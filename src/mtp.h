@@ -8,7 +8,7 @@
 #ifndef __MTP_H__
 #define __MTP_H__
 
-#include "libptp2/src/ptp.h"
+#include "ptp.h"
 
 /* MTP operation codes */
 
