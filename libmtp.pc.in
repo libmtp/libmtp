@@ -1,0 +1,14 @@
+# libmtp pkg-config source file
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libmtp
+Description: libmtp is a library for accessing Media Transfer Protocol devices
+Version: @VERSION@
+Requires:
+Conflicts:
+Libs: -L${libdir} -lmtp @LIBS@
+Cflags: -I${includedir} @OSFLAGS@

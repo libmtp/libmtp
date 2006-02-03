@@ -1,0 +1,10 @@
+Lots of docs to follow...
+
+libptp2 is copied (and modified) from version 1.1.0.
+
+For now, to get the endianness right for your system, try configure in libptp2.
+
+I have changed the config script slightly for the le64atoh function in libptp-endian.h.
+This is required for OS X on PowerPC (not sure why).  I've just cast the bytes to uint64_t
+to avoid shifting wrongly.
+

@@ -1,0 +1,87 @@
+/**
+ * \file libmtp.h
+ *
+ * Interface to the Media Transfer Protocol library.
+ *
+ * <code>
+ * #include <libmtp.h>
+ * </code>
+ */
+#ifndef LIBMTP_H_INCLUSION_GUARD
+#define LIBMTP_H_INCLUSION_GUARD
+
+#define LIBMTP_VERSION @VERSION@
+
+/* Use our own funny headers */
+#include "mtp-utils.h"
+
+/* This handles MSVC pecularities */
+#ifdef _MSC_VER
+#include <windows.h>
+#define __WIN32__
+#define snprintf _snprintf
+#define ssize_t SSIZE_T
+#endif
+
+#include <sys/types.h>
+
+#ifdef __WIN32__
+/*
+ * Windows specific code, types that do not exist in Windows
+ * sys/types.h
+ */
+typedef char int8_t;
+typedef unsigned char uint8_t;
+typedef __int16 int16_t;
+typedef unsigned __int16 uint16_t;
+typedef __int32 int32_t;
+typedef unsigned __int32 uint32_t;
+typedef unsigned __int64 uint64_t;
+#endif
+#include <stdio.h>
+#include <usb.h>
+
+/**
+ * @defgroup types libnjb global type definitions
+ * @{
+ */
+typedef struct mtpdevice_struct mtpdevice_t; /**< @see mtpdevice_struct */
+/** @} */
+
+/**
+ * Main MTP device object struct
+ */
+struct mtpdevice_struct {
+  uint8_t interface_number;      /**< Interface number of this device */
+  PTPParams params;              /**< Parameters for this device */
+  PTP_USB ptp_usb;               /**< USB device for this device */
+  unsigned storage_id;           /**< The storage ID for this device */
+  uint8_t maximum_battery_level; /**< The maximum battery level for this device */
+};
+
+/* Make functions available for C++ */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * @defgroup internals The libmtp internal state manipulation API.
+ * @{
+ */
+void LIBMTP_Init(void);
+/**
+ * @}
+ * @defgroup basic The basic device management API.
+ * @{
+ */
+mtpdevice_t *LIBMTP_Get_First_Device(void);
+void LIBMTP_Release_Device(mtpdevice_t*);
+/** @} */
+
+/* End of C++ exports */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* LIBMTP_H_INCLUSION_GUARD */
+
