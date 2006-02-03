@@ -1,7 +1,11 @@
-libmtp was created by:
+libmtp was invented by:
 
 Richard Low <richard@wentnet.com>
 Linus Walleij <triad@df.lth.se>
 
 We both came to do libmtp after working on the libnjb
 project.
+
+libmtp is however largely based on libptp2, which was created by:
+
+Mariusz Woloszyn <emsi@ipartners.pl>
