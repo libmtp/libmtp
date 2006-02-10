@@ -53,8 +53,8 @@ typedef struct mtpdevice_struct mtpdevice_t; /**< @see mtpdevice_struct */
  */
 struct mtpdevice_struct {
   uint8_t interface_number;      /**< Interface number of this device */
-  PTPParams params;              /**< Parameters for this device */
-  PTP_USB ptp_usb;               /**< USB device for this device */
+  PTPParams *params;             /**< Parameters for this device */
+  PTP_USB *ptp_usb;              /**< USB device for this device */
   unsigned storage_id;           /**< The storage ID for this device */
   uint8_t maximum_battery_level; /**< The maximum battery level for this device */
 };
