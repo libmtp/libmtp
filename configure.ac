@@ -88,6 +88,11 @@ AC_CHECK_FUNCS(basename memset select strdup strerror strrchr strtoul usleep)
 CFLAGS="$CFLAGS -Wall -Wmissing-prototypes"
 
 # Output files
+dnl Create a header file containing NetBSD-style byte swapping macros
+AC_NEED_BYTEORDER_H(src/libptp-endian.h)
+dnl Create a stdint.h-like file containing size-specific integer definitions
+dnl that will always be available
+AC_NEED_STDINT_H(src/libptp-stdint.h)
 AC_CONFIG_FILES([src/libmtp.h doc/Doxyfile Makefile doc/Makefile src/Makefile
 	examples/Makefile libmtp.sh hotplug.sh libmtp.pc])
 AC_OUTPUT
