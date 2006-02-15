@@ -1,4 +1,6 @@
+#include <string.h>
 #include "libmtp.h"
+#include "unicode.h"
 
 /**
  * Initialize the library.
@@ -12,7 +14,7 @@ void LIBMTP_Init(void)
  * Get the first connected MTP device.
  * @return a device pointer.
  */
-mtpdevice_t *LIBMTP_Get_First_Device(void)
+LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 {
   uint8_t interface_number;
   PTPParams *params;
@@ -22,7 +24,7 @@ mtpdevice_t *LIBMTP_Get_First_Device(void)
   PTPDevicePropDesc dpd;
   uint8_t batteryLevelMax = 100;
   uint16_t ret;
-  mtpdevice_t *tmpdevice;
+  LIBMTP_mtpdevice_t *tmpdevice;
 
   // Allocate a parameter block
   params = (PTPParams *) malloc(sizeof(PTPParams));
@@ -73,7 +75,7 @@ mtpdevice_t *LIBMTP_Get_First_Device(void)
   ptp_free_devicepropdesc(&dpd);
 
   // OK everything got this far, so it is time to create a device struct!
-  tmpdevice = (mtpdevice_t *) malloc(sizeof(mtpdevice_t));
+  tmpdevice = (LIBMTP_mtpdevice_t *) malloc(sizeof(LIBMTP_mtpdevice_t));
   tmpdevice->interface_number = interface_number;
   tmpdevice->params = params;
   tmpdevice->ptp_usb = ptp_usb;
@@ -94,14 +96,249 @@ mtpdevice_t *LIBMTP_Get_First_Device(void)
 
 /**
  * This closes and releases an allocated MTP device.
+ * @param device a pointer to the MTP device to release.
  */
-void LIBMTP_Release_Device(mtpdevice_t *device)
+void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
 {
-  close_device(device->ptp_usb, device->params, &device->interface_number);
+  close_device(device->ptp_usb, device->params, device->interface_number);
   // Free the device info and any handler
   ptp_free_deviceinfo(&device->params->deviceinfo);
   if (device->params->handles.Handler != NULL) {
     free(device->params->handles.Handler);
   }
   free(device);
+}
+
+/**
+ * This retrieves the owners name of an MTP device.
+ * @param device a pointer to the device to get the owner for.
+ * @return a newly allocated UTF-8 string representing the owner. 
+ *         The string must be freed by the caller after use.
+ */
+char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t *device)
+{
+  uint16_t *unistring = NULL;
+  char *retstring = NULL;
+
+  if (ptp_getdevicepropvalue(device->params, 
+			     PTP_DPC_DeviceFriendlyName, 
+			     (void **)&unistring, 
+			     PTP_DTC_UNISTR) != PTP_RC_OK) {
+    return NULL;
+  }
+  // Convert from UTF-16 to UTF-8
+  retstring = ucs2_to_utf8(unistring);
+  free(unistring);
+  return retstring;
+}
+
+static LIBMTP_track_t *LIBMTP_new_track_t()
+{
+  LIBMTP_track_t *new = (LIBMTP_track_t *) malloc(sizeof(LIBMTP_track_t));
+  if (new == NULL) {
+    return NULL;
+  }
+  new->title = NULL;
+  new->artist = NULL;
+  new->album = NULL;
+  new->genre = NULL;
+  new->date = NULL;
+  new->filename = NULL;
+  new->duration = 0;
+  new->tracknumber = 0;
+  new->filesize = 0;
+  new->codec = LIBMTP_CODEC_UNKNOWN;
+  new->next = NULL;
+  return new;
+}
+
+void LIBMTP_destroy_track_t(LIBMTP_track_t *track)
+{
+  if (track == NULL) {
+    return;
+  }
+  if (track->title != NULL)
+    free(track->title);
+  if (track->artist != NULL)
+    free(track->artist);
+  if (track->album != NULL)
+    free(track->album);
+  if (track->genre != NULL)
+    free(track->genre);
+  if (track->date != NULL)
+    free(track->date);
+  if (track->filename != NULL)
+    free(track->filename);
+  free(track);
+  return;
+}
+
+/**
+ * This returns a long list of all tracks available
+ * on the current MTP device.
+ * @param device a pointer to the device to get the track listing for.
+ */
+LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
+{
+  uint32_t i = 0;
+  LIBMTP_track_t *retracks = NULL;
+  LIBMTP_track_t *curtrack = NULL;
+  
+  printf("Getting handles\n");
+  if (device->params->handles.Handler == NULL) {
+    // Get all the handles if we haven't already done that
+    if (ptp_getobjecthandles(device->params,
+			     PTP_GOH_ALL_STORAGE, 
+			     PTP_GOH_ALL_FORMATS, 
+			     PTP_GOH_ALL_ASSOCS, 
+			     &device->params->handles) != PTP_RC_OK) {
+      printf("LIBMTP panic: Could not get object handles...\n");
+      return NULL;
+    }
+  }
+  
+  for (i = 0; i < device->params->handles.n; i++) {
+
+    LIBMTP_track_t *track;
+    PTPObjectInfo oi;
+    int ret;
+    char *stringvalue = NULL;
+    unsigned short *unicodevalue = NULL;
+    uint16_t *uint16value = NULL;
+    uint32_t *uint32value = NULL;
+
+    if (ptp_getobjectinfo(device->params, device->params->handles.Handler[i], &oi) == PTP_RC_OK) {
+      
+      // Ignore stuff we don't know how to handle...
+      if (oi.ObjectFormat == PTP_OFC_Association || 
+	  (oi.ObjectFormat != PTP_OFC_WAV && 
+	   oi.ObjectFormat != PTP_OFC_MP3 && 
+	   oi.ObjectFormat != PTP_OFC_WMA)) {
+	printf("Unknown ObjectFormat (%d), skipping...\n",oi.ObjectFormat);
+	continue;
+      }
+      
+      // Allocate a new track type
+      track = LIBMTP_new_track_t();
+
+      switch (oi.ObjectFormat)
+	{
+	case PTP_OFC_WAV:
+	  track->codec = LIBMTP_CODEC_WAV;
+	  break;
+	case PTP_OFC_MP3:
+	  track->codec = LIBMTP_CODEC_MP3;
+	  break;
+	case PTP_OFC_WMA:
+	  track->codec = LIBMTP_CODEC_WMA;
+	  break;
+	default:
+	  track->codec = LIBMTP_CODEC_UNKNOWN;
+	}
+
+      // Original file-specific properties
+      track->filesize = oi.ObjectCompressedSize;
+      if (oi.Filename != NULL) {
+	track->filename = strdup(oi.Filename);
+	printf("Filename: %s\n", track->filename);
+      }
+
+      ret = ptp_getobjectpropvalue(device->params, PTP_OPC_Name, 
+				   device->params->handles.Handler[i], 
+				   (void**)&unicodevalue,
+				   PTP_DTC_UNISTR);
+      if (ret == PTP_RC_OK && unicodevalue != NULL) {
+	printf("Getting unicode rep\n");
+	track->title = ucs2_to_utf8(unicodevalue);
+	free(unicodevalue);
+	unicodevalue = NULL;
+      }
+      
+      ret = ptp_getobjectpropvalue(device->params, 
+				   PTP_OPC_Artist, 
+				   device->params->handles.Handler[i], 
+				   (void**)&unicodevalue, 
+				   PTP_DTC_UNISTR);
+      if (ret == PTP_RC_OK && unicodevalue != NULL) {
+	track->artist = ucs2_to_utf8(unicodevalue);
+	free(unicodevalue);
+	unicodevalue = NULL;
+      }
+      
+      ret = ptp_getobjectpropvalue(device->params, 
+				   PTP_OPC_Duration, 
+				   device->params->handles.Handler[i], 
+				   (void**)&uint32value, 
+				   PTP_DTC_UINT32);
+      if (ret == PTP_RC_OK && uint32value != NULL) {
+	track->duration = *uint32value;
+	free(uint32value);
+	uint32value = NULL;
+      }
+      
+      ret = ptp_getobjectpropvalue(device->params, 
+				   PTP_OPC_Track, 
+				   device->params->handles.Handler[i], 
+				   (void**)&uint16value, 
+				   PTP_DTC_UINT16);
+      if (ret == PTP_RC_OK && uint16value != NULL) {
+	track->tracknumber = *uint16value;
+	free(uint16value);
+	uint16value = NULL;
+      }
+      
+      ret = ptp_getobjectpropvalue(device->params, 
+				   PTP_OPC_Genre, 
+				   device->params->handles.Handler[i], 
+				   (void**)&unicodevalue, 
+				   PTP_DTC_UNISTR);
+      if (ret == PTP_RC_OK && unicodevalue != NULL) {
+	track->genre = ucs2_to_utf8(unicodevalue);
+	free(unicodevalue);
+	unicodevalue = NULL;
+      }
+      
+      ret = ptp_getobjectpropvalue(device->params, 
+				   PTP_OPC_AlbumName, 
+				   device->params->handles.Handler[i], 
+				   (void**)&unicodevalue, 
+				   PTP_DTC_UNISTR);
+      if (ret == PTP_RC_OK && unicodevalue != NULL) {
+	track->album = ucs2_to_utf8(unicodevalue);
+	free(unicodevalue);
+	unicodevalue = NULL;
+      }
+      
+      ret = ptp_getobjectpropvalue(device->params, 
+				   PTP_OPC_OriginalReleaseDate, 
+				   device->params->handles.Handler[i], 
+				   (void**)&stringvalue, 
+				   PTP_DTC_STR);
+      if (ret == PTP_RC_OK && stringvalue != NULL) {
+	track->date = strdup(stringvalue);
+	free(stringvalue);
+	stringvalue = NULL;
+      }
+      
+      // This is some sort of unique ID so we can keep track of the track.
+      track->item_id = device->params->handles.Handler[i];
+      
+      // Add track to a list that will be returned afterwards.
+      if (retracks == NULL) {
+	retracks = track;
+	curtrack = track;
+      } else {
+	curtrack->next = track;
+	curtrack = track;
+      }
+      
+      // Call listing callback
+      // double progressPercent = (double)i*(double)100.0 / (double)device->params->handles.n;
+
+    } else {
+      printf("LIBMTP panic: Found a bad handle, trying to ignore it.\n");
+    }
+
+  } // Handle counting loop
+  return retracks;
 }

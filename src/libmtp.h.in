@@ -45,18 +45,43 @@ typedef unsigned __int64 uint64_t;
  * @defgroup types libnjb global type definitions
  * @{
  */
-typedef struct mtpdevice_struct mtpdevice_t; /**< @see mtpdevice_struct */
+typedef enum {
+  LIBMTP_CODEC_WAV,
+  LIBMTP_CODEC_MP3,
+  LIBMTP_CODEC_WMA,
+  LIBMTP_CODEC_UNKNOWN
+} LIBMTP_codec_t;
+typedef struct LIBMTP_mtpdevice_struct LIBMTP_mtpdevice_t; /**< @see LIBMTP_mtpdevice_struct */
+typedef struct LIBMTP_track_struct LIBMTP_track_t; /**< @see LIBMTP_mtptrack_t */
 /** @} */
 
 /**
  * Main MTP device object struct
  */
-struct mtpdevice_struct {
+struct LIBMTP_mtpdevice_struct {
   uint8_t interface_number;      /**< Interface number of this device */
   PTPParams *params;             /**< Parameters for this device */
   PTP_USB *ptp_usb;              /**< USB device for this device */
   unsigned storage_id;           /**< The storage ID for this device */
   uint8_t maximum_battery_level; /**< The maximum battery level for this device */
+};
+
+/**
+ * MTP track struct
+ */
+struct LIBMTP_track_struct {
+  uint32_t item_id; /**< Unique item ID */
+  char *title; /**< Track title */
+  char *artist; /**< Name of recording artist */
+  char *genre; /**< Genre name for track */
+  char *album; /**< Album name for track */
+  char *date; /**< Date of original recording as a string */
+  char *filename; /**< Original filename of this track */
+  uint16_t tracknumber; /**< Track number (in sequence on recording) */
+  uint32_t duration; /**< Duration in milliseconds */
+  uint64_t filesize; /**< Size of track file in bytes */
+  LIBMTP_codec_t codec; /**< Codec used for the current track */
+  LIBMTP_track_t *next; /**< Next track in list or NULL if last track */
 };
 
 /* Make functions available for C++ */
@@ -74,8 +99,11 @@ void LIBMTP_Init(void);
  * @defgroup basic The basic device management API.
  * @{
  */
-mtpdevice_t *LIBMTP_Get_First_Device(void);
-void LIBMTP_Release_Device(mtpdevice_t*);
+LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void);
+void LIBMTP_Release_Device(LIBMTP_mtpdevice_t*);
+char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t*);
+void LIBMTP_destroy_track_t(LIBMTP_track_t*);
+LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t*);
 /** @} */
 
 /* End of C++ exports */
