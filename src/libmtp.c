@@ -1,4 +1,6 @@
 #include <string.h>
+#include <sys/types.h>
+#include <fcntl.h>
 #include "libmtp.h"
 #include "unicode.h"
 
@@ -341,4 +343,73 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 
   } // Handle counting loop
   return retracks;
+}
+
+/**
+ * This gets a track off the device to a file identified
+ * by a filename.
+ * @param device a pointer to the device to get the track from.
+ * @param id the track ID of the track to retrieve.
+ * @param path a filename to use for the retrieved track.
+ * @param callback a progress indicator function or NULL to ignore.
+ * @param data a user-defined pointer that is passed along to
+ *             the <code>progress</code> function in order to
+ *             pass along some user defined data to the progress
+ *             updates. If not used, set this to NULL.
+ * @return 0 if the transfer was successful, any other value means 
+ *           failure.
+ * @see LIBMTP_Get_Track_To_File_Descriptor()
+ */
+int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t *device, uint32_t id, 
+			 char *path, LIBMTP_progressfunc_t *callback,
+			 void *data)
+{
+  int fd = -1;
+  int ret;
+
+  // Sanity check
+  if (path == NULL || id == 0) {
+    return -1;
+  }
+
+  // Open file
+#ifdef __WIN32__
+  if ( path && (fd = open(path, O_CREAT|O_TRUNC|O_WRONLY|O_BINARY, 0664)) == -1 ) {
+#else
+  if ( path && (fd = open(path, O_CREAT|O_TRUNC|O_WRONLY, 0664)) == -1 ) {
+#endif
+    return -1;
+  }
+  
+  ret = LIBMTP_Get_Track_To_File_Descriptor(device, id, fd, callback, data);
+  
+  if ( path != NULL ) {
+    close(fd);
+    fd = -1;
+  }
+  
+  return 0;
+}
+
+/**
+ * This gets a track off the device to a file identified
+ * by a file descriptor.
+ * @param device a pointer to the device to get the track from.
+ * @param id the track ID of the track to retrieve.
+ * @param fd a file descriptor to write the track to.
+ * @param callback a progress indicator function or NULL to ignore.
+ * @param data a user-defined pointer that is passed along to
+ *             the <code>progress</code> function in order to
+ *             pass along some user defined data to the progress
+ *             updates. If not used, set this to NULL.
+ * @return 0 if the transfer was successful, any other value means 
+ *           failure.
+ * @see LIBMTP_Get_Track_To_File()
+ */
+int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device, 
+					uint32_t id, int fd, 
+					LIBMTP_progressfunc_t *callback,
+					void *data)
+{
+  return 0;
 }

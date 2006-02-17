@@ -89,6 +89,19 @@ struct LIBMTP_track_struct {
 extern "C" {
 #endif
 
+/** 
+ * The callback type definition. Notice that a progress percentage ratio
+ * is easy to calculate by dividing <code>sent</code> by 
+ * <code>total</code>.
+ * @param sent the number of bytes sent so far
+ * @param total the total number of bytes to send
+ * @param buf intermediate buffer
+ * @param len intermediate buffer length
+ * @param data a user-defined dereferencable pointer
+ */
+typedef int LIBMTP_progressfunc_t (u_int64_t sent, u_int64_t total,
+                const char* buf, unsigned len, void *data);
+
 /**
  * @defgroup internals The libmtp internal state manipulation API.
  * @{
@@ -104,8 +117,16 @@ void LIBMTP_Release_Device(LIBMTP_mtpdevice_t*);
 char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t*);
 void LIBMTP_destroy_track_t(LIBMTP_track_t*);
 LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t*);
+/**
+ * @}
+ * @defgroup tracks The track management API.
+ * @{
+ */
+int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t*, uint32_t, char*, 
+			LIBMTP_progressfunc_t*, void*);
+int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t, int, 
+			LIBMTP_progressfunc_t*, void*);
 /** @} */
-
 /* End of C++ exports */
 #ifdef __cplusplus
 }
