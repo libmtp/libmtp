@@ -1,0 +1,8 @@
+Problems with compilation under FC4: GCC4 related problem.
+Run this:
+
+CC=gcc32
+export CC
+./configure
+make
+
