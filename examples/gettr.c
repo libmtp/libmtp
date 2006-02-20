@@ -20,29 +20,28 @@ static void usage (void)
 int main (int argc, char **argv)
 {
   LIBMTP_mtpdevice_t *device;
-  char *owner;
   u_int32_t id;
   char *endptr;
   char *file;
 
   // We need track ID and filename
-  if ( argc != 2 ) {
+  if ( argc != 3 ) {
     usage();
     return 1;
   }
 
   // Sanity check song ID
-  id = strtoul(argv[0], &endptr, 10);
+  id = strtoul(argv[1], &endptr, 10);
   if ( *endptr != 0 ) {
-    fprintf(stderr, "illegal value %s\n", argv[0]);
+    fprintf(stderr, "illegal value %s\n", argv[1]);
     return 1;
   } else if ( ! id ) {
     fprintf(stderr, "bad song id %u\n", id);
     return 1;
-  }
+ }
 
   // Filename, e.g. "foo.mp3"
-  file = argv[1];
+  file = argv[2];
   printf("Getting track %d to local file %s\n", id, file);
 
   LIBMTP_Init();

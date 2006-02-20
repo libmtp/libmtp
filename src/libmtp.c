@@ -1,5 +1,6 @@
 #include <string.h>
 #include <sys/types.h>
+#include <sys/mman.h>
 #include <fcntl.h>
 #include "libmtp.h"
 #include "unicode.h"
@@ -124,7 +125,7 @@ char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t *device)
 
   if (ptp_getdevicepropvalue(device->params, 
 			     PTP_DPC_DeviceFriendlyName, 
-			     (void **)&unistring, 
+			     (void **) &unistring, 
 			     PTP_DTC_UNISTR) != PTP_RC_OK) {
     return NULL;
   }
@@ -247,7 +248,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 
       ret = ptp_getobjectpropvalue(device->params, PTP_OPC_Name, 
 				   device->params->handles.Handler[i], 
-				   (void**)&unicodevalue,
+				   (void**) &unicodevalue,
 				   PTP_DTC_UNISTR);
       if (ret == PTP_RC_OK && unicodevalue != NULL) {
 	printf("Getting unicode rep\n");
@@ -259,7 +260,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
       ret = ptp_getobjectpropvalue(device->params, 
 				   PTP_OPC_Artist, 
 				   device->params->handles.Handler[i], 
-				   (void**)&unicodevalue, 
+				   (void**) &unicodevalue, 
 				   PTP_DTC_UNISTR);
       if (ret == PTP_RC_OK && unicodevalue != NULL) {
 	track->artist = ucs2_to_utf8(unicodevalue);
@@ -270,7 +271,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
       ret = ptp_getobjectpropvalue(device->params, 
 				   PTP_OPC_Duration, 
 				   device->params->handles.Handler[i], 
-				   (void**)&uint32value, 
+				   (void**) &uint32value, 
 				   PTP_DTC_UINT32);
       if (ret == PTP_RC_OK && uint32value != NULL) {
 	track->duration = *uint32value;
@@ -281,7 +282,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
       ret = ptp_getobjectpropvalue(device->params, 
 				   PTP_OPC_Track, 
 				   device->params->handles.Handler[i], 
-				   (void**)&uint16value, 
+				   (void**) &uint16value, 
 				   PTP_DTC_UINT16);
       if (ret == PTP_RC_OK && uint16value != NULL) {
 	track->tracknumber = *uint16value;
@@ -292,7 +293,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
       ret = ptp_getobjectpropvalue(device->params, 
 				   PTP_OPC_Genre, 
 				   device->params->handles.Handler[i], 
-				   (void**)&unicodevalue, 
+				   (void**) &unicodevalue, 
 				   PTP_DTC_UNISTR);
       if (ret == PTP_RC_OK && unicodevalue != NULL) {
 	track->genre = ucs2_to_utf8(unicodevalue);
@@ -303,7 +304,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
       ret = ptp_getobjectpropvalue(device->params, 
 				   PTP_OPC_AlbumName, 
 				   device->params->handles.Handler[i], 
-				   (void**)&unicodevalue, 
+				   (void**) &unicodevalue, 
 				   PTP_DTC_UNISTR);
       if (ret == PTP_RC_OK && unicodevalue != NULL) {
 	track->album = ucs2_to_utf8(unicodevalue);
@@ -314,7 +315,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
       ret = ptp_getobjectpropvalue(device->params, 
 				   PTP_OPC_OriginalReleaseDate, 
 				   device->params->handles.Handler[i], 
-				   (void**)&stringvalue, 
+				   (void**) &stringvalue, 
 				   PTP_DTC_STR);
       if (ret == PTP_RC_OK && stringvalue != NULL) {
 	track->date = strdup(stringvalue);
@@ -360,15 +361,16 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
  *           failure.
  * @see LIBMTP_Get_Track_To_File_Descriptor()
  */
-int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t *device, uint32_t id, 
-			 char *path, LIBMTP_progressfunc_t *callback,
-			 void *data)
+int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id, 
+			 char const * const path, LIBMTP_progressfunc_t const * const callback,
+			 void const * const data)
 {
   int fd = -1;
   int ret;
 
   // Sanity check
   if (path == NULL || id == 0) {
+    printf("LIBMTP_Get_Track_To_File(): Bad arguments\n");
     return -1;
   }
 
@@ -378,17 +380,16 @@ int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t *device, uint32_t id,
 #else
   if ( path && (fd = open(path, O_CREAT|O_TRUNC|O_WRONLY, 0664)) == -1 ) {
 #endif
+    printf("LIBMTP_Get_Track_To_File(): Could not create file\n");
     return -1;
   }
   
   ret = LIBMTP_Get_Track_To_File_Descriptor(device, id, fd, callback, data);
+
+  // Close file
+  close(fd);
   
-  if ( path != NULL ) {
-    close(fd);
-    fd = -1;
-  }
-  
-  return 0;
+  return ret;
 }
 
 /**
@@ -407,9 +408,51 @@ int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t *device, uint32_t id,
  * @see LIBMTP_Get_Track_To_File()
  */
 int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device, 
-					uint32_t id, int fd, 
-					LIBMTP_progressfunc_t *callback,
-					void *data)
+					uint32_t const id, 
+					int const fd, 
+					LIBMTP_progressfunc_t const * const callback,
+					void const * const data)
 {
+  PTPObjectInfo oi;
+  void *image;
+  int ret;
+  // Map this to the LIBMTP callback type
+  extern Progress_Callback* globalCallback;
+  
+  // Not yet compatible.
+  globalCallback = NULL;
+ 
+  if (ptp_getobjectinfo(device->params, id, &oi) != PTP_RC_OK) {
+    printf("LIBMTP_Get_Track_To_File_Descriptor(): Could not get object info\n");
+    return -1;
+  }
+  if (oi.ObjectFormat == PTP_OFC_Association) {
+    printf("LIBMTP_Get_Track_To_File_Descriptor(): Bad object format\n");
+    return -1;
+  }
+  // Seek to end of file and write a blank so that it is created with the
+  // correct size and all.
+  lseek(fd, oi.ObjectCompressedSize-1, SEEK_SET);
+  write(fd, "", 1);
+
+  image = mmap(0, oi.ObjectCompressedSize, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+  if (image == MAP_FAILED) {
+    printf("LIBMTP_Get_Track_To_File_Descriptor(): Could not map file to memory\n");
+    return -1;
+  }
+  // Flush the file to disk.
+  fflush(NULL);
+  
+  // Copy object to memory
+  ret = ptp_getobject(device->params, id, (char **) &image);
+
+  // Spool out to file
+  munmap(image, oi.ObjectCompressedSize);
+  
+  if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Get_Track_To_File_Descriptor(): Could not get file from device\n");
+    return -1;
+  }
+
   return 0;
 }
