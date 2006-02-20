@@ -1,5 +1,6 @@
 #include <string.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
 #include "libmtp.h"
@@ -369,18 +370,18 @@ int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id,
   int ret;
 
   // Sanity check
-  if (path == NULL || id == 0) {
+  if (path == NULL) {
     printf("LIBMTP_Get_Track_To_File(): Bad arguments\n");
     return -1;
   }
 
   // Open file
 #ifdef __WIN32__
-  if ( path && (fd = open(path, O_CREAT|O_TRUNC|O_WRONLY|O_BINARY, 0664)) == -1 ) {
+  if ( (fd = open(path, O_RDWR|O_CREAT|O_TRUNC|O_BINARY,S_IRWXU|S_IRGRP) == -1 ) {
 #else
-  if ( path && (fd = open(path, O_CREAT|O_TRUNC|O_WRONLY, 0664)) == -1 ) {
+  if ( (fd = open(path, O_RDWR|O_CREAT|O_TRUNC,S_IRWXU|S_IRGRP)) == -1) {
 #endif
-    printf("LIBMTP_Get_Track_To_File(): Could not create file\n");
+    printf("LIBMTP_Get_Track_To_File(): Could not create file \"%s\"\n", path);
     return -1;
   }
   
@@ -435,6 +436,7 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
   lseek(fd, oi.ObjectCompressedSize-1, SEEK_SET);
   write(fd, "", 1);
 
+  // MAP_SHARED, MAP_PRIVATE
   image = mmap(0, oi.ObjectCompressedSize, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
   if (image == MAP_FAILED) {
     printf("LIBMTP_Get_Track_To_File_Descriptor(): Could not map file to memory\n");
