@@ -1,12 +1,8 @@
-AUTHORS
-autogen.sh
-COPYING
-Makefile.am
-ChangeLog
-configure.ac
-libmtp.pc.in
+2006-02-22  Linus Walleij  <triad@df.lth.se>
 
-
+	* Untested gettr.c and sendtr.c programs to get and send tracks
+	  created.
+	
 2006-01-30  Linus Walleij  <triad@df.lth.se>
 
 	* Created the initial GNU source directory structure.
