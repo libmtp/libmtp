@@ -277,7 +277,7 @@ int main(int argc, char **argv)
   if (year > 0) {
     char tmp[80];
     printf("Year:      %d\n", year);
-    snprintf(tmp, sizeof(tmp)-1, "%d", year);
+    snprintf(tmp, sizeof(tmp)-1, "%4d0101T0000.0", year);
     tmp[sizeof(tmp)-1] = '\0';
     trackmeta->date = strdup(tmp);
   }
@@ -297,6 +297,11 @@ int main(int argc, char **argv)
   trackmeta->filesize = filesize;
     
   device = LIBMTP_Get_First_Device();
+  if (device == NULL) {
+    printf("No MTP device found.\n");
+    LIBMTP_destroy_track_t(trackmeta);
+    exit(1);
+  }
   
   printf("Sending track...\n");
   ret = LIBMTP_Send_Track_From_File(device, path, trackmeta, progress, NULL);
@@ -304,7 +309,7 @@ int main(int argc, char **argv)
   LIBMTP_Release_Device(device);
   
   printf("New track ID: %d\n", trackmeta->item_id);
-  
+
   LIBMTP_destroy_track_t(trackmeta);
   
   printf("OK.\n");

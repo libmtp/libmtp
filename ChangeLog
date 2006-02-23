@@ -1,3 +1,8 @@
+2006-02-23  Linus Walleij  <triad@df.lth.se>
+
+	* Fixed up sendtr program and metadata tagging function that is
+	  used after sending files.
+
 2006-02-22  Linus Walleij  <triad@df.lth.se>
 
 	* Untested gettr.c and sendtr.c programs to get and send tracks

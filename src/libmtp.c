@@ -146,12 +146,12 @@ char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t *device)
  * operation later, so be careful of using strdup() when assigning 
  * strings, e.g.:
  *
- * <code>
+ * <pre>
  * LIBMTP_track_t *track = LIBMTP_new_track_t();
  * track->title = strdup(titlestr);
  * ....
  * LIBMTP_destroy_track_t(track);
- * </code>
+ * </pre>
  *
  * @return a pointer to the newly allocated metadata structure.
  * @see LIBMTP_destroy_track_t()
@@ -562,6 +562,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   uint32_t store = 0;
   uint8_t *buffer;
   uint64_t remain;
+  int subcall_ret;
   PTPObjectInfo new_track;
   PTPContainer ptp;
   PTPUSBBulkContainerSend usbdata;
@@ -630,9 +631,12 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   while (remain != 0) {
     int readsize = (remain > BLOCK_SIZE) ? BLOCK_SIZE : (int) remain;
     int bytesdone = (int) (metadata->filesize - remain);
-    
-    if (read(fd, buffer, readsize) < readsize) {
+    int readbytes;
+
+    readbytes = read(fd, buffer, readsize);
+    if (readbytes < readsize) {
       printf("LIBMTP_Send_Track_From_File_Descriptor: error reading source file\n");
+      printf("Wanted to read %d bytes but could only read %d.\n", readsize, readbytes);
       free(buffer);
       return -1;
     }
@@ -678,14 +682,100 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 
   // Get a response from device to make sure that the track was properly stored
   ret = device->params->getresp_func(device->params, &ptp);
-  if (ret!=PTP_RC_OK) {
+  if (ret != PTP_RC_OK) {
     printf("LIBMTP_Send_Track_From_File_Descriptor: error getting response from device\n");
     ptp_perror(device->params, ret);
     free(buffer);
     return -1;
   }
   
-  // Free allocated buffer and return
+  // Free allocated buffer
   free(buffer);
+
+  // Set track metadata for the new fine track
+  subcall_ret = LIBMTP_Update_Track_Metadata(device, metadata);
+  if (subcall_ret != 0) {
+    printf("LIBMTP_Send_Track_From_File_Descriptor: error setting metadata for new track\n");
+    return -1;
+  }
+  
+  return 0;
+}
+
+/**
+ * This function updates the MTP object metadata on a single file
+ * identified by an object ID.
+ * @param device a pointer to the device to send the track to.
+ * @param metadata a track metadata set to be written to the file.
+ *        notice that the <code>track_id</code> field of the
+ *        metadata structure must be correct so that the
+ *        function can update the right file.
+ * @return 0 on success, any other value means failure.
+ */
+int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device, 
+				 LIBMTP_track_t const * const metadata)
+{
+  uint16_t *unistring = NULL;
+  uint16_t ret;
+
+  // Update title
+  unistring = utf8_to_ucs2(metadata->title);
+  ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Name, metadata->item_id, unistring, PTP_DTC_UNISTR);
+  free(unistring);
+  if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Update_Track_Metadata(): could not set track title\n");
+    return -1;
+  }
+
+  // Update album
+  unistring = utf8_to_ucs2(metadata->album);
+  ret = ptp_setobjectpropvalue(device->params, PTP_OPC_AlbumName, metadata->item_id, unistring, PTP_DTC_UNISTR);
+  free(unistring);
+  if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Update_Track_Metadata(): could not set track album name\n");
+    return -1;
+  }
+
+  // Update artist
+  unistring = utf8_to_ucs2(metadata->artist);
+  ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Artist, metadata->item_id, unistring, PTP_DTC_UNISTR);
+  free(unistring);
+  if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Update_Track_Metadata(): could not set track artist name\n");
+    return -1;
+  }
+
+  // Update genre
+  unistring = utf8_to_ucs2(metadata->genre);
+  ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Genre, metadata->item_id, unistring, PTP_DTC_UNISTR);
+  free(unistring);
+  if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Update_Track_Metadata(): could not set track genre name\n");
+    return -1;
+  }
+
+  // Update duration
+  ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Duration, metadata->item_id, &metadata->duration, PTP_DTC_UINT32);
+  if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Update_Track_Metadata(): could not set track duration\n");
+    return -1;
+  }
+
+  // Update track number
+  ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Track, metadata->item_id, &metadata->tracknumber, PTP_DTC_UINT16);
+  if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Update_Track_Metadata(): could not set track tracknumber\n");
+    return -1;
+  }
+
+  // Update creation datetime
+  ret = ptp_setobjectpropvalue(device->params, PTP_OPC_OriginalReleaseDate, metadata->item_id, metadata->date, PTP_DTC_STR);
+  if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Update_Track_Metadata(): could not set track release date\n");
+    return -1;
+  }
+  
+  // NOTE: File size is not updated, this should not change anyway.
+  
   return 0;
 }
