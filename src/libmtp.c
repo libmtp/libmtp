@@ -659,7 +659,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       free(buffer);
       return -1;
     }
-    remain -= BLOCK_SIZE;
+    remain -= (uint64_t) readsize;
   }
   
   if (callback != NULL) {
