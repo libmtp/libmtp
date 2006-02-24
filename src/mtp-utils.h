@@ -28,11 +28,8 @@ struct _PTP_USB {
 	int intep;
 };
 
-uint16_t send_file(PTPParams* params, const char* filename, const char* friendlyfilename, uint16_t objectFormat, Progress_Callback* callback, uint32_t* handle);
-int get_file(PTPParams* params, uint32_t handle, const char* filename, Progress_Callback* callback);
 int open_device (int busn, int devn, short force, PTP_USB *ptp_usb, PTPParams *params, struct usb_device **dev);
 void close_device (PTP_USB *ptp_usb, PTPParams *params, uint8_t interfaceNumber);
-
 uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *interfaceNumber);
 
 /* connect_first_device return codes */

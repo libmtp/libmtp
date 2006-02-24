@@ -206,8 +206,28 @@ void LIBMTP_destroy_track_t(LIBMTP_track_t *track)
 
 /**
  * This returns a long list of all tracks available
- * on the current MTP device.
+ * on the current MTP device. Typical usage:
+ *
+ * <pre>
+ * LIBMTP_track_t *tracklist;
+ *
+ * tracklist = LIBMTP_Get_Tracklisting(device);
+ * while (tracklist != NULL) {
+ *   LIBMTP_track_t *tmp;
+ *
+ *   // Do something on each element in the list here...
+ *   tmp = tracklist;
+ *   tracklist = tracklist->next;
+ *   LIBMTP_destroy_track_t(tmp);
+ * }
+ * </pre>
+ *
  * @param device a pointer to the device to get the track listing for.
+ * @return a list of tracks that can be followed using the <code>next</code>
+ *         field of the <code>LIBMTP_track_t</code> data structure.
+ *         Each of the metadata tags must be freed after use, and may
+ *         contain only partial metadata information, i.e. one or several
+ *         fields may be NULL or 0.
  */
 LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 {
@@ -715,7 +735,10 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
  * @param metadata a track metadata set to be written to the file.
  *        notice that the <code>track_id</code> field of the
  *        metadata structure must be correct so that the
- *        function can update the right file.
+ *        function can update the right file. If some properties
+ *        of this metadata are set to NULL (strings) or 0
+ *        (numerical values) they will be discarded and the
+ *        track will not be tagged with these blank values.
  * @return 0 on success, any other value means failure.
  */
 int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device, 
@@ -725,63 +748,78 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
   uint16_t ret;
 
   // Update title
-  unistring = utf8_to_ucs2(metadata->title);
-  ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Name, metadata->item_id, unistring, PTP_DTC_UNISTR);
-  free(unistring);
-  if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Update_Track_Metadata(): could not set track title\n");
-    return -1;
+  if (metadata->title != NULL) {
+    unistring = utf8_to_ucs2(metadata->title);
+    ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Name, metadata->item_id, unistring, PTP_DTC_UNISTR);
+    free(unistring);
+    if (ret != PTP_RC_OK) {
+      printf("LIBMTP_Update_Track_Metadata(): could not set track title\n");
+      return -1;
+    }
   }
 
   // Update album
-  unistring = utf8_to_ucs2(metadata->album);
-  ret = ptp_setobjectpropvalue(device->params, PTP_OPC_AlbumName, metadata->item_id, unistring, PTP_DTC_UNISTR);
-  free(unistring);
-  if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Update_Track_Metadata(): could not set track album name\n");
-    return -1;
+  if (metadata->album != NULL) {
+    unistring = utf8_to_ucs2(metadata->album);
+    ret = ptp_setobjectpropvalue(device->params, PTP_OPC_AlbumName, metadata->item_id, unistring, PTP_DTC_UNISTR);
+    free(unistring);
+    if (ret != PTP_RC_OK) {
+      printf("LIBMTP_Update_Track_Metadata(): could not set track album name\n");
+      return -1;
+    }
   }
 
   // Update artist
-  unistring = utf8_to_ucs2(metadata->artist);
-  ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Artist, metadata->item_id, unistring, PTP_DTC_UNISTR);
-  free(unistring);
-  if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Update_Track_Metadata(): could not set track artist name\n");
-    return -1;
+  if (metadata->artist != NULL) {
+    unistring = utf8_to_ucs2(metadata->artist);
+    ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Artist, metadata->item_id, unistring, PTP_DTC_UNISTR);
+    free(unistring);
+    if (ret != PTP_RC_OK) {
+      printf("LIBMTP_Update_Track_Metadata(): could not set track artist name\n");
+      return -1;
+    }
   }
 
   // Update genre
-  unistring = utf8_to_ucs2(metadata->genre);
-  ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Genre, metadata->item_id, unistring, PTP_DTC_UNISTR);
-  free(unistring);
-  if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Update_Track_Metadata(): could not set track genre name\n");
-    return -1;
+  if (metadata->genre != NULL) {
+    unistring = utf8_to_ucs2(metadata->genre);
+    ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Genre, metadata->item_id, unistring, PTP_DTC_UNISTR);
+    free(unistring);
+    if (ret != PTP_RC_OK) {
+      printf("LIBMTP_Update_Track_Metadata(): could not set track genre name\n");
+      return -1;
+    }
   }
 
   // Update duration
-  ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Duration, metadata->item_id, &metadata->duration, PTP_DTC_UINT32);
-  if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Update_Track_Metadata(): could not set track duration\n");
-    return -1;
+  if (metadata->duration != 0) {
+    ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Duration, metadata->item_id, &metadata->duration, PTP_DTC_UINT32);
+    if (ret != PTP_RC_OK) {
+      printf("LIBMTP_Update_Track_Metadata(): could not set track duration\n");
+      return -1;
+    }
   }
 
-  // Update track number
-  ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Track, metadata->item_id, &metadata->tracknumber, PTP_DTC_UINT16);
-  if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Update_Track_Metadata(): could not set track tracknumber\n");
-    return -1;
+  // Update track number.
+  if (metadata->tracknumber != 0) {
+    ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Track, metadata->item_id, &metadata->tracknumber, PTP_DTC_UINT16);
+    if (ret != PTP_RC_OK) {
+      printf("LIBMTP_Update_Track_Metadata(): could not set track tracknumber\n");
+      return -1;
+    }
   }
 
   // Update creation datetime
-  ret = ptp_setobjectpropvalue(device->params, PTP_OPC_OriginalReleaseDate, metadata->item_id, metadata->date, PTP_DTC_STR);
-  if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Update_Track_Metadata(): could not set track release date\n");
-    return -1;
+  if (metadata->date != NULL) {
+    ret = ptp_setobjectpropvalue(device->params, PTP_OPC_OriginalReleaseDate, metadata->item_id, metadata->date, PTP_DTC_STR);
+    if (ret != PTP_RC_OK) {
+      printf("LIBMTP_Update_Track_Metadata(): could not set track release date\n");
+      return -1;
+    }
   }
   
   // NOTE: File size is not updated, this should not change anyway.
+  // neither will we change the filename.
   
   return 0;
 }
