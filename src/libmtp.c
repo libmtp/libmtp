@@ -669,7 +669,11 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   }
   
   // Signal to USB that this is the last transfer if the last chunk
-  // was exactly as large as the buffer
+  // was exactly as large as the buffer. This was part of Richards
+  // source code but apparently can not be used on Linux for some reason,
+  // could be that libusb on Linux intrinsically adds the final zero-length
+  // transfer call.
+#ifdef USE_DARWIN
   if (metadata->filesize % MTP_DEVICE_BUF_SIZE == 0) {
     ret = device->params->write_func(NULL, 0, device->params->data);
     if (ret!=PTP_RC_OK) {
@@ -679,6 +683,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       return -1;
     }
   }
+#endif
 
   // Get a response from device to make sure that the track was properly stored
   ret = device->params->getresp_func(device->params, &ptp);
@@ -705,7 +710,8 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 /**
  * This function updates the MTP object metadata on a single file
  * identified by an object ID.
- * @param device a pointer to the device to send the track to.
+ * @param device a pointer to the device to update the track 
+ *        metadata on.
  * @param metadata a track metadata set to be written to the file.
  *        notice that the <code>track_id</code> field of the
  *        metadata structure must be correct so that the
@@ -777,5 +783,26 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
   
   // NOTE: File size is not updated, this should not change anyway.
   
+  return 0;
+}
+
+/**
+ * This function deletes a single track off the MTP device,
+ * identified by an object ID.
+ * @param device a pointer to the device to delete the track from.
+ * @param item_id the item to delete.
+ * @return 0 on success, any other value means failure.
+ */
+int LIBMTP_Delete_Track(LIBMTP_mtpdevice_t *device, 
+			uint32_t item_id)
+{
+  int ret;
+
+  ret = ptp_deleteobject(device->params, item_id, 0);
+  if (ret != PTP_RC_OK) {
+    ptp_perror(device->params, ret);
+    printf("LIBMTP_Delete_Track(): could not delete track object\n");    
+    return -1;
+  }
   return 0;
 }

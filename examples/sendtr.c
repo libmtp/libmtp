@@ -143,6 +143,7 @@ int main(int argc, char **argv)
   lang = getenv("LANG");
   if (lang != NULL) {
     if (strlen(lang) > 5) {
+      printf("%s\n", &lang[strlen(lang)-5]);
       if (!strcmp(&lang[strlen(lang)-5], "UTF-8")) {
 	printf("Your system does not appear to have UTF-8 enabled ($LANG=\"%s\")\n", lang);
 	printf("If you want to have support for diacritics and Unicode characters,\n");
@@ -305,6 +306,7 @@ int main(int argc, char **argv)
   
   printf("Sending track...\n");
   ret = LIBMTP_Send_Track_From_File(device, path, trackmeta, progress, NULL);
+  printf("\n");
   
   LIBMTP_Release_Device(device);
   
