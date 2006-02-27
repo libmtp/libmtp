@@ -1,0 +1,15 @@
+LIBMTP_Init
+LIBMTP_Get_First_Device
+LIBMTP_Release_Device
+LIBMTP_Get_Ownername
+LIBMTP_Get_Storageinfo
+LIBMTP_Get_Batterylevel
+LIBMTP_new_track_t
+LIBMTP_destroy_track_t
+LIBMTP_Get_Tracklisting
+LIBMTP_Get_Track_To_File
+LIBMTP_Get_Track_To_File_Descriptor
+LIBMTP_Send_Track_From_File
+LIBMTP_Send_Track_From_File_Descriptor
+LIBMTP_Update_Track_Metadata
+LIBMTP_Delete_Track
