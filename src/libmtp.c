@@ -9,6 +9,14 @@
 #include "ptp-pack.h"
 #include "libptp-endian.h"
 
+// Forward declarations of local functions
+static int send_file_object(LIBMTP_mtpdevice_t *device, 
+			    int const fd, uint64_t size,
+			    LIBMTP_progressfunc_t const * const callback,
+			    void const * const data);
+static int delete_item(LIBMTP_mtpdevice_t *device, uint32_t item_id);
+
+
 /**
  * Initialize the library.
  */
@@ -137,6 +145,82 @@ char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t *device)
   retstring = ucs2_to_utf8(unistring);
   free(unistring);
   return retstring;
+}
+
+/**
+ * This function finds out how much storage space is currently used
+ * and any additional storage information. Storage may be a hard disk
+ * or flash memory or whatever.
+ * @param device a pointer to the device to get the storage info for.
+ * @param total a pointer to a variable that will hold the 
+ *        total the total number of bytes available on this volume after
+ *        the call.
+ * @param free a pointer to a variable that will hold the number of 
+ *        free bytes available on this volume right now after the call.
+ * @param storage_description a description of the storage. This may 
+ *        be NULL after the call even if it succeeded. If it is not NULL, 
+ *        it must be freed by the callee after use.
+ * @param volume_label a volume label or similar. This may be NULL after the
+ *        call even if it succeeded. If it is not NULL, it must be
+ *        freed by the callee after use.
+ * @return 0 if the storage info was successfully retrieved, any other
+ *        value means failure.
+ */
+int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *device, uint64_t * const total, 
+			uint64_t * const free, char ** const storage_description, 
+			char ** const volume_label)
+{
+  PTPStorageInfo storageInfo;
+  
+  if (ptp_getstorageinfo(device->params, device->storage_id, &storageInfo) != PTP_RC_OK) {
+    printf("LIBMTP_Get_Diskinfo(): failed to get disk info\n");
+    *total = 0;
+    *free = 0;
+    *storage_description = NULL;
+    *volume_label = NULL;
+    return -1;
+  }
+  *total = storageInfo.MaxCapability;
+  *free = storageInfo.FreeSpaceInBytes;
+  *storage_description = storageInfo.StorageDescription;
+  *volume_label = storageInfo.VolumeLabel;
+
+  return 0;
+}
+
+
+/**
+ * This function retrieves the current battery level on the device.
+ * @param device a pointer to the device to get the battery level for.
+ * @param maximum_level a pointer to a variable that will hold the 
+ *        maximum level of the battery if the call was successful.
+ * @param current_level a pointer to a variable that will hold the 
+ *        current level of the battery if the call was successful.
+ * @return 0 if the storage info was successfully retrieved, any other
+ *        value means failure.
+ */
+int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device, 
+			    uint8_t * const maximum_level, 
+			    uint8_t * const current_level)
+{
+  uint8_t *value = NULL;
+  uint16_t ret;
+
+  ret = ptp_getdevicepropvalue(device->params, PTP_DPC_BatteryLevel, (void**) &value, PTP_DTC_UINT8);
+  if ((ret != PTP_RC_OK) || (value == NULL)) {
+    *maximum_level = 0;
+    *current_level = 0;
+    if (value != NULL) {
+      //free(value);
+    }
+    return -1;
+  }
+  
+  *maximum_level = device->maximum_battery_level;
+  *current_level = *value;
+  //free(value);
+  
+  return 0;
 }
 
 /**
@@ -554,6 +638,141 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
   return ret;
 }
 
+
+/**
+ * This is an internal function used by both the file and track 
+ * send functions. This takes care of a created object and 
+ * transfer the actual file contents to it.
+ * @param device a pointer to the device to send the track to.
+ * @param fd the filedescriptor for a local file which will be sent.
+ * @param size the size of the file to be sent.
+ * @param callback a progress indicator function or NULL to ignore.
+ * @param data a user-defined pointer that is passed along to
+ *             the <code>progress</code> function in order to
+ *             pass along some user defined data to the progress
+ *             updates. If not used, set this to NULL.
+ * @return 0 if the transfer was successful, any other value means 
+ *           failure.
+ */
+static int send_file_object(LIBMTP_mtpdevice_t *device, 
+		      int const fd, uint64_t size,
+		      LIBMTP_progressfunc_t const * const callback,
+		      void const * const data)
+{
+  PTPContainer ptp;
+  PTPUSBBulkContainerSend usbdata;
+  uint16_t ret;
+  uint8_t *buffer;
+  uint64_t remain;
+
+  // Nullify and configure PTP container
+  memset(&ptp, 0, sizeof(ptp));
+  ptp.Code = PTP_OC_SendObject;
+  ptp.Nparam = 0;
+  ptp.Transaction_ID = device->params->transaction_id++;
+  ptp.SessionID = device->params->session_id;
+
+  // Send request to send an object
+  ret = device->params->sendreq_func(device->params, &ptp);
+  if (ret != PTP_RC_OK) {
+    ptp_perror(device->params, ret);
+    printf("LIBMTP_Send_Track_From_File_Descriptor: Could not send \"send object\" request\n");
+    return -1;
+  }
+
+  // build appropriate USB container
+  usbdata.length = htod32p(device->params,sizeof(usbdata) + size);
+  usbdata.type = htod16p(device->params,PTP_USB_CONTAINER_DATA);
+  usbdata.code = htod16p(device->params,PTP_OC_SendObject);
+  usbdata.trans_id = htod32p(device->params,ptp.Transaction_ID);
+
+  // Write request to USB
+  ret = device->params->write_func((unsigned char *)&usbdata, sizeof(usbdata), device->params->data);
+  if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Send_Track_From_File_Descriptor: Error initializing sending object\n");
+    ptp_perror(device->params, ret);
+    return -1;
+  }
+	
+  // This space will be used as a reading ring buffer for the transfers
+  buffer = (uint8_t *) malloc(BLOCK_SIZE);
+  if (buffer == NULL) {
+    printf("LIBMTP_Send_Track_From_File_Descriptor: Could not allocate send buffer\n");
+    return -1;
+  }
+	
+  remain = size;
+  while (remain != 0) {
+    int readsize = (remain > BLOCK_SIZE) ? BLOCK_SIZE : (int) remain;
+    int bytesdone = (int) (size - remain);
+    int readbytes;
+
+    readbytes = read(fd, buffer, readsize);
+    if (readbytes < readsize) {
+      printf("LIBMTP_Send_Track_From_File_Descriptor: error reading source file\n");
+      printf("Wanted to read %d bytes but could only read %d.\n", readsize, readbytes);
+      free(buffer);
+      return -1;
+    }
+    
+    if (callback != NULL) {
+      // If the callback return anything else than 0, interrupt the processing
+      int callret = callback(bytesdone, size, buffer, readsize, data);
+      if (callret != 0) {
+	printf("LIBMTP_Send_Track_From_File_Descriptor: transfer interrupted by callback\n");
+	free(buffer);
+	return -1;
+      }
+    }
+    
+    // Write to USB
+    ret = device->params->write_func(buffer, readsize, device->params->data);
+    if (ret != PTP_RC_OK) {
+      printf("LIBMTP_Send_Track_From_File_Descriptor: error writing data chunk to object\n");
+      ptp_perror(device->params, ret);
+      free(buffer);
+      return -1;
+    }
+    remain -= (uint64_t) readsize;
+  }
+  
+  if (callback != NULL) {
+    // This last call will not be able to abort execution and is just
+    // done do progress bars go up to 100%
+    (void) callback(size, size, NULL, 0, data);
+  }
+  
+  // Signal to USB that this is the last transfer if the last chunk
+  // was exactly as large as the buffer. This was part of Richards
+  // source code but apparently has some problems on Linux for some reason,
+  // could be that libusb on Linux intrinsically adds the final zero-length
+  // transfer call.
+  if (size % MTP_DEVICE_BUF_SIZE == 0) {
+    ret = device->params->write_func(NULL, 0, device->params->data);
+    if (ret!=PTP_RC_OK) {
+      printf("LIBMTP_Send_Track_From_File_Descriptor: error writing last zerolen data chunk for USB termination\n");
+      ptp_perror(device->params, ret);
+      free(buffer);
+      return -1;
+    }
+  }
+
+  // Get a response from device to make sure that the track was properly stored
+  ret = device->params->getresp_func(device->params, &ptp);
+  if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Send_Track_From_File_Descriptor: error getting response from device\n");
+    ptp_perror(device->params, ret);
+    free(buffer);
+    return -1;
+  }
+
+  // Free allocated buffer
+  free(buffer);
+
+  return 0;
+}
+ 
+
 /**
  * This function sends a track from a file descriptor to an
  * MTP device. A filename and a set of metadata must be
@@ -580,12 +799,8 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   uint32_t parenthandle = 0;
   uint16_t ret;
   uint32_t store = 0;
-  uint8_t *buffer;
-  uint64_t remain;
   int subcall_ret;
   PTPObjectInfo new_track;
-  PTPContainer ptp;
-  PTPUSBBulkContainerSend usbdata;
   
   switch (metadata->codec) {
   case LIBMTP_CODEC_WAV:
@@ -601,7 +816,6 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     printf("LIBMTP_Send_Track_From_File_Descriptor: unknown codec.\n");
     new_track.ObjectFormat = PTP_OFC_Undefined;
   }
-
   new_track.Filename = metadata->filename;
   new_track.ObjectCompressedSize = metadata->filesize;
 
@@ -613,114 +827,19 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
-  // Nullify and configure PTP container
-  memset(&ptp, 0, sizeof(ptp));
-  ptp.Code = PTP_OC_SendObject;
-  ptp.Nparam = 0;
-  ptp.Transaction_ID = device->params->transaction_id++;
-  ptp.SessionID = device->params->session_id;
-  // Send request to send an object
-  ret = device->params->sendreq_func(device->params, &ptp);
-  if (ret != PTP_RC_OK) {
-    ptp_perror(device->params, ret);
-    printf("LIBMTP_Send_Track_From_File_Descriptor: Could not send \"send object\" request\n");
+  // Call main function to transfer the track
+  subcall_ret = send_file_object(device, fd, metadata->filesize, callback, data);
+  if (subcall_ret != 0) {
+    printf("LIBMTP_Send_Track_From_File_Descriptor: error sending track object\n");
+    (void) delete_item(device, metadata->item_id);
     return -1;
   }
-  
-  // build appropriate USB container
-  usbdata.length = htod32p(device->params,sizeof(usbdata) + metadata->filesize);
-  usbdata.type = htod16p(device->params,PTP_USB_CONTAINER_DATA);
-  usbdata.code = htod16p(device->params,PTP_OC_SendObject);
-  usbdata.trans_id = htod32p(device->params,ptp.Transaction_ID);
-  // Write request to USB
-  ret = device->params->write_func((unsigned char *)&usbdata, sizeof(usbdata), device->params->data);
-  if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Send_Track_From_File_Descriptor: Error initializing object sending\n");
-    ptp_perror(device->params, ret);
-    return -1;
-  }
-	
-  // This space will be used as a reading ring buffer for the transfers
-  buffer = (uint8_t *) malloc(BLOCK_SIZE);
-  if (buffer == NULL) {
-    printf("LIBMTP_Send_Track_From_File_Descriptor: Could not allocate send buffer\n");
-    return -1;
-  }
-	
-  remain = metadata->filesize;
-  while (remain != 0) {
-    int readsize = (remain > BLOCK_SIZE) ? BLOCK_SIZE : (int) remain;
-    int bytesdone = (int) (metadata->filesize - remain);
-    int readbytes;
-
-    readbytes = read(fd, buffer, readsize);
-    if (readbytes < readsize) {
-      printf("LIBMTP_Send_Track_From_File_Descriptor: error reading source file\n");
-      printf("Wanted to read %d bytes but could only read %d.\n", readsize, readbytes);
-      free(buffer);
-      return -1;
-    }
     
-    if (callback != NULL) {
-      // If the callback return anything else than 0, interrupt the processing
-      int callret = callback(bytesdone, metadata->filesize, buffer, readsize, data);
-      if (callret != 0) {
-	printf("LIBMTP_Send_Track_From_File_Descriptor: transfer interrupted by callback\n");
-	free(buffer);
-	return -1;
-      }
-    }
-    
-    // Write to USB
-    ret = device->params->write_func(buffer, readsize, device->params->data);
-    if (ret != PTP_RC_OK) {
-      printf("LIBMTP_Send_Track_From_File_Descriptor: error writing data chunk to object\n");
-      ptp_perror(device->params, ret);
-      free(buffer);
-      return -1;
-    }
-    remain -= (uint64_t) readsize;
-  }
-  
-  if (callback != NULL) {
-    // This last call will not be able to abort execution and is just
-    // done do progress bars go up to 100%
-    (void) callback(metadata->filesize, metadata->filesize, NULL, 0, data);
-  }
-  
-  // Signal to USB that this is the last transfer if the last chunk
-  // was exactly as large as the buffer. This was part of Richards
-  // source code but apparently can not be used on Linux for some reason,
-  // could be that libusb on Linux intrinsically adds the final zero-length
-  // transfer call.
-#ifdef USE_DARWIN
-  if (metadata->filesize % MTP_DEVICE_BUF_SIZE == 0) {
-    ret = device->params->write_func(NULL, 0, device->params->data);
-    if (ret!=PTP_RC_OK) {
-      printf("LIBMTP_Send_Track_From_File_Descriptor: error writing last zerolen data chunk for USB termination\n");
-      ptp_perror(device->params, ret);
-      free(buffer);
-      return -1;
-    }
-  }
-#endif
-
-  // Get a response from device to make sure that the track was properly stored
-  ret = device->params->getresp_func(device->params, &ptp);
-  if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Send_Track_From_File_Descriptor: error getting response from device\n");
-    ptp_perror(device->params, ret);
-    free(buffer);
-    return -1;
-  }
-  
-  // Free allocated buffer
-  free(buffer);
-
   // Set track metadata for the new fine track
   subcall_ret = LIBMTP_Update_Track_Metadata(device, metadata);
   if (subcall_ret != 0) {
     printf("LIBMTP_Send_Track_From_File_Descriptor: error setting metadata for new track\n");
+    (void) delete_item(device, metadata->item_id);
     return -1;
   }
   
@@ -825,6 +944,26 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 }
 
 /**
+ * Internal function called to delete tracks and files alike.
+ * @param device a pointer to the device to delete the item from.
+ * @param item_id the item to delete.
+ * @return 0 on success, any other value means failure.
+ */
+static int delete_item(LIBMTP_mtpdevice_t *device, 
+			uint32_t item_id)
+{
+  int ret;
+
+  ret = ptp_deleteobject(device->params, item_id, 0);
+  if (ret != PTP_RC_OK) {
+    ptp_perror(device->params, ret);
+    printf("delete_item(): could not delete track object\n");    
+    return -1;
+  }
+  return 0;
+}
+
+/**
  * This function deletes a single track off the MTP device,
  * identified by an object ID.
  * @param device a pointer to the device to delete the track from.
@@ -834,13 +973,5 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 int LIBMTP_Delete_Track(LIBMTP_mtpdevice_t *device, 
 			uint32_t item_id)
 {
-  int ret;
-
-  ret = ptp_deleteobject(device->params, item_id, 0);
-  if (ret != PTP_RC_OK) {
-    ptp_perror(device->params, ret);
-    printf("LIBMTP_Delete_Track(): could not delete track object\n");    
-    return -1;
-  }
-  return 0;
+  return delete_item(device, item_id);
 }
