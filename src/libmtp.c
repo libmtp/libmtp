@@ -8,6 +8,7 @@
 #include "ptp.h"
 #include "ptp-pack.h"
 #include "libptp-endian.h"
+#include "libusb-glue.h"
 
 // Forward declarations of local functions
 static int send_file_object(LIBMTP_mtpdevice_t *device, 

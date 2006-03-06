@@ -1,7 +1,8 @@
 /*
- *  mtp-utils.c
+ *  libusb-glue.c
  *
- *  Created by Richard Low on 24/12/2005.
+ *  Created by Richard Low on 24/12/2005. (as mtp-utils.c)
+ *  Modified by Linus Walleij 6/3/2006
  *
  * This file adds some utils (many copied from ptpcam.c from libptp2) to
  * use MTP devices. Include mtp-utils.h to use any of the ptp/mtp functions.
@@ -21,7 +22,8 @@
 #include <sys/mman.h>
 #include <usb.h>
 
-#include "mtp-utils.h"
+#include "libmtp.h"
+#include "libusb-glue.h"
 #include "ptp-pack.h"
 
 /* OUR APPLICATION USB URB (2MB) ;) */

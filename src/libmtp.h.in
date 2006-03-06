@@ -12,9 +12,6 @@
 
 #define LIBMTP_VERSION @VERSION@
 
-/* Use our own funny headers */
-#include "mtp-utils.h"
-
 /* This handles MSVC pecularities */
 #ifdef _MSC_VER
 #include <windows.h>
@@ -23,7 +20,10 @@
 #define ssize_t SSIZE_T
 #endif
 
+#include <stdio.h>
+#include <usb.h>
 #include <sys/types.h>
+#include "ptp.h"
 
 #ifdef __WIN32__
 /*
@@ -38,8 +38,6 @@ typedef __int32 int32_t;
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int64 uint64_t;
 #endif
-#include <stdio.h>
-#include <usb.h>
 
 /**
  * @defgroup types libnjb global type definitions
@@ -54,6 +52,17 @@ typedef enum {
 typedef struct LIBMTP_mtpdevice_struct LIBMTP_mtpdevice_t; /**< @see LIBMTP_mtpdevice_struct */
 typedef struct LIBMTP_track_struct LIBMTP_track_t; /**< @see LIBMTP_mtptrack_t */
 /** @} */
+
+/**
+ * Internal USB struct (TODO: discard for device struct?)
+ */
+typedef struct _PTP_USB PTP_USB;
+struct _PTP_USB {
+	usb_dev_handle* handle;
+	int inep;
+	int outep;
+	int intep;
+};
 
 /**
  * Main MTP device object struct

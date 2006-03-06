@@ -1,6 +1,6 @@
 lib_LTLIBRARIES=libmtp.la
 libmtp_la_SOURCES=libmtp.c unicode.c unicode.h util.c util.h \
-	mtp-utils.c mtp-utils.h mtp-pack.c mtp-pack.h mtp.c mtp.h \
+	libusb-glue.c libusb-glue.h mtp-pack.c mtp-pack.h mtp.c mtp.h \
 	libptp-endian.h libptp-stdint.h ptp-pack.c ptp-pack.h ptp.c ptp.h
 include_HEADERS=libmtp.h
 EXTRA_DIST=libmtp.h.in libmtp.sym
