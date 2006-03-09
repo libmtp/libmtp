@@ -2,7 +2,8 @@
  *  libusb-glue.c
  *
  *  Created by Richard Low on 24/12/2005. (as mtp-utils.c)
- *  Modified by Linus Walleij 6/3/2006
+ *  Modified by Linus Walleij 2006-03-06
+ *  (Notice that Anglo-Saxons use little-endian dates and Swedes use big-endian dates.)
  *
  * This file adds some utils (many copied from ptpcam.c from libptp2) to
  * use MTP devices. Include mtp-utils.h to use any of the ptp/mtp functions.
@@ -48,6 +49,31 @@
 #ifndef USB_FEATURE_HALT
 #define USB_FEATURE_HALT	0x00
 #endif
+
+/*
+ * A data structure to hold MTP device entries
+ */
+typedef struct mtp_device_entry mtp_device_entry_t;
+struct mtp_device_entry {
+  char *name;
+  u_int16_t vendor_id;
+  u_int16_t product_id;
+};
+
+/*
+ * MTP device list
+ */
+static const mtp_device_entry_t mtp_device_table[] = {
+  { "Creative Portable Media Center", 0x041e, 0x4123 },
+  { "Creative Zen Micro (MTP mode)", 0x041e, 0x4130 },
+  { "Creative Zen Touch (MTP mode)", 0x041e, 0x4131 },
+  { "Creative Zen Sleek (MTP mode)", 0x041e, 0x4137 },
+  { "Creative Zen MicroPhoto", 0x041e, 0x413c },
+  { "iRiver T10", 0x4102, 0x1113 },
+  { "iRiver T10", 0x4102, 0x1117 },
+  { "iRiver T30", 0x4102, 0x1119 }
+};
+static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(mtp_device_entry_t);
 
 int ptpcam_usb_timeout = USB_TIMEOUT;
 
@@ -203,7 +229,13 @@ void clear_stall(PTP_USB* ptp_usb)
 void close_usb(PTP_USB* ptp_usb, uint8_t interfaceNumber)
 {
 	clear_stall(ptp_usb);
+	// Added to clear some stuff on the OUT endpoint
+	// TODO: is this good on the Mac too?
+	usb_resetep(ptp_usb->handle, ptp_usb->outep);
 	usb_release_interface(ptp_usb->handle, interfaceNumber);
+	// Brutally reset device
+	// TODO: is this good on the Mac too?
+	usb_reset(ptp_usb->handle);
 	usb_close(ptp_usb->handle);
 }
 
@@ -278,7 +310,7 @@ uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *inte
 				ret = ptp_opensession(params,1);
 				if (ret != PTP_RC_OK)
 				{
-					printf("Could not open session!\n  Try to reset the camera.\n");
+					printf("Could not open session!\n  Try to reset the device.\n");
 					usb_release_interface(ptp_usb->handle,dev->config->interface->altsetting->bInterfaceNumber);
 					continue;
 				}

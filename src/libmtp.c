@@ -739,7 +739,7 @@ static int send_file_object(LIBMTP_mtpdevice_t *device,
   
   if (callback != NULL) {
     // This last call will not be able to abort execution and is just
-    // done do progress bars go up to 100%
+    // done so progress bars go up to 100%
     (void) callback(size, size, NULL, 0, data);
   }
   
