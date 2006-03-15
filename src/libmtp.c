@@ -126,6 +126,60 @@ void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
 }
 
 /**
+ * This retrieves the model name (often equal to product name) 
+ * of an MTP device.
+ * @param device a pointer to the device to get the model name for.
+ * @return a newly allocated UTF-8 string representing the model name.
+ *         The string must be freed by the caller after use. If the call
+ *         was unsuccessful this will contain NULL.
+ */
+char *LIBMTP_Get_Modelname(LIBMTP_mtpdevice_t *device)
+{
+  char *retmodel = NULL;
+  
+  if (device->params->deviceinfo.Model != NULL) {
+    retmodel = strdup(device->params->deviceinfo.Model);
+  }
+  return retmodel;
+}
+
+/**
+ * This retrieves the serial number of an MTP device.
+ * @param device a pointer to the device to get the serial number for.
+ * @return a newly allocated UTF-8 string representing the serial number.
+ *         The string must be freed by the caller after use. If the call
+ *         was unsuccessful this will contain NULL.
+ */
+char *LIBMTP_Get_Serialnumber(LIBMTP_mtpdevice_t *device)
+{
+  char *retnumber = NULL;
+  
+  if (device->params->deviceinfo.SerialNumber != NULL) {
+    retnumber = strdup(device->params->deviceinfo.SerialNumber);
+  }
+  return retnumber;
+}
+
+/**
+ * This retrieves the device version (hardware and firmware version) of an 
+ * MTP device.
+ * @param device a pointer to the device to get the device version for.
+ * @return a newly allocated UTF-8 string representing the device version.
+ *         The string must be freed by the caller after use. If the call
+ *         was unsuccessful this will contain NULL.
+ */
+char *LIBMTP_Get_Deviceversion(LIBMTP_mtpdevice_t *device)
+{
+  char *retversion = NULL;
+  
+  if (device->params->deviceinfo.DeviceVersion != NULL) {
+    retversion = strdup(device->params->deviceinfo.DeviceVersion);
+  }
+  return retversion;
+}
+
+
+/**
  * This retrieves the owners name of an MTP device.
  * @param device a pointer to the device to get the owner for.
  * @return a newly allocated UTF-8 string representing the owner. 

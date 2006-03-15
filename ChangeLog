@@ -1,3 +1,7 @@
+2006-03-15  Linus Walleij  <triad@df.lth.se>
+
+	* Added three device information retrieval functions.
+
 2006-03-06  Linus Walleij  <triad@df.lth.se>
 
 	* Moving some things around to structure the source. More

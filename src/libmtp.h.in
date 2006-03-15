@@ -125,6 +125,9 @@ void LIBMTP_Init(void);
  */
 LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void);
 void LIBMTP_Release_Device(LIBMTP_mtpdevice_t*);
+char *LIBMTP_Get_Modelname(LIBMTP_mtpdevice_t*);
+char *LIBMTP_Get_Serialnumber(LIBMTP_mtpdevice_t*);
+char *LIBMTP_Get_Deviceversion(LIBMTP_mtpdevice_t*);
 char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t*);
 int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *, uint64_t * const, 
 			uint64_t * const, char ** const storage_description, 
