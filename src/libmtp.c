@@ -93,7 +93,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   // OK everything got this far, so it is time to create a device struct!
   tmpdevice = (LIBMTP_mtpdevice_t *) malloc(sizeof(LIBMTP_mtpdevice_t));
   tmpdevice->interface_number = interface_number;
-  tmpdevice->params = params;
+  tmpdevice->params = (void *) params;
   tmpdevice->ptp_usb = ptp_usb;
   tmpdevice->storage_id = storageID;
   tmpdevice->maximum_battery_level = batteryLevelMax;
@@ -116,11 +116,13 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
  */
 void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
 {
-  close_device(device->ptp_usb, device->params, device->interface_number);
+  PTPParams *params = (PTPParams *) device->params;
+
+  close_device(device->ptp_usb, params, device->interface_number);
   // Free the device info and any handler
-  ptp_free_deviceinfo(&device->params->deviceinfo);
-  if (device->params->handles.Handler != NULL) {
-    free(device->params->handles.Handler);
+  ptp_free_deviceinfo(&params->deviceinfo);
+  if (params->handles.Handler != NULL) {
+    free(params->handles.Handler);
   }
   free(device);
 }
@@ -136,9 +138,10 @@ void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
 char *LIBMTP_Get_Modelname(LIBMTP_mtpdevice_t *device)
 {
   char *retmodel = NULL;
+  PTPParams *params = (PTPParams *) device->params;
   
-  if (device->params->deviceinfo.Model != NULL) {
-    retmodel = strdup(device->params->deviceinfo.Model);
+  if (params->deviceinfo.Model != NULL) {
+    retmodel = strdup(params->deviceinfo.Model);
   }
   return retmodel;
 }
@@ -153,9 +156,10 @@ char *LIBMTP_Get_Modelname(LIBMTP_mtpdevice_t *device)
 char *LIBMTP_Get_Serialnumber(LIBMTP_mtpdevice_t *device)
 {
   char *retnumber = NULL;
+  PTPParams *params = (PTPParams *) device->params;
   
-  if (device->params->deviceinfo.SerialNumber != NULL) {
-    retnumber = strdup(device->params->deviceinfo.SerialNumber);
+  if (params->deviceinfo.SerialNumber != NULL) {
+    retnumber = strdup(params->deviceinfo.SerialNumber);
   }
   return retnumber;
 }
@@ -171,9 +175,10 @@ char *LIBMTP_Get_Serialnumber(LIBMTP_mtpdevice_t *device)
 char *LIBMTP_Get_Deviceversion(LIBMTP_mtpdevice_t *device)
 {
   char *retversion = NULL;
+  PTPParams *params = (PTPParams *) device->params;
   
-  if (device->params->deviceinfo.DeviceVersion != NULL) {
-    retversion = strdup(device->params->deviceinfo.DeviceVersion);
+  if (params->deviceinfo.DeviceVersion != NULL) {
+    retversion = strdup(params->deviceinfo.DeviceVersion);
   }
   return retversion;
 }
@@ -189,8 +194,9 @@ char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t *device)
 {
   uint16_t *unistring = NULL;
   char *retstring = NULL;
+  PTPParams *params = (PTPParams *) device->params;
 
-  if (ptp_getdevicepropvalue(device->params, 
+  if (ptp_getdevicepropvalue(params, 
 			     PTP_DPC_DeviceFriendlyName, 
 			     (void **) &unistring, 
 			     PTP_DTC_UNISTR) != PTP_RC_OK) {
@@ -226,8 +232,9 @@ int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *device, uint64_t * const total,
 			char ** const volume_label)
 {
   PTPStorageInfo storageInfo;
+  PTPParams *params = (PTPParams *) device->params;
   
-  if (ptp_getstorageinfo(device->params, device->storage_id, &storageInfo) != PTP_RC_OK) {
+  if (ptp_getstorageinfo(params, device->storage_id, &storageInfo) != PTP_RC_OK) {
     printf("LIBMTP_Get_Diskinfo(): failed to get disk info\n");
     *total = 0;
     *free = 0;
@@ -260,8 +267,9 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device,
 {
   uint8_t *value = NULL;
   uint16_t ret;
+  PTPParams *params = (PTPParams *) device->params;
 
-  ret = ptp_getdevicepropvalue(device->params, PTP_DPC_BatteryLevel, (void**) &value, PTP_DTC_UINT8);
+  ret = ptp_getdevicepropvalue(params, PTP_DPC_BatteryLevel, (void**) &value, PTP_DTC_UINT8);
   if ((ret != PTP_RC_OK) || (value == NULL)) {
     *maximum_level = 0;
     *current_level = 0;
@@ -373,21 +381,22 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
   uint32_t i = 0;
   LIBMTP_track_t *retracks = NULL;
   LIBMTP_track_t *curtrack = NULL;
+  PTPParams *params = (PTPParams *) device->params;
   
   printf("Getting handles\n");
-  if (device->params->handles.Handler == NULL) {
+  if (params->handles.Handler == NULL) {
     // Get all the handles if we haven't already done that
-    if (ptp_getobjecthandles(device->params,
+    if (ptp_getobjecthandles(params,
 			     PTP_GOH_ALL_STORAGE, 
 			     PTP_GOH_ALL_FORMATS, 
 			     PTP_GOH_ALL_ASSOCS, 
-			     &device->params->handles) != PTP_RC_OK) {
+			     &params->handles) != PTP_RC_OK) {
       printf("LIBMTP panic: Could not get object handles...\n");
       return NULL;
     }
   }
   
-  for (i = 0; i < device->params->handles.n; i++) {
+  for (i = 0; i < params->handles.n; i++) {
 
     LIBMTP_track_t *track;
     PTPObjectInfo oi;
@@ -397,7 +406,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
     uint16_t *uint16value = NULL;
     uint32_t *uint32value = NULL;
 
-    if (ptp_getobjectinfo(device->params, device->params->handles.Handler[i], &oi) == PTP_RC_OK) {
+    if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
       
       // Ignore stuff we don't know how to handle...
       if (oi.ObjectFormat == PTP_OFC_Association || 
@@ -433,8 +442,8 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 	printf("Filename: %s\n", track->filename);
       }
 
-      ret = ptp_getobjectpropvalue(device->params, PTP_OPC_Name, 
-				   device->params->handles.Handler[i], 
+      ret = ptp_getobjectpropvalue(params, PTP_OPC_Name, 
+				   params->handles.Handler[i], 
 				   (void**) &unicodevalue,
 				   PTP_DTC_UNISTR);
       if (ret == PTP_RC_OK && unicodevalue != NULL) {
@@ -444,9 +453,9 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 	unicodevalue = NULL;
       }
       
-      ret = ptp_getobjectpropvalue(device->params, 
+      ret = ptp_getobjectpropvalue(params, 
 				   PTP_OPC_Artist, 
-				   device->params->handles.Handler[i], 
+				   params->handles.Handler[i], 
 				   (void**) &unicodevalue, 
 				   PTP_DTC_UNISTR);
       if (ret == PTP_RC_OK && unicodevalue != NULL) {
@@ -455,9 +464,9 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 	unicodevalue = NULL;
       }
       
-      ret = ptp_getobjectpropvalue(device->params, 
+      ret = ptp_getobjectpropvalue(params, 
 				   PTP_OPC_Duration, 
-				   device->params->handles.Handler[i], 
+				   params->handles.Handler[i], 
 				   (void**) &uint32value, 
 				   PTP_DTC_UINT32);
       if (ret == PTP_RC_OK && uint32value != NULL) {
@@ -466,9 +475,9 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 	uint32value = NULL;
       }
       
-      ret = ptp_getobjectpropvalue(device->params, 
+      ret = ptp_getobjectpropvalue(params, 
 				   PTP_OPC_Track, 
-				   device->params->handles.Handler[i], 
+				   params->handles.Handler[i], 
 				   (void**) &uint16value, 
 				   PTP_DTC_UINT16);
       if (ret == PTP_RC_OK && uint16value != NULL) {
@@ -477,9 +486,9 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 	uint16value = NULL;
       }
       
-      ret = ptp_getobjectpropvalue(device->params, 
+      ret = ptp_getobjectpropvalue(params, 
 				   PTP_OPC_Genre, 
-				   device->params->handles.Handler[i], 
+				   params->handles.Handler[i], 
 				   (void**) &unicodevalue, 
 				   PTP_DTC_UNISTR);
       if (ret == PTP_RC_OK && unicodevalue != NULL) {
@@ -488,9 +497,9 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 	unicodevalue = NULL;
       }
       
-      ret = ptp_getobjectpropvalue(device->params, 
+      ret = ptp_getobjectpropvalue(params, 
 				   PTP_OPC_AlbumName, 
-				   device->params->handles.Handler[i], 
+				   params->handles.Handler[i], 
 				   (void**) &unicodevalue, 
 				   PTP_DTC_UNISTR);
       if (ret == PTP_RC_OK && unicodevalue != NULL) {
@@ -499,9 +508,9 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 	unicodevalue = NULL;
       }
       
-      ret = ptp_getobjectpropvalue(device->params, 
+      ret = ptp_getobjectpropvalue(params, 
 				   PTP_OPC_OriginalReleaseDate, 
-				   device->params->handles.Handler[i], 
+				   params->handles.Handler[i], 
 				   (void**) &stringvalue, 
 				   PTP_DTC_STR);
       if (ret == PTP_RC_OK && stringvalue != NULL) {
@@ -511,7 +520,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
       }
       
       // This is some sort of unique ID so we can keep track of the track.
-      track->item_id = device->params->handles.Handler[i];
+      track->item_id = params->handles.Handler[i];
       
       // Add track to a list that will be returned afterwards.
       if (retracks == NULL) {
@@ -523,7 +532,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
       }
       
       // Call listing callback
-      // double progressPercent = (double)i*(double)100.0 / (double)device->params->handles.n;
+      // double progressPercent = (double)i*(double)100.0 / (double)params->handles.n;
 
     } else {
       printf("LIBMTP panic: Found a bad handle, trying to ignore it.\n");
@@ -603,13 +612,14 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
   PTPObjectInfo oi;
   void *image;
   int ret;
+  PTPParams *params = (PTPParams *) device->params;
   // Map this to the LIBMTP callback type
   extern Progress_Callback* globalCallback;
   
   // Not yet compatible.
   globalCallback = NULL;
 
-  if (ptp_getobjectinfo(device->params, id, &oi) != PTP_RC_OK) {
+  if (ptp_getobjectinfo(params, id, &oi) != PTP_RC_OK) {
     printf("LIBMTP_Get_Track_To_File_Descriptor(): Could not get object info\n");
     return -1;
   }
@@ -632,7 +642,7 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
   fflush(NULL);
   
   // Copy object to memory
-  ret = ptp_getobject(device->params, id, (char **) &image);
+  ret = ptp_getobject(params, id, (char **) &image);
 
   // Spool out to file
   munmap(image, oi.ObjectCompressedSize);
@@ -719,33 +729,34 @@ static int send_file_object(LIBMTP_mtpdevice_t *device,
   uint16_t ret;
   uint8_t *buffer;
   uint64_t remain;
+  PTPParams *params = (PTPParams *) device->params;
 
   // Nullify and configure PTP container
   memset(&ptp, 0, sizeof(ptp));
   ptp.Code = PTP_OC_SendObject;
   ptp.Nparam = 0;
-  ptp.Transaction_ID = device->params->transaction_id++;
-  ptp.SessionID = device->params->session_id;
+  ptp.Transaction_ID = params->transaction_id++;
+  ptp.SessionID = params->session_id;
 
   // Send request to send an object
-  ret = device->params->sendreq_func(device->params, &ptp);
+  ret = params->sendreq_func(params, &ptp);
   if (ret != PTP_RC_OK) {
-    ptp_perror(device->params, ret);
+    ptp_perror(params, ret);
     printf("LIBMTP_Send_Track_From_File_Descriptor: Could not send \"send object\" request\n");
     return -1;
   }
 
   // build appropriate USB container
-  usbdata.length = htod32p(device->params,sizeof(usbdata) + size);
-  usbdata.type = htod16p(device->params,PTP_USB_CONTAINER_DATA);
-  usbdata.code = htod16p(device->params,PTP_OC_SendObject);
-  usbdata.trans_id = htod32p(device->params,ptp.Transaction_ID);
+  usbdata.length = htod32p(params,sizeof(usbdata) + size);
+  usbdata.type = htod16p(params,PTP_USB_CONTAINER_DATA);
+  usbdata.code = htod16p(params,PTP_OC_SendObject);
+  usbdata.trans_id = htod32p(params,ptp.Transaction_ID);
 
   // Write request to USB
-  ret = device->params->write_func((unsigned char *)&usbdata, sizeof(usbdata), device->params->data);
+  ret = params->write_func((unsigned char *)&usbdata, sizeof(usbdata), params->data);
   if (ret != PTP_RC_OK) {
     printf("LIBMTP_Send_Track_From_File_Descriptor: Error initializing sending object\n");
-    ptp_perror(device->params, ret);
+    ptp_perror(params, ret);
     return -1;
   }
 	
@@ -781,10 +792,10 @@ static int send_file_object(LIBMTP_mtpdevice_t *device,
     }
     
     // Write to USB
-    ret = device->params->write_func(buffer, readsize, device->params->data);
+    ret = params->write_func(buffer, readsize, params->data);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Send_Track_From_File_Descriptor: error writing data chunk to object\n");
-      ptp_perror(device->params, ret);
+      ptp_perror(params, ret);
       free(buffer);
       return -1;
     }
@@ -803,20 +814,20 @@ static int send_file_object(LIBMTP_mtpdevice_t *device,
   // could be that libusb on Linux intrinsically adds the final zero-length
   // transfer call.
   if (size % MTP_DEVICE_BUF_SIZE == 0) {
-    ret = device->params->write_func(NULL, 0, device->params->data);
+    ret = params->write_func(NULL, 0, params->data);
     if (ret!=PTP_RC_OK) {
       printf("LIBMTP_Send_Track_From_File_Descriptor: error writing last zerolen data chunk for USB termination\n");
-      ptp_perror(device->params, ret);
+      ptp_perror(params, ret);
       free(buffer);
       return -1;
     }
   }
 
   // Get a response from device to make sure that the track was properly stored
-  ret = device->params->getresp_func(device->params, &ptp);
+  ret = params->getresp_func(params, &ptp);
   if (ret != PTP_RC_OK) {
     printf("LIBMTP_Send_Track_From_File_Descriptor: error getting response from device\n");
-    ptp_perror(device->params, ret);
+    ptp_perror(params, ret);
     free(buffer);
     return -1;
   }
@@ -856,6 +867,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   uint32_t store = 0;
   int subcall_ret;
   PTPObjectInfo new_track;
+  PTPParams *params = (PTPParams *) device->params;
   
   switch (metadata->codec) {
   case LIBMTP_CODEC_WAV:
@@ -875,9 +887,9 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   new_track.ObjectCompressedSize = metadata->filesize;
 
   // Create the object
-  ret = ptp_sendobjectinfo(device->params, &store, &parenthandle, &metadata->item_id, &new_track);
+  ret = ptp_sendobjectinfo(params, &store, &parenthandle, &metadata->item_id, &new_track);
   if (ret != PTP_RC_OK) {
-    ptp_perror(device->params, ret);
+    ptp_perror(params, ret);
     printf("LIBMTP_Send_Track_From_File_Descriptor: Could not send object info\n");
     return -1;
   }
@@ -920,11 +932,12 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 {
   uint16_t *unistring = NULL;
   uint16_t ret;
+  PTPParams *params = (PTPParams *) device->params;
 
   // Update title
   if (metadata->title != NULL) {
     unistring = utf8_to_ucs2(metadata->title);
-    ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Name, metadata->item_id, unistring, PTP_DTC_UNISTR);
+    ret = ptp_setobjectpropvalue(params, PTP_OPC_Name, metadata->item_id, unistring, PTP_DTC_UNISTR);
     free(unistring);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track title\n");
@@ -935,7 +948,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
   // Update album
   if (metadata->album != NULL) {
     unistring = utf8_to_ucs2(metadata->album);
-    ret = ptp_setobjectpropvalue(device->params, PTP_OPC_AlbumName, metadata->item_id, unistring, PTP_DTC_UNISTR);
+    ret = ptp_setobjectpropvalue(params, PTP_OPC_AlbumName, metadata->item_id, unistring, PTP_DTC_UNISTR);
     free(unistring);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track album name\n");
@@ -946,7 +959,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
   // Update artist
   if (metadata->artist != NULL) {
     unistring = utf8_to_ucs2(metadata->artist);
-    ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Artist, metadata->item_id, unistring, PTP_DTC_UNISTR);
+    ret = ptp_setobjectpropvalue(params, PTP_OPC_Artist, metadata->item_id, unistring, PTP_DTC_UNISTR);
     free(unistring);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track artist name\n");
@@ -957,7 +970,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
   // Update genre
   if (metadata->genre != NULL) {
     unistring = utf8_to_ucs2(metadata->genre);
-    ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Genre, metadata->item_id, unistring, PTP_DTC_UNISTR);
+    ret = ptp_setobjectpropvalue(params, PTP_OPC_Genre, metadata->item_id, unistring, PTP_DTC_UNISTR);
     free(unistring);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track genre name\n");
@@ -967,7 +980,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 
   // Update duration
   if (metadata->duration != 0) {
-    ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Duration, metadata->item_id, &metadata->duration, PTP_DTC_UINT32);
+    ret = ptp_setobjectpropvalue(params, PTP_OPC_Duration, metadata->item_id, &metadata->duration, PTP_DTC_UINT32);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track duration\n");
       return -1;
@@ -976,7 +989,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 
   // Update track number.
   if (metadata->tracknumber != 0) {
-    ret = ptp_setobjectpropvalue(device->params, PTP_OPC_Track, metadata->item_id, &metadata->tracknumber, PTP_DTC_UINT16);
+    ret = ptp_setobjectpropvalue(params, PTP_OPC_Track, metadata->item_id, &metadata->tracknumber, PTP_DTC_UINT16);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track tracknumber\n");
       return -1;
@@ -985,7 +998,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 
   // Update creation datetime
   if (metadata->date != NULL) {
-    ret = ptp_setobjectpropvalue(device->params, PTP_OPC_OriginalReleaseDate, metadata->item_id, metadata->date, PTP_DTC_STR);
+    ret = ptp_setobjectpropvalue(params, PTP_OPC_OriginalReleaseDate, metadata->item_id, metadata->date, PTP_DTC_STR);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track release date\n");
       return -1;
@@ -1008,10 +1021,11 @@ static int delete_item(LIBMTP_mtpdevice_t *device,
 			uint32_t item_id)
 {
   int ret;
+  PTPParams *params = (PTPParams *) device->params;
 
-  ret = ptp_deleteobject(device->params, item_id, 0);
+  ret = ptp_deleteobject(params, item_id, 0);
   if (ret != PTP_RC_OK) {
-    ptp_perror(device->params, ret);
+    ptp_perror(params, ret);
     printf("delete_item(): could not delete track object\n");    
     return -1;
   }

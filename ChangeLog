@@ -1,3 +1,8 @@
+2006-03-16  Linus Walleij  <triad@df.lth.se>
+
+	* Fixed the .h file and implementation so you really only
+	  need this one .h file to interface the library.
+
 2006-03-15  Linus Walleij  <triad@df.lth.se>
 
 	* Added three device information retrieval functions.

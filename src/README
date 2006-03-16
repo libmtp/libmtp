@@ -1,10 +1,27 @@
 Lots of docs to follow...
 
-libptp2 is copied (and modified) from version 1.1.0.
+RELATION TO LIBPTP2
+-------------------
 
-For now, to get the endianness right for your system, try configure in libptp2.
+Parts of libptp2 are copied (and modified) from version 1.1.0:
 
-I have changed the config script slightly for the le64atoh function in libptp-endian.h.
-This is required for OS X on PowerPC (not sure why).  I've just cast the bytes to uint64_t
-to avoid shifting wrongly.
+ptp-pack.c
+ptp-pack.h
+ptp.c
+ptp.h
+
+These are just copies of the same files from libptp2.
+In order to avoid clashes with the libptp2 endianness scripts
+we have named libptp-endian.h and libptp-stdint.h the
+same way as in libptp2, though they are created by libmtp
+autoconfigure scripts.
+
+We will try to track libptp2 and fold changes back into
+libmtp.
+
+TODO: check if the following still holds! (Linus)
+
+I have changed the config script slightly for the le64atoh function 
+in libptp-endian.h. This is required for OS X on PowerPC (not sure why). 
+I've just cast the bytes to uint64_t to avoid shifting wrongly.
 

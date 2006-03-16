@@ -22,8 +22,7 @@
 
 #include <stdio.h>
 #include <usb.h>
-#include <sys/types.h>
-#include "ptp.h"
+#include <stdint.h>
 
 #ifdef __WIN32__
 /*
@@ -68,11 +67,19 @@ struct _PTP_USB {
  * Main MTP device object struct
  */
 struct LIBMTP_mtpdevice_struct {
-  uint8_t interface_number;      /**< Interface number of this device */
-  PTPParams *params;             /**< Parameters for this device */
-  PTP_USB *ptp_usb;              /**< USB device for this device */
-  unsigned storage_id;           /**< The storage ID for this device */
-  uint8_t maximum_battery_level; /**< The maximum battery level for this device */
+  /** Interface number of this device */
+  uint8_t interface_number;
+  /** 
+   * Parameters for this device, must be cast into 
+   * \c (PTPParams*) before internal use.
+   */
+  void *params;
+  /** USB device for this device */
+  PTP_USB *ptp_usb;
+  /** The storage ID for this device */
+  unsigned storage_id;
+  /** The maximum battery level for this device */
+  uint8_t maximum_battery_level;
 };
 
 /**
