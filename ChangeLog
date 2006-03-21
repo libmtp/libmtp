@@ -1,3 +1,9 @@
+2006-03-18  Linus Walleij  <triad@df.lth.se>
+
+	* Fixed up callback interface to a simpler version,
+	  the old one was bloated stuff from libnjb anyway.
+	  Bump to 0.0.2.
+
 2006-03-16  Linus Walleij  <triad@df.lth.se>
 
 	* Fixed the .h file and implementation so you really only

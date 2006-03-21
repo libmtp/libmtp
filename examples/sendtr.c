@@ -26,7 +26,7 @@ static char *basename(char *in) {
 }
 #endif
 
-static int progress (uint64_t const sent, uint64_t const total, uint8_t const * const buf, uint32_t const len, void const * const data)
+static int progress (uint64_t const sent, uint64_t const total, void const * const data)
 {
   int percent = (sent*100)/total;
 #ifdef __WIN32__

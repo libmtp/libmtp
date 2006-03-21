@@ -282,56 +282,64 @@ struct usb_device* find_device (int busn, int devn, short force)
 					return NULL;
 }
 
-/* this is a temporary function to connect to the first device we can, that has vendor ID CREATIVE_VENDOR_ID */
-
+/**
+ * This function scans through the device list to see if there are
+ * some devices to connect to. The table at the top of this file is
+ * used to identify potential devices.
+ */
 uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *interfaceNumber)
 {
-	struct usb_bus *bus;
-	struct usb_device *dev;
+  struct usb_bus *bus;
+  struct usb_device *dev;
+  
+  bus = init_usb();
+  for (; bus; bus = bus->next) {
+    for (dev = bus->devices; dev; dev = dev->next) {
+      int i;
+
+      // Loop over the list of supported devices
+      for (i = 0; i < mtp_device_table_size; i++) {
+        mtp_device_entry_t const *mtp_device = &mtp_device_table[i];
 	
-	bus=init_usb();
-	for (; bus; bus = bus->next)
-	{
-		for (dev = bus->devices; dev; dev = dev->next)
-		{
-			if (dev->descriptor.bDeviceClass!=USB_CLASS_HUB && dev->descriptor.idVendor==CREATIVE_VENDOR_ID)
-			{
-				uint16_t ret=0;
-				int n;
-				struct usb_endpoint_descriptor *ep;
-				PTPDeviceInfo deviceinfo;
-					
-				ep = dev->config->interface->altsetting->endpoint;
-				n=dev->config->interface->altsetting->bNumEndpoints;
-					
-				find_endpoints(dev,&(ptp_usb->inep),&(ptp_usb->outep),&(ptp_usb->intep));
-				init_ptp_usb(params, ptp_usb, dev);
-					
-				ret = ptp_opensession(params,1);
-				if (ret != PTP_RC_OK)
-				{
-					printf("Could not open session!\n  Try to reset the device.\n");
-					usb_release_interface(ptp_usb->handle,dev->config->interface->altsetting->bInterfaceNumber);
-					continue;
-				}
-				
-				ret = ptp_getdeviceinfo(params, &deviceinfo);
-				if (ret != PTP_RC_OK)
-				{
-					printf("Could not get device info!\n");
-					usb_release_interface(ptp_usb->handle,dev->config->interface->altsetting->bInterfaceNumber);
-					return PTP_CD_RC_ERROR_CONNECTING;
-				}
-					
-				/* we're connected, return ok */
-				*interfaceNumber = dev->config->interface->altsetting->bInterfaceNumber;
-				
-				return PTP_CD_RC_CONNECTED;
-			}
-		}
+	if (dev->descriptor.bDeviceClass != USB_CLASS_HUB && 
+	    dev->descriptor.idVendor == mtp_device->vendor_id &&
+	    dev->descriptor.idProduct == mtp_device->product_id ) {
+	  uint16_t ret=0;
+	  int n;
+	  struct usb_endpoint_descriptor *ep;
+	  PTPDeviceInfo deviceinfo;
+	  
+	  printf("Found device \"%s\" on USB bus...\n", mtp_device->name);
+	  ep = dev->config->interface->altsetting->endpoint;
+	  n=dev->config->interface->altsetting->bNumEndpoints;
+	  
+	  find_endpoints(dev,&(ptp_usb->inep),&(ptp_usb->outep),&(ptp_usb->intep));
+	  init_ptp_usb(params, ptp_usb, dev);
+	  
+	  ret = ptp_opensession(params,1);
+	  if (ret != PTP_RC_OK) {
+	    printf("Could not open session!\n  Try to reset the device.\n");
+	    usb_release_interface(ptp_usb->handle,dev->config->interface->altsetting->bInterfaceNumber);
+	    continue;
+	  }
+	  
+	  ret = ptp_getdeviceinfo(params, &deviceinfo);
+	  if (ret != PTP_RC_OK) {
+	    printf("Could not get device info!\n");
+	    usb_release_interface(ptp_usb->handle,dev->config->interface->altsetting->bInterfaceNumber);
+	    return PTP_CD_RC_ERROR_CONNECTING;
+	  }
+	  
+	  /* we're connected, return ok */
+	  *interfaceNumber = dev->config->interface->altsetting->bInterfaceNumber;
+	  
+	  return PTP_CD_RC_CONNECTED;
 	}
-	/* none found */
-	return PTP_CD_RC_NO_DEVICES;
+      }
+    }
+  }
+  /* none found */
+  return PTP_CD_RC_NO_DEVICES;
 }
 
 void find_endpoints(struct usb_device *dev, int* inep, int* outep, int* intep)

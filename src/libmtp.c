@@ -17,6 +17,26 @@ static int send_file_object(LIBMTP_mtpdevice_t *device,
 			    void const * const data);
 static int delete_item(LIBMTP_mtpdevice_t *device, uint32_t item_id);
 
+// Map this libptp2 single-threaded callback to the LIBMTP callback type
+extern Progress_Callback* globalCallback;
+static void *single_threaded_callback_data;
+static LIBMTP_progressfunc_t *single_threaded_callback;
+static Progress_Callback single_threaded_callback_helper;
+
+/**
+ * This is a ugly workaround due to limitations in callback set by
+ * libptp2...
+ */
+static int single_threaded_callback_helper(uint32_t sent, uint32_t total) {
+  if (single_threaded_callback != NULL) {
+    /* 
+     * If the callback return anything else than 0, we should interrupt the processing,
+     * but currently libptp2 does not offer anything meaningful here so we have to ignore
+     * the return value.
+     */
+    (void) single_threaded_callback(sent, total, single_threaded_callback_data);
+  }  
+}
 
 /**
  * Initialize the library.
@@ -613,11 +633,10 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
   void *image;
   int ret;
   PTPParams *params = (PTPParams *) device->params;
-  // Map this to the LIBMTP callback type
-  extern Progress_Callback* globalCallback;
-  
-  // Not yet compatible.
-  globalCallback = NULL;
+
+  single_threaded_callback_data = data;
+  single_threaded_callback = callback;
+  globalCallback = single_threaded_callback_helper;
 
   if (ptp_getobjectinfo(params, id, &oi) != PTP_RC_OK) {
     printf("LIBMTP_Get_Track_To_File_Descriptor(): Could not get object info\n");
@@ -783,7 +802,7 @@ static int send_file_object(LIBMTP_mtpdevice_t *device,
     
     if (callback != NULL) {
       // If the callback return anything else than 0, interrupt the processing
-      int callret = callback(bytesdone, size, buffer, readsize, data);
+      int callret = callback(bytesdone, size, data);
       if (callret != 0) {
 	printf("LIBMTP_Send_Track_From_File_Descriptor: transfer interrupted by callback\n");
 	free(buffer);
@@ -805,7 +824,7 @@ static int send_file_object(LIBMTP_mtpdevice_t *device,
   if (callback != NULL) {
     // This last call will not be able to abort execution and is just
     // done so progress bars go up to 100%
-    (void) callback(size, size, NULL, 0, data);
+    (void) callback(size, size, data);
   }
   
   // Signal to USB that this is the last transfer if the last chunk

@@ -111,14 +111,12 @@ extern "C" {
  * <code>total</code>.
  * @param sent the number of bytes sent so far
  * @param total the total number of bytes to send
- * @param buf intermediate buffer
- * @param len intermediate buffer length
  * @param data a user-defined dereferencable pointer
  * @return if anything else than 0 is returned, the current transfer will be
- *         interrupted.
+ *         interrupted / cancelled.
  */
 typedef int LIBMTP_progressfunc_t (uint64_t const sent, uint64_t const total,
-                uint8_t const * const buf, uint32_t const len, void const * const data);
+                		void const * const data);
 
 /**
  * @defgroup internals The libmtp internal state manipulation API.

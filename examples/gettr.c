@@ -1,6 +1,6 @@
 #include "common.h"
 
-static int progress (u_int64_t sent, u_int64_t total, const char* buf, unsigned len, void *data)
+static int progress (u_int64_t const sent, u_int64_t const total, void const * const data)
 {
   int percent = (sent*100)/total;
 #ifdef __WIN32__
