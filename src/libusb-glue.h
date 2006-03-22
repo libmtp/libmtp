@@ -13,9 +13,16 @@
 #define USB_BULK_READ usb_bulk_read
 #define USB_BULK_WRITE usb_bulk_write
 
-/* the vendor ID for creative devices that we can connect to (temporary) */
-
-#define CREATIVE_VENDOR_ID	0x041e
+/**
+ * Internal USB struct (TODO: discard for device struct?)
+ */
+typedef struct _PTP_USB PTP_USB;
+struct _PTP_USB {
+	usb_dev_handle* handle;
+	int inep;
+	int outep;
+	int intep;
+};
 
 int open_device (int busn, int devn, short force, PTP_USB *ptp_usb, PTPParams *params, struct usb_device **dev);
 void close_device (PTP_USB *ptp_usb, PTPParams *params, uint8_t interfaceNumber);

@@ -53,17 +53,6 @@ typedef struct LIBMTP_track_struct LIBMTP_track_t; /**< @see LIBMTP_mtptrack_t *
 /** @} */
 
 /**
- * Internal USB struct (TODO: discard for device struct?)
- */
-typedef struct _PTP_USB PTP_USB;
-struct _PTP_USB {
-	usb_dev_handle* handle;
-	int inep;
-	int outep;
-	int intep;
-};
-
-/**
  * Main MTP device object struct
  */
 struct LIBMTP_mtpdevice_struct {
@@ -74,8 +63,11 @@ struct LIBMTP_mtpdevice_struct {
    * \c (PTPParams*) before internal use.
    */
   void *params;
-  /** USB device for this device */
-  PTP_USB *ptp_usb;
+  /** 
+   * USB device for this device, must be cast into
+   * \c (PTP_USB*) before internal use.
+   */
+  void *usbinfo;
   /** The storage ID for this device */
   unsigned storage_id;
   /** The maximum battery level for this device */

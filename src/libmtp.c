@@ -114,7 +114,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   tmpdevice = (LIBMTP_mtpdevice_t *) malloc(sizeof(LIBMTP_mtpdevice_t));
   tmpdevice->interface_number = interface_number;
   tmpdevice->params = (void *) params;
-  tmpdevice->ptp_usb = ptp_usb;
+  tmpdevice->usbinfo = (void *) ptp_usb;
   tmpdevice->storage_id = storageID;
   tmpdevice->maximum_battery_level = batteryLevelMax;
 
@@ -137,8 +137,9 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
 {
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
 
-  close_device(device->ptp_usb, params, device->interface_number);
+  close_device(ptp_usb, params, device->interface_number);
   // Free the device info and any handler
   ptp_free_deviceinfo(&params->deviceinfo);
   if (params->handles.Handler != NULL) {
