@@ -43,13 +43,25 @@ typedef unsigned __int64 uint64_t;
  * @{
  */
 typedef enum {
-  LIBMTP_CODEC_WAV,
-  LIBMTP_CODEC_MP3,
-  LIBMTP_CODEC_WMA,
-  LIBMTP_CODEC_UNKNOWN
-} LIBMTP_codec_t;
+  LIBMTP_FILETYPE_WAV,
+  LIBMTP_FILETYPE_MP3,
+  LIBMTP_FILETYPE_WMA,
+  LIBMTP_FILETYPE_WMV,
+  LIBMTP_FILETYPE_AVI,
+  LIBMTP_FILETYPE_MPEG,
+  LIBMTP_FILETYPE_ASF,
+  LIBMTP_FILETYPE_QT,
+  LIBMTP_FILETYPE_JFIF,
+  LIBMTP_FILETYPE_TIFF,
+  LIBMTP_FILETYPE_BMP,
+  LIBMTP_FILETYPE_GIF,
+  LIBMTP_FILETYPE_PICT,
+  LIBMTP_FILETYPE_PNG,
+  LIBMTP_FILETYPE_UNKNOWN
+} LIBMTP_filetype_t;
 typedef struct LIBMTP_mtpdevice_struct LIBMTP_mtpdevice_t; /**< @see LIBMTP_mtpdevice_struct */
-typedef struct LIBMTP_track_struct LIBMTP_track_t; /**< @see LIBMTP_mtptrack_t */
+typedef struct LIBMTP_file_struct LIBMTP_file_t; /**< @see LIBMTP_file_struct */
+typedef struct LIBMTP_track_struct LIBMTP_track_t; /**< @see LIBMTP_track_struct */
 /** @} */
 
 /**
@@ -75,6 +87,17 @@ struct LIBMTP_mtpdevice_struct {
 };
 
 /**
+ * MTP file struct
+ */
+struct LIBMTP_file_struct {
+  uint32_t item_id; /**< Unique item ID */
+  char *filename; /**< Filename of this file */
+  uint64_t filesize; /**< Size of file in bytes */
+  LIBMTP_filetype_t filetype; /**< Filetype used for the current file */
+  LIBMTP_file_t *next; /**< Next file in list or NULL if last file */
+};
+
+/**
  * MTP track struct
  */
 struct LIBMTP_track_struct {
@@ -88,7 +111,7 @@ struct LIBMTP_track_struct {
   uint16_t tracknumber; /**< Track number (in sequence on recording) */
   uint32_t duration; /**< Duration in milliseconds */
   uint64_t filesize; /**< Size of track file in bytes */
-  LIBMTP_codec_t codec; /**< Codec used for the current track */
+  LIBMTP_filetype_t filetype; /**< Filetype used for the current track */
   LIBMTP_track_t *next; /**< Next track in list or NULL if last track */
 };
 
@@ -132,6 +155,22 @@ int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *, uint64_t * const,
 int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *, 
 			    uint8_t * const, 
 			    uint8_t * const);
+
+
+/**
+ * @}
+ * @defgroup files The file management API.
+ * @{
+ */
+LIBMTP_file_t *LIBMTP_new_file_t(void);
+void LIBMTP_destroy_file_t(LIBMTP_file_t*);
+LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device);
+int LIBMTP_Delete_File(LIBMTP_mtpdevice_t *, uint32_t);
+int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t*, uint32_t, char const * const, 
+			LIBMTP_progressfunc_t const * const, void const * const);
+int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t const, int const, 
+			LIBMTP_progressfunc_t const * const, void const * const);
+
 /**
  * @}
  * @defgroup tracks The track management API.
@@ -154,7 +193,6 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *,
 			 void const * const);
 int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *, 
 			LIBMTP_track_t const * const);
-int LIBMTP_Delete_Track(LIBMTP_mtpdevice_t *, uint32_t);
 /** @} */
 /* End of C++ exports */
 #ifdef __cplusplus

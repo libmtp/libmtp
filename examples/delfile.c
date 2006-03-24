@@ -2,7 +2,7 @@
 
 static void usage(void)
 {
-  printf("Usage: deltr <trackid>\n");
+  printf("Usage: delfile <fileid/trackid>\n");
 }
 
 int main (int argc, char **argv)
@@ -25,7 +25,7 @@ int main (int argc, char **argv)
     usage();
     return 1;
   } else if ( ! id ) {
-    fprintf(stderr, "bad song id %u\n", id);
+    fprintf(stderr, "bad file ID %u\n", id);
     usage();
     return 1;
   }
@@ -37,10 +37,10 @@ int main (int argc, char **argv)
     return 0;
   }
 
-  ret = LIBMTP_Delete_Track(device, id);
+  ret = LIBMTP_Delete_File(device, id);
 
   if ( ret != 0 ) {
-    printf("Failed to delete track.\n");
+    printf("Failed to delete file.\n");
     return 1;
   }
   

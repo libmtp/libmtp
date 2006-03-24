@@ -18,14 +18,13 @@ static void dump_trackinfo(LIBMTP_track_t *track)
   printf("   Track number: %d\n", track->tracknumber);
   printf("   Duration: %d milliseconds\n", track->duration);
   printf("   File size %llu bytes\n", track->filesize);
-  printf("   Codec: %d\n", track->codec);
+  printf("   Filetype: %d\n", track->filetype);
 }
 
 int main (int argc, char **argv)
 {
   LIBMTP_mtpdevice_t *device;
   LIBMTP_track_t *tracks;
-  char *owner;
 
   LIBMTP_Init();
   device = LIBMTP_Get_First_Device();

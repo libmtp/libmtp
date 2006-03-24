@@ -1,10 +1,11 @@
-bin_PROGRAMS=detect tracks gettr sendtr deltr
+bin_PROGRAMS=detect tracks files getfile sendtr delfile
 
 detect_SOURCES=detect.c common.h
 tracks_SOURCES=tracks.c common.h
-gettr_SOURCES=gettr.c common.h
+files_SOURCES=files.c common.h
+getfile_SOURCES=getfile.c common.h
 sendtr_SOURCES=sendtr.c common.h
-deltr_SOURCES=deltr.c common.h
+delfile_SOURCES=delfile.c common.h
 
 AM_CFLAGS=-I$(top_builddir)/src
 LDADD=../src/libmtp.la

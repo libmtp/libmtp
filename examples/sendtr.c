@@ -249,12 +249,12 @@ int main(int argc, char **argv)
   printf("Codec:     %s\n", pcodec);
   
   if (!strcmp(pcodec,"MP3") || !strcmp(pcodec,"mp3")) {
-    trackmeta->codec = LIBMTP_CODEC_MP3;
+    trackmeta->filetype = LIBMTP_FILETYPE_MP3;
   }  else if (!strcmp(pcodec,"WAV") || !strcmp(pcodec,"wav")) {
-    trackmeta->codec = LIBMTP_CODEC_WAV;
+    trackmeta->filetype = LIBMTP_FILETYPE_WAV;
   } else if (!strcmp(pcodec,"WMA") || !strcmp(pcodec,"wma") ||
 	     !strcmp(pcodec,"ASF") || !strcmp(pcodec,"asf")) {
-    trackmeta->codec = LIBMTP_CODEC_WMA;
+    trackmeta->filetype = LIBMTP_FILETYPE_WMA;
   } else {
     printf("Not a valid codec: \"%s\"\n", pcodec);
     exit(1);

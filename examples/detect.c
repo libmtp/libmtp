@@ -1,9 +1,14 @@
 #include "common.h"
+#include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 int main (int argc, char **argv)
 {
   LIBMTP_mtpdevice_t *device;
+  LIBMTP_file_t *files;
+  uint32_t xmlfileid = 0;
   uint64_t totalbytes;
   uint64_t freebytes;
   char *storage_description;
@@ -62,6 +67,54 @@ int main (int argc, char **argv)
 	   (currbattlevel/maxbattlevel * 100));
   } else {
     printf("    Error getting battery info...\n");
+  }
+
+  // Try to get device info XML file...
+  files = LIBMTP_Get_Filelisting(device);
+  if (files != NULL) {
+    LIBMTP_file_t *file, *tmp;
+    file = files;
+    while (file != NULL) {
+      if (!strcmp(file->filename, "WMPInfo.xml")) {
+	xmlfileid = file->item_id;
+      }
+      tmp = file;
+      file = file->next;
+      LIBMTP_destroy_file_t(tmp);
+    }
+  }
+  if (xmlfileid != 0) {
+    char tmpfilename[] = "WMPInfo.xml.XXXXXX";
+    int tmpfile = mkstemp(tmpfilename);
+    if (tmpfile != -1) {
+      int ret = LIBMTP_Get_Track_To_File_Descriptor(device, xmlfileid, tmpfile, NULL, NULL);
+      if (ret == 0) {
+	uint8_t buf[2];
+	int endianness = 0; // 0 = LE, 1 = BE
+
+	printf("\nDevice description WMPInfo.xml file:\n");
+	lseek(tmpfile, 0, SEEK_SET);
+	while (read(tmpfile, (void*) buf, 2) == 2) {
+	  if (buf[0] == 0xFF && buf[1] == 0xFE) {
+	    endianness = 0;
+	  } else if (buf[0] == 0xFE && buf[1] == 0xff) {
+	    endianness = 1;
+	  } else {
+	    uint16_t tmp;
+
+	    if (endianness == 0) {
+	      tmp = buf[1] << 8 | buf[0];
+	    } else {
+	      tmp = buf[0] << 8 | buf[1];
+	    }
+	    // Fix this some day.
+	    printf("%c", (uint8_t) tmp);
+	  }	  
+	}
+	printf("\n");
+      }
+      close(tmpfile);
+    }
   }
 
   // King Fisher of Triad rocks your world!
