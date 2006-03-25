@@ -64,6 +64,7 @@ struct mtp_device_entry {
  * MTP device list
  */
 static const mtp_device_entry_t mtp_device_table[] = {
+  { "Creative Zen Vision", 0x041e, 0x411f },
   { "Creative Portable Media Center", 0x041e, 0x4123 },
   { "Creative Zen Xtra (MTP mode)", 0x041e, 0x4128 },
   { "Second generation Dell DJ", 0x041e, 0x412f },
