@@ -72,6 +72,7 @@ static const mtp_device_entry_t mtp_device_table[] = {
   { "Creative Zen Touch (MTP mode)", 0x041e, 0x4131 },
   { "Creative Zen Sleek (MTP mode)", 0x041e, 0x4137 },
   { "Creative Zen MicroPhoto", 0x041e, 0x413c },
+  { "Creative Zen Sleek Photo", 0x041e, 0x413d },
   { "Creative Zen Vision:M", 0x041e, 0x413e },
   { "iRiver T10", 0x4102, 0x1113 },
   { "iRiver T10", 0x4102, 0x1117 },
