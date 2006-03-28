@@ -51,9 +51,11 @@
 #endif
 
 /*
- * MTP device list
+ * MTP device list, trying real bad to get all devices into
+ * this list by stealing from everyone I know.
  */
 static const LIBMTP_device_entry_t mtp_device_table[] = {
+  /* Creative devices */
   { "Creative Zen Vision", 0x041e, 0x411f, NULL },
   { "Creative Portable Media Center", 0x041e, 0x4123, NULL },
   { "Creative Zen Xtra (MTP mode)", 0x041e, 0x4128, NULL },
@@ -64,9 +66,19 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Creative Zen MicroPhoto", 0x041e, 0x413c, NULL },
   { "Creative Zen Sleek Photo", 0x041e, 0x413d, NULL },
   { "Creative Zen Vision:M", 0x041e, 0x413e, NULL },
+  /* 
+   * Copied in from libgphoto2's libptp2 adaption "library.c"
+   * carefully trying to pick only the MTP devices.
+   * Greetings to Marcus Meissner! (we should merge our
+   * projects some day...)
+   */
+  { "Philipps HDD6320", 0x041e, 0x01eb, NULL},
   { "iRiver T10", 0x4102, 0x1113, NULL },
+  { "iRiver U10", 0x4102, 0x1116, NULL },
   { "iRiver T10", 0x4102, 0x1117, NULL },
-  { "iRiver T30", 0x4102, 0x1119, NULL }
+  { "iRiver T20", 0x4102, 0x1118, NULL },
+  { "iRiver T30", 0x4102, 0x1119, NULL },
+  { "Toshiba Gigabeat", 0x0930, 0x000c, NULL}
 };
 static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
 
@@ -74,7 +86,7 @@ int ptpcam_usb_timeout = USB_TIMEOUT;
 
 void close_usb(PTP_USB* ptp_usb, uint8_t interfaceNumber);
 struct usb_device* find_device (int busn, int devicen, short force);
-void find_endpoints(struct usb_device *dev, int* inep, int* outep, int* intep);
+void find_endpoints(struct usb_device *dev, int* inep, int* inep_maxpacket, int* outep, int* outep_maxpacket, int* intep);
 void clear_stall(PTP_USB* ptp_usb);
 void init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev);
 static short ptp_write_func (unsigned char *bytes, unsigned int size, void *data);
@@ -315,7 +327,7 @@ uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *inte
 	  ep = dev->config->interface->altsetting->endpoint;
 	  n=dev->config->interface->altsetting->bNumEndpoints;
 	  
-	  find_endpoints(dev,&(ptp_usb->inep),&(ptp_usb->outep),&(ptp_usb->intep));
+	  find_endpoints(dev,&(ptp_usb->inep),&(ptp_usb->inep_maxpacket),&(ptp_usb->outep),&(ptp_usb->outep_maxpacket),&(ptp_usb->intep));
 	  init_ptp_usb(params, ptp_usb, dev);
 	  
 	  ret = ptp_opensession(params,1);
@@ -344,7 +356,7 @@ uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *inte
   return PTP_CD_RC_NO_DEVICES;
 }
 
-void find_endpoints(struct usb_device *dev, int* inep, int* outep, int* intep)
+void find_endpoints(struct usb_device *dev, int* inep, int* inep_maxpacket, int* outep, int *outep_maxpacket, int* intep)
 {
 	int i,n;
 	struct usb_endpoint_descriptor *ep;
@@ -358,10 +370,12 @@ void find_endpoints(struct usb_device *dev, int* inep, int* outep, int* intep)
 					USB_ENDPOINT_DIR_MASK)
 			{
 				*inep=ep[i].bEndpointAddress;
+				*inep_maxpacket=ep[i].wMaxPacketSize;
 			}
 			if ((ep[i].bEndpointAddress&USB_ENDPOINT_DIR_MASK)==0)
 			{
 				*outep=ep[i].bEndpointAddress;
+				*inep_maxpacket=ep[i].wMaxPacketSize;
 			}
 		} else if (ep[i].bmAttributes==USB_ENDPOINT_TYPE_INTERRUPT){
 			if ((ep[i].bEndpointAddress&USB_ENDPOINT_DIR_MASK)==
@@ -386,7 +400,7 @@ int open_device (int busn, int devn, short force, PTP_USB *ptp_usb, PTPParams *p
 						"bus/dev numbers\n");
 		exit(-1);
 	}
-	find_endpoints(*dev,&ptp_usb->inep,&ptp_usb->outep,&ptp_usb->intep);
+	find_endpoints(*dev,&ptp_usb->inep,&ptp_usb->inep_maxpacket,&ptp_usb->outep,&ptp_usb->outep_maxpacket,&ptp_usb->intep);
 	
 	init_ptp_usb(params, ptp_usb, *dev);
 	if (ptp_opensession(params,1)!=PTP_RC_OK) {

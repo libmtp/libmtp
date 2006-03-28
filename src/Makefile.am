@@ -5,10 +5,28 @@ libmtp_la_SOURCES=libmtp.c unicode.c unicode.h util.c util.h \
 include_HEADERS=libmtp.h
 EXTRA_DIST=libmtp.h.in libmtp.sym
 
-# This is the version of the *library interface*, not the revision
-# of libmtp itself. Do not change this unless you're absolutely 
-# certain of what the difference is. (See the libtool manual,
-# section 6.3 (http://www.gnu.org/software/libtool/manual.html)
+# ---------------------------------------------------------------------------
+# Advanced information about versioning:
+#   * "Writing shared libraries" by Mike Hearn
+#         http://navi.cx/~mike/writing-shared-libraries.html
+#   * libtool.info chapter "Versioning"
+#   * libtool.info chapter "Updating library version information"
+# ---------------------------------------------------------------------------
+# Versioning:
+#  - CURRENT (Major):  Increment if the interface has changes. AGE is always
+#                      *changed* at the same time.
+#  - AGE (Micro):      Increment if any interfaces have been added; set to 0
+#		         if any interfaces have been removed. Removal has 
+#                      precedence over adding, so set to 0 if both happened.
+#                      It denotes upward compatibility.
+#  - REVISION (Minor): Increment any time the source changes; set to 
+#			 0 if you incremented CURRENT.
+#
+#  To summarize. Any interface *change* increment CURRENT. If that interface
+#  change does not break upward compatibility (ie it is an addition), 
+#  increment AGE, Otherwise AGE is reset to 0. If CURRENT has changed, 
+#  REVISION is set to 0, otherwise REVISION is incremented.
+# ---------------------------------------------------------------------------
 CURRENT=0
 REVISION=0
 AGE=0

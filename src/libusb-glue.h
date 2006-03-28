@@ -20,7 +20,9 @@ typedef struct _PTP_USB PTP_USB;
 struct _PTP_USB {
 	usb_dev_handle* handle;
 	int inep;
+        int inep_maxpacket;
 	int outep;
+        int outep_maxpacket;
 	int intep;
 };
 

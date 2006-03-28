@@ -1006,7 +1006,9 @@ static int send_file_object(LIBMTP_mtpdevice_t *device,
   uint16_t ret;
   uint8_t *buffer;
   uint64_t remain;
+  int last_chunk_size = 0; // Size of the last chunk written to the OUT endpoint
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
 
   // Nullify and configure PTP container
   memset(&ptp, 0, sizeof(ptp));
@@ -1077,6 +1079,8 @@ static int send_file_object(LIBMTP_mtpdevice_t *device,
       return -1;
     }
     remain -= (uint64_t) readsize;
+    // This is useful to keep track of last write
+    last_chunk_size = readsize;
   }
   
   if (callback != NULL) {
@@ -1085,12 +1089,15 @@ static int send_file_object(LIBMTP_mtpdevice_t *device,
     (void) callback(size, size, data);
   }
   
-  // Signal to USB that this is the last transfer if the last chunk
-  // was exactly as large as the buffer. This was part of Richards
-  // source code but apparently has some problems on Linux for some reason,
-  // could be that libusb on Linux intrinsically adds the final zero-length
-  // transfer call.
-  if (size % MTP_DEVICE_BUF_SIZE == 0) {
+  /*
+   * Signal to USB that this is the last transfer if the last chunk
+   * was exactly as large as the buffer.
+   *
+   * On Linux you need kernel 2.6.16 or newer for this to work under
+   * USB 2.0 since the EHCI driver did not support zerolength writes
+   * until then. (Using a UHCI port should be OK though.)
+   */
+  if (last_chunk_size == ptp_usb->outep_maxpacket) {
     ret = params->write_func(NULL, 0, params->data);
     if (ret!=PTP_RC_OK) {
       printf("send_file_object: error writing last zerolen data chunk for USB termination\n");

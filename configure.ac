@@ -88,11 +88,16 @@ AC_CHECK_FUNCS(basename memset select strdup strerror strrchr strtoul usleep)
 CFLAGS="$CFLAGS -Wall -Wmissing-prototypes"
 
 # Output files
-dnl Create a stdint.h-like file containing size-specific integer definitions
-dnl that will always be available
+
+# Create a stdint.h-like file containing size-specific integer definitions
+# that will always be available. The <stdint.h> file is required by the
+# library, but we provide this anyway because the libptp2 stuff wants this
+# file.
 AX_NEED_STDINT_H([src/libptp-stdint.h])
 
-dnl Create a header file containing NetBSD-style byte swapping macros
+# Create a header file containing NetBSD-style byte swapping macros.
+# This m4 macros has caused severe pain, I am considering creating a 
+# hard-coded byte swapper that will be eternally portable.
 AC_NEED_BYTEORDER_H(src/libptp-endian.h)
 
 AC_CONFIG_FILES([src/libmtp.h doc/Doxyfile Makefile doc/Makefile src/Makefile
