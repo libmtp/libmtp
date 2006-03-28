@@ -35,7 +35,8 @@ static int single_threaded_callback_helper(uint32_t sent, uint32_t total) {
      * the return value.
      */
     (void) single_threaded_callback(sent, total, single_threaded_callback_data);
-  }  
+  }
+  return 0;
 }
 
 /**
@@ -44,6 +45,23 @@ static int single_threaded_callback_helper(uint32_t sent, uint32_t total) {
 void LIBMTP_Init(void)
 {
   return;
+}
+
+/**
+ * Get a list of the supported devices.
+ *
+ * @param devices a pointer to a pointer that will hold a device
+ *        list after the call to this function, if it was
+ *        successful.
+ * @param numdevs a pointer to an integer that will hold the number
+ *        of devices in the device list if the call was successful.
+ * @return 0 if the list was successfull retrieved, any other
+ *        value means failure.
+ */
+int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t ** const devices, int * const numdevs)
+{
+  // Just dispatch to libusb glue file...
+  return get_device_list(devices, numdevs);
 }
 
 /**
@@ -403,11 +421,6 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
 
     LIBMTP_file_t *file;
     PTPObjectInfo oi;
-    int ret;
-    char *stringvalue = NULL;
-    unsigned short *unicodevalue = NULL;
-    uint16_t *uint16value = NULL;
-    uint32_t *uint32value = NULL;
 
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
       
@@ -829,7 +842,7 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
   int ret;
   PTPParams *params = (PTPParams *) device->params;
 
-  single_threaded_callback_data = data;
+  single_threaded_callback_data = (void *) data;
   single_threaded_callback = callback;
   globalCallback = single_threaded_callback_helper;
 
@@ -1244,7 +1257,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 
   // Update duration
   if (metadata->duration != 0) {
-    ret = ptp_setobjectpropvalue(params, PTP_OPC_Duration, metadata->item_id, &metadata->duration, PTP_DTC_UINT32);
+    ret = ptp_setobjectpropvalue(params, PTP_OPC_Duration, metadata->item_id, (void *) &metadata->duration, PTP_DTC_UINT32);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track duration\n");
       return -1;
@@ -1253,7 +1266,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 
   // Update track number.
   if (metadata->tracknumber != 0) {
-    ret = ptp_setobjectpropvalue(params, PTP_OPC_Track, metadata->item_id, &metadata->tracknumber, PTP_DTC_UINT16);
+    ret = ptp_setobjectpropvalue(params, PTP_OPC_Track, metadata->item_id, (void *) &metadata->tracknumber, PTP_DTC_UINT16);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track tracknumber\n");
       return -1;

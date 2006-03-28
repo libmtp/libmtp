@@ -1,3 +1,14 @@
+HOTPLUGGING:
+------------
+Some scripts are generated during build:
+
+* libmtp.usermap + libmtp.sh constitute an old hotplug script
+  solution.
+* libmtp.usermap constitute a modern udev solution.
+
+
+OLD PROBLEM:
+------------
 Problems with compilation under FC4: GCC4 related problem.
 Run this:
 

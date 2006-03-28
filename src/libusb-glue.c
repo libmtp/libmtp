@@ -51,34 +51,24 @@
 #endif
 
 /*
- * A data structure to hold MTP device entries
- */
-typedef struct mtp_device_entry mtp_device_entry_t;
-struct mtp_device_entry {
-  char *name;
-  u_int16_t vendor_id;
-  u_int16_t product_id;
-};
-
-/*
  * MTP device list
  */
-static const mtp_device_entry_t mtp_device_table[] = {
-  { "Creative Zen Vision", 0x041e, 0x411f },
-  { "Creative Portable Media Center", 0x041e, 0x4123 },
-  { "Creative Zen Xtra (MTP mode)", 0x041e, 0x4128 },
-  { "Second generation Dell DJ", 0x041e, 0x412f },
-  { "Creative Zen Micro (MTP mode)", 0x041e, 0x4130 },
-  { "Creative Zen Touch (MTP mode)", 0x041e, 0x4131 },
-  { "Creative Zen Sleek (MTP mode)", 0x041e, 0x4137 },
-  { "Creative Zen MicroPhoto", 0x041e, 0x413c },
-  { "Creative Zen Sleek Photo", 0x041e, 0x413d },
-  { "Creative Zen Vision:M", 0x041e, 0x413e },
-  { "iRiver T10", 0x4102, 0x1113 },
-  { "iRiver T10", 0x4102, 0x1117 },
-  { "iRiver T30", 0x4102, 0x1119 }
+static const LIBMTP_device_entry_t mtp_device_table[] = {
+  { "Creative Zen Vision", 0x041e, 0x411f, NULL },
+  { "Creative Portable Media Center", 0x041e, 0x4123, NULL },
+  { "Creative Zen Xtra (MTP mode)", 0x041e, 0x4128, NULL },
+  { "Second generation Dell DJ", 0x041e, 0x412f, NULL },
+  { "Creative Zen Micro (MTP mode)", 0x041e, 0x4130, NULL },
+  { "Creative Zen Touch (MTP mode)", 0x041e, 0x4131, NULL },
+  { "Creative Zen Sleek (MTP mode)", 0x041e, 0x4137, NULL },
+  { "Creative Zen MicroPhoto", 0x041e, 0x413c, NULL },
+  { "Creative Zen Sleek Photo", 0x041e, 0x413d, NULL },
+  { "Creative Zen Vision:M", 0x041e, 0x413e, NULL },
+  { "iRiver T10", 0x4102, 0x1113, NULL },
+  { "iRiver T10", 0x4102, 0x1117, NULL },
+  { "iRiver T30", 0x4102, 0x1119, NULL }
 };
-static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(mtp_device_entry_t);
+static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
 
 int ptpcam_usb_timeout = USB_TIMEOUT;
 
@@ -92,6 +82,13 @@ static short ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 static short ptp_check_int (unsigned char *bytes, unsigned int size, void *data);
 int usb_clear_stall_feature(PTP_USB* ptp_usb, int ep);
 int usb_get_endpoint_status(PTP_USB* ptp_usb, int ep, uint16_t* status);
+
+int get_device_list(LIBMTP_device_entry_t ** const devices, int * const numdevs)
+{
+  *devices = (LIBMTP_device_entry_t *) &mtp_device_table;
+  *numdevs = mtp_device_table_size;
+  return 0;
+}
 
 static short ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 {
@@ -304,7 +301,7 @@ uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *inte
 
       // Loop over the list of supported devices
       for (i = 0; i < mtp_device_table_size; i++) {
-        mtp_device_entry_t const *mtp_device = &mtp_device_table[i];
+        LIBMTP_device_entry_t const *mtp_device = &mtp_device_table[i];
 	
 	if (dev->descriptor.bDeviceClass != USB_CLASS_HUB && 
 	    dev->descriptor.idVendor == mtp_device->vendor_id &&
