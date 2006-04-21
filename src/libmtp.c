@@ -436,7 +436,7 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
       
       // Allocate a new file type
       file = LIBMTP_new_file_t();
-
+      
       switch (oi.ObjectFormat)
 	{
 	case PTP_OFC_WAV:
@@ -445,10 +445,19 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
 	case PTP_OFC_MP3:
 	  file->filetype = LIBMTP_FILETYPE_MP3;
 	  break;
-	case PTP_OFC_WMA:
+	case PTP_OFC_MTP_WMA:
 	  file->filetype = LIBMTP_FILETYPE_WMA;
 	  break;
-	case PTP_OFC_WMV:
+	case PTP_OFC_MTP_OGG:
+	  file->filetype = LIBMTP_FILETYPE_OGG;
+	  break;
+	case PTP_OFC_MTP_MP4:
+	  file->filetype = LIBMTP_FILETYPE_MP4;
+	  break;
+	case PTP_OFC_MTP_UndefinedAudio:
+	  file->filetype = LIBMTP_FILETYPE_UNDEF_AUDIO;
+	  break;
+	case PTP_OFC_MTP_WMV:
 	  file->filetype = LIBMTP_FILETYPE_WMV;
 	  break;
 	case PTP_OFC_AVI:
@@ -462,6 +471,9 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
 	  break;
 	case PTP_OFC_QT:
 	  file->filetype = LIBMTP_FILETYPE_QT;
+	  break;
+	case PTP_OFC_MTP_UndefinedVideo:
+	  file->filetype = LIBMTP_FILETYPE_UNDEF_VIDEO;
 	  break;
 	case PTP_OFC_JFIF: // or should this be PTP_OFC_EXIF_JPEG?
 	  file->filetype = LIBMTP_FILETYPE_JFIF;
@@ -638,11 +650,13 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
       
       // Ignore stuff we don't know how to handle...
-      if (oi.ObjectFormat == PTP_OFC_Association || 
-	  (oi.ObjectFormat != PTP_OFC_WAV && 
+      if ( oi.ObjectFormat != PTP_OFC_WAV && 
 	   oi.ObjectFormat != PTP_OFC_MP3 && 
-	   oi.ObjectFormat != PTP_OFC_WMA)) {
-	printf("Unknown ObjectFormat (%d), skipping...\n",oi.ObjectFormat);
+	   oi.ObjectFormat != PTP_OFC_MTP_WMA &&
+	   oi.ObjectFormat != PTP_OFC_MTP_OGG && 
+	   oi.ObjectFormat != PTP_OFC_MTP_MP4 &&
+	   oi.ObjectFormat != PTP_OFC_MTP_UndefinedAudio ) {
+	printf("Not a music track (format: %d), skipping...\n",oi.ObjectFormat);
 	continue;
       }
       
@@ -657,8 +671,17 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 	case PTP_OFC_MP3:
 	  track->filetype = LIBMTP_FILETYPE_MP3;
 	  break;
-	case PTP_OFC_WMA:
+	case PTP_OFC_MTP_WMA:
 	  track->filetype = LIBMTP_FILETYPE_WMA;
+	  break;
+	case PTP_OFC_MTP_OGG:
+	  track->filetype = LIBMTP_FILETYPE_OGG;
+	  break;
+	case PTP_OFC_MTP_MP4:
+	  track->filetype = LIBMTP_FILETYPE_MP4;
+	  break;
+	case PTP_OFC_MTP_UndefinedAudio:
+	  track->filetype = LIBMTP_FILETYPE_UNDEF_AUDIO;
 	  break;
 	default:
 	  track->filetype = LIBMTP_FILETYPE_UNKNOWN;
@@ -1161,7 +1184,16 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     new_track.ObjectFormat = PTP_OFC_MP3;
     break;
   case LIBMTP_FILETYPE_WMA:
-    new_track.ObjectFormat = PTP_OFC_WMA;
+    new_track.ObjectFormat = PTP_OFC_MTP_WMA;
+    break;
+  case LIBMTP_FILETYPE_OGG:
+    new_track.ObjectFormat = PTP_OFC_MTP_OGG;
+    break;
+  case LIBMTP_FILETYPE_MP4:
+    new_track.ObjectFormat = PTP_OFC_MTP_MP4;
+    break;
+  case LIBMTP_FILETYPE_UNDEF_AUDIO:
+    new_track.ObjectFormat = PTP_OFC_MTP_UndefinedAudio;
     break;
   default:
     printf("LIBMTP_Send_Track_From_File_Descriptor: unknown filetype.\n");
@@ -1327,4 +1359,212 @@ int LIBMTP_Delete_File(LIBMTP_mtpdevice_t *device,
 			uint32_t item_id)
 {
   return delete_item(device, item_id);
+}
+
+
+/**
+ * Helper function. This indicates if a track exists on the device
+ * @param device a pointer to the device to get the track from.
+ * @param id the track ID of the track to retrieve.
+ * @return TRUE (1) if the track exists, FALSE (0) if not
+ */
+int LIBMTP_Track_Exists(LIBMTP_mtpdevice_t *device,
+           uint32_t const id)
+{
+  PTPObjectInfo oi;
+  PTPParams *params = (PTPParams *) device->params;
+
+  if (ptp_getobjectinfo(params, id, &oi) == PTP_RC_OK) {
+    return 1;
+  }
+  return 0;
+}
+
+/**
+ * This creates a new folder structure and allocates memory
+ * for it. Notice that if you add strings to this structure they
+ * will be freed by the corresponding <code>LIBMTP_folder_track_t</code>
+ * operation later, so be careful of using strdup() when assigning
+ * strings, e.g.:
+ *
+ * @return a pointer to the newly allocated folder structure.
+ * @see LIBMTP_destroy_folder_t()
+ */
+LIBMTP_folder_t *LIBMTP_new_folder_t(void)
+{
+  LIBMTP_folder_t *new = (LIBMTP_folder_t *) malloc(sizeof(LIBMTP_folder_t));
+  if (new == NULL) {
+    return NULL;
+  }
+  new->folder_id = 0;
+  new->parent_id = 0;
+  new->name = NULL;
+  new->sibling = NULL;
+  new->child = NULL;
+  return new;
+}
+
+/**
+ * This recursively deletes the memory for a folder structure
+ *
+ * @param folder folder structure to destroy
+ * @see LIBMTP_new_folder_t()
+ */
+void LIBMTP_destroy_folder_t(LIBMTP_folder_t *folder)
+{
+
+  if(folder == NULL) {
+     return;
+  }
+
+  //Destroy from the bottom up
+  if(folder->child != NULL) {
+     LIBMTP_destroy_folder_t(folder->child);
+  }
+
+  if(folder->sibling != NULL) {
+    LIBMTP_destroy_folder_t(folder->sibling);
+  }
+
+  if(folder->name != NULL) {
+    free(folder->name);
+  }
+
+  free(folder);
+}
+
+/**
+ * Helper function. Returns a folder structure for a
+ * specified id.
+ *
+ * @param folderlist list of folders to search
+ * @id id of folder to look for
+ * @return a folder or NULL if not found
+ */
+LIBMTP_folder_t *LIBMTP_Find_Folder(LIBMTP_folder_t *folderlist, uint32_t id)
+{
+  LIBMTP_folder_t *ret = NULL;
+  
+  if(folderlist == NULL) {
+    return NULL;
+  }
+  
+  if(folderlist->folder_id == id) {
+    return folderlist;
+  }
+  
+  if(folderlist->sibling) {
+    ret = LIBMTP_Find_Folder(folderlist->sibling, id);
+  }
+  
+  if(folderlist->child && ret == NULL) {
+    ret = LIBMTP_Find_Folder(folderlist->child, id);
+  }
+  
+  return ret;
+}
+
+/**
+ * This returns a list of all folders available
+ * on the current MTP device.
+ *
+ * @param device a pointer to the device to get the track listing for.
+ * @return a list of folders
+ */
+LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
+{
+  uint32_t i = 0;
+  LIBMTP_folder_t *retfolders = NULL;
+  PTPParams *params = (PTPParams *) device->params;
+  uint32_t ret = 0;
+  
+  if (params->handles.Handler == NULL) {
+    // Get all the handles if we haven't already done that
+    if ((ret=ptp_getobjecthandles(params,
+				  PTP_GOH_ALL_STORAGE, 
+				  PTP_GOH_ALL_FORMATS,
+				  PTP_GOH_ALL_ASSOCS, 
+				  &params->handles)) != PTP_RC_OK) {
+      printf("LIBMTP_Get_Folder_List: Could not get object handles...(0x%08X)\n", ret);
+      return NULL;
+    }
+  }
+  
+  for (i = 0; i < params->handles.n; i++) {
+    LIBMTP_folder_t *folder;
+    PTPObjectInfo oi;
+    
+    if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
+      if (oi.ObjectFormat != PTP_OFC_Association) {
+        continue;
+      }
+      folder = LIBMTP_new_folder_t();
+      folder->folder_id = params->handles.Handler[i];
+      folder->parent_id = oi.ParentObject;
+      folder->name = (char *)strdup(oi.Filename);
+      
+      // Work out where to put this new item
+      if(retfolders == NULL) {
+	retfolders = folder;
+	continue;
+      } else {
+	LIBMTP_folder_t *parent_folder;
+	LIBMTP_folder_t *current_folder;
+	
+	parent_folder = LIBMTP_Find_Folder(retfolders, folder->parent_id);
+	
+	if(parent_folder == NULL) {
+	  current_folder = retfolders;
+	} else {
+	  if(parent_folder->child == NULL) {
+	    parent_folder->child = folder;
+	    continue;
+	  } else {
+	    current_folder = parent_folder->child;
+	  }
+	}
+	
+	while(current_folder->sibling != NULL) {
+	  current_folder=current_folder->sibling;
+	}
+	
+	current_folder->sibling = folder;
+      }
+    }
+  }
+  return retfolders;
+}
+
+/**
+ * This create a folder on the current MTP device.
+ *
+ * @param device a pointer to the device to get the track listing for.
+ * @param name name of folder
+ * @param parent_id id of parent folder to add to.
+ * @return id to new folder or -1 if an error
+ */
+uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name, uint32_t parent_id)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  uint32_t parenthandle = 0;
+  uint32_t store = 0;
+  PTPObjectInfo new_folder;
+  uint32_t ret;
+  uint32_t new_id = 0;
+
+  memset(&new_folder, 0, sizeof(new_folder));
+  new_folder.Filename = name;
+  new_folder.ObjectCompressedSize = 1;
+  new_folder.ObjectFormat = PTP_OFC_Association;
+  new_folder.ParentObject = parent_id;
+
+  parenthandle = parent_id;
+  // Create the object
+  ret = ptp_sendobjectinfo(params, &store, &parenthandle, &new_id, &new_folder);
+  if (ret != PTP_RC_OK) {
+    ptp_perror(params, ret);
+    printf("LIBMTP_Create_Folder: Could not send object info\n");
+    return -1;
+  }
+  return new_id;
 }

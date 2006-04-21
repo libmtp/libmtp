@@ -46,11 +46,15 @@ typedef enum {
   LIBMTP_FILETYPE_WAV,
   LIBMTP_FILETYPE_MP3,
   LIBMTP_FILETYPE_WMA,
+  LIBMTP_FILETYPE_OGG,
+  LIBMTP_FILETYPE_MP4,
+  LIBMTP_FILETYPE_UNDEF_AUDIO,
   LIBMTP_FILETYPE_WMV,
   LIBMTP_FILETYPE_AVI,
   LIBMTP_FILETYPE_MPEG,
   LIBMTP_FILETYPE_ASF,
   LIBMTP_FILETYPE_QT,
+  LIBMTP_FILETYPE_UNDEF_VIDEO,
   LIBMTP_FILETYPE_JFIF,
   LIBMTP_FILETYPE_TIFF,
   LIBMTP_FILETYPE_BMP,
@@ -63,6 +67,7 @@ typedef struct LIBMTP_device_entry_struct LIBMTP_device_entry_t; /**< @see LIBMT
 typedef struct LIBMTP_mtpdevice_struct LIBMTP_mtpdevice_t; /**< @see LIBMTP_mtpdevice_struct */
 typedef struct LIBMTP_file_struct LIBMTP_file_t; /**< @see LIBMTP_file_struct */
 typedef struct LIBMTP_track_struct LIBMTP_track_t; /**< @see LIBMTP_track_struct */
+typedef struct LIBMTP_folder_struct LIBMTP_folder_t; /**< @see LIBMTP_mtpfolder_t */
 /** @} */
 
 /**
@@ -124,6 +129,17 @@ struct LIBMTP_track_struct {
   uint64_t filesize; /**< Size of track file in bytes */
   LIBMTP_filetype_t filetype; /**< Filetype used for the current track */
   LIBMTP_track_t *next; /**< Next track in list or NULL if last track */
+};
+
+/**
+ * MTP Folder structure
+ */
+struct LIBMTP_folder_struct {
+  uint32_t folder_id; /**< Unique folder ID */
+  uint32_t parent_id; /**< ID of parent folder */
+  char *name; /**< Name of folder */
+  LIBMTP_folder_t *sibling; /**< Next folder at same level or NULL if no more */
+  LIBMTP_folder_t *child; /**< Child folder or NULL if no children */
 };
 
 /* Make functions available for C++ */
@@ -205,7 +221,22 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *,
 			 void const * const);
 int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *, 
 			LIBMTP_track_t const * const);
+int LIBMTP_Track_Exists(LIBMTP_mtpdevice_t *, uint32_t);
 /** @} */
+
+/**
+ * @}
+ * @defgroup folders The folder management API.
+ * @{
+ */
+LIBMTP_folder_t *LIBMTP_new_folder_t(void);
+void LIBMTP_destroy_folder_t(LIBMTP_folder_t*);
+LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t*);
+LIBMTP_folder_t *LIBMTP_Find_Folder(LIBMTP_folder_t*, uint32_t const);
+uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t*, char  * , uint32_t);
+/** @} */
+
+
 /* End of C++ exports */
 #ifdef __cplusplus
 }

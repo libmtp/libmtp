@@ -4,6 +4,14 @@
 	  Diego Pettenò.
 	* src/libusb-glue.c: New Samsung device and some
 	  from libgphoto2.
+	* src/ptp.h: some defines from libgphoto2 to get
+	  a bit more compatible.
+	* src/libmtp.c: Added a folder API implementation by
+	  Dave "ravelox" Kelly.
+	* src/libmtp.h.in: dito.
+	* examples/folders.c: dito.
+	* examples/newfolder.c: dito.
+	* examples/trexist.c: dito.
 	
 2006-03-28  Linus Walleij  <triad@df.lth.se>
 
