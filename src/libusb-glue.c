@@ -66,7 +66,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Creative Zen MicroPhoto", 0x041e, 0x413c, NULL },
   { "Creative Zen Sleek Photo", 0x041e, 0x413d, NULL },
   { "Creative Zen Vision:M", 0x041e, 0x413e, NULL },
-  /* Contributed by */
+  /* Contributed by anonymous person on SourceForge */
   { "Samsung YP-T7J", 0x04e8, 0x5047, NULL },
   /* 
    * Copied in from libgphoto2's libptp2 adaption "library.c"

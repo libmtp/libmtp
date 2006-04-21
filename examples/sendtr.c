@@ -68,8 +68,9 @@ static char *prompt (const char *prompt, char *buffer, size_t bufsz, int require
 
 static void usage(void)
 {
-  fprintf(stderr, "usage: sendtr [ -D debuglvl ] [ -q ] -t <title> -a <artist> -l <album> -c <codec>\n");
-  fprintf(stderr, "       -g <genre> -n <track number> -d <duration in seconds> <path>\n");
+  fprintf(stderr, "usage: sendtr [ -D debuglvl ] [ -q ] -t <title> -a <artist> -l <album>\n");
+  fprintf(stderr, "       -c <codec> -g <genre> -n <track number> -y <year> \n");
+  fprintf(stderr, "       -d <duration in seconds> <path>\n");
   fprintf(stderr, "(-q means the program will not ask for missing information.)\n");
   exit(1);
 }
@@ -98,7 +99,7 @@ int main(int argc, char **argv)
   LIBMTP_track_t *trackmeta;
   int ret;
   
-  while ( (opt = getopt(argc, argv, "qD:t:a:l:c:g:n:d:")) != -1 ) {
+  while ( (opt = getopt(argc, argv, "qD:t:a:l:c:g:n:d:y:")) != -1 ) {
     switch (opt) {
     case 't':
       ptitle = strdup(optarg);
@@ -110,7 +111,7 @@ int main(int argc, char **argv)
       palbum = strdup(optarg);
       break;
     case 'c':
-      pcodec = strdup(optarg); // XXX DSM check for MP3, WAV or WMA
+      pcodec = strdup(optarg); // FIXME: DSM check for MP3, WAV or WMA
       break;
     case 'g':
       pgenre = strdup(optarg);
@@ -121,6 +122,9 @@ int main(int argc, char **argv)
     case 'd':
       length = atoi(optarg);
       break;
+    case 'y':
+      year = atoi(optarg);
+      break;
     case 'q':
       quiet = 1;
       break;
@@ -128,8 +132,8 @@ int main(int argc, char **argv)
       usage();
     }
   }
-  argc-= optind;
-  argv+= optind;
+  argc -= optind;
+  argv += optind;
   
   if ( argc != 1 ) {
     printf("You need to pass a filename.\n");
@@ -222,11 +226,11 @@ int main(int argc, char **argv)
     if (year == 0) {
       char *pnum;
       if ( (pnum = prompt("Year", num, 80, 0)) == NULL )
-	year = 0;
+    	year = 0;
       if ( strlen(pnum) ) {
-	year = strtoul(pnum, 0, 10);
+   	year = strtoul(pnum, 0, 10);
       } else {
-	year = 0;
+    	year = 0;
       }
     }
     
