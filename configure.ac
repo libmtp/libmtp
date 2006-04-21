@@ -1,6 +1,6 @@
 # Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.52)
-AC_INIT([libmtp], [0.0.3], [libmtp-users@lists.sourceforge.net])
+AC_INIT([libmtp], [0.0.4], [libmtp-users@lists.sourceforge.net])
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([src/libmtp.c])
 AC_CONFIG_HEADER([config.h])

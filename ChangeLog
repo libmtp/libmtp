@@ -1,5 +1,10 @@
 2006-04-21  Linus Walleij  <triad@df.lth.se>
 
+	* Released libmtp 0.0.3
+	* Bumped source to 0.0.4
+
+2006-04-21  Linus Walleij  <triad@df.lth.se>
+
 	* src/ptp-pack.c: GCC 4.x compilation patch from
 	  Diego Pettenò.
 	* src/libusb-glue.c: New Samsung device and some
