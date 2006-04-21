@@ -1,3 +1,8 @@
+2006-04-21  Linus Walleij  <triad@df.lth.se>
+
+	* src/ptp-pack.c: GCC 4.x compilation patch from
+	  Diego Pettenò.
+	
 2006-03-28  Linus Walleij  <triad@df.lth.se>
 
 	* m4/*: updated macros to work with GCC 4.1.0.
