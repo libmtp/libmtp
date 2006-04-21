@@ -66,18 +66,22 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Creative Zen MicroPhoto", 0x041e, 0x413c, NULL },
   { "Creative Zen Sleek Photo", 0x041e, 0x413d, NULL },
   { "Creative Zen Vision:M", 0x041e, 0x413e, NULL },
+  /* Contributed by */
+  { "Samsung YP-T7J", 0x04e8, 0x5047, NULL },
   /* 
    * Copied in from libgphoto2's libptp2 adaption "library.c"
    * carefully trying to pick only the MTP devices.
    * Greetings to Marcus Meissner! (we should merge our
    * projects some day...)
    */
-  { "Philipps HDD6320", 0x041e, 0x01eb, NULL},
+  { "Philipps HDD6320", 0x0471, 0x01eb, NULL},
   { "iRiver T10", 0x4102, 0x1113, NULL },
   { "iRiver U10", 0x4102, 0x1116, NULL },
   { "iRiver T10", 0x4102, 0x1117, NULL },
   { "iRiver T20", 0x4102, 0x1118, NULL },
   { "iRiver T30", 0x4102, 0x1119, NULL },
+  { "iRiver H10", 0x4102, 0x2102, NULL },
+  { "Dell DJ Itty", 0x413c, 0x4500, NULL},
   { "Toshiba Gigabeat", 0x0930, 0x000c, NULL}
 };
 static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);

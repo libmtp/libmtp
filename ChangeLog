@@ -2,6 +2,8 @@
 
 	* src/ptp-pack.c: GCC 4.x compilation patch from
 	  Diego Pettenò.
+	* src/libusb-glue.c: New Samsung device and some
+	  from libgphoto2.
 	
 2006-03-28  Linus Walleij  <triad@df.lth.se>
 
