@@ -1,3 +1,15 @@
+2006-04-25  Linus Walleij  <triad@df.lth.se>
+
+	* Rebased the sources around libgphoto2 instead.
+	  This was a major revision...
+	* src/ptp.c: imported libgphoto2 version verbatim.
+	* src/ptp.h: imported libgphoto2 version, minor patch.
+	* src/ptp-pack.c: imported libgphoto2 version, minor patch.
+	* src/mtp.c: dropped, since all functions are now in ptp.c
+	* src/mtp-pack.c: dropped, same reason.
+	* src/mtp.h: dropped, same reason.
+	* src/mtp-pack.h: dropped, same reason.
+
 2006-04-21  Linus Walleij  <triad@df.lth.se>
 
 	* Released libmtp 0.0.3

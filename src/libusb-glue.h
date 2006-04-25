@@ -1,12 +1,12 @@
 /*
- *  mtp-utils.h
- *  XNJB
+ *  libusb-glue.h
  *
  *  Created by Richard Low on 24/12/2005.
+ *  Modified by Linus Walleij
  *
  */
 
-#include "mtp.h"
+#include "ptp.h"
 #include <usb.h>
 #include "libmtp.h"
 

@@ -1,9 +1,11 @@
 lib_LTLIBRARIES=libmtp.la
+# Removed: ptp-pack.h mtp-pack.c mtp-pack.h mtp.h mtp.c ptp-pack.c
+# Renamed: libptp-endian.h -> gphoto2-endian.h
 libmtp_la_SOURCES=libmtp.c unicode.c unicode.h util.c util.h \
-	libusb-glue.c libusb-glue.h mtp-pack.c mtp-pack.h mtp.c mtp.h \
-	libptp-endian.h libptp-stdint.h ptp-pack.c ptp-pack.h ptp.c ptp.h
+	libusb-glue.c libusb-glue.h \
+	gphoto2-endian.h libptp-stdint.h ptp.c ptp.h
 include_HEADERS=libmtp.h
-EXTRA_DIST=libmtp.h.in libmtp.sym
+EXTRA_DIST=libmtp.h.in libmtp.sym ptp-pack.c
 
 # ---------------------------------------------------------------------------
 # Advanced information about versioning:

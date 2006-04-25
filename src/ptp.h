@@ -1,22 +1,21 @@
 /* ptp.h
  *
- * Copyright (C) 2001-2004 Mariusz Woloszyn <emsi@ipartners.pl>
+ * Copyright (C) 2001 Mariusz Woloszyn <emsi@ipartners.pl>
  *
- *  This file is part of libptp2.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
  *
- *  libptp2 is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- *  libptp2 is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with libptp2; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #ifndef __PTP_H__
@@ -24,10 +23,7 @@
 
 #include <stdarg.h>
 #include <time.h>
-#include "libptp-endian.h"
-
-/** The callback type */
-typedef int Progress_Callback(u_int32_t sent, u_int32_t total);
+#include "gphoto2-endian.h"
 
 /* PTP datalayer byteorder */
 
@@ -53,18 +49,17 @@ struct _PTPContainer {
 typedef struct _PTPContainer PTPContainer;
 
 /* PTP USB Bulk-Pipe container */
-/* USB bulk max max packet length for high speed endpoints */
-#define PTP_USB_BULK_HS_MAX_PACKET_LEN 512
+/* USB bulk max packet length for high speed endpoints */
+/* I have changed this from 512 to 4096 now. The spec says
+ * "end of data transfers are signaled by short packets or NULL
+ * packets". It never says anything about 512.
+ * So it should work like this and the MTP folks will be happier...
+ * -Marcus
+ */
+#define PTP_USB_BULK_HS_MAX_PACKET_LEN	4096
 #define PTP_USB_BULK_HDR_LEN		(2*sizeof(uint32_t)+2*sizeof(uint16_t))
 #define PTP_USB_BULK_PAYLOAD_LEN	(PTP_USB_BULK_HS_MAX_PACKET_LEN-PTP_USB_BULK_HDR_LEN)
 #define PTP_USB_BULK_REQ_LEN	(PTP_USB_BULK_HDR_LEN+5*sizeof(uint32_t))
-
-/* see ptp.c:ptp_usb_senddata for info on these sizes
-   added by RAL 2005-12-21 */
-#define BLOCK_SIZE 0xe000
-#define MTP_DEVICE_BUF_SIZE 0x200
-/* the amount of data between each progress report. Must be multiple of BLOCK_SIZE */
-#define CALLBACK_SIZE (BLOCK_SIZE*16)
 
 struct _PTPUSBBulkContainer {
 	uint32_t length;
@@ -79,20 +74,10 @@ struct _PTPUSBBulkContainer {
 			uint32_t param4;
 			uint32_t param5;
 		} params;
-		////unsigned char data[PTP_USB_BULK_PAYLOAD_LEN];
+		unsigned char data[PTP_USB_BULK_PAYLOAD_LEN];
 	} payload;
 };
 typedef struct _PTPUSBBulkContainer PTPUSBBulkContainer;
-
-/* USB Bulk Container to send - see ptp.c:ptp_usb_senddata for more info
-   added by RAL 2005-12-21 */
-struct _PTPUSBBulkContainerSend {
-	uint32_t length;
-	uint16_t type;
-	uint16_t code;
-	uint32_t trans_id;
-};
-typedef struct _PTPUSBBulkContainerSend PTPUSBBulkContainerSend;
 
 /* PTP USB Asynchronous Event Interrupt Data Format */
 struct _PTPUSBEventContainer {
@@ -114,6 +99,28 @@ typedef struct _PTPUSBEventContainer PTPUSBEventContainer;
 #define PTP_USB_CONTAINER_DATA			0x0002
 #define PTP_USB_CONTAINER_RESPONSE		0x0003
 #define PTP_USB_CONTAINER_EVENT			0x0004
+
+/* PTP/IP definitions */
+#define PTPIP_INIT_COMMAND_REQUEST	1
+#define PTPIP_INIT_COMMAND_ACK		2
+#define PTPIP_INIT_EVENT_REQUEST	3
+#define PTPIP_INIT_EVENT_ACK		4
+#define PTPIP_INIT_FAIL			5
+#define PTPIP_CMD_REQUEST		6
+#define PTPIP_CMD_RESPONSE		7
+#define PTPIP_EVENT			8
+#define PTPIP_START_DATA_PACKET		9
+#define PTPIP_DATA_PACKET		10
+#define PTPIP_CANCEL_TRANSACTION	11
+#define PTPIP_END_DATA_PACKET		12
+#define PTPIP_PING			13
+#define PTPIP_PONG			14
+
+struct _PTPIPHeader {
+	uint32_t	length;
+	uint32_t	type;
+};
+typedef struct _PTPIPHeader PTPIPHeader;
 
 /* Vendor IDs */
 #define PTP_VENDOR_EASTMAN_KODAK	0x00000001
@@ -159,28 +166,88 @@ typedef struct _PTPUSBEventContainer PTPUSBEventContainer;
 #define PTP_OC_CopyObject               0x101A
 #define PTP_OC_GetPartialObject         0x101B
 #define PTP_OC_InitiateOpenCapture      0x101C
+
 /* Eastman Kodak extension Operation Codes */
+#define PTP_OC_EK_GetSerial		0x9003
+#define PTP_OC_EK_SetSerial		0x9004
 #define PTP_OC_EK_SendFileObjectInfo	0x9005
 #define PTP_OC_EK_SendFileObject	0x9006
+#define PTP_OC_EK_SetText		0x9008
+
 /* Canon extension Operation Codes */
 #define PTP_OC_CANON_GetObjectSize	0x9001
+#define PTP_OC_CANON_9002		0x9002
+/* 9002 - sends 2 uint32, nothing back  */
+#define PTP_OC_CANON_9003		0x9003
+/* 9003 - sends nothing, nothing back  */
+/* no 9004 observed yet */
+/* no 9005 observed yet */
+/* 9006 - sends a ptp string, gets back a uint32 */
+#define PTP_OC_CANON_9006		0x9006
+/* no 9007 observed yet */
 #define PTP_OC_CANON_StartShootingMode	0x9008
 #define PTP_OC_CANON_EndShootingMode	0x9009
+/* 900a - sends nothing, nothing back */
+#define PTP_OC_CANON_900a		0x900A
 #define PTP_OC_CANON_ViewfinderOn	0x900B
 #define PTP_OC_CANON_ViewfinderOff	0x900C
 #define PTP_OC_CANON_ReflectChanges	0x900D
+
+/* 900e - send nothing, gets 5 uint16t in 32bit entities back in 20byte datablob 
+ * GetFlashDevParam?
+ */
+#define PTP_OC_CANON_900e		0x900E
+/* 900f - gets data ... hmm, object handles ? */
+#define PTP_OC_CANON_900f		0x900F
+
+#define PTP_OC_CANON_ThemeDownload	0x9010
+#define PTP_OC_CANON_ThemeUpload	0x9011
+
+/* initiate movie capture:
+   9010 startmoviecapture?
+   9003 stopmoviecapture?
+*/
+
 #define PTP_OC_CANON_CheckEvent		0x9013
 #define PTP_OC_CANON_FocusLock		0x9014
 #define PTP_OC_CANON_FocusUnlock	0x9015
 #define PTP_OC_CANON_InitiateCaptureInMemory	0x901A
 #define PTP_OC_CANON_GetPartialObject	0x901B
 #define PTP_OC_CANON_GetViewfinderImage	0x901d
+	/* Viewfinder Auto functions */
 #define PTP_OC_CANON_GetChanges		0x9020
 #define PTP_OC_CANON_GetFolderEntries	0x9021
 
+/* Nikon extension Operation Codes */
+#define PTP_OC_NIKON_GetProfileAllData	0x9006
+#define PTP_OC_NIKON_SendProfileData	0x9007
+#define PTP_OC_NIKON_DeleteProfile	0x9008
+#define PTP_OC_NIKON_SetProfileData	0x9009
+#define PTP_OC_NIKON_AdvancedTransfer	0x9010
+#define PTP_OC_NIKON_GetFileInfoInBlock	0x9011
+#define PTP_OC_NIKON_Capture		0x90C0
+#define PTP_OC_NIKON_SetControlMode	0x90C2
+#define PTP_OC_NIKON_CurveDownload	0x90C5
+#define PTP_OC_NIKON_CurveUpload	0x90C6
+#define PTP_OC_NIKON_CheckEvent		0x90C7
+#define PTP_OC_NIKON_DeviceReady	0x90C8
+#define PTP_OC_NIKON_GetDevicePTPIPInfo	0x90E0
+
+/* Microsoft / MTP extension codes */
+#define PTP_OC_MTP_GetObjectPropsSupported	0x9801
+#define PTP_OC_MTP_GetObjectPropDesc		0x9802
+#define PTP_OC_MTP_GetObjectPropValue		0x9803
+#define PTP_OC_MTP_SetObjectPropValue		0x9804
+#define PTP_OC_MTP_GetObjPropList		0x9805
+#define PTP_OC_MTP_SetObjPropList		0x9806
+#define PTP_OC_MTP_GetInterdependendPropdesc	0x9807
+#define PTP_OC_MTP_SendObjectPropList		0x9808
+#define PTP_OC_MTP_GetObjectReferences		0x9810
+#define PTP_OC_MTP_SetObjectReferences		0x9811
+
 /* Proprietary vendor extension operations mask */
-#define PTP_OC_EXTENSION_MASK		0xF000
-#define PTP_OC_EXTENSION		0x9000
+#define PTP_OC_EXTENSION_MASK           0xF000
+#define PTP_OC_EXTENSION                0x9000
 
 /* Response Codes */
 
@@ -217,14 +284,24 @@ typedef struct _PTPUSBEventContainer PTPUSBEventContainer;
 #define PTP_RC_SessionAlreadyOpened     0x201E
 #define PTP_RC_TransactionCanceled      0x201F
 #define PTP_RC_SpecificationOfDestinationUnsupported            0x2020
+
 /* Eastman Kodak extension Response Codes */
 #define PTP_RC_EK_FilenameRequired	0xA001
 #define PTP_RC_EK_FilenameConflicts	0xA002
 #define PTP_RC_EK_FilenameInvalid	0xA003
 
-/* Proprietary vendor extension response code mask */
-#define PTP_RC_EXTENSION_MASK		0xF000
-#define PTP_RC_EXTENSION		0xA000
+/* Nikon specific response codes */
+#define PTP_RC_NIKON_AdvancedTransferCancel 0xA022
+
+/* Microsoft/MTP specific codes */
+#define PTP_RC_MTP_Undefined			0xA800
+#define PTP_RC_MTP_Invalid_ObjectPropCode	0xA801
+#define PTP_RC_MTP_Invalid_ObjectProp_Format	0xA802
+#define PTP_RC_MTP_Invalid_ObjectProp_Value	0xA803
+#define PTP_RC_MTP_Invalid_ObjectReference	0xA804
+#define PTP_RC_MTP_Invalid_Dataset		0xA806
+#define PTP_RC_MTP_Specification_By_Group_Unsupported		0xA808
+#define PTP_RC_MTP_Object_Too_Large		0xA809
 
 /* libptp2 extended ERROR codes */
 #define PTP_ERROR_IO			0x02FF
@@ -249,15 +326,22 @@ typedef struct _PTPUSBEventContainer PTPUSBEventContainer;
 #define PTP_EC_StorageInfoChanged	0x400C
 #define PTP_EC_CaptureComplete		0x400D
 #define PTP_EC_UnreportedStatus		0x400E
+
 /* Canon extension Event Codes */
-#define PTP_EC_CANON_DeviceInfoChanged	0xC008
+#define PTP_EC_CANON_ExtendedErrorcode		0xC005	/* ? */
+#define PTP_EC_CANON_ObjectInfoChanged		0xC008
 #define PTP_EC_CANON_RequestObjectTransfer	0xC009
-#define PTP_EC_CANON_CameraModeChanged	0xC00C
+#define PTP_EC_CANON_CameraModeChanged		0xC00C
+
+/* Nikon extension Event Codes */
+#define PTP_EC_Nikon_ObjectAddedInSDRAM		0xC101
+/* Gets 1 parameter, objectid pointing to DPOF object */
+#define PTP_EC_Nikon_AdvancedTransfer		0xC103
 
 /* constants for GetObjectHandles */
-#define PTP_GOH_ALL_STORAGE	0xffffffff
+#define PTP_GOH_ALL_STORAGE 0xffffffff
 #define PTP_GOH_ALL_FORMATS 0x00000000
-#define PTP_GOH_ALL_ASSOCS	0x00000000
+#define PTP_GOH_ALL_ASSOCS  0x00000000
 
 /* PTP device info structure (returned by GetDevInfo) */
 
@@ -420,7 +504,6 @@ typedef struct _PTPObjectInfo PTPObjectInfo;
 #define PTP_OFC_MTP_UndefinedWindowsExecutable	0xbe80
 
 /* PTP Association Types */
-
 #define PTP_AT_Undefined			0x0000
 #define PTP_AT_GenericFolder			0x0001
 #define PTP_AT_Album				0x0002
@@ -458,30 +541,48 @@ typedef struct _PTPObjectInfo PTPObjectInfo;
 
 /* Property Describing Dataset, Range Form */
 
+union _PTPPropertyValue {
+	char		*str;	/* common string, malloced */
+	uint16_t        *unistr; /* UCS2 unicode string, malloced */
+	uint8_t		u8;
+	int8_t		i8;
+	uint16_t	u16;
+	int16_t		i16;
+	uint32_t	u32;
+	int32_t		i32;
+	/* XXXX: 64bit and 128 bit signed and unsigned missing */
+	struct array {
+		uint32_t	count;
+		union _PTPPropertyValue	*v;	/* malloced, count elements */
+	} a;
+};
+
+typedef union _PTPPropertyValue PTPPropertyValue;
+
 struct _PTPPropDescRangeForm {
-	void *		MinimumValue;
-	void *		MaximumValue;
-	void *		StepSize;
+	PTPPropertyValue 	MinimumValue;
+	PTPPropertyValue 	MaximumValue;
+	PTPPropertyValue 	StepSize;
 };
 typedef struct _PTPPropDescRangeForm PTPPropDescRangeForm;
 
 /* Property Describing Dataset, Enum Form */
 
 struct _PTPPropDescEnumForm {
-	uint16_t	NumberOfValues;
-	void **		SupportedValue;
+	uint16_t		NumberOfValues;
+	PTPPropertyValue	*SupportedValue;	/* malloced */
 };
 typedef struct _PTPPropDescEnumForm PTPPropDescEnumForm;
 
 /* Device Property Describing Dataset (DevicePropDesc) */
 
 struct _PTPDevicePropDesc {
-	uint16_t	DevicePropertyCode;
-	uint16_t	DataType;
-	uint8_t		GetSet;
-	void *		FactoryDefaultValue;
-	void *		CurrentValue;
-	uint8_t		FormFlag;
+	uint16_t		DevicePropertyCode;
+	uint16_t		DataType;
+	uint8_t			GetSet;
+	PTPPropertyValue	FactoryDefaultValue;
+	PTPPropertyValue	CurrentValue;
+	uint8_t			FormFlag;
 	union	{
 		PTPPropDescEnumForm	Enum;
 		PTPPropDescRangeForm	Range;
@@ -489,28 +590,26 @@ struct _PTPDevicePropDesc {
 };
 typedef struct _PTPDevicePropDesc PTPDevicePropDesc;
 
+/* Object Property Describing Dataset (DevicePropDesc) */
 
-/* Property Describing Dataset, Range Form */
-
-struct _PTPObjPropDescRangeForm {
-	void *		MinimumValue;
-	void *		MaximumValue;
-	void *		StepSize;
+struct _PTPObjectPropDesc {
+	uint16_t		ObjectPropertyCode;
+	uint16_t		DataType;
+	uint8_t			GetSet;
+	PTPPropertyValue	FactoryDefaultValue;
+	uint32_t		GroupCode;
+	uint8_t			FormFlag;
+	union	{
+		PTPPropDescEnumForm	Enum;
+		PTPPropDescRangeForm	Range;
+	} FORM;
 };
-typedef struct _PTPObjPropDescRangeForm PTPObjPropDescRangeForm;
-
-/* Property Describing Dataset, Enum Form */
-
-struct _PTPObjPropDescEnumForm {
-	uint16_t	NumberOfValues;
-	void **		SupportedValue;
-};
-typedef struct _PTPObjPropDescEnumForm PTPObjPropDescEnumForm;
+typedef struct _PTPObjectPropDesc PTPObjectPropDesc;
 
 /* Canon filesystem's folder entry Dataset */
 
 #define PTP_CANON_FilenameBufferLen	13
-#define PTP_CANON_FolderEntryLen	sizeof(PTPCANONFolderEntry)
+#define PTP_CANON_FolderEntryLen	28
 
 struct _PTPCANONFolderEntry {
 	uint32_t	ObjectHandle;
@@ -518,9 +617,47 @@ struct _PTPCANONFolderEntry {
 	uint8_t		Flags;
 	uint32_t	ObjectSize;
 	time_t		Time;
-    char     Filename[PTP_CANON_FilenameBufferLen];
+	char		Filename[PTP_CANON_FilenameBufferLen];
 };
 typedef struct _PTPCANONFolderEntry PTPCANONFolderEntry;
+
+/* Nikon Tone Curve Data */
+
+#define PTP_NIKON_MaxCurvePoints 19
+
+struct _PTPNIKONCoordinatePair {
+	uint8_t		X;
+	uint8_t		Y;
+};
+
+typedef struct _PTPNIKONCoordinatePair PTPNIKONCoordinatePair;
+
+struct _PTPNTCCoordinatePair {
+	uint8_t		X;
+	uint8_t		Y;
+};
+
+typedef struct _PTPNTCCoordinatePair PTPNTCCoordinatePair;
+
+struct _PTPNIKONCurveData {
+	char 			static_preamble[6];
+	uint8_t			XAxisStartPoint;
+	uint8_t			XAxisEndPoint;
+	uint8_t			YAxisStartPoint;
+	uint8_t			YAxisEndPoint;
+	uint8_t			MidPointIntegerPart;
+	uint8_t			MidPointDecimalPart;
+	uint8_t			NCoordinates;
+	PTPNIKONCoordinatePair	CurveCoordinates[PTP_NIKON_MaxCurvePoints];
+};
+
+typedef struct _PTPNIKONCurveData PTPNIKONCurveData;
+
+struct _PTPEKTextParams {
+	char	*title;
+	char	*line[5];
+};
+typedef struct _PTPEKTextParams PTPEKTextParams;
 
 /* DataType Codes */
 
@@ -535,20 +672,22 @@ typedef struct _PTPCANONFolderEntry PTPCANONFolderEntry;
 #define PTP_DTC_UINT64		0x0008
 #define PTP_DTC_INT128		0x0009
 #define PTP_DTC_UINT128		0x000A
-#define PTP_DTC_AINT8		0x4001
-#define PTP_DTC_AUINT8		0x4002
-#define PTP_DTC_AINT16		0x4003
-#define PTP_DTC_AUINT16		0x4004
-#define PTP_DTC_AINT32		0x4005
-#define PTP_DTC_AUINT32		0x4006
-#define PTP_DTC_AINT64		0x4007
-#define PTP_DTC_AUINT64		0x4008
-#define PTP_DTC_AINT128		0x4009
-#define PTP_DTC_AUINT128	0x400A
-#define PTP_DTC_STR		0xFFFF
 
-/* unicode string defined by RAL */
-#define PTP_DTC_UNISTR	0xFFFE
+#define PTP_DTC_ARRAY_MASK	0x4000
+
+#define PTP_DTC_AINT8		(PTP_DTC_ARRAY_MASK | PTP_DTC_INT8)
+#define PTP_DTC_AUINT8		(PTP_DTC_ARRAY_MASK | PTP_DTC_UINT8)
+#define PTP_DTC_AINT16		(PTP_DTC_ARRAY_MASK | PTP_DTC_INT16)
+#define PTP_DTC_AUINT16		(PTP_DTC_ARRAY_MASK | PTP_DTC_UINT16)
+#define PTP_DTC_AINT32		(PTP_DTC_ARRAY_MASK | PTP_DTC_INT32)
+#define PTP_DTC_AUINT32		(PTP_DTC_ARRAY_MASK | PTP_DTC_UINT32)
+#define PTP_DTC_AINT64		(PTP_DTC_ARRAY_MASK | PTP_DTC_INT64)
+#define PTP_DTC_AUINT64		(PTP_DTC_ARRAY_MASK | PTP_DTC_UINT64)
+#define PTP_DTC_AINT128		(PTP_DTC_ARRAY_MASK | PTP_DTC_INT128)
+#define PTP_DTC_AUINT128	(PTP_DTC_ARRAY_MASK | PTP_DTC_UINT128)
+
+#define PTP_DTC_UNISTR		0xFFFE
+#define PTP_DTC_STR		0xFFFF
 
 /* Device Properties Codes */
 
@@ -605,26 +744,30 @@ typedef struct _PTPCANONFolderEntry PTPCANONFolderEntry;
 #define PTP_DPC_CANON_D007		0xD007
 #define PTP_DPC_CANON_ImageSize		0xD008
 #define PTP_DPC_CANON_FlashMode		0xD00A
-#define PTP_DPC_CANON_TvAvSetting	0xD00C
+#define PTP_DPC_CANON_ShootingMode	0xD00C
+#define PTP_DPC_CANON_DriveMode		0xD00E
 #define PTP_DPC_CANON_MeteringMode	0xD010
-#define PTP_DPC_CANON_MacroMode		0xD011
+#define PTP_DPC_CANON_AFDistance	0xD011
 #define PTP_DPC_CANON_FocusingPoint	0xD012
 #define PTP_DPC_CANON_WhiteBalance	0xD013
 #define PTP_DPC_CANON_ISOSpeed		0xD01C
 #define PTP_DPC_CANON_Aperture		0xD01D
 #define PTP_DPC_CANON_ShutterSpeed	0xD01E
 #define PTP_DPC_CANON_ExpCompensation	0xD01F
+
+	/* capture data type (?) */
 #define PTP_DPC_CANON_D029		0xD029
 #define PTP_DPC_CANON_Zoom		0xD02A
 #define PTP_DPC_CANON_SizeQualityMode	0xD02C
-#define PTP_DPC_CANON_FlashMemory	0xD031
+#define PTP_DPC_CANON_FirmwareVersion	0xD031
 #define PTP_DPC_CANON_CameraModel	0xD032
 #define PTP_DPC_CANON_CameraOwner	0xD033
 #define PTP_DPC_CANON_UnixTime		0xD034
-#define PTP_DPC_CANON_RealImageWidth	0xD039
+#define PTP_DPC_CANON_DZoomMagnification	0xD039
 #define PTP_DPC_CANON_PhotoEffect	0xD040
 #define PTP_DPC_CANON_AssistLight	0xD041
 #define PTP_DPC_CANON_D045		0xD045
+#define PTP_DPC_CANON_AverageFilesizes	0xD048
 
 /* Nikon extension device property codes */
 #define PTP_DPC_NIKON_ShootingBank			0xD010
@@ -636,17 +779,17 @@ typedef struct _PTPCANONFolderEntry PTPCANONFolderEntry;
 #define PTP_DPC_NIKON_WhiteBalanceAutoBias		0xD017
 #define PTP_DPC_NIKON_WhiteBalanceTungstenBias		0xD018
 #define PTP_DPC_NIKON_WhiteBalanceFlourescentBias	0xD019
-#define PTP_DPC_NIKON_WhiteBalanceDaylightBias		0xD01a
-#define PTP_DPC_NIKON_WhiteBalanceFlashBias		0xD01b
-#define PTP_DPC_NIKON_WhiteBalanceCloudyBias		0xD01c
-#define PTP_DPC_NIKON_WhiteBalanceShadeBias		0xD01d
-#define PTP_DPC_NIKON_WhiteBalanceColourTemperature	0xD01e
-#define PTP_DPC_NIKON_ImageSharpening			0xD02a
-#define PTP_DPC_NIKON_ToneCompensation			0xD02b
-#define PTP_DPC_NIKON_ColourMode			0xD02c
-#define PTP_DPC_NIKON_HueAdjustment			0xD02d
-#define PTP_DPC_NIKON_NonCPULensDataFocalLength		0xD02e
-#define PTP_DPC_NIKON_NonCPULensDataMaximumAperture	0xD02f
+#define PTP_DPC_NIKON_WhiteBalanceDaylightBias		0xD01A
+#define PTP_DPC_NIKON_WhiteBalanceFlashBias		0xD01B
+#define PTP_DPC_NIKON_WhiteBalanceCloudyBias		0xD01C
+#define PTP_DPC_NIKON_WhiteBalanceShadeBias		0xD01D
+#define PTP_DPC_NIKON_WhiteBalanceColorTemperature	0xD01E
+#define PTP_DPC_NIKON_ImageSharpening			0xD02A
+#define PTP_DPC_NIKON_ToneCompensation			0xD02B
+#define PTP_DPC_NIKON_ColorModel			0xD02C
+#define PTP_DPC_NIKON_HueAdjustment			0xD02D
+#define PTP_DPC_NIKON_NonCPULensDataFocalLength		0xD02E
+#define PTP_DPC_NIKON_NonCPULensDataMaximumAperture	0xD02F
 #define PTP_DPC_NIKON_CSMMenuBankSelect			0xD040
 #define PTP_DPC_NIKON_MenuBankNameA			0xD041
 #define PTP_DPC_NIKON_MenuBankNameB			0xD042
@@ -654,91 +797,187 @@ typedef struct _PTPCANONFolderEntry PTPCANONFolderEntry;
 #define PTP_DPC_NIKON_MenuBankNameD			0xD044
 #define PTP_DPC_NIKON_A1AFCModePriority			0xD048
 #define PTP_DPC_NIKON_A2AFSModePriority			0xD049
-#define PTP_DPC_NIKON_A3GroupDynamicAF			0xD04a
-#define PTP_DPC_NIKON_A4AFActivation			0xD04b
-#define PTP_DPC_NIKON_A5FocusAreaIllumManualFocus	0xD04c
-#define PTP_DPC_NIKON_FocusAreaIllumContinuous		0xD04d
-#define PTP_DPC_NIKON_FocusAreaIllumWhenSelected 	0xD04e
-#define PTP_DPC_NIKON_A6FocusArea			0xD04f
+#define PTP_DPC_NIKON_A3GroupDynamicAF			0xD04A
+#define PTP_DPC_NIKON_A4AFActivation			0xD04B
+#define PTP_DPC_NIKON_A5FocusAreaIllumManualFocus	0xD04C
+#define PTP_DPC_NIKON_FocusAreaIllumContinuous		0xD04D
+#define PTP_DPC_NIKON_FocusAreaIllumWhenSelected 	0xD04E
+#define PTP_DPC_NIKON_FocusAreaWrap			0xD04F
 #define PTP_DPC_NIKON_A7VerticalAFON			0xD050
-#define PTP_DPC_NIKON_B1ISOAuto				0xD054
+#define PTP_DPC_NIKON_ISOAuto				0xD054
 #define PTP_DPC_NIKON_B2ISOStep				0xD055
-#define PTP_DPC_NIKON_B3EVStep				0xD056
+#define PTP_DPC_NIKON_EVStep				0xD056
 #define PTP_DPC_NIKON_B4ExposureCompEv			0xD057
-#define PTP_DPC_NIKON_B5ExposureComp			0xD058
-#define PTP_DPC_NIKON_B6CenterWeightArea		0xD059
-#define PTP_DPC_NIKON_C1AELock				0xD05e
-#define PTP_DPC_NIKON_C2AELAFL				0xD05f
-#define PTP_DPC_NIKON_C3AutoMeterOff			0xD062
-#define PTP_DPC_NIKON_C4SelfTimer			0xD063
-#define PTP_DPC_NIKON_C5MonitorOff			0xD064
+#define PTP_DPC_NIKON_ExposureCompensation		0xD058
+#define PTP_DPC_NIKON_CenterWeightArea			0xD059
+#define PTP_DPC_NIKON_AELockMode			0xD05E
+#define PTP_DPC_NIKON_AELAFLMode			0xD05F
+#define PTP_DPC_NIKON_MeterOff				0xD062
+#define PTP_DPC_NIKON_SelfTimer				0xD063
+#define PTP_DPC_NIKON_MonitorOff			0xD064
 #define PTP_DPC_NIKON_D1ShootingSpeed			0xD068
 #define PTP_DPC_NIKON_D2MaximumShots			0xD069
-#define PTP_DPC_NIKON_D3ExpDelayMode			0xD06a
-#define PTP_DPC_NIKON_D4LongExposureNoiseReduction	0xD06b
-#define PTP_DPC_NIKON_D5FileNumberSequence		0xD06c
-#define PTP_DPC_NIKON_D6ControlPanelFinderRearControl	0xD06d
-#define PTP_DPC_NIKON_ControlPanelFinderViewfinder	0xD06e
-#define PTP_DPC_NIKON_D7Illumination			0xD06f
+#define PTP_DPC_NIKON_D3ExpDelayMode			0xD06A
+#define PTP_DPC_NIKON_LongExposureNoiseReduction	0xD06B
+#define PTP_DPC_NIKON_FileNumberSequence		0xD06C
+#define PTP_DPC_NIKON_D6ControlPanelFinderRearControl	0xD06D
+#define PTP_DPC_NIKON_ControlPanelFinderViewfinder	0xD06E
+#define PTP_DPC_NIKON_D7Illumination			0xD06F
 #define PTP_DPC_NIKON_E1FlashSyncSpeed			0xD074
-#define PTP_DPC_NIKON_E2FlashShutterSpeed		0xD075
+#define PTP_DPC_NIKON_FlashShutterSpeed			0xD075
 #define PTP_DPC_NIKON_E3AAFlashMode			0xD076
 #define PTP_DPC_NIKON_E4ModelingFlash			0xD077
-#define PTP_DPC_NIKON_E5AutoBracketSet			0xD078
+#define PTP_DPC_NIKON_BracketSet			0xD078
 #define PTP_DPC_NIKON_E6ManualModeBracketing		0xD079	
-#define PTP_DPC_NIKON_E7AutoBracketOrder		0xD07a
-#define PTP_DPC_NIKON_E8AutoBracketSelection		0xD07b
+#define PTP_DPC_NIKON_BracketOrder			0xD07A
+#define PTP_DPC_NIKON_E8AutoBracketSelection		0xD07B
 #define PTP_DPC_NIKON_F1CenterButtonShootingMode	0xD080
 #define PTP_DPC_NIKON_CenterButtonPlaybackMode		0xD081
 #define PTP_DPC_NIKON_F2Multiselector			0xD082
 #define PTP_DPC_NIKON_F3PhotoInfoPlayback		0xD083
 #define PTP_DPC_NIKON_F4AssignFuncButton		0xD084
 #define PTP_DPC_NIKON_F5CustomizeCommDials		0xD085
-#define PTP_DPC_NIKON_ChangeMainSub			0xD086
+#define PTP_DPC_NIKON_ReverseCommandDial		0xD086
 #define PTP_DPC_NIKON_ApertureSetting			0xD087
 #define PTP_DPC_NIKON_MenusAndPlayback			0xD088
 #define PTP_DPC_NIKON_F6ButtonsAndDials			0xD089
-#define PTP_DPC_NIKON_F7NoCFCard			0xD08a
+#define PTP_DPC_NIKON_NoCFCard				0xD08A
 #define PTP_DPC_NIKON_ImageCommentString		0xD090
-#define PTP_DPC_NIKON_ImageCommentAttached		0xD091
-#define PTP_DPC_NIKON_AutoImageRotation			0xD092
-#define PTP_DPC_NIKON_ExposureBracketingOnOff		0xD0c0
-#define PTP_DPC_NIKON_ExposureBracketingIntervalDist	0xD0c1
-#define PTP_DPC_NIKON_ExposureBracketingNumBracketPlace	0xD0c2
-#define PTP_DPC_NIKON_AutofocusLCDTopMode2		0xD107
-#define PTP_DPC_NIKON_AutofocusLCDTopMode3AndMode4	0xD108
-#define PTP_DPC_NIKON_LightMeter			0xD10a
-#define PTP_DPC_NIKON_ExposureApertureLock		0xD111
+#define PTP_DPC_NIKON_ImageCommentAttach		0xD091
+#define PTP_DPC_NIKON_ImageRotation			0xD092
+#define PTP_DPC_NIKON_Bracketing			0xD0C0
+#define PTP_DPC_NIKON_ExposureBracketingIntervalDist	0xD0C1
+#define PTP_DPC_NIKON_BracketingProgram			0xD0C2
+#define PTP_DPC_NIKON_LensID				0xD0E0
+#define PTP_DPC_NIKON_FocalLengthMin			0xD0E3
+#define PTP_DPC_NIKON_FocalLengthMax			0xD0E4
+#define PTP_DPC_NIKON_MaxApAtMinFocalLength		0xD0E5
+#define PTP_DPC_NIKON_MaxApAtMaxFocalLength		0xD0E6
+#define PTP_DPC_NIKON_ExposureTime			0xD100
 #define PTP_DPC_NIKON_MaximumShots			0xD103
-#define PTP_DPC_NIKON_Beep                              0xD160
-#define PTP_DPC_NIKON_AFC                               0xD161
-#define PTP_DPC_NIKON_AFLampOff                         0xD163
-#define PTP_DPC_NIKON_PADVPMode                         0xD164
-#define PTP_DPC_NIKON_ReviewOff                         0xD165
-#define PTP_DPC_NIKON_GridDisplay                       0xD16c
-#define PTP_DPC_NIKON_AFAreaIllumination                0xD166
-#define PTP_DPC_NIKON_FlashMode                         0xD167
-#define PTP_DPC_NIKON_FlashPower                        0xD16d
-#define PTP_DPC_NIKON_FlashSignOff                      0xD169
-#define PTP_DPC_NIKON_RemoteTimeout                     0xD16B
-#define PTP_DPC_NIKON_LowLight                          0xD1B0
-#define PTP_DPC_NIKON_ImageCommentString                0xD090
-#define PTP_DPC_NIKON_FlashOpen                         0xD1C0
-#define PTP_DPC_NIKON_FlashCharged                      0xD1C1
-#define PTP_DPC_NIKON_LensID                            0xD0E0
-#define PTP_DPC_NIKON_FocalLengthMin                    0xD0E3
-#define PTP_DPC_NIKON_FocalLengthMax                    0xD0E4
-#define PTP_DPC_NIKON_MaxApAtMinFocalLength             0xD0E5
-#define PTP_DPC_NIKON_MaxApAtMaxFocalLength             0xD0E6
-#define PTP_DPC_NIKON_FlashExposureCompensation         0xD126
-#define PTP_DPC_NIKON_ExtendedCSMMenu		        0xD180
-#define PTP_DPC_NIKON_OptimiseImage		        0xD140
+#define PTP_DPC_NIKON_AutoExposureLock			0xD105
+#define PTP_DPC_NIKON_AutoFocusLock			0xD106
+#define PTP_DPC_NIKON_AutofocusLCDTopMode2		0xD107
+#define PTP_DPC_NIKON_AutofocusArea			0xD108
+#define PTP_DPC_NIKON_LightMeter			0xD10A
+#define PTP_DPC_NIKON_CameraOrientation			0xD10E
+#define PTP_DPC_NIKON_ExposureApertureLock		0xD111
+#define PTP_DPC_NIKON_FlashExposureCompensation		0xD126
+#define PTP_DPC_NIKON_OptimizeImage			0xD140
+#define PTP_DPC_NIKON_Saturation			0xD142
+#define PTP_DPC_NIKON_BeepOff				0xD160
+#define PTP_DPC_NIKON_AutofocusMode			0xD161
+#define PTP_DPC_NIKON_AFAssist				0xD163
+#define PTP_DPC_NIKON_PADVPMode				0xD164
+#define PTP_DPC_NIKON_ImageReview			0xD165
+#define PTP_DPC_NIKON_AFAreaIllumination		0xD166
+#define PTP_DPC_NIKON_FlashMode				0xD167
+#define PTP_DPC_NIKON_FlashCommanderMode		0xD168
+#define PTP_DPC_NIKON_FlashSign				0xD169
+#define PTP_DPC_NIKON_RemoteTimeout			0xD16B
+#define PTP_DPC_NIKON_GridDisplay			0xD16C
+#define PTP_DPC_NIKON_FlashModeManualPower		0xD16D
+#define PTP_DPC_NIKON_FlashModeCommanderPower		0xD16E
+#define PTP_DPC_NIKON_CSMMenu				0xD180
+#define PTP_DPC_NIKON_BracketingFramesAndSteps		0xD190
+#define PTP_DPC_NIKON_LowLight				0xD1B0
+#define PTP_DPC_NIKON_FlashOpen				0xD1C0
+#define PTP_DPC_NIKON_FlashCharged			0xD1C1
+
+/* Microsoft/MTP specific */
+#define PTP_DPC_MTP_Synchronization_Partner		0xD401
+#define PTP_DPC_MTP_Device_Friendly_Name		0xD402
+
+/* MTP specific Object Properties */
+#define PTP_OPC_StorageID				0xDC01
+#define PTP_OPC_ObjectFormat				0xDC02
+#define PTP_OPC_ProtectionStatus			0xDC03
+#define PTP_OPC_ObjectSize				0xDC04
+#define PTP_OPC_AssociationType				0xDC05
+#define PTP_OPC_AssociationDesc				0xDC06
+#define PTP_OPC_ObjectFileName				0xDC07
+#define PTP_OPC_DateCreated				0xDC08
+#define PTP_OPC_DateModified				0xDC09
+#define PTP_OPC_Keywords				0xDC0A
+#define PTP_OPC_ParentObject				0xDC0B
+#define PTP_OPC_PersistantUniqueObjectIdentifier	0xDC41
+#define PTP_OPC_SyncID					0xDC42
+#define PTP_OPC_PropertyBag				0xDC43
+#define PTP_OPC_Name					0xDC44
+#define PTP_OPC_CreatedBy				0xDC45
+#define PTP_OPC_Artist					0xDC46
+#define PTP_OPC_DateAuthored				0xDC47
+#define PTP_OPC_Description				0xDC48
+#define PTP_OPC_URLReference				0xDC49
+#define PTP_OPC_LanguageLocale				0xDC4A
+#define PTP_OPC_CopyrightInformation			0xDC4B
+#define PTP_OPC_Source					0xDC4C
+#define PTP_OPC_OriginLocation				0xDC4D
+#define PTP_OPC_DateAdded				0xDC4E
+#define PTP_OPC_NonConsumable				0xDC4F
+#define PTP_OPC_CorruptOrUnplayable			0xDC50
+#define PTP_OPC_RepresentativeSampleFormat		0xDC81
+#define PTP_OPC_RepresentativeSampleSize		0xDC82
+#define PTP_OPC_RepresentativeSampleHeight		0xDC83
+#define PTP_OPC_RepresentativeSampleWidth		0xDC84
+#define PTP_OPC_RepresentativeSampleDuration		0xDC85
+#define PTP_OPC_RepresentativeSampleData		0xDC86
+#define PTP_OPC_Width					0xDC87
+#define PTP_OPC_Height					0xDC88
+#define PTP_OPC_Duration				0xDC89
+#define PTP_OPC_Rating					0xDC8A
+#define PTP_OPC_Track					0xDC8B
+#define PTP_OPC_Genre					0xDC8C
+#define PTP_OPC_Credits					0xDC8D
+#define PTP_OPC_Lyrics					0xDC8E
+#define PTP_OPC_SubscriptionContentID			0xDC8F
+#define PTP_OPC_ProducedBy				0xDC90
+#define PTP_OPC_UseCount				0xDC91
+#define PTP_OPC_SkipCount				0xDC92
+#define PTP_OPC_LastAccessed				0xDC93
+#define PTP_OPC_ParentalRating				0xDC94
+#define PTP_OPC_MetaGenre				0xDC95
+#define PTP_OPC_Composer				0xDC96
+#define PTP_OPC_EffectiveRating				0xDC97
+#define PTP_OPC_Subtitle				0xDC98
+#define PTP_OPC_OriginalReleaseDate			0xDC99
+#define PTP_OPC_AlbumName				0xDC9A
+#define PTP_OPC_AlbumArtist				0xDC9B
+#define PTP_OPC_Mood					0xDC9C
+#define PTP_OPC_DRMStatus				0xDC9D
+#define PTP_OPC_SubDescription				0xDC9E
+#define PTP_OPC_IsCropped				0xDCD1
+#define PTP_OPC_IsColorCorrected			0xDCD2
+#define PTP_OPC_TotalBitRate				0xDE91
+#define PTP_OPC_BitRateType				0xDE92
+#define PTP_OPC_SampleRate				0xDE93
+#define PTP_OPC_NumberOfChannels			0xDE94
+#define PTP_OPC_AudioBitDepth				0xDE95
+#define PTP_OPC_ScanDepth				0xDE97
+#define PTP_OPC_AudioWAVECodec				0xDE99
+#define PTP_OPC_AudioBitRate				0xDE9A
+#define PTP_OPC_VideoFourCCCodec			0xDE9B
+#define PTP_OPC_VideoBitRate				0xDE9C
+#define PTP_OPC_FramesPerThousandSeconds		0xDE9D
+#define PTP_OPC_KeyFrameDistance			0xDE9E
+#define PTP_OPC_BufferSize				0xDE9F
+#define PTP_OPC_EncodingQuality				0xDEA0
 
 /* Device Property Form Flag */
 
 #define PTP_DPFF_None			0x00
 #define PTP_DPFF_Range			0x01
 #define PTP_DPFF_Enumeration		0x02
+
+/* Object Property Codes used by MTP (first 3 are same as DPFF codes) */
+#define PTP_OPFF_None			0x00
+#define PTP_OPFF_Range			0x01
+#define PTP_OPFF_Enumeration		0x02
+#define PTP_OPFF_DateTime		0x03
+#define PTP_OPFF_FixedLengthArray	0x04
+#define PTP_OPFF_RegularExpression	0x05
+#define PTP_OPFF_ByteArray		0x06
+#define PTP_OPFF_LongString		0xFF
 
 /* Device Property GetSet type */
 #define PTP_DPGS_Get			0x00
@@ -750,7 +989,7 @@ typedef struct _PTPParams PTPParams;
 
 /* raw write functions */
 typedef short (* PTPIOReadFunc)	(unsigned char *bytes, unsigned int size,
-				 void *data);
+				 void *data, unsigned int *readlen);
 typedef short (* PTPIOWriteFunc)(unsigned char *bytes, unsigned int size,
 				 void *data);
 /*
@@ -762,10 +1001,18 @@ typedef uint16_t (* PTPIOSendData)	(PTPParams* params, PTPContainer* ptp,
 					unsigned char *data, unsigned int size);
 typedef uint16_t (* PTPIOGetResp)	(PTPParams* params, PTPContainer* resp);
 typedef uint16_t (* PTPIOGetData)	(PTPParams* params, PTPContainer* ptp,
-					unsigned char **data);
+					unsigned char **data, unsigned int *recvlen);
 /* debug functions */
-typedef void (* PTPErrorFunc) (void *data, const char *format, va_list args);
-typedef void (* PTPDebugFunc) (void *data, const char *format, va_list args);
+typedef void (* PTPErrorFunc) (void *data, const char *format, va_list args)
+#if (__GNUC__ >= 3)
+	__attribute__((__format__(printf,2,0)))
+#endif
+;
+typedef void (* PTPDebugFunc) (void *data, const char *format, va_list args)
+#if (__GNUC__ >= 3)
+	__attribute__((__format__(printf,2,0)))
+#endif
+;
 
 struct _PTPParams {
 	/* data layer byteorder */
@@ -797,10 +1044,19 @@ struct _PTPParams {
 	/* ptp session ID */
 	uint32_t session_id;
 
+	/* if we have MTP style split header/data transfers */
+	int	split_header_data;
+
 	/* internal structures used by ptp driver */
 	PTPObjectHandles handles;
 	PTPObjectInfo * objectinfo;
 	PTPDeviceInfo deviceinfo;
+
+	/* PTP/IP related data */
+	int		cmdfd, evtfd;
+	uint8_t		cameraguid[16];
+	uint32_t	eventpipeid;
+	char		*cameraname;
 };
 
 /* last, but not least - ptp functions */
@@ -809,9 +1065,19 @@ uint16_t ptp_usb_senddata	(PTPParams* params, PTPContainer* ptp,
 				unsigned char *data, unsigned int size);
 uint16_t ptp_usb_getresp	(PTPParams* params, PTPContainer* resp);
 uint16_t ptp_usb_getdata	(PTPParams* params, PTPContainer* ptp, 
-				unsigned char **data);
+				unsigned char **data, unsigned int *readlen);
 uint16_t ptp_usb_event_check	(PTPParams* params, PTPContainer* event);
-uint16_t ptp_usb_event_wait		(PTPParams* params, PTPContainer* event);
+uint16_t ptp_usb_event_wait	(PTPParams* params, PTPContainer* event);
+
+int      ptp_ptpip_connect	(PTPParams* params, const char *port);
+uint16_t ptp_ptpip_sendreq	(PTPParams* params, PTPContainer* req);
+uint16_t ptp_ptpip_senddata	(PTPParams* params, PTPContainer* ptp,
+				unsigned char *data, unsigned int size);
+uint16_t ptp_ptpip_getresp	(PTPParams* params, PTPContainer* resp);
+uint16_t ptp_ptpip_getdata	(PTPParams* params, PTPContainer* ptp, 
+				unsigned char **data, unsigned int *readlen);
+uint16_t ptp_ptpip_event_wait	(PTPParams* params, PTPContainer* event);
+uint16_t ptp_ptpip_event_check	(PTPParams* params, PTPContainer* event);
 
 uint16_t ptp_getdeviceinfo	(PTPParams* params, PTPDeviceInfo* deviceinfo);
 
@@ -827,13 +1093,20 @@ uint16_t ptp_getobjecthandles 	(PTPParams* params, uint32_t storage,
 				uint32_t associationOH,
 				PTPObjectHandles* objecthandles);
 
+uint16_t ptp_getnumobjects 	(PTPParams* params, uint32_t storage,
+				uint32_t objectformatcode,
+				uint32_t associationOH,
+				uint32_t* numobs);
+
 uint16_t ptp_getobjectinfo	(PTPParams *params, uint32_t handle,
 				PTPObjectInfo* objectinfo);
 
 uint16_t ptp_getobject		(PTPParams *params, uint32_t handle,
-				char** object);
+				unsigned char** object);
+uint16_t ptp_getpartialobject	(PTPParams* params, uint32_t handle, uint32_t offset,
+				uint32_t maxbytes, unsigned char** object);
 uint16_t ptp_getthumb		(PTPParams *params, uint32_t handle,
-				char** object);
+				unsigned char** object);
 
 uint16_t ptp_deleteobject	(PTPParams* params, uint32_t handle,
 				uint32_t ofc);
@@ -841,7 +1114,7 @@ uint16_t ptp_deleteobject	(PTPParams* params, uint32_t handle,
 uint16_t ptp_sendobjectinfo	(PTPParams* params, uint32_t* store,
 				uint32_t* parenthandle, uint32_t* handle,
 				PTPObjectInfo* objectinfo);
-uint16_t ptp_sendobject		(PTPParams* params, char* object,
+uint16_t ptp_sendobject		(PTPParams* params, unsigned char* object,
 				uint32_t size);
 
 uint16_t ptp_initiatecapture	(PTPParams* params, uint32_t storageid,
@@ -850,19 +1123,32 @@ uint16_t ptp_initiatecapture	(PTPParams* params, uint32_t storageid,
 uint16_t ptp_getdevicepropdesc	(PTPParams* params, uint16_t propcode,
 				PTPDevicePropDesc *devicepropertydesc);
 uint16_t ptp_getdevicepropvalue	(PTPParams* params, uint16_t propcode,
-				void** value, uint16_t datatype);
+				PTPPropertyValue* value, uint16_t datatype);
 uint16_t ptp_setdevicepropvalue (PTPParams* params, uint16_t propcode,
-                        	void* value, uint16_t datatype);
+                        	PTPPropertyValue* value, uint16_t datatype);
 
+uint16_t ptp_mtp_getobjectpropdesc (PTPParams* params, uint16_t opc, uint16_t ofc,
+				PTPObjectPropDesc *objectpropertydesc);
+uint16_t ptp_mtp_getobjectpropvalue (PTPParams* params, uint32_t oid, uint16_t opc, 
+				PTPPropertyValue *value, uint16_t datatype);
+uint16_t ptp_mtp_setobjectpropvalue (PTPParams* params, uint32_t oid, uint16_t opc,
+				PTPPropertyValue *value, uint16_t datatype);
 
+/* Eastman Kodak extensions */
+uint16_t ptp_ek_9007 (PTPParams* params, unsigned char **serial, unsigned int *size);
+uint16_t ptp_ek_9009 (PTPParams* params, uint32_t*, uint32_t*);
+uint16_t ptp_ek_900c (PTPParams* params, unsigned char **serial, unsigned int *size);
+uint16_t ptp_ek_getserial (PTPParams* params, unsigned char **serial, unsigned int *size);
+uint16_t ptp_ek_setserial (PTPParams* params, unsigned char *serial, uint32_t size);
+uint16_t ptp_ek_settext (PTPParams* params, PTPEKTextParams *text);
 uint16_t ptp_ek_sendfileobjectinfo (PTPParams* params, uint32_t* store,
 				uint32_t* parenthandle, uint32_t* handle,
 				PTPObjectInfo* objectinfo);
-uint16_t ptp_ek_sendfileobject	(PTPParams* params, char* object,
+uint16_t ptp_ek_sendfileobject	(PTPParams* params, unsigned char* object,
 				uint32_t size);
-				
-/* Canon PTP extensions */
 
+/* Canon PTP extensions */
+uint16_t ptp_canon_9012 (PTPParams* params);
 uint16_t ptp_canon_getobjectsize (PTPParams* params, uint32_t handle,
 				uint32_t p2, uint32_t* size, uint32_t* rp2);
 
@@ -880,9 +1166,9 @@ uint16_t ptp_canon_focusunlock (PTPParams* params);
 uint16_t ptp_canon_initiatecaptureinmemory (PTPParams* params);
 uint16_t ptp_canon_getpartialobject (PTPParams* params, uint32_t handle, 
 				uint32_t offset, uint32_t size,
-				uint32_t pos, char** block, 
+				uint32_t pos, unsigned char** block, 
 				uint32_t* readnum);
-uint16_t ptp_canon_getviewfinderimage (PTPParams* params, char** image,
+uint16_t ptp_canon_getviewfinderimage (PTPParams* params, unsigned char** image,
 				uint32_t* size);
 uint16_t ptp_canon_getchanges (PTPParams* params, uint16_t** props,
 				uint32_t* propnum); 
@@ -891,41 +1177,39 @@ uint16_t ptp_canon_getfolderentries (PTPParams* params, uint32_t store,
 				uint32_t handle, 
 				PTPCANONFolderEntry** entries,
 				uint32_t* entnum);
+uint16_t ptp_canon_theme_download (PTPParams* params, uint32_t themenr,
+				unsigned char **data, unsigned int *size);
 
+uint16_t ptp_nikon_curve_download (PTPParams* params, 
+				unsigned char **data, unsigned int *size);
+uint16_t ptp_nikon_getptpipinfo (PTPParams* params, unsigned char **data, unsigned int *size);
+uint16_t ptp_nikon_getprofilealldata (PTPParams* params, unsigned char **data, unsigned int *size);
+uint16_t ptp_nikon_sendprofiledata (PTPParams* params, uint32_t profilenr, unsigned char *data, unsigned int size);
+uint16_t ptp_nikon_setcontrolmode (PTPParams* params, uint32_t mode);
+uint16_t ptp_nikon_capture (PTPParams* params, uint32_t x);
+uint16_t ptp_nikon_check_event (PTPParams* params, PTPUSBEventContainer **evt, int *evtcnt);
+uint16_t ptp_nikon_getfileinfoinblock (PTPParams* params, uint32_t p1, uint32_t p2, uint32_t p3,
+					unsigned char **data, unsigned int *size);
+uint16_t ptp_nikon_device_ready (PTPParams* params);
+uint16_t ptp_mtp_getobjectpropssupported (PTPParams* params, uint16_t ofc, uint32_t *propnum, uint16_t **props);
 
 /* Non PTP protocol functions */
 int ptp_operation_issupported	(PTPParams* params, uint16_t operation);
+int ptp_event_issupported	(PTPParams* params, uint16_t event);
 int ptp_property_issupported	(PTPParams* params, uint16_t property);
 
 void ptp_free_devicepropdesc	(PTPDevicePropDesc* dpd);
-void ptp_free_deviceinfo	(PTPDeviceInfo* di);
+void ptp_free_devicepropvalue	(uint16_t dt, PTPPropertyValue* dpd);
+void ptp_free_objectpropdesc	(PTPObjectPropDesc* dpd);
 void ptp_perror			(PTPParams* params, uint16_t error);
+
 const char*
-ptp_get_operation_name		(PTPParams* params, uint16_t oc);
-const char*
-ptp_get_property_name		(PTPParams* params, uint16_t dpc);
+ptp_get_property_description(PTPParams* params, uint16_t dpc);
 
-/* added to header file by RAL */
-uint16_t ptp_transaction (PTPParams* params, PTPContainer* ptp, 
-													uint16_t flags, unsigned int sendlen, char** data);
-
-/* below moved to header file by RAL */
-#define CHECK_PTP_RC(result)	{uint16_t r=(result); if (r!=PTP_RC_OK) return r;}
-
-#define PTP_CNT_INIT(cnt) {memset(&cnt,0,sizeof(cnt));}
-
-/* Transaction data phase description */
-#define PTP_DP_NODATA		0x0000	/* no data phase */
-#define PTP_DP_SENDDATA		0x0001	/* sending data */
-#define PTP_DP_GETDATA		0x0002	/* receiving data */
-#define PTP_DP_DATA_MASK	0x00ff	/* data phase mask */
-
-/* Number of PTP Request phase parameters */
-#define PTP_RQ_PARAM0		0x0000	/* zero parameters */
-#define PTP_RQ_PARAM1		0x0100	/* one parameter */
-#define PTP_RQ_PARAM2		0x0200	/* two parameters */
-#define PTP_RQ_PARAM3		0x0300	/* three parameters */
-#define PTP_RQ_PARAM4		0x0400	/* four parameters */
-#define PTP_RQ_PARAM5		0x0500	/* five parameters */
+int
+ptp_render_property_value(PTPParams* params, uint16_t dpc,
+                          PTPDevicePropDesc *dpd, int length, char *out);
+int ptp_render_ofc(PTPParams* params, uint16_t ofc, int spaceleft, char *txt);
+int ptp_render_mtp_propname(uint16_t propid, int spaceleft, char *txt);
 
 #endif /* __PTP_H__ */

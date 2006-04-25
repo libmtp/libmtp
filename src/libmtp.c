@@ -1,13 +1,10 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/mman.h>
 #include <fcntl.h>
 #include "libmtp.h"
 #include "unicode.h"
 #include "ptp.h"
-#include "ptp-pack.h"
-#include "libptp-endian.h"
 #include "libusb-glue.h"
 
 // Forward declarations of local functions
@@ -18,10 +15,11 @@ static int send_file_object(LIBMTP_mtpdevice_t *device,
 static int delete_item(LIBMTP_mtpdevice_t *device, uint32_t item_id);
 
 // Map this libptp2 single-threaded callback to the LIBMTP callback type
-extern Progress_Callback* globalCallback;
+// extern Progress_Callback* globalCallback;
+// static Progress_Callback single_threaded_callback_helper;
+
 static void *single_threaded_callback_data;
 static LIBMTP_progressfunc_t *single_threaded_callback;
-static Progress_Callback single_threaded_callback_helper;
 
 /**
  * This is a ugly workaround due to limitations in callback set by
@@ -107,7 +105,8 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   
   // Make sure there are no handlers
   params->handles.Handler = NULL;
-  
+
+  // TODO: is this not already done???
   if (ptp_getdeviceinfo(params, &params->deviceinfo) == PTP_RC_OK) {
     printf("Model: %s\n", params->deviceinfo.Model);
     printf("Serial number: %s\n", params->deviceinfo.SerialNumber);
@@ -122,8 +121,8 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
     goto error_handler;
   }
   // if is NULL, just leave as default
-  if (dpd.FORM.Range.MaximumValue != NULL) {
-    batteryLevelMax = *(uint8_t *)dpd.FORM.Range.MaximumValue;
+  if (dpd.FORM.Range.MaximumValue.u8 != 0) {
+    batteryLevelMax = dpd.FORM.Range.MaximumValue.u8;
     printf("Maximum battery level: %d\n", batteryLevelMax);
   }
   ptp_free_devicepropdesc(&dpd);
@@ -141,7 +140,8 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   // Then close it again.
  error_handler:
   close_device(ptp_usb, params, interface_number);
-  ptp_free_deviceinfo(&params->deviceinfo);
+  // TODO: libgphoto2 does not seem to be able to free the deviceinfo
+  // ptp_free_deviceinfo(&params->deviceinfo);
   if (params->handles.Handler != NULL) {
     free(params->handles.Handler);
   }
@@ -159,7 +159,8 @@ void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
 
   close_device(ptp_usb, params, device->interface_number);
   // Free the device info and any handler
-  ptp_free_deviceinfo(&params->deviceinfo);
+  // TODO: libgphoto2 does not seem to be able to free the deviceinfo
+  // ptp_free_deviceinfo(&params->deviceinfo);
   if (params->handles.Handler != NULL) {
     free(params->handles.Handler);
   }
@@ -231,19 +232,19 @@ char *LIBMTP_Get_Deviceversion(LIBMTP_mtpdevice_t *device)
  */
 char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t *device)
 {
-  uint16_t *unistring = NULL;
+  PTPPropertyValue propval;
   char *retstring = NULL;
   PTPParams *params = (PTPParams *) device->params;
 
   if (ptp_getdevicepropvalue(params, 
-			     PTP_DPC_DeviceFriendlyName, 
-			     (void **) &unistring, 
+			     PTP_DPC_MTP_Device_Friendly_Name, 
+			     &propval, 
 			     PTP_DTC_UNISTR) != PTP_RC_OK) {
     return NULL;
   }
   // Convert from UTF-16 to UTF-8
-  retstring = ucs2_to_utf8(unistring);
-  free(unistring);
+  retstring = ucs2_to_utf8((uint16_t *) propval.unistr);
+  free(propval.unistr);
   return retstring;
 }
 
@@ -304,23 +305,19 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device,
 			    uint8_t * const maximum_level, 
 			    uint8_t * const current_level)
 {
-  uint8_t *value = NULL;
+  PTPPropertyValue propval;
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
 
-  ret = ptp_getdevicepropvalue(params, PTP_DPC_BatteryLevel, (void**) &value, PTP_DTC_UINT8);
-  if ((ret != PTP_RC_OK) || (value == NULL)) {
+  ret = ptp_getdevicepropvalue(params, PTP_DPC_BatteryLevel, &propval, PTP_DTC_UINT8);
+  if (ret != PTP_RC_OK) {
     *maximum_level = 0;
     *current_level = 0;
-    if (value != NULL) {
-      //free(value);
-    }
     return -1;
   }
   
   *maximum_level = device->maximum_battery_level;
-  *current_level = *value;
-  //free(value);
+  *current_level = propval.u8;
   
   return 0;
 }
@@ -423,20 +420,9 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
     PTPObjectInfo oi;
 
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
-      
-      /*
-      if (oi.ObjectFormat == PTP_OFC_Association || 
-	  (oi.ObjectFormat != PTP_OFC_WAV && 
-	   oi.ObjectFormat != PTP_OFC_MP3 && 
-	   oi.ObjectFormat != PTP_OFC_WMA)) {
-	printf("Unknown ObjectFormat (%d), skipping...\n",oi.ObjectFormat);
-	continue;
-      }
-      */
-      
       // Allocate a new file type
       file = LIBMTP_new_file_t();
-      
+
       switch (oi.ObjectFormat)
 	{
 	case PTP_OFC_WAV:
@@ -642,10 +628,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
     LIBMTP_track_t *track;
     PTPObjectInfo oi;
     int ret;
-    char *stringvalue = NULL;
-    unsigned short *unicodevalue = NULL;
-    uint16_t *uint16value = NULL;
-    uint32_t *uint32value = NULL;
+    PTPPropertyValue propval;
 
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
       
@@ -693,80 +676,64 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 	track->filename = strdup(oi.Filename);
       }
 
-      ret = ptp_getobjectpropvalue(params, PTP_OPC_Name, 
+      ret = ptp_mtp_getobjectpropvalue(params, PTP_OPC_Name, 
 				   params->handles.Handler[i], 
-				   (void**) &unicodevalue,
+				   &propval,
 				   PTP_DTC_UNISTR);
-      if (ret == PTP_RC_OK && unicodevalue != NULL) {
-	track->title = ucs2_to_utf8(unicodevalue);
-	free(unicodevalue);
-	unicodevalue = NULL;
+      if (ret == PTP_RC_OK && propval.unistr != NULL) {
+	track->title = ucs2_to_utf8(propval.unistr);
+	free(propval.unistr);
       }
-      
-      ret = ptp_getobjectpropvalue(params, 
-				   PTP_OPC_Artist, 
+
+      ret = ptp_mtp_getobjectpropvalue(params, PTP_OPC_Artist, 
 				   params->handles.Handler[i], 
-				   (void**) &unicodevalue, 
+				   &propval,
 				   PTP_DTC_UNISTR);
-      if (ret == PTP_RC_OK && unicodevalue != NULL) {
-	track->artist = ucs2_to_utf8(unicodevalue);
-	free(unicodevalue);
-	unicodevalue = NULL;
+      if (ret == PTP_RC_OK && propval.unistr != NULL) {
+	track->artist = ucs2_to_utf8(propval.unistr);
+	free(propval.unistr);
       }
-      
-      ret = ptp_getobjectpropvalue(params, 
-				   PTP_OPC_Duration, 
+
+      ret = ptp_mtp_getobjectpropvalue(params, PTP_OPC_Duration, 
 				   params->handles.Handler[i], 
-				   (void**) &uint32value, 
+				   &propval,
 				   PTP_DTC_UINT32);
-      if (ret == PTP_RC_OK && uint32value != NULL) {
-	track->duration = *uint32value;
-	free(uint32value);
-	uint32value = NULL;
+      if (ret == PTP_RC_OK) {
+	track->duration = propval.u32;
       }
-      
-      ret = ptp_getobjectpropvalue(params, 
-				   PTP_OPC_Track, 
+
+      ret = ptp_mtp_getobjectpropvalue(params, PTP_OPC_Track, 
 				   params->handles.Handler[i], 
-				   (void**) &uint16value, 
+				   &propval,
 				   PTP_DTC_UINT16);
-      if (ret == PTP_RC_OK && uint16value != NULL) {
-	track->tracknumber = *uint16value;
-	free(uint16value);
-	uint16value = NULL;
+      if (ret == PTP_RC_OK) {
+	track->tracknumber = propval.u16;
       }
-      
-      ret = ptp_getobjectpropvalue(params, 
-				   PTP_OPC_Genre, 
+
+      ret = ptp_mtp_getobjectpropvalue(params, PTP_OPC_Genre, 
 				   params->handles.Handler[i], 
-				   (void**) &unicodevalue, 
+				   &propval,
 				   PTP_DTC_UNISTR);
-      if (ret == PTP_RC_OK && unicodevalue != NULL) {
-	track->genre = ucs2_to_utf8(unicodevalue);
-	free(unicodevalue);
-	unicodevalue = NULL;
+      if (ret == PTP_RC_OK && propval.unistr != NULL) {
+	track->genre = ucs2_to_utf8(propval.unistr);
+	free(propval.unistr);
       }
-      
-      ret = ptp_getobjectpropvalue(params, 
-				   PTP_OPC_AlbumName, 
+
+      ret = ptp_mtp_getobjectpropvalue(params, PTP_OPC_AlbumName, 
 				   params->handles.Handler[i], 
-				   (void**) &unicodevalue, 
+				   &propval,
 				   PTP_DTC_UNISTR);
-      if (ret == PTP_RC_OK && unicodevalue != NULL) {
-	track->album = ucs2_to_utf8(unicodevalue);
-	free(unicodevalue);
-	unicodevalue = NULL;
+      if (ret == PTP_RC_OK && propval.unistr != NULL) {
+	track->album = ucs2_to_utf8(propval.unistr);
+	free(propval.unistr);
       }
-      
-      ret = ptp_getobjectpropvalue(params, 
-				   PTP_OPC_OriginalReleaseDate, 
+
+      ret = ptp_mtp_getobjectpropvalue(params, PTP_OPC_OriginalReleaseDate, 
 				   params->handles.Handler[i], 
-				   (void**) &stringvalue, 
+				   &propval,
 				   PTP_DTC_STR);
-      if (ret == PTP_RC_OK && stringvalue != NULL) {
-	track->date = strdup(stringvalue);
-	free(stringvalue);
-	stringvalue = NULL;
+      if (ret == PTP_RC_OK && propval.str != NULL) {
+	track->date = propval.str;
       }
       
       // This is some sort of unique ID so we can keep track of the track.
@@ -861,13 +828,15 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
 					void const * const data)
 {
   PTPObjectInfo oi;
-  void *image;
+  void *image = NULL;
   int ret;
   PTPParams *params = (PTPParams *) device->params;
+  ssize_t written;
 
   single_threaded_callback_data = (void *) data;
   single_threaded_callback = callback;
-  globalCallback = single_threaded_callback_helper;
+  // Disabled since the new ptp.c from libgphoto2 doesn't seem to have this anymore.
+  // globalCallback = single_threaded_callback_helper;
 
   if (ptp_getobjectinfo(params, id, &oi) != PTP_RC_OK) {
     printf("LIBMTP_Get_File_To_File_Descriptor(): Could not get object info\n");
@@ -877,29 +846,19 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
     printf("LIBMTP_Get_File_To_File_Descriptor(): Bad object format\n");
     return -1;
   }
-  // Seek to end of file and write a blank so that it is created with the
-  // correct size and all.
-  lseek(fd, oi.ObjectCompressedSize-1, SEEK_SET);
-  write(fd, "", 1);
 
-  // MAP_SHARED, MAP_PRIVATE
-  image = mmap(0, oi.ObjectCompressedSize, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
-  if (image == MAP_FAILED) {
-    printf("LIBMTP_Get_File_To_File_Descriptor(): Could not map file to memory\n");
+  // Copy object to memory
+  // We could use ptp_getpartialobject to make for progress bars etc.
+  ret = ptp_getobject(params, id, (unsigned char **) &image);
+
+  if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Get_File_To_File_Descriptor(): Could not get file from device (%d)\n", ret);
     return -1;
   }
-  // Flush the file to disk.
-  fflush(NULL);
-  
-  // Copy object to memory
-  ret = ptp_getobject(params, id, (char **) &image);
 
-  // Spool out to file
-  munmap(image, oi.ObjectCompressedSize);
-  
-  if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Get_File_To_File_Descriptor(): Could not get file from device\n");
-    return -1;
+  written = write(fd, image, oi.ObjectCompressedSize);
+  if (written != oi.ObjectCompressedSize) {
+    printf("LIBMTP_Get_File_To_File_Descriptor(): Could not write object properly\n");
   }
 
   return 0;
@@ -1024,6 +983,31 @@ static int send_file_object(LIBMTP_mtpdevice_t *device,
 		      LIBMTP_progressfunc_t const * const callback,
 		      void const * const data)
 {
+  void *image = NULL;
+  int ret;
+  PTPParams *params = (PTPParams *) device->params;
+  ssize_t readb;
+  
+  image = malloc(size);
+  if (image == NULL) {
+    printf("send_file_object(): Could not allocate memory.\n");
+    return -1;
+  }
+  readb = read(fd, image, size);
+  if (readb != size) {
+    free(image);
+    printf("send_file_object(): Could not read source file.\n");
+    return -1;
+  }
+  ret = ptp_sendobject(params, image, size);
+  free(image);
+  if (ret != PTP_RC_OK) {
+    printf("send_file_object(): Bad return code from ptp_sendobject(): %d.\n", ret);
+    return -1;
+  }
+  return 0;
+
+#if 0
   PTPContainer ptp;
   PTPUSBBulkContainerSend usbdata;
   uint16_t ret;
@@ -1143,8 +1127,8 @@ static int send_file_object(LIBMTP_mtpdevice_t *device,
   free(buffer);
 
   return 0;
+#endif
 }
- 
 
 /**
  * This function sends a track from a file descriptor to an
@@ -1246,15 +1230,15 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device, 
 				 LIBMTP_track_t const * const metadata)
 {
-  uint16_t *unistring = NULL;
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
+  PTPPropertyValue propval;
 
   // Update title
   if (metadata->title != NULL) {
-    unistring = utf8_to_ucs2(metadata->title);
-    ret = ptp_setobjectpropvalue(params, PTP_OPC_Name, metadata->item_id, unistring, PTP_DTC_UNISTR);
-    free(unistring);
+    propval.unistr = utf8_to_ucs2((const unsigned char *) metadata->title);
+    ret = ptp_mtp_setobjectpropvalue(params, metadata->item_id, PTP_OPC_Name, &propval, PTP_DTC_UNISTR);
+    free(propval.unistr);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track title\n");
       return -1;
@@ -1263,9 +1247,9 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 
   // Update album
   if (metadata->album != NULL) {
-    unistring = utf8_to_ucs2(metadata->album);
-    ret = ptp_setobjectpropvalue(params, PTP_OPC_AlbumName, metadata->item_id, unistring, PTP_DTC_UNISTR);
-    free(unistring);
+    propval.unistr = utf8_to_ucs2((const unsigned char *) metadata->album);
+    ret = ptp_mtp_setobjectpropvalue(params, metadata->item_id, PTP_OPC_AlbumName, &propval, PTP_DTC_UNISTR);
+    free(propval.unistr);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track album name\n");
       return -1;
@@ -1274,9 +1258,9 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 
   // Update artist
   if (metadata->artist != NULL) {
-    unistring = utf8_to_ucs2(metadata->artist);
-    ret = ptp_setobjectpropvalue(params, PTP_OPC_Artist, metadata->item_id, unistring, PTP_DTC_UNISTR);
-    free(unistring);
+    propval.unistr = utf8_to_ucs2((const unsigned char *) metadata->artist);
+    ret = ptp_mtp_setobjectpropvalue(params, metadata->item_id, PTP_OPC_Artist, &propval, PTP_DTC_UNISTR);
+    free(propval.unistr);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track artist name\n");
       return -1;
@@ -1285,9 +1269,9 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 
   // Update genre
   if (metadata->genre != NULL) {
-    unistring = utf8_to_ucs2(metadata->genre);
-    ret = ptp_setobjectpropvalue(params, PTP_OPC_Genre, metadata->item_id, unistring, PTP_DTC_UNISTR);
-    free(unistring);
+    propval.unistr = utf8_to_ucs2((const unsigned char *) metadata->genre);
+    ret = ptp_mtp_setobjectpropvalue(params, metadata->item_id, PTP_OPC_Genre, &propval, PTP_DTC_UNISTR);
+    free(propval.unistr);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track genre name\n");
       return -1;
@@ -1296,7 +1280,8 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 
   // Update duration
   if (metadata->duration != 0) {
-    ret = ptp_setobjectpropvalue(params, PTP_OPC_Duration, metadata->item_id, (void *) &metadata->duration, PTP_DTC_UINT32);
+    propval.u32 = metadata->duration;
+    ret = ptp_mtp_setobjectpropvalue(params, metadata->item_id, PTP_OPC_Duration, &propval, PTP_DTC_UINT32);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track duration\n");
       return -1;
@@ -1305,7 +1290,8 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 
   // Update track number.
   if (metadata->tracknumber != 0) {
-    ret = ptp_setobjectpropvalue(params, PTP_OPC_Track, metadata->item_id, (void *) &metadata->tracknumber, PTP_DTC_UINT16);
+    propval.u16 = metadata->tracknumber;
+    ret = ptp_mtp_setobjectpropvalue(params, metadata->item_id, PTP_OPC_Track, &propval, PTP_DTC_UINT16);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track tracknumber\n");
       return -1;
@@ -1314,7 +1300,8 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 
   // Update creation datetime
   if (metadata->date != NULL) {
-    ret = ptp_setobjectpropvalue(params, PTP_OPC_OriginalReleaseDate, metadata->item_id, metadata->date, PTP_DTC_STR);
+    propval.str = metadata->date;
+    ret = ptp_mtp_setobjectpropvalue(params, metadata->item_id, PTP_OPC_OriginalReleaseDate, &propval, PTP_DTC_STR);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track release date\n");
       return -1;
@@ -1360,7 +1347,6 @@ int LIBMTP_Delete_File(LIBMTP_mtpdevice_t *device,
 {
   return delete_item(device, item_id);
 }
-
 
 /**
  * Helper function. This indicates if a track exists on the device

@@ -25,7 +25,7 @@
 
 #include "libmtp.h"
 #include "libusb-glue.h"
-#include "ptp-pack.h"
+// #include "ptp-pack.h"
 
 /* OUR APPLICATION USB URB (2MB) ;) */
 #define PTPCAM_USB_URB		2097152
@@ -94,8 +94,8 @@ void find_endpoints(struct usb_device *dev, int* inep, int* inep_maxpacket, int*
 void clear_stall(PTP_USB* ptp_usb);
 void init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev);
 static short ptp_write_func (unsigned char *bytes, unsigned int size, void *data);
-static short ptp_read_func (unsigned char *bytes, unsigned int size, void *data);
-static short ptp_check_int (unsigned char *bytes, unsigned int size, void *data);
+static short ptp_read_func (unsigned char *bytes, unsigned int size, void *data, unsigned int *readbytes);
+static short ptp_check_int (unsigned char *bytes, unsigned int size, void *data, unsigned int *rlen);
 int usb_clear_stall_feature(PTP_USB* ptp_usb, int ep);
 int usb_get_endpoint_status(PTP_USB* ptp_usb, int ep, uint16_t* status);
 
@@ -106,82 +106,112 @@ int get_device_list(LIBMTP_device_entry_t ** const devices, int * const numdevs)
   return 0;
 }
 
-static short ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
+#define CONTEXT_BLOCK_SIZE	100000
+static short
+ptp_read_func (unsigned char *bytes, unsigned int size, void *data, unsigned int *readbytes)
 {
-	int result=-1;
-	PTP_USB *ptp_usb=(PTP_USB *)data;
-	int toread=0;
-	signed long int rbytes=size;
-	
-	do {
-		bytes+=toread;
-		if (rbytes>PTPCAM_USB_URB) 
-			toread = PTPCAM_USB_URB;
-		else
-			toread = rbytes;
-		result=USB_BULK_READ(ptp_usb->handle, ptp_usb->inep,(char *)bytes, toread,ptpcam_usb_timeout);
-		/* sometimes retry might help */
-		if (result==0)
-			result=USB_BULK_READ(ptp_usb->handle, ptp_usb->inep,(char *)bytes, toread,ptpcam_usb_timeout);
+  PTP_USB *ptp_usb = (PTP_USB *)data;
+  //Camera *camera = ((PTPData *)data)->camera;
+	int toread, result, curread = 0;
+	int usecontext = (size > CONTEXT_BLOCK_SIZE);
+	int progressid = 0;
+	//GPContext *context = ((PTPData *)data)->context;
+
+	/* Split into small blocks. Too large blocks (>1x MB) would
+	 * timeout.
+	 */
+	//if (usecontext)
+	//	progressid = gp_context_progress_start (context, (size/CONTEXT_BLOCK_SIZE), _("Downloading..."));
+	while (curread < size) {
+		int oldsize = curread; 
+
+		toread = size - curread;
+		if (toread > 4096)
+			toread = 4096;
+		
+		result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep,(char *)(bytes+curread), toread, ptpcam_usb_timeout);
+		// result = gp_port_read (camera->port, (char*)(bytes + curread), toread);
+		if (result == 0) {
+		  result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep,(char *)(bytes+curread), toread, ptpcam_usb_timeout);
+			// result = gp_port_read (camera->port, (char*)(bytes + curread), toread);
+		}
 		if (result < 0)
 			break;
-		rbytes-=PTPCAM_USB_URB;
-	} while (rbytes>0);
-	
-	if (result >= 0) {
-		return (PTP_RC_OK);
+		curread += result;
+		//if (usecontext && (oldsize/CONTEXT_BLOCK_SIZE < curread/CONTEXT_BLOCK_SIZE))
+		//	gp_context_progress_update (context, progressid, curread/CONTEXT_BLOCK_SIZE);
+		if (result < toread) /* short reads are common */
+			break;
 	}
-	else 
-	{
-		return PTP_ERROR_IO;
-	}
-}
-
-static short ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
-{
-	int result;
-	PTP_USB *ptp_usb=(PTP_USB *)data;
-	
-	
-	/* only print if size < something */
-	/*int i = 0;
-	 if (size < 0xff)
-	 {
-		 printf("-------------------------\n");
-		 printf("Sending data size %d\n", size);
-		 for (i = 0; i < size; i += 8)
-		 {
-			 int j = i;
-			 for (; j<size && j<i+8; j++)
-				 printf("0x%02x ", bytes[j]);
-			 printf("\n");
-		 }
-		 printf("-------------------------\n");
-	 }
-	 */
-	
-	result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)bytes,size,ptpcam_usb_timeout);
-	if (result >= 0)
-		return (PTP_RC_OK);
-	else 
-	{
-		return PTP_ERROR_IO;
-	}
-}
-
-static short ptp_check_int (unsigned char *bytes, unsigned int size, void *data)
-{
-	int result;
-	PTP_USB *ptp_usb=(PTP_USB *)data;
-	
-	result=USB_BULK_READ(ptp_usb->handle, ptp_usb->intep,(char *)bytes,size,ptpcam_usb_timeout);
-	if (result==0)
-		result = USB_BULK_READ(ptp_usb->handle, ptp_usb->intep,(char *) bytes, size, ptpcam_usb_timeout);
-	if (result >= 0) {
-		return (PTP_RC_OK);
+	//if (usecontext)
+	//	gp_context_progress_stop (context, progressid);
+	if (result > 0) {
+	  *readbytes = curread;
+	  return (PTP_RC_OK);
 	} else {
-		return PTP_ERROR_IO;
+	  // return (translate_gp_result (result));
+	  return PTP_ERROR_IO;
 	}
+}
+
+static short
+ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
+{
+  PTP_USB *ptp_usb = (PTP_USB *)data;
+  //Camera *camera = ((PTPData *)data)->camera;
+	int towrite, result, curwrite = 0;
+	int progressid = 0;
+	int usecontext = (size > CONTEXT_BLOCK_SIZE);
+	//GPContext *context = ((PTPData *)data)->context;
+
+	/*
+	 * gp_port_write returns (in case of success) the number of bytes
+	 * write. Too large blocks (>5x MB) could timeout.
+	 */
+	//if (usecontext)
+	//	progressid = gp_context_progress_start (context, (size/CONTEXT_BLOCK_SIZE), _("Uploading..."));
+	while (curwrite < size) {
+		int oldsize = curwrite; 
+
+		towrite = size-curwrite;
+		if (towrite > 4096)
+			towrite = 4096;
+		result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)(bytes+curwrite),towrite,ptpcam_usb_timeout);
+		// result = gp_port_write (camera->port, (char*)(bytes + curwrite), towrite);
+		if (result < 0)
+			break;
+		curwrite += result;
+		//if (usecontext && (oldsize/CONTEXT_BLOCK_SIZE < curwrite/CONTEXT_BLOCK_SIZE))
+		//	gp_context_progress_update (context, progressid, curwrite/CONTEXT_BLOCK_SIZE);
+		if (result < towrite) /* short writes happen */
+			break;
+	}
+	//if (usecontext)
+	//	gp_context_progress_stop (context, progressid);
+	// Should load wMaxPacketsize from endpoint first. But works fine for all EPs.
+	if ((size % 512) == 0)
+	  result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)"x",0,ptpcam_usb_timeout);
+	  // gp_port_write (camera->port, "x", 0);
+	if (result < 0)
+	  return PTP_ERROR_IO;
+	  //return (translate_gp_result (result));
+	return PTP_RC_OK;
+}
+
+static short ptp_check_int (unsigned char *bytes, unsigned int size, void *data, unsigned int *rlen)
+{
+  int result;
+  PTP_USB *ptp_usb=(PTP_USB *)data;
+  
+  result=USB_BULK_READ(ptp_usb->handle, ptp_usb->intep,(char *)bytes,size,ptpcam_usb_timeout);
+  if (result==0)
+    result = USB_BULK_READ(ptp_usb->handle, ptp_usb->intep,(char *) bytes, size, ptpcam_usb_timeout);
+  if (result >= 0) {
+    *rlen = result;
+    return (PTP_RC_OK);
+  } else {
+    return PTP_ERROR_IO;
+  }
 }
 
 void init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev)
@@ -332,20 +362,50 @@ uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *inte
 	  n=dev->config->interface->altsetting->bNumEndpoints;
 	  
 	  find_endpoints(dev,&(ptp_usb->inep),&(ptp_usb->inep_maxpacket),&(ptp_usb->outep),&(ptp_usb->outep_maxpacket),&(ptp_usb->intep));
+	  printf("Init PTP USB...\n");
 	  init_ptp_usb(params, ptp_usb, dev);
 	  
 	  ret = ptp_opensession(params,1);
-	  if (ret != PTP_RC_OK) {
-	    printf("Could not open session!\n  Try to reset the device.\n");
+	  printf("Session open (%d)...\n", ret);
+	  if (ret == PTP_RC_InvalidTransactionID) {
+	    params->transaction_id += 10;
+	    ret = ptp_opensession(params,1);
+	  }
+	  if (ret != PTP_RC_SessionAlreadyOpened && ret != PTP_RC_OK) {
+	    printf("Could not open session! (Return code %d)\n  Try to reset the device.\n", ret);
 	    usb_release_interface(ptp_usb->handle,dev->config->interface->altsetting->bInterfaceNumber);
 	    continue;
 	  }
-	  
+	  /* It is actually permissible to call this before opening the session */
 	  ret = ptp_getdeviceinfo(params, &deviceinfo);
 	  if (ret != PTP_RC_OK) {
 	    printf("Could not get device info!\n");
 	    usb_release_interface(ptp_usb->handle,dev->config->interface->altsetting->bInterfaceNumber);
 	    return PTP_CD_RC_ERROR_CONNECTING;
+	  }
+	  /* Print out some verbose information */
+	  if (1) {
+	    int i;
+
+	    printf("Device info:\n");
+	    printf("Manufacturer: %s\n", params->deviceinfo.Manufacturer);
+	    printf("   Model: %s\n", params->deviceinfo.Model);
+	    printf("   Device version: %s\n", params->deviceinfo.DeviceVersion);
+	    printf("   Serial number: %s\n", params->deviceinfo.SerialNumber);
+	    printf("Vendor extension ID: 0x%08x\n", params->deviceinfo.VendorExtensionID);
+	    printf("Vendor extension description: %s\n", params->deviceinfo.VendorExtensionDesc);
+	    printf("Supported operations:\n");
+	    for (i=0;i<params->deviceinfo.OperationsSupported_len;i++) {
+	      printf("   0x%04x\n", params->deviceinfo.OperationsSupported[i]);
+	    }
+	    printf("Events supported:\n");
+	    for (i=0;i<params->deviceinfo.EventsSupported_len;i++) {
+	      printf("   0x%04x\n", params->deviceinfo.EventsSupported[i]);
+	    }
+	    printf("Device Properties Supported:\n");
+	    for (i=0;i<params->deviceinfo.DevicePropertiesSupported_len;i++) {
+	      printf("   0x%04x\n", params->deviceinfo.DevicePropertiesSupported[i]);
+	    }
 	  }
 	  
 	  /* we're connected, return ok */

@@ -98,7 +98,7 @@ AX_NEED_STDINT_H([src/libptp-stdint.h])
 # Create a header file containing NetBSD-style byte swapping macros.
 # This m4 macros has caused severe pain, I am considering creating a 
 # hard-coded byte swapper that will be eternally portable.
-AC_NEED_BYTEORDER_H(src/libptp-endian.h)
+AC_NEED_BYTEORDER_H(src/gphoto2-endian.h)
 
 AC_CONFIG_FILES([src/libmtp.h doc/Doxyfile Makefile doc/Makefile src/Makefile
 	examples/Makefile libmtp.sh hotplug.sh libmtp.pc])
