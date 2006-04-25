@@ -676,62 +676,68 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 	track->filename = strdup(oi.Filename);
       }
 
-      ret = ptp_mtp_getobjectpropvalue(params, PTP_OPC_Name, 
-				   params->handles.Handler[i], 
-				   &propval,
-				   PTP_DTC_UNISTR);
+      ret = ptp_mtp_getobjectpropvalue(params, params->handles.Handler[i], 
+				       PTP_OPC_Name, 
+				       &propval,
+				       PTP_DTC_UNISTR);
       if (ret == PTP_RC_OK && propval.unistr != NULL) {
 	track->title = ucs2_to_utf8(propval.unistr);
 	free(propval.unistr);
       }
 
-      ret = ptp_mtp_getobjectpropvalue(params, PTP_OPC_Artist, 
-				   params->handles.Handler[i], 
-				   &propval,
-				   PTP_DTC_UNISTR);
+      ret = ptp_mtp_getobjectpropvalue(params, 
+				       params->handles.Handler[i], 
+				       PTP_OPC_Artist,
+				       &propval,
+				       PTP_DTC_UNISTR);
       if (ret == PTP_RC_OK && propval.unistr != NULL) {
 	track->artist = ucs2_to_utf8(propval.unistr);
 	free(propval.unistr);
       }
 
-      ret = ptp_mtp_getobjectpropvalue(params, PTP_OPC_Duration, 
-				   params->handles.Handler[i], 
-				   &propval,
-				   PTP_DTC_UINT32);
+      ret = ptp_mtp_getobjectpropvalue(params, 
+				       params->handles.Handler[i], 
+				       PTP_OPC_Duration, 
+				       &propval,
+				       PTP_DTC_UINT32);
       if (ret == PTP_RC_OK) {
 	track->duration = propval.u32;
       }
 
-      ret = ptp_mtp_getobjectpropvalue(params, PTP_OPC_Track, 
-				   params->handles.Handler[i], 
-				   &propval,
-				   PTP_DTC_UINT16);
+      ret = ptp_mtp_getobjectpropvalue(params, 
+				       params->handles.Handler[i], 
+				       PTP_OPC_Track, 
+				       &propval,
+				       PTP_DTC_UINT16);
       if (ret == PTP_RC_OK) {
 	track->tracknumber = propval.u16;
       }
 
-      ret = ptp_mtp_getobjectpropvalue(params, PTP_OPC_Genre, 
-				   params->handles.Handler[i], 
-				   &propval,
-				   PTP_DTC_UNISTR);
+      ret = ptp_mtp_getobjectpropvalue(params,
+				       params->handles.Handler[i], 
+				       PTP_OPC_Genre, 
+				       &propval,
+				       PTP_DTC_UNISTR);
       if (ret == PTP_RC_OK && propval.unistr != NULL) {
 	track->genre = ucs2_to_utf8(propval.unistr);
 	free(propval.unistr);
       }
 
-      ret = ptp_mtp_getobjectpropvalue(params, PTP_OPC_AlbumName, 
-				   params->handles.Handler[i], 
-				   &propval,
-				   PTP_DTC_UNISTR);
+      ret = ptp_mtp_getobjectpropvalue(params, 
+				       params->handles.Handler[i], 
+				       PTP_OPC_AlbumName, 
+				       &propval,
+				       PTP_DTC_UNISTR);
       if (ret == PTP_RC_OK && propval.unistr != NULL) {
 	track->album = ucs2_to_utf8(propval.unistr);
 	free(propval.unistr);
       }
 
-      ret = ptp_mtp_getobjectpropvalue(params, PTP_OPC_OriginalReleaseDate, 
-				   params->handles.Handler[i], 
-				   &propval,
-				   PTP_DTC_STR);
+      ret = ptp_mtp_getobjectpropvalue(params, 
+				       params->handles.Handler[i], 
+				       PTP_OPC_OriginalReleaseDate, 
+				       &propval,
+				       PTP_DTC_STR);
       if (ret == PTP_RC_OK && propval.str != NULL) {
 	track->date = propval.str;
       }
