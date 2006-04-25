@@ -5,6 +5,7 @@
 	* src/ptp.c: imported libgphoto2 version verbatim.
 	* src/ptp.h: imported libgphoto2 version, minor patch.
 	* src/ptp-pack.c: imported libgphoto2 version, minor patch.
+	* src/ptp-pack.h: dropped, libgphoto2 does not use it.
 	* src/mtp.c: dropped, since all functions are now in ptp.c
 	* src/mtp-pack.c: dropped, same reason.
 	* src/mtp.h: dropped, same reason.
