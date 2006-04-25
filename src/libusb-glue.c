@@ -384,7 +384,7 @@ uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *inte
 	    return PTP_CD_RC_ERROR_CONNECTING;
 	  }
 	  /* Print out some verbose information */
-	  if (1) {
+	  if (0) {
 	    int i;
 
 	    printf("Device info:\n");
