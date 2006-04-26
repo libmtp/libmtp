@@ -106,24 +106,19 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   // Make sure there are no handlers
   params->handles.Handler = NULL;
 
-  // TODO: is this not already done???
-  if (ptp_getdeviceinfo(params, &params->deviceinfo) == PTP_RC_OK) {
-    printf("Model: %s\n", params->deviceinfo.Model);
-    printf("Serial number: %s\n", params->deviceinfo.SerialNumber);
-    printf("Device version: %s\n", params->deviceinfo.DeviceVersion);
-  } else {
+  // Just cache the device information for any later use.
+  if (ptp_getdeviceinfo(params, &params->deviceinfo) != PTP_RC_OK) {
     goto error_handler;
   }
   
   // Get battery maximum level
   if (ptp_getdevicepropdesc(params, PTP_DPC_BatteryLevel, &dpd) != PTP_RC_OK) {
-    printf("Unable to retrieve battery max level.\n");
+    printf("LIBMTP_Get_First_Device(): Unable to retrieve battery max level.\n");
     goto error_handler;
   }
   // if is NULL, just leave as default
   if (dpd.FORM.Range.MaximumValue.u8 != 0) {
     batteryLevelMax = dpd.FORM.Range.MaximumValue.u8;
-    printf("Maximum battery level: %d\n", batteryLevelMax);
   }
   ptp_free_devicepropdesc(&dpd);
 
@@ -165,6 +160,46 @@ void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
     free(params->handles.Handler);
   }
   free(device);
+}
+
+/**
+ * This function dumps out a large chunk of textual information
+ * provided from the PTP protocol and additionally some extra
+ * MTP-specific information where applicable.
+ * @param device a pointer to the MTP device to report info from.
+ */
+void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
+{
+  int i;
+  PTPParams *params = (PTPParams *) device->params;
+  uint16_t lastgroup = 0x0000U;
+    
+  /* Print out some verbose information */
+  printf("Device info:\n");
+  printf("   Manufacturer: %s\n", params->deviceinfo.Manufacturer);
+  printf("   Model: %s\n", params->deviceinfo.Model);
+  printf("   Device version: %s\n", params->deviceinfo.DeviceVersion);
+  printf("   Serial number: %s\n", params->deviceinfo.SerialNumber);
+  printf("   Vendor extension ID: 0x%08x\n", params->deviceinfo.VendorExtensionID);
+  printf("   Vendor extension description: %s\n", params->deviceinfo.VendorExtensionDesc);
+  printf("Supported operations:\n");
+  for (i=0;i<params->deviceinfo.OperationsSupported_len;i++) {
+    printf("   0x%04x\n", params->deviceinfo.OperationsSupported[i]);
+  }
+  printf("Events supported:\n");
+  if (params->deviceinfo.EventsSupported_len == 0) {
+    printf("   None.\n");
+  } else {
+    for (i=0;i<params->deviceinfo.EventsSupported_len;i++) {
+      printf("   0x%04x\n", params->deviceinfo.EventsSupported[i]);
+    }
+  }
+  printf("Device Properties Supported:\n");
+  for (i=0;i<params->deviceinfo.DevicePropertiesSupported_len;i++) {
+    char *propdesc = ptp_get_property_description(params, params->deviceinfo.DevicePropertiesSupported[i]);
+    printf("   0x%04x: %s\n", params->deviceinfo.DevicePropertiesSupported[i],
+	   (propdesc == NULL) ? "Unknown property" : propdesc);
+  }
 }
 
 /**
@@ -481,8 +516,7 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
 	  break;
 	default:
 	  file->filetype = LIBMTP_FILETYPE_UNKNOWN;
-	  printf("LIBMTP warning: \"%s\" has unknown filetype 0x%04X, association: 0x%04X, association desc: 0x%08X\n",
-		 oi.Filename, oi.ObjectFormat, oi.AssociationType, oi.AssociationDesc);
+	  // printf("LIBMTP warning: \"%s\" has unknown filetype 0x%04X, association: 0x%04X, association desc: 0x%08X\n", oi.Filename, oi.ObjectFormat, oi.AssociationType, oi.AssociationDesc);
 	}
 
       // Original file-specific properties

@@ -173,6 +173,7 @@ int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t ** const, int * cons
  */
 LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void);
 void LIBMTP_Release_Device(LIBMTP_mtpdevice_t*);
+void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t*);
 char *LIBMTP_Get_Modelname(LIBMTP_mtpdevice_t*);
 char *LIBMTP_Get_Serialnumber(LIBMTP_mtpdevice_t*);
 char *LIBMTP_Get_Deviceversion(LIBMTP_mtpdevice_t*);
