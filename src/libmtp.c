@@ -13,6 +13,7 @@ static int send_file_object(LIBMTP_mtpdevice_t *device,
 			    LIBMTP_progressfunc_t const * const callback,
 			    void const * const data);
 static int delete_item(LIBMTP_mtpdevice_t *device, uint32_t item_id);
+uint16_t map_mtp_type_to_ptp_type(LIBMTP_filetype_t intype);
 
 // Map this libptp2 single-threaded callback to the LIBMTP callback type
 // extern Progress_Callback* globalCallback;
@@ -172,7 +173,6 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 {
   int i;
   PTPParams *params = (PTPParams *) device->params;
-  uint16_t lastgroup = 0x0000U;
     
   /* Print out some verbose information */
   printf("Device info:\n");
@@ -458,6 +458,8 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
       // Allocate a new file type
       file = LIBMTP_new_file_t();
 
+      file->parent_id = oi.ParentObject;
+      
       switch (oi.ObjectFormat)
 	{
 	case PTP_OFC_WAV:
@@ -513,6 +515,9 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
 	  break;
 	case PTP_OFC_PNG:
 	  file->filetype = LIBMTP_FILETYPE_PNG;
+	  break;
+	case PTP_OFC_MTP_vCalendar2:
+	  file->filetype = LIBMTP_FILETYPE_CALENDAR;
 	  break;
 	default:
 	  file->filetype = LIBMTP_FILETYPE_UNKNOWN;
@@ -1018,7 +1023,7 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
  * @return 0 if the transfer was successful, any other value means 
  *           failure.
  */
-static int send_file_object(LIBMTP_mtpdevice_t *device, 
+int send_file_object(LIBMTP_mtpdevice_t *device, 
 		      int const fd, uint64_t size,
 		      LIBMTP_progressfunc_t const * const callback,
 		      void const * const data)
@@ -1250,6 +1255,131 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     return -1;
   }
   
+  return 0;
+}
+
+
+
+/**
+ * Returns the PTP filetype that maps to a certain MTP file type.
+ * @param intype the MTP library interface type
+ * @return the PTP (libgphoto2) interface type
+ */
+uint16_t map_mtp_type_to_ptp_type(LIBMTP_filetype_t intype)
+{
+  switch (intype) {
+  case LIBMTP_FILETYPE_WAV:
+    return PTP_OFC_WAV;
+    break;
+  case LIBMTP_FILETYPE_MP3:
+    return PTP_OFC_MP3;
+    break;
+  case LIBMTP_FILETYPE_WMA:
+    return PTP_OFC_MTP_WMA;
+    break;
+  case LIBMTP_FILETYPE_OGG:
+    return PTP_OFC_MTP_OGG;
+    break;
+  case LIBMTP_FILETYPE_MP4:
+    return PTP_OFC_MTP_MP4;
+    break;
+  case LIBMTP_FILETYPE_UNDEF_AUDIO:
+    return PTP_OFC_MTP_UndefinedAudio;
+    break;
+  case LIBMTP_FILETYPE_WMV:
+    return PTP_OFC_MTP_WMV;
+    break;
+  case LIBMTP_FILETYPE_AVI:
+    return PTP_OFC_AVI;
+    break;
+  case LIBMTP_FILETYPE_MPEG:
+    return PTP_OFC_MPEG;
+    break;
+  case LIBMTP_FILETYPE_ASF:
+    return PTP_OFC_ASF;
+    break;
+  case LIBMTP_FILETYPE_QT:
+    return PTP_OFC_QT;
+    break;
+  case LIBMTP_FILETYPE_UNDEF_VIDEO:
+    return PTP_OFC_MTP_UndefinedVideo;
+    break;
+  case LIBMTP_FILETYPE_JFIF:
+    return PTP_OFC_JFIF; // or should this be PTP_OFC_EXIF_JPEG?
+    break;
+  case LIBMTP_FILETYPE_TIFF:
+    return PTP_OFC_TIFF;
+    break;
+  case LIBMTP_FILETYPE_BMP:
+    return PTP_OFC_BMP;
+    break;
+  case LIBMTP_FILETYPE_GIF:
+    return PTP_OFC_GIF;
+    break;
+  case LIBMTP_FILETYPE_PICT:
+    return PTP_OFC_PICT;
+    break;
+  case LIBMTP_FILETYPE_PNG:
+    return PTP_OFC_PNG;
+    break;
+  case LIBMTP_FILETYPE_CALENDAR:
+    return PTP_OFC_MTP_vCalendar2;
+    break;
+  default:
+    printf("LIBMTP_Send_File_From_File_Descriptor: unknown filetype.\n");
+    return PTP_OFC_Undefined;
+  }
+}
+
+/**
+ * This function sends a generic file from a file descriptor to an
+ * MTP device. A filename and a set of metadata must be
+ * given as input.
+ * @param device a pointer to the device to send the file to.
+ * @param fd the filedescriptor for a local file which will be sent.
+ * @param filedata a file strtuct to pass in info abou the file.
+ *                 After this call the field <code>item_id</code>
+ *                 will contain the new track ID.
+ * @param callback a progress indicator function or NULL to ignore.
+ * @param data a user-defined pointer that is passed along to
+ *             the <code>progress</code> function in order to
+ *             pass along some user defined data to the progress
+ *             updates. If not used, set this to NULL.
+ * @return 0 if the transfer was successful, any other value means 
+ *           failure.
+ * @see LIBMTP_Send_Track_From_File()
+ */
+int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device, 
+			 int const fd, LIBMTP_file_t * const filedata,
+                         LIBMTP_progressfunc_t const * const callback,
+			 void const * const data, uint32_t parenthandle)
+{
+  uint16_t ret;
+  uint32_t store = 0;
+  int subcall_ret;
+  PTPObjectInfo new_file;
+  PTPParams *params = (PTPParams *) device->params;
+  
+  new_file.Filename = filedata->filename;
+  new_file.ObjectCompressedSize = filedata->filesize;
+  new_file.ObjectFormat = map_mtp_type_to_ptp_type(filedata->filetype);
+
+  // Create the object
+  ret = ptp_sendobjectinfo(params, &store, &parenthandle, &filedata->item_id, &new_file);
+  if (ret != PTP_RC_OK) {
+    ptp_perror(params, ret);
+    printf("LIBMTP_Send_File_From_File_Descriptor: Could not send object info\n");
+    return -1;
+  }
+
+  // Call main function to transfer the track
+  subcall_ret = send_file_object(device, fd, filedata->filesize, callback, data);
+  if (subcall_ret != 0) {
+    printf("LIBMTP_Send_File_From_File_Descriptor: error sending track object\n");
+    (void) delete_item(device, filedata->item_id);
+    return -1;
+  }
+    
   return 0;
 }
 

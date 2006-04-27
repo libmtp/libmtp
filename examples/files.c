@@ -6,6 +6,7 @@ static void dump_fileinfo(LIBMTP_file_t *file)
   if (file->filename != NULL)
     printf("   Filename: %s\n", file->filename);
   printf("   File size %llu bytes\n", file->filesize);
+  printf("   Parent ID: %d\n", file->parent_id);
   printf("   Filetype: %d\n", file->filetype);
 }
 
