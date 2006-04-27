@@ -1,3 +1,11 @@
+2006-04-27  Linus Walleij  <triad@df.lth.se>
+
+	* examples/sendfile.c: first file sender program based
+	  on API implementation and changes by Chris Allegretta.
+	* examples/Makefile.am: new program, new entry.
+	* src/libmtp.c: reflect this new functionality.
+	* src/libmtp.h.in: dito.
+	
 2006-04-25  Linus Walleij  <triad@df.lth.se>
 
 	* Rebased the sources around libgphoto2 instead.
