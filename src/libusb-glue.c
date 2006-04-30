@@ -68,6 +68,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Creative Zen Vision:M", 0x041e, 0x413e, NULL },
   /* Contributed by anonymous person on SourceForge */
   { "Samsung YP-T7J", 0x04e8, 0x5047, NULL },
+  /* From Mark Veinot */
+  { "JVC Alneo XA-HD500", 0x04f1, 0x6105, NULL },
   /* 
    * Copied in from libgphoto2's libptp2 adaption "library.c"
    * carefully trying to pick only the MTP devices.
