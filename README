@@ -7,13 +7,16 @@ Some scripts are generated during build:
 * libmtp.usermap constitute a modern udev solution.
 
 
-OLD PROBLEM:
-------------
-Problems with compilation under FC4: GCC4 related problem.
-Run this:
+Calendar support:
+-----------------
 
-CC=gcc32
-export CC
-./configure
-make
+The Creative Zen series can read VCALENDAR2 (.ics) files
+from programs with the following limitations/conditions:
 
+- The file must be in DOS (CR/LF) format, use the unix2dos
+  program to convert if needed
+- Repeat events do not seem to be supported, entries will
+  only appear once.
+- Files should be stored in the folder "My Organizer" when
+  sent to the device (Use the option -f "My Organizer" to
+  sendfile for this)
