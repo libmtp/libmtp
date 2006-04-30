@@ -1,6 +1,9 @@
 TODO file:
 ----------
 
+* Make the usb r/w stuff in libusb-glue.c take the device as parameter,
+  then put the callback function in the device and make it call.
+
 * Add all thinkable codecs.
 
 * Add a function that will list the available codecs for a certain device.

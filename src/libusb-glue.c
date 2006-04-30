@@ -385,30 +385,6 @@ uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *inte
 	    usb_release_interface(ptp_usb->handle,dev->config->interface->altsetting->bInterfaceNumber);
 	    return PTP_CD_RC_ERROR_CONNECTING;
 	  }
-	  /* Print out some verbose information */
-	  if (0) {
-	    int i;
-
-	    printf("Device info:\n");
-	    printf("Manufacturer: %s\n", params->deviceinfo.Manufacturer);
-	    printf("   Model: %s\n", params->deviceinfo.Model);
-	    printf("   Device version: %s\n", params->deviceinfo.DeviceVersion);
-	    printf("   Serial number: %s\n", params->deviceinfo.SerialNumber);
-	    printf("Vendor extension ID: 0x%08x\n", params->deviceinfo.VendorExtensionID);
-	    printf("Vendor extension description: %s\n", params->deviceinfo.VendorExtensionDesc);
-	    printf("Supported operations:\n");
-	    for (i=0;i<params->deviceinfo.OperationsSupported_len;i++) {
-	      printf("   0x%04x\n", params->deviceinfo.OperationsSupported[i]);
-	    }
-	    printf("Events supported:\n");
-	    for (i=0;i<params->deviceinfo.EventsSupported_len;i++) {
-	      printf("   0x%04x\n", params->deviceinfo.EventsSupported[i]);
-	    }
-	    printf("Device Properties Supported:\n");
-	    for (i=0;i<params->deviceinfo.DevicePropertiesSupported_len;i++) {
-	      printf("   0x%04x\n", params->deviceinfo.DevicePropertiesSupported[i]);
-	    }
-	  }
 	  
 	  /* we're connected, return ok */
 	  *interfaceNumber = dev->config->interface->altsetting->bInterfaceNumber;
