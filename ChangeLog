@@ -1,3 +1,8 @@
+2006-04-30  Linus Walleij  <triad@df.lth.se>
+
+	* src/ptp.c: sync upstream.
+	* src/ptp.h: dito.
+
 2006-04-27  Linus Walleij  <triad@df.lth.se>
 
 	* examples/sendfile.c: first file sender program based
