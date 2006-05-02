@@ -1,3 +1,13 @@
+2006-05-02  Linus Walleij  <triad@df.lth.se>
+
+	* src/libmtp.c: general shaping up for release. All track
+	  and file sending functions now respects a parent ID to be
+	  sent along with files and tracks.
+	* src/libmtp.h.in: dito.
+	* src/libusb-glue.c: dito.
+	* examples/sendfile.c: interface dependency changes.
+	* examples/sendtr.c: dito.
+
 2006-04-30  Linus Walleij  <triad@df.lth.se>
 
 	* src/ptp.c: sync upstream.

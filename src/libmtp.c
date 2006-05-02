@@ -971,6 +971,8 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
  *             the <code>progress</code> function in order to
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
+ * @param parenthandle the parent (e.g. folder) to store this file
+ *             in. Pass in 0 to put the file in the root directory.
  * @return 0 if the transfer was successful, any other value means 
  *           failure.
  * @see LIBMTP_Send_Track_From_File_Descriptor()
@@ -978,7 +980,7 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
 int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device, 
 			 char const * const path, LIBMTP_track_t * const metadata,
                          LIBMTP_progressfunc_t const * const callback,
-			 void const * const data)
+			 void const * const data, uint32_t const parenthandle)
 {
   int fd;
   int ret;
@@ -995,11 +997,11 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
 #else
   if ( (fd = open(path, O_RDONLY)) == -1) {
 #endif
-    printf("LIBMTP_Get_Track_To_File(): Could not open source file \"%s\"\n", path);
+    printf("LIBMTP_Send_Track_From_File(): Could not open source file \"%s\"\n", path);
     return -1;
   }
 
-  ret = LIBMTP_Send_Track_From_File_Descriptor(device, fd, metadata, callback, data);
+  ret = LIBMTP_Send_Track_From_File_Descriptor(device, fd, metadata, callback, data, parenthandle);
   
   // Close file.
   close(fd);
@@ -1189,6 +1191,8 @@ int send_file_object(LIBMTP_mtpdevice_t *device,
  *             the <code>progress</code> function in order to
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
+ * @param parenthandle the parent (e.g. folder) to store this file
+ *             in. Pass in 0 to put the file in the root directory.
  * @return 0 if the transfer was successful, any other value means 
  *           failure.
  * @see LIBMTP_Send_Track_From_File()
@@ -1196,14 +1200,14 @@ int send_file_object(LIBMTP_mtpdevice_t *device,
 int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device, 
 			 int const fd, LIBMTP_track_t * const metadata,
                          LIBMTP_progressfunc_t const * const callback,
-			 void const * const data)
+			 void const * const data, uint32_t const parenthandle)
 {
-  uint32_t parenthandle = 0;
   uint16_t ret;
   uint32_t store = 0;
   int subcall_ret;
   PTPObjectInfo new_track;
   PTPParams *params = (PTPParams *) device->params;
+  uint32_t localph = parenthandle;
   
   switch (metadata->filetype) {
   case LIBMTP_FILETYPE_WAV:
@@ -1232,7 +1236,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   new_track.ObjectCompressedSize = metadata->filesize;
 
   // Create the object
-  ret = ptp_sendobjectinfo(params, &store, &parenthandle, &metadata->item_id, &new_track);
+  ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->item_id, &new_track);
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
     printf("LIBMTP_Send_Track_From_File_Descriptor: Could not send object info\n");
@@ -1326,9 +1330,62 @@ uint16_t map_mtp_type_to_ptp_type(LIBMTP_filetype_t intype)
     return PTP_OFC_MTP_vCalendar2;
     break;
   default:
-    printf("LIBMTP_Send_File_From_File_Descriptor: unknown filetype.\n");
+    printf("map_mtp_type_to_ptp_type: unknown filetype.\n");
     return PTP_OFC_Undefined;
   }
+}
+
+
+/**
+ * This function sends a local file to an MTP device. 
+ * A filename and a set of metadata must be
+ * given as input.
+ * @param device a pointer to the device to send the track to.
+ * @param path the filename of a local file which will be sent.
+ * @param filedata a file strtuct to pass in info about the file.
+ *                 After this call the field <code>item_id</code>
+ *                 will contain the new file ID.
+ * @param callback a progress indicator function or NULL to ignore.
+ * @param data a user-defined pointer that is passed along to
+ *             the <code>progress</code> function in order to
+ *             pass along some user defined data to the progress
+ *             updates. If not used, set this to NULL.
+ * @param parenthandle the parent (e.g. folder) to store this file
+ *        in. Pass in 0 to put the file in the root directory.
+ * @return 0 if the transfer was successful, any other value means 
+ *           failure.
+ * @see LIBMTP_Send_File_From_File_Descriptor()
+ */
+int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device, 
+			       char const * const path, LIBMTP_file_t * const filedata,
+			       LIBMTP_progressfunc_t const * const callback,
+			       void const * const data, uint32_t const parenthandle)
+{
+  int fd;
+  int ret;
+
+  // Sanity check
+  if (path == NULL) {
+    printf("LIBMTP_Send_File_From_File(): Bad arguments, path was NULL\n");
+    return -1;
+  }
+
+  // Open file
+#ifdef __WIN32__
+  if ( (fd = open(path, O_RDONLY|O_BINARY) == -1 ) {
+#else
+  if ( (fd = open(path, O_RDONLY)) == -1) {
+#endif
+    printf("LIBMTP_Send_File_From_File(): Could not open source file \"%s\"\n", path);
+    return -1;
+  }
+
+  ret = LIBMTP_Send_File_From_File_Descriptor(device, fd, filedata, callback, data, parenthandle);
+  
+  // Close file.
+  close(fd);
+
+  return ret;
 }
 
 /**
@@ -1337,7 +1394,7 @@ uint16_t map_mtp_type_to_ptp_type(LIBMTP_filetype_t intype)
  * given as input.
  * @param device a pointer to the device to send the file to.
  * @param fd the filedescriptor for a local file which will be sent.
- * @param filedata a file strtuct to pass in info abou the file.
+ * @param filedata a file strtuct to pass in info about the file.
  *                 After this call the field <code>item_id</code>
  *                 will contain the new track ID.
  * @param callback a progress indicator function or NULL to ignore.
@@ -1345,17 +1402,20 @@ uint16_t map_mtp_type_to_ptp_type(LIBMTP_filetype_t intype)
  *             the <code>progress</code> function in order to
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
+ * @param parenthandle the parent (e.g. folder) to store this file
+ *        in. Pass in 0 to put the file in the root directory.
  * @return 0 if the transfer was successful, any other value means 
  *           failure.
- * @see LIBMTP_Send_Track_From_File()
+ * @see LIBMTP_Send_File_From_File()
  */
 int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device, 
 			 int const fd, LIBMTP_file_t * const filedata,
                          LIBMTP_progressfunc_t const * const callback,
-			 void const * const data, uint32_t parenthandle)
+			 void const * const data, uint32_t const parenthandle)
 {
   uint16_t ret;
   uint32_t store = 0;
+  uint32_t localph = parenthandle;
   int subcall_ret;
   PTPObjectInfo new_file;
   PTPParams *params = (PTPParams *) device->params;
@@ -1365,7 +1425,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   new_file.ObjectFormat = map_mtp_type_to_ptp_type(filedata->filetype);
 
   // Create the object
-  ret = ptp_sendobjectinfo(params, &store, &parenthandle, &filedata->item_id, &new_file);
+  ret = ptp_sendobjectinfo(params, &store, &localph, &filedata->item_id, &new_file);
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
     printf("LIBMTP_Send_File_From_File_Descriptor: Could not send object info\n");

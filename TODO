@@ -1,8 +1,16 @@
 TODO file:
 ----------
 
+* Add logic to transfer very large files in chunks, like 1 MB at the
+  time, or we cannot upload movies...
+
+* Make an API that can return several devices not just connect to the
+  first one...
+
 * Make the usb r/w stuff in libusb-glue.c take the device as parameter,
   then put the callback function in the device and make it call.
+  (IMPOSSIBLE: the device is created after a lot of writing has already
+   taken place, shall we use a dummy device holder then?)
 
 * Add all thinkable codecs.
 

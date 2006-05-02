@@ -111,11 +111,12 @@ int main(int argc, char **argv)
   struct stat sb;
   char *lang;
   LIBMTP_mtpdevice_t *device;
-  LIBMTP_folder_t *folders;
+  LIBMTP_folder_t *folders = NULL;
   LIBMTP_file_t *genfile;
-  int fd;
   int ret;
   uint32_t parent_id = 0;
+
+  LIBMTP_Init();
   
   while ( (opt = getopt(argc, argv, "qht:f:")) != -1 ) {
     switch (opt) {
@@ -160,15 +161,14 @@ int main(int argc, char **argv)
   lang = getenv("LANG");
   if (lang != NULL) {
     if (strlen(lang) > 5) {
-      printf("%s\n", &lang[strlen(lang)-5]);
-      if (!strcmp(&lang[strlen(lang)-5], "UTF-8")) {
+      char *langsuff = &lang[strlen(lang)-5];
+      if (strcmp(langsuff, "UTF-8")) {
 	printf("Your system does not appear to have UTF-8 enabled ($LANG=\"%s\")\n", lang);
 	printf("If you want to have support for diacritics and Unicode characters,\n");
 	printf("please switch your locale to an UTF-8 locale, e.g. \"en_US.UTF-8\".\n");
       }
     }
   }
-
   
   path = argv[0];
 
@@ -183,9 +183,6 @@ int main(int argc, char **argv)
     exit(1);
   }
   filesize = (uint64_t) sb.st_size;
-
-  
-  LIBMTP_Init();
 
   genfile = LIBMTP_new_file_t();
   genfile->filesize = filesize;
@@ -215,17 +212,7 @@ int main(int argc, char **argv)
   }
 
   if (path == NULL) {
-    printf("LIBMTP_Send_Track_From_File(): Bad arguments, path was NULL\n");
-    return -1;
-  }
-
-  // Open file
-#ifdef __WIN32__
-  if ( (fd = open(path, O_RDONLY|O_BINARY) == -1 ) {
-#else
-  if ( (fd = open(path, O_RDONLY)) == -1) {
-#endif
-    printf("Could not open source file \"%s\"\n", path);
+    printf("LIBMTP_Send_File_From_File(): Bad arguments, path was NULL\n");
     return -1;
   }
 
@@ -243,12 +230,11 @@ int main(int argc, char **argv)
         printf("parent_id = %d\n", parent_id);
     }
   }
-
+  
   LIBMTP_destroy_folder_t(folders);
-
   
   printf("Sending file...\n");
-  ret = LIBMTP_Send_File_From_File_Descriptor(device, fd, genfile, progress, NULL, parent_id);
+  ret = LIBMTP_Send_File_From_File(device, path, genfile, progress, NULL, parent_id);
 
   printf("\n");
   

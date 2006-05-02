@@ -70,9 +70,28 @@ static void usage(void)
 {
   fprintf(stderr, "usage: sendtr [ -D debuglvl ] [ -q ] -t <title> -a <artist> -l <album>\n");
   fprintf(stderr, "       -c <codec> -g <genre> -n <track number> -y <year> \n");
-  fprintf(stderr, "       -d <duration in seconds> <path>\n");
+  fprintf(stderr, "       -d <duration in seconds> -f \"Folder Name\" <path>\n");
   fprintf(stderr, "(-q means the program will not ask for missing information.)\n");
   exit(1);
+}
+
+static uint32_t find_folder_list(char *name, LIBMTP_folder_t *folderlist, int level)
+{
+  uint32_t i;
+
+  if(folderlist==NULL) {
+    return 0;
+  } 
+
+  if(!strcasecmp(name, folderlist->name))
+    return folderlist->folder_id;
+
+  if ((i = (find_folder_list(name, folderlist->child, level+1))))
+    return i;
+  if ((i = (find_folder_list(name, folderlist->sibling, level))))
+    return i;
+
+  return 0;
 }
 
 int main(int argc, char **argv)
@@ -88,18 +107,23 @@ int main(int argc, char **argv)
   char *pgenre = NULL;
   char *pcodec = NULL;
   char *palbum = NULL;
+  char *pfolder = NULL;
   uint16_t tracknum = 0;
   uint16_t length = 0;
   uint16_t year = 0;
   uint16_t quiet = 0;
   uint64_t filesize;
+  uint32_t parent_id;
   struct stat sb;
   char *lang;
   LIBMTP_mtpdevice_t *device;
+  LIBMTP_folder_t *folders = NULL;
   LIBMTP_track_t *trackmeta;
   int ret;
+
+  LIBMTP_Init();
   
-  while ( (opt = getopt(argc, argv, "qD:t:a:l:c:g:n:d:y:")) != -1 ) {
+  while ( (opt = getopt(argc, argv, "qD:t:a:l:c:g:n:d:y:f:")) != -1 ) {
     switch (opt) {
     case 't':
       ptitle = strdup(optarg);
@@ -125,6 +149,9 @@ int main(int argc, char **argv)
     case 'y':
       year = atoi(optarg);
       break;
+    case 'f':
+      pfolder = strdup(optarg);
+      break;
     case 'q':
       quiet = 1;
       break;
@@ -147,8 +174,8 @@ int main(int argc, char **argv)
   lang = getenv("LANG");
   if (lang != NULL) {
     if (strlen(lang) > 5) {
-      printf("%s\n", &lang[strlen(lang)-5]);
-      if (!strcmp(&lang[strlen(lang)-5], "UTF-8")) {
+      char *langsuff = &lang[strlen(lang)-5];
+      if (strcmp(langsuff, "UTF-8")) {
 	printf("Your system does not appear to have UTF-8 enabled ($LANG=\"%s\")\n", lang);
 	printf("If you want to have support for diacritics and Unicode characters,\n");
 	printf("please switch your locale to an UTF-8 locale, e.g. \"en_US.UTF-8\".\n");
@@ -244,9 +271,9 @@ int main(int argc, char **argv)
 	length = 0;
       }
     }
+
   }
   
-  LIBMTP_Init();
   trackmeta = LIBMTP_new_track_t();
     
   printf("Sending track:\n");
@@ -295,6 +322,9 @@ int main(int argc, char **argv)
     // Multiply by 1000 since this is in milliseconds
     trackmeta->duration = length * 1000;
   }
+  if (pfolder != NULL && parent_id != 0) {
+    printf("Folder:    %s (ID: %d)\n", pfolder, parent_id);
+  }
   // We should always have this
   if (filename != NULL) {
     trackmeta->filename = strdup(filename);
@@ -307,9 +337,22 @@ int main(int argc, char **argv)
     LIBMTP_destroy_track_t(trackmeta);
     exit(1);
   }
+
+  // If a folder argument was passed in, try to locate the folder.
+  if (pfolder) {
+    folders = LIBMTP_Get_Folder_List(device);
+    if(folders == NULL) {
+      printf("No folders found, ignoring folder argument.\n");
+    } else {
+      parent_id = find_folder_list(pfolder, folders, 0);
+      if  (!parent_id) {
+	printf("Parent folder could not be found, ignoring folder argument.\n");
+      }
+    }
+  }
   
   printf("Sending track...\n");
-  ret = LIBMTP_Send_Track_From_File(device, path, trackmeta, progress, NULL);
+  ret = LIBMTP_Send_Track_From_File(device, path, trackmeta, progress, NULL, parent_id);
   printf("\n");
   
   LIBMTP_Release_Device(device);

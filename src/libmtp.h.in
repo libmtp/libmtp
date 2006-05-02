@@ -201,9 +201,12 @@ int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t*, uint32_t, char const * const,
 			LIBMTP_progressfunc_t const * const, void const * const);
 int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t const, int const, 
 			LIBMTP_progressfunc_t const * const, void const * const);
+int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *, char const * const, 
+	                 LIBMTP_file_t * const, LIBMTP_progressfunc_t const * const,
+			 void const * const, uint32_t const);
 int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *, int const, 
 	                LIBMTP_file_t * const, LIBMTP_progressfunc_t const * const,
-			void const * const, uint32_t);
+			void const * const, uint32_t const);
 /**
  * @}
  * @defgroup tracks The track management API.
@@ -219,11 +222,11 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t const, int
 int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *, 
 			 char const * const, LIBMTP_track_t * const,
                          LIBMTP_progressfunc_t const * const,
-			 void const * const);
+			 void const * const, uint32_t const);
 int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *, 
 			 int const, LIBMTP_track_t * const,
                          LIBMTP_progressfunc_t const * const,
-			 void const * const);
+			 void const * const, uint32_t const);
 int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *, 
 			LIBMTP_track_t const * const);
 int LIBMTP_Track_Exists(LIBMTP_mtpdevice_t *, uint32_t);
