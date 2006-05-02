@@ -1,0 +1,15 @@
+.deps
+.libs
+Makefile
+Makefile.in
+delfile
+detect
+files
+folders
+getfile
+hotplug
+newfolder
+sendfile
+sendtr
+tracks
+trexist
