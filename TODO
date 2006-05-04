@@ -4,6 +4,10 @@ TODO file:
 * Add logic to transfer very large files in chunks, like 1 MB at the
   time, or we cannot upload movies...
 
+* Fix compiler warnings.
+
+* Add audio/video playlist support.
+
 * Make an API that can return several devices not just connect to the
   first one...
 
