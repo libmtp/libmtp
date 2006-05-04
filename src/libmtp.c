@@ -1405,10 +1405,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 
   // Update title
   if (metadata->title != NULL) {
-    printf("In:e: %s\n", metadata->title);
     propval.unistr = utf8_to_ucs2((const unsigned char *) metadata->title);
-    printf("Out:\n");
-    data_dump_ascii(stdout, propval.unistr, ucs2_strlen(propval.unistr)*2, 0);
     ret = ptp_mtp_setobjectpropvalue(params, metadata->item_id, PTP_OPC_Name, &propval, PTP_DTC_UNISTR);
     free(propval.unistr);
     if (ret != PTP_RC_OK) {
