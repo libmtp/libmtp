@@ -7,13 +7,19 @@
 #include "ptp.h"
 #include "libusb-glue.h"
 
-// Mapping between libmtp internal MTP filetypes and
-// the libgphoto2/PTP equivalent defines.
+/*
+ * This is a mapping between libmtp internal MTP filetypes and
+ * the libgphoto2/PTP equivalent defines. We need this because
+ * otherwise the libmtp.h device has to be dependent on ptp.h
+ * to be installed too, and we don't want that.
+ */
+
 typedef struct {
   char *name; /**< The descriptive name of the filetype */
   LIBMTP_filetype_t libmtp_id; /**< The libmtp internal type for this filetype */
   uint16_t ptp_id; /**< The PTP ID mapping to this internal type */
 } filetype_mapping_t;
+
 static const filetype_mapping_t filetype_mapping_table[] = {
   {"RIFF WAVE file", LIBMTP_FILETYPE_WAV, PTP_OFC_WAV},
   {"ISO MPEG Audio Layer 3", LIBMTP_FILETYPE_MP3, PTP_OFC_MP3},
@@ -44,6 +50,7 @@ static const filetype_mapping_t filetype_mapping_table[] = {
   // Some may use the "undefined" filetype as a folder identifier.
   {"Undefined filetype", LIBMTP_FILETYPE_UNKNOWN, PTP_OFC_Undefined}
 };
+
 static const int filetype_mapping_table_size = sizeof(filetype_mapping_table) / sizeof(filetype_mapping_t);
 
 // Forward declarations of local functions
@@ -138,7 +145,9 @@ static int single_threaded_callback_helper(uint32_t sent, uint32_t total) {
 }
 
 /**
- * Initialize the library.
+ * Initialize the library. Currently this function has no practical
+ * use but since we feel like it might some day have, please call this
+ * before you do anything else.
  */
 void LIBMTP_Init(void)
 {
@@ -147,6 +156,13 @@ void LIBMTP_Init(void)
 
 /**
  * Get a list of the supported devices.
+ *
+ * The developers depend on users of this library to constantly
+ * add in to the list of supported devices. What we need is the
+ * device name, USB Vendor ID (VID) and USB Product ID (PID).
+ * put this into a bug ticket at the project homepage, please.
+ * The VID/PID is used to let e.g. udev lift the device to
+ * console userspace access when it's plugged in.
  *
  * @param devices a pointer to a pointer that will hold a device
  *        list after the call to this function, if it was
@@ -1691,12 +1707,17 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
 }
 
 /**
- * This create a folder on the current MTP device.
+ * This create a folder on the current MTP device. The PTP name
+ * for a folder is "association". The PTP/MTP devices does not
+ * have an internal "folder" concept really, it contains a flat
+ * list of all files and some file are "associations" that other
+ * files and folders may refer to as its "parent".
  *
- * @param device a pointer to the device to get the track listing for.
- * @param name name of folder
- * @param parent_id id of parent folder to add to.
- * @return id to new folder or -1 if an error
+ * @param device a pointer to the device to create the folder on.
+ * @param name the name of the new folder.
+ * @param parent_id id of parent folder to add the new folder to,
+ *        or 0 to put it in the root directory.
+ * @return id to new folder or 0 if an error occured
  */
 uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name, uint32_t parent_id)
 {
@@ -1719,7 +1740,7 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name, uint32_t p
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
     printf("LIBMTP_Create_Folder: Could not send object info\n");
-    return -1;
+    return 0;
   }
   return new_id;
 }
