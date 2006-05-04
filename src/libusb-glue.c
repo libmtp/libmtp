@@ -55,35 +55,35 @@
  */
 static const LIBMTP_device_entry_t mtp_device_table[] = {
   /* Creative devices */
-  { "Creative Zen Vision", 0x041e, 0x411f, NULL },
-  { "Creative Portable Media Center", 0x041e, 0x4123, NULL },
-  { "Creative Zen Xtra (MTP mode)", 0x041e, 0x4128, NULL },
-  { "Second generation Dell DJ", 0x041e, 0x412f, NULL },
-  { "Creative Zen Micro (MTP mode)", 0x041e, 0x4130, NULL },
-  { "Creative Zen Touch (MTP mode)", 0x041e, 0x4131, NULL },
-  { "Creative Zen Sleek (MTP mode)", 0x041e, 0x4137, NULL },
-  { "Creative Zen MicroPhoto", 0x041e, 0x413c, NULL },
-  { "Creative Zen Sleek Photo", 0x041e, 0x413d, NULL },
-  { "Creative Zen Vision:M", 0x041e, 0x413e, NULL },
+  { "Creative Zen Vision", 0x041e, 0x411f },
+  { "Creative Portable Media Center", 0x041e, 0x4123 },
+  { "Creative Zen Xtra (MTP mode)", 0x041e, 0x4128 },
+  { "Second generation Dell DJ", 0x041e, 0x412f },
+  { "Creative Zen Micro (MTP mode)", 0x041e, 0x4130 },
+  { "Creative Zen Touch (MTP mode)", 0x041e, 0x4131 },
+  { "Creative Zen Sleek (MTP mode)", 0x041e, 0x4137 },
+  { "Creative Zen MicroPhoto", 0x041e, 0x413c },
+  { "Creative Zen Sleek Photo", 0x041e, 0x413d },
+  { "Creative Zen Vision:M", 0x041e, 0x413e },
   /* Contributed by anonymous person on SourceForge */
-  { "Samsung YP-T7J", 0x04e8, 0x5047, NULL },
+  { "Samsung YP-T7J", 0x04e8, 0x5047 },
   /* From Mark Veinot */
-  { "JVC Alneo XA-HD500", 0x04f1, 0x6105, NULL },
+  { "JVC Alneo XA-HD500", 0x04f1, 0x6105 },
   /* 
    * Copied in from libgphoto2's libptp2 adaption "library.c"
    * carefully trying to pick only the MTP devices.
    * Greetings to Marcus Meissner! (we should merge our
    * projects some day...)
    */
-  { "Philipps HDD6320", 0x0471, 0x01eb, NULL},
-  { "iRiver T10", 0x4102, 0x1113, NULL },
-  { "iRiver U10", 0x4102, 0x1116, NULL },
-  { "iRiver T10", 0x4102, 0x1117, NULL },
-  { "iRiver T20", 0x4102, 0x1118, NULL },
-  { "iRiver T30", 0x4102, 0x1119, NULL },
-  { "iRiver H10", 0x4102, 0x2102, NULL },
-  { "Dell DJ Itty", 0x413c, 0x4500, NULL},
-  { "Toshiba Gigabeat", 0x0930, 0x000c, NULL}
+  { "Philipps HDD6320", 0x0471, 0x01eb },
+  { "iRiver T10", 0x4102, 0x1113 },
+  { "iRiver U10", 0x4102, 0x1116 },
+  { "iRiver T10", 0x4102, 0x1117 },
+  { "iRiver T20", 0x4102, 0x1118 },
+  { "iRiver T30", 0x4102, 0x1119 },
+  { "iRiver H10", 0x4102, 0x2102 },
+  { "Dell DJ Itty", 0x413c, 0x4500 },
+  { "Toshiba Gigabeat", 0x0930, 0x000c }
 };
 static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
 

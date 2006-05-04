@@ -1,7 +1,10 @@
 2006-05-04  Linus Walleij  <triad@df.lth.se>
 
 	* examples/sendfile.c: fixes some more filetypes.
-	* src/libmtp.c: respectfully rearranged to use a filetype mapping table.
+	* src/libmtp.c: respectfully rearranged to use a filetype mapping 
+	  table.
+	* src/ptp-pack.c: real nasty unicode packing bug.
+	* Release libmtp 0.0.4.
 
 2006-05-02  Linus Walleij  <triad@df.lth.se>
 

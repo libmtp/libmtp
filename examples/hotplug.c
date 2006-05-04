@@ -23,7 +23,7 @@ int main (int argc, char **argv)
   extern int optind;
   extern char *optarg;
   char *udev_action = NULL;
-  char default_udev_action[] = "MODE=\"666\"";
+  char default_udev_action[] = "SYMLINK+=\"libmtp-%k\", MODE=\"666\"";
 
   while ( (opt = getopt(argc, argv, "ua:")) != -1 ) {
     switch (opt) {

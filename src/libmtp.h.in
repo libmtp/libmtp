@@ -85,7 +85,6 @@ struct LIBMTP_device_entry_struct {
   char *name; /**< The descriptive name of this device */
   uint16_t vendor_id; /**< Vendor ID for this device */
   uint16_t product_id; /**< Product ID for this device */
-  LIBMTP_device_entry_t *next; /**< Pointer to the next device entry or NULL if the last one */
 };
 
 /**
