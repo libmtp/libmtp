@@ -20,3 +20,13 @@ from programs with the following limitations/conditions:
 - Files should be stored in the folder "My Organizer" when
   sent to the device (Use the option -f "My Organizer" to
   sendfile for this)
+
+
+libgphoto2 heritage:
+--------------------
+
+libmtp is based on libgphoto2, in practice this means we
+use ptp.c, ptp.h and ptp-pack.c verbatim from the libgphoto2
+source code. If you need to change things in these files,
+make sure it is so general that libgphoto2 will want to
+merge it to their codebase too.
