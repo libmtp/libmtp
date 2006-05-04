@@ -6,6 +6,9 @@ Linus Walleij <triad@df.lth.se>
 We both came to do libmtp after working on the libnjb
 project.
 
-libmtp is however largely based on libptp2, which was created by:
-
+libmtp is however largely based on libptp2, which was created by
 Mariusz Woloszyn <emsi@ipartners.pl>
+
+We later started to use libgphoto2 which is also based on the same
+code as libptp2 but with large contributions from
+Marcus Meissner <marcus@jet.franken.de>

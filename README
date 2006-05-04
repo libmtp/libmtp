@@ -1,10 +1,80 @@
-HOTPLUGGING:
-------------
-Some scripts are generated during build:
+Building and Installing
+-----------------------
 
-* libmtp.usermap + libmtp.sh constitute an old hotplug script
-  solution.
-* libmtp.usermap constitute a modern udev solution.
+See the "INSTALL" file.
+
+
+Heritage
+--------
+
+libmtp is based on several ancestors:
+
+* libptp2 by Mariusz Woloszyn was the starting point used
+  by Richard A. Low for the initial starter port. You can
+  find it at http://libptp.sourceforge.net/
+
+* libgphoto2 by Mariusz Woloszyn and Marcus Meissner was
+  used at a later stage since it was (is) more actively
+  maintained. libmtp tracks the PTP implementation in
+  libgphoto2 and considers it an upstream project. We will
+  try to submit anything generally useful back to libgphoto2
+  and not make double efforts. In practice this means we
+  use ptp.c, ptp.h and ptp-pack.c verbatim from the libgphoto2
+  source code. If you need to change things in these files,
+  make sure it is so general that libgphoto2 will want to
+  merge it to their codebase too. You find libgphoto2 as part
+  of gPhoto: http://gphoto.sourceforge.net/
+
+* libnjb was a project that Richard and Linus were working
+  on before libmtp. When Linux took Richards initial port
+  and made an generic C API he re-used the philosophy and
+  much code from libnjb. Many of the sample programs are for
+  example taken quite literally from libnjb. You find it here:
+  http://libnjb.sourceforge.net/
+
+
+Compiling programs for libmtp
+-----------------------------
+
+libmtp has support for the pkg-config script by adding a libmtp.pc
+entry in $(prefix)/lib/pkgconfig. To compile a libmtp program,
+"just" write:
+
+gcc -o foo `pkg-config --cflags --libs libmtp` foo.c
+
+This also simplifies compilation using autoconf and pkg-config: just
+write e.g.
+
+PKG_CHECK_MODULES(MTP, libmtp)
+AC_SUBST(MTP_CFLAGS)
+AC_SUBST(MTP_LIBS)
+
+To have libmtp LIBS and CFLAGS defined. Needless to say, this will
+only work if you have pkgconfig installed on your system, but most
+people have nowadays.
+
+If your library is installed in e.g. /usr/local you may have to tell
+this to pkgconfig by setting the PKG_CONFIG_PATH thus:
+
+export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+
+
+Documentation
+-------------
+
+Read the API documentation that can be generated with doxygen.
+It will be output in doc/html if you have Doxygen properly
+installed. (It will not be created unless you have Doxygen!)
+
+For information about the Media Transfer Protocol, see:
+http://en.wikipedia.org/wiki/Media_Transfer_Protocol
+
+
+Contributing
+------------
+
+See the project page at http://libmtp.sourceforge.net/
+We always need your help.
 
 
 Calendar support:
@@ -20,13 +90,3 @@ from programs with the following limitations/conditions:
 - Files should be stored in the folder "My Organizer" when
   sent to the device (Use the option -f "My Organizer" to
   sendfile for this)
-
-
-libgphoto2 heritage:
---------------------
-
-libmtp is based on libgphoto2, in practice this means we
-use ptp.c, ptp.h and ptp-pack.c verbatim from the libgphoto2
-source code. If you need to change things in these files,
-make sure it is so general that libgphoto2 will want to
-merge it to their codebase too.

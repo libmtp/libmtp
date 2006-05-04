@@ -2,7 +2,8 @@ TODO file:
 ----------
 
 * Add logic to transfer very large files in chunks, like 1 MB at the
-  time, or we cannot upload movies...
+  time, or we cannot upload movies... Righ now libmtp just copy the
+  file to memory and transfer it.
 
 * Fix compiler warnings.
 
@@ -16,6 +17,7 @@ TODO file:
   (IMPOSSIBLE: the device is created after a lot of writing has already
    taken place, shall we use a dummy device holder then?)
 
-* Add all thinkable codecs.
+* Add all thinkable file types.
 
-* Add a function that will list the available codecs for a certain device.
+* Add a function that will list the playable file types for a certain 
+  device. (Needs some research and probably a database.)
