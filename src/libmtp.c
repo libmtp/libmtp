@@ -7,13 +7,112 @@
 #include "ptp.h"
 #include "libusb-glue.h"
 
+// Mapping between libmtp internal MTP filetypes and
+// the libgphoto2/PTP equivalent defines.
+typedef struct {
+  char *name; /**< The descriptive name of the filetype */
+  LIBMTP_filetype_t libmtp_id; /**< The libmtp internal type for this filetype */
+  uint16_t ptp_id; /**< The PTP ID mapping to this internal type */
+} filetype_mapping_t;
+static const filetype_mapping_t filetype_mapping_table[] = {
+  {"RIFF WAVE file", LIBMTP_FILETYPE_WAV, PTP_OFC_WAV},
+  {"ISO MPEG Audio Layer 3", LIBMTP_FILETYPE_MP3, PTP_OFC_MP3},
+  {"Microsoft Windows Media Audio", LIBMTP_FILETYPE_WMA, PTP_OFC_MTP_WMA},
+  {"Ogg container format", LIBMTP_FILETYPE_OGG, PTP_OFC_MTP_OGG},
+  {"Advanced Acoustic Coding", LIBMTP_FILETYPE_MP4, PTP_OFC_MTP_MP4},
+  {"Undefined audio file", LIBMTP_FILETYPE_UNDEF_AUDIO, PTP_OFC_MTP_UndefinedAudio},
+  {"Microsoft Windows Media Video", LIBMTP_FILETYPE_WMV, PTP_OFC_MTP_WMV},
+  {"Audio Video Interleave", LIBMTP_FILETYPE_AVI, PTP_OFC_AVI},
+  {"MPEG video stream", LIBMTP_FILETYPE_MPEG, PTP_OFC_MPEG},
+  {"Microsoft Advanced Systems Format", LIBMTP_FILETYPE_ASF, PTP_OFC_ASF},
+  {"Apple Quicktime container format", LIBMTP_FILETYPE_QT, PTP_OFC_QT},
+  {"Undefined video file", LIBMTP_FILETYPE_UNDEF_VIDEO, PTP_OFC_MTP_UndefinedVideo},
+  {"JPEG file", LIBMTP_FILETYPE_JFIF, PTP_OFC_JFIF},
+  {"TIFF bitmap file", LIBMTP_FILETYPE_TIFF, PTP_OFC_TIFF},
+  {"BMP bitmap file", LIBMTP_FILETYPE_BMP, PTP_OFC_BMP},
+  {"GIF bitmap file", LIBMTP_FILETYPE_GIF, PTP_OFC_GIF},
+  {"PICT bitmap file", LIBMTP_FILETYPE_PICT, PTP_OFC_PICT},
+  {"Portable Network Graphics", LIBMTP_FILETYPE_PNG, PTP_OFC_PNG},
+  {"Microsoft Windows Image Format", LIBMTP_FILETYPE_WINDOWSIMAGEFORMAT, PTP_OFC_MTP_WindowsImageFormat},
+  {"VCalendar version 1", LIBMTP_FILETYPE_VCALENDAR1, PTP_OFC_MTP_vCalendar1},
+  {"VCalendar version 2", LIBMTP_FILETYPE_VCALENDAR2, PTP_OFC_MTP_vCalendar2},
+  {"VCard version 2", LIBMTP_FILETYPE_VCARD2, PTP_OFC_MTP_vCard2},
+  {"VCard version 3", LIBMTP_FILETYPE_VCARD3, PTP_OFC_MTP_vCard3},
+  {"Undefined Windows executable file", LIBMTP_FILETYPE_WINEXEC, PTP_OFC_MTP_UndefinedWindowsExecutable},
+  {"Text file", LIBMTP_FILETYPE_TEXT, PTP_OFC_Text},
+  {"HTML file", LIBMTP_FILETYPE_HTML, PTP_OFC_HTML},
+  // Some may use the "undefined" filetype as a folder identifier.
+  {"Undefined filetype", LIBMTP_FILETYPE_UNKNOWN, PTP_OFC_Undefined}
+};
+static const int filetype_mapping_table_size = sizeof(filetype_mapping_table) / sizeof(filetype_mapping_t);
+
 // Forward declarations of local functions
 static int send_file_object(LIBMTP_mtpdevice_t *device, 
 			    int const fd, uint64_t size,
 			    LIBMTP_progressfunc_t const * const callback,
 			    void const * const data);
 static int delete_item(LIBMTP_mtpdevice_t *device, uint32_t item_id);
-uint16_t map_mtp_type_to_ptp_type(LIBMTP_filetype_t intype);
+static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype);
+static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype);
+
+/**
+ * Returns the PTP filetype that maps to a certain libmtp internal file type.
+ * @param intype the MTP library interface type
+ * @return the PTP (libgphoto2) interface type
+ */
+static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype)
+{
+  int i;
+
+  for (i = 0; i < filetype_mapping_table_size; i++) {
+    filetype_mapping_t const * const entry = &filetype_mapping_table[i];
+    if (entry->libmtp_id == intype) {
+      return entry->ptp_id;
+    }
+  }
+  printf("map_libmtp_type_to_ptp_type: unknown filetype.\n");
+  return PTP_OFC_Undefined;
+}
+
+
+/**
+ * Returns the libmtp internal filetype that maps to a certain MTP file type.
+ * @param intype the MTP library interface type
+ * @return the PTP (libgphoto2) interface type
+ */
+static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype)
+{
+  int i;
+
+  for (i = 0; i < filetype_mapping_table_size; i++) {
+    filetype_mapping_t const * const entry = &filetype_mapping_table[i];
+    if (entry->ptp_id == intype) {
+      return entry->libmtp_id;
+    }
+  }
+  printf("map_ptp_type_to_libmtp_type: unknown filetype.\n");
+  return LIBMTP_FILETYPE_UNKNOWN;
+}
+
+/**
+ * This helper function returns a textual description for a libmtp
+ * file type to be used in dialog boxes etc.
+ * @param intype the filetype to get a description for.
+ * @return a string representing the filetype, this must <b>NOT</b>
+ *         be free():ed by the caller!
+ */
+char const * LIBMTP_Get_Filetype_Description(LIBMTP_filetype_t intype)
+{
+  int i;
+
+  for (i = 0; i < filetype_mapping_table_size; i++) {
+    filetype_mapping_t const * const entry = &filetype_mapping_table[i];
+    if (entry->libmtp_id == intype) {
+      return entry->name;
+    }
+  }
+  return "Unknown filetype";
+}
 
 // Map this libptp2 single-threaded callback to the LIBMTP callback type
 // extern Progress_Callback* globalCallback;
@@ -196,7 +295,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
   }
   printf("Device Properties Supported:\n");
   for (i=0;i<params->deviceinfo.DevicePropertiesSupported_len;i++) {
-    char *propdesc = ptp_get_property_description(params, params->deviceinfo.DevicePropertiesSupported[i]);
+    char const *propdesc = ptp_get_property_description(params, params->deviceinfo.DevicePropertiesSupported[i]);
     printf("   0x%04x: %s\n", params->deviceinfo.DevicePropertiesSupported[i],
 	   (propdesc == NULL) ? "Unknown property" : propdesc);
   }
@@ -455,74 +554,21 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
     PTPObjectInfo oi;
 
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
+
+      if (oi.ObjectFormat == PTP_OFC_Association ||
+	  oi.ObjectFormat == PTP_OFC_Undefined) {
+	// MTP use these object formats for folders which means
+	// these "files" will turn up on a folder listing instead.
+	continue;
+      }
+
       // Allocate a new file type
       file = LIBMTP_new_file_t();
 
       file->parent_id = oi.ParentObject;
-      
-      switch (oi.ObjectFormat)
-	{
-	case PTP_OFC_WAV:
-	  file->filetype = LIBMTP_FILETYPE_WAV;
-	  break;
-	case PTP_OFC_MP3:
-	  file->filetype = LIBMTP_FILETYPE_MP3;
-	  break;
-	case PTP_OFC_MTP_WMA:
-	  file->filetype = LIBMTP_FILETYPE_WMA;
-	  break;
-	case PTP_OFC_MTP_OGG:
-	  file->filetype = LIBMTP_FILETYPE_OGG;
-	  break;
-	case PTP_OFC_MTP_MP4:
-	  file->filetype = LIBMTP_FILETYPE_MP4;
-	  break;
-	case PTP_OFC_MTP_UndefinedAudio:
-	  file->filetype = LIBMTP_FILETYPE_UNDEF_AUDIO;
-	  break;
-	case PTP_OFC_MTP_WMV:
-	  file->filetype = LIBMTP_FILETYPE_WMV;
-	  break;
-	case PTP_OFC_AVI:
-	  file->filetype = LIBMTP_FILETYPE_AVI;
-	  break;
-	case PTP_OFC_MPEG:
-	  file->filetype = LIBMTP_FILETYPE_MPEG;
-	  break;
-	case PTP_OFC_ASF:
-	  file->filetype = LIBMTP_FILETYPE_ASF;
-	  break;
-	case PTP_OFC_QT:
-	  file->filetype = LIBMTP_FILETYPE_QT;
-	  break;
-	case PTP_OFC_MTP_UndefinedVideo:
-	  file->filetype = LIBMTP_FILETYPE_UNDEF_VIDEO;
-	  break;
-	case PTP_OFC_JFIF: // or should this be PTP_OFC_EXIF_JPEG?
-	  file->filetype = LIBMTP_FILETYPE_JFIF;
-	  break;
-	case PTP_OFC_TIFF:
-	  file->filetype = LIBMTP_FILETYPE_TIFF;
-	  break;
-	case PTP_OFC_BMP:
-	  file->filetype = LIBMTP_FILETYPE_BMP;
-	  break;
-	case PTP_OFC_GIF:
-	  file->filetype = LIBMTP_FILETYPE_GIF;
-	  break;
-	case PTP_OFC_PICT:
-	  file->filetype = LIBMTP_FILETYPE_PICT;
-	  break;
-	case PTP_OFC_PNG:
-	  file->filetype = LIBMTP_FILETYPE_PNG;
-	  break;
-	case PTP_OFC_MTP_vCalendar2:
-	  file->filetype = LIBMTP_FILETYPE_CALENDAR;
-	  break;
-	default:
-	  file->filetype = LIBMTP_FILETYPE_UNKNOWN;
-	  // printf("LIBMTP warning: \"%s\" has unknown filetype 0x%04X, association: 0x%04X, association desc: 0x%08X\n", oi.Filename, oi.ObjectFormat, oi.AssociationType, oi.AssociationDesc);
-	}
+
+      // Set the filetype
+      file->filetype = map_ptp_type_to_libmtp_type(oi.ObjectFormat);
 
       // Original file-specific properties
       file->filesize = oi.ObjectCompressedSize;
@@ -685,29 +731,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
       // Allocate a new track type
       track = LIBMTP_new_track_t();
 
-      switch (oi.ObjectFormat)
-	{
-	case PTP_OFC_WAV:
-	  track->filetype = LIBMTP_FILETYPE_WAV;
-	  break;
-	case PTP_OFC_MP3:
-	  track->filetype = LIBMTP_FILETYPE_MP3;
-	  break;
-	case PTP_OFC_MTP_WMA:
-	  track->filetype = LIBMTP_FILETYPE_WMA;
-	  break;
-	case PTP_OFC_MTP_OGG:
-	  track->filetype = LIBMTP_FILETYPE_OGG;
-	  break;
-	case PTP_OFC_MTP_MP4:
-	  track->filetype = LIBMTP_FILETYPE_MP4;
-	  break;
-	case PTP_OFC_MTP_UndefinedAudio:
-	  track->filetype = LIBMTP_FILETYPE_UNDEF_AUDIO;
-	  break;
-	default:
-	  track->filetype = LIBMTP_FILETYPE_UNKNOWN;
-	}
+      track->filetype = map_ptp_type_to_libmtp_type(oi.ObjectFormat);
 
       // Original file-specific properties
       track->filesize = oi.ObjectCompressedSize;
@@ -1208,30 +1232,19 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   PTPObjectInfo new_track;
   PTPParams *params = (PTPParams *) device->params;
   uint32_t localph = parenthandle;
-  
-  switch (metadata->filetype) {
-  case LIBMTP_FILETYPE_WAV:
-    new_track.ObjectFormat = PTP_OFC_WAV;
-    break;
-  case LIBMTP_FILETYPE_MP3:
-    new_track.ObjectFormat = PTP_OFC_MP3;
-    break;
-  case LIBMTP_FILETYPE_WMA:
-    new_track.ObjectFormat = PTP_OFC_MTP_WMA;
-    break;
-  case LIBMTP_FILETYPE_OGG:
-    new_track.ObjectFormat = PTP_OFC_MTP_OGG;
-    break;
-  case LIBMTP_FILETYPE_MP4:
-    new_track.ObjectFormat = PTP_OFC_MTP_MP4;
-    break;
-  case LIBMTP_FILETYPE_UNDEF_AUDIO:
-    new_track.ObjectFormat = PTP_OFC_MTP_UndefinedAudio;
-    break;
-  default:
-    printf("LIBMTP_Send_Track_From_File_Descriptor: unknown filetype.\n");
+
+  // Sanity check, is this really a track?
+  if (metadata->filetype != LIBMTP_FILETYPE_WAV &&
+      metadata->filetype != LIBMTP_FILETYPE_MP3 &&
+      metadata->filetype != LIBMTP_FILETYPE_WMA &&
+      metadata->filetype != LIBMTP_FILETYPE_OGG &&
+      metadata->filetype != LIBMTP_FILETYPE_MP4 &&
+      metadata->filetype != LIBMTP_FILETYPE_UNDEF_AUDIO) {
+    printf("LIBMTP_Send_Track_From_File_Descriptor: I don't think this is actually a track, strange filetype...\n");
     new_track.ObjectFormat = PTP_OFC_Undefined;
   }
+
+  new_track.ObjectFormat = map_libmtp_type_to_ptp_type(metadata->filetype);
   new_track.Filename = metadata->filename;
   new_track.ObjectCompressedSize = metadata->filesize;
 
@@ -1261,80 +1274,6 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   
   return 0;
 }
-
-
-
-/**
- * Returns the PTP filetype that maps to a certain MTP file type.
- * @param intype the MTP library interface type
- * @return the PTP (libgphoto2) interface type
- */
-uint16_t map_mtp_type_to_ptp_type(LIBMTP_filetype_t intype)
-{
-  switch (intype) {
-  case LIBMTP_FILETYPE_WAV:
-    return PTP_OFC_WAV;
-    break;
-  case LIBMTP_FILETYPE_MP3:
-    return PTP_OFC_MP3;
-    break;
-  case LIBMTP_FILETYPE_WMA:
-    return PTP_OFC_MTP_WMA;
-    break;
-  case LIBMTP_FILETYPE_OGG:
-    return PTP_OFC_MTP_OGG;
-    break;
-  case LIBMTP_FILETYPE_MP4:
-    return PTP_OFC_MTP_MP4;
-    break;
-  case LIBMTP_FILETYPE_UNDEF_AUDIO:
-    return PTP_OFC_MTP_UndefinedAudio;
-    break;
-  case LIBMTP_FILETYPE_WMV:
-    return PTP_OFC_MTP_WMV;
-    break;
-  case LIBMTP_FILETYPE_AVI:
-    return PTP_OFC_AVI;
-    break;
-  case LIBMTP_FILETYPE_MPEG:
-    return PTP_OFC_MPEG;
-    break;
-  case LIBMTP_FILETYPE_ASF:
-    return PTP_OFC_ASF;
-    break;
-  case LIBMTP_FILETYPE_QT:
-    return PTP_OFC_QT;
-    break;
-  case LIBMTP_FILETYPE_UNDEF_VIDEO:
-    return PTP_OFC_MTP_UndefinedVideo;
-    break;
-  case LIBMTP_FILETYPE_JFIF:
-    return PTP_OFC_JFIF; // or should this be PTP_OFC_EXIF_JPEG?
-    break;
-  case LIBMTP_FILETYPE_TIFF:
-    return PTP_OFC_TIFF;
-    break;
-  case LIBMTP_FILETYPE_BMP:
-    return PTP_OFC_BMP;
-    break;
-  case LIBMTP_FILETYPE_GIF:
-    return PTP_OFC_GIF;
-    break;
-  case LIBMTP_FILETYPE_PICT:
-    return PTP_OFC_PICT;
-    break;
-  case LIBMTP_FILETYPE_PNG:
-    return PTP_OFC_PNG;
-    break;
-  case LIBMTP_FILETYPE_CALENDAR:
-    return PTP_OFC_MTP_vCalendar2;
-    break;
-  default:
-    printf("map_mtp_type_to_ptp_type: unknown filetype.\n");
-    return PTP_OFC_Undefined;
-  }
-}
-
 
 /**
  * This function sends a local file to an MTP device. 
@@ -1422,7 +1361,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   
   new_file.Filename = filedata->filename;
   new_file.ObjectCompressedSize = filedata->filesize;
-  new_file.ObjectFormat = map_mtp_type_to_ptp_type(filedata->filetype);
+  new_file.ObjectFormat = map_libmtp_type_to_ptp_type(filedata->filetype);
 
   // Create the object
   ret = ptp_sendobjectinfo(params, &store, &localph, &filedata->item_id, &new_file);
@@ -1466,7 +1405,10 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 
   // Update title
   if (metadata->title != NULL) {
+    printf("In:e: %s\n", metadata->title);
     propval.unistr = utf8_to_ucs2((const unsigned char *) metadata->title);
+    printf("Out:\n");
+    data_dump_ascii(stdout, propval.unistr, ucs2_strlen(propval.unistr)*2, 0);
     ret = ptp_mtp_setobjectpropvalue(params, metadata->item_id, PTP_OPC_Name, &propval, PTP_DTC_UNISTR);
     free(propval.unistr);
     if (ret != PTP_RC_OK) {

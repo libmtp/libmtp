@@ -1,3 +1,8 @@
+2006-05-04  Linus Walleij  <triad@df.lth.se>
+
+	* examples/sendfile.c: fixes some more filetypes.
+	* src/libmtp.c: respectfully rearranged to use a filetype mapping table.
+
 2006-05-02  Linus Walleij  <triad@df.lth.se>
 
 	* src/libmtp.c: general shaping up for release. All track

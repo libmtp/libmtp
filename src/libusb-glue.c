@@ -217,10 +217,13 @@ static void init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device
       exit(0);
     }
     ptp_usb->handle = device_handle;
+    usb_claim_interface(device_handle, dev->config->interface->altsetting->bInterfaceNumber);
+    /*
     if (!usb_claim_interface(device_handle, dev->config->interface->altsetting->bInterfaceNumber)) {
       perror("usb_claim_interface()");
       exit(0);
     }
+    */
   }
 }
 

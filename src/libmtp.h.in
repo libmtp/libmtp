@@ -61,7 +61,14 @@ typedef enum {
   LIBMTP_FILETYPE_GIF,
   LIBMTP_FILETYPE_PICT,
   LIBMTP_FILETYPE_PNG,
-  LIBMTP_FILETYPE_CALENDAR,
+  LIBMTP_FILETYPE_VCALENDAR1,
+  LIBMTP_FILETYPE_VCALENDAR2,
+  LIBMTP_FILETYPE_VCARD2,
+  LIBMTP_FILETYPE_VCARD3,
+  LIBMTP_FILETYPE_WINDOWSIMAGEFORMAT,
+  LIBMTP_FILETYPE_WINEXEC,
+  LIBMTP_FILETYPE_TEXT,
+  LIBMTP_FILETYPE_HTML,
   LIBMTP_FILETYPE_UNKNOWN
 } LIBMTP_filetype_t;
 typedef struct LIBMTP_device_entry_struct LIBMTP_device_entry_t; /**< @see LIBMTP_device_entry_struct */
@@ -195,6 +202,7 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *,
  */
 LIBMTP_file_t *LIBMTP_new_file_t(void);
 void LIBMTP_destroy_file_t(LIBMTP_file_t*);
+char const * LIBMTP_Get_Filetype_Description(LIBMTP_filetype_t);
 LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device);
 int LIBMTP_Delete_File(LIBMTP_mtpdevice_t *, uint32_t);
 int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t*, uint32_t, char const * const, 

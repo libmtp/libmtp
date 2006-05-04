@@ -18,7 +18,7 @@ static void dump_trackinfo(LIBMTP_track_t *track)
   printf("   Track number: %d\n", track->tracknumber);
   printf("   Duration: %d milliseconds\n", track->duration);
   printf("   File size %llu bytes\n", track->filesize);
-  printf("   Filetype: %d\n", track->filetype);
+  printf("   Filetype: %s\n", LIBMTP_Get_Filetype_Description(track->filetype));
 }
 
 int main (int argc, char **argv)

@@ -188,18 +188,53 @@ int main(int argc, char **argv)
   genfile->filesize = filesize;
   genfile->filename = strdup(filename);
 
-  if (!strcasecmp(ptype,"ics")) {
-    genfile->filetype = LIBMTP_FILETYPE_CALENDAR;
-  } else if (!strcasecmp(ptype,"jpg")) {
+  // This need to be kept constantly updated as new file types arrive.
+  if (!strcasecmp(ptype,"wav")) {
+    genfile->filetype = LIBMTP_FILETYPE_WAV;
+  } else if (!strcasecmp(ptype,"mp3")) {
+    genfile->filetype = LIBMTP_FILETYPE_MP3;
+  } else if (!strcasecmp(ptype,"wma")) {
+    genfile->filetype = LIBMTP_FILETYPE_WMA;
+  } else if (!strcasecmp(ptype,"ogg")) {
+    genfile->filetype = LIBMTP_FILETYPE_OGG;
+  } else if (!strcasecmp(ptype,"mp4")) {
+    genfile->filetype = LIBMTP_FILETYPE_MP4;
+  } else if (!strcasecmp(ptype,"wmv")) {
+    genfile->filetype = LIBMTP_FILETYPE_WMV;
+  } else if (!strcasecmp(ptype,"avi")) {
+    genfile->filetype = LIBMTP_FILETYPE_AVI;
+  } else if (!strcasecmp(ptype,"mpeg") || !strcasecmp(ptype,"mpg")) {
+    genfile->filetype = LIBMTP_FILETYPE_MPEG;
+  } else if (!strcasecmp(ptype,"asf")) {
+    genfile->filetype = LIBMTP_FILETYPE_ASF;
+  } else if (!strcasecmp(ptype,"qt") || !strcasecmp(ptype,"mov")) {
+    genfile->filetype = LIBMTP_FILETYPE_QT;
+  } else if (!strcasecmp(ptype,"wma")) {
+    genfile->filetype = LIBMTP_FILETYPE_WMA;
+  } else if (!strcasecmp(ptype,"jpg") || !strcasecmp(ptype,"jpeg")) {
     genfile->filetype = LIBMTP_FILETYPE_JFIF;
+  } else if (!strcasecmp(ptype,"tif") || !strcasecmp(ptype,"tiff")) {
+    genfile->filetype = LIBMTP_FILETYPE_TIFF;
+  } else if (!strcasecmp(ptype,"bmp")) {
+    genfile->filetype = LIBMTP_FILETYPE_BMP;
   } else if (!strcasecmp(ptype,"gif")) {
     genfile->filetype = LIBMTP_FILETYPE_GIF;
+  } else if (!strcasecmp(ptype,"pic") || !strcasecmp(ptype,"pict")) {
+    genfile->filetype = LIBMTP_FILETYPE_PICT;
   } else if (!strcasecmp(ptype,"png")) {
     genfile->filetype = LIBMTP_FILETYPE_PNG;
+  } else if (!strcasecmp(ptype,"wmf")) {
+    genfile->filetype = LIBMTP_FILETYPE_WINDOWSIMAGEFORMAT;
+  } else if (!strcasecmp(ptype,"ics")) {
+    genfile->filetype = LIBMTP_FILETYPE_VCALENDAR2;
+  } else if (!strcasecmp(ptype,"exe") || !strcasecmp(ptype,"com") || 
+	     !strcasecmp(ptype,"bat") || !strcasecmp(ptype,"dll") || 
+	     !strcasecmp(ptype,"sys")) {
+    genfile->filetype = LIBMTP_FILETYPE_WINEXEC;
   } else {
-    printf("Sorry, type \"%s\" is not yet supported\n", ptype);
-    printf("Currently supported types: ics,jpg,gif,png\n");
-    exit(1);
+    printf("Sorry, file type \"%s\" is not yet supported\n", ptype);
+    printf("Tagging as unknown file type.\n");
+    genfile->filetype = LIBMTP_FILETYPE_UNKNOWN;
   }
 
   printf("Sending file:\n");
