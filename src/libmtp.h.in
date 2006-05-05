@@ -193,7 +193,6 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *,
 			    uint8_t * const, 
 			    uint8_t * const);
 
-
 /**
  * @}
  * @defgroup files The file management API.

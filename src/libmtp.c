@@ -571,8 +571,7 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
 
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
 
-      if (oi.ObjectFormat == PTP_OFC_Association ||
-	  oi.ObjectFormat == PTP_OFC_Undefined) {
+      if (oi.ObjectFormat == PTP_OFC_Association) {
 	// MTP use these object formats for folders which means
 	// these "files" will turn up on a folder listing instead.
 	continue;
