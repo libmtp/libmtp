@@ -740,7 +740,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 	   oi.ObjectFormat != PTP_OFC_MTP_OGG && 
 	   oi.ObjectFormat != PTP_OFC_MTP_MP4 &&
 	   oi.ObjectFormat != PTP_OFC_MTP_UndefinedAudio ) {
-	printf("Not a music track (format: %d), skipping...\n",oi.ObjectFormat);
+	// printf("Not a music track (format: %d), skipping...\n",oi.ObjectFormat);
 	continue;
       }
       
