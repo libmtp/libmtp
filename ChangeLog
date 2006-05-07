@@ -1,3 +1,11 @@
+2006-05-07  Linus Walleij  <triad@df.lth.se>
+
+	* COPYING: since we no longer use any parts of libptp2
+	  and only files from libgphoto2, we switch to the GNU
+	  Lesser General Public License (GNU LGPL). libptp2 is
+	  a derived work from libgphoto2, and so is libmtp, there
+	  are no remnants of libptp2 in libmtp anymore.
+
 2006-05-04  Linus Walleij  <triad@df.lth.se>
 
 	* examples/sendfile.c: fixes some more filetypes.

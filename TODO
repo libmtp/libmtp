@@ -5,6 +5,9 @@ TODO file:
   time, or we cannot upload movies... Righ now libmtp just copy the
   file to memory and transfer it.
 
+* Previous fix can help to get the callbacks working again, cause
+  right now they aren't called.
+
 * Fix compiler warnings.
 
 * Add audio/video playlist support.
