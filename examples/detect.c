@@ -46,8 +46,27 @@ int main (int argc, char **argv)
   uint8_t maxbattlevel;
   uint8_t currbattlevel;
   int ret;
+  int probeonly = 0;
 
   LIBMTP_Init();
+
+  if (argc > 1 && !strcmp(argv[1], "-p")) {
+    probeonly = 1;
+  }
+
+  if (probeonly) {
+    uint16_t vid;
+    uint16_t pid;
+
+    ret = LIBMTP_Detect_Descriptor(&vid, &pid);
+    if (ret > 0) {
+      printf("DETECTED MTP DEVICE WITH VID:%04x, PID:%04X\n", vid, pid);
+      exit(0);
+    } else {
+      exit(1);
+    }
+  }
+
   device = LIBMTP_Get_First_Device();
   if (device == NULL) {
     printf("No devices.\n");

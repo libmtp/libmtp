@@ -25,6 +25,7 @@
 
 #include "libmtp.h"
 #include "libusb-glue.h"
+#include "util.h"
 
 /* OUR APPLICATION USB URB (2MB) ;) */
 #define PTPCAM_USB_URB		2097152
@@ -95,6 +96,8 @@ static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMT
 int ptpcam_usb_timeout = USB_TIMEOUT;
 
 // Local functions
+static struct usb_bus* init_usb();
+static struct usb_device *probe_usb_bus_for_mtp_devices(void);
 static void close_usb(PTP_USB* ptp_usb, uint8_t interfaceNumber);
 static struct usb_device* find_device (int busn, int devicen, short force);
 static void find_endpoints(struct usb_device *dev, int* inep, int* inep_maxpacket, int* outep, int* outep_maxpacket, int* intep);
@@ -105,13 +108,131 @@ static short ptp_read_func (unsigned char *bytes, unsigned int size, void *data,
 static short ptp_check_int (unsigned char *bytes, unsigned int size, void *data, unsigned int *rlen);
 static int usb_clear_stall_feature(PTP_USB* ptp_usb, int ep);
 static int usb_get_endpoint_status(PTP_USB* ptp_usb, int ep, uint16_t* status);
-static struct usb_bus* init_usb();
+
 
 int get_device_list(LIBMTP_device_entry_t ** const devices, int * const numdevs)
 {
   *devices = (LIBMTP_device_entry_t *) &mtp_device_table;
   *numdevs = mtp_device_table_size;
   return 0;
+}
+
+static struct usb_bus* init_usb()
+{
+  usb_init();
+  usb_find_busses();
+  usb_find_devices();
+  return (usb_get_busses());
+}
+
+/**
+ * Check for the Microsoft OS device descriptor and returns device struct
+ * if the device is MTP-compliant. The function will only recognize
+ * a single device connected to the USB bus.
+ *
+ * @return an MTP-compliant USB device if one was found, else NULL.
+ */
+static struct usb_device *probe_usb_bus_for_mtp_devices(void)
+{
+  struct usb_bus *bus;
+  
+  bus = init_usb();
+  for (; bus; bus = bus->next) {
+    struct usb_device *dev;
+    
+    for (dev = bus->devices; dev; dev = dev->next) {
+      usb_dev_handle *devh;
+      unsigned char buf[1024], cmd;
+      int ret;
+  
+      devh = usb_open(dev);
+      if (devh == NULL) {
+	continue;
+      }
+
+      // Read the special descripor, if possible...
+      ret = usb_get_descriptor(devh, 0x03, 0xee, buf, sizeof(buf));
+      
+      if (ret < 10) {
+	// printf("Device: VID %04x/PID %04x: no extended device property...\n",
+	//       dev->descriptor.idVendor,
+	//       dev->descriptor.idProduct);
+	usb_close(devh);
+	continue;
+      }
+
+      if (ret > 0) {
+	// printf("Device: VID %04x/PID %04x: responds to special descriptor call...\n",
+	//       dev->descriptor.idVendor,
+	//       dev->descriptor.idProduct);
+	// data_dump_ascii (stdout, buf, ret, 0);
+      }
+
+      if (!((buf[2] == 'M') && (buf[4]=='S') && (buf[6]=='F') && (buf[8]=='T'))) {
+	// printf("This is not a Microsoft MTP descriptor...\n");
+	usb_close(devh);
+	continue;
+      }
+      
+      cmd = buf[16];
+      ret = usb_control_msg (devh, USB_ENDPOINT_IN|USB_RECIP_DEVICE|USB_TYPE_VENDOR, 
+			     cmd, 0, 4, (char *) buf, sizeof(buf), 1000);
+      if (ret == -1) {
+	//printf("Decice could not respond to control message 1.\n");
+	usb_close(devh);
+	// Return the device anyway.
+	return dev;
+      }
+      
+      if (ret > 0) {
+	//printf("Device response to control message 1:\n");
+	//data_dump_ascii (stdout, buf, ret, 0);
+      }
+
+      ret = usb_control_msg (devh, USB_ENDPOINT_IN|USB_RECIP_DEVICE|USB_TYPE_VENDOR, 
+			     cmd, 0, 5, (char *) buf, sizeof(buf), 1000);
+      if (ret == -1) {
+	//printf("Device could not respond to control message 2.\n");
+	usb_close(devh);
+	// Return the device anyway.
+	return dev;
+      }
+      
+      if (ret > 0) {
+	//printf("Device response to control message 2:\n");
+	//data_dump_ascii (stdout, buf, ret, 0);
+      }
+
+      usb_close(devh);
+      // We can return the device here, it will be the first. 
+      // If it was not MTP, the loop continues before it reaches this point.
+      return dev;
+    }
+  }
+  // If nothing was found we end up here.
+  return NULL;
+}
+
+/**
+ * Detect the MTP device descriptor and return the VID and PID
+ * of the first device found. This is a very low-level function
+ * which is intended for use with <b>udev</b> or other hotplug
+ * mechanisms. The idea is that a script may want to know if the
+ * just plugged-in device was an MTP device or not.
+ * @param vid the Vendor ID (VID) of the first device found.
+ * @param pid the Product ID (PID) of the first device found.
+ * @return the number of detected devices or -1 if the call
+ *         was unsuccessful.
+ */
+int LIBMTP_Detect_Descriptor(uint16_t *vid, uint16_t *pid)
+{
+  struct usb_device *dev = probe_usb_bus_for_mtp_devices();
+  if (dev == NULL) {
+    return 0;
+  }
+  *vid = dev->descriptor.idVendor;
+  *pid = dev->descriptor.idProduct;
+  return 1;
 }
 
 // Based on same function on library.c in libgphoto2
@@ -236,7 +357,7 @@ static void clear_stall(PTP_USB* ptp_usb)
   int ret;
   
   /* check the inep status */
-  ret=usb_get_endpoint_status(ptp_usb,ptp_usb->inep,&status);
+  ret = usb_get_endpoint_status(ptp_usb,ptp_usb->inep,&status);
   if (ret<0) perror ("inep: usb_get_endpoint_status()");
   /* and clear the HALT condition if happend */
   else if (status) {
@@ -274,14 +395,6 @@ static void close_usb(PTP_USB* ptp_usb, uint8_t interfaceNumber)
   usb_close(ptp_usb->handle);
 }
 
-
-static struct usb_bus* init_usb()
-{
-  usb_init();
-  usb_find_busses();
-  usb_find_devices();
-  return (usb_get_busses());
-}
 
 /*
  find_device() returns the pointer to a usb_device structure matching
@@ -325,61 +438,95 @@ uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *inte
 {
   struct usb_bus *bus;
   struct usb_device *dev;
-  
-  bus = init_usb();
-  for (; bus; bus = bus->next) {
-    for (dev = bus->devices; dev; dev = dev->next) {
-      int i;
+  struct usb_endpoint_descriptor *ep;
+  PTPDeviceInfo deviceinfo;
+  uint16_t ret=0;
+  int n;
 
-      // Loop over the list of supported devices
-      for (i = 0; i < mtp_device_table_size; i++) {
-        LIBMTP_device_entry_t const *mtp_device = &mtp_device_table[i];
+  // First try to locate the device using the extended
+  // device descriptor.
+  dev = probe_usb_bus_for_mtp_devices();
+
+  if (dev != NULL) {
+    int i;
+
+    // See if we can find the name of this beast
+    for (i = 0; i < mtp_device_table_size; i++) {
+      LIBMTP_device_entry_t const *mtp_device = &mtp_device_table[i];
+      if (dev->descriptor.idVendor == mtp_device->vendor_id &&
+	  dev->descriptor.idProduct == mtp_device->product_id ) {
+	printf("Autodetected device \"%s\" (VID=%04x,PID=%04x) is known.\n", 
+	       mtp_device->name, dev->descriptor.idVendor, dev->descriptor.idProduct);
+	break;
+      }
+    }
+    if (i == mtp_device_table_size) {
+      printf("Autodetected device with VID=%04x and PID=%04x is UNKNOWN.\n", 
+	     dev->descriptor.idVendor, dev->descriptor.idProduct);
+      printf("Please report this VID/PID and the device model name etc to the\n");
+      printf("libmtp development team!\n");
+    }
+  }
+
+  // If autodetection fails, scan the bus for well known devices.
+  if (dev == NULL) {
+    bus = init_usb();
+    for (; bus; bus = bus->next) {
+      for (dev = bus->devices; dev; dev = dev->next) {
+	int i;
 	
-	if (dev->descriptor.bDeviceClass != USB_CLASS_HUB && 
-	    dev->descriptor.idVendor == mtp_device->vendor_id &&
-	    dev->descriptor.idProduct == mtp_device->product_id ) {
-	  uint16_t ret=0;
-	  int n;
-	  struct usb_endpoint_descriptor *ep;
-	  PTPDeviceInfo deviceinfo;
+	// Loop over the list of supported devices
+	for (i = 0; i < mtp_device_table_size; i++) {
+	  LIBMTP_device_entry_t const *mtp_device = &mtp_device_table[i];
 	  
-	  printf("Found device \"%s\" on USB bus...\n", mtp_device->name);
-	  ep = dev->config->interface->altsetting->endpoint;
-	  n=dev->config->interface->altsetting->bNumEndpoints;
-	  
-	  find_endpoints(dev,&(ptp_usb->inep),&(ptp_usb->inep_maxpacket),&(ptp_usb->outep),&(ptp_usb->outep_maxpacket),&(ptp_usb->intep));
-	  printf("Init PTP USB...\n");
-	  init_ptp_usb(params, ptp_usb, dev);
-	  
-	  ret = ptp_opensession(params,1);
-	  printf("Session open (%d)...\n", ret);
-	  if (ret == PTP_RC_InvalidTransactionID) {
-	    params->transaction_id += 10;
-	    ret = ptp_opensession(params,1);
+	  if (dev->descriptor.bDeviceClass != USB_CLASS_HUB && 
+	      dev->descriptor.idVendor == mtp_device->vendor_id &&
+	      dev->descriptor.idProduct == mtp_device->product_id ) {
+	    
+	    printf("Found non-autodetected device \"%s\" on USB bus...\n", mtp_device->name);
+	    
 	  }
-	  if (ret != PTP_RC_SessionAlreadyOpened && ret != PTP_RC_OK) {
-	    printf("Could not open session! (Return code %d)\n  Try to reset the device.\n", ret);
-	    usb_release_interface(ptp_usb->handle,dev->config->interface->altsetting->bInterfaceNumber);
-	    continue;
-	  }
-	  /* It is actually permissible to call this before opening the session */
-	  ret = ptp_getdeviceinfo(params, &deviceinfo);
-	  if (ret != PTP_RC_OK) {
-	    printf("Could not get device info!\n");
-	    usb_release_interface(ptp_usb->handle,dev->config->interface->altsetting->bInterfaceNumber);
-	    return PTP_CD_RC_ERROR_CONNECTING;
-	  }
-	  
-	  /* we're connected, return ok */
-	  *interfaceNumber = dev->config->interface->altsetting->bInterfaceNumber;
-	  
-	  return PTP_CD_RC_CONNECTED;
 	}
       }
     }
   }
-  /* none found */
-  return PTP_CD_RC_NO_DEVICES;
+
+  // Still not found any?
+  if (dev == NULL) {
+    return PTP_CD_RC_NO_DEVICES;
+  }
+
+  // Found a device, then assign endpoints...
+  ep = dev->config->interface->altsetting->endpoint;
+  n = dev->config->interface->altsetting->bNumEndpoints;
+  find_endpoints(dev, &(ptp_usb->inep), &(ptp_usb->inep_maxpacket),
+		 &(ptp_usb->outep), &(ptp_usb->outep_maxpacket), &(ptp_usb->intep));
+  
+  // printf("Init PTP USB...\n");
+  init_ptp_usb(params, ptp_usb, dev);
+  
+  ret = ptp_opensession(params,1);
+  // printf("Session open (%d)...\n", ret);
+  if (ret == PTP_RC_InvalidTransactionID) {
+    params->transaction_id += 10;
+    ret = ptp_opensession(params,1);
+  }
+  if (ret != PTP_RC_SessionAlreadyOpened && ret != PTP_RC_OK) {
+    printf("Could not open session! (Return code %d)\n  Try to reset the device.\n", ret);
+    usb_release_interface(ptp_usb->handle,dev->config->interface->altsetting->bInterfaceNumber);
+  }
+
+  // It is actually permissible to call this before opening the session
+  ret = ptp_getdeviceinfo(params, &deviceinfo);
+  if (ret != PTP_RC_OK) {
+    printf("Could not get device info!\n");
+    usb_release_interface(ptp_usb->handle,dev->config->interface->altsetting->bInterfaceNumber);
+    return PTP_CD_RC_ERROR_CONNECTING;
+  }
+  
+  // we're connected, return OK
+  *interfaceNumber = dev->config->interface->altsetting->bInterfaceNumber;  
+  return PTP_CD_RC_CONNECTED;
 }
 
 static void find_endpoints(struct usb_device *dev, int* inep, int* inep_maxpacket, int* outep, int *outep_maxpacket, int* intep)

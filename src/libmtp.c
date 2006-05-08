@@ -77,7 +77,7 @@ static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype)
       return entry->ptp_id;
     }
   }
-  printf("map_libmtp_type_to_ptp_type: unknown filetype.\n");
+  // printf("map_libmtp_type_to_ptp_type: unknown filetype.\n");
   return PTP_OFC_Undefined;
 }
 
@@ -97,7 +97,7 @@ static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype)
       return entry->libmtp_id;
     }
   }
-  printf("map_ptp_type_to_libmtp_type: unknown filetype.\n");
+  // printf("map_ptp_type_to_libmtp_type: unknown filetype.\n");
   return LIBMTP_FILETYPE_UNKNOWN;
 }
 

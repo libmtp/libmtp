@@ -179,6 +179,7 @@ int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t ** const, int * cons
  * @defgroup basic The basic device management API.
  * @{
  */
+int LIBMTP_Detect_Descriptor(uint16_t*,uint16_t*);
 LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void);
 void LIBMTP_Release_Device(LIBMTP_mtpdevice_t*);
 void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t*);
