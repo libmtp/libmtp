@@ -235,6 +235,37 @@ int LIBMTP_Detect_Descriptor(uint16_t *vid, uint16_t *pid)
   return 1;
 }
 
+/**
+ * This routine just dumps out low-level
+ * USB information about the current device.
+ * @param ptp_usb the USB device to get information from.
+ */
+void dump_usbinfo(PTP_USB *ptp_usb)
+{
+  int res;
+  struct usb_device *dev;
+
+#ifdef LIBUSB_HAS_GET_DRIVER_NP
+  char devname[0x10];
+  
+  devname[0] = '\0';
+  res = usb_get_driver_np(ptp_usb->handle, ptp_usb->interface, devname, sizeof(devname));
+  if (devname[0] != '\0') {
+    printf("   Using kernel interface \"%s\"\n", devname);
+  }
+#endif
+  dev = usb_device(ptp_usb->handle);
+  printf("   bcdUSB: %d\n", dev->descriptor.bcdUSB);
+  printf("   bDeviceClass: %d\n", dev->descriptor.bDeviceClass);
+  printf("   bDeviceSubClass: %d\n", dev->descriptor.bDeviceSubClass);
+  printf("   bDeviceProtocol: %d\n", dev->descriptor.bDeviceProtocol);
+  printf("   bMaxPacketSize0: %d\n", dev->descriptor.bMaxPacketSize0);
+  printf("   idVendor: %04x\n", dev->descriptor.idVendor);
+  printf("   idProduct: %04x\n", dev->descriptor.idProduct);
+  // TODO: add in string dumps for iManufacturer, iProduct, iSerialnumber...
+}
+
+
 // Based on same function on library.c in libgphoto2
 #define CONTEXT_BLOCK_SIZE	100000
 static short
@@ -343,11 +374,11 @@ static void init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device
       exit(0);
     }
     ptp_usb->handle = device_handle;
-    usb_claim_interface(device_handle, dev->config->interface->altsetting->bInterfaceNumber);
     if (usb_claim_interface(device_handle, dev->config->interface->altsetting->bInterfaceNumber)) {
       perror("usb_claim_interface()");
       exit(0);
     }
+    ptp_usb->interface = dev->config->interface->altsetting->bInterfaceNumber;
   }
 }
 

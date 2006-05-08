@@ -288,7 +288,10 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 {
   int i;
   PTPParams *params = (PTPParams *) device->params;
-    
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
+  
+  printf("USB low-level info:\n");
+  dump_usbinfo(ptp_usb);
   /* Print out some verbose information */
   printf("Device info:\n");
   printf("   Manufacturer: %s\n", params->deviceinfo.Manufacturer);

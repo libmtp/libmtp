@@ -18,16 +18,18 @@
  */
 typedef struct _PTP_USB PTP_USB;
 struct _PTP_USB {
-	usb_dev_handle* handle;
-	int inep;
-        int inep_maxpacket;
-	int outep;
-        int outep_maxpacket;
-	int intep;
+  usb_dev_handle* handle;
+  int interface;
+  int inep;
+  int inep_maxpacket;
+  int outep;
+  int outep_maxpacket;
+  int intep;
 };
 
 int get_device_list(LIBMTP_device_entry_t ** const devices, int * const numdevs);
 int open_device (int busn, int devn, short force, PTP_USB *ptp_usb, PTPParams *params, struct usb_device **dev);
+void dump_usbinfo(PTP_USB *ptp_usb);
 void close_device (PTP_USB *ptp_usb, PTPParams *params, uint8_t interfaceNumber);
 uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *interfaceNumber);
 
