@@ -1915,7 +1915,7 @@ ptp_mtp_setobjectpropvalue (
         ptp.Param1 = oid;
         ptp.Param2 = opc;
 	size = ptp_pack_DPV(params, value, &data, datatype);
-        ret = ptp_transaction(params, &ptp, PTP_DP_SENDDATA, size, &data, NULL);
+    ret = ptp_transaction(params, &ptp, PTP_DP_SENDDATA, size, &data, NULL);
 	free(data);
 	return ret;
 }
@@ -2878,3 +2878,142 @@ ptp_render_mtp_propname(uint16_t propid, int spaceleft, char *txt) {
 			return snprintf(txt, spaceleft,ptp_opc_trans[i].name);
 	return snprintf (txt, spaceleft,"unknown(%04x)", propid);
 }
+
+#define PACK_ARRAY(type,func)  {					\
+		size=sizeof(uint32_t)+sizeof(type)*arraylen;	\
+		dpv=malloc(size);	\
+		htod32a(dpv,arraylen);	\
+		for (i=0; i<arraylen; i++)	\
+			func(&(dpv[sizeof(uint32_t)+i*sizeof(type)]),((type*)value)[i]);	\
+	}
+
+inline uint32_t
+ptp_pack_array (PTPParams *params, void* value, unsigned char** dpvptr, uint16_t datatype, uint32_t arraylen)
+{
+	unsigned char* dpv=NULL;
+	uint32_t size=0;
+	int i=0;
+	
+	switch (datatype) {
+		case PTP_DTC_AINT8:
+			PACK_ARRAY(int8_t,htod8a);
+			break;
+		case PTP_DTC_AUINT8:
+			PACK_ARRAY(uint8_t,htod8a);
+			break;
+		case PTP_DTC_AINT16:
+			PACK_ARRAY(int16_t,htod16a);
+			break;
+		case PTP_DTC_AUINT16:
+			PACK_ARRAY(uint16_t,htod16a);
+			break;	
+		case PTP_DTC_AINT32:
+			PACK_ARRAY(int32_t,htod32a);
+			break;
+		case PTP_DTC_AUINT32:
+			PACK_ARRAY(uint32_t,htod32a);
+			break;
+		/*case PTP_DTC_AINT64:
+			PACK_ARRAY(int64_t,htod64a);
+			break;
+		case PTP_DTC_AUINT64:
+			PACK_ARRAY(uint64_t,htod64a);
+			break;
+		case PTP_DTC_AINT128:
+			PACK_ARRAY(int128_t,htod128a);
+			break;
+		case PTP_DTC_AUINT128:
+			PACK_ARRAY(uint128_t,htod128a);
+			break;*/
+		default:
+			printf("data type 0x%.04x not supported by ptp_pack_array\n", datatype);
+			return 0;
+	}
+	*dpvptr=dpv;
+	return size;
+}
+
+#define UNPACK_ARRAY(type,func)  {					\
+	  int i=0;	\
+		*arraylen=dtoh32a(&data[0]);	\
+		*value=malloc(sizeof(type)*(*arraylen));	\
+		for (i=0; i<*arraylen; i++)	\
+				((type*)(*value))[i]=func(&data[sizeof(uint32_t)+i*sizeof(type)]);	\
+		return *arraylen*sizeof(type);	\
+	}
+
+inline uint32_t
+ptp_unpack_array (PTPParams *params, unsigned char* data, void** value, uint16_t datatype, uint32_t* arraylen)
+{
+	switch (datatype) {
+		case PTP_DTC_AINT8:
+			UNPACK_ARRAY(int8_t,dtoh8a);
+			break;
+		case PTP_DTC_AUINT8:
+			UNPACK_ARRAY(uint8_t,dtoh8a);
+			break;
+		case PTP_DTC_AINT16:
+			UNPACK_ARRAY(int16_t,dtoh16a);
+			break;
+		case PTP_DTC_AUINT16:
+			UNPACK_ARRAY(uint16_t,dtoh16a);
+			break;	
+		case PTP_DTC_AINT32:
+			UNPACK_ARRAY(int32_t,dtoh32a);
+			break;
+		case PTP_DTC_AUINT32:
+			UNPACK_ARRAY(uint32_t,dtoh32a);
+			break;
+		case PTP_DTC_AINT64:
+			UNPACK_ARRAY(int64_t,dtoh64a);
+			break;
+		case PTP_DTC_AUINT64:
+			UNPACK_ARRAY(uint64_t,dtoh64a);
+			break;
+			/*case PTP_DTC_AINT128:
+			UNPACK_ARRAY(int128_t,dtoh128a);
+			break;
+		case PTP_DTC_AUINT128:
+			UNPACK_ARRAY(uint128_t,dtoh128a);
+			break;*/
+		default:
+			printf("data type 0x%.04x not supported by ptp_unpack_array\n", datatype);
+			return 0;
+	}
+}
+
+uint16_t
+ptp_getobjectreferences (PTPParams* params, uint32_t handle, uint32_t** ohArray, uint32_t* arraylen)
+{
+    PTPContainer ptp;
+    uint16_t ret;
+    unsigned char* dpv=NULL;
+
+    PTP_CNT_INIT(ptp);
+    ptp.Code=PTP_OC_MTP_GetObjectReferences;
+    ptp.Param1=handle;
+    ptp.Nparam=1;
+    ret=ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &dpv, NULL);
+    if (ret == PTP_RC_OK) ptp_unpack_array(params, dpv, (void**)ohArray, PTP_DTC_AUINT32, arraylen);
+    free(dpv);
+    return ret;
+}
+
+uint16_t
+ptp_setobjectreferences (PTPParams* params, uint32_t handle, uint32_t* ohArray, uint32_t arraylen)
+{
+    PTPContainer ptp;
+    uint16_t ret;
+    uint32_t size;
+    unsigned char* dpv=NULL;
+
+    PTP_CNT_INIT(ptp);
+    ptp.Code=PTP_OC_MTP_SetObjectReferences;
+    ptp.Param1=handle;
+    ptp.Nparam=1;
+    size=ptp_pack_array(params, ohArray, &dpv, PTP_DTC_AUINT32, arraylen);
+    ret=ptp_transaction(params, &ptp, PTP_DP_SENDDATA, size, (unsigned char **)&dpv, NULL);
+    free(dpv);
+    return ret;
+}
+
