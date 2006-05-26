@@ -1,3 +1,11 @@
+2006-05-26  Dave Kelly <libmtp@ravelox.co.uk>
+
+	* src/libmtp.c: refactored object handling to be more generic
+	* src/libmtp.h.in: ditto
+	* examples/refactortest.c: Added simple example to use refactoring
+	* examples/getplaylist.c: Added example to extract playlist data
+	* src/ptp.c: Re-added ptp_get/set_objectreferences to allow for playlist handling
+
 2006-05-08  Linus Walleij  <triad@df.lth.se>
 
 	* src/libmtp.h.in: add simple detection function.
