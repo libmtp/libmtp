@@ -6,6 +6,14 @@
 	* src/ptp.c: sync to libgphoto2.
 	* src/ptp.h: ditto.
 	* src/ptp-pack.c: ditto.
+	* src/libmtp.c: fixed all filetype API related functions
+	  not to use any PTP intrinsic defines at all, made all
+	  parameters to functions use the internal libmtp interface
+	  enumerations and definitions. Removed LIBMTP_Release():
+	  we can live with the memory lost during init. You're not
+	  supposed to re-initialize the device. Consequently removed
+	  the delete function that cleaned the filetype assoc list.
+	* examples/refactortest.c: reflect changes.
 
 2006-05-26  Dave Kelly <libmtp@ravelox.co.uk>
 

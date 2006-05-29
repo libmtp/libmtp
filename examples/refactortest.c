@@ -56,19 +56,19 @@
 
 void test_mp3_datafunc(LIBMTP_mtpdevice_t *device, uint32_t object_id, void *data)
 {
-	LIBMTP_track_t *track;
-
-	if(data == NULL) return;
-
-	track = (LIBMTP_track_t *)data;
-
-    track->title = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_Name,1);
-	track->artist = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_Artist,1);
-	track->duration = LIBMTP_Get_U32_From_Object(device, object_id, PTP_OPC_Duration, 0);
-	track->duration = LIBMTP_Get_U16_From_Object(device, object_id, PTP_OPC_Track, 0);
-	track->artist = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_Genre,1);
-	track->album = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_AlbumName,1);
-	track->date = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_OriginalReleaseDate,0);
+  LIBMTP_track_t *track;
+  
+  if(data == NULL) return;
+  
+  track = (LIBMTP_track_t *) data;
+  
+  track->title = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_Name,1);
+  track->artist = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_Artist,1);
+  track->duration = LIBMTP_Get_U32_From_Object(device, object_id, PTP_OPC_Duration, 0);
+  track->duration = LIBMTP_Get_U16_From_Object(device, object_id, PTP_OPC_Track, 0);
+  track->artist = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_Genre,1);
+  track->album = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_AlbumName,1);
+  track->date = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_OriginalReleaseDate,0);
 }
 
 int main (int argc, char **argv)
@@ -85,7 +85,7 @@ int main (int argc, char **argv)
     exit (0);
   }
   
-  LIBMTP_Set_Datafunc(0x3009, test_mp3_datafunc);
+  LIBMTP_Set_Datafunc(LIBMTP_FILETYPE_MP3, test_mp3_datafunc);
 
   list = LIBMTP_Make_List(device, filter, sizeof(filter)/sizeof(uint32_t), NULL, 0);
 
@@ -94,7 +94,7 @@ int main (int argc, char **argv)
   LIBMTP_destroy_object_t(list, 1);
 
   LIBMTP_Release_Device(device);
-  LIBMTP_Release();
+
   printf("OK.\n");
   exit (0);
 }

@@ -26,6 +26,13 @@ struct filemap_t {
   LIBMTP_filemap_t *next;
 };
 
+// Map this libptp2 single-threaded callback to the LIBMTP callback type
+// extern Progress_Callback* globalCallback;
+// static Progress_Callback single_threaded_callback_helper;
+
+static void *single_threaded_callback_data;
+static LIBMTP_progressfunc_t *single_threaded_callback;
+
 // Global variables
 static LIBMTP_filemap_t *filemap = NULL;
 
@@ -58,26 +65,16 @@ static LIBMTP_filemap_t *new_filemap_entry()
   return filemap;
 }
 
-static void delete_filemap(LIBMTP_filemap_t *filemap_entry)
-{
-  if(filemap_entry == NULL) return;
-  
-  free(filemap_entry->description);
-  filemap_entry->description = NULL;
-  
-  free(filemap_entry);
-}
-
 /**
  * Register an MTP or PTP filetype for data retrieval
  *
  * @param description Text description of filetype
- * @param id MTP filetype id
+ * @param id libmtp internal filetype id
  * @param ptp_id PTP filetype id
  * @param constructor Pointer to function to create data structure for filetype
  * @param destructor Pointer to function to destroy data structure for filetype
  * @param datafunc Pointer to function to fill data structure
- * @return	PTP_RC_OK for success or PTP_RC_GeneralError for error
+ * @return 0 for success any other value means error.
 */
 
 int LIBMTP_Register_Filetype(char *description, LIBMTP_filetype_t id, uint16_t ptp_id, void *constructor, void *destructor, void *datafunc)
@@ -90,13 +87,15 @@ int LIBMTP_Register_Filetype(char *description, LIBMTP_filetype_t id, uint16_t p
     if(current->id == id) {
       break;
     }
-    current=current->next;
+    current = current->next;
   }
   
   // Create the entry
   if(current == NULL) {
     new = new_filemap_entry();
-    if(new == NULL) return PTP_RC_GeneralError;
+    if(new == NULL) {
+      return 1;
+    }
     
     new->id = id;
     if(description != NULL) new->description = (char *)strdup(description);
@@ -117,136 +116,154 @@ int LIBMTP_Register_Filetype(char *description, LIBMTP_filetype_t id, uint16_t p
   } else {
     free(current->description);
     current->description = NULL;
-    if(description != NULL) current->description = (char *)strdup(description);
+    if(description != NULL) {
+      current->description = (char *)strdup(description);
+    }
     current->ptp_id = ptp_id;
     current->constructor = constructor;
     current->destructor = destructor;
     current->datafunc = datafunc;
   }
 
-  return PTP_RC_OK;
+  return 0;
 }
 
 /**
  * Set the description for a MTP filetype
  *
- * @param id MTP filetype id
+ * @param id libmtp internal filetype id
  * @param description Text description of filetype
- * @return  PTP_RC_OK for success or PTP_RC_GeneralError for error
+ * @return 0 on success, any other value means error.
 */
-int LIBMTP_Set_Description(uint32_t id, char *description)
+int LIBMTP_Set_Filetype_Description(LIBMTP_filetype_t id, char *description)
 {
-  LIBMTP_filemap_t *current, *found = NULL;
+  LIBMTP_filemap_t *current;
   
-  if(filemap == NULL) return PTP_RC_GeneralError;
+  if (filemap == NULL) {
+    return 1;
+  }
   
   // Go through the filemap until an entry is found
   current = filemap;
   
-  while(current) {
-    if(current->ptp_id == id) {
-      found = current;
+  while(current != NULL) {
+    if(current->id == id) {
       break;
     }
-    current=current->next;
+    current = current->next;
   }
   
-  if(found == NULL) return PTP_RC_GeneralError;
-  
-  free(found->description);
-  current->description = NULL;
-  if(description != NULL) current->description = (char *)strdup(description);
-  return PTP_RC_OK;
+  if(current == NULL) {
+    return 1;
+  }
+
+  if (current->description != NULL) {
+    free(current->description);
+    current->description = NULL;
+  }
+  if(description != NULL) {
+    current->description = (char *) strdup(description);
+  }
+  return 0;
 }
 
 /**
  * Set the constructor for a MTP filetype
  *
- * @param id MTP filetype id
+ * @param id libmtp internal filetype id
  * @param constructor Pointer to a constructor function
- * @return  PTP_RC_OK for success or PTP_RC_GeneralError for error
+ * @return 0 on success, any other value means failure
 */
-int LIBMTP_Set_Constructor(uint32_t id, void *constructor)
+int LIBMTP_Set_Constructor(LIBMTP_filetype_t id, void *constructor)
 {
-  LIBMTP_filemap_t *current, *found = NULL;
+  LIBMTP_filemap_t *current;
   
-  if(filemap == NULL) return PTP_RC_GeneralError;
-  
+  if (filemap == NULL) {
+    return 1;
+  } 
+ 
   // Go through the filemap until an entry is found
   current = filemap;
   
-  while(current) {
-    if(current->ptp_id == id) {
-      found = current;
+  while(current != NULL) {
+    if(current->id == id) {
       break;
     }
-    current=current->next;
+    current = current->next;
   }
   
-  if(found == NULL) return PTP_RC_GeneralError;
+  if (current == NULL) {
+    return 1;
+  }
   
   current->constructor = constructor;
-  return PTP_RC_OK;
+  return 0;
 }
 
 /**
  * Set the destructor for a MTP filetype
  *
- * @param id MTP filetype id
+ * @param id libmtp internal filetype id
  * @param destructor Pointer to a destructor function
- * @return  PTP_RC_OK for success or PTP_RC_GeneralError for error
+ * @return 0 on success, any other value means failure
 */
-int LIBMTP_Set_Destructor(uint32_t id, void *destructor)
+int LIBMTP_Set_Destructor(LIBMTP_filetype_t id, void *destructor)
 {
-  LIBMTP_filemap_t *current, *found = NULL;
+  LIBMTP_filemap_t *current;
   
-  if(filemap == NULL) return PTP_RC_GeneralError;
+  if (filemap == NULL) {
+    return 1;
+  }
   
   // Go through the filemap until an entry is found
   current = filemap;
   
-  while(current) {
-    if(current->ptp_id == id) {
-      found = current;
+  while(current != NULL) {
+    if(current->id == id) {
       break;
     }
-    current=current->next;
+    current = current->next;
   }
   
-  if(found == NULL) return PTP_RC_GeneralError;
+  if(current == NULL) {
+    return 1;
+  }
   
   current->destructor = destructor;
-  return PTP_RC_OK;
+  return 0;
 }
 
 /**
  * Set the datafunc for a MTP filetype
  *
- * @param id MTP filetype id
+ * @param id libmtp internal filetype id
  * @param datafunc Pointer to a data function
- * @return  PTP_RC_OK for success or PTP_RC_GeneralError for error
+ * @return 0 on success, any other value means failure
 */
-int LIBMTP_Set_Datafunc(uint32_t id, void *datafunc)
+int LIBMTP_Set_Datafunc(LIBMTP_filetype_t id, void *datafunc)
 {
-  LIBMTP_filemap_t *current, *found = NULL;
+  LIBMTP_filemap_t *current;
   
-  if(filemap == NULL) return PTP_RC_GeneralError;
+  if (filemap == NULL) {
+    return 1;
+  }
   
   // Go through the filemap until an entry is found
   current = filemap;
   
-  while(current) {
-    if(current->ptp_id == id) {
-      found = current;
+  while(current != NULL) {
+    if(current->id == id) {
       break;
     }
-    current=current->next;
+    current = current->next;
   }
   
-  if(found == NULL) return PTP_RC_GeneralError;
+  if(current == NULL) {
+    return 1;
+  }
   
   current->datafunc = datafunc;
-  return PTP_RC_OK;
+  return 0;
 }
 
 static void init_filemap()
@@ -293,10 +310,10 @@ static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype)
   current = filemap;
 
   while (current != NULL) {
-	  if(current->id == intype) {
-		  return current->ptp_id;
-	  }
-	  current = current->next;
+    if(current->id == intype) {
+      return current->ptp_id;
+    }
+    current = current->next;
   }
   // printf("map_libmtp_type_to_ptp_type: unknown filetype.\n");
   return PTP_OFC_Undefined;
@@ -315,10 +332,10 @@ static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype)
   current = filemap;
 
   while (current != NULL) {
-	  if(current->ptp_id == intype) {
-		  return current->id;
-	  }
-	  current = current->next;
+    if(current->ptp_id == intype) {
+      return current->id;
+    }
+    current = current->next;
   }
   // printf("map_ptp_type_to_libmtp_type: unknown filetype.\n");
   return LIBMTP_FILETYPE_UNKNOWN;
@@ -357,10 +374,10 @@ static void *get_constructor(uint16_t intype)
   current = filemap;
 
   while (current != NULL) {
-	  if(current->ptp_id == intype) {
-		  return current->constructor;
-	  }
-	  current = current->next;
+    if(current->ptp_id == intype) {
+      return current->constructor;
+    }
+    current = current->next;
   }
   return NULL;
 }
@@ -377,10 +394,10 @@ static void *get_destructor(uint16_t intype)
   current = filemap;
 
   while (current != NULL) {
-	  if(current->ptp_id == intype) {
-		  return current->destructor;
-	  }
-	  current = current->next;
+    if(current->ptp_id == intype) {
+      return current->destructor;
+    }
+    current = current->next;
   }
   return NULL;
 }
@@ -388,7 +405,7 @@ static void *get_destructor(uint16_t intype)
 /**
  * This helper function returns a textual description for a libmtp
  * file type to be used in dialog boxes etc.
- * @param intype the filetype to get a description for.
+ * @param intype the libmtp internal filetype to get a description for.
  * @return a string representing the filetype, this must <b>NOT</b>
  *         be free():ed by the caller!
  */
@@ -399,21 +416,14 @@ char const * LIBMTP_Get_Filetype_Description(LIBMTP_filetype_t intype)
   current = filemap;
 
   while (current != NULL) {
-	  if(current->ptp_id == intype) {
-		  return current->description;
-	  }
-	  current = current->next;
+    if(current->id == intype) {
+      return current->description;
+    }
+    current = current->next;
   }
-
+  
   return "Unknown filetype";
 }
-
-// Map this libptp2 single-threaded callback to the LIBMTP callback type
-// extern Progress_Callback* globalCallback;
-// static Progress_Callback single_threaded_callback_helper;
-
-static void *single_threaded_callback_data;
-static LIBMTP_progressfunc_t *single_threaded_callback;
 
 /**
  * This is a ugly workaround due to limitations in callback set by
@@ -432,7 +442,10 @@ static int single_threaded_callback_helper(uint32_t sent, uint32_t total) {
 }
 
 /**
- * Initialize the library. 
+ * Initialize the library. You are only supposed to call this
+ * one, before using the library for the first time in a program.
+ * Never re-initialize libmtp!
+ *
  * The only thing this does at the moment is to initialise the
  * filetype mapping table.
  */
@@ -443,42 +456,35 @@ void LIBMTP_Init(void)
 }
 
 /**
- * Uninitialize the library.
- */
-void LIBMTP_Release(void)
-{
-	delete_filemap(filemap);
-	return;
-}
-
-/**
  * Retrieves a string from an object
  *
  * @param device a pointer to an MTP device.
  * @param object_id Object reference
  * @param attribute_id PTP attribute ID
  * @param getUtf8 retrieve the string as UTF8. Specify 1 for UTF8.
- * @return string
+ * @return valid string or NULL on failure.
  */
-char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device,uint32_t object_id, uint32_t attribute_id, char getUtf8)
+char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t object_id, 
+				    uint32_t attribute_id, char getUtf8)
 {
   PTPPropertyValue propval;
   char *retstring = NULL;
-  PTPParams *params = NULL;
+  PTPParams *params = (PTPParams *) device->params;
   int ret;
-
-  if ( device == NULL ) return retstring;
-
-  params = (PTPParams *)device->params;
+  
+  if ( device == NULL ) {
+    return NULL;
+  }
+  
   ret = ptp_mtp_getobjectpropvalue(params, object_id,
                                    attribute_id,
                                    &propval,
-                                   ( getUtf8 ==1 ? PTP_DTC_UNISTR : PTP_DTC_STR ));
+                                   ( getUtf8 == 1 ? PTP_DTC_UNISTR : PTP_DTC_STR ));
   if (ret == PTP_RC_OK) {
     if (getUtf8 == 1) {
       if (propval.unistr != NULL) {
-       retstring = ucs2_to_utf8(propval.unistr);
-       free(propval.unistr);
+	retstring = ucs2_to_utf8(propval.unistr);
+	free(propval.unistr);
       }
     } else {
       if (propval.str != NULL) {
@@ -498,18 +504,20 @@ char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device,uint32_t object_i
  * @param object_id Object reference
  * @param attribute_id PTP attribute ID
  * @param default Default value to return if
- * @return uint32_t
+ * @return the value
  */
-uint32_t LIBMTP_Get_U32_From_Object(LIBMTP_mtpdevice_t *device,uint32_t object_id, uint32_t attribute_id, uint32_t value_default)
+uint32_t LIBMTP_Get_U32_From_Object(LIBMTP_mtpdevice_t *device,uint32_t object_id, 
+				    uint32_t attribute_id, uint32_t value_default)
 {
   PTPPropertyValue propval;
   uint32_t retval = value_default;
-  PTPParams *params = NULL;
+  PTPParams *params = (PTPParams *) device->params;
   int ret;
 
-  if ( device == NULL ) return retval;
+  if ( device == NULL ) {
+    return value_default;
+  }
 
-  params = (PTPParams *)device->params;
   ret = ptp_mtp_getobjectpropvalue(params, object_id,
                                    attribute_id,
                                    &propval,
@@ -528,18 +536,20 @@ uint32_t LIBMTP_Get_U32_From_Object(LIBMTP_mtpdevice_t *device,uint32_t object_i
  * @param object_id Object reference
  * @param attribute_id PTP attribute ID
  * @param default Default value to return if
- * @return uint16_t
+ * @return a value
  */
-uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *device,uint32_t object_id, uint32_t attribute_id, uint16_t value_default)
+uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *device, uint32_t object_id, 
+				    uint32_t attribute_id, uint16_t value_default)
 {
   PTPPropertyValue propval;
   uint16_t retval = value_default;
-  PTPParams *params = NULL;
+  PTPParams *params = (PTPParams *) device->params;
   int ret;
 
-  if ( device == NULL ) return retval;
+  if ( device == NULL ) {
+    return value_default;
+  }
 
-  params = (PTPParams *)device->params;
   ret = ptp_mtp_getobjectpropvalue(params, object_id,
                                    attribute_id,
                                    &propval,
@@ -547,7 +557,7 @@ uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *device,uint32_t object_i
   if (ret == PTP_RC_OK) {
     retval = propval.u16;
   }
-
+  
   return retval;
 }
 
@@ -559,17 +569,18 @@ uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *device,uint32_t object_i
  * @param attribute_id PTP attribute ID
  * @param string string value to set
  * @param setUtf8 Specify string as UTF8. Set to 1 if UTF8.
- * @return PTP_RC_OK for success.
+ * @return 0 on success, any other value means failure
  */
-int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device,uint32_t object_id, uint32_t attribute_id, char *string, int setUtf8)
+int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t object_id, uint32_t attribute_id, 
+			     char *string, int setUtf8)
 {
   PTPPropertyValue propval;
-  PTPParams *params = NULL;
-  int ret = PTP_RC_OK;
+  PTPParams *params = (PTPParams *) device->params;
+  int ret;
 
-  if (device == NULL || string == NULL) return ret;
-
-  params = (PTPParams *)device->params;
+  if (device == NULL || string == NULL) {
+    return 1;
+  }
 
   if (setUtf8 == 1) {
     propval.unistr = utf8_to_ucs2((const unsigned char *) string);
@@ -579,8 +590,11 @@ int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device,uint32_t object_id, uint
     propval.str = string;
     ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_STR);
   }
+  if (ret != PTP_RC_OK) {
+    return 1;
+  }
 
-  return ret;
+  return 0;
 }
 
 /**
@@ -590,22 +604,26 @@ int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device,uint32_t object_id, uint
  * @param object_id Object reference
  * @param attribute_id PTP attribute ID
  * @param value 32-bit unsigned integer to set
- * @return PTP_RC_OK for success.
+ * @return 0 on success, any other value means failure
  */
-int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *device,uint32_t object_id, uint32_t attribute_id, uint32_t value)
+int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *device,uint32_t object_id, 
+			  uint32_t attribute_id, uint32_t value)
 {
   PTPPropertyValue propval;
-  PTPParams *params = NULL;
-  int ret = PTP_RC_OK;
+  PTPParams *params = (PTPParams *) device->params;
+  int ret;
 
-  if (device == NULL) return ret;
-
-  params = (PTPParams *)device->params;
+  if (device == NULL) {
+    return 1;
+  }
 
   propval.u32 = value;
   ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UINT32);
-
-  return ret;
+  if (ret != PTP_RC_OK) {
+    return 1;
+  }
+  
+  return 0;
 }
 
 /**
@@ -615,22 +633,26 @@ int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *device,uint32_t object_id, uint32_
  * @param object_id Object reference
  * @param attribute_id PTP attribute ID
  * @param value 16-bit unsigned integer to set
- * @return PTP_RC_OK for success.
+ * @return 0 on success, any other value means failure
  */
-int LIBMTP_Set_Object_U16(LIBMTP_mtpdevice_t *device,uint32_t object_id, uint32_t attribute_id, uint16_t value)
+int LIBMTP_Set_Object_U16(LIBMTP_mtpdevice_t *device,uint32_t object_id, 
+			  uint32_t attribute_id, uint16_t value)
 {
   PTPPropertyValue propval;
-  PTPParams *params = NULL;
-  int ret = PTP_RC_OK;
+  PTPParams *params = (PTPParams *) device->params;
+  int ret;
 
-  if (device == NULL) return ret;
-
-  params = (PTPParams *)device->params;
+  if (device == NULL) {
+    return 1;
+  }
 
   propval.u16 = value;
   ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UINT16);
+  if (ret != PTP_RC_OK) {
+    return 1;
+  }
 
-  return ret;
+  return 0;
 }
 
 /**
@@ -640,26 +662,29 @@ int LIBMTP_Set_Object_U16(LIBMTP_mtpdevice_t *device,uint32_t object_id, uint32_
  * @param object_id Object reference
  * @param items array of unsigned 32-bit integers
  * @param len length of array
- * @return PTP_RC_OK for success.
+ * @return 0 on success, any other value means failure
  */
-int LIBMTP_Get_Object_References(LIBMTP_mtpdevice_t *device, uint32_t object_id, uint32_t **items, uint32_t *len)
+int LIBMTP_Get_Object_References(LIBMTP_mtpdevice_t *device, uint32_t object_id, 
+				 uint32_t **items, uint32_t *len)
 {
   PTPParams *params = (PTPParams *) device->params;
   uint32_t ret;
 
+  // A device must be attached
   if (device == NULL ) {
     *items = NULL;
     *len = 0;
-    return PTP_RC_OK;
+    return 1;
   }
   
   ret = ptp_mtp_getobjectreferences (params, object_id, items, len);
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
     printf("LIBMTP_Get_Object_References: Could not get object references\n");
+    return 1;
   }
 
-  return ret;
+  return 0;
 }
 
 /**
@@ -669,24 +694,26 @@ int LIBMTP_Get_Object_References(LIBMTP_mtpdevice_t *device, uint32_t object_id,
  * @param object_id Object reference
  * @param items array of unsigned 32-bit integers
  * @param len length of array
- * @return PTP_RC_OK for success.
+ * @return 0 on success, any other value means failure
  */
-int LIBMTP_Set_Object_References(LIBMTP_mtpdevice_t *device, uint32_t object_id, uint32_t *items, uint32_t len)
+int LIBMTP_Set_Object_References(LIBMTP_mtpdevice_t *device, uint32_t object_id, 
+				 uint32_t *items, uint32_t len)
 {
   PTPParams *params = (PTPParams *) device->params;
   uint32_t ret;
 
   if (device == NULL || items == NULL) {
-    return PTP_RC_OK;
+    return 1;
   }
   
   ret = ptp_mtp_setobjectreferences (params, object_id, items, len);
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
     printf("LIBMTP_Set_Object_References: Could not set object references\n");
+    return 1;
   }
   
-  return ret;
+  return 0;
 }
 
 
@@ -1012,7 +1039,7 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device,
 }
 
 /**
- * This creates a new object structure and allocates memory
+ * This creates a new MTP object structure and allocates memory
  * for it. Notice that if you add strings to this structure they
  * will be freed by the corresponding <code>LIBMTP_destroy_object_t</code>
  * operation later, so be careful of using strdup() when assigning 
@@ -1046,6 +1073,7 @@ LIBMTP_object_t *LIBMTP_new_object_t(void)
 
   return new;
 }
+
 /**
  * This creates a new file metadata structure and allocates memory
  * for it. Notice that if you add strings to this structure they
@@ -1146,7 +1174,7 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
 
       if (oi.ObjectFormat == PTP_OFC_Association) {
-	// MTP use these object formats for folders which means
+	// MTP use thesis object format for folders which means
 	// these "files" will turn up on a folder listing instead.
 	continue;
       }
@@ -2078,33 +2106,33 @@ LIBMTP_folder_t *LIBMTP_new_folder_t(void)
  */
 void LIBMTP_destroy_object_t(LIBMTP_object_t *object, uint32_t recursive)
 {
-	if(object == NULL) {
-		return;
-	}
+  if(object == NULL) {
+    return;
+  }
+  
+  //Destroy from the bottom up
+  if(recursive==1) {
+    LIBMTP_destroy_object_t(object->child, recursive);
+    object->child = NULL;
+    LIBMTP_destroy_object_t(object->sibling, recursive);
+    object->sibling = NULL;
+  }
 
-	//Destroy from the bottom up
-	if(recursive==1) {
-		LIBMTP_destroy_object_t(object->child, recursive);
-		object->child = NULL;
-		LIBMTP_destroy_object_t(object->sibling, recursive);
-		object->sibling = NULL;
-	}
-
-	if(object->name != NULL) free(object->name);
-
-	//Use the data type destructor
-	if(object->data != NULL) {
-		void (*destructor)(void *);
-
-		destructor = get_destructor(object->type);
-
-		if(destructor != NULL) {
-			(*destructor)(object->data);
-		}
-		object->data = NULL;
-	}
-
-	free(object);
+  if(object->name != NULL) free(object->name);
+  
+  //Use the data type destructor
+  if(object->data != NULL) {
+    void (*destructor)(void *);
+    
+    destructor = get_destructor(object->type);
+    
+    if(destructor != NULL) {
+      (*destructor)(object->data);
+    }
+    object->data = NULL;
+  }
+  
+  free(object);
 }
 
 /**
@@ -2310,19 +2338,21 @@ LIBMTP_object_t *LIBMTP_Find_Object(LIBMTP_object_t *objectlist, uint32_t id)
 }
 
 /**
- * This returns a list of objects on the current MTP device.
+ * This returns a list of objects on the current MTP device,
+ * selected by a filter based on PTP object ID:s.
  *
- * @param device a pointer to the device to get the track listing for.
+ * @param device a pointer to the device to get the object listing for.
  * @param filter array of unsigned 32-bit integers specifying which types
- * to include in the list
- * @param filter_len length of filter array
+ *        to include in the list
+ * @param filter_len length of filter array in 32-bit words
  * @param exclusions array of unsigned 32-bit integers specifying which types
- * to exclude from the list
+ *        to exclude from the list
  * @param exclusion_len length of exclusion array
  * @return a list of objects
  * @see LIBMTP_destroy_object_t()
  */
-LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter, uint32_t filter_len, uint32_t *exclusions, uint32_t exclusion_len)
+LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter, 
+				  uint32_t filter_len, uint32_t *exclusions, uint32_t exclusion_len)
 {
   uint32_t i = 0;
   LIBMTP_object_t *objectlist = NULL;
@@ -2330,7 +2360,7 @@ LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter, 
   uint32_t ret = 0;
   uint32_t max_exclusions = 0;
   uint32_t max_filter = 0;
-
+  
   if (params->handles.Handler == NULL) {
     // Get all the handles if we haven't already done that
     if ((ret=ptp_getobjecthandles(params,
@@ -2342,61 +2372,60 @@ LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter, 
       return NULL;
     }
   }
-
+  
   if(filter != NULL) max_filter = filter_len;
   if(exclusions != NULL) max_exclusions = exclusion_len;
-
+  
   for (i = 0; i < params->handles.n; i++) {
     LIBMTP_object_t *object;
     PTPObjectInfo oi;
     
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
-
-	  uint32_t x = 0;
-	  uint32_t exclude = 0, filter_allow = 0;
-	  void (*datafunc)(LIBMTP_mtpdevice_t *, uint32_t, void *);
-	  void *(*constructor)(void);
-
+      uint32_t x = 0;
+      uint32_t exclude = 0, filter_allow = 0;
+      void (*datafunc)(LIBMTP_mtpdevice_t *, uint32_t, void *);
+      void *(*constructor)(void);
+      
       // Is the ObjectFormat in the list of exclusions ?
-	  for(x = 0; x < max_exclusions; x++) {
-		  if (oi.ObjectFormat == exclusions[x]) {
-			  exclude = 1;
-			  break;
-		  }
+      for(x = 0; x < max_exclusions; x++) {
+	if (oi.ObjectFormat == exclusions[x]) {
+	  exclude = 1;
+	  break;
+	}
       }
-	  if(exclude == 1) {
-		  continue;
-	  }
-
-	  // Is the ObjectFormat in the filter ?
-	  for(x = 0; x < max_filter; x++) {
-		  if (oi.ObjectFormat == filter[x]) {
-			  filter_allow = 1;
-			  break;
-		  }
-	  }
-	  if(filter_allow == 0) {
-		  continue;
-	  }
-
+      if(exclude == 1) {
+	continue;
+      }
+      
+      // Is the ObjectFormat in the filter ?
+      for(x = 0; x < max_filter; x++) {
+	if (oi.ObjectFormat == filter[x]) {
+	  filter_allow = 1;
+	  break;
+	}
+      }
+      if(filter_allow == 0) {
+	continue;
+      }
+      
       object = LIBMTP_new_object_t();
       object->id = params->handles.Handler[i];
       object->parent = oi.ParentObject;
       object->name = (char *)strdup(oi.Filename);
       object->size = oi.ObjectCompressedSize;
-	  object->type = oi.ObjectFormat;
+      object->type = oi.ObjectFormat;
       
-	  // Get the function pointers for the constructor and datafunc
-	  constructor = get_constructor(oi.ObjectFormat);
-	  datafunc = get_datafunc(oi.ObjectFormat);
-
-	  if(constructor != NULL) {
-		  object->data = (*constructor)();
-		  if(datafunc != NULL) {
-			  (*datafunc)(device, object->id, object->data);
-		  }
-	  }
-
+      // Get the function pointers for the constructor and datafunc
+      constructor = get_constructor(oi.ObjectFormat);
+      datafunc = get_datafunc(oi.ObjectFormat);
+      
+      if(constructor != NULL) {
+	object->data = (*constructor)();
+	if(datafunc != NULL) {
+	  (*datafunc)(device, object->id, object->data);
+	}
+      }
+      
       // Work out where to put this new item
       if(objectlist == NULL) {
         objectlist = object;
@@ -2408,7 +2437,7 @@ LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter, 
         parent_object = LIBMTP_Find_Object(objectlist, object->parent);
 	
         if(parent_object == NULL) {
-           current_object = objectlist;
+	  current_object = objectlist;
         } else {
           if(parent_object->child == NULL) {
             parent_object->child = object;
@@ -2416,7 +2445,7 @@ LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter, 
           } else {
             current_object = parent_object->child;
           }
-	    }
+	}
 	
         while(current_object->sibling != NULL) {
           current_object=current_object->sibling;
@@ -2425,12 +2454,13 @@ LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter, 
       }
     }
   }
-
+  
   return objectlist;
 }
-
+       
 /**
- * Debug function.
+ * Debug function that dumps out some textual representation
+ * of an object list.
  *
  * @param list object list returned from LIBMTP_Make_List
  *
@@ -2438,15 +2468,15 @@ LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter, 
  */
 void LIBMTP_Dump_List(LIBMTP_object_t *list)
 {
-	if(list == NULL) return;
-
-    printf("Id    : %u\n", list->id);
-	printf("Parent: %u\n", list->parent);
-	printf("Size  : %u\n", list->size);
-	printf("Name  : %s\n", (list->name ? list->name : ""));
-	printf("Type  : (%u) %s\n", list->type, LIBMTP_Get_Filetype_Description(list->type));
-	printf("--\n");
-
-	LIBMTP_Dump_List(list->child);
-	LIBMTP_Dump_List(list->sibling);
+  if(list == NULL) return;
+  
+  printf("Id    : %u\n", list->id);
+  printf("Parent: %u\n", list->parent);
+  printf("Size  : %u\n", list->size);
+  printf("Name  : %s\n", (list->name ? list->name : ""));
+  printf("Type  : 0x%04x\n", list->type);
+  printf("--\n");
+  
+  LIBMTP_Dump_List(list->child);
+  LIBMTP_Dump_List(list->sibling);
 }
