@@ -1,10 +1,18 @@
+2006-05-29  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: one more device.
+	* doc/examples.h: produce correct documentation.
+	* configure.ac: bump to 0.0.6.
+
 2006-05-26  Dave Kelly <libmtp@ravelox.co.uk>
 
 	* src/libmtp.c: refactored object handling to be more generic
 	* src/libmtp.h.in: ditto
 	* examples/refactortest.c: Added simple example to use refactoring
 	* examples/getplaylist.c: Added example to extract playlist data
-	* src/ptp.c: Re-added ptp_get/set_objectreferences to allow for playlist handling
+	* src/ptp.c: Re-added ptp_get/set_objectreferences to allow 
+	  for playlist handling
+	* src/ptp.h: ditto
 
 2006-05-08  Linus Walleij  <triad@df.lth.se>
 

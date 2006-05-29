@@ -13,3 +13,5 @@ sendfile
 sendtr
 tracks
 trexist
+getplaylist
+refactortest

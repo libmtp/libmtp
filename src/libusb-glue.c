@@ -83,6 +83,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    */
   { "Philipps HDD6320", 0x0471, 0x01eb },
   { "iRiver T10", 0x4102, 0x1113 },
+  { "iRiver T20 FM", 0x4102, 0x1114 },
   { "iRiver U10", 0x4102, 0x1116 },
   { "iRiver T10", 0x4102, 0x1117 },
   { "iRiver T20", 0x4102, 0x1118 },
