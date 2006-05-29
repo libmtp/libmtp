@@ -503,7 +503,7 @@ char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t object_
  * @param device a pointer to an MTP device.
  * @param object_id Object reference
  * @param attribute_id PTP attribute ID
- * @param default Default value to return if
+ * @param value_default Default value to return on failure
  * @return the value
  */
 uint32_t LIBMTP_Get_U32_From_Object(LIBMTP_mtpdevice_t *device,uint32_t object_id, 
@@ -535,7 +535,7 @@ uint32_t LIBMTP_Get_U32_From_Object(LIBMTP_mtpdevice_t *device,uint32_t object_i
  * @param device a pointer to an MTP device.
  * @param object_id Object reference
  * @param attribute_id PTP attribute ID
- * @param default Default value to return if
+ * @param value_default Default value to return on failure
  * @return a value
  */
 uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *device, uint32_t object_id, 
@@ -1326,10 +1326,9 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
   }
   
   for (i = 0; i < params->handles.n; i++) {
-
     LIBMTP_track_t *track;
     PTPObjectInfo oi;
-
+    
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
       
       // Ignore stuff we don't know how to handle...
@@ -1345,23 +1344,23 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
       
       // Allocate a new track type
       track = LIBMTP_new_track_t();
-
+      
       track->filetype = map_ptp_type_to_libmtp_type(oi.ObjectFormat);
-
+      
       // Original file-specific properties
       track->filesize = oi.ObjectCompressedSize;
       if (oi.Filename != NULL) {
 	track->filename = strdup(oi.Filename);
       }
-
-	  track->title = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name,1);
-	  track->artist = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Artist,1);
+      
+      track->title = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name, 1);
+      track->artist = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Artist, 1);
       track->duration = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_Duration, 0);
-      track->duration = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_Track, 0);
-	  track->artist = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Genre,1);
-	  track->album = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_AlbumName,1);
-	  track->date = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_OriginalReleaseDate,0);
-
+      track->tracknumber = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_Track, 0);
+      track->artist = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Genre, 1);
+      track->album = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_AlbumName, 1);
+      track->date = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_OriginalReleaseDate, 0);
+      
       // This is some sort of unique ID so we can keep track of the track.
       track->item_id = params->handles.Handler[i];
       
