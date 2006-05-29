@@ -1134,12 +1134,8 @@ uint16_t ptp_mtp_getobjectpropvalue (PTPParams* params, uint32_t oid, uint16_t o
 				PTPPropertyValue *value, uint16_t datatype);
 uint16_t ptp_mtp_setobjectpropvalue (PTPParams* params, uint32_t oid, uint16_t opc,
 				PTPPropertyValue *value, uint16_t datatype);
-inline uint32_t ptp_pack_array (PTPParams *, void* , unsigned char** , uint16_t , uint32_t );
-
-inline uint32_t ptp_unpack_array (PTPParams *, unsigned char* , void** , uint16_t, uint32_t*);
-
-uint16_t ptp_getobjectreferences (PTPParams* params, uint32_t handle, uint32_t** ohArray, uint32_t* arraylen);
-uint16_t ptp_setobjectreferences (PTPParams* params, uint32_t handle, uint32_t* ohArray, uint32_t arraylen);
+uint16_t ptp_mtp_getobjectreferences (PTPParams* params, uint32_t handle, uint32_t** ohArray, uint32_t* arraylen);
+uint16_t ptp_mtp_setobjectreferences (PTPParams* params, uint32_t handle, uint32_t* ohArray, uint32_t arraylen);
 
 
 /* Eastman Kodak extensions */

@@ -26,35 +26,46 @@ struct filemap_t {
   LIBMTP_filemap_t *next;
 };
 
-LIBMTP_filemap_t *filemap = NULL;
+// Global variables
+static LIBMTP_filemap_t *filemap = NULL;
+
+// Forward declarations of local functions
+static int send_file_object(LIBMTP_mtpdevice_t *device, 
+			    int const fd, uint64_t size,
+			    LIBMTP_progressfunc_t const * const callback,
+			    void const * const data);
+static int delete_item(LIBMTP_mtpdevice_t *device, uint32_t item_id);
+static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype);
+static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype);
+
 
 static LIBMTP_filemap_t *new_filemap_entry()
 {
-	LIBMTP_filemap_t *filemap;
-
-	filemap = (LIBMTP_filemap_t *)malloc(sizeof(LIBMTP_filemap_t));
-
-	if( filemap != NULL ) {
-	  filemap->description = NULL;
-	  filemap->id = LIBMTP_FILETYPE_UNKNOWN;
-	  filemap->ptp_id = PTP_OFC_Undefined;
-	  filemap->constructor = NULL;
-	  filemap->destructor = NULL;
-	  filemap->datafunc = NULL;
-	  filemap->next = NULL;
-	}
-
-	return filemap;
+  LIBMTP_filemap_t *filemap;
+  
+  filemap = (LIBMTP_filemap_t *)malloc(sizeof(LIBMTP_filemap_t));
+  
+  if( filemap != NULL ) {
+    filemap->description = NULL;
+    filemap->id = LIBMTP_FILETYPE_UNKNOWN;
+    filemap->ptp_id = PTP_OFC_Undefined;
+    filemap->constructor = NULL;
+    filemap->destructor = NULL;
+    filemap->datafunc = NULL;
+    filemap->next = NULL;
+  }
+  
+  return filemap;
 }
 
 static void delete_filemap(LIBMTP_filemap_t *filemap_entry)
 {
-	if(filemap_entry == NULL) return;
-
-	free(filemap_entry->description);
-	filemap_entry->description = NULL;
-	
-	free(filemap_entry);
+  if(filemap_entry == NULL) return;
+  
+  free(filemap_entry->description);
+  filemap_entry->description = NULL;
+  
+  free(filemap_entry);
 }
 
 /**
@@ -76,41 +87,41 @@ int LIBMTP_Register_Filetype(char *description, LIBMTP_filetype_t id, uint16_t p
   // Has this LIBMTP filetype been registered before ?
   current = filemap;
   while (current != NULL) {
-	  if(current->id == id) {
-		  break;
-	  }
-	  current=current->next;
+    if(current->id == id) {
+      break;
+    }
+    current=current->next;
   }
-
+  
   // Create the entry
   if(current == NULL) {
-	  new = new_filemap_entry();
-	  if(new == NULL) return PTP_RC_GeneralError;
-
-	  new->id = id;
-	  if(description != NULL) new->description = (char *)strdup(description);
-	  new->ptp_id = ptp_id;
-	  new->constructor = constructor;
-	  new->destructor = destructor;
-	  new->datafunc = datafunc;
-
-	  // Add the entry to the list
-	  if(filemap == NULL) {
-		  filemap = new;
-	  } else {
-		  current = filemap;
-		  while (current->next != NULL ) current=current->next;
-		  current->next = new;
-	  }
-// Update the existing entry
+    new = new_filemap_entry();
+    if(new == NULL) return PTP_RC_GeneralError;
+    
+    new->id = id;
+    if(description != NULL) new->description = (char *)strdup(description);
+    new->ptp_id = ptp_id;
+    new->constructor = constructor;
+    new->destructor = destructor;
+    new->datafunc = datafunc;
+    
+    // Add the entry to the list
+    if(filemap == NULL) {
+      filemap = new;
+    } else {
+      current = filemap;
+      while (current->next != NULL ) current=current->next;
+      current->next = new;
+    }
+    // Update the existing entry
   } else {
-	  free(current->description);
-	  current->description = NULL;
-	  if(description != NULL) current->description = (char *)strdup(description);
-	  current->ptp_id = ptp_id;
-	  current->constructor = constructor;
-	  current->destructor = destructor;
-	  current->datafunc = datafunc;
+    free(current->description);
+    current->description = NULL;
+    if(description != NULL) current->description = (char *)strdup(description);
+    current->ptp_id = ptp_id;
+    current->constructor = constructor;
+    current->destructor = destructor;
+    current->datafunc = datafunc;
   }
 
   return PTP_RC_OK;
@@ -125,27 +136,27 @@ int LIBMTP_Register_Filetype(char *description, LIBMTP_filetype_t id, uint16_t p
 */
 int LIBMTP_Set_Description(uint32_t id, char *description)
 {
-	LIBMTP_filemap_t *current, *found = NULL;
-
-	if(filemap == NULL) return PTP_RC_GeneralError;
-
-	// Go through the filemap until an entry is found
-	current = filemap;
-
-	while(current) {
-		if(current->ptp_id == id) {
-			found = current;
-			break;
-		}
-		current=current->next;
-	}
-
-	if(found == NULL) return PTP_RC_GeneralError;
-
-	free(found->description);
-	current->description = NULL;
-	if(description != NULL) current->description = (char *)strdup(description);
-	return PTP_RC_OK;
+  LIBMTP_filemap_t *current, *found = NULL;
+  
+  if(filemap == NULL) return PTP_RC_GeneralError;
+  
+  // Go through the filemap until an entry is found
+  current = filemap;
+  
+  while(current) {
+    if(current->ptp_id == id) {
+      found = current;
+      break;
+    }
+    current=current->next;
+  }
+  
+  if(found == NULL) return PTP_RC_GeneralError;
+  
+  free(found->description);
+  current->description = NULL;
+  if(description != NULL) current->description = (char *)strdup(description);
+  return PTP_RC_OK;
 }
 
 /**
@@ -157,25 +168,25 @@ int LIBMTP_Set_Description(uint32_t id, char *description)
 */
 int LIBMTP_Set_Constructor(uint32_t id, void *constructor)
 {
-    LIBMTP_filemap_t *current, *found = NULL;
-
-    if(filemap == NULL) return PTP_RC_GeneralError;
-
-    // Go through the filemap until an entry is found
-    current = filemap;
-
-    while(current) {
-        if(current->ptp_id == id) {
-            found = current;
-            break;
-        }
-        current=current->next;
+  LIBMTP_filemap_t *current, *found = NULL;
+  
+  if(filemap == NULL) return PTP_RC_GeneralError;
+  
+  // Go through the filemap until an entry is found
+  current = filemap;
+  
+  while(current) {
+    if(current->ptp_id == id) {
+      found = current;
+      break;
     }
-
-    if(found == NULL) return PTP_RC_GeneralError;
-
-    current->constructor = constructor;
-	return PTP_RC_OK;
+    current=current->next;
+  }
+  
+  if(found == NULL) return PTP_RC_GeneralError;
+  
+  current->constructor = constructor;
+  return PTP_RC_OK;
 }
 
 /**
@@ -187,25 +198,25 @@ int LIBMTP_Set_Constructor(uint32_t id, void *constructor)
 */
 int LIBMTP_Set_Destructor(uint32_t id, void *destructor)
 {
-    LIBMTP_filemap_t *current, *found = NULL;
-
-    if(filemap == NULL) return PTP_RC_GeneralError;
-
-    // Go through the filemap until an entry is found
-    current = filemap;
-
-    while(current) {
-        if(current->ptp_id == id) {
-            found = current;
-            break;
-        }
-        current=current->next;
+  LIBMTP_filemap_t *current, *found = NULL;
+  
+  if(filemap == NULL) return PTP_RC_GeneralError;
+  
+  // Go through the filemap until an entry is found
+  current = filemap;
+  
+  while(current) {
+    if(current->ptp_id == id) {
+      found = current;
+      break;
     }
-
-    if(found == NULL) return PTP_RC_GeneralError;
-
-    current->destructor = destructor;
-	return PTP_RC_OK;
+    current=current->next;
+  }
+  
+  if(found == NULL) return PTP_RC_GeneralError;
+  
+  current->destructor = destructor;
+  return PTP_RC_OK;
 }
 
 /**
@@ -217,35 +228,35 @@ int LIBMTP_Set_Destructor(uint32_t id, void *destructor)
 */
 int LIBMTP_Set_Datafunc(uint32_t id, void *datafunc)
 {
-    LIBMTP_filemap_t *current, *found = NULL;
-
-    if(filemap == NULL) return PTP_RC_GeneralError;
-
-    // Go through the filemap until an entry is found
-    current = filemap;
-
-    while(current) {
-        if(current->ptp_id == id) {
-            found = current;
-            break;
-        }
-        current=current->next;
+  LIBMTP_filemap_t *current, *found = NULL;
+  
+  if(filemap == NULL) return PTP_RC_GeneralError;
+  
+  // Go through the filemap until an entry is found
+  current = filemap;
+  
+  while(current) {
+    if(current->ptp_id == id) {
+      found = current;
+      break;
     }
-
-    if(found == NULL) return PTP_RC_GeneralError;
-
-    current->datafunc = datafunc;
-	return PTP_RC_OK;
+    current=current->next;
+  }
+  
+  if(found == NULL) return PTP_RC_GeneralError;
+  
+  current->datafunc = datafunc;
+  return PTP_RC_OK;
 }
 
 static void init_filemap()
 {
-  LIBMTP_Register_Filetype("RIFF WAVE file", LIBMTP_FILETYPE_WAV, PTP_OFC_WAV,NULL,NULL,NULL);
+  LIBMTP_Register_Filetype("RIFF WAVE file", LIBMTP_FILETYPE_WAV, PTP_OFC_WAV,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
   LIBMTP_Register_Filetype("ISO MPEG Audio Layer 3", LIBMTP_FILETYPE_MP3, PTP_OFC_MP3,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
-  LIBMTP_Register_Filetype("Microsoft Windows Media Audio", LIBMTP_FILETYPE_WMA, PTP_OFC_MTP_WMA,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("Ogg container format", LIBMTP_FILETYPE_OGG, PTP_OFC_MTP_OGG,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("Advanced Acoustic Coding", LIBMTP_FILETYPE_MP4, PTP_OFC_MTP_MP4,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("Undefined audio file", LIBMTP_FILETYPE_UNDEF_AUDIO, PTP_OFC_MTP_UndefinedAudio,NULL,NULL,NULL);
+  LIBMTP_Register_Filetype("Microsoft Windows Media Audio", LIBMTP_FILETYPE_WMA, PTP_OFC_MTP_WMA,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
+  LIBMTP_Register_Filetype("Ogg container format", LIBMTP_FILETYPE_OGG, PTP_OFC_MTP_OGG,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
+  LIBMTP_Register_Filetype("Advanced Acoustic Coding", LIBMTP_FILETYPE_MP4, PTP_OFC_MTP_MP4,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
+  LIBMTP_Register_Filetype("Undefined audio file", LIBMTP_FILETYPE_UNDEF_AUDIO, PTP_OFC_MTP_UndefinedAudio,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
   LIBMTP_Register_Filetype("Microsoft Windows Media Video", LIBMTP_FILETYPE_WMV, PTP_OFC_MTP_WMV,NULL,NULL,NULL);
   LIBMTP_Register_Filetype("Audio Video Interleave", LIBMTP_FILETYPE_AVI, PTP_OFC_AVI,NULL,NULL,NULL);
   LIBMTP_Register_Filetype("MPEG video stream", LIBMTP_FILETYPE_MPEG, PTP_OFC_MPEG,NULL,NULL,NULL);
@@ -269,15 +280,6 @@ static void init_filemap()
   LIBMTP_Register_Filetype("Undefined filetype", LIBMTP_FILETYPE_UNKNOWN, PTP_OFC_Undefined, NULL, NULL, NULL);
 
 }
-
-// Forward declarations of local functions
-static int send_file_object(LIBMTP_mtpdevice_t *device, 
-			    int const fd, uint64_t size,
-			    LIBMTP_progressfunc_t const * const callback,
-			    void const * const data);
-static int delete_item(LIBMTP_mtpdevice_t *device, uint32_t item_id);
-static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype);
-static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype);
 
 /**
  * Returns the PTP filetype that maps to a certain libmtp internal file type.
@@ -646,12 +648,12 @@ int LIBMTP_Get_Object_References(LIBMTP_mtpdevice_t *device, uint32_t object_id,
   uint32_t ret;
 
   if (device == NULL ) {
-	  *items = NULL;
-	  *len = 0;
-	  return PTP_RC_OK;
+    *items = NULL;
+    *len = 0;
+    return PTP_RC_OK;
   }
-
-  ret = ptp_getobjectreferences (params, object_id, items, len);
+  
+  ret = ptp_mtp_getobjectreferences (params, object_id, items, len);
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
     printf("LIBMTP_Get_Object_References: Could not get object references\n");
@@ -675,15 +677,15 @@ int LIBMTP_Set_Object_References(LIBMTP_mtpdevice_t *device, uint32_t object_id,
   uint32_t ret;
 
   if (device == NULL || items == NULL) {
-	  return PTP_RC_OK;
+    return PTP_RC_OK;
   }
-
-  ret = ptp_setobjectreferences (params, object_id, items, len);
+  
+  ret = ptp_mtp_setobjectreferences (params, object_id, items, len);
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
     printf("LIBMTP_Set_Object_References: Could not set object references\n");
   }
-
+  
   return ret;
 }
 
