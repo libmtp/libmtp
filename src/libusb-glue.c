@@ -516,6 +516,7 @@ uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *inte
 	      dev->descriptor.idProduct == mtp_device->product_id ) {
 	    
 	    printf("Found non-autodetected device \"%s\" on USB bus...\n", mtp_device->name);
+            goto next_step;
 	    
 	  }
 	}
@@ -523,6 +524,7 @@ uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *inte
     }
   }
 
+next_step:
   // Still not found any?
   if (dev == NULL) {
     return PTP_CD_RC_NO_DEVICES;

@@ -1959,28 +1959,28 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 
   // Update title
   ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Name, metadata->title,1);
-  if (ret != PTP_RC_OK) {
+  if (ret != 0) {
     printf("LIBMTP_Update_Track_Metadata(): could not set track title\n");
     return -1;
   }
 
   // Update album
   ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_AlbumName, metadata->album,1);
-  if (ret != PTP_RC_OK) {
+  if (ret != 0) {
     printf("LIBMTP_Update_Track_Metadata(): could not set track album name\n");
     return -1;
   }
 
   // Update artist
   ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Artist, metadata->artist,1);
-  if (ret != PTP_RC_OK) {
+  if (ret != 0) {
     printf("LIBMTP_Update_Track_Metadata(): could not set track artist name\n");
     return -1;
   }
 
   // Update genre
   ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Artist, metadata->genre,1);
-  if (ret != PTP_RC_OK) {
+  if (ret != 0) {
     printf("LIBMTP_Update_Track_Metadata(): could not set track genre name\n");
     return -1;
   }
@@ -1988,7 +1988,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
   // Update duration
   if (metadata->duration != 0) {
     ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_Duration, metadata->duration);
-    if (ret != PTP_RC_OK) {
+    if (ret != 0) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track duration\n");
       return -1;
     }
@@ -1997,7 +1997,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
   // Update track number.
   if (metadata->tracknumber != 0) {
     ret = LIBMTP_Set_Object_U16(device, metadata->item_id, PTP_OPC_Track, metadata->tracknumber);
-    if (ret != PTP_RC_OK) {
+    if (ret != 0) {
       printf("LIBMTP_Update_Track_Metadata(): could not set track tracknumber\n");
       return -1;
     }
@@ -2005,7 +2005,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 
   // Update creation datetime
   ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_OriginalReleaseDate, metadata->date,0);
-  if (ret != PTP_RC_OK) {
+  if (ret != 0) {
     printf("LIBMTP_Update_Track_Metadata(): could not set track release date\n");
     return -1;
   }

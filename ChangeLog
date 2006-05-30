@@ -1,3 +1,10 @@
+2006-05-30  Flavien Lebarbe <flavien+libmtp@lebarbe.net>
+
+	* src/libmtp.c: fixed a bug in update metadata due to
+	  bad use of return code.
+	* src/libusb-glue.c: fixed a loop exiting problem with
+	  good 'ol GOTO.
+	
 2006-05-29  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: one more device.
