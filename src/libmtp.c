@@ -280,7 +280,8 @@ static void init_filemap()
   LIBMTP_Register_Filetype("Microsoft Advanced Systems Format", LIBMTP_FILETYPE_ASF, PTP_OFC_ASF,NULL,NULL,NULL);
   LIBMTP_Register_Filetype("Apple Quicktime container format", LIBMTP_FILETYPE_QT, PTP_OFC_QT,NULL,NULL,NULL);
   LIBMTP_Register_Filetype("Undefined video file", LIBMTP_FILETYPE_UNDEF_VIDEO, PTP_OFC_MTP_UndefinedVideo,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("JPEG file", LIBMTP_FILETYPE_JFIF, PTP_OFC_JFIF,NULL,NULL,NULL);
+  LIBMTP_Register_Filetype("JPEG file", LIBMTP_FILETYPE_JPEG, PTP_OFC_EXIF_JPEG,NULL,NULL,NULL);
+  LIBMTP_Register_Filetype("JFIF file", LIBMTP_FILETYPE_JFIF, PTP_OFC_JFIF,NULL,NULL,NULL);
   LIBMTP_Register_Filetype("TIFF bitmap file", LIBMTP_FILETYPE_TIFF, PTP_OFC_TIFF,NULL,NULL,NULL);
   LIBMTP_Register_Filetype("BMP bitmap file", LIBMTP_FILETYPE_BMP, PTP_OFC_BMP,NULL,NULL,NULL);
   LIBMTP_Register_Filetype("GIF bitmap file", LIBMTP_FILETYPE_GIF, PTP_OFC_GIF,NULL,NULL,NULL);

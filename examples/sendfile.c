@@ -212,6 +212,8 @@ int main(int argc, char **argv)
   } else if (!strcasecmp(ptype,"wma")) {
     genfile->filetype = LIBMTP_FILETYPE_WMA;
   } else if (!strcasecmp(ptype,"jpg") || !strcasecmp(ptype,"jpeg")) {
+    genfile->filetype = LIBMTP_FILETYPE_JPEG;
+  } else if (!strcasecmp(ptype,"jfif")) {
     genfile->filetype = LIBMTP_FILETYPE_JFIF;
   } else if (!strcasecmp(ptype,"tif") || !strcasecmp(ptype,"tiff")) {
     genfile->filetype = LIBMTP_FILETYPE_TIFF;

@@ -41,6 +41,9 @@ typedef unsigned __int64 uint64_t;
 /**
  * @defgroup types libnjb global type definitions
  * @{
+ * The filetypes defined here are the external types used
+ * by the libmtp library interface. The types used internally
+ * as PTP-defined enumerator types is something different.
  */
 typedef enum {
   LIBMTP_FILETYPE_WAV,
@@ -55,6 +58,7 @@ typedef enum {
   LIBMTP_FILETYPE_ASF,
   LIBMTP_FILETYPE_QT,
   LIBMTP_FILETYPE_UNDEF_VIDEO,
+  LIBMTP_FILETYPE_JPEG,
   LIBMTP_FILETYPE_JFIF,
   LIBMTP_FILETYPE_TIFF,
   LIBMTP_FILETYPE_BMP,
