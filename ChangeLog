@@ -1,3 +1,9 @@
+2006-05-31  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: fixed mapping for JPEG vs JFIF
+	* src/libmtp.h.in: added proper type for JPEG
+	* examples/sendfile.c: send proper JPEG type
+
 2006-05-30  Flavien Lebarbe <flavien+libmtp@lebarbe.net>
 
 	* src/libmtp.c: fixed a bug in update metadata due to
