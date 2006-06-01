@@ -1,3 +1,7 @@
+2006-06-01  Linus Walleij <triad@df.lth.se>
+
+	* Released libmtp 0.0.6.
+
 2006-05-31  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: fixed mapping for JPEG vs JFIF
