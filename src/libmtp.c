@@ -1798,12 +1798,11 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       metadata->filetype != LIBMTP_FILETYPE_MP4 &&
       metadata->filetype != LIBMTP_FILETYPE_UNDEF_AUDIO) {
     printf("LIBMTP_Send_Track_From_File_Descriptor: I don't think this is actually a track, strange filetype...\n");
-    new_track.ObjectFormat = PTP_OFC_Undefined;
   }
 
-  new_track.ObjectFormat = map_libmtp_type_to_ptp_type(metadata->filetype);
   new_track.Filename = metadata->filename;
   new_track.ObjectCompressedSize = metadata->filesize;
+  new_track.ObjectFormat = map_libmtp_type_to_ptp_type(metadata->filetype);
 
   // Create the object
   ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->item_id, &new_track);
