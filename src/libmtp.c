@@ -1416,7 +1416,7 @@ int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id,
 
   // Open file
 #ifdef __WIN32__
-  if ( (fd = open(path, O_RDWR|O_CREAT|O_TRUNC|O_BINARY,S_IRWXU|S_IRGRP) == -1 ) {
+  if ( (fd = open(path, O_RDWR|O_CREAT|O_TRUNC|O_BINARY,S_IRWXU|S_IRGRP)) == -1 ) {
 #else
   if ( (fd = open(path, O_RDWR|O_CREAT|O_TRUNC,S_IRWXU|S_IRGRP)) == -1) {
 #endif
