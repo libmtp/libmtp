@@ -1,3 +1,17 @@
+/**
+ * \file libmtp.c
+ * This file provides an interface "glue" to the underlying
+ * PTP implementation from libgphoto2. It uses some local
+ * code to convert from/to UTF-8 (stored in unicode.c/.h)
+ * and some small utility functions, mainly for debugging
+ * (stored in util.c/.h).
+ *
+ * The three PTP files (ptp.c, ptp.h and ptp-pack.c) are 
+ * plain copied from the libhphoto2 codebase.
+ *
+ * The files libusb-glue.c/.h are just what they say: an
+ * interface to libusb for the actual, physical USB traffic.
+ */
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
