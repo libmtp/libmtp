@@ -59,6 +59,10 @@ This package depends on libusb.  Get libusb from sourceforge at:
 
    http://www.sourceforge.net/projects/libusb/
 
+On Linux, please use the very latest version you can get, between
+0.1.8 and 0.1.12 a lot of things happened which pertains to
+the udev hotplugging support, see below.
+
 
 BASIC BUILD PROCEDURE
 =====================
