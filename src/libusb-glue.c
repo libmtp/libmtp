@@ -83,6 +83,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * projects some day...)
    */
   { "Philipps HDD6320", 0x0471, 0x01eb },
+  /* Anonymous SourceForge user */
+  { "Philipps HDD1630/17", 0x0471, 0x014c },
   { "iRiver T10", 0x4102, 0x1113 },
   { "iRiver T20 FM", 0x4102, 0x1114 },
   { "iRiver U10", 0x4102, 0x1116 },
