@@ -62,6 +62,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Second generation Dell DJ", 0x041e, 0x412f },
   { "Creative Zen Micro (MTP mode)", 0x041e, 0x4130 },
   { "Creative Zen Touch (MTP mode)", 0x041e, 0x4131 },
+  { "Dell Pocket DJ (MTP mode)", 0x041e, 0x4132 },
   { "Creative Zen Sleek (MTP mode)", 0x041e, 0x4137 },
   { "Creative Zen MicroPhoto", 0x041e, 0x413c },
   { "Creative Zen Sleek Photo", 0x041e, 0x413d },
