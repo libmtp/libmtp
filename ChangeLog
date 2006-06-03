@@ -1,3 +1,8 @@
+2006-06-03  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: metadata bugs, album name and genre
+	  confused. Fixe it and released libmtp 0.0.7.
+
 2006-06-01  Linus Walleij <triad@df.lth.se>
 
 	* Released libmtp 0.0.6.

@@ -1372,7 +1372,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
       track->artist = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Artist, 1);
       track->duration = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_Duration, 0);
       track->tracknumber = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_Track, 0);
-      track->artist = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Genre, 1);
+      track->genre = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Genre, 1);
       track->album = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_AlbumName, 1);
       track->date = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_OriginalReleaseDate, 0);
       
@@ -1993,7 +1993,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
   }
 
   // Update genre
-  ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Artist, metadata->genre,1);
+  ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Genre, metadata->genre,1);
   if (ret != 0) {
     printf("LIBMTP_Update_Track_Metadata(): could not set track genre name\n");
     return -1;
