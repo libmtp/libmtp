@@ -1,3 +1,10 @@
+2006-06-05  Linus Walleij <triad@df.lth.se>
+
+	* examples/sendtr.c: fixed annoying bug that made this
+	  program totally useless.
+	* src/libmtp.c: cosmetics.
+	* configure.ac: bump to 0.0.8.
+
 2006-06-03  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: metadata bugs, album name and genre
