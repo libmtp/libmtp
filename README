@@ -26,7 +26,7 @@ libmtp is based on several ancestors:
   of gPhoto: http://gphoto.sourceforge.net/
 
 * libnjb was a project that Richard and Linus were working
-  on before libmtp. When Linux took Richards initial port
+  on before libmtp. When Linus took Richards initial port
   and made an generic C API he re-used the philosophy and
   much code from libnjb. Many of the sample programs are for
   example taken quite literally from libnjb. You find it here:
@@ -75,6 +75,11 @@ Contributing
 
 See the project page at http://libmtp.sourceforge.net/
 We always need your help.
+
+If you happen upon a device which libmtp claims it cannot
+autodetect, please submit the vendor ID and device ID 
+as a bug, patch or feature request on the Sourceforge
+bug tracker at our homepage.
 
 
 Calendar support:
