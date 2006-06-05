@@ -113,7 +113,7 @@ int main(int argc, char **argv)
   uint16_t year = 0;
   uint16_t quiet = 0;
   uint64_t filesize;
-  uint32_t parent_id;
+  uint32_t parent_id = 0;
   struct stat sb;
   char *lang;
   LIBMTP_mtpdevice_t *device;
@@ -279,17 +279,22 @@ int main(int argc, char **argv)
   printf("Sending track:\n");
   printf("Codec:     %s\n", pcodec);
   
-  if (!strcmp(pcodec,"MP3") || !strcmp(pcodec,"mp3")) {
+  if (!strcasecmp(pcodec,"mp3")) {
     trackmeta->filetype = LIBMTP_FILETYPE_MP3;
-  }  else if (!strcmp(pcodec,"WAV") || !strcmp(pcodec,"wav")) {
+  }  else if (!strcasecmp(pcodec,"wav")) {
     trackmeta->filetype = LIBMTP_FILETYPE_WAV;
-  } else if (!strcmp(pcodec,"WMA") || !strcmp(pcodec,"wma") ||
-	     !strcmp(pcodec,"ASF") || !strcmp(pcodec,"asf")) {
+  } else if (!strcasecmp(pcodec,"ogg")) {
+    trackmeta->filetype = LIBMTP_FILETYPE_OGG;
+  } else if (!strcasecmp(pcodec,"mp4")) {
+    trackmeta->filetype = LIBMTP_FILETYPE_MP4;
+  } else if (!strcasecmp(pcodec,"wma") || !strcasecmp(pcodec,"asf")) {
     trackmeta->filetype = LIBMTP_FILETYPE_WMA;
   } else {
     printf("Not a valid codec: \"%s\"\n", pcodec);
+    printf("Supported formats: MP3, WAV, OGG, MP4, WMA\n");
     exit(1);
-  }  
+  }
+  printf("Codec:     %s\n", LIBMTP_Get_Filetype_Description(trackmeta->filetype));
   if (ptitle) {
     printf("Title:     %s\n", ptitle);
     trackmeta->title = strdup(ptitle);

@@ -1817,6 +1817,8 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   new_track.Filename = metadata->filename;
   new_track.ObjectCompressedSize = metadata->filesize;
   new_track.ObjectFormat = map_libmtp_type_to_ptp_type(metadata->filetype);
+  printf("Filename: %s, size: %d, format %d->%d\n", metadata->filename, metadata->filesize, metadata->filetype,
+	 new_track.ObjectFormat);
 
   // Create the object
   ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->item_id, &new_track);
