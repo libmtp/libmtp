@@ -2702,9 +2702,10 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
  * @see LIBMTP_Delete_Object()
  */
 int LIBMTP_Update_Playlist(LIBMTP_mtpdevice_t *device, 
-			   LIBMTP_playlist_t * const metadata)
+			   LIBMTP_playlist_t const * const metadata)
 {
   uint16_t ret;
+  PTPParams *params = (PTPParams *) device->params;
 
   // Update title
   ret = LIBMTP_Set_Object_String(device, metadata->playlist_id, PTP_OPC_Name, metadata->name, 1);
