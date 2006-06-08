@@ -28,7 +28,7 @@
  *         want to know the length in bytes, multiply this by two and
  *         add two (for zero terminator).
  */
-int ucs2_strlen(const uint16_t *unicstr)
+int ucs2_strlen(uint16_t const * const unicstr)
 {
   int length;
   
@@ -45,7 +45,7 @@ int ucs2_strlen(const uint16_t *unicstr)
  * @return the number of bytes this string would occupy
  *         in UTF-8
  */
-static int ucs2utf8len(const uint16_t *unicstr){
+static int ucs2utf8len(uint16_t const * const unicstr){
   int length=0;
   int i;
   uint8_t *locstr = (uint8_t *) unicstr;
@@ -67,7 +67,7 @@ static int ucs2utf8len(const uint16_t *unicstr){
  * @param unicstr the UCS-2 string to copy
  * @return a newly allocated copy of the string
  */
-static uint16_t *ucs2strdup(const uint16_t *unicstr) {
+static uint16_t *ucs2strdup(uint16_t const * const unicstr) {
   int length = ucs2_strlen(unicstr);
   uint8_t *data;
   
@@ -87,7 +87,7 @@ static uint16_t *ucs2strdup(const uint16_t *unicstr) {
  * @param unicstr the UCS-2 unicode string to convert
  * @return a UTF-8 string.
  */
-char *ucs2_to_utf8(const uint16_t *unicstr){
+char *ucs2_to_utf8(uint16_t const * const unicstr){
   char *data = NULL;
   int i = 0;
   int l = 0;
@@ -126,7 +126,7 @@ char *ucs2_to_utf8(const uint16_t *unicstr){
  * @param str the UTF-8 string to convert.
  * @return a pointer to a newly allocated UCS-2 string.
  */
-uint16_t *utf8_to_ucs2(const unsigned char *str) {
+uint16_t *utf8_to_ucs2(unsigned char const * const str) {
   uint16_t *retval;
   int i;
   unsigned char buffer[STRING_BUFFER_LENGTH*2];    

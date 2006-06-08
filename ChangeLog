@@ -1,3 +1,13 @@
+2006-06-07  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: new playlist API and refactorings.
+	* src/libmtp.c: ditto, and refactorings.
+	* src/unicode.h: const correctness.
+	* src/unicode.c: ditto.
+	* examples/playlists.c: new example program.
+	* configure.ac: bump to 0.0.9
+	* src/Makefile.am: bump library interface.
+	
 2006-06-05  Linus Walleij <triad@df.lth.se>
 
 	* examples/sendtr.c: fixed annoying bug that made this

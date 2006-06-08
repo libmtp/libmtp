@@ -12,5 +12,6 @@
 /** \example sendtr.c */
 /** \example tracks.c */
 /** \example trexist.c */
+/** \example playlists.c */
 /** \example getplaylist.c */
 /** \example refactortest.c */

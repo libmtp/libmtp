@@ -37,7 +37,7 @@ int main (int argc, char **argv)
     return 0;
   }
 
-  ret = LIBMTP_Delete_File(device, id);
+  ret = LIBMTP_Delete_Object(device, id);
 
   if ( ret != 0 ) {
     printf("Failed to delete file.\n");

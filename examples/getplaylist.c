@@ -7,7 +7,7 @@ uint32_t LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t playlist_id)
   uint32_t i;
 
   ret = LIBMTP_Get_Object_References (device, playlist_id, &items, &len);
-  if (ret != 0x2001) {
+  if (ret != 0) {
     printf("LIBMTP_Get_Playlist: Could not get object references\n");
     return -1;
   }

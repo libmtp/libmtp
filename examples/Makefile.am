@@ -1,4 +1,6 @@
-bin_PROGRAMS=detect tracks files getfile sendtr delfile hotplug folders newfolder trexist sendfile getplaylist refactortest
+bin_PROGRAMS=detect tracks files getfile sendtr delfile hotplug \
+	folders newfolder trexist sendfile playlists getplaylist \
+	refactortest
 
 detect_SOURCES=detect.c common.h
 tracks_SOURCES=tracks.c common.h
@@ -11,6 +13,7 @@ hotplug_SOURCES=hotplug.c common.h
 folders_SOURCES=folders.c common.h
 newfolder_SOURCES=newfolder.c common.h
 trexist_SOURCES=trexist.c common.h
+playlists_SOURCES=playlists.c common.h
 getplaylist_SOURCES=getplaylist.c common.h
 refactortest_SOURCES=refactortest.c common.h
 
