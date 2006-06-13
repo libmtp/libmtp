@@ -1,6 +1,8 @@
 TODO file:
 ----------
 
+* Support abstract MTP album (0xBA03) just like playlists.
+
 * Add logic to transfer very large files in chunks, like 1 MB at the
   time, or we cannot upload movies... Righ now libmtp just copy the
   file to memory and transfer it.

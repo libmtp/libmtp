@@ -1,8 +1,12 @@
 2006-06-13  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: added default folders to device struct.
+	  Add some new function prototypes.
 	* src/libmtp.c: discover and use the default folders if
-	  we can find them.
+	  we can find them. Retrieve device secure time and cert
+	  out of sheer curiosity.
+	* src/ptp.c: sync to libgphoto2 with my patches.
+	* src/ptp.h: ditto.
 
 2006-06-07  Linus Walleij <triad@df.lth.se>
 

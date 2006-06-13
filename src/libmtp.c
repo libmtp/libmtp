@@ -50,7 +50,7 @@ static int send_file_object(LIBMTP_mtpdevice_t *device,
 			    void const * const data);
 static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype);
 static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype);
-
+int get_device_unicode_property(LIBMTP_mtpdevice_t *device, char **unicstring, uint16_t property);
 
 static LIBMTP_filemap_t *new_filemap_entry()
 {
@@ -713,7 +713,6 @@ int LIBMTP_Set_Object_References(LIBMTP_mtpdevice_t *device, uint32_t const obje
   return 0;
 }
 
-
 /**
  * Get a list of the supported devices.
  *
@@ -951,9 +950,22 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
   printf("Device Properties Supported:\n");
   for (i=0;i<params->deviceinfo.DevicePropertiesSupported_len;i++) {
     char const *propdesc = ptp_get_property_description(params, params->deviceinfo.DevicePropertiesSupported[i]);
-    printf("   0x%04x: %s\n", params->deviceinfo.DevicePropertiesSupported[i],
-	   (propdesc == NULL) ? "Unknown property" : propdesc);
+    
+    if (propdesc != NULL) {
+      printf("   0x%04x: %s\n", params->deviceinfo.DevicePropertiesSupported[i], propdesc);
+    } else {
+      uint16_t prop = params->deviceinfo.DevicePropertiesSupported[i];
+      printf("   0x%04x: Unknown property", prop);
+    }
   }
+  
+  printf("Special directories:\n");
+  printf("   Default music folder: 0x%08x\n", device->default_music_folder);
+  printf("   Default playlist folder: 0x%08x\n", device->default_playlist_folder);
+  printf("   Default picture folder: 0x%08x\n", device->default_picture_folder);
+  printf("   Default video folder: 0x%08x\n", device->default_video_folder);
+  printf("   Default organizer folder: 0x%08x\n", device->default_organizer_folder);
+  printf("   Default zencast folder: 0x%08x\n", device->default_zencast_folder);
 }
 
 /**
@@ -1026,7 +1038,7 @@ char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t *device)
   PTPParams *params = (PTPParams *) device->params;
 
   if (ptp_getdevicepropvalue(params, 
-			     PTP_DPC_MTP_Device_Friendly_Name, 
+			     PTP_DPC_MTP_DeviceFriendlyName, 
 			     &propval, 
 			     PTP_DTC_UNISTR) != PTP_RC_OK) {
     return NULL;
@@ -1087,8 +1099,10 @@ int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *device, uint64_t * const total,
  *        maximum level of the battery if the call was successful.
  * @param current_level a pointer to a variable that will hold the 
  *        current level of the battery if the call was successful.
+ *        A value of 0 means that the device is on external power.
  * @return 0 if the storage info was successfully retrieved, any other
- *        value means failure.
+ *        value means failure. A typical cause of failure is that
+ *        the device does not support the battery level property.
  */
 int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device, 
 			    uint8_t * const maximum_level, 
@@ -1098,10 +1112,15 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device,
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
 
+  *maximum_level = 0;
+  *current_level = 0;
+
+  if (!ptp_property_issupported(params, PTP_DPC_BatteryLevel)) {
+    return -1;
+  }
+  
   ret = ptp_getdevicepropvalue(params, PTP_DPC_BatteryLevel, &propval, PTP_DTC_UINT8);
   if (ret != PTP_RC_OK) {
-    *maximum_level = 0;
-    *current_level = 0;
     return -1;
   }
   
@@ -1109,6 +1128,75 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device,
   *current_level = propval.u8;
   
   return 0;
+}
+
+/**
+ * Helper function to extract a unicode property off a device.
+ */
+int get_device_unicode_property(LIBMTP_mtpdevice_t *device, char **unicstring, uint16_t property)
+{
+  PTPPropertyValue propval;
+  PTPParams *params = (PTPParams *) device->params;
+  uint8_t *tmp;
+  uint32_t len;
+  int i;
+
+  if (!ptp_property_issupported(params, property)) {
+    return -1;
+  }
+
+  if (ptp_getdevicepropvalue(params, 
+			     property, 
+			     &propval, 
+			     PTP_DTC_AUINT16) != PTP_RC_OK) {
+    return -1;
+  }
+
+  // Extract the actual array.
+  len = propval.a.count * 2 + 2;
+  tmp = malloc(len);
+  for (i = 0; i < propval.a.count; i++) {
+    // Force this to become a little-endian unicode string
+    uint16_t tch = propval.a.v[i].u16;
+    tmp[i*2] = (uint8_t) tch & 0xFF;
+    tmp[(i*2)+1] = (uint8_t) tch >> 8;
+  }
+  tmp[len-1] = 0;
+  tmp[len-2] = 0;
+  free(propval.a.v);
+
+  *unicstring = ucs2_to_utf8((uint16_t *) tmp);
+  free(tmp);
+
+  return 0;
+}
+
+/**
+ * This function returns the secure time as an XML document string from
+ * the device.
+ * @param device a pointer to the device to get the secure time for.
+ * @param sectime the secure time string as an XML document or NULL if the call
+ *         failed or the secure time property is not supported. This string
+ *         must be <code>free()</code>:ed by the caller after use.
+ * @return 0 on success, any other value means failure.
+ */
+int LIBMTP_Get_Secure_Time(LIBMTP_mtpdevice_t *device, char **sectime)
+{
+  return get_device_unicode_property(device, sectime, PTP_DPC_MTP_SecureTime);
+}
+
+/**
+ * This function returns the device (public key) certificate as an 
+ * XML document string from the device.
+ * @param device a pointer to the device to get the device certificate for.
+ * @param devcert the device certificate as an XML string or NULL if the call
+ *        failed or the device certificate property is not supported. This
+ *        string must be <code>free()</code>:ed by the caller after use.
+ * @return 0 on success, any other value means failure.
+ */
+int LIBMTP_Get_Device_Certificate(LIBMTP_mtpdevice_t *device, char **devcert)
+{
+  return get_device_unicode_property(device, devcert, PTP_DPC_MTP_DeviceCertificate);
 }
 
 /**

@@ -243,6 +243,8 @@ int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *, uint64_t * const,
 int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *, 
 			    uint8_t * const, 
 			    uint8_t * const);
+int LIBMTP_Get_Secure_Time(LIBMTP_mtpdevice_t *, char **);
+int LIBMTP_Get_Device_Certificate(LIBMTP_mtpdevice_t *, char **);
 
 /**
  * @}
