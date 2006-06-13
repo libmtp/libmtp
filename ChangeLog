@@ -1,3 +1,9 @@
+2006-06-13  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: added default folders to device struct.
+	* src/libmtp.c: discover and use the default folders if
+	  we can find them.
+
 2006-06-07  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: new playlist API and refactorings.

@@ -307,7 +307,6 @@ static void init_filemap()
   LIBMTP_Register_Filetype("Text file", LIBMTP_FILETYPE_TEXT, PTP_OFC_Text,NULL,NULL,NULL);
   LIBMTP_Register_Filetype("HTML file", LIBMTP_FILETYPE_HTML, PTP_OFC_HTML,NULL,NULL,NULL);
   LIBMTP_Register_Filetype("Undefined filetype", LIBMTP_FILETYPE_UNKNOWN, PTP_OFC_Undefined, NULL, NULL, NULL);
-
 }
 
 /**
@@ -754,6 +753,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   PTPDevicePropDesc dpd;
   uint8_t batteryLevelMax = 100;
   uint16_t ret;
+  uint32_t i;
   LIBMTP_mtpdevice_t *tmpdevice;
 
   // Allocate a parameter block
@@ -807,6 +807,50 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   tmpdevice->usbinfo = (void *) ptp_usb;
   tmpdevice->storage_id = storageID;
   tmpdevice->maximum_battery_level = batteryLevelMax;
+
+  // Set all default folders to 0 == root directory
+  tmpdevice->default_music_folder = 0;
+  tmpdevice->default_playlist_folder = 0;
+  tmpdevice->default_picture_folder = 0;
+  tmpdevice->default_video_folder = 0;
+  tmpdevice->default_organizer_folder = 0;
+  tmpdevice->default_zencast_folder = 0;
+
+  /*
+   * Then get the handles and try to locate the default folders.
+   * This has the desired side effect of cacheing all handles from
+   * the device which speeds up later operations.
+   */
+  flush_handles(tmpdevice);
+  for (i = 0; i < params->handles.n; i++) {
+    PTPObjectInfo oi;
+    if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
+      // Ignore non-folders
+      if ( oi.ObjectFormat != PTP_OFC_Association )
+	continue;
+      if (!strcmp(oi.Filename, "Music")) {
+	tmpdevice->default_music_folder = params->handles.Handler[i];
+	continue;
+      } else if (!strcmp(oi.Filename, "My Playlists")) {
+	tmpdevice->default_playlist_folder = params->handles.Handler[i];
+	continue;
+      } else if (!strcmp(oi.Filename, "Pictures")) {
+	tmpdevice->default_picture_folder = params->handles.Handler[i];
+	continue;
+      } else if (!strcmp(oi.Filename, "Video")) {
+	tmpdevice->default_video_folder = params->handles.Handler[i];
+	continue;
+      } else if (!strcmp(oi.Filename, "My Organizer")) {
+	tmpdevice->default_organizer_folder = params->handles.Handler[i];
+	continue;
+      } else if (!strcmp(oi.Filename, "ZENcast")) {
+	tmpdevice->default_zencast_folder = params->handles.Handler[i];
+	continue;
+      }
+    } else {
+      printf("LIBMTP panic: Found a bad handle, trying to ignore it.\n");
+    }
+  }
 
   return tmpdevice;
   
@@ -1801,6 +1845,10 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   PTPParams *params = (PTPParams *) device->params;
   uint32_t localph = parenthandle;
 
+  if (localph == 0) {
+    localph = device->default_music_folder;
+  }
+
   // Sanity check, is this really a track?
   if (metadata->filetype != LIBMTP_FILETYPE_WAV &&
       metadata->filetype != LIBMTP_FILETYPE_MP3 &&
@@ -1930,10 +1978,51 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   int subcall_ret;
   PTPObjectInfo new_file;
   PTPParams *params = (PTPParams *) device->params;
-  
+
   new_file.Filename = filedata->filename;
   new_file.ObjectCompressedSize = filedata->filesize;
   new_file.ObjectFormat = map_libmtp_type_to_ptp_type(filedata->filetype);
+
+  /* 
+   * If no destination folder was given, look up a default
+   * folder if possible. Perhaps there is some way of retrieveing
+   * the default folder for different forms of content, what
+   * do I know, we use a fixed list in lack of any better method.
+   * Some devices obviously need to have their files in certain
+   * folders in order to find/display them at all (hello Creative), 
+   * so we have to have a method for this.
+   */
+
+  if (localph == 0) {
+    uint16_t of = new_file.ObjectFormat;
+    if (of == PTP_OFC_WAV ||
+	of == PTP_OFC_MP3 ||
+	of == PTP_OFC_MTP_WMA ||
+	of == PTP_OFC_MTP_OGG ||
+	of == PTP_OFC_MTP_MP4 ||
+	of == PTP_OFC_MTP_UndefinedAudio) {
+      localph = device->default_music_folder;
+    } else if (of == PTP_OFC_MTP_WMV ||
+	       of == PTP_OFC_AVI ||
+	       of == PTP_OFC_MPEG ||
+	       of == PTP_OFC_ASF ||
+	       of == PTP_OFC_QT ||
+	       of == PTP_OFC_MTP_UndefinedVideo) {
+      localph = device->default_video_folder;
+    } else if (of == PTP_OFC_EXIF_JPEG ||
+	       of == PTP_OFC_JFIF ||
+	       of == PTP_OFC_TIFF ||
+	       of == PTP_OFC_BMP ||
+	       of == PTP_OFC_GIF ||
+	       of == PTP_OFC_PICT ||
+	       of == PTP_OFC_PNG ||
+	       of == PTP_OFC_MTP_WindowsImageFormat) {
+      localph = device->default_picture_folder;
+    } else if (of == PTP_OFC_MTP_vCalendar1 ||
+	       of == PTP_OFC_MTP_vCalendar2) {
+      localph = device->default_organizer_folder;
+    }
+  }
 
   // Create the object
   ret = ptp_sendobjectinfo(params, &store, &localph, &filedata->item_id, &new_file);
@@ -2622,6 +2711,11 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   PTPParams *params = (PTPParams *) device->params;
   uint32_t localph = parenthandle;
   char fname[256];
+
+  // Use a default folder if none given
+  if (localph == 0) {
+    localph = device->default_playlist_folder;
+  }
 
   // .zpl is the "abstract audio/video playlist "file" suffix
   new_pl.Filename = NULL;

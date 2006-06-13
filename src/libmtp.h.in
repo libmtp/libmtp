@@ -131,6 +131,18 @@ struct LIBMTP_mtpdevice_struct {
   unsigned storage_id;
   /** The maximum battery level for this device */
   uint8_t maximum_battery_level;
+  /** Default music folder */
+  uint32_t default_music_folder;
+  /** Default playlist folder */
+  uint32_t default_playlist_folder;
+  /** Default picture folder */
+  uint32_t default_picture_folder;
+  /** Default video folder */
+  uint32_t default_video_folder;
+  /** Default organizer folder */
+  uint32_t default_organizer_folder;
+  /** Default ZENcast folder (only Creative devices...) */
+  uint32_t default_zencast_folder;
 };
 
 /**
