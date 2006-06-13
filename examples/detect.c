@@ -43,6 +43,8 @@ int main (int argc, char **argv)
   char *storage_description;
   char *volume_label;
   char *owner;
+  char *sectime;
+  char *devcert;
   uint8_t maxbattlevel;
   uint8_t currbattlevel;
   int ret;
@@ -118,6 +120,20 @@ int main (int argc, char **argv)
 	   (currbattlevel/maxbattlevel * 100));
   } else {
     printf("   Error getting battery info...\n");
+  }
+
+  // Secure time XML fragment
+  ret = LIBMTP_Get_Secure_Time(device, &sectime);
+  if (ret == 0 && sectime != NULL) {
+    printf("\nSecure Time:\n%s\n", sectime);
+    free(sectime);
+  }
+
+  // Device certificate XML fragment
+  ret = LIBMTP_Get_Device_Certificate(device, &devcert);
+  if (ret == 0 && devcert != NULL) {
+    printf("\nDevice Certificate:\n%s\n", devcert);
+    free(devcert);
   }
 
   // Try to get device info XML file...
