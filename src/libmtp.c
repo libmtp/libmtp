@@ -1307,6 +1307,7 @@ void LIBMTP_destroy_file_t(LIBMTP_file_t *file)
  *         Each of the metadata tags must be freed after use, and may
  *         contain only partial metadata information, i.e. one or several
  *         fields may be NULL or 0.
+ * @see LIBMTP_Get_Filemetadata()
  */
 LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
 {
@@ -1368,6 +1369,73 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
 
   } // Handle counting loop
   return retfiles;
+}
+
+/**
+ * This function retrieves the metadata for a single file off
+ * the device.
+ *
+ * Do not call this function repeatedly! The file handles are linearly
+ * searched O(n) and the call may involve (slow) USB traffic, so use
+ * <code>LIBMTP_Get_Filelisting()</code> and cache the file, preferably
+ * as an efficient data structure such as a hash list.
+ *
+ * @param device a pointer to the device to get the file metadata from.
+ * @param fileid the object ID of the file that you want the metadata for.
+ * @return a metadata entry on success or NULL on failure.
+ * @see LIBMTP_Get_Filelisting()
+ */
+LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *device, uint32_t const fileid)
+{
+  uint32_t i = 0;
+  PTPParams *params = (PTPParams *) device->params;
+
+  // Get all the handles if we haven't already done that  
+  if (params->handles.Handler == NULL) {
+    flush_handles(device);
+  }
+
+  for (i = 0; i < params->handles.n; i++) {
+    LIBMTP_file_t *file;
+    PTPObjectInfo oi;
+
+    // Is this the file we're looking for?
+    if (params->handles.Handler[i] != fileid) {
+      continue;
+    }
+
+    if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
+
+      if (oi.ObjectFormat == PTP_OFC_Association) {
+	// MTP use thesis object format for folders which means
+	// these "files" will turn up on a folder listing instead.
+	return NULL;
+      }
+
+      // Allocate a new file type
+      file = LIBMTP_new_file_t();
+      
+      file->parent_id = oi.ParentObject;
+      
+      // Set the filetype
+      file->filetype = map_ptp_type_to_libmtp_type(oi.ObjectFormat);
+      
+      // Original file-specific properties
+      file->filesize = oi.ObjectCompressedSize;
+      if (oi.Filename != NULL) {
+	file->filename = strdup(oi.Filename);
+      }
+      
+      // This is some sort of unique ID so we can keep track of the track.
+      file->item_id = params->handles.Handler[i];
+      
+      return file;
+    } else {
+      return NULL;
+    }
+
+  }
+  return NULL;
 }
 
 /**
@@ -1459,6 +1527,7 @@ void LIBMTP_destroy_track_t(LIBMTP_track_t *track)
  *         Each of the metadata tags must be freed after use, and may
  *         contain only partial metadata information, i.e. one or several
  *         fields may be NULL or 0.
+ * @see LIBMTP_Get_Trackmetadata()
  */
 LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 {
@@ -1529,6 +1598,83 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 
   } // Handle counting loop
   return retracks;
+}
+
+/**
+ * This function retrieves the metadata for a single track off
+ * the device.
+ *
+ * Do not call this function repeatedly! The track handles are linearly
+ * searched O(n) and the call may involve (slow) USB traffic, so use
+ * <code>LIBMTP_Get_Tracklisting()</code> and cache the tracks, preferably
+ * as an efficient data structure such as a hash list.
+ *
+ * @param device a pointer to the device to get the track metadata from.
+ * @param trackid the object ID of the track that you want the metadata for.
+ * @return a track metadata entry on success or NULL on failure.
+ * @see LIBMTP_Get_Tracklisting()
+ */
+LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t const trackid)
+{
+  uint32_t i = 0;
+  PTPParams *params = (PTPParams *) device->params;
+
+  // Get all the handles if we haven't already done that  
+  if (params->handles.Handler == NULL) {
+    flush_handles(device);
+  }
+
+  for (i = 0; i < params->handles.n; i++) {
+    PTPObjectInfo oi;
+    
+    // Skip if this is not the track we want.
+    if (params->handles.Handler[i] != trackid) {
+      continue;
+    }
+
+    if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
+      LIBMTP_track_t *track;
+      
+      // Ignore stuff we don't know how to handle...
+      if ( oi.ObjectFormat != PTP_OFC_WAV && 
+	   oi.ObjectFormat != PTP_OFC_MP3 && 
+	   oi.ObjectFormat != PTP_OFC_MTP_WMA &&
+	   oi.ObjectFormat != PTP_OFC_MTP_OGG && 
+	   oi.ObjectFormat != PTP_OFC_MTP_MP4 &&
+	   oi.ObjectFormat != PTP_OFC_MTP_UndefinedAudio ) {
+	return NULL;
+      }
+      
+      // Allocate a new track type
+      track = LIBMTP_new_track_t();
+      
+      track->filetype = map_ptp_type_to_libmtp_type(oi.ObjectFormat);
+      
+      // Original file-specific properties
+      track->filesize = oi.ObjectCompressedSize;
+      if (oi.Filename != NULL) {
+	track->filename = strdup(oi.Filename);
+      }
+      
+      track->title = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name, 1);
+      track->artist = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Artist, 1);
+      track->duration = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_Duration, 0);
+      track->tracknumber = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_Track, 0);
+      track->genre = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Genre, 1);
+      track->album = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_AlbumName, 1);
+      track->date = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_OriginalReleaseDate, 0);
+      
+      // This is some sort of unique ID so we can keep track of the track.
+      track->item_id = params->handles.Handler[i];
+      
+      return track;
+
+    } else {
+      return NULL;
+    }
+
+  }
+  return NULL;
 }
 
 
@@ -2713,6 +2859,7 @@ void LIBMTP_destroy_playlist_t(LIBMTP_playlist_t *playlist)
  * @param device a pointer to the device to get the playlist listing from.
  * @return a playlist list on success, else NULL. If there are no playlists
  *         on the device, NULL will be returned as well.
+ * @see LIBMTP_Get_Playlist()
  */
 LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *device)
 {
@@ -2772,6 +2919,66 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *device)
     }
   }  
   return retlists;
+}
+
+
+/**
+ * This function retrieves an individual playlist from the device.
+ * @param device a pointer to the device to get the playlist from.
+ * @param plid the unique ID of the playlist to retrieve.
+ * @return a valid playlist metadata post or NULL on failure.
+ * @see LIBMTP_Get_Playlist_List()
+ */
+LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t const plid)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  uint32_t i;
+
+  // Get all the handles if we haven't already done that
+  if (params->handles.Handler == NULL) {
+    flush_handles(device);
+  }
+
+  for (i = 0; i < params->handles.n; i++) {
+    LIBMTP_playlist_t *pl;
+    PTPObjectInfo oi;
+    uint16_t ret;
+    
+    if (params->handles.Handler[i] != plid) {
+      continue;
+    }
+
+    ret = ptp_getobjectinfo(params, params->handles.Handler[i], &oi);
+    if ( ret == PTP_RC_OK) {
+      
+      // Ignore stuff that isn't playlists
+      if ( oi.ObjectFormat != PTP_OFC_MTP_AbstractAudioVideoPlaylist ) {
+	return NULL;
+      }
+      
+      // Allocate a new playlist type
+      pl = LIBMTP_new_playlist_t();
+      
+      // Ignoring the io.Filename field.
+      pl->name = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name, 1);
+      
+      // This is some sort of unique playlist ID so we can keep track of it
+      pl->playlist_id = params->handles.Handler[i];
+
+      // Then get the track listing for this playlist
+      ret = ptp_mtp_getobjectreferences(params, pl->playlist_id, &pl->tracks, &pl->no_tracks);
+      if (ret != PTP_RC_OK) {
+	printf("LIBMTP_Get_Playlist: Could not get object references\n");
+	pl->tracks = NULL;
+	pl->no_tracks = 0;
+      }
+      
+      return pl;
+    } else {
+      return NULL;
+    }
+  }  
+  return NULL;
 }
 
 /**

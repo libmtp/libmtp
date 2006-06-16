@@ -1,17 +1,25 @@
 #include "common.h"
 
-static void dump_plinfo(LIBMTP_playlist_t *pl)
+static void dump_plinfo(LIBMTP_mtpdevice_t *device, LIBMTP_playlist_t *pl)
 {
   uint32_t i;
 
   printf("Playlist ID: %d\n", pl->playlist_id);
   if (pl->name != NULL)
     printf("   Name: %s\n", pl->name);
-  printf("   Tracks: ");
+  printf("   Tracks:\n");
+
   for (i = 0; i < pl->no_tracks; i++) {
-    printf("%d, ", pl->tracks[i]);
+    LIBMTP_track_t *track;
+    
+    track = LIBMTP_Get_Trackmetadata(device, pl->tracks[i]);
+    if (track != NULL) {
+      printf("      %u: %s - %s\n", pl->tracks[i], track->artist, track->title);
+      LIBMTP_destroy_track_t(track);
+    } else {
+      printf("      %u: INVALID TRACK REFERENCE!\n", pl->tracks[i]);
+    }
   }
-  printf("\n");
 }
 
 int main (int argc, char **argv)
@@ -34,7 +42,7 @@ int main (int argc, char **argv)
     LIBMTP_playlist_t *pl, *tmp;
     pl = playlists;
     while (pl != NULL) {
-      dump_plinfo(pl);
+      dump_plinfo(device, pl);
       tmp = pl;
       pl = pl->next;
       LIBMTP_destroy_playlist_t(tmp);

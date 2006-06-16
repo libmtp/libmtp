@@ -1,3 +1,12 @@
+2006-06-16  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: new interfaces for single metadata post
+	  retrieveal.
+	* src/libmtp.c: ditto.
+	* examples/playlists.c: display track info using the new
+	  individual track metadata retrieveal method.
+	* examples/getplaylist.c: ditto.
+
 2006-06-13  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: added default folders to device struct.

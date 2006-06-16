@@ -254,7 +254,8 @@ int LIBMTP_Get_Device_Certificate(LIBMTP_mtpdevice_t *, char **);
 LIBMTP_file_t *LIBMTP_new_file_t(void);
 void LIBMTP_destroy_file_t(LIBMTP_file_t*);
 char const * LIBMTP_Get_Filetype_Description(LIBMTP_filetype_t);
-LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device);
+LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *);
+LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *, uint32_t const);
 int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t*, uint32_t, char const * const, 
 			LIBMTP_progressfunc_t const * const, void const * const);
 int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t const, int const, 
@@ -273,6 +274,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *, int const,
 LIBMTP_track_t *LIBMTP_new_track_t(void);
 void LIBMTP_destroy_track_t(LIBMTP_track_t*);
 LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t*);
+LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t*, uint32_t const);
 int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t*, uint32_t, char const * const, 
 			LIBMTP_progressfunc_t const * const, void const * const);
 int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t const, int const, 
@@ -311,6 +313,7 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t*, char *, uint32_t);
 LIBMTP_playlist_t *LIBMTP_new_playlist_t(void);
 void LIBMTP_destroy_playlist_t(LIBMTP_playlist_t *);
 LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *);
+LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *, uint32_t const);
 int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *, LIBMTP_playlist_t * const, uint32_t const);
 int LIBMTP_Update_Playlist(LIBMTP_mtpdevice_t *, LIBMTP_playlist_t const * const);
 
