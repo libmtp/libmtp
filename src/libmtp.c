@@ -484,7 +484,7 @@ char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const o
       }
     } else {
       if (propval.str != NULL) {
-        retstring = (char *)strdup(propval.str);
+        retstring = (char *) strdup(propval.str);
         free(propval.str);
       }
     }
@@ -3006,6 +3006,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   PTPParams *params = (PTPParams *) device->params;
   uint32_t localph = parenthandle;
   char fname[256];
+  uint8_t data[2];
 
   // Use a default folder if none given
   if (localph == 0) {
@@ -3030,7 +3031,8 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   }
 
   // Means size = -1, probably N/A
-  new_pl.ObjectCompressedSize = 0xFFFFFFFFU;
+  // new_pl.ObjectCompressedSize = 0xFFFFFFFFU; <- DOES NOT WORK!
+  new_pl.ObjectCompressedSize = 1;
   new_pl.ObjectFormat = PTP_OFC_MTP_AbstractAudioVideoPlaylist;
   
   // Create the object
@@ -3043,20 +3045,20 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   
   /*
    * TODO: determine if we really have to send this "blank" data or if we can
-   *       just pass in an object of size -1 as info.
-   *
-   * unsigned char *data = "\0";
-   * ret = ptp_sendobject(&params, data, 1);
-   * if (ret != PTP_RC_OK) {
-   *  ptp_perror(params, ret);
-   *  printf("LIBMTP_New_Playlist(): Could not send object data (the tracks)\n");
-   *  return -1;
-   * }
+   *       just pass in an object of size -1 as info. (Failed when I tried it!)
    */
+  data[0] = '\0';
+  data[1] = '\0';
+  ret = ptp_sendobject(params, data, 1);
+  if (ret != PTP_RC_OK) {
+    ptp_perror(params, ret);
+    printf("LIBMTP_New_Playlist(): Could not send blank object data\n");
+    return -1;
+  }
 
   // Update title
   ret = LIBMTP_Set_Object_String(device, metadata->playlist_id, PTP_OPC_Name, metadata->name, 1);
-  if (ret != PTP_RC_OK) {
+  if (ret != 0) {
     printf("LIBMTP_New_Playlist(): could not set playlist name\n");
     return -1;
   }
@@ -3098,7 +3100,7 @@ int LIBMTP_Update_Playlist(LIBMTP_mtpdevice_t *device,
 
   // Update title
   ret = LIBMTP_Set_Object_String(device, metadata->playlist_id, PTP_OPC_Name, metadata->name, 1);
-  if (ret != PTP_RC_OK) {
+  if (ret != 0) {
     printf("LIBMTP_Update_Playlist(): could not set playlist name\n");
     return -1;
   }
