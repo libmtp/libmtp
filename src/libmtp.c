@@ -959,6 +959,31 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
       printf("   0x%04x: Unknown property\n", prop);
     }
   }
+
+  if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjectPropsSupported)) {
+    printf("Playable File (Object) Types and Object Properties Supported:\n");
+    for (i=0;i<params->deviceinfo.ImageFormats_len;i++) {
+      char txt[256];
+      uint16_t ret;
+      uint16_t *props = NULL;
+      uint32_t propcnt = 0;
+      int j;
+      
+      (void) ptp_render_ofc (params, params->deviceinfo.ImageFormats[i], sizeof(txt), txt);
+      printf("   %04x: %s\n", params->deviceinfo.ImageFormats[i], txt);
+      
+      ret = ptp_mtp_getobjectpropssupported (params, params->deviceinfo.ImageFormats[i], &propcnt, &props);
+      if (ret != PTP_RC_OK) {
+	printf("      Error on query for object properties.\n");
+      } else {
+	for (j=0;j<propcnt;j++) {
+	  (void) ptp_render_mtp_propname(props[j],sizeof(txt),txt);
+	  printf("      %04x: %s\n", props[j], txt);
+	}
+	free(props);
+      }
+    }
+  }
   
   printf("Special directories:\n");
   printf("   Default music folder: 0x%08x\n", device->default_music_folder);
