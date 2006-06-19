@@ -1,3 +1,14 @@
+2006-06-19  Linus Walleij <triad@df.lth.se>
+
+	* src/unicode.c: support all endianness, detect 
+	  byte-order-mark
+	* src/unicode.h: ditto.
+	* src/libmtp.c: ditto.
+	* examples/detect.c: use proper tempfile function.
+	* src/libmtp.h.in: add some more track properties.
+	* src/libmtp.c: ditto.
+	* examples/tracks.c: ditto.
+	
 2006-06-16  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: new interfaces for single metadata post

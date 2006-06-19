@@ -19,6 +19,35 @@ static void dump_trackinfo(LIBMTP_track_t *track)
   printf("   Duration: %d milliseconds\n", track->duration);
   printf("   File size %llu bytes\n", track->filesize);
   printf("   Filetype: %s\n", LIBMTP_Get_Filetype_Description(track->filetype));
+  if (track->samplerate != 0) {
+    printf("   Sample rate: %u Hz\n", track->samplerate);
+  }
+  if (track->nochannels != 0) {
+    printf("   Number of channels: %u\n", track->nochannels);
+  }
+  if (track->wavecodec != 0) {
+    printf("   WAVE fourCC code: 0x%08X\n", track->wavecodec);
+  }
+  if (track->bitrate != 0) {
+    printf("   Bitrate: %u bits/s\n", track->bitrate);
+  }
+  if (track->bitratetype != 0) {
+    if (track->bitratetype == 1) {
+      printf("   Bitrate type: Constant\n");
+    } else if (track->bitratetype == 2) {
+      printf("   Bitrate type: Variable (VBR)\n");
+    } else if (track->bitratetype == 3) {
+      printf("   Bitrate type: Free\n");
+    } else {
+      printf("   Bitrate type: Unknown/Erroneous value\n");
+    }
+  }
+  if (track->rating != 0) {
+    printf("   User rating: %u (out of 100)\n", track->rating);
+  }
+  if (track->usecount != 0) {
+    printf("   Use count: %u times\n", track->usecount);
+  }
 }
 
 int main (int argc, char **argv)

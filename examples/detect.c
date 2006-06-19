@@ -151,8 +151,9 @@ int main (int argc, char **argv)
     }
   }
   if (xmlfileid != 0) {
-    char tmpfilename[] = "WMPInfo.xml.XXXXXX";
-    int tmpfile = mkstemp(tmpfilename);
+    FILE *xmltmp = tmpfile();
+    int tmpfile = fileno(xmltmp);
+    
     if (tmpfile != -1) {
       int ret = LIBMTP_Get_Track_To_File_Descriptor(device, xmlfileid, tmpfile, NULL, NULL);
       if (ret == 0) {
@@ -172,7 +173,7 @@ int main (int argc, char **argv)
 	  dump_xml_fragment(buf, readbytes);
 	}
       }
-      close(tmpfile);
+      fclose(xmltmp);
     }
   }
 

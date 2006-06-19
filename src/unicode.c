@@ -85,14 +85,20 @@ static uint16_t *ucs2strdup(uint16_t const * const unicstr) {
  * string.
  *
  * @param unicstr the UCS-2 unicode string to convert
+ * @param endianness the default endianness of the string. 0 means
+ *        little-endian, any other value means big-endian.
+ *        If a byte-order-mark (BOM) occurs in the string this
+ *        will be honoured and switch the endianness.
  * @return a UTF-8 string.
  */
-char *ucs2_to_utf8(uint16_t const * const unicstr){
+char *ucs2_to_utf8(uint16_t const * const unicstr, 
+		   uint8_t const endianness) {
   char *data = NULL;
   int i = 0;
   int l = 0;
   int length8;
   uint8_t *locstr = (uint8_t *) unicstr;
+  uint8_t locend = endianness;
 
   length8 = ucs2utf8len(unicstr);
   data = (char *) malloc(length8+1);
@@ -100,18 +106,43 @@ char *ucs2_to_utf8(uint16_t const * const unicstr){
     return NULL;
   }
   for(l = 0; (locstr[l] | locstr[l+1]) != '\0'; l += 2) {
-    if (locstr[l+1] == 0x00 && locstr[l] < 0x80U) {
-      data[i] = locstr[l];
-      i ++;
-    } else if (locstr[l+1] < 0x08) {
-      data[i] = 0xc0 | (locstr[l+1]<<2 & 0x1C) | (locstr[l]>>6  & 0x03);
-      data[i+1] = 0x80 | (locstr[l] & 0x3F);
-      i+=2;
+    // This will honour the byte-order-mark properly
+    if (locstr[l] == 0xFF && locstr[l+1] == 0xFE) {
+      locend = 0;
+    } else if (locstr[l] == 0xFE && locstr[l+1] == 0xFF) {
+      locend = 1;
     } else {
-      data[i] = 0xe0 | (locstr[l+1]>>4 & 0x0F);
-      data[i+1] = 0x80 | (locstr[l+1]<<2 & 0x3C) | (locstr[l]>>6 & 0x03);
-      data[i+2] = 0x80 | (locstr[l] & 0x3F);
-      i+=3;
+      if (!locend) {
+	// This is for little-endian machines
+	if (locstr[l+1] == 0x00 && locstr[l] < 0x80U) {
+	  data[i] = locstr[l];
+	  i ++;
+	} else if (locstr[l+1] < 0x08) {
+	  data[i] = 0xc0 | (locstr[l+1]<<2 & 0x1C) | (locstr[l]>>6  & 0x03);
+	  data[i+1] = 0x80 | (locstr[l] & 0x3F);
+	i+=2;
+	} else {
+	  data[i] = 0xe0 | (locstr[l+1]>>4 & 0x0F);
+	  data[i+1] = 0x80 | (locstr[l+1]<<2 & 0x3C) | (locstr[l]>>6 & 0x03);
+	  data[i+2] = 0x80 | (locstr[l] & 0x3F);
+	  i+=3;
+	}
+      } else {
+	// This is for big-endian machines
+	if (locstr[l] == 0x00 && locstr[l+1] < 0x80U) {
+	  data[i] = locstr[l+1];
+	  i ++;
+	} else if (locstr[l] < 0x08) {
+	data[i] = 0xc0 | (locstr[l]<<2 & 0x1C) | (locstr[l+1]>>6  & 0x03);
+	data[i+1] = 0x80 | (locstr[l+1] & 0x3F);
+	i+=2;
+	} else {
+	  data[i] = 0xe0 | (locstr[l]>>4 & 0x0F);
+	  data[i+1] = 0x80 | (locstr[l]<<2 & 0x3C) | (locstr[l+1]>>6 & 0x03);
+	  data[i+2] = 0x80 | (locstr[l+1] & 0x3F);
+	  i+=3;
+	}
+      }
     }
   }
   /* Terminate string */
@@ -124,9 +155,12 @@ char *ucs2_to_utf8(uint16_t const * const unicstr){
  * Convert a UTF-8 string to a unicode UCS-2 string.
  *
  * @param str the UTF-8 string to convert.
+ * @param endianness desired endianness of the returned string. 0 means
+ *        little-endian, any other value means big-endian.
  * @return a pointer to a newly allocated UCS-2 string.
  */
-uint16_t *utf8_to_ucs2(unsigned char const * const str) {
+uint16_t *utf8_to_ucs2(unsigned char const * const str,
+		       const uint8_t endianness) {
   uint16_t *retval;
   int i;
   unsigned char buffer[STRING_BUFFER_LENGTH*2];    
@@ -134,8 +168,13 @@ uint16_t *utf8_to_ucs2(unsigned char const * const str) {
     
   for(i = 0; str[i] != '\0';) {
     if (str[i] < 0x80) {
-      buffer[length+1] = 0x00;
-      buffer[length] = str[i];
+      if (!endianness) {
+	buffer[length+1] = 0x00;
+	buffer[length] = str[i];
+      } else {
+	buffer[length] = 0x00;
+	buffer[length+1] = str[i];
+      }
       length += 2;
       i++;
     } else {
@@ -152,13 +191,23 @@ uint16_t *utf8_to_ucs2(unsigned char const * const str) {
       if (numbytes <= 3) {
 	if (numbytes == 2 && str[i+1] > 0x80) {
 	  /* This character can always be handled correctly */
-	  buffer[length+1] = (str[i]>>2 & 0x07);
-	  buffer[length] = (str[i]<<6 & 0xC0) | (str[i+1] & 0x3F);
+	  if (!endianness) {
+	    buffer[length+1] = (str[i]>>2 & 0x07);
+	    buffer[length] = (str[i]<<6 & 0xC0) | (str[i+1] & 0x3F);
+	  } else {
+	    buffer[length] = (str[i]>>2 & 0x07);
+	    buffer[length+1] = (str[i]<<6 & 0xC0) | (str[i+1] & 0x3F);
+	  }
 	  i += 2;
 	  length += 2;
 	} else if (numbytes == 3 && str[i+1] > 0x80 && str[i+2] > 0x80) {
-	  buffer[length+1] = (str[i]<<4 & 0xF0) | (str[i+1]>>2 & 0x0F);
-	  buffer[length]= (str[i+1]<<6 & 0xC0) | (str[i+2] & 0x3F);
+	  if (!endianness) {
+	    buffer[length+1] = (str[i]<<4 & 0xF0) | (str[i+1]>>2 & 0x0F);
+	    buffer[length]= (str[i+1]<<6 & 0xC0) | (str[i+2] & 0x3F);
+	  } else {
+	    buffer[length] = (str[i]<<4 & 0xF0) | (str[i+1]>>2 & 0x0F);
+	    buffer[length+1]= (str[i+1]<<6 & 0xC0) | (str[i+2] & 0x3F);
+	  }
 	  i += 3;
 	  length += 2;
 	} else {
@@ -171,10 +220,11 @@ uint16_t *utf8_to_ucs2(unsigned char const * const str) {
       }
     }
   }
-  /* Copy the buffer contents */
-  buffer[length+1] = 0x00;
+  // Terminate string
   buffer[length] = 0x00;
+  buffer[length+1] = 0x00;
 
+  // Copy the buffer contents
   retval = ucs2strdup((uint16_t *) buffer);
   return retval;
 }

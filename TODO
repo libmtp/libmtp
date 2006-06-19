@@ -3,6 +3,8 @@ TODO file:
 
 * Support abstract MTP album (0xBA03) just like playlists.
 
+* Support playback and volume setting on devices that have it.
+
 * Add logic to transfer very large files in chunks, like 1 MB at the
   time, or we cannot upload movies... Righ now libmtp just copy the
   file to memory and transfer it.
@@ -10,19 +12,16 @@ TODO file:
 * Previous fix can help to get the callbacks working again, cause
   right now they aren't called.
 
-* Fix compiler warnings.
-
-* Add audio/video playlist support.
-
-* Make an API that can return several devices not just connect to the
-  first one...
-
 * Make the usb r/w stuff in libusb-glue.c take the device as parameter,
   then put the callback function in the device and make it call.
   (IMPOSSIBLE: the device is created after a lot of writing has already
    taken place, shall we use a dummy device holder then?)
 
-* Add all thinkable file types.
+* Fix compiler warnings.
+
+* Make an API that can return several devices not just connect to the
+  first one...
 
 * Add a function that will list the playable file types for a certain 
-  device. (Needs some research and probably a database.)
+  device. (Needs some research and probably a database.) Can the device
+  be probed to determine supported file types?

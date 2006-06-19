@@ -170,6 +170,13 @@ struct LIBMTP_track_struct {
   char *filename; /**< Original filename of this track */
   uint16_t tracknumber; /**< Track number (in sequence on recording) */
   uint32_t duration; /**< Duration in milliseconds */
+  uint32_t samplerate; /**< Sample rate of original file, min 0x1f80 max 0xbb80 */	
+  uint16_t nochannels; /**< Number of channels in this recording 0 = unknown, 1 or 2 */
+  uint32_t wavecodec; /**< FourCC wave codec name */
+  uint32_t bitrate; /**< (Average) bitrate for this file min=1 max=0x16e360 */
+  uint16_t bitratetype; /**< 0 = unused, 1 = constant, 2 = VBR, 3 = free */
+  uint16_t rating; /**< User rating 0-100 (0x00-0x64) */
+  uint32_t usecount; /**< Number of times used/played */
   uint64_t filesize; /**< Size of track file in bytes */
   LIBMTP_filetype_t filetype; /**< Filetype used for the current track */
   LIBMTP_track_t *next; /**< Next track in list or NULL if last track */

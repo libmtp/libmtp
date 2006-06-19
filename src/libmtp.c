@@ -50,7 +50,8 @@ static int send_file_object(LIBMTP_mtpdevice_t *device,
 			    void const * const data);
 static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype);
 static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype);
-int get_device_unicode_property(LIBMTP_mtpdevice_t *device, char **unicstring, uint16_t property);
+static int get_device_unicode_property(LIBMTP_mtpdevice_t *device, 
+				       char **unicstring, uint16_t property);
 
 static LIBMTP_filemap_t *new_filemap_entry()
 {
@@ -479,7 +480,7 @@ char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const o
   if (ret == PTP_RC_OK) {
     if (getUtf8 == 1) {
       if (propval.unistr != NULL) {
-	retstring = ucs2_to_utf8(propval.unistr);
+	retstring = ucs2_to_utf8(propval.unistr, 0);
 	free(propval.unistr);
       }
     } else {
@@ -580,7 +581,7 @@ int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t const object_i
   }
 
   if (setUtf8 == 1) {
-    propval.unistr = utf8_to_ucs2((unsigned char const * const) string);
+    propval.unistr = utf8_to_ucs2((unsigned char const * const) string, 0);
     ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UNISTR);
     free(propval.unistr);
   } else {
@@ -955,7 +956,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
       printf("   0x%04x: %s\n", params->deviceinfo.DevicePropertiesSupported[i], propdesc);
     } else {
       uint16_t prop = params->deviceinfo.DevicePropertiesSupported[i];
-      printf("   0x%04x: Unknown property", prop);
+      printf("   0x%04x: Unknown property\n", prop);
     }
   }
   
@@ -1037,6 +1038,10 @@ char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t *device)
   char *retstring = NULL;
   PTPParams *params = (PTPParams *) device->params;
 
+  if (!ptp_property_issupported(params, PTP_DPC_MTP_DeviceFriendlyName)) {
+    return NULL;
+  }
+
   if (ptp_getdevicepropvalue(params, 
 			     PTP_DPC_MTP_DeviceFriendlyName, 
 			     &propval, 
@@ -1044,7 +1049,7 @@ char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t *device)
     return NULL;
   }
   // Convert from UTF-16 to UTF-8
-  retstring = ucs2_to_utf8((uint16_t *) propval.unistr);
+  retstring = ucs2_to_utf8((uint16_t *) propval.unistr, 0);
   free(propval.unistr);
   return retstring;
 }
@@ -1132,8 +1137,14 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device,
 
 /**
  * Helper function to extract a unicode property off a device.
+ * @param device a pointer to the device to get the property from.
+ * @param unicstring a pointer to a pointer that will hold the 
+ *        property after this call is completed.
+ * @param property the property to retrieve.
+ * @return 0 on success, any other value means failure.
  */
-int get_device_unicode_property(LIBMTP_mtpdevice_t *device, char **unicstring, uint16_t property)
+static int get_device_unicode_property(LIBMTP_mtpdevice_t *device, 
+				       char **unicstring, uint16_t property)
 {
   PTPPropertyValue propval;
   PTPParams *params = (PTPParams *) device->params;
@@ -1145,6 +1156,7 @@ int get_device_unicode_property(LIBMTP_mtpdevice_t *device, char **unicstring, u
     return -1;
   }
 
+  // Unicode strings are 16bit unsigned integer arrays.
   if (ptp_getdevicepropvalue(params, 
 			     property, 
 			     &propval, 
@@ -1157,6 +1169,7 @@ int get_device_unicode_property(LIBMTP_mtpdevice_t *device, char **unicstring, u
   tmp = malloc(len);
   for (i = 0; i < propval.a.count; i++) {
     // Force this to become a little-endian unicode string
+    // in order to be able to use the ucs2_to_utf8 function.
     uint16_t tch = propval.a.v[i].u16;
     tmp[i*2] = (uint8_t) tch & 0xFF;
     tmp[(i*2)+1] = (uint8_t) tch >> 8;
@@ -1165,7 +1178,7 @@ int get_device_unicode_property(LIBMTP_mtpdevice_t *device, char **unicstring, u
   tmp[len-2] = 0;
   free(propval.a.v);
 
-  *unicstring = ucs2_to_utf8((uint16_t *) tmp);
+  *unicstring = ucs2_to_utf8((uint16_t *) tmp, 0);
   free(tmp);
 
   return 0;
@@ -1471,6 +1484,13 @@ LIBMTP_track_t *LIBMTP_new_track_t(void)
   new->tracknumber = 0;
   new->filesize = 0;
   new->filetype = LIBMTP_FILETYPE_UNKNOWN;
+  new->samplerate = 0;
+  new->nochannels = 0;
+  new->wavecodec = 0;
+  new->bitrate = 0;
+  new->bitratetype = 0;
+  new->rating = 0;
+  new->usecount = 0;
   new->next = NULL;
   return new;
 }
@@ -1576,6 +1596,14 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
       track->genre = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Genre, 1);
       track->album = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_AlbumName, 1);
       track->date = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_OriginalReleaseDate, 0);
+      // These are, well not so important.
+      track->samplerate = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_SampleRate, 0);
+      track->nochannels = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_NumberOfChannels, 0);
+      track->wavecodec = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_AudioWAVECodec, 0);
+      track->bitrate = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_AudioBitRate, 0);
+      track->bitratetype = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_BitRateType, 0);
+      track->rating = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_Rating, 0);
+      track->usecount = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_UseCount, 0);
       
       // This is some sort of unique ID so we can keep track of the track.
       track->item_id = params->handles.Handler[i];
@@ -1663,6 +1691,14 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
       track->genre = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Genre, 1);
       track->album = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_AlbumName, 1);
       track->date = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_OriginalReleaseDate, 0);
+      // These are, well not so important.
+      track->samplerate = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_SampleRate, 0);
+      track->nochannels = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_NumberOfChannels, 0);
+      track->wavecodec = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_AudioWAVECodec, 0);
+      track->bitrate = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_AudioBitRate, 0);
+      track->bitratetype = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_BitRateType, 0);
+      track->rating = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_Rating, 0);
+      track->usecount = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_UseCount, 0);
       
       // This is some sort of unique ID so we can keep track of the track.
       track->item_id = params->handles.Handler[i];
@@ -2350,7 +2386,72 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
     printf("LIBMTP_Update_Track_Metadata(): could not set track release date\n");
     return -1;
   }
-  
+
+  // These are, well not so important.
+  // Update sample rate
+  if (metadata->samplerate != 0) {
+    ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_SampleRate, metadata->samplerate);
+    if (ret != 0) {
+      printf("LIBMTP_Update_Track_Metadata(): could not set samplerate\n");
+      return -1;
+    }
+  }
+
+  // Update number of channels
+  if (metadata->nochannels != 0) {
+    ret = LIBMTP_Set_Object_U16(device, metadata->item_id, PTP_OPC_NumberOfChannels, metadata->nochannels);
+    if (ret != 0) {
+      printf("LIBMTP_Update_Track_Metadata(): could not set number of channels\n");
+      return -1;
+    }
+  }
+
+  // Update WAVE codec
+  if (metadata->wavecodec != 0) {
+    ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_AudioWAVECodec, metadata->wavecodec);
+    if (ret != 0) {
+      printf("LIBMTP_Update_Track_Metadata(): could not set WAVE codec\n");
+      return -1;
+    }
+  }
+
+  // Update bitrate
+  if (metadata->bitrate != 0) {
+    ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_AudioBitRate, metadata->bitrate);
+    if (ret != 0) {
+      printf("LIBMTP_Update_Track_Metadata(): could not set bitrate\n");
+      return -1;
+    }
+  }
+
+  // Update bitrate type
+  if (metadata->bitratetype != 0) {
+    ret = LIBMTP_Set_Object_U16(device, metadata->item_id, PTP_OPC_BitRateType, metadata->bitratetype);
+    if (ret != 0) {
+      printf("LIBMTP_Update_Track_Metadata(): could not set bitratetype\n");
+      return -1;
+    }
+  }
+
+  // Update user rating
+  // TODO: shall this be set for rating 0?
+  if (metadata->rating != 0) {
+    ret = LIBMTP_Set_Object_U16(device, metadata->item_id, PTP_OPC_Rating, metadata->rating);
+    if (ret != 0) {
+      printf("LIBMTP_Update_Track_Metadata(): could not set user rating\n");
+      return -1;
+    }
+  }
+
+  // Update use count
+  if (metadata->usecount != 0) {
+    ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_UseCount, metadata->usecount);
+    if (ret != 0) {
+      printf("LIBMTP_Update_Track_Metadata(): could not set use count\n");
+      return -1;
+    }
+  }
+
   // NOTE: File size is not updated, this should not change anyway.
   // neither will we change the filename.
   
