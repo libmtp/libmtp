@@ -45,6 +45,8 @@ int main (int argc, char **argv)
   char *owner;
   char *sectime;
   char *devcert;
+  uint16_t *filetypes;
+  uint16_t filetypes_len;
   uint8_t maxbattlevel;
   uint8_t currbattlevel;
   int ret;
@@ -120,6 +122,16 @@ int main (int argc, char **argv)
 	   (currbattlevel/maxbattlevel * 100));
   } else {
     printf("   Error getting battery info...\n");
+  }
+
+  ret = LIBMTP_Get_Supported_Filetypes(device, &filetypes, &filetypes_len);
+  if (ret == 0) {
+    uint16_t i;
+    
+    printf("libmtp supported (playable) filetypes:\n");
+    for (i = 0; i < filetypes_len; i++) {
+      printf("   %s\n", LIBMTP_Get_Filetype_Description(filetypes[i]));
+    }
   }
 
   // Secure time XML fragment

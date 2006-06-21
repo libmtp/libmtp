@@ -52,6 +52,8 @@ static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype);
 static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype);
 static int get_device_unicode_property(LIBMTP_mtpdevice_t *device, 
 				       char **unicstring, uint16_t property);
+static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat,
+			       LIBMTP_track_t *track);
 
 static LIBMTP_filemap_t *new_filemap_entry()
 {
@@ -335,8 +337,8 @@ static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype)
 /**
  * Returns the PTP internal filetype that maps to a certain libmtp
  * interface file type.
- * @param intype the MTP library interface type
- * @return the PTP (libgphoto2) interface type
+ * @param intype the PTP (libgphoto2) interface type 
+ * @return the MTP library interface type
  */
 static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype)
 {
@@ -1218,7 +1220,7 @@ static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
  *         must be <code>free()</code>:ed by the caller after use.
  * @return 0 on success, any other value means failure.
  */
-int LIBMTP_Get_Secure_Time(LIBMTP_mtpdevice_t *device, char **sectime)
+int LIBMTP_Get_Secure_Time(LIBMTP_mtpdevice_t *device, char ** const sectime)
 {
   return get_device_unicode_property(device, sectime, PTP_DPC_MTP_SecureTime);
 }
@@ -1232,10 +1234,52 @@ int LIBMTP_Get_Secure_Time(LIBMTP_mtpdevice_t *device, char **sectime)
  *        string must be <code>free()</code>:ed by the caller after use.
  * @return 0 on success, any other value means failure.
  */
-int LIBMTP_Get_Device_Certificate(LIBMTP_mtpdevice_t *device, char **devcert)
+int LIBMTP_Get_Device_Certificate(LIBMTP_mtpdevice_t *device, char ** const devcert)
 {
   return get_device_unicode_property(device, devcert, PTP_DPC_MTP_DeviceCertificate);
 }
+
+/**
+ * This function retrieves a list of supported file types, i.e. the file
+ * types that this device claims it supports, e.g. audio file types that
+ * the device can play etc. This list is mitigated to
+ * inlcude the file types that libmtp can handle, i.e. it will not list
+ * filetypes that libmtp will handle internally like playlists and folders.
+ * @param device a pointer to the device to get the filetype capabilities for.
+ * @param filetypes a pointer to a pointer that will hold the list of
+ *        supported filetypes if the call was successful. This list must
+ *        be <code>free()</code>:ed by the caller after use.
+ * @param length a pointer to a variable that will hold the length of the
+ *        list of supported filetypes if the call was successful.
+ * @return 0 on success, any other value means failure.
+ * @see LIBMTP_Get_Filetype_Description()
+ */
+int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *device, uint16_t ** const filetypes, 
+				  uint16_t * const length)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  uint16_t *localtypes;
+  uint16_t localtypelen;
+  uint32_t i;
+  
+  // This is more memory than needed if there are unknown types, but what the heck.
+  localtypes = (uint16_t *) malloc(params->deviceinfo.ImageFormats_len * sizeof(uint16_t));
+  localtypelen = 0;
+  
+  for (i=0;i<params->deviceinfo.ImageFormats_len;i++) {
+    uint16_t localtype = map_ptp_type_to_libmtp_type(params->deviceinfo.ImageFormats[i]);
+    if (localtype != LIBMTP_FILETYPE_UNKNOWN) {
+      localtypes[localtypelen] = localtype;
+      localtypelen++;
+    }
+  }
+
+  *filetypes = localtypes;
+  *length = localtypelen;
+
+  return 0;
+}
+
 
 /**
  * This creates a new MTP object structure and allocates memory
@@ -1549,6 +1593,35 @@ void LIBMTP_destroy_track_t(LIBMTP_track_t *track)
 }
 
 /**
+ * This function retrieves the track metadata for a track
+ * given by a unique ID.
+ * @param device a pointer to the device to get the track metadata off.
+ * @param trackid the unique ID of the track.
+ * @param objectformat the object format of this track, so we know what it supports.
+ * @param track a metadata set to fill in.
+ */
+static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat,
+			       LIBMTP_track_t *track)
+{
+  // TODO: first see which properties can be read off this object format
+  track->title = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Name, 1);
+  track->artist = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Artist, 1);
+  track->duration = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_Duration, 0);
+  track->tracknumber = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_Track, 0);
+  track->genre = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Genre, 1);
+  track->album = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_AlbumName, 1);
+  track->date = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_OriginalReleaseDate, 0);
+  // These are, well not so important.
+  track->samplerate = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_SampleRate, 0);
+  track->nochannels = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_NumberOfChannels, 0);
+  track->wavecodec = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_AudioWAVECodec, 0);
+  track->bitrate = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_AudioBitRate, 0);
+  track->bitratetype = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_BitRateType, 0);
+  track->rating = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_Rating, 0);
+  track->usecount = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_UseCount, 0);
+}
+
+/**
  * This returns a long list of all tracks available
  * on the current MTP device. Typical usage:
  *
@@ -1593,6 +1666,9 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
       
       // Ignore stuff we don't know how to handle...
+      // TODO: get this list as an intersection of the sets
+      // supported by the device and the from the device and
+      // all known audio track files?
       if ( oi.ObjectFormat != PTP_OFC_WAV && 
 	   oi.ObjectFormat != PTP_OFC_MP3 && 
 	   oi.ObjectFormat != PTP_OFC_MTP_WMA &&
@@ -1605,6 +1681,9 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
       
       // Allocate a new track type
       track = LIBMTP_new_track_t();
+
+      // This is some sort of unique ID so we can keep track of the track.
+      track->item_id = params->handles.Handler[i];
       
       track->filetype = map_ptp_type_to_libmtp_type(oi.ObjectFormat);
       
@@ -1613,25 +1692,8 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
       if (oi.Filename != NULL) {
 	track->filename = strdup(oi.Filename);
       }
-      
-      track->title = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name, 1);
-      track->artist = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Artist, 1);
-      track->duration = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_Duration, 0);
-      track->tracknumber = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_Track, 0);
-      track->genre = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Genre, 1);
-      track->album = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_AlbumName, 1);
-      track->date = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_OriginalReleaseDate, 0);
-      // These are, well not so important.
-      track->samplerate = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_SampleRate, 0);
-      track->nochannels = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_NumberOfChannels, 0);
-      track->wavecodec = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_AudioWAVECodec, 0);
-      track->bitrate = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_AudioBitRate, 0);
-      track->bitratetype = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_BitRateType, 0);
-      track->rating = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_Rating, 0);
-      track->usecount = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_UseCount, 0);
-      
-      // This is some sort of unique ID so we can keep track of the track.
-      track->item_id = params->handles.Handler[i];
+
+      get_track_metadata(device, oi.ObjectFormat, track);
       
       // Add track to a list that will be returned afterwards.
       if (retracks == NULL) {
@@ -1700,6 +1762,9 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
       
       // Allocate a new track type
       track = LIBMTP_new_track_t();
+
+      // This is some sort of unique ID so we can keep track of the track.
+      track->item_id = params->handles.Handler[i];
       
       track->filetype = map_ptp_type_to_libmtp_type(oi.ObjectFormat);
       
@@ -1708,26 +1773,9 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
       if (oi.Filename != NULL) {
 	track->filename = strdup(oi.Filename);
       }
-      
-      track->title = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name, 1);
-      track->artist = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Artist, 1);
-      track->duration = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_Duration, 0);
-      track->tracknumber = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_Track, 0);
-      track->genre = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Genre, 1);
-      track->album = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_AlbumName, 1);
-      track->date = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_OriginalReleaseDate, 0);
-      // These are, well not so important.
-      track->samplerate = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_SampleRate, 0);
-      track->nochannels = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_NumberOfChannels, 0);
-      track->wavecodec = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_AudioWAVECodec, 0);
-      track->bitrate = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_AudioBitRate, 0);
-      track->bitratetype = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_BitRateType, 0);
-      track->rating = LIBMTP_Get_U16_From_Object(device, params->handles.Handler[i], PTP_OPC_Rating, 0);
-      track->usecount = LIBMTP_Get_U32_From_Object(device, params->handles.Handler[i], PTP_OPC_UseCount, 0);
-      
-      // This is some sort of unique ID so we can keep track of the track.
-      track->item_id = params->handles.Handler[i];
-      
+
+      get_track_metadata(device, oi.ObjectFormat, track);
+            
       return track;
 
     } else {
@@ -2359,6 +2407,9 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 {
   uint16_t ret;
 
+  // TODO: only try to update this metadata for object tags
+  // that exist on the current player.
+
   // Update title
   ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Name, metadata->title,1);
   if (ret != 0) {
@@ -2468,13 +2519,11 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
     }
   }
 
-  // Update use count
-  if (metadata->usecount != 0) {
-    ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_UseCount, metadata->usecount);
-    if (ret != 0) {
-      printf("LIBMTP_Update_Track_Metadata(): could not set use count\n");
-      return -1;
-    }
+  // Update use count, set even to zero if desired.
+  ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_UseCount, metadata->usecount);
+  if (ret != 0) {
+    printf("LIBMTP_Update_Track_Metadata(): could not set use count\n");
+    return -1;
   }
 
   // NOTE: File size is not updated, this should not change anyway.

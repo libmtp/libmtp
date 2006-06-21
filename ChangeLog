@@ -1,3 +1,10 @@
+2006-06-21  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: added function to retrieve supported
+	  filetypes.	
+	* src/libmtp.c: ditto.
+	* examples/detect.c: use that function.
+
 2006-06-19  Linus Walleij <triad@df.lth.se>
 
 	* src/unicode.c: support all endianness, detect 
