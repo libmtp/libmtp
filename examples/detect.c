@@ -119,7 +119,7 @@ int main (int argc, char **argv)
   ret = LIBMTP_Get_Batterylevel(device, &maxbattlevel, &currbattlevel);
   if (ret == 0) {
     printf("   Battery level %d of %d (%d%%)\n",currbattlevel, maxbattlevel, 
-	   (currbattlevel/maxbattlevel * 100));
+	   (int) ((float) currbattlevel/ (float) maxbattlevel * 100.0));
   } else {
     printf("   Error getting battery info...\n");
   }
