@@ -286,6 +286,7 @@ static void init_filemap()
   LIBMTP_Register_Filetype("ISO MPEG Audio Layer 3", LIBMTP_FILETYPE_MP3, PTP_OFC_MP3,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
   LIBMTP_Register_Filetype("Microsoft Windows Media Audio", LIBMTP_FILETYPE_WMA, PTP_OFC_MTP_WMA,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
   LIBMTP_Register_Filetype("Ogg container format", LIBMTP_FILETYPE_OGG, PTP_OFC_MTP_OGG,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
+  LIBMTP_Register_Filetype("Audible.com Audio Codec", LIBMTP_FILETYPE_AUDIBLE, PTP_OFC_MTP_AudibleCodec,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
   LIBMTP_Register_Filetype("Advanced Acoustic Coding", LIBMTP_FILETYPE_MP4, PTP_OFC_MTP_MP4,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
   LIBMTP_Register_Filetype("Undefined audio file", LIBMTP_FILETYPE_UNDEF_AUDIO, PTP_OFC_MTP_UndefinedAudio,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
   LIBMTP_Register_Filetype("Microsoft Windows Media Video", LIBMTP_FILETYPE_WMV, PTP_OFC_MTP_WMV,NULL,NULL,NULL);
@@ -1164,6 +1165,8 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device,
 
 /**
  * Helper function to extract a unicode property off a device.
+ * This is the standard way of retrieveing unicode device
+ * properties as described by the PTP spec.
  * @param device a pointer to the device to get the property from.
  * @param unicstring a pointer to a pointer that will hold the 
  *        property after this call is completed.
