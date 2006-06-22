@@ -1,9 +1,12 @@
 TODO file:
 ----------
 
-* Support abstract MTP album (0xBA03) just like playlists.
+* Support abstract MTP album (0xBA03) just like playlists. Too
+  bad that Creative devices do not support them, they group the
+  albums by using the metadata instead.
 
 * Support playback and volume setting on devices that have it.
+  (I don't have one - Linus.)
 
 * Add logic to transfer very large files in chunks, like 1 MB at the
   time, or we cannot upload movies... Righ now libmtp just copy the

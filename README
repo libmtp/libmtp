@@ -93,5 +93,6 @@ from programs with the following limitations/conditions:
 - Repeat events do not seem to be supported, entries will
   only appear once.
 - Files should be stored in the folder "My Organizer" when
-  sent to the device (Use the option -f "My Organizer" to
-  sendfile for this)
+  sent to the device (this directory should be autodetected
+  for use with calendar files, otherwise use the option 
+  -f "My Organizer" to sendfile for this)
