@@ -1,3 +1,7 @@
+2006-06-22  Linus Walleij <triad@df.lth.se>
+
+	* Release libmtp 0.0.9.
+
 2006-06-21  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: added function to retrieve supported
