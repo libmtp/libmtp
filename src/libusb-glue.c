@@ -67,6 +67,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Creative Zen MicroPhoto", 0x041e, 0x413c },
   { "Creative Zen Sleek Photo", 0x041e, 0x413d },
   { "Creative Zen Vision:M", 0x041e, 0x413e },
+  /* Contributed by polux2001@users.sourceforge.net */
+  { "Samsung YH-925", 0x04e8, 0x502f },
   /* Contributed by anonymous person on SourceForge */
   { "Samsung YP-T7J", 0x04e8, 0x5047 },
   /* From a rouge .INF file */
