@@ -67,6 +67,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Creative Zen MicroPhoto", 0x041e, 0x413c },
   { "Creative Zen Sleek Photo", 0x041e, 0x413d },
   { "Creative Zen Vision:M", 0x041e, 0x413e },
+  /* From libgphoto2 */
+  { "Samsung:YH-820", 0x04e8, 0x502e },
   /* Contributed by polux2001@users.sourceforge.net */
   { "Samsung YH-925", 0x04e8, 0x502f },
   /* Contributed by anonymous person on SourceForge */
@@ -87,6 +89,12 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Philipps HDD6320", 0x0471, 0x01eb },
   /* Anonymous SourceForge user */
   { "Philipps HDD1630/17", 0x0471, 0x014c },
+  /* Reported by tangent_@users.sourceforge.net */
+  { "SanDisk Sansa c150", 0x0781, 0x7410 },
+  /* From libgphoto2 source */
+  { "SanDisk Sansa e200", 0x0781, 0x7420 },
+  /* Reported by gonkflea@users.sourceforge.net */
+  { "SanDisk Sansa e260", 0x0781, 0x7420 },
   { "iRiver T10", 0x4102, 0x1113 },
   { "iRiver T20 FM", 0x4102, 0x1114 },
   { "iRiver U10", 0x4102, 0x1116 },

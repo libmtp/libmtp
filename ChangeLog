@@ -1,3 +1,7 @@
+2006-07-26  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: new SanDisk devices.
+
 2006-06-22  Linus Walleij <triad@df.lth.se>
 
 	* Release libmtp 0.0.9.
