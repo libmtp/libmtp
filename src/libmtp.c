@@ -3367,3 +3367,12 @@ int LIBMTP_Update_Playlist(LIBMTP_mtpdevice_t *device,
   }
   return 0;
 }
+
+
+/**
+ * Dummy function needed to interface to upstream
+ * ptp.c/ptp.h files.
+ */
+void ptp_nikon_getptpipguid (unsigned char* guid) {
+  return;
+}

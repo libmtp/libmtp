@@ -1,8 +1,15 @@
+2006-07-27  Linus Walleij <triad@df.lth.se>
+	
+	* Release libmtp 0.0.10.
+
 2006-07-26  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: new SanDisk devices.
 	* src/libmtp.c: only set metdata properties supported by
 	  the device, duh.
+	* src/ptp.c: sync to upstream.
+	* src/ptp.h: sync to upstream.
+	* configure.ac: bump to 0.0.10.
 
 2006-06-22  Linus Walleij <triad@df.lth.se>
 
