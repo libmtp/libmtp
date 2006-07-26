@@ -1606,22 +1606,69 @@ void LIBMTP_destroy_track_t(LIBMTP_track_t *track)
 static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat,
 			       LIBMTP_track_t *track)
 {
-  // TODO: first see which properties can be read off this object format
-  track->title = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Name, 1);
-  track->artist = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Artist, 1);
-  track->duration = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_Duration, 0);
-  track->tracknumber = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_Track, 0);
-  track->genre = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Genre, 1);
-  track->album = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_AlbumName, 1);
-  track->date = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_OriginalReleaseDate, 0);
-  // These are, well not so important.
-  track->samplerate = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_SampleRate, 0);
-  track->nochannels = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_NumberOfChannels, 0);
-  track->wavecodec = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_AudioWAVECodec, 0);
-  track->bitrate = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_AudioBitRate, 0);
-  track->bitratetype = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_BitRateType, 0);
-  track->rating = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_Rating, 0);
-  track->usecount = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_UseCount, 0);
+  uint16_t ret;
+  PTPParams *params = (PTPParams *) device->params;
+  uint32_t i;
+  uint16_t *props = NULL;
+  uint32_t propcnt = 0;
+
+  // First see which properties can be retrieved for this object format
+  ret = ptp_mtp_getobjectpropssupported (params, map_libmtp_type_to_ptp_type(track->filetype), &propcnt, &props);
+  if (ret != PTP_RC_OK) {
+    // Just bail out for now, nothing is ever set.
+    return;
+  } else {
+    for (i=0;i<propcnt;i++) {
+      switch (props[i]) {
+      case PTP_OPC_Name:
+	track->title = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Name, 1);
+	break;
+      case PTP_OPC_Artist:
+	track->artist = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Artist, 1);
+	break;
+      case PTP_OPC_Duration:
+	track->duration = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_Duration, 0);
+	break;
+      case PTP_OPC_Track:
+	track->tracknumber = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_Track, 0);
+	break;
+      case PTP_OPC_Genre:
+	track->genre = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Genre, 1);
+	break;
+      case PTP_OPC_AlbumName:
+	track->album = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_AlbumName, 1);
+	break;
+      case PTP_OPC_OriginalReleaseDate:
+	track->date = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_OriginalReleaseDate, 0);
+	break;
+	// These are, well not so important.
+      case PTP_OPC_SampleRate:
+	track->samplerate = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_SampleRate, 0);
+	break;
+      case PTP_OPC_NumberOfChannels:
+	track->nochannels = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_NumberOfChannels, 0);
+	break;
+      case PTP_OPC_AudioWAVECodec:
+	track->wavecodec = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_AudioWAVECodec, 0);
+	break;
+      case PTP_OPC_AudioBitRate:
+	track->bitrate = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_AudioBitRate, 0);
+	break;
+      case PTP_OPC_BitRateType:
+	track->bitratetype = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_BitRateType, 0);
+	break;
+      case PTP_OPC_Rating:
+	track->rating = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_Rating, 0);
+	break;
+      case PTP_OPC_UseCount:
+	track->usecount = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_UseCount, 0);
+	break;
+      }
+    }
+    free(props);
+  }
+
+
 }
 
 /**
@@ -2409,130 +2456,157 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 				 LIBMTP_track_t const * const metadata)
 {
   uint16_t ret;
+  PTPParams *params = (PTPParams *) device->params;
+  uint32_t i;
+  uint16_t *props = NULL;
+  uint32_t propcnt = 0;
 
-  // TODO: only try to update this metadata for object tags
-  // that exist on the current player.
-
-  // Update title
-  ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Name, metadata->title,1);
-  if (ret != 0) {
-    printf("LIBMTP_Update_Track_Metadata(): could not set track title\n");
+  // First see which properties can be set on this file format and apply accordingly	
+  // i.e only try to update this metadata for object tags that exist on the current player.
+  ret = ptp_mtp_getobjectpropssupported (params, map_libmtp_type_to_ptp_type(metadata->filetype), &propcnt, &props);
+  if (ret != PTP_RC_OK) {
+    // Just bail out for now, nothing is ever set.
     return -1;
-  }
+  } else {
+    for (i=0;i<propcnt;i++) {
+      switch (props[i]) {
+      case PTP_OPC_Name:
+	// Update title
+	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Name, metadata->title,1);
+	if (ret != 0) {
+	  printf("LIBMTP_Update_Track_Metadata(): could not set track title\n");
+	  return -1;
+	}
+	break;
+      case PTP_OPC_AlbumName:
+	// Update album
+	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_AlbumName, metadata->album,1);
+	if (ret != 0) {
+	  printf("LIBMTP_Update_Track_Metadata(): could not set track album name\n");
+	  return -1;
+	}
+	break;
+      case PTP_OPC_Artist:
+	// Update artist
+	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Artist, metadata->artist,1);
+	if (ret != 0) {
+	  printf("LIBMTP_Update_Track_Metadata(): could not set track artist name\n");
+	  return -1;
+	}
+	break;
+      case PTP_OPC_Genre:
+	// Update genre
+	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Genre, metadata->genre,1);
+	if (ret != 0) {
+	  printf("LIBMTP_Update_Track_Metadata(): could not set track genre name\n");
+	  return -1;
+	}
+	break;
+      case PTP_OPC_Duration:
+	// Update duration
+	if (metadata->duration != 0) {
+	  ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_Duration, metadata->duration);
+	  if (ret != 0) {
+	    printf("LIBMTP_Update_Track_Metadata(): could not set track duration\n");
+	    return -1;
+	  }
+	}
+	break;
+      case PTP_OPC_Track:
+	// Update track number.
+	if (metadata->tracknumber != 0) {
+	  ret = LIBMTP_Set_Object_U16(device, metadata->item_id, PTP_OPC_Track, metadata->tracknumber);
+	  if (ret != 0) {
+	    printf("LIBMTP_Update_Track_Metadata(): could not set track tracknumber\n");
+	    return -1;
+	  }
+	}
+	break;
+      case PTP_OPC_OriginalReleaseDate:
+	// Update creation datetime
+	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_OriginalReleaseDate, metadata->date,0);
+	if (ret != 0) {
+	  printf("LIBMTP_Update_Track_Metadata(): could not set track release date\n");
+	  return -1;
+	}
+	break;
+      // These are, well not so important.
+      case PTP_OPC_SampleRate:
+	// Update sample rate
+	if (metadata->samplerate != 0) {
+	  ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_SampleRate, metadata->samplerate);
+	  if (ret != 0) {
+	    printf("LIBMTP_Update_Track_Metadata(): could not set samplerate\n");
+	    return -1;
+	  }
+	}
+	break;
+      case PTP_OPC_NumberOfChannels:
+	// Update number of channels
+	if (metadata->nochannels != 0) {
+	  ret = LIBMTP_Set_Object_U16(device, metadata->item_id, PTP_OPC_NumberOfChannels, metadata->nochannels);
+	  if (ret != 0) {
+	    printf("LIBMTP_Update_Track_Metadata(): could not set number of channels\n");
+	    return -1;
+	  }
+	}
+	break;
+      case PTP_OPC_AudioWAVECodec:
+	// Update WAVE codec
+	if (metadata->wavecodec != 0) {
+	  ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_AudioWAVECodec, metadata->wavecodec);
+	  if (ret != 0) {
+	    printf("LIBMTP_Update_Track_Metadata(): could not set WAVE codec\n");
+	    return -1;
+	  }
+	}
+	break;
+      case PTP_OPC_AudioBitRate:
+	// Update bitrate
+	if (metadata->bitrate != 0) {
+	  ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_AudioBitRate, metadata->bitrate);
+	  if (ret != 0) {
+	    printf("LIBMTP_Update_Track_Metadata(): could not set bitrate\n");
+	    return -1;
+	  }
+	}
+	break;
+      case PTP_OPC_BitRateType:
+	// Update bitrate type
+	if (metadata->bitratetype != 0) {
+	  ret = LIBMTP_Set_Object_U16(device, metadata->item_id, PTP_OPC_BitRateType, metadata->bitratetype);
+	  if (ret != 0) {
+	    printf("LIBMTP_Update_Track_Metadata(): could not set bitratetype\n");
+	    return -1;
+	  }
+	}
+	break;
+      case PTP_OPC_Rating:
+	// Update user rating
+	// TODO: shall this be set for rating 0?
+	if (metadata->rating != 0) {
+	  ret = LIBMTP_Set_Object_U16(device, metadata->item_id, PTP_OPC_Rating, metadata->rating);
+	  if (ret != 0) {
+	    printf("LIBMTP_Update_Track_Metadata(): could not set user rating\n");
+	    return -1;
+	  }
+	}
+	break;
+      case PTP_OPC_UseCount:
+	// Update use count, set even to zero if desired.
+	ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_UseCount, metadata->usecount);
+	if (ret != 0) {
+	  printf("LIBMTP_Update_Track_Metadata(): could not set use count\n");
+	  return -1;
+	}
+	break;
 
-  // Update album
-  ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_AlbumName, metadata->album,1);
-  if (ret != 0) {
-    printf("LIBMTP_Update_Track_Metadata(): could not set track album name\n");
-    return -1;
-  }
-
-  // Update artist
-  ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Artist, metadata->artist,1);
-  if (ret != 0) {
-    printf("LIBMTP_Update_Track_Metadata(): could not set track artist name\n");
-    return -1;
-  }
-
-  // Update genre
-  ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Genre, metadata->genre,1);
-  if (ret != 0) {
-    printf("LIBMTP_Update_Track_Metadata(): could not set track genre name\n");
-    return -1;
-  }
-
-  // Update duration
-  if (metadata->duration != 0) {
-    ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_Duration, metadata->duration);
-    if (ret != 0) {
-      printf("LIBMTP_Update_Track_Metadata(): could not set track duration\n");
-      return -1;
+	// NOTE: File size is not updated, this should not change anyway.
+	// neither will we change the filename.
+      }
     }
+    return 0;
   }
-
-  // Update track number.
-  if (metadata->tracknumber != 0) {
-    ret = LIBMTP_Set_Object_U16(device, metadata->item_id, PTP_OPC_Track, metadata->tracknumber);
-    if (ret != 0) {
-      printf("LIBMTP_Update_Track_Metadata(): could not set track tracknumber\n");
-      return -1;
-    }
-  }
-
-  // Update creation datetime
-  ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_OriginalReleaseDate, metadata->date,0);
-  if (ret != 0) {
-    printf("LIBMTP_Update_Track_Metadata(): could not set track release date\n");
-    return -1;
-  }
-
-  // These are, well not so important.
-  // Update sample rate
-  if (metadata->samplerate != 0) {
-    ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_SampleRate, metadata->samplerate);
-    if (ret != 0) {
-      printf("LIBMTP_Update_Track_Metadata(): could not set samplerate\n");
-      return -1;
-    }
-  }
-
-  // Update number of channels
-  if (metadata->nochannels != 0) {
-    ret = LIBMTP_Set_Object_U16(device, metadata->item_id, PTP_OPC_NumberOfChannels, metadata->nochannels);
-    if (ret != 0) {
-      printf("LIBMTP_Update_Track_Metadata(): could not set number of channels\n");
-      return -1;
-    }
-  }
-
-  // Update WAVE codec
-  if (metadata->wavecodec != 0) {
-    ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_AudioWAVECodec, metadata->wavecodec);
-    if (ret != 0) {
-      printf("LIBMTP_Update_Track_Metadata(): could not set WAVE codec\n");
-      return -1;
-    }
-  }
-
-  // Update bitrate
-  if (metadata->bitrate != 0) {
-    ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_AudioBitRate, metadata->bitrate);
-    if (ret != 0) {
-      printf("LIBMTP_Update_Track_Metadata(): could not set bitrate\n");
-      return -1;
-    }
-  }
-
-  // Update bitrate type
-  if (metadata->bitratetype != 0) {
-    ret = LIBMTP_Set_Object_U16(device, metadata->item_id, PTP_OPC_BitRateType, metadata->bitratetype);
-    if (ret != 0) {
-      printf("LIBMTP_Update_Track_Metadata(): could not set bitratetype\n");
-      return -1;
-    }
-  }
-
-  // Update user rating
-  // TODO: shall this be set for rating 0?
-  if (metadata->rating != 0) {
-    ret = LIBMTP_Set_Object_U16(device, metadata->item_id, PTP_OPC_Rating, metadata->rating);
-    if (ret != 0) {
-      printf("LIBMTP_Update_Track_Metadata(): could not set user rating\n");
-      return -1;
-    }
-  }
-
-  // Update use count, set even to zero if desired.
-  ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_UseCount, metadata->usecount);
-  if (ret != 0) {
-    printf("LIBMTP_Update_Track_Metadata(): could not set use count\n");
-    return -1;
-  }
-
-  // NOTE: File size is not updated, this should not change anyway.
-  // neither will we change the filename.
-  
-  return 0;
 }
 
 /**
