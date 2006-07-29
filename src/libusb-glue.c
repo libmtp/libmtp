@@ -80,12 +80,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "iRiver Portable Media Center", 0x1006, 0x4003 },
   /* From Mark Veinot */
   { "JVC Alneo XA-HD500", 0x04f1, 0x6105 },
-  /* 
-   * Copied in from libgphoto2's libptp2 adaption "library.c"
-   * carefully trying to pick only the MTP devices.
-   * Greetings to Marcus Meissner! (we should merge our
-   * projects some day...)
-   */
+  /* From libgphoto2 source */
   { "Philipps HDD6320", 0x0471, 0x01eb },
   /* Anonymous SourceForge user */
   { "Philipps HDD1630/17", 0x0471, 0x014c },
@@ -95,6 +90,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "SanDisk Sansa e200", 0x0781, 0x7420 },
   /* Reported by gonkflea@users.sourceforge.net */
   { "SanDisk Sansa e260", 0x0781, 0x7420 },
+  /* From libgphoto2 source */
   { "iRiver T10", 0x4102, 0x1113 },
   { "iRiver T20 FM", 0x4102, 0x1114 },
   { "iRiver U10", 0x4102, 0x1116 },
@@ -103,7 +99,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "iRiver T30", 0x4102, 0x1119 },
   { "iRiver H10", 0x4102, 0x2102 },
   { "Dell DJ Itty", 0x413c, 0x4500 },
-  { "Toshiba Gigabeat", 0x0930, 0x000c }
+  { "Toshiba Gigabeat MEGF-40", 0x0930, 0x0009 }
+  { "Toshiba Gigabeat", 0x0930, 0x000c },
 };
 static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
 
