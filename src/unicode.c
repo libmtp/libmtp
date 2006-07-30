@@ -170,7 +170,7 @@ uint16_t *utf8_to_ucs2(unsigned char const * const str,
   unsigned char buffer[STRING_BUFFER_LENGTH*2];    
   int length=0;
     
-  for(i = 0; str[i] != '\0';) {
+  for(i = 0; str[i] != '\0' && length < (STRING_BUFFER_LENGTH*2-2);) {
     if (str[i] < 0x80) {
       if (!endianness) {
 	buffer[length+1] = 0x00;
