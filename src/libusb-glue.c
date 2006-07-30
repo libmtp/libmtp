@@ -99,8 +99,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "iRiver T30", 0x4102, 0x1119 },
   { "iRiver H10", 0x4102, 0x2102 },
   { "Dell DJ Itty", 0x413c, 0x4500 },
-  { "Toshiba Gigabeat MEGF-40", 0x0930, 0x0009 }
-  { "Toshiba Gigabeat", 0x0930, 0x000c },
+  { "Toshiba Gigabeat MEGF-40", 0x0930, 0x0009 },
+  { "Toshiba Gigabeat", 0x0930, 0x000c }
 };
 static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
 

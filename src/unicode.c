@@ -3,8 +3,12 @@
  *
  * This file contains general Unicode string manipulation functions.
  * It mainly consist of functions for converting between UCS-2 (used on
- * the devices), UTF-8 (used by several applications) and 
- * ISO 8859-1 / Codepage 1252 (fallback).
+ * the devices) and UTF-8 (used by several applications).
+ *
+ * For a deeper understanding of Unicode encoding formats see the
+ * Wikipedia entries for
+ * <a href="http://en.wikipedia.org/wiki/UTF-16/UCS-2">UTF-16/UCS-2</a>
+ * and <a href="http://en.wikipedia.org/wiki/UTF-8">UTF-8</a>.
  */
 
 #include <stdlib.h>
