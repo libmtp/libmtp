@@ -1,3 +1,8 @@
+2006-08-04  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: patch from Dan Aloni to make sendfile
+	  use mmap and avoid memory drainage.
+
 2006-07-27  Linus Walleij <triad@df.lth.se>
 	
 	* Release libmtp 0.0.10.

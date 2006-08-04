@@ -16,6 +16,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <sys/mman.h>
+
 #include "libmtp.h"
 #include "unicode.h"
 #include "ptp.h"
@@ -2062,20 +2064,34 @@ int send_file_object(LIBMTP_mtpdevice_t *device,
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
   ssize_t readb;
-  
-  image = malloc(size);
-  if (image == NULL) {
-    printf("send_file_object(): Could not allocate memory.\n");
-    return -1;
+  int is_map;
+
+  image = mmap(NULL, size, PROT_READ | PROT_EXEC | PROT_WRITE, MAP_PRIVATE,
+	       fd, 0);
+  if (image == MAP_FAILED) {
+    image = malloc(size);
+    if (image == NULL) {
+      printf("send_file_object(): Could not allocate memory.\n");
+      return -1;
+    }
+    readb = read(fd, image, size);
+    if (readb != size) {
+      free(image);
+      printf("send_file_object(): Could not read source file.\n");
+      return -1;
+    }
+    is_map = 0;
+  } else {
+    is_map = 1;
   }
-  readb = read(fd, image, size);
-  if (readb != size) {
-    free(image);
-    printf("send_file_object(): Could not read source file.\n");
-    return -1;
-  }
+
   ret = ptp_sendobject(params, image, size);
-  free(image);
+
+  if (is_map)
+    munmap(image, size);
+  else
+    free(image);
+  
   if (ret != PTP_RC_OK) {
     printf("send_file_object(): Bad return code from ptp_sendobject(): %d.\n", ret);
     return -1;
