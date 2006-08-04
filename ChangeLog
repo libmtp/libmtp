@@ -2,6 +2,8 @@
 
 	* src/libmtp.c: patch from Dan Aloni to make sendfile
 	  use mmap and avoid memory drainage.
+	* src/libusb-glue.c: patch from Andy Kelk to avoid 
+	  exit():ing when the interface cannot be claimed.
 
 2006-07-27  Linus Walleij <triad@df.lth.se>
 	

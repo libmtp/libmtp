@@ -114,7 +114,7 @@ static void close_usb(PTP_USB* ptp_usb, uint8_t interfaceNumber);
 static struct usb_device* find_device (int busn, int devicen, short force);
 static void find_endpoints(struct usb_device *dev, int* inep, int* inep_maxpacket, int* outep, int* outep_maxpacket, int* intep);
 static void clear_stall(PTP_USB* ptp_usb);
-static void init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev);
+static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev);
 static short ptp_write_func (unsigned char *bytes, unsigned int size, void *data);
 static short ptp_read_func (unsigned char *bytes, unsigned int size, void *data, unsigned int *readbytes);
 static short ptp_check_int (unsigned char *bytes, unsigned int size, void *data, unsigned int *rlen);
@@ -362,7 +362,7 @@ static short ptp_check_int (unsigned char *bytes, unsigned int size, void *data,
   }
 }
 
-static void init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev)
+static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev)
 {
   usb_dev_handle *device_handle;
   
@@ -383,15 +383,16 @@ static void init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device
   if ((device_handle = usb_open(dev))){
     if (!device_handle) {
       perror("usb_open()");
-      exit(0);
+      return -1;
     }
     ptp_usb->handle = device_handle;
     if (usb_claim_interface(device_handle, dev->config->interface->altsetting->bInterfaceNumber)) {
       perror("usb_claim_interface()");
-      exit(0);
+      return -1;
     }
     ptp_usb->interface = dev->config->interface->altsetting->bInterfaceNumber;
   }
+  return 0;
 }
 
 static void clear_stall(PTP_USB* ptp_usb)
@@ -548,7 +549,9 @@ next_step:
 		 &(ptp_usb->outep), &(ptp_usb->outep_maxpacket), &(ptp_usb->intep));
   
   // printf("Init PTP USB...\n");
-  init_ptp_usb(params, ptp_usb, dev);
+  if (init_ptp_usb(params, ptp_usb, dev) < 0) {
+    return PTP_CD_RC_ERROR_CONNECTING;
+  }
   
   ret = ptp_opensession(params,1);
   // printf("Session open (%d)...\n", ret);
@@ -619,7 +622,9 @@ int open_device (int busn, int devn, short force, PTP_USB *ptp_usb, PTPParams *p
   }
   find_endpoints(*dev,&ptp_usb->inep,&ptp_usb->inep_maxpacket,&ptp_usb->outep,&ptp_usb->outep_maxpacket,&ptp_usb->intep);
   
-  init_ptp_usb(params, ptp_usb, *dev);
+  if (init_ptp_usb(params, ptp_usb, *dev) < 0) {
+    return -1;
+  }
   if (ptp_opensession(params,1)!=PTP_RC_OK) {
     fprintf(stderr,"ERROR: Could not open session!\n");
     close_usb(ptp_usb, (*dev)->config->interface->altsetting->bInterfaceNumber);
