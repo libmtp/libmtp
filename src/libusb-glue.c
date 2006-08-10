@@ -85,6 +85,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Philipps HDD6320 2", 0x0471, 0x014b },
   /* Anonymous SourceForge user */
   { "Philipps HDD1630/17", 0x0471, 0x014c },
+  /* Reported by Brian Robison */
+  { "SanDisk Sansa m240", 0x0781, 0x7400 },
   /* Reported by tangent_@users.sourceforge.net */
   { "SanDisk Sansa c150", 0x0781, 0x7410 },
   /* From libgphoto2 source */
