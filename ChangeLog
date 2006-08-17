@@ -1,3 +1,14 @@
+2006-08-17  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: bump to 0.0.12 and require iconv.h.
+
+2006-08-16  Linus Walleij <triad@df.lth.se>
+
+	* src/unicode.c: remove bigendian weirdness and switch
+	  to using iconv() instead.
+	* src/unicode.h: dito.
+	* src/libmtp.c: reflect changes.
+	
 2006-08-09  Linus Walleij <triad@df.lth.se>
 
 	* Release libmtp 0.0.11.

@@ -454,6 +454,7 @@ char const * LIBMTP_Get_Filetype_Description(LIBMTP_filetype_t intype)
 void LIBMTP_Init(void)
 {
   init_filemap();
+  unicode_init();
   return;
 }
 
@@ -485,7 +486,7 @@ char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const o
   if (ret == PTP_RC_OK) {
     if (getUtf8 == 1) {
       if (propval.unistr != NULL) {
-	retstring = ucs2_to_utf8(propval.unistr, 0);
+	retstring = ucs2le_to_utf8(propval.unistr);
 	free(propval.unistr);
       }
     } else {
@@ -586,7 +587,7 @@ int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t const object_i
   }
 
   if (setUtf8 == 1) {
-    propval.unistr = utf8_to_ucs2((unsigned char const * const) string, 0);
+    propval.unistr = utf8_to_ucs2le((unsigned char const * const) string);
     ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UNISTR);
     free(propval.unistr);
   } else {
@@ -1079,7 +1080,7 @@ char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t *device)
     return NULL;
   }
   // Convert from UTF-16 to UTF-8
-  retstring = ucs2_to_utf8((uint16_t *) propval.unistr, 0);
+  retstring = ucs2le_to_utf8((uint16_t *) propval.unistr);
   free(propval.unistr);
   return retstring;
 }
@@ -1180,8 +1181,7 @@ static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
 {
   PTPPropertyValue propval;
   PTPParams *params = (PTPParams *) device->params;
-  uint8_t *tmp;
-  uint32_t len;
+  uint16_t *tmp;
   int i;
 
   if (!ptp_property_issupported(params, property)) {
@@ -1197,20 +1197,17 @@ static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
   }
 
   // Extract the actual array.
-  len = propval.a.count * 2 + 2;
-  tmp = malloc(len);
+  // printf("Array of %d elements\n", propval.a.count);
+  tmp = malloc((propval.a.count + 1)*sizeof(uint16_t));
   for (i = 0; i < propval.a.count; i++) {
-    // Force this to become a little-endian unicode string
-    // in order to be able to use the ucs2_to_utf8 function.
-    uint16_t tch = propval.a.v[i].u16;
-    tmp[i*2] = (uint8_t) tch & 0xFF;
-    tmp[(i*2)+1] = (uint8_t) tch >> 8;
+    tmp[i] = propval.a.v[i].u16;
+    // printf("%04x ", tmp[i]);
   }
-  tmp[len-1] = 0;
-  tmp[len-2] = 0;
+  tmp[propval.a.count] = 0x0000U;
   free(propval.a.v);
 
-  *unicstring = ucs2_to_utf8((uint16_t *) tmp, 0);
+  *unicstring = utf16_to_utf8(tmp);
+
   free(tmp);
 
   return 0;
