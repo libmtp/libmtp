@@ -55,7 +55,10 @@
  * this list by stealing from everyone I know.
  */
 static const LIBMTP_device_entry_t mtp_device_table[] = {
-  /* Creative devices */
+  
+  /*
+   * Creative Technology
+   */
   { "Creative Zen Vision", 0x041e, 0x411f },
   { "Creative Portable Media Center", 0x041e, 0x4123 },
   { "Creative Zen Xtra (MTP mode)", 0x041e, 0x4128 },
@@ -67,43 +70,77 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Creative Zen MicroPhoto", 0x041e, 0x413c },
   { "Creative Zen Sleek Photo", 0x041e, 0x413d },
   { "Creative Zen Vision:M", 0x041e, 0x413e },
-  /* From libgphoto2 */
-  { "Samsung:YH-820", 0x04e8, 0x502e },
-  /* Contributed by polux2001@users.sourceforge.net */
+
+  /*
+   * Samsung
+   */
+  // From libgphoto2
+  { "Samsung YH-820", 0x04e8, 0x502e },
+  // Contributed by polux2001@users.sourceforge.net
   { "Samsung YH-925", 0x04e8, 0x502f },
-  /* Contributed by anonymous person on SourceForge */
+  // Contributed by anonymous person on SourceForge
   { "Samsung YP-T7J", 0x04e8, 0x5047 },
-  /* From a rouge .INF file */
+  // Reported by cstrickler@gmail.com
+  { "Samsung YP-U2J (YP-U2JXB/XAA)", 0x04e8, 0x5054 },
+  // From a rouge .INF file
   { "Samsung YH-999 Portable Media Center", 0x04e8, 0x5a0f },
+
+  /*
+   * Intel
+   */
   { "Intel Bandon Portable Media Center", 0x045e, 0x00c9 },
-  { "iRiver Portable Media Center", 0x1006, 0x4002 },
-  { "iRiver Portable Media Center", 0x1006, 0x4003 },
-  /* From Mark Veinot */
+
+  /*
+   * JVC
+   */
+  // From Mark Veinot
   { "JVC Alneo XA-HD500", 0x04f1, 0x6105 },
-  /* From libgphoto2 source */
+
+  /*
+   * Philipps
+   */
+  // From libgphoto2 source
   { "Philipps HDD6320", 0x0471, 0x01eb },
   { "Philipps HDD6320 2", 0x0471, 0x014b },
-  /* Anonymous SourceForge user */
+  // Anonymous SourceForge user
   { "Philipps HDD1630/17", 0x0471, 0x014c },
-  /* Reported by Brian Robison */
+
+  /*
+   * SanDisk
+   */
+  // Reported by Brian Robison
   { "SanDisk Sansa m240", 0x0781, 0x7400 },
-  /* Reported by tangent_@users.sourceforge.net */
+  // Reported by tangent_@users.sourceforge.net
   { "SanDisk Sansa c150", 0x0781, 0x7410 },
-  /* From libgphoto2 source */
+  // From libgphoto2 source
   { "SanDisk Sansa e200", 0x0781, 0x7420 },
-  /* Reported by gonkflea@users.sourceforge.net */
+  // Reported by gonkflea@users.sourceforge.net
   { "SanDisk Sansa e260", 0x0781, 0x7420 },
-  /* From libgphoto2 source */
+
+  /*
+   * iRiver
+   */
+  { "iRiver Portable Media Center", 0x1006, 0x4002 },
+  { "iRiver Portable Media Center", 0x1006, 0x4003 },
+  // From libgphoto2 source
   { "iRiver T10", 0x4102, 0x1113 },
   { "iRiver T20 FM", 0x4102, 0x1114 },
   { "iRiver U10", 0x4102, 0x1116 },
   { "iRiver T10", 0x4102, 0x1117 },
   { "iRiver T20", 0x4102, 0x1118 },
   { "iRiver T30", 0x4102, 0x1119 },
-  /* Reported by Scott Call */
-  { "iRiver H10", 0x4102, 0x2101 },
+  // Reported by Scott Call
+  { "iRiver H10 20GB", 0x4102, 0x2101 },
   { "iRiver H10", 0x4102, 0x2102 },
+
+  /*
+   * Dell
+   */
   { "Dell DJ Itty", 0x413c, 0x4500 },
+  
+  /*
+   * Toshiba
+   */
   { "Toshiba Gigabeat MEGF-40", 0x0930, 0x0009 },
   { "Toshiba Gigabeat", 0x0930, 0x000c }
 };
