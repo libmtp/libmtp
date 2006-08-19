@@ -1058,9 +1058,13 @@ char *LIBMTP_Get_Deviceversion(LIBMTP_mtpdevice_t *device)
 
 
 /**
- * This retrieves the owners name of an MTP device.
- * @param device a pointer to the device to get the owner for.
- * @return a newly allocated UTF-8 string representing the owner. 
+ * This retrieves the "friendly name" of an MTP device. Usually
+ * this is simply the name of the owner or something like
+ * "John Doe's Digital Audio Player" so the function is named
+ * Ownername for this reason. This property should be supported
+ * by all MTP devices.
+ * @param device a pointer to the device to get the friendly name for.
+ * @return a newly allocated UTF-8 string representing the friendly name. 
  *         The string must be freed by the caller after use.
  */
 char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t *device)
@@ -1079,7 +1083,36 @@ char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t *device)
 			     PTP_DTC_UNISTR) != PTP_RC_OK) {
     return NULL;
   }
-  // Convert from UTF-16 to UTF-8
+  // Convert from UCS-2 to UTF-8
+  retstring = ucs2le_to_utf8((uint16_t *) propval.unistr);
+  free(propval.unistr);
+  return retstring;
+}
+
+/**
+ * This retrieves the syncronization partner of an MTP device. This
+ * property should be supported by all MTP devices.
+ * @param device a pointer to the device to get the sync partner for.
+ * @return a newly allocated UTF-8 string representing the synchronization
+ *         partner. The string must be freed by the caller after use.
+ */
+char *LIBMTP_Get_Syncpartner(LIBMTP_mtpdevice_t *device)
+{
+  PTPPropertyValue propval;
+  char *retstring = NULL;
+  PTPParams *params = (PTPParams *) device->params;
+
+  if (!ptp_property_issupported(params, PTP_DPC_MTP_SynchronizationPartner)) {
+    return NULL;
+  }
+
+  if (ptp_getdevicepropvalue(params, 
+			     PTP_DPC_MTP_SynchronizationPartner, 
+			     &propval, 
+			     PTP_DTC_UNISTR) != PTP_RC_OK) {
+    return NULL;
+  }
+  // Convert from UCS-2 to UTF-8
   retstring = ucs2le_to_utf8((uint16_t *) propval.unistr);
   free(propval.unistr);
   return retstring;

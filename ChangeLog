@@ -1,3 +1,11 @@
+2006-08-19  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: add function to get syncronization
+	  partner for the device.
+	* src/libmtp.c: dito.
+	* examples/detect.c: use that function.
+	* src/Makefile.am: backward-compatible interface bump.
+
 2006-08-17  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bump to 0.0.12 and require iconv.h.

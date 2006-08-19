@@ -42,7 +42,8 @@ int main (int argc, char **argv)
   uint64_t freebytes;
   char *storage_description;
   char *volume_label;
-  char *owner;
+  char *friendlyname;
+  char *syncpartner;
   char *sectime;
   char *devcert;
   uint16_t *filetypes;
@@ -80,13 +81,20 @@ int main (int argc, char **argv)
   LIBMTP_Dump_Device_Info(device);
   
   printf("MTP-specific device properties:\n");
-  // The owner name
-  owner = LIBMTP_Get_Ownername(device);
-  if (owner == NULL) {
-    printf("   Owner name: (NULL)\n");
+  // The friendly name
+  friendlyname = LIBMTP_Get_Ownername(device);
+  if (friendlyname == NULL) {
+    printf("   Friendly name: (NULL)\n");
   } else {
-    printf("   Owner name: %s\n", owner);
-    free(owner);
+    printf("   Friendly name: %s\n", friendlyname);
+    free(friendlyname);
+  }
+  syncpartner = LIBMTP_Get_Syncpartner(device);
+  if (syncpartner == NULL) {
+    printf("   Synchronization partner: (NULL)\n");
+  } else {
+    printf("   Synchronization partner: %s\n", syncpartner);
+    free(syncpartner);
   }
 
   // Some storage info
