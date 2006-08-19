@@ -82,7 +82,7 @@ int main (int argc, char **argv)
   
   printf("MTP-specific device properties:\n");
   // The friendly name
-  friendlyname = LIBMTP_Get_Ownername(device);
+  friendlyname = LIBMTP_Get_Friendlyname(device);
   if (friendlyname == NULL) {
     printf("   Friendly name: (NULL)\n");
   } else {

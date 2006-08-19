@@ -244,8 +244,10 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t*);
 char *LIBMTP_Get_Modelname(LIBMTP_mtpdevice_t*);
 char *LIBMTP_Get_Serialnumber(LIBMTP_mtpdevice_t*);
 char *LIBMTP_Get_Deviceversion(LIBMTP_mtpdevice_t*);
-char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t*);
+char *LIBMTP_Get_Friendlyname(LIBMTP_mtpdevice_t*);
+int LIBMTP_Set_Friendlyname(LIBMTP_mtpdevice_t*, char const * const);
 char *LIBMTP_Get_Syncpartner(LIBMTP_mtpdevice_t*);
+int LIBMTP_Set_Syncpartner(LIBMTP_mtpdevice_t*, char const * const);
 int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *, uint64_t * const, 
 			uint64_t * const, char ** const storage_description, 
 			char ** const volume_label);

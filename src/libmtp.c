@@ -1060,14 +1060,14 @@ char *LIBMTP_Get_Deviceversion(LIBMTP_mtpdevice_t *device)
 /**
  * This retrieves the "friendly name" of an MTP device. Usually
  * this is simply the name of the owner or something like
- * "John Doe's Digital Audio Player" so the function is named
- * Ownername for this reason. This property should be supported
+ * "John Doe's Digital Audio Player". This property should be supported
  * by all MTP devices.
  * @param device a pointer to the device to get the friendly name for.
  * @return a newly allocated UTF-8 string representing the friendly name. 
  *         The string must be freed by the caller after use.
+ * @see LIBMTP_Set_Friendlyname()
  */
-char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t *device)
+char *LIBMTP_Get_Friendlyname(LIBMTP_mtpdevice_t *device)
 {
   PTPPropertyValue propval;
   char *retstring = NULL;
@@ -1084,9 +1084,37 @@ char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t *device)
     return NULL;
   }
   // Convert from UCS-2 to UTF-8
-  retstring = ucs2le_to_utf8((uint16_t *) propval.unistr);
+  retstring = ucs2le_to_utf8(propval.unistr);
   free(propval.unistr);
   return retstring;
+}
+
+/**
+ * Sets the "friendly name" of an MTP device.
+ * @param device a pointer to the device to set the friendly name for.
+ * @param friendlyname the new friendly name for the device.
+ * @return 0 on success, any other value means failure.
+ * @see LIBMTP_Get_Ownername()
+ */
+int LIBMTP_Set_Friendlyname(LIBMTP_mtpdevice_t *device,
+			 char const * const friendlyname)
+{
+  PTPPropertyValue propval;
+  PTPParams *params = (PTPParams *) device->params;
+
+  if (!ptp_property_issupported(params, PTP_DPC_MTP_DeviceFriendlyName)) {
+    return -1;
+  }
+  propval.unistr = utf8_to_ucs2le((unsigned char *) friendlyname);
+  if (ptp_setdevicepropvalue(params,
+			     PTP_DPC_MTP_DeviceFriendlyName, 
+			     &propval, 
+			     PTP_DTC_UNISTR) != PTP_RC_OK) {
+    free(propval.unistr);
+    return -1;
+  }
+  free(propval.unistr);
+  return 0;
 }
 
 /**
@@ -1095,6 +1123,7 @@ char *LIBMTP_Get_Ownername(LIBMTP_mtpdevice_t *device)
  * @param device a pointer to the device to get the sync partner for.
  * @return a newly allocated UTF-8 string representing the synchronization
  *         partner. The string must be freed by the caller after use.
+ * @see LIBMTP_Set_Syncpartner()
  */
 char *LIBMTP_Get_Syncpartner(LIBMTP_mtpdevice_t *device)
 {
@@ -1113,9 +1142,42 @@ char *LIBMTP_Get_Syncpartner(LIBMTP_mtpdevice_t *device)
     return NULL;
   }
   // Convert from UCS-2 to UTF-8
-  retstring = ucs2le_to_utf8((uint16_t *) propval.unistr);
+  retstring = ucs2le_to_utf8(propval.unistr);
   free(propval.unistr);
   return retstring;
+}
+
+
+/**
+ * Sets the synchronization partner of an MTP device. Note that
+ * we have no idea what the effect of setting this to "foobar"
+ * may be. But the general idea seems to be to tell which program
+ * shall synchronize with this device and tell others to leave
+ * it alone.
+ * @param device a pointer to the device to set the sync partner for.
+ * @param syncpartner the new synchronization partner for the device.
+ * @return 0 on success, any other value means failure.
+ * @see LIBMTP_Get_Syncpartner()
+ */
+int LIBMTP_Set_Syncpartner(LIBMTP_mtpdevice_t *device,
+			 char const * const syncpartner)
+{
+  PTPPropertyValue propval;
+  PTPParams *params = (PTPParams *) device->params;
+  
+  if (!ptp_property_issupported(params, PTP_DPC_MTP_SynchronizationPartner)) {
+    return -1;
+  }
+  propval.unistr = utf8_to_ucs2le((unsigned char *) syncpartner);
+  if (ptp_setdevicepropvalue(params,
+			     PTP_DPC_MTP_SynchronizationPartner, 
+			     &propval, 
+			     PTP_DTC_UNISTR) != PTP_RC_OK) {
+    free(propval.unistr);
+    return -1;
+  }
+  free(propval.unistr);
+  return 0;
 }
 
 /**
