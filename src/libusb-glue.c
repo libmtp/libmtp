@@ -142,7 +142,13 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * Toshiba
    */
   { "Toshiba Gigabeat MEGF-40", 0x0930, 0x0009 },
-  { "Toshiba Gigabeat", 0x0930, 0x000c }
+  { "Toshiba Gigabeat", 0x0930, 0x000c },
+
+  /*
+   * Archos
+   */
+  // Reported by gudul1@users.sourceforge.net
+  { "Archos 104 (MTP mode)", 0x0e79, 0x120a }
 };
 static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
 
