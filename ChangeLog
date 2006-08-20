@@ -1,3 +1,8 @@
+2006-08-21  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: fixup mmap() usage and add madvise() 
+	  as result of experiments by Gavin McCullagh.
+
 2006-08-20  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: set friendly name and sync partner,
