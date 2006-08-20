@@ -2017,11 +2017,14 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
   // We could use ptp_getpartialobject to make for progress bars etc.
   ret = ptp_getobject(params, id, &image);
 
+  // If we get this into upstream, use this.
+  // ret = ptp_getobject_tofd(params, id, fd);
+  
   if (ret != PTP_RC_OK) {
     printf("LIBMTP_Get_File_To_File_Descriptor(): Could not get file from device (%d)\n", ret);
     return -1;
   }
-
+  
   written = write(fd, image, oi.ObjectCompressedSize);
   if (written != oi.ObjectCompressedSize) {
     printf("LIBMTP_Get_File_To_File_Descriptor(): Could not write object properly\n");
@@ -2158,14 +2161,17 @@ int send_file_object(LIBMTP_mtpdevice_t *device,
   ssize_t readb;
   int is_map;
 
-  image = mmap(NULL, size, PROT_READ | PROT_EXEC | PROT_WRITE, MAP_PRIVATE,
-	       fd, 0);
+  image = mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);
+
   if (image == MAP_FAILED) {
     image = malloc(size);
     if (image == NULL) {
       printf("send_file_object(): Could not allocate memory.\n");
       return -1;
     }
+#ifndef __WIN32__
+    madvise(image, size, MADV_SEQUENTIAL | MADV_WILLNEED);
+#endif
     readb = read(fd, image, size);
     if (readb != size) {
       free(image);
@@ -2175,6 +2181,9 @@ int send_file_object(LIBMTP_mtpdevice_t *device,
     is_map = 0;
   } else {
     is_map = 1;
+#ifndef __WIN32__
+    madvise(image, size, MADV_SEQUENTIAL | MADV_WILLNEED);
+#endif
   }
 
   ret = ptp_sendobject(params, image, size);
