@@ -1999,10 +1999,8 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
 					void const * const data)
 {
   PTPObjectInfo oi;
-  unsigned char *image = NULL;
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
-  ssize_t written;
 
   if (ptp_getobjectinfo(params, id, &oi) != PTP_RC_OK) {
     printf("LIBMTP_Get_File_To_File_Descriptor(): Could not get object info\n");
@@ -2013,23 +2011,14 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
-  // Copy object to memory
-  // We could use ptp_getpartialobject to make for progress bars etc.
-  ret = ptp_getobject(params, id, &image);
-
-  // If we get this into upstream, use this.
-  // ret = ptp_getobject_tofd(params, id, fd);
+  // This now exist in upstream
+  ret = ptp_getobject_tofd(params, id, fd);
   
   if (ret != PTP_RC_OK) {
     printf("LIBMTP_Get_File_To_File_Descriptor(): Could not get file from device (%d)\n", ret);
     return -1;
   }
   
-  written = write(fd, image, oi.ObjectCompressedSize);
-  if (written != oi.ObjectCompressedSize) {
-    printf("LIBMTP_Get_File_To_File_Descriptor(): Could not write object properly\n");
-  }
-
   return 0;
 }
 
