@@ -192,6 +192,7 @@ static char *builtin_ucs2le_to_utf8(uint16_t const * const unicstr) {
  * Converts a little-endian Unicode UCS-2 2-byte string
  * to a UTF-8 string.
  *
+ * @param device a pointer to the current device.
  * @param unicstr the UCS-2 unicode string to convert
  * @return a UTF-8 string.
  */
@@ -229,6 +230,7 @@ char *ucs2le_to_utf8(LIBMTP_mtpdevice_t *device, uint16_t const * const unicstr)
  * Converts a big-endian UTF-16 2-byte string
  * to a UTF-8 string.
  *
+ * @param device a pointer to the current device.
  * @param unicstr the UTF-16 unicode string to convert
  * @return a UTF-8 string.
  */
@@ -339,6 +341,7 @@ static uint16_t *builtin_utf8_to_ucs2le(unsigned char const * const str) {
  * Convert a UTF-8 string to a little-endian Unicode
  * UCS-2 string.
  *
+ * @param device a pointer to the current device.
  * @param str the UTF-8 string to convert.
  * @return a pointer to a newly allocated UCS-2 string.
  */
