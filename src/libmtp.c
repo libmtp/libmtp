@@ -454,7 +454,6 @@ char const * LIBMTP_Get_Filetype_Description(LIBMTP_filetype_t intype)
 void LIBMTP_Init(void)
 {
   init_filemap();
-  unicode_init();
   return;
 }
 
@@ -486,7 +485,7 @@ char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const o
   if (ret == PTP_RC_OK) {
     if (getUtf8 == 1) {
       if (propval.unistr != NULL) {
-	retstring = ucs2le_to_utf8(propval.unistr);
+	retstring = ucs2le_to_utf8(device, propval.unistr);
 	free(propval.unistr);
       }
     } else {
@@ -587,7 +586,7 @@ int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t const object_i
   }
 
   if (setUtf8 == 1) {
-    propval.unistr = utf8_to_ucs2le((unsigned char const * const) string);
+    propval.unistr = utf8_to_ucs2le(device, (unsigned char const * const) string);
     ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UNISTR);
     free(propval.unistr);
   } else {
@@ -822,6 +821,9 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   tmpdevice->default_organizer_folder = 0;
   tmpdevice->default_zencast_folder = 0;
 
+  // Initialize iconv() converters...
+  unicode_init(tmpdevice);
+  
   /*
    * Then get the handles and try to locate the default folders.
    * This has the desired side effect of cacheing all handles from
@@ -888,6 +890,8 @@ void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
     free(params->handles.Handler);
     params->handles.Handler = NULL;
   }
+  // Free iconv() converters...
+  unicode_deinit(device);
   free(device);
 }
 
@@ -1084,7 +1088,7 @@ char *LIBMTP_Get_Friendlyname(LIBMTP_mtpdevice_t *device)
     return NULL;
   }
   // Convert from UCS-2 to UTF-8
-  retstring = ucs2le_to_utf8(propval.unistr);
+  retstring = ucs2le_to_utf8(device, propval.unistr);
   free(propval.unistr);
   return retstring;
 }
@@ -1105,7 +1109,7 @@ int LIBMTP_Set_Friendlyname(LIBMTP_mtpdevice_t *device,
   if (!ptp_property_issupported(params, PTP_DPC_MTP_DeviceFriendlyName)) {
     return -1;
   }
-  propval.unistr = utf8_to_ucs2le((unsigned char *) friendlyname);
+  propval.unistr = utf8_to_ucs2le(device, (unsigned char *) friendlyname);
   if (ptp_setdevicepropvalue(params,
 			     PTP_DPC_MTP_DeviceFriendlyName, 
 			     &propval, 
@@ -1142,7 +1146,7 @@ char *LIBMTP_Get_Syncpartner(LIBMTP_mtpdevice_t *device)
     return NULL;
   }
   // Convert from UCS-2 to UTF-8
-  retstring = ucs2le_to_utf8(propval.unistr);
+  retstring = ucs2le_to_utf8(device, propval.unistr);
   free(propval.unistr);
   return retstring;
 }
@@ -1168,7 +1172,7 @@ int LIBMTP_Set_Syncpartner(LIBMTP_mtpdevice_t *device,
   if (!ptp_property_issupported(params, PTP_DPC_MTP_SynchronizationPartner)) {
     return -1;
   }
-  propval.unistr = utf8_to_ucs2le((unsigned char *) syncpartner);
+  propval.unistr = utf8_to_ucs2le(device, (unsigned char *) syncpartner);
   if (ptp_setdevicepropvalue(params,
 			     PTP_DPC_MTP_SynchronizationPartner, 
 			     &propval, 
@@ -1301,7 +1305,7 @@ static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
   tmp[propval.a.count] = 0x0000U;
   free(propval.a.v);
 
-  *unicstring = utf16_to_utf8(tmp);
+  *unicstring = utf16_to_utf8(device, tmp);
 
   free(tmp);
 

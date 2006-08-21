@@ -19,8 +19,6 @@
 
 #ifdef USE_ICONV
 #include <iconv.h>
-// Default to not using iconv() until it's properly initialized.
-static int use_fallbacks = 1;
 
 /*
  * iconv converters, since these conversions are stateless
@@ -28,36 +26,63 @@ static int use_fallbacks = 1;
  * handling here. (Like making the iconv():erters part of
  * the device struct.)
  */
-iconv_t cd_utf8_to_ucs2le;
-iconv_t cd_ucs2le_to_utf8;
-iconv_t cd_utf16_to_utf8;
+typedef struct converter_struct converter_t;
+struct converter_struct {
+  int use_fallbacks;
+  iconv_t cd_utf8_to_ucs2le;
+  iconv_t cd_ucs2le_to_utf8;
+  iconv_t cd_utf16_to_utf8;
+};
 
-void unicode_init(void)
+void unicode_init(LIBMTP_mtpdevice_t *device)
 {
   // printf("Using iconv()...\n");
-  cd_utf16_to_utf8 = iconv_open("UTF-8", "UTF-16");
-  cd_ucs2le_to_utf8 = iconv_open("UTF-8", "UCS-2LE");
-  cd_utf8_to_ucs2le = iconv_open("UCS-2LE", "UTF-8");
+  converter_t *cd;
+
+  // This malloc() better not fail...
+  cd = (converter_t *) malloc(sizeof(converter_t));
+  cd->cd_utf16_to_utf8 = iconv_open("UTF-8", "UTF-16");
+  cd->cd_ucs2le_to_utf8 = iconv_open("UTF-8", "UCS-2LE");
+  cd->cd_utf8_to_ucs2le = iconv_open("UCS-2LE", "UTF-8");
   /*
    * If we cannot use the iconv implementation on this
    * machine, fall back on the old routines.
    */
-  if (cd_utf16_to_utf8 == (iconv_t) -1 ||
-      cd_ucs2le_to_utf8 == (iconv_t) -1 ||
-      cd_utf8_to_ucs2le == (iconv_t) -1) {
-    if (cd_utf16_to_utf8 != (iconv_t) -1)
-      iconv_close(cd_utf16_to_utf8);
-    if (cd_ucs2le_to_utf8 != (iconv_t) -1)
-      iconv_close(cd_ucs2le_to_utf8);
-    if (cd_utf8_to_ucs2le != (iconv_t) -1)
-      iconv_close(cd_utf8_to_ucs2le);    
-    use_fallbacks = 1;
+  if (cd->cd_utf16_to_utf8 == (iconv_t) -1 ||
+      cd->cd_ucs2le_to_utf8 == (iconv_t) -1 ||
+      cd->cd_utf8_to_ucs2le == (iconv_t) -1) {
+    if (cd->cd_utf16_to_utf8 != (iconv_t) -1)
+      iconv_close(cd->cd_utf16_to_utf8);
+    if (cd->cd_ucs2le_to_utf8 != (iconv_t) -1)
+      iconv_close(cd->cd_ucs2le_to_utf8);
+    if (cd->cd_utf8_to_ucs2le != (iconv_t) -1)
+      iconv_close(cd->cd_utf8_to_ucs2le);    
+    cd->use_fallbacks = 1;
   }
   // OK activate the iconv() stuff...
-  use_fallbacks = 0;
+  cd->use_fallbacks = 0;
+  device->cd = (void *) cd;
+}
+
+void unicode_deinit(LIBMTP_mtpdevice_t *device)
+{
+  converter_t *cd = (converter_t *) device->cd;
+
+  if (!cd->use_fallbacks) {
+    if (cd->cd_utf16_to_utf8 != (iconv_t) -1)
+      iconv_close(cd->cd_utf16_to_utf8);
+    if (cd->cd_ucs2le_to_utf8 != (iconv_t) -1)
+      iconv_close(cd->cd_ucs2le_to_utf8);
+    if (cd->cd_utf8_to_ucs2le != (iconv_t) -1)
+      iconv_close(cd->cd_utf8_to_ucs2le);
+  }
 }
 #else
-void unicode_init(void)
+void unicode_init(LIBMTP_mtpdevice_t *device)
+{
+  return;
+}
+void unicode_deinit(LIBMTP_mtpdevice_t *device)
 {
   return;
 }
@@ -171,8 +196,10 @@ static char *builtin_ucs2le_to_utf8(uint16_t const * const unicstr) {
  * @return a UTF-8 string.
  */
 #ifdef USE_ICONV
-char *ucs2le_to_utf8(uint16_t const * const unicstr) {
-  if (use_fallbacks) {
+char *ucs2le_to_utf8(LIBMTP_mtpdevice_t *device, uint16_t const * const unicstr) {
+  converter_t *cd = (converter_t *) device->cd;
+  
+  if (cd->use_fallbacks) {
     return builtin_ucs2le_to_utf8(unicstr);
   } else {
     char *stringp = (char *) unicstr;
@@ -184,7 +211,7 @@ char *ucs2le_to_utf8(uint16_t const * const unicstr) {
     
     loclstr[0]='\0';
     /* Do the conversion.  */
-    nconv = iconv(cd_ucs2le_to_utf8, &stringp, &convlen, &locp, &convmax);
+    nconv = iconv(cd->cd_ucs2le_to_utf8, &stringp, &convlen, &locp, &convmax);
     if (nconv == (size_t) -1) {
       return NULL;
     }
@@ -193,7 +220,7 @@ char *ucs2le_to_utf8(uint16_t const * const unicstr) {
   }
 }
 #else
-char *ucs2le_to_utf8(uint16_t const * const unicstr) {
+char *ucs2le_to_utf8(LIBMTP_mtpdevice_t *device, uint16_t const * const unicstr) {
   return builtin_ucs2le_to_utf8(unicstr);
 }
 #endif
@@ -206,9 +233,11 @@ char *ucs2le_to_utf8(uint16_t const * const unicstr) {
  * @return a UTF-8 string.
  */
 #ifdef USE_ICONV
-char *utf16_to_utf8(const uint16_t *unicstr)
+char *utf16_to_utf8(LIBMTP_mtpdevice_t *device, const uint16_t *unicstr)
 {
-  if (use_fallbacks) {
+  converter_t *cd = (converter_t *) device->cd;
+  
+  if (cd->use_fallbacks) {
     if (unicstr[0] == 0xFFFEU || unicstr[0] == 0xFEFFU) {
       // Consume BOM, endianness is fixed at network layer.
       return builtin_ucs2le_to_utf8(unicstr+1);
@@ -224,7 +253,7 @@ char *utf16_to_utf8(const uint16_t *unicstr)
 
     loclstr[0]='\0';
     /* Do the conversion.  */
-    nconv = iconv(cd_utf16_to_utf8, &stringp, &convlen, &locp, &convmax);
+    nconv = iconv(cd->cd_utf16_to_utf8, &stringp, &convlen, &locp, &convmax);
     if (nconv == (size_t) -1) {
       // Return partial string anyway.
       *locp = '\0';
@@ -238,7 +267,7 @@ char *utf16_to_utf8(const uint16_t *unicstr)
   }
 }
 #else
-char *utf16_to_utf8(const uint16_t *unicstr)
+char *utf16_to_utf8(LIBMTP_mtpdevice_t *device, const uint16_t *unicstr)
 {
   if (unicstr[0] == 0xFFFEU) {
     // FIXME: big-endian, swap bytes around or something
@@ -314,8 +343,10 @@ static uint16_t *builtin_utf8_to_ucs2le(unsigned char const * const str) {
  * @return a pointer to a newly allocated UCS-2 string.
  */
 #ifdef USE_ICONV
-uint16_t *utf8_to_ucs2le(unsigned char const * const str) {
-  if (use_fallbacks) {
+uint16_t *utf8_to_ucs2le(LIBMTP_mtpdevice_t *device, unsigned char const * const str) {
+  converter_t *cd = (converter_t *) device->cd;
+  
+  if (cd->use_fallbacks) {
     return builtin_utf8_to_ucs2le(str);
   } else {
     uint16_t ucs2str[STRING_BUFFER_LENGTH+1];
@@ -327,7 +358,7 @@ uint16_t *utf8_to_ucs2le(unsigned char const * const str) {
     
     ucs2str[0] = 0x0000U;
     // memset(ucs2strp, 0, (STRING_BUFFER_LENGTH+1)*sizeof(uint16_t));
-    nconv = iconv (cd_utf8_to_ucs2le, &stringp, &convlen, &ucs2strp, &convmax);
+    nconv = iconv (cd->cd_utf8_to_ucs2le, &stringp, &convlen, &ucs2strp, &convmax);
     if (nconv == (size_t) -1) {
       return NULL;
     }
@@ -335,7 +366,7 @@ uint16_t *utf8_to_ucs2le(unsigned char const * const str) {
   }
 }
 #else
-uint16_t *utf8_to_ucs2le(unsigned char const * const str) {
+uint16_t *utf8_to_ucs2le(LIBMTP_mtpdevice_t *device, unsigned char const * const str) {
   return builtin_utf8_to_ucs2le(str);
 }
 #endif
