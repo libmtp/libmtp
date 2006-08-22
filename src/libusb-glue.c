@@ -368,6 +368,7 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
   int towrite = 0;
   int result = 0;
   int curwrite = 0;
+  struct usb_device *dev = usb_device(ptp_usb->handle);
 
   /*
    * gp_port_write returns (in case of success) the number of bytes
@@ -384,9 +385,9 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
     if (result < towrite) /* short writes happen */
       break;
   }
-  // Should load wMaxPacketsize from endpoint first. But works fine for all EPs.
-  if ((size % 512) == 0)
+  if ((size % dev->descriptor.bMaxPacketSize0) == 0) {
     result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)"x",0,ptpcam_usb_timeout);
+  }
   if (result < 0)
     return PTP_ERROR_IO;
   return PTP_RC_OK;

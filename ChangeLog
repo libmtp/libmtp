@@ -1,5 +1,12 @@
 2006-08-22  Linus Walleij <triad@df.lth.se>
 
+	* src/libusb-glue.c: found a real nasty endpoint bug,
+	  code from libgphoto2 was assuming max packet size of
+	  512 bytes while it is 64 when a USB 2.0 device is
+	  plugged into an UHCI hub.
+
+2006-08-22  Linus Walleij <triad@df.lth.se>
+
 	* configure.ac: bump to 0.0.13, also released 0.0.12 now.
 	
 2006-08-21  Linus Walleij <triad@df.lth.se>
