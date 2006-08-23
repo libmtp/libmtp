@@ -6,8 +6,8 @@
 
 static void usage(void)
 {
-  fprintf(stderr, "usage: hotplug [-u -a\"ACTION\"]\n");
-  fprintf(stderr, "       -d:  use udev syntax\n");
+  fprintf(stderr, "usage: hotplug [-h -u -a\"ACTION\"]\n");
+  fprintf(stderr, "       -u:  use udev syntax\n");
   fprintf(stderr, "       -a\"ACTION\": perform udev action ACTION on attachment\n");
   exit(1);
 }
