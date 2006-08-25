@@ -1,3 +1,10 @@
+2006-08-25  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: use the new file descriptor sender function.
+	  Going to release this as 0.0.13.
+	* src/ptp.c: upstream accepted patches synced in.
+	* src/ptp.h: dito.
+
 2006-08-22  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: found a real nasty endpoint bug,

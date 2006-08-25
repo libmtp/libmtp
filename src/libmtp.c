@@ -46,10 +46,6 @@ static LIBMTP_filemap_t *filemap = NULL;
 
 // Forward declarations of local functions
 static void flush_handles(LIBMTP_mtpdevice_t *device);
-static int send_file_object(LIBMTP_mtpdevice_t *device, 
-			    int const fd, uint64_t size,
-			    LIBMTP_progressfunc_t const * const callback,
-			    void const * const data);
 static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype);
 static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype);
 static int get_device_unicode_property(LIBMTP_mtpdevice_t *device, 
@@ -1765,8 +1761,6 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
     }
     free(props);
   }
-
-
 }
 
 /**
@@ -2129,193 +2123,6 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
 
 
 /**
- * This is an internal function used by both the file and track 
- * send functions. This takes care of a created object and 
- * transfer the actual file contents to it.
- * @param device a pointer to the device to send the track to.
- * @param fd the filedescriptor for a local file which will be sent.
- * @param size the size of the file to be sent.
- * @param callback a progress indicator function or NULL to ignore.
- * @param data a user-defined pointer that is passed along to
- *             the <code>progress</code> function in order to
- *             pass along some user defined data to the progress
- *             updates. If not used, set this to NULL.
- * @return 0 if the transfer was successful, any other value means 
- *           failure.
- */
-int send_file_object(LIBMTP_mtpdevice_t *device, 
-		      int const fd, uint64_t size,
-		      LIBMTP_progressfunc_t const * const callback,
-		      void const * const data)
-{
-  void *image = NULL;
-  uint16_t ret;
-  PTPParams *params = (PTPParams *) device->params;
-  ssize_t readb;
-  int is_map;
-
-  image = mmap(NULL, size, PROT_READ, MAP_PRIVATE, fd, 0);
-
-  if (image == MAP_FAILED) {
-    image = malloc(size);
-    if (image == NULL) {
-      printf("send_file_object(): Could not allocate memory.\n");
-      return -1;
-    }
-#ifndef __WIN32__
-    madvise(image, size, MADV_SEQUENTIAL | MADV_WILLNEED);
-#endif
-    readb = read(fd, image, size);
-    if (readb != size) {
-      free(image);
-      printf("send_file_object(): Could not read source file.\n");
-      return -1;
-    }
-    is_map = 0;
-  } else {
-    is_map = 1;
-#ifndef __WIN32__
-    madvise(image, size, MADV_SEQUENTIAL | MADV_WILLNEED);
-#endif
-  }
-
-  ret = ptp_sendobject(params, image, size);
-
-  if (is_map)
-    munmap(image, size);
-  else
-    free(image);
-  
-  if (ret != PTP_RC_OK) {
-    printf("send_file_object(): Bad return code from ptp_sendobject(): %d.\n", ret);
-    return -1;
-  }
-  return 0;
-
-#if 0
-  PTPContainer ptp;
-  PTPUSBBulkContainerSend usbdata;
-  uint16_t ret;
-  uint8_t *buffer;
-  uint64_t remain;
-  int last_chunk_size = 0; // Size of the last chunk written to the OUT endpoint
-  PTPParams *params = (PTPParams *) device->params;
-  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
-
-  // Nullify and configure PTP container
-  memset(&ptp, 0, sizeof(ptp));
-  ptp.Code = PTP_OC_SendObject;
-  ptp.Nparam = 0;
-  ptp.Transaction_ID = params->transaction_id++;
-  ptp.SessionID = params->session_id;
-
-  // Send request to send an object
-  ret = params->sendreq_func(params, &ptp);
-  if (ret != PTP_RC_OK) {
-    ptp_perror(params, ret);
-    printf("send_file_object: Could not send \"send object\" request\n");
-    return -1;
-  }
-
-  // build appropriate USB container
-  usbdata.length = htod32p(params,sizeof(usbdata) + size);
-  usbdata.type = htod16p(params,PTP_USB_CONTAINER_DATA);
-  usbdata.code = htod16p(params,PTP_OC_SendObject);
-  usbdata.trans_id = htod32p(params,ptp.Transaction_ID);
-
-  // Write request to USB
-  ret = params->write_func((unsigned char *)&usbdata, sizeof(usbdata), params->data);
-  if (ret != PTP_RC_OK) {
-    printf("send_file_object: Error initializing sending object\n");
-    ptp_perror(params, ret);
-    return -1;
-  }
-	
-  // This space will be used as a reading ring buffer for the transfers
-  buffer = (uint8_t *) malloc(BLOCK_SIZE);
-  if (buffer == NULL) {
-    printf("send_file_object: Could not allocate send buffer\n");
-    return -1;
-  }
-	
-  remain = size;
-  while (remain != 0) {
-    int readsize = (remain > BLOCK_SIZE) ? BLOCK_SIZE : (int) remain;
-    int bytesdone = (int) (size - remain);
-    int readbytes;
-
-    readbytes = read(fd, buffer, readsize);
-    if (readbytes < readsize) {
-      printf("send_file_object: error reading source file\n");
-      printf("Wanted to read %d bytes but could only read %d.\n", readsize, readbytes);
-      free(buffer);
-      return -1;
-    }
-    
-    if (callback != NULL) {
-      // If the callback return anything else than 0, interrupt the processing
-      int callret = callback(bytesdone, size, data);
-      if (callret != 0) {
-	printf("send_file_object: transfer interrupted by callback\n");
-	free(buffer);
-	return -1;
-      }
-    }
-    
-    // Write to USB
-    ret = params->write_func(buffer, readsize, params->data);
-    if (ret != PTP_RC_OK) {
-      printf("send_file_object: error writing data chunk to object\n");
-      ptp_perror(params, ret);
-      free(buffer);
-      return -1;
-    }
-    remain -= (uint64_t) readsize;
-    // This is useful to keep track of last write
-    last_chunk_size = readsize;
-  }
-  
-  if (callback != NULL) {
-    // This last call will not be able to abort execution and is just
-    // done so progress bars go up to 100%
-    (void) callback(size, size, data);
-  }
-  
-  /*
-   * Signal to USB that this is the last transfer if the last chunk
-   * was exactly as large as the buffer.
-   *
-   * On Linux you need kernel 2.6.16 or newer for this to work under
-   * USB 2.0 since the EHCI driver did not support zerolength writes
-   * until then. (Using a UHCI port should be OK though.)
-   */
-  if (last_chunk_size == ptp_usb->outep_maxpacket) {
-    ret = params->write_func(NULL, 0, params->data);
-    if (ret!=PTP_RC_OK) {
-      printf("send_file_object: error writing last zerolen data chunk for USB termination\n");
-      ptp_perror(params, ret);
-      free(buffer);
-      return -1;
-    }
-  }
-
-  // Get a response from device to make sure that the track was properly stored
-  ret = params->getresp_func(params, &ptp);
-  if (ret != PTP_RC_OK) {
-    printf("send_file_object: error getting response from device\n");
-    ptp_perror(params, ret);
-    free(buffer);
-    return -1;
-  }
-
-  // Free allocated buffer
-  free(buffer);
-
-  return 0;
-#endif
-}
-
-/**
  * This function sends a track from a file descriptor to an
  * MTP device. A filename and a set of metadata must be
  * given as input.
@@ -2374,11 +2181,10 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
-  // Call main function to transfer the track
-  subcall_ret = send_file_object(device, fd, metadata->filesize, callback, data);
-  if (subcall_ret != 0) {
-    printf("LIBMTP_Send_Track_From_File_Descriptor: error sending track object\n");
-    (void) LIBMTP_Delete_Object(device, metadata->item_id);
+  ret = ptp_sendobject_fromfd(params, fd, metadata->filesize);
+  if (ret != PTP_RC_OK) {
+    ptp_perror(params, ret);
+    printf("LIBMTP_Send_Track_From_File_Descriptor: Could not send object\n");
     return -1;
   }
     
@@ -2478,7 +2284,6 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   uint16_t ret;
   uint32_t store = 0;
   uint32_t localph = parenthandle;
-  int subcall_ret;
   PTPObjectInfo new_file;
   PTPParams *params = (PTPParams *) device->params;
 
@@ -2535,11 +2340,10 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
-  // Call main function to transfer the track
-  subcall_ret = send_file_object(device, fd, filedata->filesize, callback, data);
-  if (subcall_ret != 0) {
-    printf("LIBMTP_Send_File_From_File_Descriptor: error sending track object\n");
-    (void) LIBMTP_Delete_Object(device, filedata->item_id);
+  ret = ptp_sendobject_fromfd(params, fd, filedata->filesize);
+  if (ret != PTP_RC_OK) {
+    ptp_perror(params, ret);
+    printf("LIBMTP_Send_File_From_File_Descriptor: Could not send object\n");
     return -1;
   }
   
