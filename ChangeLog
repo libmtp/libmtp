@@ -1,3 +1,10 @@
+2006-08-26  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: version bump.
+	* src/libmtp.c: fix bug and reinstate callbacks.
+	* src/libusb-glue.h: dito.
+	* src/libusb-glue.c: dito.
+
 2006-08-25  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: use the new file descriptor sender function.

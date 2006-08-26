@@ -372,7 +372,7 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
 
   /*
    * gp_port_write returns (in case of success) the number of bytes
-   * write. Too large blocks (>5x MB) could timeout.
+   * written. Too large blocks (>5x MB) could timeout.
    */
   while (curwrite < size) {
     towrite = size-curwrite;
@@ -385,9 +385,26 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
     if (result < towrite) /* short writes happen */
       break;
   }
-  if ((size % dev->descriptor.bMaxPacketSize0) == 0) {
-    result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)"x",0,ptpcam_usb_timeout);
+
+  // Increase counters, call callback
+  if (ptp_usb->callback_active) {
+    ptp_usb->current_transfer_complete += result;
+    if (ptp_usb->current_transfer_callback != NULL) {
+      (void) ptp_usb->current_transfer_callback(ptp_usb->current_transfer_complete,
+						ptp_usb->current_transfer_total,
+						ptp_usb->current_transfer_callback_data);
+    }
   }
+  
+  // If this is the last transfer (callbacks only active if this function called repeatedly with
+  // new data, otherwise this is a single large transaction which ends here).
+  if (!ptp_usb->callback_active || ptp_usb->current_transfer_total == ptp_usb->current_transfer_complete) {
+    // Then terminate an even packet boundary write with a zero length packet
+    if ((size % dev->descriptor.bMaxPacketSize0) == 0) {
+      result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)"x",0,ptpcam_usb_timeout);
+    }
+  }
+
   if (result < 0)
     return PTP_ERROR_IO;
   return PTP_RC_OK;

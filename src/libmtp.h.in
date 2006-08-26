@@ -94,7 +94,7 @@ typedef struct LIBMTP_object_struct LIBMTP_object_t; /**< @see LIBMTP_object_t *
  * @return if anything else than 0 is returned, the current transfer will be
  *         interrupted / cancelled.
  */
-typedef int LIBMTP_progressfunc_t (uint64_t const sent, uint64_t const total,
+typedef int (* LIBMTP_progressfunc_t) (uint64_t const sent, uint64_t const total,
                 		void const * const data);
 
 /** 

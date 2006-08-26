@@ -760,6 +760,13 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   // Allocate a parameter block
   params = (PTPParams *) malloc(sizeof(PTPParams));
   ptp_usb = (PTP_USB *) malloc(sizeof(PTP_USB));
+  // Callbacks and stuff
+  ptp_usb->callback_active = 0;
+  ptp_usb->current_transfer_total = 0;
+  ptp_usb->current_transfer_complete = 0;
+  ptp_usb->current_transfer_callback = NULL;
+  
+  // get storage ID
   ret = connect_first_device(params, ptp_usb, &interface_number);
   
   switch (ret)
@@ -819,7 +826,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 
   // Initialize iconv() converters...
   unicode_init(tmpdevice);
-  
+
   /*
    * Then get the handles and try to locate the default folders.
    * This has the desired side effect of cacheing all handles from
@@ -2154,6 +2161,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   PTPObjectInfo new_track;
   PTPParams *params = (PTPParams *) device->params;
   uint32_t localph = parenthandle;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
 
   if (localph == 0) {
     localph = device->default_music_folder;
@@ -2181,12 +2189,25 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
+  ptp_usb->callback_active = 1;
+  ptp_usb->current_transfer_total = metadata->filesize+12; // 12 = USB header size
+  ptp_usb->current_transfer_complete = 0;
+  ptp_usb->current_transfer_callback = callback;
+  ptp_usb->current_transfer_callback_data = data;
+  
   ret = ptp_sendobject_fromfd(params, fd, metadata->filesize);
   if (ret != PTP_RC_OK) {
+    ptp_usb->callback_active = 0;
+    ptp_usb->current_transfer_callback = NULL;
+    ptp_usb->current_transfer_callback_data = NULL;
     ptp_perror(params, ret);
     printf("LIBMTP_Send_Track_From_File_Descriptor: Could not send object\n");
     return -1;
   }
+
+  ptp_usb->callback_active = 0;
+  ptp_usb->current_transfer_callback = NULL;
+  ptp_usb->current_transfer_callback_data = NULL;
     
   // Set track metadata for the new fine track
   subcall_ret = LIBMTP_Update_Track_Metadata(device, metadata);
@@ -2286,6 +2307,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   uint32_t localph = parenthandle;
   PTPObjectInfo new_file;
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
 
   new_file.Filename = filedata->filename;
   new_file.ObjectCompressedSize = filedata->filesize;
@@ -2339,13 +2361,26 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     printf("LIBMTP_Send_File_From_File_Descriptor: Could not send object info\n");
     return -1;
   }
-
+  
+  ptp_usb->callback_active = 1;
+  ptp_usb->current_transfer_total = filedata->filesize+12; // 12 = USB header size
+  ptp_usb->current_transfer_complete = 0;
+  ptp_usb->current_transfer_callback = callback;
+  ptp_usb->current_transfer_callback_data = data;
+  
   ret = ptp_sendobject_fromfd(params, fd, filedata->filesize);
   if (ret != PTP_RC_OK) {
+    ptp_usb->callback_active = 0;
+    ptp_usb->current_transfer_callback = NULL;
+    ptp_usb->current_transfer_callback_data = NULL;
     ptp_perror(params, ret);
     printf("LIBMTP_Send_File_From_File_Descriptor: Could not send object\n");
     return -1;
   }
+  
+  ptp_usb->callback_active = 0;
+  ptp_usb->current_transfer_callback = NULL;
+  ptp_usb->current_transfer_callback_data = NULL;
   
   // Added object so flush handles.
   flush_handles(device);
