@@ -1,6 +1,6 @@
 #include "common.h"
 
-void dump_folder_list(LIBMTP_folder_t *folderlist, int level)
+static void dump_folder_list(LIBMTP_folder_t *folderlist, int level)
 {
   int i;
   if(folderlist==NULL) {

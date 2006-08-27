@@ -459,13 +459,12 @@ void LIBMTP_Init(void)
  * @param device a pointer to an MTP device.
  * @param object_id Object reference
  * @param attribute_id PTP attribute ID
- * @param getUtf8 retrieve the string as UTF8. Specify 1 for UTF8.
  * @return valid string or NULL on failure. The returned string
  *         must bee <code>free()</code>:ed by the caller after
  *         use.
  */
 char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const object_id, 
-				    uint32_t const attribute_id, uint8_t const getUtf8)
+				    uint32_t const attribute_id)
 {
   PTPPropertyValue propval;
   char *retstring = NULL;
@@ -476,19 +475,11 @@ char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const o
     return NULL;
   }
   
-  ret = ptp_mtp_getobjectpropvalue(params, object_id, attribute_id, &propval,
-                                   ( getUtf8 == 1 ? PTP_DTC_UNISTR : PTP_DTC_STR ));
+  ret = ptp_mtp_getobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_STR);
   if (ret == PTP_RC_OK) {
-    if (getUtf8 == 1) {
-      if (propval.unistr != NULL) {
-	retstring = ucs2le_to_utf8(device, propval.unistr);
-	free(propval.unistr);
-      }
-    } else {
-      if (propval.str != NULL) {
-        retstring = (char *) strdup(propval.str);
-        free(propval.str);
-      }
+    if (propval.str != NULL) {
+      retstring = (char *) strdup(propval.str);
+      free(propval.str);
     }
   }
   
@@ -566,12 +557,10 @@ uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const o
  * @param object_id Object reference
  * @param attribute_id PTP attribute ID
  * @param string string value to set
- * @param setUtf8 Specify string as UTF8. Set to 1 if UTF8.
  * @return 0 on success, any other value means failure
  */
 int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t const object_id, 
-			     uint32_t const attribute_id, char const * const string, 
-			     uint8_t const setUtf8)
+			     uint32_t const attribute_id, char const * const string)
 {
   PTPPropertyValue propval;
   PTPParams *params = (PTPParams *) device->params;
@@ -581,14 +570,8 @@ int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t const object_i
     return -1;
   }
 
-  if (setUtf8 == 1) {
-    propval.unistr = utf8_to_ucs2le(device, (unsigned char const * const) string);
-    ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UNISTR);
-    free(propval.unistr);
-  } else {
-    propval.str = (char *) string;
-    ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_STR);
-  }
+  propval.str = (char *) string;
+  ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_STR);
   if (ret != PTP_RC_OK) {
     return -1;
   }
@@ -759,6 +742,12 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 
   // Allocate a parameter block
   params = (PTPParams *) malloc(sizeof(PTPParams));
+  params->cd_locale_to_ucs2 = iconv_open("UCS-2", "UTF-8");
+  params->cd_ucs2_to_locale = iconv_open("UTF-8", "UCS-2");
+  if (params->cd_locale_to_ucs2 == (iconv_t) -1 || params->cd_ucs2_to_locale == (iconv_t) -1) {
+    return NULL;
+  }
+      
   ptp_usb = (PTP_USB *) malloc(sizeof(PTP_USB));
   // Callbacks and stuff
   ptp_usb->callback_active = 0;
@@ -894,6 +883,8 @@ void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
     params->handles.Handler = NULL;
   }
   // Free iconv() converters...
+  iconv_close(params->cd_locale_to_ucs2);
+  iconv_close(params->cd_ucs2_to_locale);
   unicode_deinit(device);
   free(device);
 }
@@ -1087,12 +1078,13 @@ char *LIBMTP_Get_Friendlyname(LIBMTP_mtpdevice_t *device)
   if (ptp_getdevicepropvalue(params, 
 			     PTP_DPC_MTP_DeviceFriendlyName, 
 			     &propval, 
-			     PTP_DTC_UNISTR) != PTP_RC_OK) {
+			     PTP_DTC_STR) != PTP_RC_OK) {
     return NULL;
   }
-  // Convert from UCS-2 to UTF-8
-  retstring = ucs2le_to_utf8(device, propval.unistr);
-  free(propval.unistr);
+  if (propval.str != NULL) {
+    retstring = strdup(propval.str);
+    free(propval.str);
+  }
   return retstring;
 }
 
@@ -1112,15 +1104,13 @@ int LIBMTP_Set_Friendlyname(LIBMTP_mtpdevice_t *device,
   if (!ptp_property_issupported(params, PTP_DPC_MTP_DeviceFriendlyName)) {
     return -1;
   }
-  propval.unistr = utf8_to_ucs2le(device, (unsigned char *) friendlyname);
+  propval.str = (char *) friendlyname;
   if (ptp_setdevicepropvalue(params,
 			     PTP_DPC_MTP_DeviceFriendlyName, 
 			     &propval, 
-			     PTP_DTC_UNISTR) != PTP_RC_OK) {
-    free(propval.unistr);
+			     PTP_DTC_STR) != PTP_RC_OK) {
     return -1;
   }
-  free(propval.unistr);
   return 0;
 }
 
@@ -1145,12 +1135,13 @@ char *LIBMTP_Get_Syncpartner(LIBMTP_mtpdevice_t *device)
   if (ptp_getdevicepropvalue(params, 
 			     PTP_DPC_MTP_SynchronizationPartner, 
 			     &propval, 
-			     PTP_DTC_UNISTR) != PTP_RC_OK) {
+			     PTP_DTC_STR) != PTP_RC_OK) {
     return NULL;
   }
-  // Convert from UCS-2 to UTF-8
-  retstring = ucs2le_to_utf8(device, propval.unistr);
-  free(propval.unistr);
+  if (propval.str != NULL) {
+    retstring = strdup(propval.str);
+    free(propval.str);
+  }
   return retstring;
 }
 
@@ -1175,15 +1166,13 @@ int LIBMTP_Set_Syncpartner(LIBMTP_mtpdevice_t *device,
   if (!ptp_property_issupported(params, PTP_DPC_MTP_SynchronizationPartner)) {
     return -1;
   }
-  propval.unistr = utf8_to_ucs2le(device, (unsigned char *) syncpartner);
+  propval.str = (char *) syncpartner;
   if (ptp_setdevicepropvalue(params,
 			     PTP_DPC_MTP_SynchronizationPartner, 
 			     &propval, 
-			     PTP_DTC_UNISTR) != PTP_RC_OK) {
-    free(propval.unistr);
+			     PTP_DTC_STR) != PTP_RC_OK) {
     return -1;
   }
-  free(propval.unistr);
   return 0;
 }
 
@@ -1722,10 +1711,10 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
     for (i=0;i<propcnt;i++) {
       switch (props[i]) {
       case PTP_OPC_Name:
-	track->title = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Name, 1);
+	track->title = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Name);
 	break;
       case PTP_OPC_Artist:
-	track->artist = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Artist, 1);
+	track->artist = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Artist);
 	break;
       case PTP_OPC_Duration:
 	track->duration = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_Duration, 0);
@@ -1734,13 +1723,13 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
 	track->tracknumber = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_Track, 0);
 	break;
       case PTP_OPC_Genre:
-	track->genre = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Genre, 1);
+	track->genre = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Genre);
 	break;
       case PTP_OPC_AlbumName:
-	track->album = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_AlbumName, 1);
+	track->album = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_AlbumName);
 	break;
       case PTP_OPC_OriginalReleaseDate:
-	track->date = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_OriginalReleaseDate, 0);
+	track->date = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_OriginalReleaseDate);
 	break;
 	// These are, well not so important.
       case PTP_OPC_SampleRate:
@@ -2431,7 +2420,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
       switch (props[i]) {
       case PTP_OPC_Name:
 	// Update title
-	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Name, metadata->title,1);
+	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Name, metadata->title);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set track title\n");
 	  return -1;
@@ -2439,7 +2428,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_AlbumName:
 	// Update album
-	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_AlbumName, metadata->album,1);
+	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_AlbumName, metadata->album);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set track album name\n");
 	  return -1;
@@ -2447,7 +2436,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_Artist:
 	// Update artist
-	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Artist, metadata->artist,1);
+	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Artist, metadata->artist);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set track artist name\n");
 	  return -1;
@@ -2455,7 +2444,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_Genre:
 	// Update genre
-	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Genre, metadata->genre,1);
+	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Genre, metadata->genre);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set track genre name\n");
 	  return -1;
@@ -2483,7 +2472,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_OriginalReleaseDate:
 	// Update creation datetime
-	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_OriginalReleaseDate, metadata->date,0);
+	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_OriginalReleaseDate, metadata->date);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set track release date\n");
 	  return -1;
@@ -3101,7 +3090,7 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *device)
       pl = LIBMTP_new_playlist_t();
       
       // Ignoring the io.Filename field.
-      pl->name = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name, 1);
+      pl->name = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name);
       
       // This is some sort of unique playlist ID so we can keep track of it
       pl->playlist_id = params->handles.Handler[i];
@@ -3171,7 +3160,7 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t cons
       pl = LIBMTP_new_playlist_t();
       
       // Ignoring the io.Filename field.
-      pl->name = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name, 1);
+      pl->name = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name);
       
       // This is some sort of unique playlist ID so we can keep track of it
       pl->playlist_id = params->handles.Handler[i];
@@ -3268,7 +3257,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   }
 
   // Update title
-  ret = LIBMTP_Set_Object_String(device, metadata->playlist_id, PTP_OPC_Name, metadata->name, 1);
+  ret = LIBMTP_Set_Object_String(device, metadata->playlist_id, PTP_OPC_Name, metadata->name);
   if (ret != 0) {
     printf("LIBMTP_New_Playlist(): could not set playlist name\n");
     return -1;
@@ -3310,7 +3299,7 @@ int LIBMTP_Update_Playlist(LIBMTP_mtpdevice_t *device,
   PTPParams *params = (PTPParams *) device->params;
 
   // Update title
-  ret = LIBMTP_Set_Object_String(device, metadata->playlist_id, PTP_OPC_Name, metadata->name, 1);
+  ret = LIBMTP_Set_Object_String(device, metadata->playlist_id, PTP_OPC_Name, metadata->name);
   if (ret != 0) {
     printf("LIBMTP_Update_Playlist(): could not set playlist name\n");
     return -1;

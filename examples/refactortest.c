@@ -62,13 +62,13 @@ static void test_mp3_datafunc(LIBMTP_mtpdevice_t *device, uint32_t object_id, vo
   
   track = (LIBMTP_track_t *) data;
   
-  track->title = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_Name,1);
-  track->artist = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_Artist,1);
+  track->title = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_Name);
+  track->artist = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_Artist);
   track->duration = LIBMTP_Get_U32_From_Object(device, object_id, PTP_OPC_Duration, 0);
   track->duration = LIBMTP_Get_U16_From_Object(device, object_id, PTP_OPC_Track, 0);
-  track->artist = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_Genre,1);
-  track->album = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_AlbumName,1);
-  track->date = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_OriginalReleaseDate,0);
+  track->artist = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_Genre);
+  track->album = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_AlbumName);
+  track->date = LIBMTP_Get_String_From_Object(device, object_id, PTP_OPC_OriginalReleaseDate);
 }
 
 int main (int argc, char **argv)

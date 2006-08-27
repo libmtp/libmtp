@@ -1,3 +1,17 @@
+2006-08-28  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: version bump.
+	* src/ptp-pack.c: upstream has committed my patch giving full
+	  unicode support in libgphoto2 ptp2 camlib. No need for
+	  any more ugly workarounds, plus we now have full unicode
+	  filenames!
+	* src/ptp.c: dito.
+	* src/ptp.h: dito.
+	* src/libmtp.c: revamp to use the new unicode support in
+	  libgphoto2.
+	* src/unicode.c: remove unused functionality.
+	* src/unicode.h: dito.
+
 2006-08-27  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: version bump. Release all these fixes
