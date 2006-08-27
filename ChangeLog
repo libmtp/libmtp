@@ -1,3 +1,17 @@
+2006-08-27  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: version bump. Release all these fixes
+	  as 0.0.15.
+	* src/libusb-glue.c: fixed sucky errors. Added callback
+	  code when reading files.
+	* src/libusb-glue.h: const correctness.
+	* src/libmtp.h.in: finally fixup the type on the callbacks.
+	* src/libmtp.c: more accurate sending callbacks. Callbacks
+	  when getting files also, working correctly. Typeing of
+	  callbacks now OK.
+	* examples/getfile.c: some display bar cosmetic fixup.
+	* TODO: lots of the things todo are now done.
+
 2006-08-26  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: version bump.

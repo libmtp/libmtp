@@ -54,7 +54,7 @@
 #define PTP_OPC_OriginalReleaseDate         0xDC99
 #define PTP_OPC_AlbumName               0xDC9A
 
-void test_mp3_datafunc(LIBMTP_mtpdevice_t *device, uint32_t object_id, void *data)
+static void test_mp3_datafunc(LIBMTP_mtpdevice_t *device, uint32_t object_id, void *data)
 {
   LIBMTP_track_t *track;
   

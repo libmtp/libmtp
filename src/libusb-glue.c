@@ -352,6 +352,17 @@ ptp_read_func (unsigned char *bytes, unsigned int size, void *data, unsigned int
     if (result < toread) /* short reads are common */
       break;
   }
+
+  // Increase counters, call callback
+  if (ptp_usb->callback_active) {
+    ptp_usb->current_transfer_complete += curread;
+    if (ptp_usb->current_transfer_callback != NULL) {
+      (void) ptp_usb->current_transfer_callback(ptp_usb->current_transfer_complete,
+						ptp_usb->current_transfer_total,
+						ptp_usb->current_transfer_callback_data);
+    }
+  }
+  
   if (result > 0) {
     *readbytes = curread;
     return (PTP_RC_OK);

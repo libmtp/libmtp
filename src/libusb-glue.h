@@ -30,7 +30,7 @@ struct _PTP_USB {
   uint64_t current_transfer_total;
   uint64_t current_transfer_complete;
   LIBMTP_progressfunc_t current_transfer_callback;
-  void *current_transfer_callback_data;
+  void const * current_transfer_callback_data;
 };
 
 int get_device_list(LIBMTP_device_entry_t ** const devices, int * const numdevs);

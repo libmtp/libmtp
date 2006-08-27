@@ -1952,7 +1952,7 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
  * @see LIBMTP_Get_File_To_File_Descriptor()
  */
 int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id, 
-			 char const * const path, LIBMTP_progressfunc_t const * const callback,
+			 char const * const path, LIBMTP_progressfunc_t const callback,
 			 void const * const data)
 {
   int fd = -1;
@@ -2000,12 +2000,13 @@ int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id,
 int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device, 
 					uint32_t const id, 
 					int const fd, 
-					LIBMTP_progressfunc_t const * const callback,
+					LIBMTP_progressfunc_t const callback,
 					void const * const data)
 {
   PTPObjectInfo oi;
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
 
   if (ptp_getobjectinfo(params, id, &oi) != PTP_RC_OK) {
     printf("LIBMTP_Get_File_To_File_Descriptor(): Could not get object info\n");
@@ -2016,8 +2017,19 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
+  // Callbacks
+  ptp_usb->callback_active = 1;
+  ptp_usb->current_transfer_total = oi.ObjectCompressedSize+40; // 40???
+  ptp_usb->current_transfer_complete = 0;
+  ptp_usb->current_transfer_callback = callback;
+  ptp_usb->current_transfer_callback_data = data;
+  
   // This now exist in upstream
   ret = ptp_getobject_tofd(params, id, fd);
+
+  ptp_usb->callback_active = 0;
+  ptp_usb->current_transfer_callback = NULL;
+  ptp_usb->current_transfer_callback_data = NULL;
   
   if (ret != PTP_RC_OK) {
     printf("LIBMTP_Get_File_To_File_Descriptor(): Could not get file from device (%d)\n", ret);
@@ -2044,7 +2056,7 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
  * @see LIBMTP_Get_Track_To_File_Descriptor()
  */
 int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id, 
-			 char const * const path, LIBMTP_progressfunc_t const * const callback,
+			 char const * const path, LIBMTP_progressfunc_t const callback,
 			 void const * const data)
 {
   // This is just a wrapper
@@ -2070,7 +2082,7 @@ int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id,
 int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device, 
 					uint32_t const id, 
 					int const fd, 
-					LIBMTP_progressfunc_t const * const callback,
+					LIBMTP_progressfunc_t const callback,
 					void const * const data)
 {
   // This is just a wrapper
@@ -2098,7 +2110,7 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
  */
 int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device, 
 			 char const * const path, LIBMTP_track_t * const metadata,
-                         LIBMTP_progressfunc_t const * const callback,
+                         LIBMTP_progressfunc_t const callback,
 			 void const * const data, uint32_t const parenthandle)
 {
   int fd;
@@ -2152,7 +2164,7 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
  */
 int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device, 
 			 int const fd, LIBMTP_track_t * const metadata,
-                         LIBMTP_progressfunc_t const * const callback,
+                         LIBMTP_progressfunc_t const callback,
 			 void const * const data, uint32_t const parenthandle)
 {
   uint16_t ret;
@@ -2189,6 +2201,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
+  // Callbacks
   ptp_usb->callback_active = 1;
   ptp_usb->current_transfer_total = metadata->filesize+12+12; // 12 = USB header size, two commands
   ptp_usb->current_transfer_complete = 0;
@@ -2196,19 +2209,17 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_callback_data = data;
   
   ret = ptp_sendobject_fromfd(params, fd, metadata->filesize);
+  
+  ptp_usb->callback_active = 0;
+  ptp_usb->current_transfer_callback = NULL;
+  ptp_usb->current_transfer_callback_data = NULL;
+
   if (ret != PTP_RC_OK) {
-    ptp_usb->callback_active = 0;
-    ptp_usb->current_transfer_callback = NULL;
-    ptp_usb->current_transfer_callback_data = NULL;
     ptp_perror(params, ret);
     printf("LIBMTP_Send_Track_From_File_Descriptor: Could not send object\n");
     return -1;
   }
-
-  ptp_usb->callback_active = 0;
-  ptp_usb->current_transfer_callback = NULL;
-  ptp_usb->current_transfer_callback_data = NULL;
-    
+  
   // Set track metadata for the new fine track
   subcall_ret = LIBMTP_Update_Track_Metadata(device, metadata);
   if (subcall_ret != 0) {
@@ -2246,7 +2257,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
  */
 int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device, 
 			       char const * const path, LIBMTP_file_t * const filedata,
-			       LIBMTP_progressfunc_t const * const callback,
+			       LIBMTP_progressfunc_t const callback,
 			       void const * const data, uint32_t const parenthandle)
 {
   int fd;
@@ -2299,7 +2310,7 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
  */
 int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device, 
 			 int const fd, LIBMTP_file_t * const filedata,
-                         LIBMTP_progressfunc_t const * const callback,
+                         LIBMTP_progressfunc_t const callback,
 			 void const * const data, uint32_t const parenthandle)
 {
   uint16_t ret;
@@ -2361,7 +2372,8 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     printf("LIBMTP_Send_File_From_File_Descriptor: Could not send object info\n");
     return -1;
   }
-  
+
+  // Callbacks
   ptp_usb->callback_active = 1;
   ptp_usb->current_transfer_total = filedata->filesize+12+12; // 12 = USB header size, two commands
   ptp_usb->current_transfer_complete = 0;
@@ -2369,18 +2381,16 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_callback_data = data;
   
   ret = ptp_sendobject_fromfd(params, fd, filedata->filesize);
-  if (ret != PTP_RC_OK) {
-    ptp_usb->callback_active = 0;
-    ptp_usb->current_transfer_callback = NULL;
-    ptp_usb->current_transfer_callback_data = NULL;
-    ptp_perror(params, ret);
-    printf("LIBMTP_Send_File_From_File_Descriptor: Could not send object\n");
-    return -1;
-  }
   
   ptp_usb->callback_active = 0;
   ptp_usb->current_transfer_callback = NULL;
   ptp_usb->current_transfer_callback_data = NULL;
+
+  if (ret != PTP_RC_OK) {
+    ptp_perror(params, ret);
+    printf("LIBMTP_Send_File_From_File_Descriptor: Could not send object\n");
+    return -1;
+  }
   
   // Added object so flush handles.
   flush_handles(device);

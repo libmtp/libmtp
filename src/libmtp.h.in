@@ -271,14 +271,14 @@ char const * LIBMTP_Get_Filetype_Description(LIBMTP_filetype_t);
 LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *);
 LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *, uint32_t const);
 int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t*, uint32_t, char const * const, 
-			LIBMTP_progressfunc_t const * const, void const * const);
+			LIBMTP_progressfunc_t const, void const * const);
 int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t const, int const, 
-			LIBMTP_progressfunc_t const * const, void const * const);
+			LIBMTP_progressfunc_t const, void const * const);
 int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *, char const * const, 
-	                 LIBMTP_file_t * const, LIBMTP_progressfunc_t const * const,
+	                 LIBMTP_file_t * const, LIBMTP_progressfunc_t const,
 			 void const * const, uint32_t const);
 int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *, int const, 
-	                LIBMTP_file_t * const, LIBMTP_progressfunc_t const * const,
+	                LIBMTP_file_t * const, LIBMTP_progressfunc_t const,
 			void const * const, uint32_t const);
 /**
  * @}
@@ -290,16 +290,16 @@ void LIBMTP_destroy_track_t(LIBMTP_track_t*);
 LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t*);
 LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t*, uint32_t const);
 int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t*, uint32_t, char const * const, 
-			LIBMTP_progressfunc_t const * const, void const * const);
+			LIBMTP_progressfunc_t const, void const * const);
 int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t const, int const, 
-			LIBMTP_progressfunc_t const * const, void const * const);
+			LIBMTP_progressfunc_t const, void const * const);
 int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *, 
 			 char const * const, LIBMTP_track_t * const,
-                         LIBMTP_progressfunc_t const * const,
+                         LIBMTP_progressfunc_t const,
 			 void const * const, uint32_t const);
 int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *, 
 			 int const, LIBMTP_track_t * const,
-                         LIBMTP_progressfunc_t const * const,
+                         LIBMTP_progressfunc_t const,
 			 void const * const, uint32_t const);
 int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *, 
 			LIBMTP_track_t const * const);

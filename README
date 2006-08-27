@@ -74,7 +74,8 @@ Contributing
 ------------
 
 See the project page at http://libmtp.sourceforge.net/
-We always need your help.
+We always need your help. There is a mailinglist and a
+bug report system there.
 
 If you happen upon a device which libmtp claims it cannot
 autodetect, please submit the vendor ID and device ID 

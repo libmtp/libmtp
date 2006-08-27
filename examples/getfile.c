@@ -53,8 +53,10 @@ int main (int argc, char **argv)
   
   // This function will also work just as well for tracks.
   if (LIBMTP_Get_File_To_File(device, id, file, progress, NULL) != 0 ) {
-    printf("Error getting file from MTP device.\n");
+    printf("\nError getting file from MTP device.\n");
   }
+  // Terminate progress bar.
+  printf("\n");
   
   LIBMTP_Release_Device(device);
   printf("OK.\n");

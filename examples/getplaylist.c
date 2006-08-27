@@ -1,6 +1,6 @@
 #include "common.h"
 
-uint32_t dump_playlist(LIBMTP_mtpdevice_t *device, uint32_t playlist_id)
+static uint32_t dump_playlist(LIBMTP_mtpdevice_t *device, uint32_t playlist_id)
 {
   uint32_t *items;
   uint32_t len, ret;
