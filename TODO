@@ -1,8 +1,11 @@
 TODO file:
 ----------
 
+* Make abstract playlists really become size -1 when created as 
+  the ones created on the device instead of the current 1 byte size.
+
 * Support abstract MTP album (0xBA03) just like playlists. Too
-  bad that Creative devices do not support them, they group the
+  bad that Creative Zen Micro do not support them, they group the
   albums by using the metadata instead. Support representative
   sample (i.e. album cover).
 
