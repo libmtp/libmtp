@@ -388,7 +388,7 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
 
   // Increase counters, call callback
   if (ptp_usb->callback_active) {
-    ptp_usb->current_transfer_complete += result;
+    ptp_usb->current_transfer_complete += curwrite;
     if (ptp_usb->current_transfer_callback != NULL) {
       (void) ptp_usb->current_transfer_callback(ptp_usb->current_transfer_complete,
 						ptp_usb->current_transfer_total,
