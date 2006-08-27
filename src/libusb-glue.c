@@ -398,7 +398,8 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
   
   // If this is the last transfer (callbacks only active if this function called repeatedly with
   // new data, otherwise this is a single large transaction which ends here).
-  if (!ptp_usb->callback_active || ptp_usb->current_transfer_total == ptp_usb->current_transfer_complete) {
+  // -12 is for the following response command.
+  if (!ptp_usb->callback_active || ptp_usb->current_transfer_complete >= ptp_usb->current_transfer_total-12) {
     // Then terminate an even packet boundary write with a zero length packet
     if ((size % dev->descriptor.bMaxPacketSize0) == 0) {
       result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)"x",0,ptpcam_usb_timeout);

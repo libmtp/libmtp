@@ -2190,7 +2190,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   }
 
   ptp_usb->callback_active = 1;
-  ptp_usb->current_transfer_total = metadata->filesize+12; // 12 = USB header size
+  ptp_usb->current_transfer_total = metadata->filesize+12+12; // 12 = USB header size, two commands
   ptp_usb->current_transfer_complete = 0;
   ptp_usb->current_transfer_callback = callback;
   ptp_usb->current_transfer_callback_data = data;
@@ -2363,7 +2363,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   }
   
   ptp_usb->callback_active = 1;
-  ptp_usb->current_transfer_total = filedata->filesize+12; // 12 = USB header size
+  ptp_usb->current_transfer_total = filedata->filesize+12+12; // 12 = USB header size, two commands
   ptp_usb->current_transfer_complete = 0;
   ptp_usb->current_transfer_callback = callback;
   ptp_usb->current_transfer_callback_data = data;
