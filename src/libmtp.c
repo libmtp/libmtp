@@ -573,6 +573,8 @@ int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t const object_i
   propval.str = (char *) string;
   ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_STR);
   if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Set_Object_String(): could not set object string.\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
   
@@ -913,6 +915,7 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
 			     &params->handles);
   if (ret != PTP_RC_OK) {
     printf("flush_handles(): LIBMTP panic: Could not get object handles...\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
   }
 
   return;
@@ -979,6 +982,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
       ret = ptp_mtp_getobjectpropssupported (params, params->deviceinfo.ImageFormats[i], &propcnt, &props);
       if (ret != PTP_RC_OK) {
 	printf("      Error on query for object properties.\n");
+	printf("      Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
       } else {
 	for (j=0;j<propcnt;j++) {
 	  (void) ptp_render_mtp_propname(props[j],sizeof(txt),txt);
@@ -1248,6 +1252,8 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device,
   
   ret = ptp_getdevicepropvalue(params, PTP_DPC_BatteryLevel, &propval, PTP_DTC_UINT8);
   if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Get_Batterylevel(): could not get devcie property value.\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
   
@@ -2187,6 +2193,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
     printf("LIBMTP_Send_Track_From_File_Descriptor: Could not send object info\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
 
@@ -2359,6 +2366,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
     printf("LIBMTP_Send_File_From_File_Descriptor: Could not send object info\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
 
@@ -2823,6 +2831,7 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name, uint32_t p
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
     printf("LIBMTP_Create_Folder: Could not send object info\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return 0;
   }
   // Created new object so flush handles
@@ -3240,6 +3249,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
     printf("LIBMTP_New_Playlist(): Could not send object info (the playlist itself)\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
   

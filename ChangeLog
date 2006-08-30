@@ -1,3 +1,10 @@
+2006-08-30  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: version bump.
+	* src/libmtp.c: more debug prints.
+	* src/libusb-glue.c: new iRiver device called Clix. By
+	  the way I released libmtp 0.0.16 yesterday.
+
 2006-08-28  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: version bump.
