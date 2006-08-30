@@ -129,6 +129,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "iRiver T10", 0x4102, 0x1117 },
   { "iRiver T20", 0x4102, 0x1118 },
   { "iRiver T30", 0x4102, 0x1119 },
+  // Reported by Adam Torgerson
+  { "iRiver Clix", 0x4102, 0x112a },
   // Reported by Scott Call
   { "iRiver H10 20GB", 0x4102, 0x2101 },
   { "iRiver H10", 0x4102, 0x2102 },
