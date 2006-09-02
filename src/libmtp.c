@@ -2299,6 +2299,16 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
  * This function sends a generic file from a file descriptor to an
  * MTP device. A filename and a set of metadata must be
  * given as input.
+ *
+ * This can potentially be used for sending in a stream of unknown
+ * length. Set <code>filedata->filesize = (uint64_t) -1</code> to
+ * make libmtp send some dummy length to the device and just
+ * accept a stream up to some device-determined max length. There
+ * is not guarantee this will work on all devices... Remember to
+ * set correct metadata for the track with
+ * <code>LIBMTP_Update_Track_Metadata()</code> afterwards if it's
+ * a music file. (This doesn't seem to work very well right now.)
+ *
  * @param device a pointer to the device to send the file to.
  * @param fd the filedescriptor for a local file which will be sent.
  * @param filedata a file strtuct to pass in info about the file.
@@ -2333,7 +2343,12 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
 
   new_file.Filename = filedata->filename;
-  new_file.ObjectCompressedSize = filedata->filesize;
+  if (filedata->filesize == (uint64_t) -1) {
+    // This is a stream. Set a dummy length...
+    new_file.ObjectCompressedSize = 1;
+  } else {
+    new_file.ObjectCompressedSize = filedata->filesize;
+  }
   new_file.ObjectFormat = map_libmtp_type_to_ptp_type(filedata->filetype);
 
   /* 
@@ -2390,18 +2405,30 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
-  // Callbacks
-  ptp_usb->callback_active = 1;
-  ptp_usb->current_transfer_total = filedata->filesize+12+12; // 12 = USB header size, two commands
-  ptp_usb->current_transfer_complete = 0;
-  ptp_usb->current_transfer_callback = callback;
-  ptp_usb->current_transfer_callback_data = data;
+  if (filedata->filesize != (uint64_t) -1) {
+    // Callbacks
+    ptp_usb->callback_active = 1;
+    ptp_usb->current_transfer_total = filedata->filesize+12+12; // 12 = USB header size, two commands
+    ptp_usb->current_transfer_complete = 0;
+    ptp_usb->current_transfer_callback = callback;
+    ptp_usb->current_transfer_callback_data = data;
+    
+    ret = ptp_sendobject_fromfd(params, fd, filedata->filesize);
   
-  ret = ptp_sendobject_fromfd(params, fd, filedata->filesize);
-  
-  ptp_usb->callback_active = 0;
-  ptp_usb->current_transfer_callback = NULL;
-  ptp_usb->current_transfer_callback_data = NULL;
+    ptp_usb->callback_active = 0;
+    ptp_usb->current_transfer_callback = NULL;
+    ptp_usb->current_transfer_callback_data = NULL;
+  } else {
+    // This is a stream..
+    ret = ptp_sendobject_fromfd(params, fd, 0xFFFFFFFFU);
+    if (ret == PTP_ERROR_IO) {
+      // That's expected. The stream ends, simply...
+      ret = PTP_RC_OK;
+    } else {
+      printf("LIBMTP_Send_File_From_File_Descriptor: Error while sending stream.\n");
+      printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    }
+  }
 
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
@@ -3259,8 +3286,9 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
     new_pl.Filename = fname;
   }
 
-  // Means size = -1, probably N/A
-  // new_pl.ObjectCompressedSize = 0xFFFFFFFFU; <- DOES NOT WORK!
+  // Playlists created on device have size (uint32_t) -1 = 0xFFFFFFFFU, but setting:
+  // new_pl.ObjectCompressedSize = 0; <- DOES NOT WORK! (return PTP_RC_GeneralError)
+  // new_pl.ObjectCompressedSize = (uint32_t) -1; <- DOES NOT WORK! (return PTP_RC_MTP_Object_Too_Large)
   new_pl.ObjectCompressedSize = 1;
   new_pl.ObjectFormat = PTP_OFC_MTP_AbstractAudioVideoPlaylist;
   
@@ -3274,8 +3302,8 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   }
   
   /*
-   * TODO: determine if we really have to send this "blank" data or if we can
-   *       just pass in an object of size -1 as info. (Failed when I tried it!)
+   * We have to send this one blank data byte.
+   * If we don't, the handle will not be created and thus there is no playlist.
    */
   data[0] = '\0';
   data[1] = '\0';
@@ -3283,6 +3311,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
     printf("LIBMTP_New_Playlist(): Could not send blank object data\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
 
@@ -3298,6 +3327,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
     ret = ptp_mtp_setobjectreferences (params, metadata->playlist_id, metadata->tracks, metadata->no_tracks);
     if (ret != PTP_RC_OK) {
       printf("LIBMTP_New_Playlist(): could not add tracks as object references\n");
+      printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
       return -1;
     }
   }

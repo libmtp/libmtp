@@ -1,6 +1,5 @@
 bin_PROGRAMS=detect tracks files getfile sendtr delfile hotplug \
-	folders newfolder trexist sendfile playlists getplaylist \
-	refactortest
+	folders newfolder trexist sendfile playlists getplaylist
 
 detect_SOURCES=detect.c common.h
 tracks_SOURCES=tracks.c common.h
@@ -15,7 +14,6 @@ newfolder_SOURCES=newfolder.c common.h
 trexist_SOURCES=trexist.c common.h
 playlists_SOURCES=playlists.c common.h
 getplaylist_SOURCES=getplaylist.c common.h
-refactortest_SOURCES=refactortest.c common.h
 
 AM_CFLAGS=-I$(top_builddir)/src
 LDADD=../src/libmtp.la

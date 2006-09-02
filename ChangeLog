@@ -1,6 +1,11 @@
 2006-09-02  Linus Walleij <triad@df.lth.se>
 
-	* src/libmtp.c: documentation fixes.
+	* src/libmtp.c: add some code to have 
+	  LIBMTP_Send_File_From_File_Descriptor() accept a stream
+	  if size is set to (uint64_t) -1, plus documentation fixes.
+	  I don't think the streaming code will work but whoever want
+	  to experiment with it has a place to start.
+	* examples/refactortest.c: removed. Who uses this?
 
 2006-08-30  Linus Walleij <triad@df.lth.se>
 
