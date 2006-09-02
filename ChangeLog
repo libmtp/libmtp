@@ -1,3 +1,7 @@
+2006-09-02  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: documentation fixes.
+
 2006-08-30  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: version bump.

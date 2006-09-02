@@ -2097,7 +2097,11 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
  * @param parenthandle the parent (e.g. folder) to store this file
- *             in. Pass in 0 to put the file in the root directory.
+ *             in. Since some devices are a bit picky about where files
+ *             are placed, a default folder will be chosen if libmtp
+ *             has detected one for the current filetype and this
+ *             parameter is set to 0. If this is 0 and no default folder
+ *             can be found, the file will be stored in the root folder.
  * @return 0 if the transfer was successful, any other value means 
  *           failure.
  * @see LIBMTP_Send_Track_From_File_Descriptor()
@@ -2151,7 +2155,11 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
  * @param parenthandle the parent (e.g. folder) to store this file
- *             in. Pass in 0 to put the file in the root directory.
+ *             in. Since some devices are a bit picky about where files
+ *             are placed, a default folder will be chosen if libmtp
+ *             has detected one for the current filetype and this
+ *             parameter is set to 0. If this is 0 and no default folder
+ *             can be found, the file will be stored in the root folder.
  * @return 0 if the transfer was successful, any other value means 
  *           failure.
  * @see LIBMTP_Send_Track_From_File()
@@ -2245,7 +2253,11 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
  * @param parenthandle the parent (e.g. folder) to store this file
- *        in. Pass in 0 to put the file in the root directory.
+ *        in. Since some devices are a bit picky about where files
+ *        are placed, a default folder will be chosen if libmtp
+ *        has detected one for the current filetype and this
+ *        parameter is set to 0. If this is 0 and no default folder
+ *        can be found, the file will be stored in the root folder.
  * @return 0 if the transfer was successful, any other value means 
  *           failure.
  * @see LIBMTP_Send_File_From_File_Descriptor()
@@ -2298,7 +2310,11 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
  * @param parenthandle the parent (e.g. folder) to store this file
- *        in. Pass in 0 to put the file in the root directory.
+ *        in. Since some devices are a bit picky about where files
+ *        are placed, a default folder will be chosen if libmtp
+ *        has detected one for the current filetype and this
+ *        parameter is set to 0. If this is 0 and no default folder
+ *        can be found, the file will be stored in the root folder.
  * @return 0 if the transfer was successful, any other value means 
  *           failure.
  * @see LIBMTP_Send_File_From_File()
@@ -2356,7 +2372,11 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	       of == PTP_OFC_MTP_WindowsImageFormat) {
       localph = device->default_picture_folder;
     } else if (of == PTP_OFC_MTP_vCalendar1 ||
-	       of == PTP_OFC_MTP_vCalendar2) {
+	       of == PTP_OFC_MTP_vCalendar2 ||
+	       of == PTP_OFC_MTP_UndefinedContact ||
+	       of == PTP_OFC_MTP_vCard2 ||
+	       of == PTP_OFC_MTP_vCard3 ||
+	       of == PTP_OFC_MTP_UndefinedCalendarItem) {
       localph = device->default_organizer_folder;
     }
   }
