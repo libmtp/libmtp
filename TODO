@@ -1,8 +1,18 @@
 TODO file:
 ----------
 
+* SPEED: USB block size (libusb-glue.c) increase to good size.
+
+* SPEED: File chunk size (ptp.c) increase to good size.
+
+* SPEED: Cache the supported object properties at first read/startup.
+
+* SPEED: use the enhanced functions to get all props for one object
+  in a single go!
+
 * Make abstract playlists really become size -1 when created as 
   the ones created on the device instead of the current 1 byte size.
+  (Is this even possible?)
 
 * Support abstract MTP album (0xBA03) just like playlists. Too
   bad that Creative Zen Micro do not support them, they group the
