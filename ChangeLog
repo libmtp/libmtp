@@ -1,3 +1,8 @@
+2006-09-04  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: bug in streaming code, use defined USB_BULK_HDR_SIZE
+	  instead of magic values.
+
 2006-09-02  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: add some code to have 
