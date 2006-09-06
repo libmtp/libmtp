@@ -331,7 +331,7 @@ void dump_usbinfo(PTP_USB *ptp_usb)
 
 
 // Based on same function on library.c in libgphoto2
-#define CONTEXT_BLOCK_SIZE	100000
+#define CONTEXT_BLOCK_SIZE	0x100000
 static short
 ptp_read_func (unsigned char *bytes, unsigned int size, void *data, unsigned int *readbytes)
 {
@@ -344,15 +344,15 @@ ptp_read_func (unsigned char *bytes, unsigned int size, void *data, unsigned int
    */
   while (curread < size) {
     toread = size - curread;
-    if (toread > 4096)
-      toread = 4096;
+    if (toread > CONTEXT_BLOCK_SIZE)
+      toread = CONTEXT_BLOCK_SIZE;
     
     result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep,(char *)(bytes+curread), toread, ptpcam_usb_timeout);
     if (result == 0) {
       result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep,(char *)(bytes+curread), toread, ptpcam_usb_timeout);
     }
     if (result < 0)
-      break;
+      return PTP_ERROR_IO;
     curread += result;
     if (result < toread) /* short reads are common */
       break;
@@ -398,11 +398,11 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
    */
   while (curwrite < size) {
     towrite = size-curwrite;
-    if (towrite > 4096)
-      towrite = 4096;
+    if (towrite > CONTEXT_BLOCK_SIZE)
+      towrite = CONTEXT_BLOCK_SIZE;
     result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)(bytes+curwrite),towrite,ptpcam_usb_timeout);
     if (result < 0)
-      break;
+      return PTP_ERROR_IO;
     curwrite += result;
     if (result < towrite) /* short writes happen */
       break;

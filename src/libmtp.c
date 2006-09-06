@@ -741,6 +741,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   uint16_t ret;
   uint32_t i;
   LIBMTP_mtpdevice_t *tmpdevice;
+	uint8_t remaining_directories;
 
   // Allocate a parameter block
   params = (PTPParams *) malloc(sizeof(PTPParams));
@@ -824,7 +825,12 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
    * the device which speeds up later operations.
    */
   flush_handles(tmpdevice);
-  for (i = 0; i < params->handles.n; i++) {
+	/*
+	 * Remaining directories to get the handles to.
+	 * We can stop when done this to save time
+	*/
+	remaining_directories = 6;
+  for (i = 0; i < params->handles.n && remaining_directories > 0; i++) {
     PTPObjectInfo oi;
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
       // Ignore non-folders
@@ -832,21 +838,27 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 	continue;
       if (!strcmp(oi.Filename, "Music")) {
 	tmpdevice->default_music_folder = params->handles.Handler[i];
+  remaining_directories--;
 	continue;
       } else if (!strcmp(oi.Filename, "My Playlists")) {
 	tmpdevice->default_playlist_folder = params->handles.Handler[i];
+	remaining_directories--;
 	continue;
       } else if (!strcmp(oi.Filename, "Pictures")) {
 	tmpdevice->default_picture_folder = params->handles.Handler[i];
+	remaining_directories--;
 	continue;
       } else if (!strcmp(oi.Filename, "Video")) {
 	tmpdevice->default_video_folder = params->handles.Handler[i];
+	remaining_directories--;
 	continue;
       } else if (!strcmp(oi.Filename, "My Organizer")) {
 	tmpdevice->default_organizer_folder = params->handles.Handler[i];
+	remaining_directories--;
 	continue;
       } else if (!strcmp(oi.Filename, "ZENcast")) {
 	tmpdevice->default_zencast_folder = params->handles.Handler[i];
+	remaining_directories--;
 	continue;
       }
     } else {
@@ -2016,7 +2028,6 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
   ptp_usb->callback_active = 1;
   ptp_usb->current_transfer_total = oi.ObjectCompressedSize+
     PTP_USB_BULK_HDR_LEN+sizeof(uint32_t); // Request length, one parameter
-  
   ptp_usb->current_transfer_complete = 0;
   ptp_usb->current_transfer_callback = callback;
   ptp_usb->current_transfer_callback_data = data;
