@@ -1,3 +1,10 @@
+2006-09-06  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: fixed some endpoint size detection
+	  and sending special file sizes stuff. Real hairy bug...
+	  Also messed around a bit with the callbacks.
+	* src/libmtp.c: changes for callback size detection.
+
 2006-09-04  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: bug in streaming code, use defined USB_BULK_HDR_SIZE

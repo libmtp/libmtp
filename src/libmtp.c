@@ -2014,7 +2014,9 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
 
   // Callbacks
   ptp_usb->callback_active = 1;
-  ptp_usb->current_transfer_total = oi.ObjectCompressedSize+40; // 40???
+  ptp_usb->current_transfer_total = oi.ObjectCompressedSize+
+    PTP_USB_BULK_HDR_LEN+sizeof(uint32_t); // Request length, one parameter
+  
   ptp_usb->current_transfer_complete = 0;
   ptp_usb->current_transfer_callback = callback;
   ptp_usb->current_transfer_callback_data = data;
@@ -2207,7 +2209,9 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 
   // Callbacks
   ptp_usb->callback_active = 1;
-  ptp_usb->current_transfer_total = metadata->filesize+PTP_USB_BULK_HDR_LEN+PTP_USB_BULK_HDR_LEN;
+  // The callback will deactivate itself after this amount of data has been sent
+  // One BULK header for the request, one for the data phase. No parameters to the request.
+  ptp_usb->current_transfer_total = metadata->filesize+PTP_USB_BULK_HDR_LEN*2;
   ptp_usb->current_transfer_complete = 0;
   ptp_usb->current_transfer_callback = callback;
   ptp_usb->current_transfer_callback_data = data;
@@ -2408,7 +2412,9 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   if (filedata->filesize != (uint64_t) -1) {
     // Callbacks
     ptp_usb->callback_active = 1;
-    ptp_usb->current_transfer_total = filedata->filesize+PTP_USB_BULK_HDR_LEN+PTP_USB_BULK_HDR_LEN;
+    // The callback will deactivate itself after this amount of data has been sent
+    // One BULK header for the request, one for the data phase. No parameters to the request.
+    ptp_usb->current_transfer_total = filedata->filesize+PTP_USB_BULK_HDR_LEN*2;
     ptp_usb->current_transfer_complete = 0;
     ptp_usb->current_transfer_callback = callback;
     ptp_usb->current_transfer_callback_data = data;

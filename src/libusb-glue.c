@@ -322,9 +322,10 @@ void dump_usbinfo(PTP_USB *ptp_usb)
   printf("   bDeviceClass: %d\n", dev->descriptor.bDeviceClass);
   printf("   bDeviceSubClass: %d\n", dev->descriptor.bDeviceSubClass);
   printf("   bDeviceProtocol: %d\n", dev->descriptor.bDeviceProtocol);
-  printf("   bMaxPacketSize0: %d\n", dev->descriptor.bMaxPacketSize0);
   printf("   idVendor: %04x\n", dev->descriptor.idVendor);
   printf("   idProduct: %04x\n", dev->descriptor.idProduct);
+  printf("   IN endpoint maxpacket: %d bytes\n", ptp_usb->inep_maxpacket);
+  printf("   OUT endpoint maxpacket: %d bytes\n", ptp_usb->outep_maxpacket);
   // TODO: add in string dumps for iManufacturer, iProduct, iSerialnumber...
 }
 
@@ -360,6 +361,12 @@ ptp_read_func (unsigned char *bytes, unsigned int size, void *data, unsigned int
   // Increase counters, call callback
   if (ptp_usb->callback_active) {
     ptp_usb->current_transfer_complete += curread;
+    if (ptp_usb->current_transfer_complete > ptp_usb->current_transfer_total) {
+      // Fishy... but some commands have unpredictable lengths.
+      // send last update and disable callback.
+      ptp_usb->current_transfer_complete = ptp_usb->current_transfer_total;
+      ptp_usb->callback_active = 0;
+    }
     if (ptp_usb->current_transfer_callback != NULL) {
       (void) ptp_usb->current_transfer_callback(ptp_usb->current_transfer_complete,
 						ptp_usb->current_transfer_total,
@@ -383,8 +390,8 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
   int towrite = 0;
   int result = 0;
   int curwrite = 0;
-  struct usb_device *dev = usb_device(ptp_usb->handle);
-
+  
+  printf("Send packet, size %08x\n", size);
   /*
    * gp_port_write returns (in case of success) the number of bytes
    * written. Too large blocks (>5x MB) could timeout.
@@ -404,6 +411,12 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
   // Increase counters, call callback
   if (ptp_usb->callback_active) {
     ptp_usb->current_transfer_complete += curwrite;
+    if (ptp_usb->current_transfer_complete > ptp_usb->current_transfer_total) {
+      // Fishy... but some commands have unpredictable lengths.
+      // send last update and disable callback.
+      ptp_usb->current_transfer_complete = ptp_usb->current_transfer_total;
+      ptp_usb->callback_active = 0;
+    }
     if (ptp_usb->current_transfer_callback != NULL) {
       (void) ptp_usb->current_transfer_callback(ptp_usb->current_transfer_complete,
 						ptp_usb->current_transfer_total,
@@ -413,13 +426,28 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
   
   // If this is the last transfer (callbacks only active if this function called repeatedly with
   // new data, otherwise this is a single large transaction which ends here).
-  // -PTP_USB_BULK_HDR_LEN is for the following response command.
-  if (!ptp_usb->callback_active || 
-      ptp_usb->current_transfer_complete >= ptp_usb->current_transfer_total-PTP_USB_BULK_HDR_LEN) {
+  // a request and the bulk send header.
+  if (!ptp_usb->callback_active) {
     // Then terminate an even packet boundary write with a zero length packet
-    if ((size % dev->descriptor.bMaxPacketSize0) == 0) {
+    if ((size % ptp_usb->outep_maxpacket) == 0) {
       result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)"x",0,ptpcam_usb_timeout);
     }
+  } else if (ptp_usb->current_transfer_complete == ptp_usb->current_transfer_total) {
+    // This is the amount actually transfered in this large transaction.
+    uint64_t actual_xfer_size = ptp_usb->current_transfer_total - 2*PTP_USB_BULK_HDR_LEN;
+    
+    if ((actual_xfer_size % ptp_usb->outep_maxpacket) == 0) {
+      result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)"x",0,ptpcam_usb_timeout);
+      printf("Endpoint max packet size: %d bytes. Sent 0 packet terminator.\n", ptp_usb->outep_maxpacket);
+    }
+    // Set as complete and disable callback, just as good. 
+    // This also blocks callbacks from the following response command.
+    if (ptp_usb->current_transfer_callback != NULL) {
+      (void) ptp_usb->current_transfer_callback(ptp_usb->current_transfer_total, // Both total = 100%
+						ptp_usb->current_transfer_total, // Both total = 100%
+						ptp_usb->current_transfer_callback_data);
+    }
+    ptp_usb->callback_active = 0;
   }
 
   if (result < 0)
@@ -627,8 +655,8 @@ next_step:
   // Found a device, then assign endpoints...
   ep = dev->config->interface->altsetting->endpoint;
   n = dev->config->interface->altsetting->bNumEndpoints;
-  find_endpoints(dev, &(ptp_usb->inep), &(ptp_usb->inep_maxpacket),
-		 &(ptp_usb->outep), &(ptp_usb->outep_maxpacket), &(ptp_usb->intep));
+  find_endpoints(dev, &ptp_usb->inep, &ptp_usb->inep_maxpacket,
+		 &ptp_usb->outep, &ptp_usb->outep_maxpacket, &ptp_usb->intep);
   
   // printf("Init PTP USB...\n");
   if (init_ptp_usb(params, ptp_usb, dev) < 0) {
@@ -678,7 +706,7 @@ static void find_endpoints(struct usb_device *dev, int* inep, int* inep_maxpacke
       if ((ep[i].bEndpointAddress&USB_ENDPOINT_DIR_MASK)==0)
 	{
 	  *outep=ep[i].bEndpointAddress;
-	  *inep_maxpacket=ep[i].wMaxPacketSize;
+	  *outep_maxpacket=ep[i].wMaxPacketSize;
 	}
     } else if (ep[i].bmAttributes==USB_ENDPOINT_TYPE_INTERRUPT){
       if ((ep[i].bEndpointAddress&USB_ENDPOINT_DIR_MASK)==
