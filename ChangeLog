@@ -1,3 +1,11 @@
+2006-09-06  Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: changed packet sizes to improve
+	  transfer speeds.
+	* src/libmtp.c: changed packet sizes to improve transfer
+	  transfer speeds. Also stopped extra ptp_getobjectinfo
+	  calls when getting directories on connect.
+
 2006-09-06  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: fixed some endpoint size detection
