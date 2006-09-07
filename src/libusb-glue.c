@@ -59,100 +59,101 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   /*
    * Creative Technology
    */
-  { "Creative Zen Vision", 0x041e, 0x411f },
-  { "Creative Portable Media Center", 0x041e, 0x4123 },
-  { "Creative Zen Xtra (MTP mode)", 0x041e, 0x4128 },
-  { "Second generation Dell DJ", 0x041e, 0x412f },
-  { "Creative Zen Micro (MTP mode)", 0x041e, 0x4130 },
-  { "Creative Zen Touch (MTP mode)", 0x041e, 0x4131 },
-  { "Dell Pocket DJ (MTP mode)", 0x041e, 0x4132 },
-  { "Creative Zen Sleek (MTP mode)", 0x041e, 0x4137 },
-  { "Creative Zen MicroPhoto", 0x041e, 0x413c },
-  { "Creative Zen Sleek Photo", 0x041e, 0x413d },
-  { "Creative Zen Vision:M", 0x041e, 0x413e },
+  { "Creative Zen Vision", 0x041e, 0x411f, DEVICE_FLAG_NONE },
+  { "Creative Portable Media Center", 0x041e, 0x4123, DEVICE_FLAG_NONE },
+  { "Creative Zen Xtra (MTP mode)", 0x041e, 0x4128, DEVICE_FLAG_NONE },
+  { "Second generation Dell DJ", 0x041e, 0x412f, DEVICE_FLAG_NONE },
+  { "Creative Zen Micro (MTP mode)", 0x041e, 0x4130, DEVICE_FLAG_NONE },
+  { "Creative Zen Touch (MTP mode)", 0x041e, 0x4131, DEVICE_FLAG_NONE },
+  { "Dell Pocket DJ (MTP mode)", 0x041e, 0x4132, DEVICE_FLAG_NONE },
+  { "Creative Zen Sleek (MTP mode)", 0x041e, 0x4137, DEVICE_FLAG_NONE },
+  { "Creative Zen MicroPhoto", 0x041e, 0x413c, DEVICE_FLAG_NONE },
+  { "Creative Zen Sleek Photo", 0x041e, 0x413d, DEVICE_FLAG_NONE },
+  { "Creative Zen Vision:M", 0x041e, 0x413e, DEVICE_FLAG_NONE },
 
   /*
    * Samsung
+   * We suspect that more of these are dual mode.
    */
   // From libgphoto2
-  { "Samsung YH-820", 0x04e8, 0x502e },
+  { "Samsung YH-820", 0x04e8, 0x502e, DEVICE_FLAG_NONE },
   // Contributed by polux2001@users.sourceforge.net
-  { "Samsung YH-925", 0x04e8, 0x502f },
+  { "Samsung YH-925", 0x04e8, 0x502f, DEVICE_FLAG_NONE },
   // Contributed by anonymous person on SourceForge
-  { "Samsung YP-T7J", 0x04e8, 0x5047 },
+  { "Samsung YP-T7J", 0x04e8, 0x5047, DEVICE_FLAG_NONE },
   // Reported by cstrickler@gmail.com
-  { "Samsung YP-U2J (YP-U2JXB/XAA)", 0x04e8, 0x5054 },
+  { "Samsung YP-U2J (YP-U2JXB/XAA)", 0x04e8, 0x5054, DEVICE_FLAG_NONE },
   // Reported by Andrew Benson
-  { "Samsung YP-F2J", 0x04e8, 0x5057 },
+  { "Samsung YP-F2J", 0x04e8, 0x5057, DEVICE_FLAG_DUALMODE },
   // From a rouge .INF file
-  { "Samsung YH-999 Portable Media Center", 0x04e8, 0x5a0f },
+  { "Samsung YH-999 Portable Media Center", 0x04e8, 0x5a0f, DEVICE_FLAG_NONE },
 
   /*
    * Intel
    */
-  { "Intel Bandon Portable Media Center", 0x045e, 0x00c9 },
+  { "Intel Bandon Portable Media Center", 0x045e, 0x00c9, DEVICE_FLAG_NONE },
 
   /*
    * JVC
    */
   // From Mark Veinot
-  { "JVC Alneo XA-HD500", 0x04f1, 0x6105 },
+  { "JVC Alneo XA-HD500", 0x04f1, 0x6105, DEVICE_FLAG_NONE },
 
   /*
    * Philipps
    */
   // From libgphoto2 source
-  { "Philipps HDD6320", 0x0471, 0x01eb },
-  { "Philipps HDD6320 2", 0x0471, 0x014b },
+  { "Philipps HDD6320", 0x0471, 0x01eb, DEVICE_FLAG_NONE },
+  { "Philipps HDD6320 2", 0x0471, 0x014b, DEVICE_FLAG_NONE },
   // Anonymous SourceForge user
-  { "Philipps HDD1630/17", 0x0471, 0x014c },
+  { "Philipps HDD1630/17", 0x0471, 0x014c, DEVICE_FLAG_NONE },
 
   /*
    * SanDisk
    */
   // Reported by Brian Robison
-  { "SanDisk Sansa m240", 0x0781, 0x7400 },
+  { "SanDisk Sansa m240", 0x0781, 0x7400, DEVICE_FLAG_NONE },
   // Reported by tangent_@users.sourceforge.net
-  { "SanDisk Sansa c150", 0x0781, 0x7410 },
+  { "SanDisk Sansa c150", 0x0781, 0x7410, DEVICE_FLAG_NONE },
   // From libgphoto2 source
-  { "SanDisk Sansa e200", 0x0781, 0x7420 },
+  { "SanDisk Sansa e200", 0x0781, 0x7420, DEVICE_FLAG_NONE },
   // Reported by gonkflea@users.sourceforge.net
-  { "SanDisk Sansa e260", 0x0781, 0x7420 },
+  { "SanDisk Sansa e260", 0x0781, 0x7420, DEVICE_FLAG_NONE },
 
   /*
    * iRiver
    */
-  { "iRiver Portable Media Center", 0x1006, 0x4002 },
-  { "iRiver Portable Media Center", 0x1006, 0x4003 },
+  { "iRiver Portable Media Center", 0x1006, 0x4002, DEVICE_FLAG_NONE },
+  { "iRiver Portable Media Center", 0x1006, 0x4003, DEVICE_FLAG_NONE },
   // From libgphoto2 source
-  { "iRiver T10", 0x4102, 0x1113 },
-  { "iRiver T20 FM", 0x4102, 0x1114 },
-  { "iRiver U10", 0x4102, 0x1116 },
-  { "iRiver T10", 0x4102, 0x1117 },
-  { "iRiver T20", 0x4102, 0x1118 },
-  { "iRiver T30", 0x4102, 0x1119 },
+  { "iRiver T10", 0x4102, 0x1113, DEVICE_FLAG_NONE },
+  { "iRiver T20 FM", 0x4102, 0x1114, DEVICE_FLAG_NONE },
+  { "iRiver U10", 0x4102, 0x1116, DEVICE_FLAG_NONE },
+  { "iRiver T10", 0x4102, 0x1117, DEVICE_FLAG_NONE },
+  { "iRiver T20", 0x4102, 0x1118, DEVICE_FLAG_NONE },
+  { "iRiver T30", 0x4102, 0x1119, DEVICE_FLAG_NONE },
   // Reported by Adam Torgerson
-  { "iRiver Clix", 0x4102, 0x112a },
+  { "iRiver Clix", 0x4102, 0x112a, DEVICE_FLAG_NONE },
   // Reported by Scott Call
-  { "iRiver H10 20GB", 0x4102, 0x2101 },
-  { "iRiver H10", 0x4102, 0x2102 },
+  { "iRiver H10 20GB", 0x4102, 0x2101, DEVICE_FLAG_NONE },
+  { "iRiver H10", 0x4102, 0x2102, DEVICE_FLAG_NONE },
 
   /*
    * Dell
    */
-  { "Dell DJ Itty", 0x413c, 0x4500 },
+  { "Dell DJ Itty", 0x413c, 0x4500, DEVICE_FLAG_NONE },
   
   /*
    * Toshiba
    */
-  { "Toshiba Gigabeat MEGF-40", 0x0930, 0x0009 },
-  { "Toshiba Gigabeat", 0x0930, 0x000c },
+  { "Toshiba Gigabeat MEGF-40", 0x0930, 0x0009, DEVICE_FLAG_NONE },
+  { "Toshiba Gigabeat", 0x0930, 0x000c, DEVICE_FLAG_NONE },
 
   /*
    * Archos
    */
   // Reported by gudul1@users.sourceforge.net
-  { "Archos 104 (MTP mode)", 0x0e79, 0x120a }
+  { "Archos 104 (MTP mode)", 0x0e79, 0x120a, DEVICE_FLAG_NONE }
 };
 static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
 
@@ -326,6 +327,7 @@ void dump_usbinfo(PTP_USB *ptp_usb)
   printf("   idProduct: %04x\n", dev->descriptor.idProduct);
   printf("   IN endpoint maxpacket: %d bytes\n", ptp_usb->inep_maxpacket);
   printf("   OUT endpoint maxpacket: %d bytes\n", ptp_usb->outep_maxpacket);
+  printf("   Device flags: 0x%08x\n", ptp_usb->device_flags);
   // TODO: add in string dumps for iManufacturer, iProduct, iSerialnumber...
 }
 
@@ -391,7 +393,6 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
   int result = 0;
   int curwrite = 0;
   
-  printf("Send packet, size %08x\n", size);
   /*
    * gp_port_write returns (in case of success) the number of bytes
    * written. Too large blocks (>5x MB) could timeout.
@@ -438,7 +439,6 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
     
     if ((actual_xfer_size % ptp_usb->outep_maxpacket) == 0) {
       result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)"x",0,ptpcam_usb_timeout);
-      printf("Endpoint max packet size: %d bytes. Sent 0 packet terminator.\n", ptp_usb->outep_maxpacket);
     }
     // Set as complete and disable callback, just as good. 
     // This also blocks callbacks from the following response command.
@@ -597,6 +597,8 @@ uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *inte
   uint16_t ret=0;
   int n;
 
+  // Reset device flags
+  ptp_usb->device_flags = DEVICE_FLAG_NONE;
   // First try to locate the device using the extended
   // device descriptor.
   dev = probe_usb_bus_for_mtp_devices();
@@ -611,6 +613,7 @@ uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *inte
 	  dev->descriptor.idProduct == mtp_device->product_id ) {
 	printf("Autodetected device \"%s\" (VID=%04x,PID=%04x) is known.\n", 
 	       mtp_device->name, dev->descriptor.idVendor, dev->descriptor.idProduct);
+	ptp_usb->device_flags = mtp_device->device_flags;
 	break;
       }
     }
@@ -638,6 +641,7 @@ uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *inte
 	      dev->descriptor.idProduct == mtp_device->product_id ) {
 	    
 	    printf("Found non-autodetected device \"%s\" on USB bus...\n", mtp_device->name);
+	    ptp_usb->device_flags = mtp_device->device_flags;
             goto next_step;
 	    
 	  }
@@ -652,7 +656,7 @@ next_step:
     return PTP_CD_RC_NO_DEVICES;
   }
 
-  // Found a device, then assign endpoints...
+  // Found a device, then assign endpoints to ptp_usb...
   ep = dev->config->interface->altsetting->endpoint;
   n = dev->config->interface->altsetting->bNumEndpoints;
   find_endpoints(dev, &ptp_usb->inep, &ptp_usb->inep_maxpacket,

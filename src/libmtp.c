@@ -825,11 +825,11 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
    * the device which speeds up later operations.
    */
   flush_handles(tmpdevice);
-	/*
-	 * Remaining directories to get the handles to.
-	 * We can stop when done this to save time
-	*/
-	remaining_directories = 6;
+  /*
+   * Remaining directories to get the handles to.
+   * We can stop when done this to save time
+   */
+  remaining_directories = 6;
   for (i = 0; i < params->handles.n && remaining_directories > 0; i++) {
     PTPObjectInfo oi;
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
@@ -838,7 +838,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 	continue;
       if (!strcmp(oi.Filename, "Music")) {
 	tmpdevice->default_music_folder = params->handles.Handler[i];
-  remaining_directories--;
+	remaining_directories--;
 	continue;
       } else if (!strcmp(oi.Filename, "My Playlists")) {
 	tmpdevice->default_playlist_folder = params->handles.Handler[i];
@@ -1992,6 +1992,11 @@ int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id,
 /**
  * This gets a file off the device to a file identified
  * by a file descriptor.
+ *
+ * This function can potentially be used for streaming 
+ * files off the device for playback or broadcast for example, 
+ * by downloading the file into a stream sink e.g. a socket.
+ *
  * @param device a pointer to the device to get the file from.
  * @param id the file ID of the file to retrieve.
  * @param fd a local file descriptor to write the file to.

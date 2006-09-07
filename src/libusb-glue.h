@@ -14,7 +14,21 @@
 #define USB_BULK_WRITE usb_bulk_write
 
 /**
- * Internal USB struct (TODO: discard for device struct?)
+ * These flags are used to indicate if some or other
+ * device need special treatment. These should be possible
+ * to concatenate using logical OR so please use one bit per
+ * feature and lets pray we don't need more than 32 bits...
+ */
+#define DEVICE_FLAG_NONE 0x00000000
+/**
+ * This means the device supports both MTP and USB mass 
+ * storage by dynamically reconfiguring itself if it is not
+ * used with MTP before a certain timeout.
+ */
+#define DEVICE_FLAG_DUALMODE 0x00000001
+
+/**
+ * Internal USB struct.
  */
 typedef struct _PTP_USB PTP_USB;
 struct _PTP_USB {
@@ -31,6 +45,8 @@ struct _PTP_USB {
   uint64_t current_transfer_complete;
   LIBMTP_progressfunc_t current_transfer_callback;
   void const * current_transfer_callback_data;
+  /** Any special device flags, only used internally */
+  uint32_t device_flags;
 };
 
 int get_device_list(LIBMTP_device_entry_t ** const devices, int * const numdevs);

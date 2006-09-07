@@ -1,7 +1,14 @@
 TODO file:
 ----------
 
-* SPEED: USB block size (libusb-glue.c) increase to good size.
+* Add a callback to the track and file scanning functions and 
+  bump library interface.
+
+* Modify LIBMTP_device_entry_struct to contain a field for "flags"
+  which can be used to identify different special device 
+  characteristics (bugs...) on certain devices. Also add "flags"
+  to device struct, so that it remains easily accessible for the
+  session, and bump library interface.
 
 * SPEED: File chunk size (ptp.c) increase to good size.
 

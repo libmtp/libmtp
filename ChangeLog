@@ -1,3 +1,14 @@
+2006-09-07  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.h: added device flags so we can make
+	  the code behave differently on certain devices.
+	* src/libusb-glue.c: dito, plus removed some debug prints.
+	* src/libmtp.c: docs.
+	* src/libmtp.h.in: added device_flags to device list struct.
+	* src/Makefile.am: bumped to compatible library interface.
+	* configure.ac: bump version to 0.0.18 (0.0.17 released
+	  yesterday).
+
 2006-09-06  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: changed packet sizes to improve

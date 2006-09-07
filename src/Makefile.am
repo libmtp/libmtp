@@ -30,8 +30,8 @@ EXTRA_DIST=libmtp.h.in libmtp.sym ptp-pack.c
 #  REVISION is set to 0, otherwise REVISION is incremented.
 # ---------------------------------------------------------------------------
 CURRENT=3
-REVISION=0
-AGE=0
+REVISION=1
+AGE=1
 SOVERSION=$(CURRENT):$(REVISION):$(AGE)
 libmtp_la_LDFLAGS=@LDFLAGS@ -version-info $(SOVERSION)
 
