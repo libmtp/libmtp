@@ -224,16 +224,12 @@ static struct usb_device *probe_usb_bus_for_mtp_devices(void)
 	usb_close(devh);
 	continue;
       }
-
-      if (ret > 0) {
-	// printf("Device: VID %04x/PID %04x: responds to special descriptor call...\n",
-	//       dev->descriptor.idVendor,
-	//       dev->descriptor.idProduct);
-	// data_dump_ascii (stdout, buf, ret, 0);
-      }
-
+      
+      // It is atleast 10 bytes...
       if (!((buf[2] == 'M') && (buf[4]=='S') && (buf[6]=='F') && (buf[8]=='T'))) {
-	// printf("This is not a Microsoft MTP descriptor...\n");
+	printf("This is not a Microsoft MTP descriptor...\n");
+	printf("Device response to read device property 0xee:\n");
+	data_dump_ascii (stdout, buf, ret, 0);
 	usb_close(devh);
 	continue;
       }
@@ -244,13 +240,21 @@ static struct usb_device *probe_usb_bus_for_mtp_devices(void)
       if (ret == -1) {
 	//printf("Decice could not respond to control message 1.\n");
 	usb_close(devh);
-	// Return the device anyway.
-	return dev;
+	continue;
       }
       
-      if (ret > 0) {
-	//printf("Device response to control message 1:\n");
-	//data_dump_ascii (stdout, buf, ret, 0);
+      if (ret > 0x15) {
+	if ((buf[0x12] != 'M') || (buf[0x13] != 'T') || (buf[0x14] != 'P')) {
+	  printf("The device has a Microsoft device descriptor, but it's not MTP.\n");
+	  printf("This is not an MTP device. Presumable it is USB mass storage\n");
+	  printf("with some additional Janus (DRM) support.\n");
+	  printf("Device response to control message 1:\n");
+	  data_dump_ascii (stdout, buf, ret, 0);
+	  continue;
+	}
+      } else {
+	// Not MTP or broken
+	continue;
       }
 
       ret = usb_control_msg (devh, USB_ENDPOINT_IN|USB_RECIP_DEVICE|USB_TYPE_VENDOR, 
@@ -258,15 +262,20 @@ static struct usb_device *probe_usb_bus_for_mtp_devices(void)
       if (ret == -1) {
 	//printf("Device could not respond to control message 2.\n");
 	usb_close(devh);
-	// Return the device anyway.
+	// Return the device anyway, it said previously it was MTP, right?
 	return dev;
       }
       
-      if (ret > 0) {
-	//printf("Device response to control message 2:\n");
-	//data_dump_ascii (stdout, buf, ret, 0);
+      if (ret > 0x15) {
+	if ((buf[0x12] != 'M') || (buf[0x13] != 'T') || (buf[0x14] != 'P')) {
+	  printf("This device does not respond with MTP characteristics on\n");
+	  printf("the second device property read (0x05), but will be regarded\n");
+	  printf("as MTP anyway.\n");
+	  printf("Device response to control message 2:\n");
+	  data_dump_ascii (stdout, buf, ret, 0);
+	}
       }
-
+      
       usb_close(devh);
       // We can return the device here, it will be the first. 
       // If it was not MTP, the loop continues before it reaches this point.

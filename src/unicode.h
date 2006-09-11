@@ -2,9 +2,6 @@
 #define __MTP__UNICODE__H
 
 #include "config.h"
-#ifdef HAVE_ICONV_H
-#define USE_ICONV
-#endif
 
 void unicode_init(LIBMTP_mtpdevice_t*);
 void unicode_deinit(LIBMTP_mtpdevice_t*);

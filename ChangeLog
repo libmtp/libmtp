@@ -1,3 +1,19 @@
+2006-09-11  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: messed around a bit with device descriptor
+	  detection so as to bring closer to libgphoto2 detection algorithm.
+	  I've seen things that might be false positives, possibly USB mass
+	  storage devices with additional MSFT descriptors to indicate they
+	  have Janus DRM. 
+	* src/libmtp.c: use UCS-2-INTERNAL if we're not on glibc. glibc
+	  knows that UCS-2 is in machine endianness but Darwin and *BSD does
+	  not. Detect C library and switch accordingly.
+	* src/unicode.c: retire old unicode code only keep things we cannot
+	  live without. Remove the own internal UCS-2 conversion engine and
+	  the internal iconv() engine and use the one already available in
+	  PTPParams.
+	* src/unicode.h: dito.
+
 2006-09-07  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.h: added device flags so we can make

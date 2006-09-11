@@ -24,6 +24,18 @@
 #include "libusb-glue.h"
 
 /*
+ * On MacOS (Darwin) and *BSD we're not using glibc. glibc knows
+ * that UCS-2 is to be in the local machine endianness, whereas
+ * the sysV-like glibc:s out there does not. So we construct this
+ * macro to get things right.
+ */
+#ifndef __GLIBC__
+# define UCS_2_INTERNAL "UCS-2-INTERNAL"
+#else
+# define UCS_2_INTERNAL "UCS-2"
+#endif
+
+/*
  * This is a mapping between libmtp internal MTP filetypes and
  * the libgphoto2/PTP equivalent defines. We need this because
  * otherwise the libmtp.h device has to be dependent on ptp.h
@@ -745,9 +757,10 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 
   // Allocate a parameter block
   params = (PTPParams *) malloc(sizeof(PTPParams));
-  params->cd_locale_to_ucs2 = iconv_open("UCS-2", "UTF-8");
-  params->cd_ucs2_to_locale = iconv_open("UTF-8", "UCS-2");
+  params->cd_locale_to_ucs2 = iconv_open(UCS_2_INTERNAL, "UTF-8");
+  params->cd_ucs2_to_locale = iconv_open("UTF-8", UCS_2_INTERNAL);
   if (params->cd_locale_to_ucs2 == (iconv_t) -1 || params->cd_ucs2_to_locale == (iconv_t) -1) {
+    printf("LIBMTP panic: could not open iconv() converters to/from UCS-2!\n");
     return NULL;
   }
       
@@ -815,9 +828,6 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   tmpdevice->default_video_folder = 0;
   tmpdevice->default_organizer_folder = 0;
   tmpdevice->default_zencast_folder = 0;
-
-  // Initialize iconv() converters...
-  unicode_init(tmpdevice);
 
   /*
    * Then get the handles and try to locate the default folders.
@@ -899,7 +909,6 @@ void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
   // Free iconv() converters...
   iconv_close(params->cd_locale_to_ucs2);
   iconv_close(params->cd_ucs2_to_locale);
-  unicode_deinit(device);
   free(device);
 }
 
