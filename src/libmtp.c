@@ -846,6 +846,8 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
       // Ignore non-folders
       if ( oi.ObjectFormat != PTP_OFC_Association )
 	continue;
+      if ( oi.Filename == NULL)
+	continue;
       if (!strcmp(oi.Filename, "Music")) {
 	tmpdevice->default_music_folder = params->handles.Handler[i];
 	remaining_directories--;
