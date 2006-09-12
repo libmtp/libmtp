@@ -1,3 +1,10 @@
+2006-09-12  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: bump release. Released 0.0.18 yesterday.
+	* src/libmtp.c: do not try to read battery max level unless
+	  the device supports it. (Bug occurred on Toshiba Gigabeat 
+	  P10.)
+
 2006-09-11  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: messed around a bit with device descriptor

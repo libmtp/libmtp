@@ -754,7 +754,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   PTPStorageIDs storageIDs;
   unsigned storageID = 0;
   PTPDevicePropDesc dpd;
-  uint8_t batteryLevelMax = 100;
+  uint8_t batteryLevelMax = 100; // Some default
   uint16_t ret;
   uint32_t i;
   LIBMTP_mtpdevice_t *tmpdevice;
@@ -808,15 +808,17 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   }
   
   // Get battery maximum level
-  if (ptp_getdevicepropdesc(params, PTP_DPC_BatteryLevel, &dpd) != PTP_RC_OK) {
-    printf("LIBMTP_Get_First_Device(): Unable to retrieve battery max level.\n");
-    goto error_handler;
+  if (ptp_property_issupported(params, PTP_DPC_BatteryLevel)) {
+    if (ptp_getdevicepropdesc(params, PTP_DPC_BatteryLevel, &dpd) != PTP_RC_OK) {
+      printf("LIBMTP_Get_First_Device(): Unable to retrieve battery max level.\n");
+      goto error_handler;
+    }
+    // if is NULL, just leave as default
+    if (dpd.FORM.Range.MaximumValue.u8 != 0) {
+      batteryLevelMax = dpd.FORM.Range.MaximumValue.u8;
+    }
+    ptp_free_devicepropdesc(&dpd);
   }
-  // if is NULL, just leave as default
-  if (dpd.FORM.Range.MaximumValue.u8 != 0) {
-    batteryLevelMax = dpd.FORM.Range.MaximumValue.u8;
-  }
-  ptp_free_devicepropdesc(&dpd);
 
   // OK everything got this far, so it is time to create a device struct!
   tmpdevice = (LIBMTP_mtpdevice_t *) malloc(sizeof(LIBMTP_mtpdevice_t));
