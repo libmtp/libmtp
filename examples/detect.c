@@ -129,7 +129,8 @@ int main (int argc, char **argv)
     printf("   Battery level %d of %d (%d%%)\n",currbattlevel, maxbattlevel, 
 	   (int) ((float) currbattlevel/ (float) maxbattlevel * 100.0));
   } else {
-    printf("   Error getting battery info...\n");
+    // Silently ignore. Some devices does not support getting the 
+    // battery level.
   }
 
   ret = LIBMTP_Get_Supported_Filetypes(device, &filetypes, &filetypes_len);

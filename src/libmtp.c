@@ -1262,7 +1262,7 @@ int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *device, uint64_t * const total,
  *        current level of the battery if the call was successful.
  *        A value of 0 means that the device is on external power.
  * @return 0 if the storage info was successfully retrieved, any other
- *        value means failure. A typical cause of failure is that
+ *        means failure. A typical cause of failure is that
  *        the device does not support the battery level property.
  */
 int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device, 
