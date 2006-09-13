@@ -757,7 +757,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   PTPParams *params;
   PTP_USB *ptp_usb;
   PTPStorageIDs storageIDs;
-  unsigned storageID = 0;
+  uint32_t storageID = 0;
   PTPDevicePropDesc dpd;
   uint8_t batteryLevelMax = 100; // Some default
   uint16_t ret;
@@ -1311,7 +1311,7 @@ int LIBMTP_Format_Storage(LIBMTP_mtpdevice_t *device)
 {
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
-
+  
   if (!ptp_operation_issupported(params,PTP_OC_FormatStore)) {
     printf("LIBMTP_Format_Storage(): device cannot format storage\n");
     return -1;

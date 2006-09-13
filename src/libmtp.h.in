@@ -130,7 +130,7 @@ struct LIBMTP_mtpdevice_struct {
    */
   void *usbinfo;
   /** The storage ID for this device */
-  unsigned storage_id;
+  uint32_t storage_id;
   /** The maximum battery level for this device */
   uint8_t maximum_battery_level;
   /** Default music folder */
