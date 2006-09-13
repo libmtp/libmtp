@@ -6,6 +6,7 @@ delfile
 detect
 files
 folders
+format
 getfile
 hotplug
 newfolder

@@ -1,3 +1,8 @@
+2006-09-13  Linus Walleij <triad@df.lth.se>
+
+	* examples/format.c: formatting test program.
+	* examples.Makefile.am: added format.
+
 2006-09-13  Andy Kelk <andy@mopoke.co.uk>
 
 	* src/libmtp.h.in: added interface to format storage.
