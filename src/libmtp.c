@@ -621,6 +621,8 @@ int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
   propval.u32 = value;
   ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UINT32);
   if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Set_Object_U32(): could not set unsigned 32bit integer property.\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
   
@@ -650,6 +652,8 @@ int LIBMTP_Set_Object_U16(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
   propval.u16 = value;
   ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UINT16);
   if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Set_Object_U16(): could not set unsigned 16bit integer property.\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return 1;
   }
 
@@ -711,6 +715,7 @@ int LIBMTP_Set_Object_References(LIBMTP_mtpdevice_t *device, uint32_t const obje
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
     printf("LIBMTP_Set_Object_References: Could not set object references\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return 1;
   }
   
