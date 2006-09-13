@@ -1298,6 +1298,33 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device,
   return 0;
 }
 
+
+/**
+ * Formats device storage (if the device supports the operation).
+ * WARNING: This WILL delete all data from the device. Make sure you've
+ * got confirmation from the user BEFORE you call this function.
+ *
+ * @param device a pointer to the device to format.
+ * @return 0 on success, any other value means failure.
+ */
+int LIBMTP_Format_Storage(LIBMTP_mtpdevice_t *device)
+{
+  uint16_t ret;
+  PTPParams *params = (PTPParams *) device->params;
+
+  if (!ptp_operation_issupported(params,PTP_OC_FormatStore)) {
+    printf("LIBMTP_Format_Storage(): device cannot format storage\n");
+    return -1;
+  }
+  ret = ptp_formatstore(params, device->storage_id);
+  if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Format_Storage(): failed to format storage\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    return -1;
+  }
+  return 0;
+}
+
 /**
  * Helper function to extract a unicode property off a device.
  * This is the standard way of retrieveing unicode device

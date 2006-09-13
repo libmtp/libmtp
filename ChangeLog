@@ -1,3 +1,10 @@
+2006-09-13  Andy Kelk <andy@mopoke.co.uk>
+
+	* src/libmtp.h.in: added interface to format storage.
+	* src/libmtp.c: dito.
+	* src/ptp.c: dito.
+	* src/ptp.h: dito.
+
 2006-09-12  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bump release. Released 0.0.18 yesterday.

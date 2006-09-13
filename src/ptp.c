@@ -680,6 +680,30 @@ ptp_getstorageinfo (PTPParams* params, uint32_t storageid,
 }
 
 /**
+ * ptp_formatstore:
+ * params:	PTPParams*
+ *              storageid		- StorageID
+ *
+ * Formats the storage on the device.
+ *
+ * Return values: Some PTP_RC_* code.
+ **/
+uint16_t
+ptp_formatstore (PTPParams* params, uint32_t storageid)
+{
+	uint16_t ret;
+	PTPContainer ptp;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code=PTP_OC_FormatStore;
+	ptp.Param1=storageid;
+	ptp.Param2=PTP_FST_Undefined;
+	ptp.Nparam=2;
+	ret=ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
+	return ret;
+}
+
+/**
  * ptp_getobjecthandles:
  * params:	PTPParams*
  *		storage			- StorageID

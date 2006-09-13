@@ -254,6 +254,7 @@ int LIBMTP_Set_Syncpartner(LIBMTP_mtpdevice_t*, char const * const);
 int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *, uint64_t * const, 
 			uint64_t * const, char ** const storage_description, 
 			char ** const volume_label);
+int LIBMTP_Format_Storage(LIBMTP_mtpdevice_t *);
 int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *, 
 			    uint8_t * const, 
 			    uint8_t * const);
