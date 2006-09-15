@@ -70,6 +70,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Creative Zen MicroPhoto", 0x041e, 0x413c, DEVICE_FLAG_NONE },
   { "Creative Zen Sleek Photo", 0x041e, 0x413d, DEVICE_FLAG_NONE },
   { "Creative Zen Vision:M", 0x041e, 0x413e, DEVICE_FLAG_NONE },
+  // Reported by marazm@o2.pl
+  { "Creative Zen V", 0x041e, 0x4150, DEVICE_FLAG_NONE },
 
   /*
    * Samsung
