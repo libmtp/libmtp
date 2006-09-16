@@ -1,3 +1,8 @@
+2006-09-16  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: bump to 0.0.19 and release. There are some
+	  new devices as well.
+
 2006-09-13  Linus Walleij <triad@df.lth.se>
 
 	* examples/format.c: formatting test program.
