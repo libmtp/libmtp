@@ -44,48 +44,6 @@ int ucs2_strlen(uint16_t const * const unicstr)
 }
 
 /**
- * This routine returns the length in bytes that this
- * UCS-2 string would occupy if encoded as UTF-8
- *
- * @param unicstr the Unicode UCS-2 string to analyze
- * @return the number of bytes this string would occupy
- *         in UTF-8
- */
-static int ucs2utf8len(uint16_t const * const unicstr){
-  int length=0;
-  int i;
-  uint8_t *locstr = (uint8_t *) unicstr;
-  for(i = 0; (locstr[i] | locstr[i+1]) != '\0'; i+=2) {
-    if (locstr[i] == 0x00 && locstr[i+1] < 0x80)
-      length ++;
-    else if (locstr[i] < 0x08)
-      length += 2;
-    else
-      length += 3;
-  }
-  return length;
-}
-
-/** 
- * Create a new, allocated UCS-2 string that is a copy
- * of the parameter
- *
- * @param unicstr the UCS-2 string to copy
- * @return a newly allocated copy of the string
- */
-static uint16_t *ucs2_strdup(uint16_t const * const unicstr) {
-  int length = ucs2_strlen(unicstr);
-  uint8_t *data;
-  
-  data = (uint8_t *) malloc(length*2+2);
-  if ( data == NULL ) {
-    return NULL;
-  }
-  memcpy(data, unicstr, length*2+2);
-  return (uint16_t *) data;
-}
-
-/**
  * Converts a big-endian UTF-16 2-byte string
  * to a UTF-8 string. Actually just a UCS-2 internal conversion
  * routine that strips off the BOM if there is one.

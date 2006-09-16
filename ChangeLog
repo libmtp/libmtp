@@ -2,6 +2,7 @@
 
 	* configure.ac: bump to 0.0.19 and release. There are some
 	  new devices as well.
+	* src/unicode.c: retire unused code.
 
 2006-09-13  Linus Walleij <triad@df.lth.se>
 
