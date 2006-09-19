@@ -83,17 +83,30 @@ as a bug, patch or feature request on the Sourceforge
 bug tracker at our homepage.
 
 
-Calendar support:
------------------
+Calendar and contact support:
+-----------------------------
 
 The Creative Zen series can read VCALENDAR2 (.ics) files
-from programs with the following limitations/conditions:
+and VCard (.vcf) files from programs like for example
+Evolution with the following limitations/conditions: 
 
 - The file must be in DOS (CR/LF) format, use the unix2dos
   program to convert if needed
-- Repeat events do not seem to be supported, entries will
-  only appear once.
-- Files should be stored in the folder "My Organizer" when
-  sent to the device (this directory should be autodetected
+
+- Repeat events in calendar files do not seem to be supported, 
+  entries will only appear once.
+
+- Calendar (.ics) files should be stored in the folder "My Organizer" 
+  when sent to the device (this directory should be autodetected
   for use with calendar files, otherwise use the option 
-  -f "My Organizer" to sendfile for this)
+  -f "My Organizer" to sendfile for this) Apparently this file can
+  also contain tasklists.
+
+- Contact (.vcf) files should be stored in the folder "My Contacts"
+  when sent to the device. (-f "My Contacts")
+
+- Some devices are picky about the name of the calendar and
+  contact files. For example the Zen Microphoto wants:
+
+  Calendar: My Organizer/6651415.ics
+  Contacts: My Contacts/6651416.vcf
