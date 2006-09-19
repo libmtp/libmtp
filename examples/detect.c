@@ -157,7 +157,7 @@ int main (int argc, char **argv)
     free(devcert);
   }
 
-  // Try to get device info XML file...
+  // Try to get Media player device info XML file...
   files = LIBMTP_Get_Filelisting(device);
   if (files != NULL) {
     LIBMTP_file_t *file, *tmp;

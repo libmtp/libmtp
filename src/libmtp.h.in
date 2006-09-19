@@ -339,13 +339,13 @@ int LIBMTP_Update_Playlist(LIBMTP_mtpdevice_t *, LIBMTP_playlist_t const * const
  * @defgroup objects The object management API.
  * @{
  */
-char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *,const uint32_t, const uint32_t);
-uint32_t LIBMTP_Get_U32_From_Object(LIBMTP_mtpdevice_t *,const uint32_t, const uint32_t, const uint32_t);
-uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *,const uint32_t, const uint32_t, const uint16_t);
-int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *,const uint32_t,const uint32_t, 
+char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t);
+uint32_t LIBMTP_Get_U32_From_Object(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t, const uint32_t);
+uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t, const uint16_t);
+int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *,const uint32_t,const uint16_t, 
                              char const * const);
-int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *,const uint32_t, const uint32_t, const uint32_t);
-int LIBMTP_Set_Object_U16(LIBMTP_mtpdevice_t *,const uint32_t, const uint32_t, const uint16_t);
+int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t, const uint32_t);
+int LIBMTP_Set_Object_U16(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t, const uint16_t);
 int LIBMTP_Get_Object_References(LIBMTP_mtpdevice_t *, const uint32_t, uint32_t **, uint32_t *);
 int LIBMTP_Set_Object_References(LIBMTP_mtpdevice_t *, const uint32_t, uint32_t const * const, const uint32_t);
 LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *, uint32_t *, uint32_t, uint32_t *, uint32_t);

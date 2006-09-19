@@ -1,3 +1,9 @@
+2006-09-19  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: fixed attribute IDs to be 16bit.
+	* src/libmtp.c: dito.
+	* examples/sendfile.c: support vcard3.
+
 2006-09-16  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bump to 0.0.19 and release. There are some

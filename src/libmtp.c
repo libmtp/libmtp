@@ -481,7 +481,7 @@ void LIBMTP_Init(void)
  *         use.
  */
 char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const object_id, 
-				    uint32_t const attribute_id)
+				    uint16_t const attribute_id)
 {
   PTPPropertyValue propval;
   char *retstring = NULL;
@@ -513,7 +513,7 @@ char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const o
  * @return the value
  */
 uint32_t LIBMTP_Get_U32_From_Object(LIBMTP_mtpdevice_t *device,uint32_t const object_id, 
-				    uint32_t const attribute_id, uint32_t const value_default)
+				    uint16_t const attribute_id, uint32_t const value_default)
 {
   PTPPropertyValue propval;
   uint32_t retval = value_default;
@@ -545,7 +545,7 @@ uint32_t LIBMTP_Get_U32_From_Object(LIBMTP_mtpdevice_t *device,uint32_t const ob
  * @return a value
  */
 uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const object_id, 
-				    uint32_t const attribute_id, uint16_t const value_default)
+				    uint16_t const attribute_id, uint16_t const value_default)
 {
   PTPPropertyValue propval;
   uint16_t retval = value_default;
@@ -577,7 +577,7 @@ uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const o
  * @return 0 on success, any other value means failure
  */
 int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t const object_id, 
-			     uint32_t const attribute_id, char const * const string)
+			     uint16_t const attribute_id, char const * const string)
 {
   PTPPropertyValue propval;
   PTPParams *params = (PTPParams *) device->params;
@@ -608,7 +608,7 @@ int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t const object_i
  * @return 0 on success, any other value means failure
  */
 int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *device, uint32_t const object_id, 
-			  uint32_t const attribute_id, uint32_t const value)
+			  uint16_t const attribute_id, uint32_t const value)
 {
   PTPPropertyValue propval;
   PTPParams *params = (PTPParams *) device->params;
@@ -639,7 +639,7 @@ int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
  * @return 0 on success, any other value means failure
  */
 int LIBMTP_Set_Object_U16(LIBMTP_mtpdevice_t *device, uint32_t const object_id, 
-			  uint32_t const attribute_id, uint16_t const value)
+			  uint16_t const attribute_id, uint16_t const value)
 {
   PTPPropertyValue propval;
   PTPParams *params = (PTPParams *) device->params;

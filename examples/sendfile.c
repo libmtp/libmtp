@@ -229,6 +229,8 @@ int main(int argc, char **argv)
     genfile->filetype = LIBMTP_FILETYPE_WINDOWSIMAGEFORMAT;
   } else if (!strcasecmp(ptype,"ics")) {
     genfile->filetype = LIBMTP_FILETYPE_VCALENDAR2;
+  } else if (!strcasecmp(ptype,"vcf")) {
+    genfile->filetype = LIBMTP_FILETYPE_VCARD3;
   } else if (!strcasecmp(ptype,"exe") || !strcasecmp(ptype,"com") || 
 	     !strcasecmp(ptype,"bat") || !strcasecmp(ptype,"dll") || 
 	     !strcasecmp(ptype,"sys")) {
