@@ -956,6 +956,92 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
   return;
 }
 
+
+struct {
+  uint16_t opcode;
+  const char *name;
+} ptp_opcode_trans[] = {
+  {PTP_OC_Undefined,"Undefined operation"},
+  {PTP_OC_GetDeviceInfo,"Get device info"},
+  {PTP_OC_OpenSession,"Open session"},
+  {PTP_OC_CloseSession,"Close session"},
+  {PTP_OC_GetStorageIDs,"Get storage IDs"},
+  {PTP_OC_GetStorageInfo,"Get storage info"},
+  {PTP_OC_GetNumObjects,"Get number of objects"},
+  {PTP_OC_GetObjectHandles,"Get object handles"},
+  {PTP_OC_GetObjectInfo,"Get object info"},
+  {PTP_OC_GetObject,"Get object"},
+  {PTP_OC_GetThumb,"Get thumbnail"},
+  {PTP_OC_DeleteObject,"Delete object"},
+  {PTP_OC_SendObjectInfo,"Send object info"},
+  {PTP_OC_SendObject,"Send object"},
+  {PTP_OC_InitiateCapture,"Initiate capture"},
+  {PTP_OC_FormatStore,"Format storage"},
+  {PTP_OC_ResetDevice,"Reset device"},
+  {PTP_OC_SelfTest,"Self test device"},
+  {PTP_OC_SetObjectProtection,"Set object protection"},
+  {PTP_OC_PowerDown,"Power down device"},
+  {PTP_OC_GetDevicePropDesc,"Get device property description"},
+  {PTP_OC_GetDevicePropValue,"Get device property value"},
+  {PTP_OC_SetDevicePropValue,"Set device property value"},
+  {PTP_OC_ResetDevicePropValue,"Reset device property value"},
+  {PTP_OC_TerminateOpenCapture,"Terminate open capture"},
+  {PTP_OC_MoveObject,"Move object"},
+  {PTP_OC_CopyObject,"Copy object"},
+  {PTP_OC_GetPartialObject,"Get partial object"},
+  {PTP_OC_InitiateOpenCapture,"Initiate open capture"}
+};
+
+struct {
+  uint16_t opcode;
+  const char *name;
+} ptp_opcode_mtp_trans[] = {
+  {PTP_OC_MTP_GetObjectPropsSupported,"Get object properties supported"},
+  {PTP_OC_MTP_GetObjectPropDesc,"Get object property description"},
+  {PTP_OC_MTP_GetObjectPropValue,"Get object property value"},
+  {PTP_OC_MTP_SetObjectPropValue,"Set object property value"},
+  {PTP_OC_MTP_GetObjPropList,"Get object property list"},
+  {PTP_OC_MTP_SetObjPropList,"Set object property list"},
+  {PTP_OC_MTP_GetInterdependendPropdesc,"Get interdependent property description"},
+  {PTP_OC_MTP_SendObjectPropList,"Send object property list"},
+  {PTP_OC_MTP_GetObjectReferences,"Get object references"},
+  {PTP_OC_MTP_SetObjectReferences,"Set object references"},
+  {PTP_OC_MTP_UpdateDeviceFirmware,"Update device firmware"},
+  {PTP_OC_MTP_Skip,"Skip to next position in playlist"},
+  {0x9101,"Get secure time challenge"},
+  {0x9102,"Get secure time response"},
+  {0x9103,"Set license response"},
+  {0x9104,"Get sync list"},
+  {0x9105,"Send meter challenge query"},
+  {0x9106,"Get meter challenge"},
+  {0x9107,"Set meter response"},
+  {0x9108,"Clean data store"},
+  {0x9109,"Get license state"}
+};
+
+static int
+ptp_render_opcode(PTPParams* params, uint16_t opcode, int spaceleft, char *txt)
+{
+  int i;
+  
+  if (!(opcode & 0x8000)) {
+    for (i=0;i<sizeof(ptp_opcode_trans)/sizeof(ptp_opcode_trans[0]);i++)
+      if (opcode == ptp_opcode_trans[i].opcode)
+	return snprintf(txt, spaceleft,ptp_opcode_trans[i].name);
+  } else {
+    switch (params->deviceinfo.VendorExtensionID) {
+    case PTP_VENDOR_MICROSOFT:
+      for (i=0;i<sizeof(ptp_opcode_mtp_trans)/sizeof(ptp_opcode_mtp_trans[0]);i++)
+	if (opcode == ptp_opcode_mtp_trans[i].opcode)
+	  return snprintf(txt, spaceleft,ptp_opcode_mtp_trans[i].name);
+      break;
+    default:break;
+    }
+  }
+  return snprintf (txt, spaceleft,"Unknown(%04x)", opcode);
+}
+
+
 /**
  * This function dumps out a large chunk of textual information
  * provided from the PTP protocol and additionally some extra
@@ -980,7 +1066,10 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
   printf("   Vendor extension description: %s\n", params->deviceinfo.VendorExtensionDesc);
   printf("Supported operations:\n");
   for (i=0;i<params->deviceinfo.OperationsSupported_len;i++) {
-    printf("   0x%04x\n", params->deviceinfo.OperationsSupported[i]);
+    char txt[256];
+
+    (void) ptp_render_opcode (params, params->deviceinfo.OperationsSupported[i], sizeof(txt), txt);
+    printf("   %04x: %s\n", params->deviceinfo.OperationsSupported[i], txt);
   }
   printf("Events supported:\n");
   if (params->deviceinfo.EventsSupported_len == 0) {
