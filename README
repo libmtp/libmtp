@@ -108,5 +108,15 @@ Evolution with the following limitations/conditions:
 - Some devices are picky about the name of the calendar and
   contact files. For example the Zen Microphoto wants:
 
-  Calendar: My Organizer/6651415.ics
-  Contacts: My Contacts/6651416.vcf
+  Calendar: My Organizer/6651416.ics
+  Contacts: My Organizer/6651416.vcf
+
+
+Syncing in with Evolution and Creative Devices
+----------------------------------------------
+
+Evolution can easily export .ics an .vcf files, but you currently
+need some command-line hacking to get you stuff copied over in
+one direction host -> device. The examples/ directory contains a script
+created for the Creative Zen Microphoto by Nicolas Tetreault.
+

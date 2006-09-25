@@ -1,3 +1,9 @@
+2006-09-25  Linus Walleij <triad@df.lth.se>
+
+	* examples/evolution-sync.sh: example script to illustrate
+	  to to transfer calendar, task and contact information
+	  to a device supporting this.
+
 2006-09-19  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: fixed attribute IDs to be 16bit.

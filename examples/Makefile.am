@@ -19,3 +19,4 @@ format_SOURCES=format.c common.h
 
 AM_CFLAGS=-I$(top_builddir)/src
 LDADD=../src/libmtp.la
+EXTRA_DIST=evolution-sync.sh
