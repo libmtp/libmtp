@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Example evolution synchronization script by Nicolas Tetreault,
+# modified by Linus Walleij.
+
 # Define target files
 SYNC_HOME=$HOME/MTP_device_sync
 
