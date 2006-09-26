@@ -1,3 +1,8 @@
+2006-09-26  Linus Walleij <triad@df.lth.se>
+
+	* libmtp.pc.in: require libusb instead of just linking it.
+	* configure.ac: bump release to 0.0.20 and release.
+
 2006-09-25  Linus Walleij <triad@df.lth.se>
 
 	* examples/evolution-sync.sh: example script to illustrate
