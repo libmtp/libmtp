@@ -49,13 +49,11 @@ AM_CONDITIONAL(COMPILE_MINGW32, [test "$mingw_compiler" = "yes"])
 
 
 # Checks for libraries.
-AC_CHECK_LIB([curses], [initscr], AC_SUBST([CURSESPLAY], cursesplay))
 AC_CHECK_LIB([usb], [usb_control_msg],,
 	AC_MSG_ERROR([I can't find the libusb libraries on your system. You
 	may need to set the LDFLAGS environment variable to include the
 	search path where you have libusb installed before running
 	configure (e.g. setenv LDFLAGS=-L/usr/local/lib)]), "$OSFLAGS")
-AC_CHECK_LIB([z], [uncompress], AC_SUBST([SAMPLE_LDADD], [-lz]))
 
 # Checks for header files.
 AC_HEADER_STDC

@@ -11,4 +11,5 @@ Version: @VERSION@
 Requires: libusb
 Conflicts:
 Libs: -L${libdir} -lmtp
+Libs.private @LIBS@
 Cflags: -I${includedir} @OSFLAGS@
