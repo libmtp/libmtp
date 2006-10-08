@@ -159,7 +159,13 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * Archos
    */
   // Reported by gudul1@users.sourceforge.net
-  { "Archos 104 (MTP mode)", 0x0e79, 0x120a, DEVICE_FLAG_NONE }
+  { "Archos 104 (MTP mode)", 0x0e79, 0x120a, DEVICE_FLAG_NONE },
+
+  /*
+   * Dunlop (OEM of EGOMAN ltd?)
+   */
+  { "Dunlop MP3 player 1GB / EGOMAN MD223AFD", 0x10d6, 0x2200, DEVICE_FLAG_NONE }
+  
 };
 static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
 
