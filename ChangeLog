@@ -1,3 +1,8 @@
+2006-10-10  Linus Walleij <triad@df.lth.se>
+
+	* examples/delfile.c: patch to make this command take an
+	  optional filename as parameter instead of file ID.
+
 2006-09-26  Linus Walleij <triad@df.lth.se>
 
 	* libmtp.pc.in: require libusb instead of just linking it.
