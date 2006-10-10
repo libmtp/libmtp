@@ -72,6 +72,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Creative Zen Vision:M", 0x041e, 0x413e, DEVICE_FLAG_NONE },
   // Reported by marazm@o2.pl
   { "Creative Zen V", 0x041e, 0x4150, DEVICE_FLAG_NONE },
+  // Reported by Darel on the XNJB forums
+  { "Creative Zen V plus", 0x041e, 0x4152, DEVICE_FLAG_NONE },
 
   /*
    * Samsung
@@ -163,6 +165,9 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
 
   /*
    * Dunlop (OEM of EGOMAN ltd?)
+   * This unit is falsely detected as USB mass storage in Linux
+   * so special care is needed to blacklist the device in kernel
+   * or similar to get it properly userspace:d.
    */
   { "Dunlop MP3 player 1GB / EGOMAN MD223AFD", 0x10d6, 0x2200, DEVICE_FLAG_NONE }
   
