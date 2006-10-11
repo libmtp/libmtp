@@ -2349,6 +2349,67 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     printf("LIBMTP_Send_Track_From_File_Descriptor: I don't think this is actually a track, strange filetype...\n");
   }
 
+
+  /*
+   * MTP enhanched does it this way (from a sniff):
+   * -> PTP_OC_MTP_SendObjectPropList (0x9808):
+   *    20 00 00 00 01 00 08 98 1B 00 00 00 01 00 01 00
+   *    FF FF FF FF 00 30 00 00 00 00 00 00 12 5E 00 00
+   *    Length: 0x00000020
+   *    Type:   0x0001 PTP_USB_CONTAINER_COMMAND
+   *    Code:   0x9808
+   *    Transaction ID: 0x0000001B
+   *    Param1: 0x00010001 <- store
+   *    Param2: 0xffffffff <- parent handle (-1 ?)
+   *    Param3: 0x00003000 <- file type PTP_OFC_Undefined - we don't know about PDF files
+   *    Param4: 0x00000000 <- file length MSB (-0x0c header len)
+   *    Param5: 0x00005e12 <- file length LSB (-0x0c header len)
+   *    
+   * -> PTP_OC_MTP_SendObjectPropList (0x9808):
+   *    46 00 00 00 02 00 08 98 1B 00 00 00 03 00 00 00
+   *    00 00 00 00 07 DC FF FF 0D 4B 00 53 00 30 00 36 - dc07 = file name
+   *    00 30 00 33 00 30 00 36 00 2E 00 70 00 64 00 66
+   *    00 00 00 00 00 00 00 03 DC 04 00 00 00 00 00 00 - dc03 = protection status
+   *    00 4F DC 02 00 01                               - dc4f = non consumable
+   *    Length: 0x00000046
+   *    Type:   0x0002 PTP_USB_CONTAINER_DATA
+   *    Code:   0x9808
+   *    Transaction ID: 0x0000001B
+   *    Metadata....
+   *    0x00000003 <- Number of metadata items
+   *    0x00000000 <- Object handle, set to 0x00000000 since it is unknown!
+   *    0xdc07     <- metadata type: file name
+   *    0xffff     <- metadata type: string
+   *    0x0d       <- number of (uint16_t) characters 
+   *    4b 53 30 36 30 33 30 36 2e 50 64 66 00 "KS060306.pdf", null terminated
+   *    0x00000000 <- Object handle, set to 0x00000000 since it is unknown!
+   *    0xdc03     <- metadata type: protection status
+   *    0x0004     <- metadata type: uint16_t
+   *    0x0000     <- not protected
+   *    0x00000000 <- Object handle, set to 0x00000000 since it is unknown!
+   *    0xdc4f     <- non consumable
+   *    0x0002     <- metadata type: uint8_t
+   *    0x01       <- non-consumable (this device cannot display PDF)
+   *
+   * <- Read 0x18 bytes back
+   *    18 00 00 00 03 00 01 20 1B 00 00 00 01 00 01 00
+   *    00 00 00 00 01 40 00 00
+   *    Length: 0x000000018
+   *    Type:   0x0003 PTP_USB_CONTAINER_RESPONSE
+   *    Code:   0x2001 PTP_OK
+   *    Transaction ID: 0x0000001B
+   *    Param1: 0x00010001 <- store
+   *    Param2: 0x00000000 <- parent handle
+   *    Param3: 0x00004001 <- new file/object ID
+   *
+   * -> PTP_OC_SendObject (0x100d)
+   *    0C 00 00 00 01 00 0D 10 1C 00 00 00
+   * -> ... all the bytes ...
+   * <- Read 0x0c bytes back
+   *    0C 00 00 00 03 00 01 20 1C 00 00 00
+   *    ... Then update metadata one-by one, actually (instead of sending it first!) ...
+   */
+
   new_track.Filename = metadata->filename;
   new_track.ObjectCompressedSize = metadata->filesize;
   new_track.ObjectFormat = map_libmtp_type_to_ptp_type(metadata->filetype);

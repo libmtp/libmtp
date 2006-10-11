@@ -6,8 +6,7 @@ LIBMTP_file_t *files;
 
 static void usage(void)
 {
-  printf("Usage: delfile <fileid/trackid> <filename>\n");
-  printf("       if filename is set then fileid/trackid is ignored\n");
+  printf("Usage: delfile [-n] <fileid/trackid> | -f <filename>\n");
 }
 
 /* Find the folder_id of a given path
@@ -38,8 +37,11 @@ lookup_folder_id (LIBMTP_folder_t * folder, char * path, char * parent)
 
 /* Parses a string to find item_id */
 static int
-parse_path (const char * path)
+parse_path (char * path)
 {
+  // Check if path is a folder
+  int item_id = lookup_folder_id(folders,path,"");
+  if (item_id == -1) {
   int len = strlen(strrchr(path,'/'));
   char * filename = malloc(len);
   int index = strlen (path) - len;
@@ -48,15 +50,19 @@ parse_path (const char * path)
   parent = strncpy(parent, path, index);
   parent[index] = '\0';
   int parent_id = lookup_folder_id(folders,parent,"");
-
-  while (files != NULL) {
-    if (files->parent_id == parent_id) {
+    LIBMTP_file_t * file;
+    file = files;
+    while (file != NULL) {
+      if (file->parent_id == parent_id) {
       if (strcasecmp (files->filename, filename) == 0) {
         int item_id = files->item_id;
         return item_id;
       }
     }
-    files = files->next;
+      file = file->next;
+    }
+  } else {
+    return item_id;
   }
 
   return 0;
@@ -67,22 +73,25 @@ int main (int argc, char **argv)
 {
   LIBMTP_mtpdevice_t *device;
   u_int32_t id = 0;
+  int i;
   char *endptr;
   int ret = 1;
+  int FILENAME = 1;
+  int ITEMID = 2;
+  int field_type = 0;
 
-  if ( argc == 2 ) {
-    // Sanity check song ID
-    id = strtoul(argv[1], &endptr, 10);
-    if ( *endptr != 0 ) {
-      fprintf(stderr, "illegal value %s\n", argv[1]);
-      usage();
-      return 1;
-    } else if ( ! id ) {
-      fprintf(stderr, "bad file ID %u\n", id);
+  if ( argc > 2 ) {
+    if (strncmp(argv[1],"-f",2) == 0) {
+      field_type = FILENAME;
+      strcpy(argv[1],"");
+    } else if (strncmp(argv[1],"-n",2) == 0) {
+      field_type = ITEMID;
+      strcpy(argv[1],"0");
+    } else {
       usage();
       return 1;
     }
-  } else if (argc != 3) {
+  } else {
     usage();
     return 1;
   }
@@ -93,20 +102,37 @@ int main (int argc, char **argv)
     printf("No devices.\n");
     return 0;
   }
-
-  if (argc == 3) {
+  if (field_type == FILENAME) {
     files = LIBMTP_Get_Filelisting (device);
     folders = LIBMTP_Get_Folder_List (device);
-    id = parse_path (argv[2]);
-    printf ("%d\n",id);
   }
 
-  if (id > 0 ) ret = LIBMTP_Delete_Object(device, id);
-
+  for (i=1;i<argc;i++) {
+    if (field_type == ITEMID) {
+      // Sanity check song ID
+      id = strtoul(argv[i], &endptr, 10);
+      if ( *endptr != 0 ) {
+        fprintf(stderr, "illegal value %s .. skipping\n", argv[i]);
+        id = 0;
+      }
+    } else {
+      if (strlen(argv[i]) > 0) {
+        id = parse_path (argv[i]);
+      } else {
+        id = 0;
+      }
+    }
+    ret = 0;
+    if (id > 0 ) {
+        printf("Deleting %s\n",argv[i]);
+        ret = LIBMTP_Delete_Object(device, id);
+    }
   if ( ret != 0 ) {
-    printf("Failed to delete file.\n");
+      printf("Failed to delete file:%s\n",argv[i]);
     ret = 1;
   }
+  }
+  
   
   LIBMTP_Release_Device(device);
   printf("OK.\n");
