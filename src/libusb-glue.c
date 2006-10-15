@@ -164,7 +164,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Archos 104 (MTP mode)", 0x0e79, 0x120a, DEVICE_FLAG_NONE },
 
   /*
-   * Dunlop (OEM of EGOMAN ltd?)
+   * Dunlop (OEM of EGOMAN ltd?) reported by Nanomad
    * This unit is falsely detected as USB mass storage in Linux
    * so special care is needed to blacklist the device in kernel
    * or similar to get it properly userspace:d.
