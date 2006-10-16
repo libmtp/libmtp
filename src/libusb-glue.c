@@ -169,7 +169,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * so special care is needed to blacklist the device in kernel
    * or similar to get it properly userspace:d.
    */
-  { "Dunlop MP3 player 1GB / EGOMAN MD223AFD", 0x10d6, 0x2200, DEVICE_FLAG_NONE }
+  { "Dunlop MP3 player 1GB / EGOMAN MD223AFD", 0x10d6, 0x2200, DEVICE_FLAG_UNLOAD_DRIVER}
   
 };
 static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
@@ -522,6 +522,18 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
       return -1;
     }
     ptp_usb->handle = device_handle;
+#ifdef LIBUSB_HAS_DETACH_KERNEL_DRIVER_NP
+    /*
+     * If this device is known to be wrongfully claimed by other kernel
+     * drivers (such as mass storage), then try to unload it to make it
+     * accessible from user space.
+     */
+    if (ptp_usb->device_flags & DEVICE_FLAG_UNLOAD_DRIVER) {
+      if (usb_detach_kernel_driver_np(device_handle, dev->config->interface->altsetting->bInterfaceNumber)) {
+	perror("usb_detach_kernel_driver_np()");
+      }
+    }
+#endif
     if (usb_claim_interface(device_handle, dev->config->interface->altsetting->bInterfaceNumber)) {
       perror("usb_claim_interface()");
       return -1;

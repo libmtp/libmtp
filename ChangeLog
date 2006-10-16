@@ -1,3 +1,10 @@
+2006-10-16  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: bump to 0.0.21.
+	* src/libusb-glue.c: add code to unload a kernel driver for
+	  the primary interface if it is already in use under Linux.
+	* src/libusb-glue.h: add a device flag to make this possible.
+
 2006-10-11  Linus Walleij <triad@df.lth.se>
 
 	* examples/delfile.c: patch from Chris Debenham 

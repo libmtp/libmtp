@@ -26,6 +26,12 @@
  * used with MTP before a certain timeout.
  */
 #define DEVICE_FLAG_DUALMODE 0x00000001
+/**
+ * This means that under Linux, another kernel module may 
+ * be using the MTP interface, so we need to detach it if
+ * it is.
+ */
+#define DEVICE_FLAG_UNLOAD_DRIVER 0x00000002
 
 /**
  * Internal USB struct.
