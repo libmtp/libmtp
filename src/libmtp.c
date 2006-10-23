@@ -957,6 +957,7 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
 }
 
 
+/*
 struct {
   uint16_t opcode;
   const char *name;
@@ -1040,6 +1041,7 @@ ptp_render_opcode(PTPParams* params, uint16_t opcode, int spaceleft, char *txt)
   }
   return snprintf (txt, spaceleft,"Unknown(%04x)", opcode);
 }
+*/
 
 
 /**

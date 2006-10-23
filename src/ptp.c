@@ -449,7 +449,13 @@ _ptp_transaction (PTPParams* params, PTPContainer* ptp,
 	}
 	/* get response */
 	CHECK_PTP_RC(params->getresp_func(params, ptp));
-
+	if (ptp->Transaction_ID != params->transaction_id-1) {
+		ptp_error (params,
+			"PTP: Sequence number mismatch %d vs expected %d.",
+			ptp->Transaction_ID, params->transaction_id-1
+		);
+		return PTP_ERROR_BADPARAM;
+	}
 	return ptp->Code;
 }
 
@@ -506,9 +512,20 @@ ptp_usb_event (PTPParams* params, PTPContainer* event, int wait)
 	}
 	if (ret!=PTP_RC_OK) {
 		ptp_error (params,
-			"PTP: reading event an error 0x%04x occured", ret);
+			"PTP: reading event an error 0x%04x occurred", ret);
 		ret = PTP_ERROR_IO;
 		/* reading event error is nonfatal (for example timeout) */
+	} 
+	while (dtoh32(usbevent.length) > rlen) {
+		unsigned int newrlen = 0;
+
+		ret=params->check_int_fast_func(((unsigned char*)&usbevent)+rlen,
+			dtoh32(usbevent.length)-rlen,params->data,&newrlen
+		);
+		if (ret != PTP_RC_OK) {
+			break;
+		}
+		rlen+=newrlen;
 	} 
 	/* if we read anything over interrupt endpoint it must be an event */
 	/* build an appropriate PTPContainer */
@@ -518,7 +535,6 @@ ptp_usb_event (PTPParams* params, PTPContainer* event, int wait)
 	event->Param1=dtoh32(usbevent.param1);
 	event->Param2=dtoh32(usbevent.param2);
 	event->Param3=dtoh32(usbevent.param3);
-
 	return ret;
 }
 
@@ -1305,28 +1321,31 @@ ptp_ek_sendfileobject (PTPParams* params, unsigned char* object, uint32_t size)
 
 
 /**
- * ptp_canon_getobjectsize:
+ * ptp_canon_getpartialobjectinfo:
  * params:	PTPParams*
  *		uint32_t handle		- ObjectHandle
- *		uint32_t p2 		- Yet unknown parameter,
- *					  value 0 works.
+ *		uint32_t p2 		- Not fully understood parameter
+ *					  0 - returns full size
+ *					  1 - returns thumbnail size (or EXIF?)
  * 
  * Gets form the responder the size of the specified object.
  *
  * Return values: Some PTP_RC_* code.
  * Upon success : uint32_t* size	- The object size
- *		  uint32_t  rp2		- Yet unknown parameter
+ *		  uint32_t* rp2		- Still unknown return parameter
+ *                                        (perhaps upper 32bit of size)
+ *
  *
  **/
 uint16_t
-ptp_canon_getobjectsize (PTPParams* params, uint32_t handle, uint32_t p2, 
+ptp_canon_getpartialobjectinfo (PTPParams* params, uint32_t handle, uint32_t p2, 
 			uint32_t* size, uint32_t* rp2) 
 {
 	uint16_t ret;
 	PTPContainer ptp;
 	
 	PTP_CNT_INIT(ptp);
-	ptp.Code=PTP_OC_CANON_GetObjectSize;
+	ptp.Code=PTP_OC_CANON_GetPartialObjectInfo;
 	ptp.Param1=handle;
 	ptp.Param2=p2;
 	ptp.Nparam=2;
@@ -1335,6 +1354,87 @@ ptp_canon_getobjectsize (PTPParams* params, uint32_t handle, uint32_t p2,
 	*rp2=ptp.Param2;
 	return ret;
 }
+
+/**
+ * ptp_canon_get_mac_address:
+ * params:	PTPParams*
+ *					  value 0 works.
+ * Gets the MAC address of the wireless transmitter.
+ *
+ * Return values: Some PTP_RC_* code.
+ * Upon success : unsigned char* mac	- The MAC address
+ *
+ **/
+uint16_t
+ptp_canon_get_mac_address (PTPParams* params, unsigned char **mac)
+{
+	PTPContainer ptp;
+	unsigned int size = 0;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code=PTP_OC_CANON_GetMACAddress;
+	ptp.Nparam=0;
+	*mac = NULL;
+	return ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, mac, &size);
+}
+
+/**
+ * ptp_canon_get_directory:
+ * params:	PTPParams*
+
+ * Gets the full directory of the camera.
+ *
+ * Return values: Some PTP_RC_* code.
+ * Upon success : PTPObjectHandles        *handles	- filled out with handles
+ * 		  PTPObjectInfo           **oinfos	- allocated array of PTP Object Infos
+ * 		  uint32_t                **flags	- allocated array of CANON Flags
+ *
+ **/
+uint16_t
+ptp_canon_get_directory (PTPParams* params,
+	PTPObjectHandles	*handles,
+	PTPObjectInfo		**oinfos,	/* size(handles->n) */
+	uint32_t		**flags		/* size(handles->n) */
+) {
+	PTPContainer	ptp;
+	unsigned char	*dir = NULL;
+	unsigned int	size = 0;
+	uint16_t	ret;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code=PTP_OC_CANON_GetDirectory;
+	ptp.Nparam=0;
+	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &dir, &size);
+	if (ret != PTP_RC_OK)
+		return ret;
+	ret = ptp_unpack_canon_directory(params, dir, ptp.Param1, handles, oinfos, flags);
+	free (dir);
+	return ret;
+}
+
+/**
+ * ptp_canon_setobjectarchive:
+ *
+ * params:	PTPParams*
+ *		uint32_t	objectid
+ *		uint32_t	flags
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+uint16_t
+ptp_canon_setobjectarchive (PTPParams* params, uint32_t oid, uint32_t flags)
+{
+	PTPContainer ptp;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code=PTP_OC_CANON_SetObjectArchive;
+	ptp.Nparam=2;
+	ptp.Param1=oid;
+	ptp.Param2=flags;
+	return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
+}
+
 
 /**
  * ptp_canon_startshootingmode:
@@ -1359,6 +1459,74 @@ ptp_canon_startshootingmode (PTPParams* params)
 	return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
 }
 
+/**
+ * ptp_canon_initiate_direct_transfer:
+ * params:	PTPParams*
+ *              uint32_t *out
+ * 
+ * Switches the camera display to on and lets the user
+ * select what to transfer. Sends a 0xc011 event when started 
+ * and 0xc013 if direct transfer aborted.
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+uint16_t
+ptp_canon_initiate_direct_transfer (PTPParams* params, uint32_t *out)
+{
+	PTPContainer ptp;
+	uint16_t ret;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code   = PTP_OC_CANON_InitiateDirectTransferEx2;
+	ptp.Nparam = 1;
+	ptp.Param1 = 0xf;
+	ret = ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
+	if ((ret == PTP_RC_OK) && (ptp.Nparam>0))
+		*out = ptp.Param1;
+	return ret;
+}
+
+/**
+ * ptp_canon_get_target_handles:
+ * params:	PTPParams*
+ *              PTPCanon_directtransfer_entry **out
+ *              unsigned int *outsize
+ * 
+ * Retrieves direct transfer entries specifying the images to transfer
+ * from the camera (to be retrieved after 0xc011 event).
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+uint16_t
+ptp_canon_get_target_handles (PTPParams* params,
+	PTPCanon_directtransfer_entry **entries, unsigned int *cnt)
+{
+	PTPContainer ptp;
+	uint16_t ret;
+	unsigned char *out = NULL, *cur;
+	int i;
+	unsigned int size;
+	
+	PTP_CNT_INIT(ptp);
+	ptp.Code   = PTP_OC_CANON_GetTargetHandles;
+	ptp.Nparam = 0;
+	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &out, &size);
+	if (ret != PTP_RC_OK)
+		return ret;
+	*cnt = dtoh32a(out);
+	*entries = malloc(sizeof(PTPCanon_directtransfer_entry)*(*cnt));
+	cur = out+4;
+	for (i=0;i<*cnt;i++) {
+		unsigned char len;
+		(*entries)[i].oid = dtoh32a(cur);
+		(*entries)[i].str = ptp_unpack_string(params, cur, 4, &len);
+		cur += 4+(cur[4]*2+1);
+	}
+	free (out);
+	return PTP_RC_OK;
+}
 /**
  * ptp_canon_endshootingmode:
  * params:	PTPParams*
@@ -1429,26 +1597,23 @@ ptp_canon_viewfinderoff (PTPParams* params)
 }
 
 /**
- * ptp_canon_reflectchanges:
+ * ptp_canon_aeafawb:
  * params:	PTPParams*
  * 		uint32_t p1 	- Yet unknown parameter,
  * 				  value 7 works
  * 
- * Make viewfinder reflect changes.
- * There is a button for this operation in the Remote Capture app.
- * What it does exactly I don't know. This operation is followed
- * by the CANON_GetChanges(?) operation in the log.
+ * Called AeAfAwb (auto exposure, focus, white balance)
  *
  * Return values: Some PTP_RC_* code.
  *
  **/
 uint16_t
-ptp_canon_reflectchanges (PTPParams* params, uint32_t p1)
+ptp_canon_aeafawb (PTPParams* params, uint32_t p1)
 {
 	PTPContainer ptp;
 	
 	PTP_CNT_INIT(ptp);
-	ptp.Code=PTP_OC_CANON_ReflectChanges;
+	ptp.Code=PTP_OC_CANON_DoAeAfAwb;
 	ptp.Param1=p1;
 	ptp.Nparam=1;
 	return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
@@ -1614,7 +1779,7 @@ ptp_canon_getpartialobject (PTPParams* params, uint32_t handle,
 	unsigned int len;
 	
 	PTP_CNT_INIT(ptp);
-	ptp.Code=PTP_OC_CANON_GetPartialObject;
+	ptp.Code=PTP_OC_CANON_GetPartialObjectEx;
 	ptp.Param1=handle;
 	ptp.Param2=offset;
 	ptp.Param3=size;
@@ -1697,7 +1862,7 @@ ptp_canon_getchanges (PTPParams* params, uint16_t** props, uint32_t* propnum)
 }
 
 /**
- * ptp_canon_getfolderentries:
+ * ptp_canon_getobjectinfo:
  *
  * This command reads a specified object's record in a device's filesystem,
  * or the records of all objects belonging to a specified folder (association).
@@ -1720,7 +1885,7 @@ ptp_canon_getchanges (PTPParams* params, uint16_t** props, uint32_t* propnum)
  *
  **/
 uint16_t
-ptp_canon_getfolderentries (PTPParams* params, uint32_t store, uint32_t p2, 
+ptp_canon_getobjectinfo (PTPParams* params, uint32_t store, uint32_t p2, 
 			    uint32_t parent, uint32_t handle, 
 			    PTPCANONFolderEntry** entries, uint32_t* entnum)
 {
@@ -1730,7 +1895,7 @@ ptp_canon_getfolderentries (PTPParams* params, uint32_t store, uint32_t p2,
 	unsigned int len;
 	
 	PTP_CNT_INIT(ptp);
-	ptp.Code=PTP_OC_CANON_GetFolderEntries;
+	ptp.Code=PTP_OC_CANON_GetObjectInfoEx;
 	ptp.Param1=store;
 	ptp.Param2=p2;
 	ptp.Param3=parent;
@@ -1756,7 +1921,7 @@ ptp_canon_getfolderentries (PTPParams* params, uint32_t store, uint32_t p2,
 }
 
 /**
- * ptp_canon_lookup_object:
+ * ptp_canon_get_objecthandle_by_name:
  *
  * This command looks up the specified object on the camera.
  *
@@ -1773,7 +1938,7 @@ ptp_canon_getfolderentries (PTPParams* params, uint32_t store, uint32_t p2,
  *
  **/
 uint16_t
-ptp_canon_lookup_object (PTPParams* params, char* name, uint32_t* objectid)
+ptp_canon_get_objecthandle_by_name (PTPParams* params, char* name, uint32_t* objectid)
 {
 	uint16_t ret;
 	PTPContainer ptp;
@@ -1781,7 +1946,7 @@ ptp_canon_lookup_object (PTPParams* params, char* name, uint32_t* objectid)
 	uint8_t len;
 
 	PTP_CNT_INIT (ptp);
-	ptp.Code=PTP_OC_CANON_LookupObject;
+	ptp.Code=PTP_OC_CANON_GetObjectHandleByName;
 	ptp.Nparam=0;
 	len=0;
 	data = malloc (2*(strlen(name)+1)+2);
@@ -1794,7 +1959,7 @@ ptp_canon_lookup_object (PTPParams* params, char* name, uint32_t* objectid)
 }
 
 /**
- * ptp_canon_theme_download:
+ * ptp_canon_get_customize_data:
  *
  * This command downloads the specified theme slot, including jpegs
  * and wav files.
@@ -1808,7 +1973,7 @@ ptp_canon_lookup_object (PTPParams* params, char* name, uint32_t* objectid)
  *
  **/
 uint16_t
-ptp_canon_theme_download (PTPParams* params, uint32_t themenr,
+ptp_canon_get_customize_data (PTPParams* params, uint32_t themenr,
 		unsigned char **data, unsigned int *size)
 {
 	PTPContainer ptp;
@@ -1816,7 +1981,7 @@ ptp_canon_theme_download (PTPParams* params, uint32_t themenr,
 	*data = NULL;
 	*size = 0;
 	PTP_CNT_INIT(ptp);
-	ptp.Code	= PTP_OC_CANON_ThemeDownload;
+	ptp.Code	= PTP_OC_CANON_GetCustomizeData;
 	ptp.Param1	= themenr;
 	ptp.Nparam	= 1;
 	return ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, data, size); 
@@ -3253,6 +3418,82 @@ ptp_render_ofc(PTPParams* params, uint16_t ofc, int spaceleft, char *txt)
 	}
 	return snprintf (txt, spaceleft,_("Unknown(%04x)"), ofc);
 }
+
+struct {
+	uint16_t opcode;
+	const char *name;
+} ptp_opcode_trans[] = {
+	{PTP_OC_Undefined,N_("Undefined")},
+	{PTP_OC_GetDeviceInfo,N_("get device info")},
+	{PTP_OC_OpenSession,N_("Open session")},
+	{PTP_OC_CloseSession,N_("Close session")},
+	{PTP_OC_GetStorageIDs,N_("Get storage IDs")},
+	{PTP_OC_GetStorageInfo,N_("Get storage info")},
+	{PTP_OC_GetNumObjects,N_("Get number of objects")},
+	{PTP_OC_GetObjectHandles,N_("Get object handles")},
+	{PTP_OC_GetObjectInfo,N_("Get object info")},
+	{PTP_OC_GetObject,N_("Get object")},
+	{PTP_OC_GetThumb,N_("Get thumbnail")},
+	{PTP_OC_DeleteObject,N_("Delete object")},
+	{PTP_OC_SendObjectInfo,N_("Send object info")},
+	{PTP_OC_SendObject,N_("Send object")},
+	{PTP_OC_InitiateCapture,N_("Initiate capture")},
+	{PTP_OC_FormatStore,N_("Format storage")},
+	{PTP_OC_ResetDevice,N_("Reset device")},
+	{PTP_OC_SelfTest,N_("Self test device")},
+	{PTP_OC_SetObjectProtection,N_("Set object protection")},
+	{PTP_OC_PowerDown,N_("Power down device")},
+	{PTP_OC_GetDevicePropDesc,N_("Get device property description")},
+	{PTP_OC_GetDevicePropValue,N_("Get device property value")},
+	{PTP_OC_SetDevicePropValue,N_("Set device property value")},
+	{PTP_OC_ResetDevicePropValue,N_("Reset device property value")},
+	{PTP_OC_TerminateOpenCapture,N_("Terminate open capture")},
+	{PTP_OC_MoveObject,N_("Move object")},
+	{PTP_OC_CopyObject,N_("Copy object")},
+	{PTP_OC_GetPartialObject,N_("Get partial object")},
+	{PTP_OC_InitiateOpenCapture,N_("Initiate open capture")}
+};
+
+struct {
+	uint16_t opcode;
+	const char *name;
+} ptp_opcode_mtp_trans[] = {
+	{PTP_OC_MTP_GetObjectPropsSupported,N_("Get object properties supported")},
+	{PTP_OC_MTP_GetObjectPropDesc,N_("Get object property description")},
+	{PTP_OC_MTP_GetObjectPropValue,N_("Get object property value")},
+	{PTP_OC_MTP_SetObjectPropValue,N_("Set object property value")},
+	{PTP_OC_MTP_GetObjPropList,N_("Get object property list")},
+	{PTP_OC_MTP_SetObjPropList,N_("Set object property list")},
+	{PTP_OC_MTP_GetInterdependendPropdesc,N_("Get interdependent property description")},
+	{PTP_OC_MTP_SendObjectPropList,N_("Send object property list")},
+	{PTP_OC_MTP_GetObjectReferences,N_("Get object references")},
+	{PTP_OC_MTP_SetObjectReferences,N_("Set object references")},
+	{PTP_OC_MTP_UpdateDeviceFirmware,N_("Update device firmware")},
+	{PTP_OC_MTP_Skip,N_("Skip to next position in playlist")}
+};
+
+int
+ptp_render_opcode(PTPParams* params, uint16_t opcode, int spaceleft, char *txt)
+{
+	int i;
+
+	if (!(opcode & 0x8000)) {
+		for (i=0;i<sizeof(ptp_opcode_trans)/sizeof(ptp_opcode_trans[0]);i++)
+			if (opcode == ptp_opcode_trans[i].opcode)
+				return snprintf(txt, spaceleft,_(ptp_opcode_trans[i].name));
+	} else {
+		switch (params->deviceinfo.VendorExtensionID) {
+		case PTP_VENDOR_MICROSOFT:
+			for (i=0;i<sizeof(ptp_opcode_mtp_trans)/sizeof(ptp_opcode_mtp_trans[0]);i++)
+				if (opcode == ptp_opcode_mtp_trans[i].opcode)
+					return snprintf(txt, spaceleft,_(ptp_opcode_mtp_trans[i].name));
+			break;
+		default:break;
+		}
+	}
+	return snprintf (txt, spaceleft,_("Unknown(%04x)"), opcode);
+}
+
 
 struct {
 	uint16_t id;

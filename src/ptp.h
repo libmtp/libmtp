@@ -92,6 +92,11 @@ struct _PTPUSBEventContainer {
 };
 typedef struct _PTPUSBEventContainer PTPUSBEventContainer;
 
+struct _PTPCanon_directtransfer_entry {
+	uint32_t	oid;
+	char		*str;
+};
+typedef struct _PTPCanon_directtransfer_entry PTPCanon_directtransfer_entry;
 
 /* USB container types */
 
@@ -176,47 +181,63 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_OC_EK_SetText		0x9008
 
 /* Canon extension Operation Codes */
-#define PTP_OC_CANON_GetObjectSize	0x9001
-#define PTP_OC_CANON_9002		0x9002
+#define PTP_OC_CANON_GetPartialObjectInfo	0x9001
+#define PTP_OC_CANON_SetObjectArchive		0x9002
 /* 9002 - sends 2 uint32, nothing back  */
-#define PTP_OC_CANON_9003		0x9003
+#define PTP_OC_CANON_9003			0x9003
 /* 9003 - sends nothing, nothing back  */
 /* no 9004 observed yet */
 /* no 9005 observed yet */
-#define PTP_OC_CANON_LookupObject	0x9006
+#define PTP_OC_CANON_GetObjectHandleByName	0x9006
 /* no 9007 observed yet */
-#define PTP_OC_CANON_StartShootingMode	0x9008
-#define PTP_OC_CANON_EndShootingMode	0x9009
+#define PTP_OC_CANON_StartShootingMode		0x9008
+#define PTP_OC_CANON_EndShootingMode		0x9009
 /* 900a - sends nothing, nothing back */
-#define PTP_OC_CANON_900a		0x900A
-#define PTP_OC_CANON_ViewfinderOn	0x900B
-#define PTP_OC_CANON_ViewfinderOff	0x900C
-#define PTP_OC_CANON_ReflectChanges	0x900D
+#define PTP_OC_CANON_900a			0x900A
+#define PTP_OC_CANON_ViewfinderOn		0x900B
+#define PTP_OC_CANON_ViewfinderOff		0x900C
+#define PTP_OC_CANON_DoAeAfAwb			0x900D
 
-/* 900e - send nothing, gets 5 uint16t in 32bit entities back in 20byte datablob 
- * GetFlashDevParam?
- */
-#define PTP_OC_CANON_900e		0x900E
-/* 900f - gets data ... hmm, object handles ? */
-#define PTP_OC_CANON_900f		0x900F
-
-#define PTP_OC_CANON_ThemeDownload	0x9010
-#define PTP_OC_CANON_ThemeUpload	0x9011
+/* 900e - send nothing, gets 5 uint16t in 32bit entities back in 20byte datablob */
+#define PTP_OC_CANON_GetCustomizeSpec		0x900E
+#define PTP_OC_CANON_GetCustomizeItemInfo	0x900F
+#define PTP_OC_CANON_GetCustomizeData		0x9010
+#define PTP_OC_CANON_SetCustomizeData		0x9011
 
 /* initiate movie capture:
    9010 startmoviecapture?
    9003 stopmoviecapture?
 */
 
-#define PTP_OC_CANON_CheckEvent		0x9013
-#define PTP_OC_CANON_FocusLock		0x9014
-#define PTP_OC_CANON_FocusUnlock	0x9015
+#define PTP_OC_CANON_CheckEvent			0x9013
+#define PTP_OC_CANON_FocusLock			0x9014
+#define PTP_OC_CANON_FocusUnlock		0x9015
 #define PTP_OC_CANON_InitiateCaptureInMemory	0x901A
-#define PTP_OC_CANON_GetPartialObject	0x901B
-#define PTP_OC_CANON_GetViewfinderImage	0x901d
-	/* Viewfinder Auto functions */
-#define PTP_OC_CANON_GetChanges		0x9020
-#define PTP_OC_CANON_GetFolderEntries	0x9021
+#define PTP_OC_CANON_GetPartialObjectEx		0x901B
+#define PTP_OC_CANON_SetObjectTime		0x901C
+#define PTP_OC_CANON_GetViewfinderImage		0x901D
+#define PTP_OC_CANON_ChangeUSBProtocol		0x901F
+#define PTP_OC_CANON_GetChanges			0x9020
+#define PTP_OC_CANON_GetObjectInfoEx		0x9021
+
+#define PTP_OC_CANON_TerminateDirectTransfer 	0x9023
+
+#define PTP_OC_CANON_InitiateDirectTransferEx2 	0x9028
+#define PTP_OC_CANON_GetTargetHandles 		0x9029
+#define PTP_OC_CANON_NotifyProgress 		0x902A
+#define PTP_OC_CANON_NotifyCancelAccepted	0x902B
+/* 902c: no parms, read 3 uint32 in data, no response parms */
+#define PTP_OC_CANON_902C			0x902C
+#define PTP_OC_CANON_GetDirectory		0x902D
+
+#define PTP_OC_CANON_SetPairingInfo		0x9030
+#define PTP_OC_CANON_GetPairingInfo		0x9031
+#define PTP_OC_CANON_DeletePairingInfo		0x9032
+#define PTP_OC_CANON_GetMACAddress		0x9033
+/* 9034: 1 param, no parms returned */
+#define PTP_OC_CANON_SetDisplayMonitor		0x9034
+#define PTP_OC_CANON_PairingComplete		0x9035
+#define PTP_OC_CANON_GetWirelessMAXChannel	0x9036
 
 /* Nikon extension Operation Codes */
 #define PTP_OC_NIKON_GetProfileAllData	0x9006
@@ -335,6 +356,9 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_EC_CANON_RequestObjectTransfer	0xC009
 #define PTP_EC_CANON_CameraModeChanged		0xC00C
 
+#define PTP_EC_CANON_StartDirectTransfer	0xC011
+#define PTP_EC_CANON_StopDirectTransfer		0xC013
+
 /* Nikon extension Event Codes */
 #define PTP_EC_Nikon_ObjectAddedInSDRAM		0xC101
 /* Gets 1 parameter, objectid pointing to DPOF object */
@@ -348,7 +372,7 @@ typedef struct _PTPIPHeader PTPIPHeader;
 /* PTP device info structure (returned by GetDevInfo) */
 
 struct _PTPDeviceInfo {
-	uint16_t StaqndardVersion;
+	uint16_t StandardVersion;
 	uint32_t VendorExtensionID;
 	uint16_t VendorExtensionVersion;
 	char	*VendorExtensionDesc;
@@ -546,7 +570,6 @@ typedef struct _PTPObjectInfo PTPObjectInfo;
 
 union _PTPPropertyValue {
 	char		*str;	/* common string, malloced */
-	uint16_t        *unistr; /* UCS2 unicode string, malloced */
 	uint8_t		u8;
 	int8_t		i8;
 	uint16_t	u16;
@@ -1097,6 +1120,9 @@ struct _PTPParams {
 	PTPObjectInfo * objectinfo;
 	PTPDeviceInfo deviceinfo;
 
+	/* Canon specific flags list */
+	uint32_t	*canon_flags; /* size(handles.n) */
+
 	/* Wifi profiles */
 	uint8_t  wifi_profiles_version;
 	uint8_t  wifi_profiles_number;
@@ -1213,16 +1239,19 @@ uint16_t ptp_ek_sendfileobject	(PTPParams* params, unsigned char* object,
 
 /* Canon PTP extensions */
 uint16_t ptp_canon_9012 (PTPParams* params);
-uint16_t ptp_canon_getobjectsize (PTPParams* params, uint32_t handle,
+uint16_t ptp_canon_initiate_direct_transfer (PTPParams* params, uint32_t* out);
+uint16_t ptp_canon_get_target_handles (PTPParams* params, PTPCanon_directtransfer_entry**, unsigned int*cnt);
+uint16_t ptp_canon_getpartialobjectinfo (PTPParams* params, uint32_t handle,
 				uint32_t p2, uint32_t* size, uint32_t* rp2);
 
+uint16_t ptp_canon_get_mac_address (PTPParams* params, unsigned char **mac);
 uint16_t ptp_canon_startshootingmode (PTPParams* params);
 uint16_t ptp_canon_endshootingmode (PTPParams* params);
 
 uint16_t ptp_canon_viewfinderon (PTPParams* params);
 uint16_t ptp_canon_viewfinderoff (PTPParams* params);
 
-uint16_t ptp_canon_reflectchanges (PTPParams* params, uint32_t p1);
+uint16_t ptp_canon_aeafawb (PTPParams* params, uint32_t p1);
 uint16_t ptp_canon_checkevent (PTPParams* params, 
 				PTPUSBEventContainer* event, int* isevent);
 uint16_t ptp_canon_focuslock (PTPParams* params);
@@ -1236,14 +1265,17 @@ uint16_t ptp_canon_getviewfinderimage (PTPParams* params, unsigned char** image,
 				uint32_t* size);
 uint16_t ptp_canon_getchanges (PTPParams* params, uint16_t** props,
 				uint32_t* propnum); 
-uint16_t ptp_canon_getfolderentries (PTPParams* params, uint32_t store,
+uint16_t ptp_canon_getobjectinfo (PTPParams* params, uint32_t store,
 				uint32_t p2, uint32_t parenthandle,
 				uint32_t handle, 
 				PTPCANONFolderEntry** entries,
 				uint32_t* entnum);
-uint16_t ptp_canon_lookup_object (PTPParams* params, char* name, uint32_t* objectid);
-uint16_t ptp_canon_theme_download (PTPParams* params, uint32_t themenr,
+uint16_t ptp_canon_get_objecthandle_by_name (PTPParams* params, char* name, uint32_t* objectid);
+uint16_t ptp_canon_get_directory (PTPParams* params, PTPObjectHandles *handles, PTPObjectInfo **oinfos, uint32_t **flags);
+uint16_t ptp_canon_setobjectarchive (PTPParams* params, uint32_t oid, uint32_t flags);
+uint16_t ptp_canon_get_customize_data (PTPParams* params, uint32_t themenr,
 				unsigned char **data, unsigned int *size);
+
 
 uint16_t ptp_nikon_curve_download (PTPParams* params, 
 				unsigned char **data, unsigned int *size);
@@ -1276,6 +1308,7 @@ int
 ptp_render_property_value(PTPParams* params, uint16_t dpc,
                           PTPDevicePropDesc *dpd, int length, char *out);
 int ptp_render_ofc(PTPParams* params, uint16_t ofc, int spaceleft, char *txt);
+int ptp_render_opcode(PTPParams* params, uint16_t opcode, int spaceleft, char *txt);
 int ptp_render_mtp_propname(uint16_t propid, int spaceleft, char *txt);
 
 /* ptpip.c */

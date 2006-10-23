@@ -1,3 +1,10 @@
+2006-10-23  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: retire opcode rendering (moved to ptp.c)
+	* src/ptp.c: sync to upstream.
+	* src/ptp.h: dito.
+	* src/ptp-pack.c: dito.
+
 2006-10-20  Linus Walleij <triad@df.lth.se>
 
 	* Release 0.0.21 to get all the new device support out.
