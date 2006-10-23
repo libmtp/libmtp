@@ -257,7 +257,7 @@ typedef struct _PTPIPHeader PTPIPHeader;
 /* Microsoft / MTP extension codes */
 #define PTP_OC_MTP_GetSecureTimeChallenge	0x9101
 #define PTP_OC_MTP_GetSecureTimeResponse	0x9102
-#define PTP_OC_MTP_SetLicenseResponse		0x9102
+#define PTP_OC_MTP_SetLicenseResponse		0x9103
 #define PTP_OC_MTP_GetSyncList			0x9104
 #define PTP_OC_MTP_SendMeterChallengeQuery	0x9105
 #define PTP_OC_MTP_GetMeterChallenge		0x9106
