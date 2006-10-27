@@ -3512,6 +3512,352 @@ int LIBMTP_Update_Playlist(LIBMTP_mtpdevice_t *device,
   return 0;
 }
 
+/**
+ * This creates a new album metadata structure and allocates memory
+ * for it. Notice that if you add strings to this structure they
+ * will be freed by the corresponding <code>LIBMTP_destroy_album_t</code>
+ * operation later, so be careful of using strdup() when assigning
+ * strings.
+ *
+ * @return a pointer to the newly allocated metadata structure.
+ * @see LIBMTP_destroy_album_t()
+ */
+LIBMTP_album_t *LIBMTP_new_album_t(void)
+{
+  LIBMTP_album_t *new = (LIBMTP_album_t *) malloc(sizeof(LIBMTP_album_t));
+  if (new == NULL) {
+    return NULL;
+  }
+  new->album_id = 0;
+  new->name = NULL;
+  new->tracks = NULL;
+  new->no_tracks = 0;
+  new->next = NULL;
+  return new;
+}
+
+/**
+ * This recursively deletes the memory for an album structure
+ *
+ * @param album structure to destroy
+ * @see LIBMTP_new_album_t()
+ */
+void LIBMTP_destroy_album_t(LIBMTP_album_t *album)
+{
+  if (album == NULL) {
+    return;
+  }
+  if (album->name != NULL)
+    free(album->name);
+  if (album->tracks != NULL)
+    free(album->tracks);
+  free(album);
+  return;
+}
+
+/**
+ * This function returns a list of the albums available on the
+ * device.
+ *
+ * @param device a pointer to the device to get the album listing from.
+ * @return an album list on success, else NULL. If there are no albums
+ *         on the device, NULL will be returned as well.
+ * @see LIBMTP_Get_Album()
+ */
+LIBMTP_album_t *LIBMTP_Get_Album_List(LIBMTP_mtpdevice_t *device)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  LIBMTP_album_t *retalbums = NULL;
+  LIBMTP_album_t *curalbum = NULL;
+  uint32_t i;
+
+  // Get all the handles if we haven't already done that
+  if (params->handles.Handler == NULL) {
+    flush_handles(device);
+  }
+
+  for (i = 0; i < params->handles.n; i++) {
+    LIBMTP_album_t *alb;
+    PTPObjectInfo oi;
+    uint16_t ret;
+
+    ret = ptp_getobjectinfo(params, params->handles.Handler[i], &oi);
+    if ( ret == PTP_RC_OK) {
+
+      // Ignore stuff that isn't an album
+      if ( oi.ObjectFormat != PTP_OFC_MTP_AbstractAudioAlbum ) {
+        continue;
+      }
+
+      // Allocate a new album type
+      alb = LIBMTP_new_album_t();
+      alb->name = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name);
+      alb->album_id = params->handles.Handler[i];
+
+      // Then get the track listing for this album
+      ret = ptp_mtp_getobjectreferences(params, alb->album_id, &alb->tracks, &alb->no_tracks);
+      if (ret != PTP_RC_OK) {
+        printf("LIBMTP_Get_Album: Could not get object references\n");
+        alb->tracks = NULL;
+        alb->no_tracks = 0;
+      }
+
+      // Add album to a list that will be returned afterwards.
+      if (retalbums == NULL) {
+        retalbums = alb;
+        curalbum = alb;
+      } else {
+        curalbum->next = alb;
+        curalbum = alb;
+      }
+
+    } else {
+      printf("LIBMTP panic: Found a bad handle, trying to ignore it.\n");
+    }
+  }
+  return retalbums;
+}
+
+/**
+ * This function retrieves an individual album from the device.
+ * @param device a pointer to the device to get the album from.
+ * @param albid the unique ID of the album to retrieve.
+ * @return a valid album metadata or NULL on failure.
+ * @see LIBMTP_Get_Album_List()
+ */
+LIBMTP_album_t *LIBMTP_Get_Album(LIBMTP_mtpdevice_t *device, uint32_t const albid)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  uint32_t i;
+
+  // Get all the handles if we haven't already done that
+  if (params->handles.Handler == NULL) {
+    flush_handles(device);
+  }
+
+  for (i = 0; i < params->handles.n; i++) {
+    LIBMTP_album_t *alb;
+    PTPObjectInfo oi;
+    uint16_t ret;
+
+    if (params->handles.Handler[i] != albid) {
+      continue;
+    }
+
+    ret = ptp_getobjectinfo(params, params->handles.Handler[i], &oi);
+    if ( ret == PTP_RC_OK) {
+
+      // Ignore stuff that isn't an album
+      if ( oi.ObjectFormat != PTP_OFC_MTP_AbstractAudioAlbum ) {
+        return NULL;
+      }
+
+      // Allocate a new album type
+      alb = LIBMTP_new_album_t();
+      alb->name = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name);
+      alb->album_id = params->handles.Handler[i];
+      ret = ptp_mtp_getobjectreferences(params, alb->album_id, &alb->tracks, &alb->no_tracks);
+      if (ret != PTP_RC_OK) {
+        printf("LIBMTP_Get_Album: Could not get object references\n");
+        alb->tracks = NULL;
+        alb->no_tracks = 0;
+      }
+
+      return alb;
+    } else {
+      return NULL;
+    }
+  }
+  return NULL;
+}
+
+/**
+ * This routine creates a new album based on the metadata
+ * supplied. If the <code>tracks</code> field of the metadata
+ * contains a track listing, these tracks will be added to the
+ * album.
+ * @param device a pointer to the device to create the new album on.
+ * @param metadata the metadata for the new album. If the function
+ *        exits with success, the <code>album_id</code> field of this
+ *        struct will contain the new ID of the album.
+ * @param parenthandle the parent (e.g. folder) to store this album
+ *        in. Pass in 0 to put the album in the default music directory.
+ * @return 0 on success, any other value means failure.
+ * @see LIBMTP_Update_Album()
+ * @see LIBMTP_Delete_Object()
+ */
+int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
+			       LIBMTP_album_t * const metadata,
+			       uint32_t const parenthandle)
+{
+  uint16_t ret;
+  uint32_t store = 0;
+  PTPObjectInfo new_alb;
+  PTPParams *params = (PTPParams *) device->params;
+  uint32_t localph = parenthandle;
+  char fname[256];
+  uint8_t data[1];
+
+  // Use a default folder if none given
+  if (localph == 0) {
+    localph = device->default_music_folder;
+  }
+
+  new_alb.Filename = NULL;
+  if (strlen(metadata->name) > 4) {
+    char *suff = &metadata->name[strlen(metadata->name)-4];
+    if (!strcmp(suff, ".alb")) {
+      new_alb.Filename = metadata->name;
+    }
+  }
+  // If it didn't end with ".alb" then add that here.
+  if (new_alb.Filename == NULL) {
+    strncpy(fname, metadata->name, sizeof(fname)-5);
+    strcat(fname, ".alb");
+    fname[sizeof(fname)-1] = '\0';
+    new_alb.Filename = fname;
+  }
+
+  new_alb.ObjectCompressedSize = 1;
+  new_alb.ObjectFormat = PTP_OFC_MTP_AbstractAudioAlbum;
+
+  // Create the object
+  ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->album_id, &new_alb);
+  if (ret != PTP_RC_OK) {
+    ptp_perror(params, ret);
+    printf("LIBMTP_New_Album(): Could not send object info (the album itself)\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    return -1;
+  }
+  data[0] = '\0';
+  ret = ptp_sendobject(params, data, 1);
+  if (ret != PTP_RC_OK) {
+    ptp_perror(params, ret);
+    printf("LIBMTP_New_Album(): Could not send blank object data\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    return -1;
+  }
+
+  // Update title
+  ret = LIBMTP_Set_Object_String(device, metadata->album_id, PTP_OPC_Name, metadata->name);
+  if (ret != 0) {
+    printf("LIBMTP_New_Album(): could not set album name\n");
+    return -1;
+  }
+
+  if (metadata->no_tracks > 0) {
+    // Add tracks to the new album as object references.
+    ret = ptp_mtp_setobjectreferences (params, metadata->album_id, metadata->tracks, metadata->no_tracks);
+    if (ret != PTP_RC_OK) {
+      printf("LIBMTP_New_Album(): could not add tracks as object references\n");
+      printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+      return -1;
+    }
+  }
+
+  // Created new item, so flush handles
+  flush_handles(device);
+
+  return 0;
+}
+
+/**
+ * This routine sends cover art for an album object. This uses the
+ * RepresentativeSampleData property of the album, if the device
+ * supports it. The data should be of a format acceptable to the
+ * player (for iRiver and Creative, this seems to be JPEG) and
+ * must not be too large. (for a Creative, max seems to be about 20KB.)
+ * TODO: there must be a way to find the max size for an ObjectPropertyValue.
+ * @param device a pointer to the device which the album is on.
+ * @param id unique id of the album object.
+ * @param imagedata pointer to an array of uint8_t containing the image data.
+ * @param imagesize number of bytes in the image.
+ * @return 0 on success, any other value means failure.
+ * @see LIBMTP_Create_New_Album()
+ */
+int LIBMTP_Send_Album_Art(LIBMTP_mtpdevice_t *device,
+                          uint32_t const id,
+                          uint8_t * const imagedata,
+                          uint32_t const imagesize)
+{
+  uint16_t ret;
+  PTPParams *params = (PTPParams *) device->params;
+  PTPPropertyValue propval;
+
+  int i;
+  propval.a.count = imagesize;
+  propval.a.v = malloc(sizeof(PTPPropertyValue) * imagesize);
+  for (i = 0; i < imagesize; i++) {
+    propval.a.v[i].u8 = imagedata[i];
+  }
+
+  // check that we can send album art
+  uint16_t *props = NULL;
+  uint32_t propcnt = 0;
+  ret = ptp_mtp_getobjectpropssupported(params, PTP_OFC_MTP_AbstractAudioAlbum, &propcnt, &props);
+  if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Send_Album_Art(): could not get object properties\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    return -1;
+  }
+  int supported = 0;
+  for (i = 0; i < propcnt; i++) {
+    if (props[i] == PTP_OPC_RepresentativeSampleData)
+      supported = 1;
+  }
+  if (!supported) {
+    printf("LIBMTP_Send_Album_Art(): device doesn't support RepresentativeSampleData\n");
+    return -1;
+  }
+
+  // go ahead and send the data
+  ret = ptp_mtp_setobjectpropvalue(params,id,PTP_OPC_RepresentativeSampleData,
+                            &propval,PTP_DTC_AUINT8);
+  if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Send_Album_Art(): could not send album art\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    return -1;
+  }
+  return 0;
+}
+
+/**
+ * This routine updates an album based on the metadata
+ * supplied. If the <code>tracks</code> field of the metadata
+ * contains a track listing, these tracks will be added to the
+ * album in place of those already present, i.e. the
+ * previous track listing will be deleted.
+ * @param device a pointer to the device to create the new album on.
+ * @param metadata the metadata for the album to be updated.
+ *                 notice that the field <code>album_id</code>
+ *                 must contain the apropriate album ID.
+ * @return 0 on success, any other value means failure.
+ * @see LIBMTP_Create_New_Album()
+ * @see LIBMTP_Delete_Object()
+ */
+int LIBMTP_Update_Album(LIBMTP_mtpdevice_t *device,
+			   LIBMTP_album_t const * const metadata)
+{
+  uint16_t ret;
+  PTPParams *params = (PTPParams *) device->params;
+
+  // Update title
+  ret = LIBMTP_Set_Object_String(device, metadata->album_id, PTP_OPC_Name, metadata->name);
+  if (ret != 0) {
+    printf("LIBMTP_Update_Album(): could not set album name\n");
+    return -1;
+  }
+
+  if (metadata->no_tracks > 0) {
+    // Add tracks to the new album as object references.
+    ret = ptp_mtp_setobjectreferences (params, metadata->album_id, metadata->tracks, metadata->no_tracks);
+    if (ret != PTP_RC_OK) {
+      printf("LIBMTP_Update_Album(): could not add tracks as object references\n");
+      return -1;
+    }
+  }
+  return 0;
+}
 
 /**
  * Dummy function needed to interface to upstream

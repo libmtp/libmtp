@@ -1,3 +1,14 @@
+2006-10-27  Linus Walleij <triad@df.lth.se>
+
+	* src/Makefile.am: bump library interface to reflect the new
+	  album methods.
+	* configure.ac: bump to 0.0.22 for the next release.
+
+2006-10-27  Andy Kelk <andy@mopoke.co.uk>
+
+	* src/libmtp.c: add support form abstract audio/video albums.
+	* src/libmtp.h.in: dito.
+
 2006-10-23  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: retire opcode rendering (moved to ptp.c)

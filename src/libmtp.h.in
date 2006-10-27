@@ -81,6 +81,7 @@ typedef struct LIBMTP_mtpdevice_struct LIBMTP_mtpdevice_t; /**< @see LIBMTP_mtpd
 typedef struct LIBMTP_file_struct LIBMTP_file_t; /**< @see LIBMTP_file_struct */
 typedef struct LIBMTP_track_struct LIBMTP_track_t; /**< @see LIBMTP_track_struct */
 typedef struct LIBMTP_playlist_struct LIBMTP_playlist_t; /**< @see LIBMTP_playlist_struct */
+typedef struct LIBMTP_album_struct LIBMTP_album_t; /**< @see LIBMTP_album_struct */
 typedef struct LIBMTP_folder_struct LIBMTP_folder_t; /**< @see LIBMTP_folder_t */
 typedef struct LIBMTP_object_struct LIBMTP_object_t; /**< @see LIBMTP_object_t */
 
@@ -195,6 +196,17 @@ struct LIBMTP_playlist_struct {
   uint32_t *tracks; /**< The tracks in this playlist */
   uint32_t no_tracks; /**< The number of tracks in this playlist */
   LIBMTP_playlist_t *next; /**< Next playlist or NULL if last playlist */
+};
+
+/**
+ * MTP Album structure
+ */
+struct LIBMTP_album_struct {
+  uint32_t album_id; /**< Unique playlist ID */
+  char *name; /**< Name of album */
+  uint32_t *tracks; /**< The tracks in this album */
+  uint32_t no_tracks; /**< The number of tracks in this album */
+  LIBMTP_album_t *next; /**< Next album or NULL if last album */
 };
 
 /**
@@ -333,6 +345,18 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *, uint32_t const);
 int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *, LIBMTP_playlist_t * const, uint32_t const);
 int LIBMTP_Update_Playlist(LIBMTP_mtpdevice_t *, LIBMTP_playlist_t const * const);
 
+/**
+ * @}
+ * @defgroup albums The audio/video album management API.
+ * @{
+ */
+LIBMTP_album_t *LIBMTP_new_album_t(void);
+void LIBMTP_destroy_album_t(LIBMTP_album_t *);
+LIBMTP_album_t *LIBMTP_Get_Album_List(LIBMTP_mtpdevice_t *);
+LIBMTP_album_t *LIBMTP_Get_Album(LIBMTP_mtpdevice_t *, uint32_t const);
+int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *, LIBMTP_album_t * const, uint32_t const);
+int LIBMTP_Update_Album(LIBMTP_mtpdevice_t *, LIBMTP_album_t const * const);
+int LIBMTP_Send_Album_Art(LIBMTP_mtpdevice_t *, uint32_t const, uint8_t * const, uint32_t const);
 
 /**
  * @}
