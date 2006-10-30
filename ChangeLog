@@ -1,3 +1,9 @@
+2006-10-29  Andy Kelk <andy@mopoke.co.uk>
+
+	* examples/albumart.c: simple tool for adding album art.
+	* src/libmtp.c: graceful handling of players not supporting 
+	  abstract album objects.
+
 2006-10-27  Linus Walleij <triad@df.lth.se>
 
 	* src/Makefile.am: bump library interface to reflect the new
