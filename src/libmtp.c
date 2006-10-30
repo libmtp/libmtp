@@ -3698,12 +3698,14 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
   char fname[256];
   uint8_t data[1];
 
-  // check we can create an object of type PTP_OFC_MTP_AbstractAudioAlbum
+  // Check if we can create an object of type PTP_OFC_MTP_AbstractAudioAlbum
   int i;
   int supported = 0;
   for ( i=0; i < params->deviceinfo.ImageFormats_len; i++ ) {
-    if (params->deviceinfo.ImageFormats[i] == PTP_OFC_MTP_AbstractAudioAlbum)
+    if (params->deviceinfo.ImageFormats[i] == PTP_OFC_MTP_AbstractAudioAlbum) {
       supported = 1;
+      break;
+    }
   }
   if (!supported) {
     printf("LIBMTP_Create_New_Album(): Player does not support the AbstractAudioAlbum type\n");
