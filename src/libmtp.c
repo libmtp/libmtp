@@ -6,7 +6,7 @@
  * and some small utility functions, mainly for debugging
  * (stored in util.c/.h).
  *
- * The three PTP files (ptp.c, ptp.h and ptp-pack.c) are 
+ * The three PTP files (ptp.c, ptp.h and ptp-pack.c) are
  * plain copied from the libhphoto2 codebase.
  *
  * The files libusb-glue.c/.h are just what they say: an
@@ -24,11 +24,11 @@
 #include "libusb-glue.h"
 
 /*
- * On MacOS (Darwin) and *BSD we're not using glibc, but libiconv. 
- * glibc knows that UCS-2 is to be in the local machine endianness, 
- * whereas libiconv does not. So we construct this macro to get 
+ * On MacOS (Darwin) and *BSD we're not using glibc, but libiconv.
+ * glibc knows that UCS-2 is to be in the local machine endianness,
+ * whereas libiconv does not. So we construct this macro to get
  * things right. Reportedly, glibc 2.1.3 has a bug so that UCS-2
- * is always bigendian though, we would need to work around that 
+ * is always bigendian though, we would need to work around that
  * too...
  */
 #ifndef __GLIBC__
@@ -65,7 +65,7 @@ static LIBMTP_filemap_t *filemap = NULL;
 static void flush_handles(LIBMTP_mtpdevice_t *device);
 static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype);
 static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype);
-static int get_device_unicode_property(LIBMTP_mtpdevice_t *device, 
+static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
 				       char **unicstring, uint16_t property);
 static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat,
 			       LIBMTP_track_t *track);
@@ -73,9 +73,9 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
 static LIBMTP_filemap_t *new_filemap_entry()
 {
   LIBMTP_filemap_t *filemap;
-  
+
   filemap = (LIBMTP_filemap_t *)malloc(sizeof(LIBMTP_filemap_t));
-  
+
   if( filemap != NULL ) {
     filemap->description = NULL;
     filemap->id = LIBMTP_FILETYPE_UNKNOWN;
@@ -85,7 +85,7 @@ static LIBMTP_filemap_t *new_filemap_entry()
     filemap->datafunc = NULL;
     filemap->next = NULL;
   }
-  
+
   return filemap;
 }
 
@@ -100,8 +100,8 @@ static LIBMTP_filemap_t *new_filemap_entry()
  * @param datafunc Pointer to function to fill data structure
  * @return 0 for success any other value means error.
 */
-int LIBMTP_Register_Filetype(char const * const description, LIBMTP_filetype_t const id, 
-			     uint16_t const ptp_id, void const * const constructor, 
+int LIBMTP_Register_Filetype(char const * const description, LIBMTP_filetype_t const id,
+			     uint16_t const ptp_id, void const * const constructor,
 			     void const * const destructor, void const * const datafunc)
 {
   LIBMTP_filemap_t *new = NULL, *current;
@@ -114,14 +114,14 @@ int LIBMTP_Register_Filetype(char const * const description, LIBMTP_filetype_t c
     }
     current = current->next;
   }
-  
+
   // Create the entry
   if(current == NULL) {
     new = new_filemap_entry();
     if(new == NULL) {
       return 1;
     }
-    
+
     new->id = id;
     if(description != NULL) {
       new->description = strdup(description);
@@ -130,7 +130,7 @@ int LIBMTP_Register_Filetype(char const * const description, LIBMTP_filetype_t c
     new->constructor = (void*) constructor;
     new->destructor = (void*) destructor;
     new->datafunc = (void*) datafunc;
-    
+
     // Add the entry to the list
     if(filemap == NULL) {
       filemap = new;
@@ -167,21 +167,21 @@ int LIBMTP_Register_Filetype(char const * const description, LIBMTP_filetype_t c
 int LIBMTP_Set_Filetype_Description(LIBMTP_filetype_t const id, char const * const description)
 {
   LIBMTP_filemap_t *current;
-  
+
   if (filemap == NULL) {
     return -1;
   }
-  
+
   // Go through the filemap until an entry is found
   current = filemap;
-  
+
   while(current != NULL) {
     if(current->id == id) {
       break;
     }
     current = current->next;
   }
-  
+
   if(current == NULL) {
     return -1;
   }
@@ -206,25 +206,25 @@ int LIBMTP_Set_Filetype_Description(LIBMTP_filetype_t const id, char const * con
 int LIBMTP_Set_Constructor(LIBMTP_filetype_t const id, void const * const constructor)
 {
   LIBMTP_filemap_t *current;
-  
+
   if (filemap == NULL) {
     return -1;
-  } 
- 
+  }
+
   // Go through the filemap until an entry is found
   current = filemap;
-  
+
   while(current != NULL) {
     if(current->id == id) {
       break;
     }
     current = current->next;
   }
-  
+
   if (current == NULL) {
     return -1;
   }
-  
+
   current->constructor = (void*) constructor;
   return 0;
 }
@@ -239,25 +239,25 @@ int LIBMTP_Set_Constructor(LIBMTP_filetype_t const id, void const * const constr
 int LIBMTP_Set_Destructor(LIBMTP_filetype_t const id, void const * const destructor)
 {
   LIBMTP_filemap_t *current;
-  
+
   if (filemap == NULL) {
     return -1;
   }
-  
+
   // Go through the filemap until an entry is found
   current = filemap;
-  
+
   while(current != NULL) {
     if(current->id == id) {
       break;
     }
     current = current->next;
   }
-  
+
   if(current == NULL) {
     return -1;
   }
-  
+
   current->destructor = (void *) destructor;
   return 0;
 }
@@ -272,25 +272,25 @@ int LIBMTP_Set_Destructor(LIBMTP_filetype_t const id, void const * const destruc
 int LIBMTP_Set_Datafunc(LIBMTP_filetype_t const id, void const * const datafunc)
 {
   LIBMTP_filemap_t *current;
-  
+
   if (filemap == NULL) {
     return -1;
   }
-  
+
   // Go through the filemap until an entry is found
   current = filemap;
-  
+
   while(current != NULL) {
     if(current->id == id) {
       break;
     }
     current = current->next;
   }
-  
+
   if(current == NULL) {
     return -1;
   }
-  
+
   current->datafunc = (void *) datafunc;
   return 0;
 }
@@ -353,7 +353,7 @@ static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype)
 /**
  * Returns the PTP internal filetype that maps to a certain libmtp
  * interface file type.
- * @param intype the PTP (libgphoto2) interface type 
+ * @param intype the PTP (libgphoto2) interface type
  * @return the MTP library interface type
  */
 static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype)
@@ -380,9 +380,9 @@ static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype)
 static void *get_datafunc(uint16_t intype)
 {
   LIBMTP_filemap_t *current;
-  
+
   current = filemap;
-  
+
   while (current != NULL) {
     if(current->ptp_id == intype) {
       return current->datafunc;
@@ -401,9 +401,9 @@ static void *get_datafunc(uint16_t intype)
 static void *get_constructor(uint16_t intype)
 {
   LIBMTP_filemap_t *current;
-  
+
   current = filemap;
-  
+
   while (current != NULL) {
     if(current->ptp_id == intype) {
       return current->constructor;
@@ -421,7 +421,7 @@ static void *get_constructor(uint16_t intype)
 static void *get_destructor(uint16_t intype)
 {
   LIBMTP_filemap_t *current;
-  
+
   current = filemap;
 
   while (current != NULL) {
@@ -445,14 +445,14 @@ char const * LIBMTP_Get_Filetype_Description(LIBMTP_filetype_t intype)
   LIBMTP_filemap_t *current;
 
   current = filemap;
-  
+
   while (current != NULL) {
     if(current->id == intype) {
       return current->description;
     }
     current = current->next;
   }
-  
+
   return "Unknown filetype";
 }
 
@@ -480,18 +480,18 @@ void LIBMTP_Init(void)
  *         must bee <code>free()</code>:ed by the caller after
  *         use.
  */
-char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const object_id, 
+char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 				    uint16_t const attribute_id)
 {
   PTPPropertyValue propval;
   char *retstring = NULL;
   PTPParams *params = (PTPParams *) device->params;
   uint16_t ret;
-  
+
   if ( device == NULL || object_id == 0) {
     return NULL;
   }
-  
+
   ret = ptp_mtp_getobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_STR);
   if (ret == PTP_RC_OK) {
     if (propval.str != NULL) {
@@ -499,7 +499,7 @@ char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const o
       free(propval.str);
     }
   }
-  
+
   return retstring;
 }
 
@@ -512,14 +512,14 @@ char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const o
  * @param value_default Default value to return on failure
  * @return the value
  */
-uint32_t LIBMTP_Get_U32_From_Object(LIBMTP_mtpdevice_t *device,uint32_t const object_id, 
+uint32_t LIBMTP_Get_U32_From_Object(LIBMTP_mtpdevice_t *device,uint32_t const object_id,
 				    uint16_t const attribute_id, uint32_t const value_default)
 {
   PTPPropertyValue propval;
   uint32_t retval = value_default;
   PTPParams *params = (PTPParams *) device->params;
   uint16_t ret;
-  
+
   if ( device == NULL ) {
     return value_default;
   }
@@ -544,7 +544,7 @@ uint32_t LIBMTP_Get_U32_From_Object(LIBMTP_mtpdevice_t *device,uint32_t const ob
  * @param value_default Default value to return on failure
  * @return a value
  */
-uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const object_id, 
+uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 				    uint16_t const attribute_id, uint16_t const value_default)
 {
   PTPPropertyValue propval;
@@ -563,7 +563,7 @@ uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const o
   if (ret == PTP_RC_OK) {
     retval = propval.u16;
   }
-  
+
   return retval;
 }
 
@@ -576,7 +576,7 @@ uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const o
  * @param string string value to set
  * @return 0 on success, any other value means failure
  */
-int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t const object_id, 
+int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 			     uint16_t const attribute_id, char const * const string)
 {
   PTPPropertyValue propval;
@@ -594,7 +594,7 @@ int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t const object_i
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
-  
+
   return 0;
 }
 
@@ -607,7 +607,7 @@ int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t const object_i
  * @param value 32-bit unsigned integer to set
  * @return 0 on success, any other value means failure
  */
-int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *device, uint32_t const object_id, 
+int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 			  uint16_t const attribute_id, uint32_t const value)
 {
   PTPPropertyValue propval;
@@ -625,7 +625,7 @@ int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
-  
+
   return 0;
 }
 
@@ -638,7 +638,7 @@ int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
  * @param value 16-bit unsigned integer to set
  * @return 0 on success, any other value means failure
  */
-int LIBMTP_Set_Object_U16(LIBMTP_mtpdevice_t *device, uint32_t const object_id, 
+int LIBMTP_Set_Object_U16(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 			  uint16_t const attribute_id, uint16_t const value)
 {
   PTPPropertyValue propval;
@@ -669,7 +669,7 @@ int LIBMTP_Set_Object_U16(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
  * @param len length of array
  * @return 0 on success, any other value means failure
  */
-int LIBMTP_Get_Object_References(LIBMTP_mtpdevice_t *device, uint32_t const object_id, 
+int LIBMTP_Get_Object_References(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 				 uint32_t **items, uint32_t *len)
 {
   PTPParams *params = (PTPParams *) device->params;
@@ -681,7 +681,7 @@ int LIBMTP_Get_Object_References(LIBMTP_mtpdevice_t *device, uint32_t const obje
     *len = 0;
     return 1;
   }
-  
+
   ret = ptp_mtp_getobjectreferences (params, object_id, items, len);
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
@@ -701,7 +701,7 @@ int LIBMTP_Get_Object_References(LIBMTP_mtpdevice_t *device, uint32_t const obje
  * @param len length of array
  * @return 0 on success, any other value means failure
  */
-int LIBMTP_Set_Object_References(LIBMTP_mtpdevice_t *device, uint32_t const object_id, 
+int LIBMTP_Set_Object_References(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 				 uint32_t const * const items, uint32_t const len)
 {
   PTPParams *params = (PTPParams *) device->params;
@@ -710,7 +710,7 @@ int LIBMTP_Set_Object_References(LIBMTP_mtpdevice_t *device, uint32_t const obje
   if (device == NULL || items == NULL) {
     return 1;
   }
-  
+
   ret = ptp_mtp_setobjectreferences (params, object_id, (uint32_t *) items, len);
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
@@ -718,7 +718,7 @@ int LIBMTP_Set_Object_References(LIBMTP_mtpdevice_t *device, uint32_t const obje
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return 1;
   }
-  
+
   return 0;
 }
 
@@ -773,17 +773,17 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
     printf("LIBMTP panic: could not open iconv() converters to/from UCS-2!\n");
     return NULL;
   }
-      
+
   ptp_usb = (PTP_USB *) malloc(sizeof(PTP_USB));
   // Callbacks and stuff
   ptp_usb->callback_active = 0;
   ptp_usb->current_transfer_total = 0;
   ptp_usb->current_transfer_complete = 0;
   ptp_usb->current_transfer_callback = NULL;
-  
+
   // get storage ID
   ret = connect_first_device(params, ptp_usb, &interface_number);
-  
+
   switch (ret)
     {
     case PTP_CD_RC_CONNECTED:
@@ -803,7 +803,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
       storageID = storageIDs.Storage[0];
     free(storageIDs.Storage);
   }
-  
+
   // Make sure there are no handlers
   params->handles.Handler = NULL;
 
@@ -811,7 +811,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   if (ptp_getdeviceinfo(params, &params->deviceinfo) != PTP_RC_OK) {
     goto error_handler;
   }
-  
+
   // Get battery maximum level
   if (ptp_property_issupported(params, PTP_DPC_BatteryLevel)) {
     if (ptp_getdevicepropdesc(params, PTP_DPC_BatteryLevel, &dpd) != PTP_RC_OK) {
@@ -891,7 +891,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   }
 
   return tmpdevice;
-  
+
   // Then close it again.
  error_handler:
   close_device(ptp_usb, params, interface_number);
@@ -937,16 +937,16 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
 {
   PTPParams *params = (PTPParams *) device->params;
   uint16_t ret;
-  
+
   if (params->handles.Handler != NULL) {
     free(params->handles.Handler);
   }
 
   // Get all the handles if we haven't already done that
   ret = ptp_getobjecthandles(params,
-			     PTP_GOH_ALL_STORAGE, 
-			     PTP_GOH_ALL_FORMATS, 
-			     PTP_GOH_ALL_ASSOCS, 
+			     PTP_GOH_ALL_STORAGE,
+			     PTP_GOH_ALL_FORMATS,
+			     PTP_GOH_ALL_ASSOCS,
 			     &params->handles);
   if (ret != PTP_RC_OK) {
     printf("flush_handles(): LIBMTP panic: Could not get object handles...\n");
@@ -967,7 +967,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
   int i;
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
-  
+
   printf("USB low-level info:\n");
   dump_usbinfo(ptp_usb);
   /* Print out some verbose information */
@@ -996,7 +996,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
   printf("Device Properties Supported:\n");
   for (i=0;i<params->deviceinfo.DevicePropertiesSupported_len;i++) {
     char const *propdesc = ptp_get_property_description(params, params->deviceinfo.DevicePropertiesSupported[i]);
-    
+
     if (propdesc != NULL) {
       printf("   0x%04x: %s\n", params->deviceinfo.DevicePropertiesSupported[i], propdesc);
     } else {
@@ -1013,10 +1013,10 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
       uint16_t *props = NULL;
       uint32_t propcnt = 0;
       int j;
-      
+
       (void) ptp_render_ofc (params, params->deviceinfo.ImageFormats[i], sizeof(txt), txt);
       printf("   %04x: %s\n", params->deviceinfo.ImageFormats[i], txt);
-      
+
       ret = ptp_mtp_getobjectpropssupported (params, params->deviceinfo.ImageFormats[i], &propcnt, &props);
       if (ret != PTP_RC_OK) {
 	printf("      Error on query for object properties.\n");
@@ -1030,7 +1030,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
       }
     }
   }
-  
+
   printf("Special directories:\n");
   printf("   Default music folder: 0x%08x\n", device->default_music_folder);
   printf("   Default playlist folder: 0x%08x\n", device->default_playlist_folder);
@@ -1041,7 +1041,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 }
 
 /**
- * This retrieves the model name (often equal to product name) 
+ * This retrieves the model name (often equal to product name)
  * of an MTP device.
  * @param device a pointer to the device to get the model name for.
  * @return a newly allocated UTF-8 string representing the model name.
@@ -1052,7 +1052,7 @@ char *LIBMTP_Get_Modelname(LIBMTP_mtpdevice_t *device)
 {
   char *retmodel = NULL;
   PTPParams *params = (PTPParams *) device->params;
-  
+
   if (params->deviceinfo.Model != NULL) {
     retmodel = strdup(params->deviceinfo.Model);
   }
@@ -1070,7 +1070,7 @@ char *LIBMTP_Get_Serialnumber(LIBMTP_mtpdevice_t *device)
 {
   char *retnumber = NULL;
   PTPParams *params = (PTPParams *) device->params;
-  
+
   if (params->deviceinfo.SerialNumber != NULL) {
     retnumber = strdup(params->deviceinfo.SerialNumber);
   }
@@ -1078,7 +1078,7 @@ char *LIBMTP_Get_Serialnumber(LIBMTP_mtpdevice_t *device)
 }
 
 /**
- * This retrieves the device version (hardware and firmware version) of an 
+ * This retrieves the device version (hardware and firmware version) of an
  * MTP device.
  * @param device a pointer to the device to get the device version for.
  * @return a newly allocated UTF-8 string representing the device version.
@@ -1089,7 +1089,7 @@ char *LIBMTP_Get_Deviceversion(LIBMTP_mtpdevice_t *device)
 {
   char *retversion = NULL;
   PTPParams *params = (PTPParams *) device->params;
-  
+
   if (params->deviceinfo.DeviceVersion != NULL) {
     retversion = strdup(params->deviceinfo.DeviceVersion);
   }
@@ -1103,7 +1103,7 @@ char *LIBMTP_Get_Deviceversion(LIBMTP_mtpdevice_t *device)
  * "John Doe's Digital Audio Player". This property should be supported
  * by all MTP devices.
  * @param device a pointer to the device to get the friendly name for.
- * @return a newly allocated UTF-8 string representing the friendly name. 
+ * @return a newly allocated UTF-8 string representing the friendly name.
  *         The string must be freed by the caller after use.
  * @see LIBMTP_Set_Friendlyname()
  */
@@ -1117,9 +1117,9 @@ char *LIBMTP_Get_Friendlyname(LIBMTP_mtpdevice_t *device)
     return NULL;
   }
 
-  if (ptp_getdevicepropvalue(params, 
-			     PTP_DPC_MTP_DeviceFriendlyName, 
-			     &propval, 
+  if (ptp_getdevicepropvalue(params,
+			     PTP_DPC_MTP_DeviceFriendlyName,
+			     &propval,
 			     PTP_DTC_STR) != PTP_RC_OK) {
     return NULL;
   }
@@ -1148,8 +1148,8 @@ int LIBMTP_Set_Friendlyname(LIBMTP_mtpdevice_t *device,
   }
   propval.str = (char *) friendlyname;
   if (ptp_setdevicepropvalue(params,
-			     PTP_DPC_MTP_DeviceFriendlyName, 
-			     &propval, 
+			     PTP_DPC_MTP_DeviceFriendlyName,
+			     &propval,
 			     PTP_DTC_STR) != PTP_RC_OK) {
     return -1;
   }
@@ -1174,9 +1174,9 @@ char *LIBMTP_Get_Syncpartner(LIBMTP_mtpdevice_t *device)
     return NULL;
   }
 
-  if (ptp_getdevicepropvalue(params, 
-			     PTP_DPC_MTP_SynchronizationPartner, 
-			     &propval, 
+  if (ptp_getdevicepropvalue(params,
+			     PTP_DPC_MTP_SynchronizationPartner,
+			     &propval,
 			     PTP_DTC_STR) != PTP_RC_OK) {
     return NULL;
   }
@@ -1204,14 +1204,14 @@ int LIBMTP_Set_Syncpartner(LIBMTP_mtpdevice_t *device,
 {
   PTPPropertyValue propval;
   PTPParams *params = (PTPParams *) device->params;
-  
+
   if (!ptp_property_issupported(params, PTP_DPC_MTP_SynchronizationPartner)) {
     return -1;
   }
   propval.str = (char *) syncpartner;
   if (ptp_setdevicepropvalue(params,
-			     PTP_DPC_MTP_SynchronizationPartner, 
-			     &propval, 
+			     PTP_DPC_MTP_SynchronizationPartner,
+			     &propval,
 			     PTP_DTC_STR) != PTP_RC_OK) {
     return -1;
   }
@@ -1223,13 +1223,13 @@ int LIBMTP_Set_Syncpartner(LIBMTP_mtpdevice_t *device,
  * and any additional storage information. Storage may be a hard disk
  * or flash memory or whatever.
  * @param device a pointer to the device to get the storage info for.
- * @param total a pointer to a variable that will hold the 
+ * @param total a pointer to a variable that will hold the
  *        total the total number of bytes available on this volume after
  *        the call.
- * @param free a pointer to a variable that will hold the number of 
+ * @param free a pointer to a variable that will hold the number of
  *        free bytes available on this volume right now after the call.
- * @param storage_description a description of the storage. This may 
- *        be NULL after the call even if it succeeded. If it is not NULL, 
+ * @param storage_description a description of the storage. This may
+ *        be NULL after the call even if it succeeded. If it is not NULL,
  *        it must be freed by the callee after use.
  * @param volume_label a volume label or similar. This may be NULL after the
  *        call even if it succeeded. If it is not NULL, it must be
@@ -1237,13 +1237,13 @@ int LIBMTP_Set_Syncpartner(LIBMTP_mtpdevice_t *device,
  * @return 0 if the storage info was successfully retrieved, any other
  *        value means failure.
  */
-int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *device, uint64_t * const total, 
-			uint64_t * const free, char ** const storage_description, 
+int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *device, uint64_t * const total,
+			uint64_t * const free, char ** const storage_description,
 			char ** const volume_label)
 {
   PTPStorageInfo storageInfo;
   PTPParams *params = (PTPParams *) device->params;
-  
+
   if (ptp_getstorageinfo(params, device->storage_id, &storageInfo) != PTP_RC_OK) {
     printf("LIBMTP_Get_Diskinfo(): failed to get disk info\n");
     *total = 0;
@@ -1264,17 +1264,17 @@ int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *device, uint64_t * const total,
 /**
  * This function retrieves the current battery level on the device.
  * @param device a pointer to the device to get the battery level for.
- * @param maximum_level a pointer to a variable that will hold the 
+ * @param maximum_level a pointer to a variable that will hold the
  *        maximum level of the battery if the call was successful.
- * @param current_level a pointer to a variable that will hold the 
+ * @param current_level a pointer to a variable that will hold the
  *        current level of the battery if the call was successful.
  *        A value of 0 means that the device is on external power.
  * @return 0 if the storage info was successfully retrieved, any other
  *        means failure. A typical cause of failure is that
  *        the device does not support the battery level property.
  */
-int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device, 
-			    uint8_t * const maximum_level, 
+int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device,
+			    uint8_t * const maximum_level,
 			    uint8_t * const current_level)
 {
   PTPPropertyValue propval;
@@ -1287,17 +1287,17 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device,
   if (!ptp_property_issupported(params, PTP_DPC_BatteryLevel)) {
     return -1;
   }
-  
+
   ret = ptp_getdevicepropvalue(params, PTP_DPC_BatteryLevel, &propval, PTP_DTC_UINT8);
   if (ret != PTP_RC_OK) {
     printf("LIBMTP_Get_Batterylevel(): could not get devcie property value.\n");
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
-  
+
   *maximum_level = device->maximum_battery_level;
   *current_level = propval.u8;
-  
+
   return 0;
 }
 
@@ -1314,7 +1314,7 @@ int LIBMTP_Format_Storage(LIBMTP_mtpdevice_t *device)
 {
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
-  
+
   if (!ptp_operation_issupported(params,PTP_OC_FormatStore)) {
     printf("LIBMTP_Format_Storage(): device cannot format storage\n");
     return -1;
@@ -1333,12 +1333,12 @@ int LIBMTP_Format_Storage(LIBMTP_mtpdevice_t *device)
  * This is the standard way of retrieveing unicode device
  * properties as described by the PTP spec.
  * @param device a pointer to the device to get the property from.
- * @param unicstring a pointer to a pointer that will hold the 
+ * @param unicstring a pointer to a pointer that will hold the
  *        property after this call is completed.
  * @param property the property to retrieve.
  * @return 0 on success, any other value means failure.
  */
-static int get_device_unicode_property(LIBMTP_mtpdevice_t *device, 
+static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
 				       char **unicstring, uint16_t property)
 {
   PTPPropertyValue propval;
@@ -1351,9 +1351,9 @@ static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
   }
 
   // Unicode strings are 16bit unsigned integer arrays.
-  if (ptp_getdevicepropvalue(params, 
-			     property, 
-			     &propval, 
+  if (ptp_getdevicepropvalue(params,
+			     property,
+			     &propval,
 			     PTP_DTC_AUINT16) != PTP_RC_OK) {
     return -1;
   }
@@ -1390,7 +1390,7 @@ int LIBMTP_Get_Secure_Time(LIBMTP_mtpdevice_t *device, char ** const sectime)
 }
 
 /**
- * This function returns the device (public key) certificate as an 
+ * This function returns the device (public key) certificate as an
  * XML document string from the device.
  * @param device a pointer to the device to get the device certificate for.
  * @param devcert the device certificate as an XML string or NULL if the call
@@ -1418,18 +1418,18 @@ int LIBMTP_Get_Device_Certificate(LIBMTP_mtpdevice_t *device, char ** const devc
  * @return 0 on success, any other value means failure.
  * @see LIBMTP_Get_Filetype_Description()
  */
-int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *device, uint16_t ** const filetypes, 
+int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *device, uint16_t ** const filetypes,
 				  uint16_t * const length)
 {
   PTPParams *params = (PTPParams *) device->params;
   uint16_t *localtypes;
   uint16_t localtypelen;
   uint32_t i;
-  
+
   // This is more memory than needed if there are unknown types, but what the heck.
   localtypes = (uint16_t *) malloc(params->deviceinfo.ImageFormats_len * sizeof(uint16_t));
   localtypelen = 0;
-  
+
   for (i=0;i<params->deviceinfo.ImageFormats_len;i++) {
     uint16_t localtype = map_ptp_type_to_libmtp_type(params->deviceinfo.ImageFormats[i]);
     if (localtype != LIBMTP_FILETYPE_UNKNOWN) {
@@ -1449,7 +1449,7 @@ int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *device, uint16_t ** const
  * This creates a new MTP object structure and allocates memory
  * for it. Notice that if you add strings to this structure they
  * will be freed by the corresponding <code>LIBMTP_destroy_object_t</code>
- * operation later, so be careful of using strdup() when assigning 
+ * operation later, so be careful of using strdup() when assigning
  * strings, e.g.:
  *
  * <pre>
@@ -1485,7 +1485,7 @@ LIBMTP_object_t *LIBMTP_new_object_t(void)
  * This creates a new file metadata structure and allocates memory
  * for it. Notice that if you add strings to this structure they
  * will be freed by the corresponding <code>LIBMTP_destroy_file_t</code>
- * operation later, so be careful of using strdup() when assigning 
+ * operation later, so be careful of using strdup() when assigning
  * strings, e.g.:
  *
  * <pre>
@@ -1513,7 +1513,7 @@ LIBMTP_file_t *LIBMTP_new_file_t(void)
 
 /**
  * This destroys a file metadata structure and deallocates the memory
- * used by it, including any strings. Never use a file metadata 
+ * used by it, including any strings. Never use a file metadata
  * structure again after calling this function on it.
  * @param file the file metadata to destroy.
  * @see LIBMTP_new_file_t()
@@ -1562,11 +1562,11 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
   LIBMTP_file_t *curfile = NULL;
   PTPParams *params = (PTPParams *) device->params;
 
-  // Get all the handles if we haven't already done that  
+  // Get all the handles if we haven't already done that
   if (params->handles.Handler == NULL) {
     flush_handles(device);
   }
-  
+
   for (i = 0; i < params->handles.n; i++) {
 
     LIBMTP_file_t *file;
@@ -1596,7 +1596,7 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
 
       // This is some sort of unique ID so we can keep track of the track.
       file->item_id = params->handles.Handler[i];
-      
+
       // Add track to a list that will be returned afterwards.
       if (retfiles == NULL) {
 	retfiles = file;
@@ -1605,7 +1605,7 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
 	curfile->next = file;
 	curfile = file;
       }
-      
+
       // Call listing callback
       // double progressPercent = (double)i*(double)100.0 / (double)params->handles.n;
 
@@ -1636,7 +1636,7 @@ LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *device, uint32_t cons
   uint32_t i = 0;
   PTPParams *params = (PTPParams *) device->params;
 
-  // Get all the handles if we haven't already done that  
+  // Get all the handles if we haven't already done that
   if (params->handles.Handler == NULL) {
     flush_handles(device);
   }
@@ -1660,21 +1660,21 @@ LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *device, uint32_t cons
 
       // Allocate a new file type
       file = LIBMTP_new_file_t();
-      
+
       file->parent_id = oi.ParentObject;
-      
+
       // Set the filetype
       file->filetype = map_ptp_type_to_libmtp_type(oi.ObjectFormat);
-      
+
       // Original file-specific properties
       file->filesize = oi.ObjectCompressedSize;
       if (oi.Filename != NULL) {
 	file->filename = strdup(oi.Filename);
       }
-      
+
       // This is some sort of unique ID so we can keep track of the track.
       file->item_id = params->handles.Handler[i];
-      
+
       return file;
     } else {
       return NULL;
@@ -1688,7 +1688,7 @@ LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *device, uint32_t cons
  * This creates a new track metadata structure and allocates memory
  * for it. Notice that if you add strings to this structure they
  * will be freed by the corresponding <code>LIBMTP_destroy_track_t</code>
- * operation later, so be careful of using strdup() when assigning 
+ * operation later, so be careful of using strdup() when assigning
  * strings, e.g.:
  *
  * <pre>
@@ -1730,7 +1730,7 @@ LIBMTP_track_t *LIBMTP_new_track_t(void)
 
 /**
  * This destroys a track metadata structure and deallocates the memory
- * used by it, including any strings. Never use a track metadata 
+ * used by it, including any strings. Never use a track metadata
  * structure again after calling this function on it.
  * @param track the track metadata to destroy.
  * @see LIBMTP_new_track_t()
@@ -1863,39 +1863,39 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
   LIBMTP_track_t *curtrack = NULL;
   PTPParams *params = (PTPParams *) device->params;
 
-  // Get all the handles if we haven't already done that  
+  // Get all the handles if we haven't already done that
   if (params->handles.Handler == NULL) {
     flush_handles(device);
   }
-  
+
   for (i = 0; i < params->handles.n; i++) {
     LIBMTP_track_t *track;
     PTPObjectInfo oi;
-    
+
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
-      
+
       // Ignore stuff we don't know how to handle...
       // TODO: get this list as an intersection of the sets
       // supported by the device and the from the device and
       // all known audio track files?
-      if ( oi.ObjectFormat != PTP_OFC_WAV && 
-	   oi.ObjectFormat != PTP_OFC_MP3 && 
+      if ( oi.ObjectFormat != PTP_OFC_WAV &&
+	   oi.ObjectFormat != PTP_OFC_MP3 &&
 	   oi.ObjectFormat != PTP_OFC_MTP_WMA &&
-	   oi.ObjectFormat != PTP_OFC_MTP_OGG && 
+	   oi.ObjectFormat != PTP_OFC_MTP_OGG &&
 	   oi.ObjectFormat != PTP_OFC_MTP_MP4 &&
 	   oi.ObjectFormat != PTP_OFC_MTP_UndefinedAudio ) {
 	// printf("Not a music track (format: %d), skipping...\n",oi.ObjectFormat);
 	continue;
       }
-      
+
       // Allocate a new track type
       track = LIBMTP_new_track_t();
 
       // This is some sort of unique ID so we can keep track of the track.
       track->item_id = params->handles.Handler[i];
-      
+
       track->filetype = map_ptp_type_to_libmtp_type(oi.ObjectFormat);
-      
+
       // Original file-specific properties
       track->filesize = oi.ObjectCompressedSize;
       if (oi.Filename != NULL) {
@@ -1903,7 +1903,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
       }
 
       get_track_metadata(device, oi.ObjectFormat, track);
-      
+
       // Add track to a list that will be returned afterwards.
       if (retracks == NULL) {
 	retracks = track;
@@ -1912,7 +1912,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 	curtrack->next = track;
 	curtrack = track;
       }
-      
+
       // Call listing callback
       // double progressPercent = (double)i*(double)100.0 / (double)params->handles.n;
 
@@ -1943,14 +1943,14 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
   uint32_t i = 0;
   PTPParams *params = (PTPParams *) device->params;
 
-  // Get all the handles if we haven't already done that  
+  // Get all the handles if we haven't already done that
   if (params->handles.Handler == NULL) {
     flush_handles(device);
   }
 
   for (i = 0; i < params->handles.n; i++) {
     PTPObjectInfo oi;
-    
+
     // Skip if this is not the track we want.
     if (params->handles.Handler[i] != trackid) {
       continue;
@@ -1958,25 +1958,25 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
 
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
       LIBMTP_track_t *track;
-      
+
       // Ignore stuff we don't know how to handle...
-      if ( oi.ObjectFormat != PTP_OFC_WAV && 
-	   oi.ObjectFormat != PTP_OFC_MP3 && 
+      if ( oi.ObjectFormat != PTP_OFC_WAV &&
+	   oi.ObjectFormat != PTP_OFC_MP3 &&
 	   oi.ObjectFormat != PTP_OFC_MTP_WMA &&
-	   oi.ObjectFormat != PTP_OFC_MTP_OGG && 
+	   oi.ObjectFormat != PTP_OFC_MTP_OGG &&
 	   oi.ObjectFormat != PTP_OFC_MTP_MP4 &&
 	   oi.ObjectFormat != PTP_OFC_MTP_UndefinedAudio ) {
 	return NULL;
       }
-      
+
       // Allocate a new track type
       track = LIBMTP_new_track_t();
 
       // This is some sort of unique ID so we can keep track of the track.
       track->item_id = params->handles.Handler[i];
-      
+
       track->filetype = map_ptp_type_to_libmtp_type(oi.ObjectFormat);
-      
+
       // Original file-specific properties
       track->filesize = oi.ObjectCompressedSize;
       if (oi.Filename != NULL) {
@@ -1984,7 +1984,7 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
       }
 
       get_track_metadata(device, oi.ObjectFormat, track);
-            
+
       return track;
 
     } else {
@@ -2007,11 +2007,11 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
  *             the <code>progress</code> function in order to
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
- * @return 0 if the transfer was successful, any other value means 
+ * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Get_File_To_File_Descriptor()
  */
-int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id, 
+int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id,
 			 char const * const path, LIBMTP_progressfunc_t const callback,
 			 void const * const data)
 {
@@ -2033,12 +2033,12 @@ int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id,
     printf("LIBMTP_Get_File_To_File(): Could not create file \"%s\"\n", path);
     return -1;
   }
-  
+
   ret = LIBMTP_Get_File_To_File_Descriptor(device, id, fd, callback, data);
 
   // Close file
   close(fd);
-  
+
   return ret;
 }
 
@@ -2046,8 +2046,8 @@ int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id,
  * This gets a file off the device to a file identified
  * by a file descriptor.
  *
- * This function can potentially be used for streaming 
- * files off the device for playback or broadcast for example, 
+ * This function can potentially be used for streaming
+ * files off the device for playback or broadcast for example,
  * by downloading the file into a stream sink e.g. a socket.
  *
  * @param device a pointer to the device to get the file from.
@@ -2058,13 +2058,13 @@ int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id,
  *             the <code>progress</code> function in order to
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
- * @return 0 if the transfer was successful, any other value means 
+ * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Get_File_To_File()
  */
-int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device, 
-					uint32_t const id, 
-					int const fd, 
+int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
+					uint32_t const id,
+					int const fd,
 					LIBMTP_progressfunc_t const callback,
 					void const * const data)
 {
@@ -2089,19 +2089,19 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_complete = 0;
   ptp_usb->current_transfer_callback = callback;
   ptp_usb->current_transfer_callback_data = data;
-  
+
   // This now exist in upstream
   ret = ptp_getobject_tofd(params, id, fd);
 
   ptp_usb->callback_active = 0;
   ptp_usb->current_transfer_callback = NULL;
   ptp_usb->current_transfer_callback_data = NULL;
-  
+
   if (ret != PTP_RC_OK) {
     printf("LIBMTP_Get_File_To_File_Descriptor(): Could not get file from device (%d)\n", ret);
     return -1;
   }
-  
+
   return 0;
 }
 
@@ -2117,11 +2117,11 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
  *             the <code>progress</code> function in order to
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
- * @return 0 if the transfer was successful, any other value means 
+ * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Get_Track_To_File_Descriptor()
  */
-int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id, 
+int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id,
 			 char const * const path, LIBMTP_progressfunc_t const callback,
 			 void const * const data)
 {
@@ -2141,13 +2141,13 @@ int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id,
  *             the <code>progress</code> function in order to
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
- * @return 0 if the transfer was successful, any other value means 
+ * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Get_Track_To_File()
  */
-int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device, 
-					uint32_t const id, 
-					int const fd, 
+int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
+					uint32_t const id,
+					int const fd,
 					LIBMTP_progressfunc_t const callback,
 					void const * const data)
 {
@@ -2173,12 +2173,12 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
  *             has detected one for the current filetype and this
  *             parameter is set to 0. If this is 0 and no default folder
  *             can be found, the file will be stored in the root folder.
- * @return 0 if the transfer was successful, any other value means 
+ * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Send_Track_From_File_Descriptor()
  * @see LIBMTP_Delete_Object()
  */
-int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device, 
+int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
 			 char const * const path, LIBMTP_track_t * const metadata,
                          LIBMTP_progressfunc_t const callback,
 			 void const * const data, uint32_t const parenthandle)
@@ -2203,7 +2203,7 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
   }
 
   ret = LIBMTP_Send_Track_From_File_Descriptor(device, fd, metadata, callback, data, parenthandle);
-  
+
   // Close file.
   close(fd);
 
@@ -2231,12 +2231,12 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
  *             has detected one for the current filetype and this
  *             parameter is set to 0. If this is 0 and no default folder
  *             can be found, the file will be stored in the root folder.
- * @return 0 if the transfer was successful, any other value means 
+ * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Send_Track_From_File()
  * @see LIBMTP_Delete_Object()
  */
-int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device, 
+int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 			 int const fd, LIBMTP_track_t * const metadata,
                          LIBMTP_progressfunc_t const callback,
 			 void const * const data, uint32_t const parenthandle)
@@ -2278,7 +2278,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
    *    Param3: 0x00003000 <- file type PTP_OFC_Undefined - we don't know about PDF files
    *    Param4: 0x00000000 <- file length MSB (-0x0c header len)
    *    Param5: 0x00005e12 <- file length LSB (-0x0c header len)
-   *    
+   *
    * -> PTP_OC_MTP_SendObjectPropList (0x9808):
    *    46 00 00 00 02 00 08 98 1B 00 00 00 03 00 00 00
    *    00 00 00 00 07 DC FF FF 0D 4B 00 53 00 30 00 36 - dc07 = file name
@@ -2294,7 +2294,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
    *    0x00000000 <- Object handle, set to 0x00000000 since it is unknown!
    *    0xdc07     <- metadata type: file name
    *    0xffff     <- metadata type: string
-   *    0x0d       <- number of (uint16_t) characters 
+   *    0x0d       <- number of (uint16_t) characters
    *    4b 53 30 36 30 33 30 36 2e 50 64 66 00 "KS060306.pdf", null terminated
    *    0x00000000 <- Object handle, set to 0x00000000 since it is unknown!
    *    0xdc03     <- metadata type: protection status
@@ -2327,7 +2327,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   new_track.Filename = metadata->filename;
   new_track.ObjectCompressedSize = metadata->filesize;
   new_track.ObjectFormat = map_libmtp_type_to_ptp_type(metadata->filetype);
-  
+
   // Create the object
   ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->item_id, &new_track);
   if (ret != PTP_RC_OK) {
@@ -2345,9 +2345,9 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_complete = 0;
   ptp_usb->current_transfer_callback = callback;
   ptp_usb->current_transfer_callback_data = data;
-  
+
   ret = ptp_sendobject_fromfd(params, fd, metadata->filesize);
-  
+
   ptp_usb->callback_active = 0;
   ptp_usb->current_transfer_callback = NULL;
   ptp_usb->current_transfer_callback_data = NULL;
@@ -2357,7 +2357,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     printf("LIBMTP_Send_Track_From_File_Descriptor: Could not send object\n");
     return -1;
   }
-  
+
   // Set track metadata for the new fine track
   subcall_ret = LIBMTP_Update_Track_Metadata(device, metadata);
   if (subcall_ret != 0) {
@@ -2368,12 +2368,12 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 
   // Added object so flush handles
   flush_handles(device);
-  
+
   return 0;
 }
 
 /**
- * This function sends a local file to an MTP device. 
+ * This function sends a local file to an MTP device.
  * A filename and a set of metadata must be
  * given as input.
  * @param device a pointer to the device to send the track to.
@@ -2392,12 +2392,12 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
  *        has detected one for the current filetype and this
  *        parameter is set to 0. If this is 0 and no default folder
  *        can be found, the file will be stored in the root folder.
- * @return 0 if the transfer was successful, any other value means 
+ * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Send_File_From_File_Descriptor()
  * @see LIBMTP_Delete_Object()
  */
-int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device, 
+int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
 			       char const * const path, LIBMTP_file_t * const filedata,
 			       LIBMTP_progressfunc_t const callback,
 			       void const * const data, uint32_t const parenthandle)
@@ -2422,7 +2422,7 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
   }
 
   ret = LIBMTP_Send_File_From_File_Descriptor(device, fd, filedata, callback, data, parenthandle);
-  
+
   // Close file.
   close(fd);
 
@@ -2459,12 +2459,12 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
  *        has detected one for the current filetype and this
  *        parameter is set to 0. If this is 0 and no default folder
  *        can be found, the file will be stored in the root folder.
- * @return 0 if the transfer was successful, any other value means 
+ * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Send_File_From_File()
  * @see LIBMTP_Delete_Object()
  */
-int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device, 
+int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 			 int const fd, LIBMTP_file_t * const filedata,
                          LIBMTP_progressfunc_t const callback,
 			 void const * const data, uint32_t const parenthandle)
@@ -2485,13 +2485,13 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   }
   new_file.ObjectFormat = map_libmtp_type_to_ptp_type(filedata->filetype);
 
-  /* 
+  /*
    * If no destination folder was given, look up a default
    * folder if possible. Perhaps there is some way of retrieveing
    * the default folder for different forms of content, what
    * do I know, we use a fixed list in lack of any better method.
    * Some devices obviously need to have their files in certain
-   * folders in order to find/display them at all (hello Creative), 
+   * folders in order to find/display them at all (hello Creative),
    * so we have to have a method for this.
    */
 
@@ -2548,9 +2548,9 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     ptp_usb->current_transfer_complete = 0;
     ptp_usb->current_transfer_callback = callback;
     ptp_usb->current_transfer_callback_data = data;
-    
+
     ret = ptp_sendobject_fromfd(params, fd, filedata->filesize);
-  
+
     ptp_usb->callback_active = 0;
     ptp_usb->current_transfer_callback = NULL;
     ptp_usb->current_transfer_callback_data = NULL;
@@ -2571,7 +2571,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     printf("LIBMTP_Send_File_From_File_Descriptor: Could not send object\n");
     return -1;
   }
-  
+
   // Added object so flush handles.
   flush_handles(device);
   return 0;
@@ -2580,7 +2580,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 /**
  * This function updates the MTP object metadata on a single file
  * identified by an object ID.
- * @param device a pointer to the device to update the track 
+ * @param device a pointer to the device to update the track
  *        metadata on.
  * @param metadata a track metadata set to be written to the file.
  *        notice that the <code>track_id</code> field of the
@@ -2591,7 +2591,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
  *        track will not be tagged with these blank values.
  * @return 0 on success, any other value means failure.
  */
-int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device, 
+int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 				 LIBMTP_track_t const * const metadata)
 {
   uint16_t ret;
@@ -2600,7 +2600,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
   uint16_t *props = NULL;
   uint32_t propcnt = 0;
 
-  // First see which properties can be set on this file format and apply accordingly	
+  // First see which properties can be set on this file format and apply accordingly
   // i.e only try to update this metadata for object tags that exist on the current player.
   ret = ptp_mtp_getobjectpropssupported (params, map_libmtp_type_to_ptp_type(metadata->filetype), &propcnt, &props);
   if (ret != PTP_RC_OK) {
@@ -2756,7 +2756,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
  * @param item_id the item to delete.
  * @return 0 on success, any other value means failure.
  */
-int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device, 
+int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
 			 uint32_t object_id)
 {
   uint16_t ret;
@@ -2831,7 +2831,7 @@ void LIBMTP_destroy_object_t(LIBMTP_object_t *object, uint32_t recursive)
   if(object == NULL) {
     return;
   }
-  
+
   //Destroy from the bottom up
   if(recursive==1) {
     LIBMTP_destroy_object_t(object->child, recursive);
@@ -2841,19 +2841,19 @@ void LIBMTP_destroy_object_t(LIBMTP_object_t *object, uint32_t recursive)
   }
 
   if(object->name != NULL) free(object->name);
-  
+
   //Use the data type destructor
   if(object->data != NULL) {
     void (*destructor)(void *);
-    
+
     destructor = get_destructor(object->type);
-    
+
     if(destructor != NULL) {
       (*destructor)(object->data);
     }
     object->data = NULL;
   }
-  
+
   free(object);
 }
 
@@ -2897,23 +2897,23 @@ void LIBMTP_destroy_folder_t(LIBMTP_folder_t *folder)
 LIBMTP_folder_t *LIBMTP_Find_Folder(LIBMTP_folder_t *folderlist, uint32_t id)
 {
   LIBMTP_folder_t *ret = NULL;
-  
+
   if(folderlist == NULL) {
     return NULL;
   }
-  
+
   if(folderlist->folder_id == id) {
     return folderlist;
   }
-  
+
   if(folderlist->sibling) {
     ret = LIBMTP_Find_Folder(folderlist->sibling, id);
   }
-  
+
   if(folderlist->child && ret == NULL) {
     ret = LIBMTP_Find_Folder(folderlist->child, id);
   }
-  
+
   return ret;
 }
 
@@ -2930,15 +2930,15 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
   LIBMTP_folder_t *retfolders = NULL;
   PTPParams *params = (PTPParams *) device->params;
 
-  // Get all the handles if we haven't already done that  
+  // Get all the handles if we haven't already done that
   if (params->handles.Handler == NULL) {
     flush_handles(device);
   }
-  
+
   for (i = 0; i < params->handles.n; i++) {
     LIBMTP_folder_t *folder;
     PTPObjectInfo oi;
-    
+
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
       if (oi.ObjectFormat != PTP_OFC_Association) {
         continue;
@@ -2947,7 +2947,7 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
       folder->folder_id = params->handles.Handler[i];
       folder->parent_id = oi.ParentObject;
       folder->name = (char *)strdup(oi.Filename);
-      
+
       // Work out where to put this new item
       if(retfolders == NULL) {
 	retfolders = folder;
@@ -2955,9 +2955,9 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
       } else {
 	LIBMTP_folder_t *parent_folder;
 	LIBMTP_folder_t *current_folder;
-	
+
 	parent_folder = LIBMTP_Find_Folder(retfolders, folder->parent_id);
-	
+
 	if(parent_folder == NULL) {
 	  current_folder = retfolders;
 	} else {
@@ -2968,11 +2968,11 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
 	    current_folder = parent_folder->child;
 	  }
 	}
-	
+
 	while(current_folder->sibling != NULL) {
 	  current_folder=current_folder->sibling;
 	}
-	
+
 	current_folder->sibling = folder;
       }
     }
@@ -3068,7 +3068,7 @@ LIBMTP_object_t *LIBMTP_Find_Object(LIBMTP_object_t *objectlist, uint32_t id)
  * @return a list of objects
  * @see LIBMTP_destroy_object_t()
  */
-LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter, 
+LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter,
 				  uint32_t filter_len, uint32_t *exclusions, uint32_t exclusion_len)
 {
   uint32_t i = 0;
@@ -3077,24 +3077,24 @@ LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter,
   uint32_t max_exclusions = 0;
   uint32_t max_filter = 0;
 
-  // Get all the handles if we haven't already done that  
+  // Get all the handles if we haven't already done that
   if (params->handles.Handler == NULL) {
     flush_handles(device);
   }
-  
+
   if(filter != NULL) max_filter = filter_len;
   if(exclusions != NULL) max_exclusions = exclusion_len;
-  
+
   for (i = 0; i < params->handles.n; i++) {
     LIBMTP_object_t *object;
     PTPObjectInfo oi;
-    
+
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
       uint32_t x = 0;
       uint32_t exclude = 0, filter_allow = 0;
       void (*datafunc)(LIBMTP_mtpdevice_t *, uint32_t, void *);
       void *(*constructor)(void);
-      
+
       // Is the ObjectFormat in the list of exclusions ?
       for(x = 0; x < max_exclusions; x++) {
 	if (oi.ObjectFormat == exclusions[x]) {
@@ -3105,7 +3105,7 @@ LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter,
       if(exclude == 1) {
 	continue;
       }
-      
+
       // Is the ObjectFormat in the filter ?
       for(x = 0; x < max_filter; x++) {
 	if (oi.ObjectFormat == filter[x]) {
@@ -3116,25 +3116,25 @@ LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter,
       if(filter_allow == 0) {
 	continue;
       }
-      
+
       object = LIBMTP_new_object_t();
       object->id = params->handles.Handler[i];
       object->parent = oi.ParentObject;
       object->name = (char *)strdup(oi.Filename);
       object->size = oi.ObjectCompressedSize;
       object->type = oi.ObjectFormat;
-      
+
       // Get the function pointers for the constructor and datafunc
       constructor = get_constructor(oi.ObjectFormat);
       datafunc = get_datafunc(oi.ObjectFormat);
-      
+
       if(constructor != NULL) {
 	object->data = (*constructor)();
 	if(datafunc != NULL) {
 	  (*datafunc)(device, object->id, object->data);
 	}
       }
-      
+
       // Work out where to put this new item
       if(objectlist == NULL) {
         objectlist = object;
@@ -3142,9 +3142,9 @@ LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter,
       } else {
         LIBMTP_object_t *parent_object;
         LIBMTP_object_t *current_object;
-	
+
         parent_object = LIBMTP_Find_Object(objectlist, object->parent);
-	
+
         if(parent_object == NULL) {
 	  current_object = objectlist;
         } else {
@@ -3155,7 +3155,7 @@ LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter,
             current_object = parent_object->child;
           }
 	}
-	
+
         while(current_object->sibling != NULL) {
           current_object=current_object->sibling;
         }
@@ -3163,10 +3163,10 @@ LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter,
       }
     }
   }
-  
+
   return objectlist;
 }
-       
+
 /**
  * Debug function that dumps out some textual representation
  * of an object list.
@@ -3178,14 +3178,14 @@ LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter,
 void LIBMTP_Dump_List(LIBMTP_object_t *list)
 {
   if(list == NULL) return;
-  
+
   printf("Id    : %u\n", list->id);
   printf("Parent: %u\n", list->parent);
   printf("Size  : %u\n", list->size);
   printf("Name  : %s\n", (list->name ? list->name : ""));
   printf("Type  : 0x%04x\n", list->type);
   printf("--\n");
-  
+
   LIBMTP_Dump_List(list->child);
   LIBMTP_Dump_List(list->sibling);
 }
@@ -3194,7 +3194,7 @@ void LIBMTP_Dump_List(LIBMTP_object_t *list)
  * This creates a new playlist metadata structure and allocates memory
  * for it. Notice that if you add strings to this structure they
  * will be freed by the corresponding <code>LIBMTP_destroy_playlist_t</code>
- * operation later, so be careful of using strdup() when assigning 
+ * operation later, so be careful of using strdup() when assigning
  * strings, e.g.:
  *
  * <pre>
@@ -3223,7 +3223,7 @@ LIBMTP_playlist_t *LIBMTP_new_playlist_t(void)
 
 /**
  * This destroys a playlist metadata structure and deallocates the memory
- * used by it, including any strings. Never use a track metadata 
+ * used by it, including any strings. Never use a track metadata
  * structure again after calling this function on it.
  * @param playlist the playlist metadata to destroy.
  * @see LIBMTP_new_playlist_t()
@@ -3269,21 +3269,21 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *device)
     LIBMTP_playlist_t *pl;
     PTPObjectInfo oi;
     uint16_t ret;
-    
+
     ret = ptp_getobjectinfo(params, params->handles.Handler[i], &oi);
     if ( ret == PTP_RC_OK) {
-      
+
       // Ignore stuff that isn't playlists
       if ( oi.ObjectFormat != PTP_OFC_MTP_AbstractAudioVideoPlaylist ) {
 	continue;
       }
-      
+
       // Allocate a new playlist type
       pl = LIBMTP_new_playlist_t();
-      
+
       // Ignoring the io.Filename field.
       pl->name = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name);
-      
+
       // This is some sort of unique playlist ID so we can keep track of it
       pl->playlist_id = params->handles.Handler[i];
 
@@ -3294,7 +3294,7 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *device)
 	pl->tracks = NULL;
 	pl->no_tracks = 0;
       }
-      
+
       // Add playlist to a list that will be returned afterwards.
       if (retlists == NULL) {
 	retlists = pl;
@@ -3303,13 +3303,13 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *device)
 	curlist->next = pl;
 	curlist = pl;
       }
-      
+
       // Call callback here if we decide to add that possibility...
 
     } else {
       printf("LIBMTP panic: Found a bad handle, trying to ignore it.\n");
     }
-  }  
+  }
   return retlists;
 }
 
@@ -3335,25 +3335,25 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t cons
     LIBMTP_playlist_t *pl;
     PTPObjectInfo oi;
     uint16_t ret;
-    
+
     if (params->handles.Handler[i] != plid) {
       continue;
     }
 
     ret = ptp_getobjectinfo(params, params->handles.Handler[i], &oi);
     if ( ret == PTP_RC_OK) {
-      
+
       // Ignore stuff that isn't playlists
       if ( oi.ObjectFormat != PTP_OFC_MTP_AbstractAudioVideoPlaylist ) {
 	return NULL;
       }
-      
+
       // Allocate a new playlist type
       pl = LIBMTP_new_playlist_t();
-      
+
       // Ignoring the io.Filename field.
       pl->name = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name);
-      
+
       // This is some sort of unique playlist ID so we can keep track of it
       pl->playlist_id = params->handles.Handler[i];
 
@@ -3364,12 +3364,12 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t cons
 	pl->tracks = NULL;
 	pl->no_tracks = 0;
       }
-      
+
       return pl;
     } else {
       return NULL;
     }
-  }  
+  }
   return NULL;
 }
 
@@ -3388,7 +3388,7 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t cons
  * @see LIBMTP_Update_Playlist()
  * @see LIBMTP_Delete_Object()
  */
-int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device, 
+int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 			       LIBMTP_playlist_t * const metadata,
 			       uint32_t const parenthandle)
 {
@@ -3427,7 +3427,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   // new_pl.ObjectCompressedSize = (uint32_t) -1; <- DOES NOT WORK! (return PTP_RC_MTP_Object_Too_Large)
   new_pl.ObjectCompressedSize = 1;
   new_pl.ObjectFormat = PTP_OFC_MTP_AbstractAudioVideoPlaylist;
-  
+
   // Create the object
   ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->playlist_id, &new_pl);
   if (ret != PTP_RC_OK) {
@@ -3436,7 +3436,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
-  
+
   /*
    * We have to send this one blank data byte.
    * If we don't, the handle will not be created and thus there is no playlist.
@@ -3467,7 +3467,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
       return -1;
     }
   }
-  
+
   // Created new item, so flush handles
   flush_handles(device);
 
@@ -3482,13 +3482,13 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
  * previous track listing will be deleted.
  * @param device a pointer to the device to create the new playlist on.
  * @param metadata the metadata for the playlist to be updated.
- *                 notice that the field <code>playlist_id</code> 
+ *                 notice that the field <code>playlist_id</code>
  *                 must contain the apropriate playlist ID.
  * @return 0 on success, any other value means failure.
  * @see LIBMTP_Create_New_Playlist()
  * @see LIBMTP_Delete_Object()
  */
-int LIBMTP_Update_Playlist(LIBMTP_mtpdevice_t *device, 
+int LIBMTP_Update_Playlist(LIBMTP_mtpdevice_t *device,
 			   LIBMTP_playlist_t const * const metadata)
 {
   uint16_t ret;
@@ -3697,6 +3697,18 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
   uint32_t localph = parenthandle;
   char fname[256];
   uint8_t data[1];
+
+  // check we can create an object of type PTP_OFC_MTP_AbstractAudioAlbum
+  int i;
+  int supported = 0;
+  for ( i=0; i < params->deviceinfo.ImageFormats_len; i++ ) {
+    if (params->deviceinfo.ImageFormats[i] == PTP_OFC_MTP_AbstractAudioAlbum)
+      supported = 1;
+  }
+  if (!supported) {
+    printf("LIBMTP_Create_New_Album(): Player does not support the AbstractAudioAlbum type\n");
+    return -1;
+  }
 
   // Use a default folder if none given
   if (localph == 0) {
