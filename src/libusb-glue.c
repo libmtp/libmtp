@@ -27,6 +27,9 @@
 #include "libusb-glue.h"
 #include "util.h"
 
+/* To enable debug prints, switch on this */
+//#define ENABLE_USB_BULK_DEBUG
+
 /* OUR APPLICATION USB URB (2MB) ;) */
 #define PTPCAM_USB_URB		2097152
 
@@ -383,6 +386,10 @@ ptp_read_func (unsigned char *bytes, unsigned int size, void *data, unsigned int
     }
     if (result < 0)
       return PTP_ERROR_IO;
+#ifdef ENABLE_USB_BULK_DEBUG
+    printf("<==USB IN\n");
+    data_dump_ascii (stdout,(bytes+curread),toread,16);
+#endif
     curread += result;
     if (result < toread) /* short reads are common */
       break;
@@ -430,6 +437,10 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
     if (towrite > CONTEXT_BLOCK_SIZE)
       towrite = CONTEXT_BLOCK_SIZE;
     result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)(bytes+curwrite),towrite,ptpcam_usb_timeout);
+#ifdef ENABLE_USB_BULK_DEBUG
+    printf("USB OUT==>\n");
+    data_dump_ascii (stdout,(bytes+curwrite),towrite,16);
+#endif
     if (result < 0)
       return PTP_ERROR_IO;
     curwrite += result;
