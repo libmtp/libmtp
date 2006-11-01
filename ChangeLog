@@ -1,3 +1,11 @@
+2006-11-01  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: set/get uint8 to/from objects
+	* src/libmtp.c: send object property list.
+	* src/ptp.c: dito.
+	* src/ptp.h: dito.
+	* src/ptp-pack.c: dito.
+
 2006-10-29  Andy Kelk <andy@mopoke.co.uk>
 
 	* examples/albumart.c: simple tool for adding album art.

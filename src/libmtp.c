@@ -568,6 +568,38 @@ uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const o
 }
 
 /**
+ * Retrieves an unsigned 8-bit integer from an object attribute
+ *
+ * @param device a pointer to an MTP device.
+ * @param object_id Object reference
+ * @param attribute_id PTP attribute ID
+ * @param value_default Default value to return on failure
+ * @return a value
+ */
+uint8_t LIBMTP_Get_U8_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+				  uint16_t const attribute_id, uint8_t const value_default)
+{
+  PTPPropertyValue propval;
+  uint8_t retval = value_default;
+  PTPParams *params = (PTPParams *) device->params;
+  uint16_t ret;
+
+  if ( device == NULL ) {
+    return value_default;
+  }
+
+  ret = ptp_mtp_getobjectpropvalue(params, object_id,
+                                   attribute_id,
+                                   &propval,
+                                   PTP_DTC_UINT8);
+  if (ret == PTP_RC_OK) {
+    retval = propval.u8;
+  }
+
+  return retval;
+}
+
+/**
  * Sets an object attribute from a string
  *
  * @param device a pointer to an MTP device.
@@ -653,6 +685,37 @@ int LIBMTP_Set_Object_U16(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
   ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UINT16);
   if (ret != PTP_RC_OK) {
     printf("LIBMTP_Set_Object_U16(): could not set unsigned 16bit integer property.\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    return 1;
+  }
+
+  return 0;
+}
+
+/**
+ * Sets an object attribute from an unsigned 8-bit integer
+ *
+ * @param device a pointer to an MTP device.
+ * @param object_id Object reference
+ * @param attribute_id PTP attribute ID
+ * @param value 8-bit unsigned integer to set
+ * @return 0 on success, any other value means failure
+ */
+int LIBMTP_Set_Object_U8(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+			  uint16_t const attribute_id, uint8_t const value)
+{
+  PTPPropertyValue propval;
+  PTPParams *params = (PTPParams *) device->params;
+  uint16_t ret;
+
+  if (device == NULL) {
+    return 1;
+  }
+
+  propval.u8 = value;
+  ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UINT8);
+  if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Set_Object_U8(): could not set unsigned 8bit integer property.\n");
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return 1;
   }
@@ -2211,6 +2274,24 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
 }
 
 
+static MTPPropList *New_MTP_Prop_Entry()
+{
+  MTPPropList *prop;
+  prop = (MTPPropList *) malloc(sizeof(MTPPropList));
+  prop->property = PTP_OPC_StorageID; /* Should be "unknown" */
+  prop->datatype = PTP_DTC_UNDEF;
+  prop->next = NULL;
+  return prop;
+}
+
+static void Destroy_MTP_Prop_Entry(MTPPropList *prop)
+{
+  if (prop->datatype == PTP_DTC_STR) {
+    free(prop->propval.str);
+  }
+  free(prop);
+}
+
 /**
  * This function sends a track from a file descriptor to an
  * MTP device. A filename and a set of metadata must be
@@ -2244,10 +2325,10 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   uint16_t ret;
   uint32_t store = 0;
   int subcall_ret;
-  PTPObjectInfo new_track;
   PTPParams *params = (PTPParams *) device->params;
   uint32_t localph = parenthandle;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
+  uint8_t nonconsumable = 0x00U; /* By default it is consumable */
 
   if (localph == 0) {
     localph = device->default_music_folder;
@@ -2261,80 +2342,144 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       metadata->filetype != LIBMTP_FILETYPE_MP4 &&
       metadata->filetype != LIBMTP_FILETYPE_UNDEF_AUDIO) {
     printf("LIBMTP_Send_Track_From_File_Descriptor: I don't think this is actually a track, strange filetype...\n");
+    nonconsumable = 0x01U; /* Not suitable for consumption */
   }
 
+  if (metadata->filetype == LIBMTP_FILETYPE_UNDEF_AUDIO) {
+    nonconsumable = 0x01U; /* Not suitable for consumption */
+  }
 
-  /*
-   * MTP enhanched does it this way (from a sniff):
-   * -> PTP_OC_MTP_SendObjectPropList (0x9808):
-   *    20 00 00 00 01 00 08 98 1B 00 00 00 01 00 01 00
-   *    FF FF FF FF 00 30 00 00 00 00 00 00 12 5E 00 00
-   *    Length: 0x00000020
-   *    Type:   0x0001 PTP_USB_CONTAINER_COMMAND
-   *    Code:   0x9808
-   *    Transaction ID: 0x0000001B
-   *    Param1: 0x00010001 <- store
-   *    Param2: 0xffffffff <- parent handle (-1 ?)
-   *    Param3: 0x00003000 <- file type PTP_OFC_Undefined - we don't know about PDF files
-   *    Param4: 0x00000000 <- file length MSB (-0x0c header len)
-   *    Param5: 0x00005e12 <- file length LSB (-0x0c header len)
-   *
-   * -> PTP_OC_MTP_SendObjectPropList (0x9808):
-   *    46 00 00 00 02 00 08 98 1B 00 00 00 03 00 00 00
-   *    00 00 00 00 07 DC FF FF 0D 4B 00 53 00 30 00 36 - dc07 = file name
-   *    00 30 00 33 00 30 00 36 00 2E 00 70 00 64 00 66
-   *    00 00 00 00 00 00 00 03 DC 04 00 00 00 00 00 00 - dc03 = protection status
-   *    00 4F DC 02 00 01                               - dc4f = non consumable
-   *    Length: 0x00000046
-   *    Type:   0x0002 PTP_USB_CONTAINER_DATA
-   *    Code:   0x9808
-   *    Transaction ID: 0x0000001B
-   *    Metadata....
-   *    0x00000003 <- Number of metadata items
-   *    0x00000000 <- Object handle, set to 0x00000000 since it is unknown!
-   *    0xdc07     <- metadata type: file name
-   *    0xffff     <- metadata type: string
-   *    0x0d       <- number of (uint16_t) characters
-   *    4b 53 30 36 30 33 30 36 2e 50 64 66 00 "KS060306.pdf", null terminated
-   *    0x00000000 <- Object handle, set to 0x00000000 since it is unknown!
-   *    0xdc03     <- metadata type: protection status
-   *    0x0004     <- metadata type: uint16_t
-   *    0x0000     <- not protected
-   *    0x00000000 <- Object handle, set to 0x00000000 since it is unknown!
-   *    0xdc4f     <- non consumable
-   *    0x0002     <- metadata type: uint8_t
-   *    0x01       <- non-consumable (this device cannot display PDF)
-   *
-   * <- Read 0x18 bytes back
-   *    18 00 00 00 03 00 01 20 1B 00 00 00 01 00 01 00
-   *    00 00 00 00 01 40 00 00
-   *    Length: 0x000000018
-   *    Type:   0x0003 PTP_USB_CONTAINER_RESPONSE
-   *    Code:   0x2001 PTP_OK
-   *    Transaction ID: 0x0000001B
-   *    Param1: 0x00010001 <- store
-   *    Param2: 0x00000000 <- parent handle
-   *    Param3: 0x00004001 <- new file/object ID
-   *
-   * -> PTP_OC_SendObject (0x100d)
-   *    0C 00 00 00 01 00 0D 10 1C 00 00 00
-   * -> ... all the bytes ...
-   * <- Read 0x0c bytes back
-   *    0C 00 00 00 03 00 01 20 1C 00 00 00
-   *    ... Then update metadata one-by one, actually (instead of sending it first!) ...
-   */
+#ifdef ENABLE_MTP_ENHANCED
+  if (ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList)) {
+    /*
+     * MTP enhanched does it this way (from a sniff):
+     * -> PTP_OC_MTP_SendObjectPropList (0x9808):
+     *    20 00 00 00 01 00 08 98 1B 00 00 00 01 00 01 00
+     *    FF FF FF FF 00 30 00 00 00 00 00 00 12 5E 00 00
+     *    Length: 0x00000020
+     *    Type:   0x0001 PTP_USB_CONTAINER_COMMAND
+     *    Code:   0x9808
+     *    Transaction ID: 0x0000001B
+     *    Param1: 0x00010001 <- store
+     *    Param2: 0xffffffff <- parent handle (-1 ?)
+     *    Param3: 0x00003000 <- file type PTP_OFC_Undefined - we don't know about PDF files
+     *    Param4: 0x00000000 <- file length MSB (-0x0c header len)
+     *    Param5: 0x00005e12 <- file length LSB (-0x0c header len)
+     *
+     * -> PTP_OC_MTP_SendObjectPropList (0x9808):
+     *    46 00 00 00 02 00 08 98 1B 00 00 00 03 00 00 00
+     *    00 00 00 00 07 DC FF FF 0D 4B 00 53 00 30 00 36 - dc07 = file name
+     *    00 30 00 33 00 30 00 36 00 2E 00 70 00 64 00 66
+     *    00 00 00 00 00 00 00 03 DC 04 00 00 00 00 00 00 - dc03 = protection status
+     *    00 4F DC 02 00 01                               - dc4f = non consumable
+     *    Length: 0x00000046
+     *    Type:   0x0002 PTP_USB_CONTAINER_DATA
+     *    Code:   0x9808
+     *    Transaction ID: 0x0000001B
+     *    Metadata....
+     *    0x00000003 <- Number of metadata items
+     *    0x00000000 <- Object handle, set to 0x00000000 since it is unknown!
+     *    0xdc07     <- metadata type: file name
+     *    0xffff     <- metadata type: string
+     *    0x0d       <- number of (uint16_t) characters
+     *    4b 53 30 36 30 33 30 36 2e 50 64 66 00 "KS060306.pdf", null terminated
+     *    0x00000000 <- Object handle, set to 0x00000000 since it is unknown!
+     *    0xdc03     <- metadata type: protection status
+     *    0x0004     <- metadata type: uint16_t
+     *    0x0000     <- not protected
+     *    0x00000000 <- Object handle, set to 0x00000000 since it is unknown!
+     *    0xdc4f     <- non consumable
+     *    0x0002     <- metadata type: uint8_t
+     *    0x01       <- non-consumable (this device cannot display PDF)
+     *
+     * <- Read 0x18 bytes back
+     *    18 00 00 00 03 00 01 20 1B 00 00 00 01 00 01 00
+     *    00 00 00 00 01 40 00 00
+     *    Length: 0x000000018
+     *    Type:   0x0003 PTP_USB_CONTAINER_RESPONSE
+     *    Code:   0x2001 PTP_OK
+     *    Transaction ID: 0x0000001B
+     *    Param1: 0x00010001 <- store
+     *    Param2: 0x00000000 <- parent handle
+     *    Param3: 0x00004001 <- new file/object ID
+     *
+     * -> PTP_OC_SendObject (0x100d)
+     *    0C 00 00 00 01 00 0D 10 1C 00 00 00
+     * -> ... all the bytes ...
+     * <- Read 0x0c bytes back
+     *    0C 00 00 00 03 00 01 20 1C 00 00 00
+     *    ... Then update metadata one-by one, actually (instead of sending it first!) ...
+     */
+    MTPPropList *proplist;
+    MTPPropList *prop;
 
-  new_track.Filename = metadata->filename;
-  new_track.ObjectCompressedSize = metadata->filesize;
-  new_track.ObjectFormat = map_libmtp_type_to_ptp_type(metadata->filetype);
+    /* Send an object property list of that is supported */
+    localph = 0xFFFFFFFFU; // Set to -1
+    metadata->item_id = 0x00000000U;
 
-  // Create the object
-  ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->item_id, &new_track);
-  if (ret != PTP_RC_OK) {
-    ptp_perror(params, ret);
-    printf("LIBMTP_Send_Track_From_File_Descriptor: Could not send object info\n");
-    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
-    return -1;
+    prop = New_MTP_Prop_Entry();
+    prop->property = PTP_OPC_ObjectFileName;
+    prop->datatype = PTP_DTC_STR;
+    prop->propval.str = strdup(metadata->filename);
+    proplist = prop;
+    prop->next = New_MTP_Prop_Entry();
+    prop = prop->next;
+    
+    prop->property = PTP_OPC_ProtectionStatus;
+    prop->datatype = PTP_DTC_UINT16;
+    prop->propval.u16 = 0x0000U; /* Not protected */
+    prop->next = New_MTP_Prop_Entry();
+    prop = prop->next;
+    
+    prop->property = PTP_OPC_NonConsumable;
+    prop->datatype = PTP_DTC_UINT8;
+    prop->propval.u8 = nonconsumable;
+    prop->next = NULL;
+
+    ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &metadata->item_id,
+				     map_libmtp_type_to_ptp_type(metadata->filetype),
+				     metadata->filesize, proplist);
+
+    /* Free property list */
+    prop = proplist;
+    while (prop != NULL) {
+      Destroy_MTP_Prop_Entry(prop);
+      prop = prop->next;
+    }
+
+    if (ret != PTP_RC_OK) {
+      ptp_perror(params, ret);
+      printf("LIBMTP_Send_Track_From_File_Descriptor: Could not send object property list.\n");
+      if (ret == PTP_RC_AccessDenied) {
+	printf("ACCESS DENIED.\n");
+      } else {
+	printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+      }
+      return -1;
+    }
+  } else if (ptp_operation_issupported(params,PTP_OC_SendObjectInfo)) {
+#else // !ENABLE_MTP_ENHANCED
+  {
+#endif // ENABLE_MTP_ENHANCED
+    PTPObjectInfo new_track;
+
+    /* Else use the fallback compatibility mode */
+    new_track.Filename = metadata->filename;
+    new_track.ObjectCompressedSize = metadata->filesize;
+    new_track.ObjectFormat = map_libmtp_type_to_ptp_type(metadata->filetype);
+
+    // Create the object
+    ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->item_id, &new_track);
+    if (ret != PTP_RC_OK) {
+      ptp_perror(params, ret);
+      printf("LIBMTP_Send_Track_From_File_Descriptor: Could not send object info.\n");
+      if (ret == PTP_RC_AccessDenied) {
+	printf("ACCESS DENIED.\n");
+      } else {
+	printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+      }
+      return -1;
+    }
   }
 
   // Callbacks
@@ -2364,6 +2509,14 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     printf("LIBMTP_Send_Track_From_File_Descriptor: error setting metadata for new track\n");
     (void) LIBMTP_Delete_Object(device, metadata->item_id);
     return -1;
+  }
+  if (nonconsumable != 0x00U) {
+    /* Flag it as non-consumable if it is */
+    subcall_ret = LIBMTP_Set_Object_U8(device, metadata->item_id, PTP_OPC_NonConsumable, nonconsumable);
+    if (subcall_ret != 0) {
+      printf("LIBMTP_Update_Track_Metadata(): could not set non-consumable status.\n");
+      return -1;
+    }    
   }
 
   // Added object so flush handles
@@ -2535,7 +2688,11 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
     printf("LIBMTP_Send_File_From_File_Descriptor: Could not send object info\n");
-    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    if (ret == PTP_RC_AccessDenied) {
+      printf("ACCESS DENIED.\n");
+    } else {
+      printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    }
     return -1;
   }
 
@@ -3014,7 +3171,11 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name, uint32_t p
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
     printf("LIBMTP_Create_Folder: Could not send object info\n");
-    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    if (ret == PTP_RC_AccessDenied) {
+      printf("ACCESS DENIED.\n");
+    } else {
+      printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    }
     return 0;
   }
   // Created new object so flush handles
@@ -3433,7 +3594,11 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
     printf("LIBMTP_New_Playlist(): Could not send object info (the playlist itself)\n");
-    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    if (ret == PTP_RC_AccessDenied) {
+      printf("ACCESS DENIED.\n");
+    } else {
+      printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    }
     return -1;
   }
 
