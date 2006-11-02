@@ -107,13 +107,15 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "JVC Alneo XA-HD500", 0x04f1, 0x6105, DEVICE_FLAG_NONE },
 
   /*
-   * Philipps
+   * Philips
    */
   // From libgphoto2 source
-  { "Philipps HDD6320", 0x0471, 0x01eb, DEVICE_FLAG_NONE },
-  { "Philipps HDD6320 2", 0x0471, 0x014b, DEVICE_FLAG_NONE },
+  { "Philips HDD6320", 0x0471, 0x01eb, DEVICE_FLAG_NONE },
+  { "Philips HDD6320 2", 0x0471, 0x014b, DEVICE_FLAG_NONE },
   // Anonymous SourceForge user
-  { "Philipps HDD1630/17", 0x0471, 0x014c, DEVICE_FLAG_NONE },
+  { "Philips HDD1630/17", 0x0471, 0x014c, DEVICE_FLAG_NONE },
+  // From Gerhard Mekenkamp
+  { "Philips GoGear Audio", 0x0471, 0x0165, DEVICE_FLAG_NONE },
 
   /*
    * SanDisk
