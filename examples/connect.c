@@ -32,7 +32,12 @@ split_arg(char * argument, char ** part1, char ** part2)
 void
 usage(void)
 {
-  printf("Usage: connect \n");
+  printf("Usage: connect <command1> <command2>\n");
+  printf("Commands: --delete [filename]\n");
+  printf("          --sendfile [source] [destination]\n");
+  printf("          --sendtrack [source] [destination]\n");
+  printf("          --getfile [source] [destination]\n");
+  printf("          --newfolder [foldername]\n");
 }
 
 void
