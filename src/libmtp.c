@@ -3103,7 +3103,10 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
       folder = LIBMTP_new_folder_t();
       folder->folder_id = params->handles.Handler[i];
       folder->parent_id = oi.ParentObject;
-      folder->name = (char *)strdup(oi.Filename);
+      if (oi.Filename != NULL)
+        folder->name = (char *)strdup(oi.Filename);
+      else
+        folder->name = NULL;
 
       // Work out where to put this new item
       if(retfolders == NULL) {

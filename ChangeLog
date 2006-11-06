@@ -1,3 +1,8 @@
+2006-11-06 Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: added a check for NULL filenames in
+	  LIBMTP_Get_Folder_List.
+
 2006-11-01  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: set/get uint8 to/from objects
