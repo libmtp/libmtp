@@ -390,7 +390,7 @@ ptp_read_func (unsigned char *bytes, unsigned int size, void *data, unsigned int
       return PTP_ERROR_IO;
 #ifdef ENABLE_USB_BULK_DEBUG
     printf("<==USB IN\n");
-    data_dump_ascii (stdout,(bytes+curread),toread,16);
+    data_dump_ascii (stdout,(bytes+curread),result,16);
 #endif
     curread += result;
     if (result < toread) /* short reads are common */
