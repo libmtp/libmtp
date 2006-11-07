@@ -2329,7 +2329,10 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   uint32_t localph = parenthandle;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   uint8_t nonconsumable = 0x00U; /* By default it is consumable */
-
+	uint16_t *props = NULL;
+	uint32_t propcnt = 0;
+	uint32_t i = 0;
+		
   if (localph == 0) {
     localph = device->default_music_folder;
   }
@@ -2410,32 +2413,65 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
      *    0C 00 00 00 03 00 01 20 1C 00 00 00
      *    ... Then update metadata one-by one, actually (instead of sending it first!) ...
      */
-    MTPPropList *proplist;
-    MTPPropList *prop;
+    MTPPropList *proplist = NULL;
+    MTPPropList *prop = NULL;
+    MTPPropList *previous = NULL;
 
     /* Send an object property list of that is supported */
     localph = 0xFFFFFFFFU; // Set to -1
     metadata->item_id = 0x00000000U;
+		
+    ret = ptp_mtp_getobjectpropssupported (params, map_libmtp_type_to_ptp_type(metadata->filetype), &propcnt, &props);
+		
+    if (ret == PTP_RC_OK)
+    {
+      for (i=0;i<propcnt;i++) {
+        switch (props[i]) {
+          case PTP_OPC_ObjectFileName:
+            prop = New_MTP_Prop_Entry();
+            prop->property = PTP_OPC_ObjectFileName;
+            prop->datatype = PTP_DTC_STR;
+            prop->propval.str = strdup(metadata->filename);
 
-    prop = New_MTP_Prop_Entry();
-    prop->property = PTP_OPC_ObjectFileName;
-    prop->datatype = PTP_DTC_STR;
-    prop->propval.str = strdup(metadata->filename);
-    proplist = prop;
-    prop->next = New_MTP_Prop_Entry();
-    prop = prop->next;
-    
-    prop->property = PTP_OPC_ProtectionStatus;
-    prop->datatype = PTP_DTC_UINT16;
-    prop->propval.u16 = 0x0000U; /* Not protected */
-    prop->next = New_MTP_Prop_Entry();
-    prop = prop->next;
-    
-    prop->property = PTP_OPC_NonConsumable;
-    prop->datatype = PTP_DTC_UINT8;
-    prop->propval.u8 = nonconsumable;
-    prop->next = NULL;
+            if (previous != NULL)
+              previous->next = prop;
+            else
+              proplist = prop;
+            previous = prop;
+            prop->next = NULL;
+            break;
+          case PTP_OPC_ProtectionStatus:
+            prop = New_MTP_Prop_Entry();
+            prop->property = PTP_OPC_ProtectionStatus;
+            prop->datatype = PTP_DTC_UINT16;
+            prop->propval.u16 = 0x0000U; /* Not protected */
 
+            if (previous != NULL)
+              previous->next = prop;
+            else
+              proplist = prop;
+            previous = prop;
+            prop->next = NULL;
+            break;
+          case PTP_OPC_NonConsumable:
+            prop = New_MTP_Prop_Entry();
+            prop->property = PTP_OPC_NonConsumable;
+            prop->datatype = PTP_DTC_UINT8;
+            prop->propval.u8 = nonconsumable;
+
+            if (previous != NULL)
+              previous->next = prop;
+            else
+              proplist = prop;
+            previous = prop;
+            prop->next = NULL;
+            break;
+        }
+      }
+    }
+
+    free(props);
+    
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &metadata->item_id,
 				     map_libmtp_type_to_ptp_type(metadata->filetype),
 				     metadata->filesize, proplist);
@@ -3107,7 +3143,7 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
         folder->name = (char *)strdup(oi.Filename);
       else
         folder->name = NULL;
-
+			
       // Work out where to put this new item
       if(retfolders == NULL) {
 	retfolders = folder;

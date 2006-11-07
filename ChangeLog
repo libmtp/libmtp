@@ -1,3 +1,7 @@
+2006-11-07 Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: added checks for supported properties
+
 2006-11-06 Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: added a check for NULL filenames in
