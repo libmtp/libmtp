@@ -61,7 +61,7 @@ void data_dump_ascii (FILE *f, void *buf, uint32_t n, uint32_t dump_boundry)
   
   lc = 0;
   while (remain) {
-    fprintf(f, "\t%04x:", dump_boundry);
+    fprintf(f, "\t%04x:", dump_boundry-0x10);
     
     ln = ( remain > 16 ) ? 16 : remain;
     
