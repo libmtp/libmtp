@@ -1,3 +1,11 @@
+/*
+ * This program is derived from the exact equivalent in libnjb.
+ *
+ * This is an improved commandline track transfer program
+ * based on Enrique Jorreto Ledesma's work on the original program by 
+ * Shaun Jackman and Linus Walleij.
+ */
+
 #include <string.h>
 #include <libgen.h>
 #include <sys/stat.h>
@@ -11,14 +19,17 @@ extern LIBMTP_folder_t *folders;
 extern LIBMTP_file_t *files;
 extern LIBMTP_mtpdevice_t *device;
 
-int send_track(char *, char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t);
-/*
- * This program is derived from the exact equivalent in libnjb.
- *
- * This is an improved commandline track transfer program
- * based on Enrique Jorreto Ledesma's work on the original program by 
- * Shaun Jackman and Linus Walleij.
- */
+int send_track (char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t);
+void sendtr (int, char **);
+void sendtr_usage (void);
+
+void sendtr_usage (void)
+{
+  fprintf(stderr, "usage: sendtr [ -D debuglvl ] [ -q ] -t <title> -a <artist> -l <album>\n");
+  fprintf(stderr, "       -c <codec> -g <genre> -n <track number> -y <year> \n");
+  fprintf(stderr, "       -d <duration in seconds> <local path> <remote path>\n");
+  fprintf(stderr, "(-q means the program will not ask for missing information.)\n");
+}
 
 static char *prompt (const char *prompt, char *buffer, size_t bufsz, int required)
 {
@@ -48,7 +59,7 @@ static char *prompt (const char *prompt, char *buffer, size_t bufsz, int require
   }
 }
 
-int send_track(char * from_path, char * to_path, char *partist, char *ptitle, char *pgenre, char *palbum, char *pfolder, uint16_t tracknum, uint16_t length, uint16_t year)
+int send_track(char * from_path, char * to_path, char *partist, char *ptitle, char *pgenre, char *palbum, uint16_t tracknum, uint16_t length, uint16_t year)
 {
   printf("Sending track %s to %s\n",from_path,to_path);
   char *filename, *parent;
@@ -176,9 +187,6 @@ int send_track(char * from_path, char * to_path, char *partist, char *ptitle, ch
       // Multiply by 1000 since this is in milliseconds
       trackmeta->duration = length * 1000;
     }
-    if (pfolder != NULL && parent_id != 0) {
-      printf("Folder:    %s (ID: %d)\n", pfolder, parent_id);
-    }
     // We should always have this
     if (filename != NULL) {
       trackmeta->filename = strdup(filename);
@@ -195,3 +203,79 @@ int send_track(char * from_path, char * to_path, char *partist, char *ptitle, ch
   }
   return 0;
 }
+
+void
+sendtr (int argc, char **argv) {
+    int opt;
+    extern int optind;
+    extern char *optarg;
+    char *partist = NULL;
+    char *ptitle = NULL;
+    char *pgenre = NULL;
+    char *pcodec = NULL;
+    char *palbum = NULL;
+    uint16_t tracknum = 0;
+    uint16_t length = 0;
+    uint16_t year = 0;
+    uint16_t quiet = 0;
+    char *lang;
+      while ( (opt = getopt(argc, argv, "qD:t:a:l:c:g:n:d:y:")) != -1 ) {
+        switch (opt) {
+        case 't':
+          ptitle = strdup(optarg);
+          break;
+        case 'a':
+          partist = strdup(optarg);
+          break;
+        case 'l':
+          palbum = strdup(optarg);
+          break;
+        case 'c':
+          pcodec = strdup(optarg); // FIXME: DSM check for MP3, WAV or WMA
+          break;
+        case 'g':
+          pgenre = strdup(optarg);
+          break;
+        case 'n':
+          tracknum = atoi(optarg);
+          break;
+        case 'd':
+          length = atoi(optarg);
+          break;
+        case 'y':
+          year = atoi(optarg);
+          break;
+        case 'q':
+          quiet = 1;
+          break;
+        default:
+          sendtr_usage();
+        }
+      }
+      argc -= optind;
+      argv += optind;
+
+      if ( argc != 2 ) {
+        printf("You need to pass a filename and destination.\n");
+        sendtr_usage();
+      }
+      /*
+ *        * Check environment variables $LANG and $LC_CTYPE
+ *               * to see if we want to support UTF-8 unicode
+ *                      */
+      lang = getenv("LANG");
+      if (lang != NULL) {
+        if (strlen(lang) > 5) {
+          char *langsuff = &lang[strlen(lang)-5];
+          if (strcmp(langsuff, "UTF-8")) {
+            printf("Your system does not appear to have UTF-8 enabled ($LANG=\"%s\")\n", lang);
+            printf("If you want to have support for diacritics and Unicode characters,\n");
+            printf("please switch your locale to an UTF-8 locale, e.g. \"en_US.UTF-8\".\n");
+          }
+        }
+      }
+
+      printf("%s,%s,%s,%s,%s,%s,%d%d,%d\n",argv[0],argv[1],partist,ptitle,pgenre,palbum,tracknum, length, year);
+      send_track(argv[0],argv[1],partist,ptitle,pgenre,palbum, tracknum, length, year);
+}
+

@@ -2,7 +2,7 @@ bin_PROGRAMS=connect detect tracks files hotplug \
 	folders trexist playlists getplaylist \
 	format albumart
 
-connect_SOURCES=connect.c sendfile.c sendtr.c pathutils.c common.h
+connect_SOURCES=connect.c sendfile.c sendtr.c delfile.c newfolder.c pathutils.c common.h
 detect_SOURCES=detect.c common.h
 tracks_SOURCES=tracks.c common.h
 files_SOURCES=files.c common.h
@@ -17,3 +17,8 @@ albumart_SOURCES=albumart.c common.h
 AM_CFLAGS=-I$(top_builddir)/src
 LDADD=../src/libmtp.la
 EXTRA_DIST=evolution-sync.sh
+
+install-exec-hook:
+	ln -f -s $(DESTDIR)$(bindir)/mtp-connect $(DESTDIR)$(bindir)/mtp-sendtr
+	ln -f -s $(DESTDIR)$(bindir)/mtp-connect $(DESTDIR)$(bindir)/mtp-delfile
+	ln -f -s $(DESTDIR)$(bindir)/mtp-connect $(DESTDIR)$(bindir)/mtp-newfolder

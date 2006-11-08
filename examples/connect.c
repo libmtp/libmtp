@@ -10,10 +10,14 @@ LIBMTP_mtpdevice_t *device;
 
 void usage(void);
 void delete_item(char *);
+void delete_files(int, char **);
+void sendtr (int, char **);
 void send_file(char *,char *);
-int send_track(char *, char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t);
+void sendfile(int, char **);
+int send_track(char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t);
 void get_file(char *,char *);
 void new_folder(char *);
+void newfolder(int,char **);
 void split_arg(char *,char **, char **);
 
 void
@@ -34,24 +38,10 @@ usage(void)
 {
   printf("Usage: connect <command1> <command2>\n");
   printf("Commands: --delete [filename]\n");
-  printf("          --sendfile [source] [destination]\n");
-  printf("          --sendtrack [source] [destination]\n");
-  printf("          --getfile [source] [destination]\n");
+  printf("          --sendfile [source],[destination]\n");
+  printf("          --sendtrack [source],[destination]\n");
+  printf("          --getfile [source],[destination]\n");
   printf("          --newfolder [foldername]\n");
-}
-
-void
-delete_item(char * path)
-{
-  int id = parse_path (path,files,folders);
-  if (id > 0) {
-    printf("Deleting %s which has item_id:%d\n",path,id);
-    int ret = 1;
-    ret = LIBMTP_Delete_Object(device, id);
-    if (ret != 0) {
-      printf("Failed to remove file\n");
-    }
-  }
 }
 
 void
@@ -83,9 +73,6 @@ new_folder(char * path)
 
 int main (int argc, char **argv)
 {
-  //u_int32_t id = 0;
-  int c;
-
   if ( argc < 2 ) {
     usage ();
     return 1;
@@ -118,81 +105,13 @@ int main (int argc, char **argv)
   folders = LIBMTP_Get_Folder_List (device);
 
   if ((strncmp(basename(argv[0]),"mtp-sendtr",10) == 0) || (strncmp(basename(argv[0]),"sendtr",6) == 0)) {
-    int opt;
-    extern int optind;
-    extern char *optarg;
-    char *partist = NULL;
-    char *ptitle = NULL;
-    char *pgenre = NULL;
-    char *pcodec = NULL;
-    char *palbum = NULL;
-    char *pfolder = NULL;
-    uint16_t tracknum = 0;
-    uint16_t length = 0;
-    uint16_t year = 0;
-    uint16_t quiet = 0;
-    char *lang;
-      while ( (opt = getopt(argc, argv, "qD:t:a:l:c:g:n:d:y:f:")) != -1 ) {
-        switch (opt) {
-        case 't':
-          ptitle = strdup(optarg);
-          break;
-        case 'a':
-          partist = strdup(optarg);
-          break;
-        case 'l':
-          palbum = strdup(optarg);
-          break;
-        case 'c':
-          pcodec = strdup(optarg); // FIXME: DSM check for MP3, WAV or WMA
-          break;
-        case 'g':
-          pgenre = strdup(optarg);
-          break;
-        case 'n':
-          tracknum = atoi(optarg);
-          break;
-        case 'd':
-          length = atoi(optarg);
-          break;
-        case 'y':
-          year = atoi(optarg);
-          break;
-        case 'f':
-          pfolder = strdup(optarg);
-          break;
-        case 'q':
-          quiet = 1;
-          break;
-        default:
-          usage();
-        }
-      }
-      argc -= optind;
-      argv += optind;
-    
-      if ( argc != 2 ) {
-        printf("You need to pass a filename and destination.\n");
-        usage();
-      }
-      /*
-       * Check environment variables $LANG and $LC_CTYPE
-       * to see if we want to support UTF-8 unicode
-       */
-      lang = getenv("LANG");
-      if (lang != NULL) {
-        if (strlen(lang) > 5) {
-          char *langsuff = &lang[strlen(lang)-5];
-          if (strcmp(langsuff, "UTF-8")) {
-            printf("Your system does not appear to have UTF-8 enabled ($LANG=\"%s\")\n", lang);
-            printf("If you want to have support for diacritics and Unicode characters,\n");
-            printf("please switch your locale to an UTF-8 locale, e.g. \"en_US.UTF-8\".\n");
-          }
-        }
-      }
-
-      printf("%s,%s,%s,%s,%s,%s,%s,%d%d,%d\n",argv[0],argv[1],partist,ptitle,pgenre,palbum,pfolder, tracknum, length, year);
-      send_track(argv[0],argv[1],partist,ptitle,pgenre,palbum,pfolder, tracknum, length, year);
+    sendtr(argc, argv);
+  } else if ((strncmp(basename(argv[0]),"mtp-sendfile",11) == 0) || (strncmp(basename(argv[0]),"sendfile",7) == 0)) {
+    sendfile(argc, argv);
+  } else if ((strncmp(basename(argv[0]),"mtp-delfile",11) == 0) || (strncmp(basename(argv[0]),"delfile",7) == 0)) {
+    delete_files(argc,argv);
+  } else if ((strncmp(basename(argv[0]),"mtp-newfolder",13) == 0) || (strncmp(basename(argv[0]),"newfolder",9) == 0)) {
+    newfolder(argc,argv);
   } else {  
     while (1) {
       int option_index = 0;
@@ -205,7 +124,7 @@ int main (int argc, char **argv)
         {0, 0, 0, 0}
       };
   
-      c = getopt_long (argc, argv, "d:f:g:n:t:", long_options, &option_index);
+      int c = getopt_long (argc, argv, "d:f:g:n:t:", long_options, &option_index);
       if (c == -1)
         break;
   
@@ -236,7 +155,7 @@ int main (int argc, char **argv)
       case 't':
         printf("Send track %s\n",optarg);
         split_arg(optarg,&arg1,&arg2);
-        send_track(arg1,arg2,NULL,NULL,NULL,NULL,NULL,0,0,0);
+        send_track(arg1,arg2,NULL,NULL,NULL,NULL,0,0,0);
         break;
       }
     }

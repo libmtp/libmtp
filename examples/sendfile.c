@@ -12,6 +12,13 @@ extern LIBMTP_file_t *files;
 extern LIBMTP_mtpdevice_t *device;
 
 int send_file(char *, char *);
+void sendfile(int, char **);
+void sendfile_usage(void);
+
+void sendfile_usage(void)
+{
+  fprintf(stderr, "usage: sendfile <local filename> <remote filename>\n");
+}
 
 int send_file(char * from_path, char *to_path)
 {
@@ -22,7 +29,6 @@ int send_file(char * from_path, char *to_path)
   LIBMTP_file_t *genfile;
   int ret;
   uint32_t parent_id = 0;
-  char * parent;
 
   if ( stat(from_path, &sb) == -1 ) {
     fprintf(stderr, "%s: ", from_path);
@@ -55,3 +61,11 @@ int send_file(char * from_path, char *to_path)
   return 0;
 }
 
+void
+sendfile (int argc, char **argv) {
+  if (argc < 3) {
+    sendfile_usage();
+    return;
+  }
+  send_file(argv[1],argv[2]);
+}
