@@ -1,6 +1,6 @@
 bin_PROGRAMS=connect detect tracks files hotplug \
 	folders trexist playlists getplaylist \
-	format albumart
+	format albumart albums
 
 connect_SOURCES=connect.c sendfile.c sendtr.c delfile.c newfolder.c pathutils.c common.h
 detect_SOURCES=detect.c common.h
@@ -13,6 +13,7 @@ playlists_SOURCES=playlists.c common.h
 getplaylist_SOURCES=getplaylist.c common.h
 format_SOURCES=format.c common.h
 albumart_SOURCES=albumart.c common.h
+albums_SOURCES=albums.c common.h
 
 AM_CFLAGS=-I$(top_builddir)/src
 LDADD=../src/libmtp.la
