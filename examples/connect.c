@@ -16,6 +16,7 @@ void send_file(char *,char *);
 void sendfile(int, char **);
 int send_track(char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t);
 void get_file(char *,char *);
+void getfile(int, char **);
 void new_folder(char *);
 void newfolder(int,char **);
 void split_arg(char *,char **, char **);
@@ -42,33 +43,6 @@ usage(void)
   printf("          --sendtrack [source],[destination]\n");
   printf("          --getfile [source],[destination]\n");
   printf("          --newfolder [foldername]\n");
-}
-
-void
-get_file(char * from_path,char * to_path)
-{
-  int id = parse_path (from_path,files,folders);
-  if (id > 0) {
-    printf("Getting %s to %s\n",from_path,to_path);
-    if (LIBMTP_Get_File_To_File(device, id, to_path, progress, NULL) != 0 ) {
-      printf("\nError getting file from MTP device.\n");
-    }
-  }
-}
-
-void
-new_folder(char * path)
-{
-  printf("Creating new folder %s\n",path);
-  char * parent = dirname(path);
-  char * folder = basename(path);
-  int id = parse_path (parent,files,folders);
-  int newid = LIBMTP_Create_Folder(device, folder, id);
-  if (newid == 0) {
-    printf("Folder creation failed.\n");
-  } else {
-    printf("New folder created with ID: %d\n", newid);
-  }
 }
 
 int main (int argc, char **argv)
@@ -104,14 +78,16 @@ int main (int argc, char **argv)
   files = LIBMTP_Get_Filelisting (device);
   folders = LIBMTP_Get_Folder_List (device);
 
-  if ((strncmp(basename(argv[0]),"mtp-sendtr",10) == 0) || (strncmp(basename(argv[0]),"sendtr",6) == 0)) {
-    sendtr(argc, argv);
-  } else if ((strncmp(basename(argv[0]),"mtp-sendfile",11) == 0) || (strncmp(basename(argv[0]),"sendfile",7) == 0)) {
-    sendfile(argc, argv);
-  } else if ((strncmp(basename(argv[0]),"mtp-delfile",11) == 0) || (strncmp(basename(argv[0]),"delfile",7) == 0)) {
+  if ((strncmp(basename(argv[0]),"mtp-delfile",11) == 0) || (strncmp(basename(argv[0]),"delfile",7) == 0)) {
     delete_files(argc,argv);
+  } else if ((strncmp(basename(argv[0]),"mtp-getfile",13) == 0) || (strncmp(basename(argv[0]),"getfile",9) == 0)) {
+    getfile(argc,argv);
   } else if ((strncmp(basename(argv[0]),"mtp-newfolder",13) == 0) || (strncmp(basename(argv[0]),"newfolder",9) == 0)) {
     newfolder(argc,argv);
+  } else if ((strncmp(basename(argv[0]),"mtp-sendfile",11) == 0) || (strncmp(basename(argv[0]),"sendfile",7) == 0)) {
+    sendfile(argc, argv);
+  } else if ((strncmp(basename(argv[0]),"mtp-sendtr",10) == 0) || (strncmp(basename(argv[0]),"sendtr",6) == 0)) {
+    sendtr(argc, argv);
   } else {  
     while (1) {
       int option_index = 0;
