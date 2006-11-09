@@ -3,8 +3,8 @@
 #include "pathutils.h"
 
 void delfile_usage(void);
-void delete_item(char *);
-void delete_files(int, char **);
+void delfile_function(char *);
+void delfile_command(int, char **);
 
 extern LIBMTP_mtpdevice_t *device;
 extern LIBMTP_folder_t *folders;
@@ -16,7 +16,7 @@ void delfile_usage(void)
 }
 
 void
-delete_item(char * path)
+delfile_function(char * path)
 {
   int id = parse_path (path,files,folders);
   if (id > 0) {
@@ -29,7 +29,7 @@ delete_item(char * path)
   }
 }
 
-void delete_files(int argc, char **argv)
+void delfile_command(int argc, char **argv)
 {
   int FILENAME = 1;
   int ITEMID = 2;

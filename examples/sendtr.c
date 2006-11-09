@@ -19,11 +19,11 @@ extern LIBMTP_folder_t *folders;
 extern LIBMTP_file_t *files;
 extern LIBMTP_mtpdevice_t *device;
 
-int send_track (char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t);
-void sendtr (int, char **);
-void sendtr_usage (void);
+int sendtrack_function (char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t);
+void sendtrack_command (int, char **);
+void sendtrack_usage (void);
 
-void sendtr_usage (void)
+void sendtrack_usage (void)
 {
   fprintf(stderr, "usage: sendtr [ -D debuglvl ] [ -q ] -t <title> -a <artist> -l <album>\n");
   fprintf(stderr, "       -c <codec> -g <genre> -n <track number> -y <year> \n");
@@ -59,7 +59,7 @@ static char *prompt (const char *prompt, char *buffer, size_t bufsz, int require
   }
 }
 
-int send_track(char * from_path, char * to_path, char *partist, char *ptitle, char *pgenre, char *palbum, uint16_t tracknum, uint16_t length, uint16_t year)
+int sendtrack_function(char * from_path, char * to_path, char *partist, char *ptitle, char *pgenre, char *palbum, uint16_t tracknum, uint16_t length, uint16_t year)
 {
   printf("Sending track %s to %s\n",from_path,to_path);
   char *filename, *parent;
@@ -204,8 +204,7 @@ int send_track(char * from_path, char * to_path, char *partist, char *ptitle, ch
   return 0;
 }
 
-void
-sendtr (int argc, char **argv) {
+void sendtrack_command (int argc, char **argv) {
     int opt;
     extern int optind;
     extern char *optarg;
@@ -249,7 +248,7 @@ sendtr (int argc, char **argv) {
           quiet = 1;
           break;
         default:
-          sendtr_usage();
+          sendtrack_usage();
         }
       }
       argc -= optind;
@@ -257,7 +256,7 @@ sendtr (int argc, char **argv) {
 
       if ( argc != 2 ) {
         printf("You need to pass a filename and destination.\n");
-        sendtr_usage();
+        sendtrack_usage();
       }
       /*
  *        * Check environment variables $LANG and $LC_CTYPE
@@ -276,6 +275,6 @@ sendtr (int argc, char **argv) {
       }
 
       printf("%s,%s,%s,%s,%s,%s,%d%d,%d\n",argv[0],argv[1],partist,ptitle,pgenre,palbum,tracknum, length, year);
-      send_track(argv[0],argv[1],partist,ptitle,pgenre,palbum, tracknum, length, year);
+      sendtrack_function(argv[0],argv[1],partist,ptitle,pgenre,palbum, tracknum, length, year);
 }
 

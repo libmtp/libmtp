@@ -1,20 +1,21 @@
 #include "common.h"
 #include "pathutils.h"
 
-void get_file(char *,char *);
-void getfile(int, char **);
+void getfile_function(char *,char *);
+void getfile_command(int, char **);
+void getfile_usage(void);
 
 extern LIBMTP_folder_t *folders;
 extern LIBMTP_file_t *files;
 extern LIBMTP_mtpdevice_t *device;
 
-static void getfile_usage (void)
+void getfile_usage (void)
 {
   fprintf(stderr, "getfile <fileid/trackid> <filename>\n");
 }
 
 void
-get_file(char * from_path,char * to_path)
+getfile_function(char * from_path,char * to_path)
 {
   int id = parse_path (from_path,files,folders);
   if (id > 0) {
@@ -26,7 +27,7 @@ get_file(char * from_path,char * to_path)
 }
 
 
-void getfile(int argc, char **argv)
+void getfile_command(int argc, char **argv)
 {
   u_int32_t id;
   char *endptr;

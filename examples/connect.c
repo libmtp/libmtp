@@ -9,17 +9,22 @@ LIBMTP_file_t *files;
 LIBMTP_mtpdevice_t *device;
 
 void usage(void);
-void delete_item(char *);
-void delete_files(int, char **);
-void sendtr (int, char **);
-void send_file(char *,char *);
-void sendfile(int, char **);
-int send_track(char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t);
-void get_file(char *,char *);
-void getfile(int, char **);
-void new_folder(char *);
-void newfolder(int,char **);
 void split_arg(char *,char **, char **);
+void delfile_function(char *);
+void delfile_command(int, char **);
+void delfile_usage(void);
+int sendtrack_function(char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t);
+void sendtrack_command (int, char **);
+void sendtrack_usage(void);
+void sendfile_function(char *,char *);
+void sendfile_command(int, char **);
+void sendfile_usage(void);
+void getfile_function(char *,char *);
+void getfile_command(int, char **);
+void getfile_usage(void);
+void newfolder_function(char *);
+void newfolder_command(int,char **);
+void newfolder_usage(void);
 
 void
 split_arg(char * argument, char ** part1, char ** part2)
@@ -79,15 +84,15 @@ int main (int argc, char **argv)
   folders = LIBMTP_Get_Folder_List (device);
 
   if ((strncmp(basename(argv[0]),"mtp-delfile",11) == 0) || (strncmp(basename(argv[0]),"delfile",7) == 0)) {
-    delete_files(argc,argv);
+    delfile_command(argc,argv);
   } else if ((strncmp(basename(argv[0]),"mtp-getfile",13) == 0) || (strncmp(basename(argv[0]),"getfile",9) == 0)) {
-    getfile(argc,argv);
+    getfile_command(argc,argv);
   } else if ((strncmp(basename(argv[0]),"mtp-newfolder",13) == 0) || (strncmp(basename(argv[0]),"newfolder",9) == 0)) {
-    newfolder(argc,argv);
+    newfolder_command(argc,argv);
   } else if ((strncmp(basename(argv[0]),"mtp-sendfile",11) == 0) || (strncmp(basename(argv[0]),"sendfile",7) == 0)) {
-    sendfile(argc, argv);
+    sendfile_command(argc, argv);
   } else if ((strncmp(basename(argv[0]),"mtp-sendtr",10) == 0) || (strncmp(basename(argv[0]),"sendtr",6) == 0)) {
-    sendtr(argc, argv);
+    sendtrack_command(argc, argv);
   } else {  
     while (1) {
       int option_index = 0;
@@ -108,30 +113,30 @@ int main (int argc, char **argv)
       switch (c) {
       case 'd':
         printf("Delete %s\n",optarg);
-        delete_item(optarg);
+        delfile_function(optarg);
         break;
   
       case 'f':
         printf("Send file %s\n",optarg);
         split_arg(optarg,&arg1,&arg2);
-        send_file(arg1,arg2);
+        sendfile_function(arg1,arg2);
         break;
   
       case 'g':
         printf("Get file %s\n",optarg);
         split_arg(optarg,&arg1,&arg2);
-        get_file(arg1,arg2);
+        getfile_function(arg1,arg2);
         break;
   
       case 'n':
         printf("New folder %s\n",optarg);
-        new_folder(optarg);
+        newfolder_function(optarg);
         break;
   
       case 't':
         printf("Send track %s\n",optarg);
         split_arg(optarg,&arg1,&arg2);
-        send_track(arg1,arg2,NULL,NULL,NULL,NULL,0,0,0);
+        sendtrack_function(arg1,arg2,NULL,NULL,NULL,NULL,0,0,0);
         break;
       }
     }

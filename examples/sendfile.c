@@ -11,8 +11,8 @@ extern LIBMTP_folder_t *folders;
 extern LIBMTP_file_t *files;
 extern LIBMTP_mtpdevice_t *device;
 
-int send_file(char *, char *);
-void sendfile(int, char **);
+int sendfile_function(char *, char *);
+void sendfile_command(int, char **);
 void sendfile_usage(void);
 
 void sendfile_usage(void)
@@ -20,7 +20,7 @@ void sendfile_usage(void)
   fprintf(stderr, "usage: sendfile <local filename> <remote filename>\n");
 }
 
-int send_file(char * from_path, char *to_path)
+int sendfile_function(char * from_path, char *to_path)
 {
   printf("Sending %s to %s\n",from_path,to_path);
   char *filename;
@@ -61,11 +61,10 @@ int send_file(char * from_path, char *to_path)
   return 0;
 }
 
-void
-sendfile (int argc, char **argv) {
+void sendfile_command (int argc, char **argv) {
   if (argc < 3) {
     sendfile_usage();
     return;
   }
-  send_file(argv[1],argv[2]);
+  sendfile_function(argv[1],argv[2]);
 }

@@ -1,14 +1,14 @@
 #include "common.h"
 #include <libgen.h>
 
-void new_folder(char *);
-void newfolder(int,char **);
+void newfolder_function(char *);
+void newfolder_command(int,char **);
 
 extern LIBMTP_folder_t *folders;
 extern LIBMTP_file_t *files;
 extern LIBMTP_mtpdevice_t *device;
 
-void newfolder (int argc, char **argv)
+void newfolder_command (int argc, char **argv)
 {
   uint32_t newid;
   
@@ -27,7 +27,7 @@ void newfolder (int argc, char **argv)
 }
 
 void
-new_folder(char * path)
+newfolder_function(char * path)
 {
   printf("Creating new folder %s\n",path);
   char * parent = dirname(path);
