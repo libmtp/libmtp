@@ -111,7 +111,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    */
   // From libgphoto2 source
   { "Philips HDD6320", 0x0471, 0x01eb, DEVICE_FLAG_NONE },
-  { "Philips HDD6320 2", 0x0471, 0x014b, DEVICE_FLAG_NONE },
+  { "Philips HDD6320/00", 0x0471, 0x014b, DEVICE_FLAG_NONE },
   // Anonymous SourceForge user
   { "Philips HDD1630/17", 0x0471, 0x014c, DEVICE_FLAG_NONE },
   // From Gerhard Mekenkamp
