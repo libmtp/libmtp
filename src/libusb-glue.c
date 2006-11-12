@@ -78,7 +78,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // Reported by danielw@iinet.net.au
   { "Creative Zen Vision:M (DVP-HD0004)", 0x041e, 0x4151, DEVICE_FLAG_NONE },
   // Reported by Darel on the XNJB forums
-  { "Creative Zen V plus", 0x041e, 0x4152, DEVICE_FLAG_NONE },
+  { "Creative Zen V Plus", 0x041e, 0x4152, DEVICE_FLAG_NONE },
+  { "Creative Zen Vision W", 0x041e, 0x4153, DEVICE_FLAG_NONE },
 
   /*
    * Samsung

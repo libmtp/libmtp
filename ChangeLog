@@ -1,3 +1,7 @@
+2006-11-12 Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: added Zen Vision W to devices
+
 2006-11-07 Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: added checks for supported properties
