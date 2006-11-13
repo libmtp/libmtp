@@ -80,7 +80,7 @@ int main (int argc, char **argv)
     printf("No devices.\n");
     return 0;
   }
-  files = LIBMTP_Get_Filelisting (device);
+  files = LIBMTP_Get_Filelisting_With_Callback (device, NULL, NULL);
   folders = LIBMTP_Get_Folder_List (device);
 
   if ((strncmp(basename(argv[0]),"mtp-delfile",11) == 0) || (strncmp(basename(argv[0]),"delfile",7) == 0)) {

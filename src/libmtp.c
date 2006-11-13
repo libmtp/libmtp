@@ -1598,13 +1598,25 @@ void LIBMTP_destroy_file_t(LIBMTP_file_t *file)
 }
 
 /**
+* THIS FUNCTION IS DEPRECATED. PLEASE UPDATE YOUR CODE IN ORDER 
+ * NOT TO USE IT.
+ * @see LIBMTP_Get_Filelisting_With_Callback()
+ */
+LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
+{
+  printf("WARNING: LIBMTP_Get_Filelisting() is deprecated.\n");
+  printf("WARNING: please update your code to use LIBMTP_Get_Filelisting_With_Callback()\n");
+  return LIBMTP_Get_Filelisting_With_Callback(device, NULL, NULL);
+}
+
+/**
  * This returns a long list of all files available
  * on the current MTP device. Typical usage:
  *
  * <pre>
  * LIBMTP_file_t *filelist;
  *
- * filelist = LIBMTP_Get_Filelisting(device);
+ * filelist = LIBMTP_Get_Filelisting_With_Callback(device, callback, data);
  * while (filelist != NULL) {
  *   LIBMTP_file_t *tmp;
  *
@@ -1616,6 +1628,13 @@ void LIBMTP_destroy_file_t(LIBMTP_file_t *file)
  * </pre>
  *
  * @param device a pointer to the device to get the file listing for.
+ * @param callback a function to be called during the tracklisting retrieveal
+ *               for displaying progress bars etc, or NULL if you don't want 
+ *               any callbacks.
+ * @param data a user-defined pointer that is passed along to
+ *             the <code>progress</code> function in order to
+ *             pass along some user defined data to the progress
+ *             updates. If not used, set this to NULL.
  * @return a list of files that can be followed using the <code>next</code>
  *         field of the <code>LIBMTP_file_t</code> data structure.
  *         Each of the metadata tags must be freed after use, and may
@@ -1623,7 +1642,9 @@ void LIBMTP_destroy_file_t(LIBMTP_file_t *file)
  *         fields may be NULL or 0.
  * @see LIBMTP_Get_Filemetadata()
  */
-LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
+LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
+                                                    LIBMTP_progressfunc_t const callback,
+                                                    void const * const data)
 {
   uint32_t i = 0;
   LIBMTP_file_t *retfiles = NULL;
@@ -1637,6 +1658,9 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
 
   for (i = 0; i < params->handles.n; i++) {
 
+    if (callback != NULL)
+      callback(i, params->handles.n, data);
+    
     LIBMTP_file_t *file;
     PTPObjectInfo oi;
 
@@ -1971,7 +1995,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 {
   printf("WARNING: LIBMTP_Get_Tracklisting() is deprecated.\n");
   printf("WARNING: please update your code to use LIBMTP_Get_Tracklisting_With_Callback()\n");
-  return LIBMTP_Get_Tracklisting_With_Callback(device, NULL);
+  return LIBMTP_Get_Tracklisting_With_Callback(device, NULL, NULL);
 }
 
 /**
@@ -1981,7 +2005,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
  * <pre>
  * LIBMTP_track_t *tracklist;
  *
- * tracklist = LIBMTP_Get_Tracklisting(device);
+ * tracklist = LIBMTP_Get_Tracklisting(device, callback, data);
  * while (tracklist != NULL) {
  *   LIBMTP_track_t *tmp;
  *
@@ -1996,6 +2020,10 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
  * @param callback a function to be called during the tracklisting retrieveal
  *               for displaying progress bars etc, or NULL if you don't want 
  *               any callbacks.
+ * @param data a user-defined pointer that is passed along to
+ *             the <code>progress</code> function in order to
+ *             pass along some user defined data to the progress
+ *             updates. If not used, set this to NULL.
  * @return a list of tracks that can be followed using the <code>next</code>
  *         field of the <code>LIBMTP_track_t</code> data structure.
  *         Each of the metadata tags must be freed after use, and may
@@ -2003,7 +2031,9 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
  *         fields may be NULL or 0.
  * @see LIBMTP_Get_Trackmetadata()
  */
-LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device, LIBMTP_progressfunc_t const callback)
+LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device,
+                                                      LIBMTP_progressfunc_t const callback,
+                                                      void const * const data)
 {
   uint32_t i = 0;
   LIBMTP_track_t *retracks = NULL;
@@ -2016,6 +2046,10 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
   }
 
   for (i = 0; i < params->handles.n; i++) {
+    
+    if (callback != NULL)
+      callback(i, params->handles.n, data);
+    
     LIBMTP_track_t *track;
     PTPObjectInfo oi;
 

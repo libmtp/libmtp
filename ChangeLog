@@ -1,8 +1,13 @@
-2006-11-13 Richard Low <richard@wentnet.com>
+2006-11-13 Richard Low <richard@wentnet.com>, Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: add LIBMTP_Get_Tracklisting_With_Callback()
+	  and LIBMTP_Get_Filelisting_With_Callback()
 	* src/libmtp.c: dito, deprecate LIBMTP_Get_Tracklisting()
+	  and LIBMTP_Get_Filelisting()
 	* examples/tracks.c: use undeprecated API entry.
+	* examples/connect.c: ditto.
+	* examples/detect.c: ditto.
+	* examples/files.c: ditto.	
 	* src/ptp.c: working on getting object prop lists.
 	* src/ptp.h: dito.
 

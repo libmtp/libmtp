@@ -29,7 +29,7 @@ int main (int argc, char **argv)
   }
   
   // Get track listing.
-  files = LIBMTP_Get_Filelisting(device);
+  files = LIBMTP_Get_Filelisting_With_Callback(device, NULL, NULL);
   if (files == NULL) {
     printf("No files.\n");
   } else {
