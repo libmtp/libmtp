@@ -23,6 +23,9 @@
 #include "ptp.h"
 #include "libusb-glue.h"
 
+/* Enable enhanced MTP commands */
+#define ENABLE_MTP_ENHANCED
+
 /*
  * On MacOS (Darwin) and *BSD we're not using glibc, but libiconv.
  * glibc knows that UCS-2 is to be in the local machine endianness,
@@ -69,6 +72,8 @@ static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
 				       char **unicstring, uint16_t property);
 static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat,
 			       LIBMTP_track_t *track);
+static MTPPropList *New_MTP_Prop_Entry();
+static void Destroy_MTP_Prop_Entry(MTPPropList *prop);
 
 static LIBMTP_filemap_t *new_filemap_entry()
 {
@@ -1833,64 +1838,140 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
   uint32_t i;
-  uint16_t *props = NULL;
-  uint32_t propcnt = 0;
 
-  // First see which properties can be retrieved for this object format
-  ret = ptp_mtp_getobjectpropssupported (params, map_libmtp_type_to_ptp_type(track->filetype), &propcnt, &props);
-  if (ret != PTP_RC_OK) {
-    // Just bail out for now, nothing is ever set.
-    return;
-  } else {
-    for (i=0;i<propcnt;i++) {
-      switch (props[i]) {
+#if 0 // #ifdef ENABLE_MTP_ENHANCED
+  if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjPropList)) {
+    MTPPropList *proplist = NULL;
+    MTPPropList *prop;
+    MTPPropList *tmpprop;
+    
+    ret = ptp_mtp_getobjectproplist(params, track->item_id, &proplist);
+    prop = proplist;
+    while (prop != NULL) {
+      switch (prop->property) {
       case PTP_OPC_Name:
-	track->title = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Name);
+	track->title = strdup(prop->propval.str);
 	break;
       case PTP_OPC_Artist:
-	track->artist = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Artist);
+	track->artist = strdup(prop->propval.str);
 	break;
       case PTP_OPC_Duration:
-	track->duration = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_Duration, 0);
+	track->duration = prop->propval.u32;
 	break;
       case PTP_OPC_Track:
-	track->tracknumber = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_Track, 0);
+	track->tracknumber = prop->propval.u16;
 	break;
       case PTP_OPC_Genre:
-	track->genre = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Genre);
+	track->genre = strdup(prop->propval.str);
 	break;
       case PTP_OPC_AlbumName:
-	track->album = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_AlbumName);
+	track->album = strdup(prop->propval.str);
 	break;
       case PTP_OPC_OriginalReleaseDate:
-	track->date = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_OriginalReleaseDate);
+	track->date = strdup(prop->propval.str);
 	break;
 	// These are, well not so important.
       case PTP_OPC_SampleRate:
-	track->samplerate = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_SampleRate, 0);
+	track->samplerate = prop->propval.u32;
 	break;
       case PTP_OPC_NumberOfChannels:
-	track->nochannels = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_NumberOfChannels, 0);
+	track->nochannels = prop->propval.u16;
 	break;
       case PTP_OPC_AudioWAVECodec:
-	track->wavecodec = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_AudioWAVECodec, 0);
+	track->wavecodec = prop->propval.u32;
 	break;
       case PTP_OPC_AudioBitRate:
-	track->bitrate = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_AudioBitRate, 0);
+	track->bitrate = prop->propval.u32;
 	break;
       case PTP_OPC_BitRateType:
-	track->bitratetype = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_BitRateType, 0);
+	track->bitratetype = prop->propval.u16;
 	break;
       case PTP_OPC_Rating:
-	track->rating = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_Rating, 0);
+	track->rating = prop->propval.u16;
 	break;
       case PTP_OPC_UseCount:
-	track->usecount = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_UseCount, 0);
+	track->usecount = prop->propval.u32;
 	break;
       }
+      tmpprop = prop;
+      prop = prop->next;
+      Destroy_MTP_Prop_Entry(tmpprop);
     }
-    free(props);
+  } else {
+#else
+  {
+#endif
+    uint16_t *props = NULL;
+    uint32_t propcnt = 0;
+
+    // First see which properties can be retrieved for this object format
+    ret = ptp_mtp_getobjectpropssupported (params, map_libmtp_type_to_ptp_type(track->filetype), &propcnt, &props);
+    if (ret != PTP_RC_OK) {
+      // Just bail out for now, nothing is ever set.
+      return;
+    } else {
+      for (i=0;i<propcnt;i++) {
+	switch (props[i]) {
+	case PTP_OPC_Name:
+	  track->title = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Name);
+	  break;
+	case PTP_OPC_Artist:
+	  track->artist = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Artist);
+	  break;
+	case PTP_OPC_Duration:
+	  track->duration = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_Duration, 0);
+	  break;
+	case PTP_OPC_Track:
+	  track->tracknumber = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_Track, 0);
+	  break;
+	case PTP_OPC_Genre:
+	  track->genre = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Genre);
+	  break;
+	case PTP_OPC_AlbumName:
+	  track->album = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_AlbumName);
+	  break;
+	case PTP_OPC_OriginalReleaseDate:
+	  track->date = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_OriginalReleaseDate);
+	  break;
+	  // These are, well not so important.
+	case PTP_OPC_SampleRate:
+	  track->samplerate = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_SampleRate, 0);
+	  break;
+	case PTP_OPC_NumberOfChannels:
+	  track->nochannels = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_NumberOfChannels, 0);
+	  break;
+	case PTP_OPC_AudioWAVECodec:
+	  track->wavecodec = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_AudioWAVECodec, 0);
+	  break;
+	case PTP_OPC_AudioBitRate:
+	  track->bitrate = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_AudioBitRate, 0);
+	  break;
+	case PTP_OPC_BitRateType:
+	  track->bitratetype = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_BitRateType, 0);
+	  break;
+	case PTP_OPC_Rating:
+	  track->rating = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_Rating, 0);
+	  break;
+	case PTP_OPC_UseCount:
+	  track->usecount = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_UseCount, 0);
+	  break;
+	}
+      }
+      free(props);
+    }
   }
+}
+
+/**
+ * THIS FUNCTION IS DEPRECATED. PLEASE UPDATE YOUR CODE IN ORDER 
+ * NOT TO USE IT.
+ * @see LIBMTP_Get_Tracklisting_With_Callback()
+ */
+LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
+{
+  printf("WARNING: LIBMTP_Get_Tracklisting() is deprecated.\n");
+  printf("WARNING: please update your code to use LIBMTP_Get_Tracklisting_With_Callback()\n");
+  return LIBMTP_Get_Tracklisting_With_Callback(device, NULL);
 }
 
 /**
@@ -1912,6 +1993,9 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
  * </pre>
  *
  * @param device a pointer to the device to get the track listing for.
+ * @param callback a function to be called during the tracklisting retrieveal
+ *               for displaying progress bars etc, or NULL if you don't want 
+ *               any callbacks.
  * @return a list of tracks that can be followed using the <code>next</code>
  *         field of the <code>LIBMTP_track_t</code> data structure.
  *         Each of the metadata tags must be freed after use, and may
@@ -1919,7 +2003,7 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
  *         fields may be NULL or 0.
  * @see LIBMTP_Get_Trackmetadata()
  */
-LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
+LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device, LIBMTP_progressfunc_t const callback)
 {
   uint32_t i = 0;
   LIBMTP_track_t *retracks = NULL;
@@ -2468,9 +2552,9 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
             break;
         }
       }
+      free(props);
     }
 
-    free(props);
     
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &metadata->item_id,
 				     map_libmtp_type_to_ptp_type(metadata->filetype),
@@ -2479,8 +2563,9 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     /* Free property list */
     prop = proplist;
     while (prop != NULL) {
-      Destroy_MTP_Prop_Entry(prop);
+      previous = prop;
       prop = prop->next;
+      Destroy_MTP_Prop_Entry(previous);
     }
 
     if (ret != PTP_RC_OK) {

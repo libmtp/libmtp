@@ -2528,6 +2528,47 @@ ptp_mtp_setobjectreferences (PTPParams* params, uint32_t handle, uint32_t* ohArr
 }
 
 uint16_t
+ptp_mtp_getobjectproplist (PTPParams* params, uint32_t handle, MTPPropList **proplist)
+{
+	uint16_t ret;
+	PTPContainer ptp;
+	int old_split_header_data;
+	unsigned char* opldata = NULL;
+	unsigned int oplsize;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code = PTP_OC_MTP_GetObjPropList;
+	ptp.Param1 = handle;
+	ptp.Param2 = 0x00000000U;  // 0x00000000U should be "all formats"
+	ptp.Param3 = 0xFFFFFFFFU; // 0xFFFFFFFFU should be "all properties"
+	ptp.Param4 = 0x00000000U;
+	ptp.Param5 = 0x00000000U;
+	ptp.Nparam = 5;
+
+	/* Temporary disable split headers */
+	//old_split_header_data = params->split_header_data;
+	//params->split_header_data = 0;
+
+	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &opldata, &oplsize);
+	if (ret == PTP_RC_OK) {
+		printf("Read OPL for object 0x%08X, 0x%08X bytes:\n", handle, oplsize);
+		data_dump_ascii (stdout, opldata, oplsize, 16);
+		free(opldata);
+	} else {
+		printf("OPL read error code: %04X\n", ret);
+		exit (1);
+	}
+
+	/* Restore split headers */
+	//params->split_header_data = old_split_header_data;
+
+	/* return the property list here */
+	*proplist = NULL;
+	return ret;
+
+}
+
+uint16_t
 ptp_mtp_sendobjectproplist (PTPParams* params, uint32_t* store, uint32_t* parenthandle, uint32_t* handle,
 			    uint16_t objecttype, uint64_t objectsize, MTPPropList *proplist)
 {

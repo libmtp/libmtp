@@ -1,3 +1,11 @@
+2006-11-13 Richard Low <richard@wentnet.com>
+
+	* src/libmtp.h.in: add LIBMTP_Get_Tracklisting_With_Callback()
+	* src/libmtp.c: dito, deprecate LIBMTP_Get_Tracklisting()
+	* examples/tracks.c: use undeprecated API entry.
+	* src/ptp.c: working on getting object prop lists.
+	* src/ptp.h: dito.
+
 2006-11-12 Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: added Zen Vision W to devices
