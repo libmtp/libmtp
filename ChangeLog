@@ -1,3 +1,7 @@
+2006-11-14 Richard Low <richard@wentnet.com>
+	
+	* examples/tracks.c: really use undeprecated API entry.
+
 2006-11-13 Richard Low <richard@wentnet.com>, Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: add LIBMTP_Get_Tracklisting_With_Callback()

@@ -63,7 +63,7 @@ int main (int argc, char **argv)
   }
   
   // Get track listing.
-  tracks = LIBMTP_Get_Tracklisting_With_Callback(device, NULL);
+  tracks = LIBMTP_Get_Tracklisting_With_Callback(device, NULL, NULL);
   if (tracks == NULL) {
     printf("No tracks.\n");
   } else {
