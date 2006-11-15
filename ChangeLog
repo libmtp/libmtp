@@ -1,3 +1,7 @@
+2006-11-15 Richard Low <richard@wentnet.com>
+
+	* src/ptp-pack.c: set string buffer to correct size.
+
 2006-11-14 Richard Low <richard@wentnet.com>
 	
 	* examples/tracks.c: really use undeprecated API entry.

@@ -172,7 +172,7 @@ ptp_pack_string(PTPParams *params, char *string, unsigned char* data, uint16_t o
 static inline unsigned char *
 ptp_get_packed_stringcopy(PTPParams *params, char *string, uint32_t *packed_size)
 {
-	uint8_t packed[PTP_MAXSTRLEN+3], len;
+	uint8_t packed[PTP_MAXSTRLEN*2+3], len;
 	size_t plen;
 	unsigned char *retcopy = NULL;
 
