@@ -1,3 +1,10 @@
+2006-11-16 Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: a crude implementation of ptp_mtp_getobjectproplist
+	* src/ptp.c: ditto
+	* src/ptp.h: ditto
+	* src/ptp-pack.c: ditto
+
 2006-11-16 Robert Reardon <rreardon@monkshatch.vispa.com>
 
 	* src/libmtp.c: use enhanced MTP commands to create albums and

@@ -889,6 +889,58 @@ ptp_pack_OPL (PTPParams *params, MTPPropList *proplist, unsigned char** opldatap
 	return totalsize;
 }
 
+static inline int
+ptp_unpack_OPL (PTPParams *params, unsigned char* data, MTPPropList **proplist, unsigned int len)
+{ 
+  //data_dump_ascii (stdout, data, len, 16);
+  
+  uint32_t prop_count = dtoh32a(data);
+  MTPPropList *prop = NULL;
+  int offset = 0;
+  int i = 0;
+  
+  if (prop_count == 0)
+  {
+    *proplist = NULL;
+    return 0;
+  }
+  
+  data += sizeof(uint32_t);
+  
+  *proplist = malloc(sizeof(MTPPropList));
+  prop = *proplist;
+  
+  for (i = 0; i < prop_count; i++)
+  {
+    // we ignore the object handle
+    data += sizeof(uint32_t);
+    len -= sizeof(uint32_t);
+  
+    prop->property = dtoh32a(data);
+    data += sizeof(uint16_t);
+    len -= sizeof(uint16_t);
+    
+    prop->datatype = dtoh32a(data);
+    data += sizeof(uint16_t);
+    len -= sizeof(uint16_t);
+    
+    offset = 0;
+    ptp_unpack_DPV(params, data, &offset, len, &prop->propval, prop->datatype);
+    data += offset;
+    len -= offset;
+    
+    if (i != prop_count - 1)
+    {
+      prop->next = malloc(sizeof(MTPPropList));
+      prop = prop->next;
+    }
+    else
+      prop->next = NULL;
+  }
+  
+  return prop_count;
+}
+
 /*
     PTP USB Event container unpack
     Copyright (c) 2003 Nikolai Kopanygin
