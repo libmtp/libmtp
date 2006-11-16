@@ -1,3 +1,7 @@
+2006-11-16 Robert Reardon <rreardon@monkshatch.vispa.com>
+
+	* src/libmtp.c: use enhanced MTP commands to create albums.
+	
 2006-11-15 Richard Low <richard@wentnet.com>
 
 	* src/ptp-pack.c: set string buffer to correct size.

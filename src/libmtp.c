@@ -4020,6 +4020,9 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
   uint32_t localph = parenthandle;
   char fname[256];
   uint8_t data[1];
+  uint16_t *props = NULL;
+  uint32_t propcnt = 0;
+  uint8_t nonconsumable = 0x00U; /* By default it is consumable */
 
   // Check if we can create an object of type PTP_OFC_MTP_AbstractAudioAlbum
   int i;
@@ -4058,13 +4061,110 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
   new_alb.ObjectCompressedSize = 1;
   new_alb.ObjectFormat = PTP_OFC_MTP_AbstractAudioAlbum;
 
-  // Create the object
-  ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->album_id, &new_alb);
-  if (ret != PTP_RC_OK) {
-    ptp_perror(params, ret);
-    printf("LIBMTP_New_Album(): Could not send object info (the album itself)\n");
-    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
-    return -1;
+#ifdef ENABLE_MTP_ENHANCED
+  if (ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList)) {
+    
+    MTPPropList *proplist = NULL;
+    MTPPropList *prop = NULL;
+    MTPPropList *previous = NULL;
+
+    ret = ptp_mtp_getobjectpropssupported(params, PTP_OFC_MTP_AbstractAudioAlbum, &propcnt, &props);
+    
+    /* Send an object property list of that is supported */
+    localph = 0xFFFFFFFFU; // Set to -1
+    
+    for (i=0;i<propcnt;i++) {
+      switch (props[i]) {
+      case PTP_OPC_ObjectFileName:
+	prop = New_MTP_Prop_Entry();
+	prop->property = PTP_OPC_ObjectFileName;
+	prop->datatype = PTP_DTC_STR;
+	prop->propval.str = strdup(new_alb.Filename);
+	
+	if (previous != NULL)
+	  previous->next = prop;
+	else
+	  proplist = prop;
+	previous = prop;
+	prop->next = NULL;
+	break;
+      case PTP_OPC_ProtectionStatus:
+	prop = New_MTP_Prop_Entry();
+	prop->property = PTP_OPC_ProtectionStatus;
+	prop->datatype = PTP_DTC_UINT16;
+	prop->propval.u16 = 0x0000U; /* Not protected */
+	
+	if (previous != NULL)
+	  previous->next = prop;
+	else
+	  proplist = prop;
+	previous = prop;
+	prop->next = NULL;
+	break;
+      case PTP_OPC_NonConsumable:
+	prop = New_MTP_Prop_Entry();
+	prop->property = PTP_OPC_NonConsumable;
+	prop->datatype = PTP_DTC_UINT8;
+	prop->propval.u8 = nonconsumable;
+	
+	if (previous != NULL)
+	  previous->next = prop;
+	else
+	  proplist = prop;
+	previous = prop;
+	prop->next = NULL;
+	break;
+      case PTP_OPC_Name:
+	prop = New_MTP_Prop_Entry();
+	prop->property = PTP_OPC_Name;
+	prop->datatype = PTP_DTC_STR;
+	prop->propval.str = strdup(metadata->name);
+        
+	if (previous != NULL)
+	  previous->next = prop;
+	else
+	  proplist = prop;
+	previous = prop;
+	prop->next = NULL;
+	break;
+      }
+    }
+    free(props);
+    
+    ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &metadata->album_id,
+				     map_libmtp_type_to_ptp_type(new_alb.ObjectFormat),
+				     new_alb.ObjectCompressedSize, proplist);
+	
+    /* Free property list */
+    prop = proplist;
+    while (prop != NULL) {
+      previous = prop;
+      prop = prop->next;
+      Destroy_MTP_Prop_Entry(previous);
+    }
+    
+    if (ret != PTP_RC_OK) {
+      ptp_perror(params, ret);
+      printf("LIBMTP_New_Album(): Could not send object property list.\n");
+      if (ret == PTP_RC_AccessDenied) {
+	printf("ACCESS DENIED.\n");
+      } else {
+	printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+      }
+      return -1;
+    }
+  } else if (ptp_operation_issupported(params,PTP_OC_SendObjectInfo)) {
+#else // !ENABLE_MTP_ENHANCED
+  {
+#endif // ENABLE_MTP_ENHANCED
+    // Create the object
+    ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->album_id, &new_alb);
+    if (ret != PTP_RC_OK) {
+      ptp_perror(params, ret);
+      printf("LIBMTP_New_Album(): Could not send object info (the album itself)\n");
+      printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+      return -1;
+    }
   }
   data[0] = '\0';
   ret = ptp_sendobject(params, data, 1);
@@ -4074,7 +4174,7 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
-
+  
   // Update title
   ret = LIBMTP_Set_Object_String(device, metadata->album_id, PTP_OPC_Name, metadata->name);
   if (ret != 0) {
@@ -4120,6 +4220,7 @@ int LIBMTP_Send_Album_Art(LIBMTP_mtpdevice_t *device,
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
   PTPPropertyValue propval;
+  PTPPropertyValue propval_type;
 
   int i;
   propval.a.count = imagesize;
@@ -4127,6 +4228,8 @@ int LIBMTP_Send_Album_Art(LIBMTP_mtpdevice_t *device,
   for (i = 0; i < imagesize; i++) {
     propval.a.v[i].u8 = imagedata[i];
   }
+  
+  propval_type.u16 = PTP_OFC_EXIF_JPEG;
 
   // check that we can send album art
   uint16_t *props = NULL;
@@ -4146,6 +4249,9 @@ int LIBMTP_Send_Album_Art(LIBMTP_mtpdevice_t *device,
     printf("LIBMTP_Send_Album_Art(): device doesn't support RepresentativeSampleData\n");
     return -1;
   }
+
+  /* Set the Object Format */
+  LIBMTP_Set_Object_U16(device, id, PTP_OPC_RepresentativeSampleFormat, PTP_OFC_EXIF_JPEG);
 
   // go ahead and send the data
   ret = ptp_mtp_setobjectpropvalue(params,id,PTP_OPC_RepresentativeSampleData,
