@@ -908,6 +908,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   tmpdevice->default_video_folder = 0;
   tmpdevice->default_organizer_folder = 0;
   tmpdevice->default_zencast_folder = 0;
+  tmpdevice->default_album_folder = 0;
 
   /*
    * Then get the handles and try to locate the default folders.
@@ -950,6 +951,10 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 	continue;
       } else if (!strcmp(oi.Filename, "ZENcast")) {
 	tmpdevice->default_zencast_folder = params->handles.Handler[i];
+	remaining_directories--;
+	continue;
+      } else if (!strcmp(oi.Filename, "Albums")) {
+	tmpdevice->default_album_folder = params->handles.Handler[i];
 	remaining_directories--;
 	continue;
       }
@@ -1106,6 +1111,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
   printf("   Default video folder: 0x%08x\n", device->default_video_folder);
   printf("   Default organizer folder: 0x%08x\n", device->default_organizer_folder);
   printf("   Default zencast folder: 0x%08x\n", device->default_zencast_folder);
+  printf("   Default album folder: 0x%08x\n", device->default_album_folder);
 }
 
 /**

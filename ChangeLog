@@ -1,6 +1,8 @@
 2006-11-16 Robert Reardon <rreardon@monkshatch.vispa.com>
 
-	* src/libmtp.c: use enhanced MTP commands to create albums.
+	* src/libmtp.c: use enhanced MTP commands to create albums and
+	  add detection of the default album folder.
+	* src/libmtp.h.in: add a holder for album default folder.
 	
 2006-11-15 Richard Low <richard@wentnet.com>
 
