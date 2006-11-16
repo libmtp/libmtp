@@ -95,6 +95,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Samsung YP-U2J (YP-U2JXB/XAA)", 0x04e8, 0x5054, DEVICE_FLAG_NONE },
   // Reported by Andrew Benson
   { "Samsung YP-F2J", 0x04e8, 0x5057, DEVICE_FLAG_DUALMODE },
+  // Reported by Patrick <skibler@gmail.com>
+  { "Samsung YP-K5", 0x04e8, 0x505a, DEVICE_FLAG_DUALMODE },
   // From a rouge .INF file
   { "Samsung YH-999 Portable Media Center", 0x04e8, 0x5a0f, DEVICE_FLAG_NONE },
 
