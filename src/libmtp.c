@@ -1869,7 +1869,7 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
   PTPParams *params = (PTPParams *) device->params;
   uint32_t i;
 
-#if 0 // #ifdef ENABLE_MTP_ENHANCED
+#ifdef 0 //#ifdef ENABLE_MTP_ENHANCED
   if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjPropList)) {
     MTPPropList *proplist = NULL;
     MTPPropList *prop;
@@ -1880,10 +1880,16 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
     while (prop != NULL) {
       switch (prop->property) {
       case PTP_OPC_Name:
-	track->title = strdup(prop->propval.str);
+  if (prop->propval.str != NULL)
+    track->title = strdup(prop->propval.str);
+  else
+    track->title = NULL;
 	break;
       case PTP_OPC_Artist:
-	track->artist = strdup(prop->propval.str);
+  if (prop->propval.str != NULL)
+    track->artist = strdup(prop->propval.str);
+  else
+    track->artist = NULL;
 	break;
       case PTP_OPC_Duration:
 	track->duration = prop->propval.u32;
@@ -1892,13 +1898,22 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
 	track->tracknumber = prop->propval.u16;
 	break;
       case PTP_OPC_Genre:
-	track->genre = strdup(prop->propval.str);
+  if (prop->propval.str != NULL)
+    track->genre = strdup(prop->propval.str);
+  else
+    track->genre = NULL;
 	break;
       case PTP_OPC_AlbumName:
-	track->album = strdup(prop->propval.str);
+  if (prop->propval.str != NULL)
+    track->album = strdup(prop->propval.str);
+  else
+    track->album = NULL;
 	break;
       case PTP_OPC_OriginalReleaseDate:
-	track->date = strdup(prop->propval.str);
+  if (prop->propval.str != NULL)
+    track->date = strdup(prop->propval.str);
+  else
+    track->date = NULL;
 	break;
 	// These are, well not so important.
       case PTP_OPC_SampleRate:
