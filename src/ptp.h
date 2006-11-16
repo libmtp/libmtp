@@ -98,13 +98,6 @@ struct _PTPCanon_directtransfer_entry {
 };
 typedef struct _PTPCanon_directtransfer_entry PTPCanon_directtransfer_entry;
 
-typedef struct _PTPDataBuffer PTPDataBuffer;
-struct _PTPDataBuffer {
-  unsigned char data[PTP_USB_BULK_HS_MAX_PACKET_LEN];
-  uint32_t length;
-  PTPDataBuffer* next;
-};
-
 /* USB container types */
 
 #define PTP_USB_CONTAINER_UNDEFINED		0x0000

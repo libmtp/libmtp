@@ -208,6 +208,13 @@ ptp_usb_senddata (PTPParams* params, PTPContainer* ptp,
 	return ret;
 }
 
+typedef struct _PTPDataBuffer PTPDataBuffer;
+struct _PTPDataBuffer {
+  unsigned char data[PTP_USB_BULK_HS_MAX_PACKET_LEN];
+  uint32_t length;
+  PTPDataBuffer* next;
+};
+
 uint16_t
 ptp_usb_getdata (PTPParams* params, PTPContainer* ptp,
                  unsigned char **data, unsigned int *readlen,
