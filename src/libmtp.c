@@ -2557,7 +2557,11 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     MTPPropList *previous = NULL;
 
     /* Send an object property list of that is supported */
-    localph = 0xFFFFFFFFU; // Set to -1
+    
+    // default handle
+    if (localph == 0)
+      localph = 0xFFFFFFFFU; // Set to -1
+    
     metadata->item_id = 0x00000000U;
 		
     ret = ptp_mtp_getobjectpropssupported (params, map_libmtp_type_to_ptp_type(metadata->filetype), &propcnt, &props);

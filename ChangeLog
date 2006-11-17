@@ -1,3 +1,7 @@
+2006-11-17 Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: fixed parent handle for uploaded tracks
+
 2006-11-17 Robert Reardon <rreardon@monkshatch.vispa.com>
 
 	* src/libmtp.c: fixed up album art using enhanced commands.
