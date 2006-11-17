@@ -4153,7 +4153,7 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
     free(props);
     
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &metadata->album_id,
-				     map_libmtp_type_to_ptp_type(new_alb.ObjectFormat),
+				     PTP_OFC_MTP_AbstractAudioAlbum,
 				     new_alb.ObjectCompressedSize, proplist);
 	
     /* Free property list */
@@ -4241,7 +4241,6 @@ int LIBMTP_Send_Album_Art(LIBMTP_mtpdevice_t *device,
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
   PTPPropertyValue propval;
-  PTPPropertyValue propval_type;
 
   int i;
   propval.a.count = imagesize;
@@ -4249,8 +4248,6 @@ int LIBMTP_Send_Album_Art(LIBMTP_mtpdevice_t *device,
   for (i = 0; i < imagesize; i++) {
     propval.a.v[i].u8 = imagedata[i];
   }
-  
-  propval_type.u16 = PTP_OFC_EXIF_JPEG;
 
   // check that we can send album art
   uint16_t *props = NULL;
@@ -4270,9 +4267,6 @@ int LIBMTP_Send_Album_Art(LIBMTP_mtpdevice_t *device,
     printf("LIBMTP_Send_Album_Art(): device doesn't support RepresentativeSampleData\n");
     return -1;
   }
-
-  /* Set the Object Format */
-  LIBMTP_Set_Object_U16(device, id, PTP_OPC_RepresentativeSampleFormat, PTP_OFC_EXIF_JPEG);
 
   // go ahead and send the data
   ret = ptp_mtp_setobjectpropvalue(params,id,PTP_OPC_RepresentativeSampleData,

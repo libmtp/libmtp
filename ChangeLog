@@ -1,3 +1,7 @@
+2006-11-17 Robert Reardon <rreardon@monkshatch.vispa.com>
+
+	* src/libmtp.c: fixed up album art using enhanced commands.
+
 2006-11-16 Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: a crude implementation of ptp_mtp_getobjectproplist
