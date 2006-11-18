@@ -1,3 +1,7 @@
+2006-11-18 Richard Low <richard@wentnet.com>
+
+	* src/ptp.c: tidy up ptp_usb_getdata
+
 2006-11-17 Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: fixed parent handle for uploaded tracks

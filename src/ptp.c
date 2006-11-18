@@ -264,13 +264,23 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp,
     {      
       if (to_fd == -1)
       {
-        //if (rlen == 12)
-        //  params->split_header_data = 1;
         unsigned int read = 0;
         unsigned int total_read = 0;
         PTPDataBuffer *buffer = malloc(sizeof(PTPDataBuffer));
         buffer->next = NULL;
         PTPDataBuffer *buffer_start = buffer;
+        
+        if (rlen > PTP_USB_BULK_HDR_LEN)
+        {
+          // we have some payload. We know payloads are smaller than PTP_USB_BULK_HS_MAX_PACKET_LEN
+          // so fits in one buffer object
+          memcpy(&buffer->data,usbdata.payload.data,rlen - PTP_USB_BULK_HDR_LEN);
+          buffer->length = rlen - PTP_USB_BULK_HDR_LEN;
+          
+          buffer->next = malloc(sizeof(PTPDataBuffer));
+          buffer = buffer->next;
+          buffer->next = NULL;
+        }
         
         while (1)
         {
@@ -330,7 +340,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp,
       len=dtoh32(usbdata.length)-PTP_USB_BULK_HDR_LEN;
 
       /* autodetect split header/data MTP devices */
-      if (dtoh32(usbdata.length) > 12 && (rlen==12))
+      if (dtoh32(usbdata.length) > PTP_USB_BULK_HDR_LEN && (rlen==PTP_USB_BULK_HDR_LEN))
         params->split_header_data = 1;
 
       if (to_fd == -1) {
