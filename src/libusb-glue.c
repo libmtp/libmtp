@@ -726,6 +726,20 @@ next_step:
   }
   
   ret = ptp_opensession(params,1);
+
+  // This works in situations where previous bad applications have not used LIBMTP_Release_Device on exit
+  if (ret == PTP_ERROR_IO) {
+	printf("%s\n","PTP ERROR IO: Trying again after resetting USB");
+        // printf("%s\n","Closing USB interface...");
+	close_usb(ptp_usb,dev->config->interface->altsetting->bInterfaceNumber);
+        // printf("%s\n","Init PTP USB...");
+	if (init_ptp_usb(params, ptp_usb, dev) < 0) {
+ 	   return PTP_CD_RC_ERROR_CONNECTING;
+  	}
+	
+	ret = ptp_opensession(params,1);
+  }
+
   // printf("Session open (%d)...\n", ret);
   if (ret == PTP_RC_InvalidTransactionID) {
     params->transaction_id += 10;

@@ -1,3 +1,7 @@
+2006-11-19 Daniel <danielw@iinet.net.au>
+
+	* src/libusb-glue.c: fix error on reconnect.
+	
 2006-11-18 Richard Low <richard@wentnet.com>
 
 	* src/ptp.c: tidy up ptp_usb_getdata

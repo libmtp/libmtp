@@ -920,7 +920,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
    * Remaining directories to get the handles to.
    * We can stop when done this to save time
    */
-  remaining_directories = 6;
+  remaining_directories = 7;
   for (i = 0; i < params->handles.n && remaining_directories > 0; i++) {
     PTPObjectInfo oi;
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
