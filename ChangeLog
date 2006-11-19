@@ -1,3 +1,8 @@
+2006-11-19 Robert Reardon <rreardon@monkshatch.vispa.com>
+
+	* src/libmtp.c: use enhanced MTP commands to create playlists
+	* examples/newplaylist.c: demo program for creating new playlists
+
 2006-11-19 Daniel <danielw@iinet.net.au>
 
 	* src/libusb-glue.c: fix error on reconnect.
