@@ -2,6 +2,7 @@
 
 	* src/libmtp.c: use enhanced MTP commands to create playlists
 	* examples/newplaylist.c: demo program for creating new playlists
+	* examples/Makefile.am: add demo newplaylists program
 
 2006-11-19 Daniel <danielw@iinet.net.au>
 
