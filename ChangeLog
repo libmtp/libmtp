@@ -1,6 +1,7 @@
 2006-11-19 Robert Reardon <rreardon@monkshatch.vispa.com>
 
-	* src/libmtp.c: use enhanced MTP commands to create playlists
+	* src/libmtp.c: use enhanced MTP commands to create playlists and
+	  send files
 	* examples/newplaylist.c: demo program for creating new playlists
 	* examples/Makefile.am: add demo newplaylists program
 

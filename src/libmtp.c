@@ -2809,6 +2809,10 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   PTPObjectInfo new_file;
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
+  int i;
+  uint16_t *props = NULL;
+  uint32_t propcnt = 0;
+  uint8_t nonconsumable = 0x00U; /* By default it is consumable */
 
   new_file.Filename = filedata->filename;
   if (filedata->filesize == (uint64_t) -1) {
@@ -2863,20 +2867,115 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       localph = device->default_organizer_folder;
     }
   }
+  
+#ifdef ENABLE_MTP_ENHANCED
+  if (ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList)) {
+    
+    MTPPropList *proplist = NULL;
+    MTPPropList *prop = NULL;
+    MTPPropList *previous = NULL;
 
-  // Create the object
-  ret = ptp_sendobjectinfo(params, &store, &localph, &filedata->item_id, &new_file);
-  if (ret != PTP_RC_OK) {
-    ptp_perror(params, ret);
-    printf("LIBMTP_Send_File_From_File_Descriptor: Could not send object info\n");
-    if (ret == PTP_RC_AccessDenied) {
-      printf("ACCESS DENIED.\n");
-    } else {
-      printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    ret = ptp_mtp_getobjectpropssupported(params, new_file.ObjectFormat, &propcnt, &props);
+    
+    for (i=0;i<propcnt;i++) {
+      switch (props[i]) {
+      case PTP_OPC_ObjectFileName:
+	prop = New_MTP_Prop_Entry();
+	prop->property = PTP_OPC_ObjectFileName;
+	prop->datatype = PTP_DTC_STR;
+	prop->propval.str = strdup(new_file.Filename);
+	
+	if (previous != NULL)
+	  previous->next = prop;
+	else
+	  proplist = prop;
+	previous = prop;
+	prop->next = NULL;
+	break;
+      case PTP_OPC_ProtectionStatus:
+	prop = New_MTP_Prop_Entry();
+	prop->property = PTP_OPC_ProtectionStatus;
+	prop->datatype = PTP_DTC_UINT16;
+	prop->propval.u16 = 0x0000U; /* Not protected */
+	
+	if (previous != NULL)
+	  previous->next = prop;
+	else
+	  proplist = prop;
+	previous = prop;
+	prop->next = NULL;
+	break;
+      case PTP_OPC_NonConsumable:
+	prop = New_MTP_Prop_Entry();
+	prop->property = PTP_OPC_NonConsumable;
+	prop->datatype = PTP_DTC_UINT8;
+	prop->propval.u8 = nonconsumable;
+	
+	if (previous != NULL)
+	  previous->next = prop;
+	else
+	  proplist = prop;
+	previous = prop;
+	prop->next = NULL;
+	break;
+      case PTP_OPC_Name:
+	prop = New_MTP_Prop_Entry();
+	prop->property = PTP_OPC_Name;
+	prop->datatype = PTP_DTC_STR;
+	prop->propval.str = strdup(filedata->filename);
+        
+	if (previous != NULL)
+	  previous->next = prop;
+	else
+	  proplist = prop;
+	previous = prop;
+	prop->next = NULL;
+	break;
+      }
     }
-    return -1;
-  }
+    free(props);
+    
+    ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &filedata->item_id,
+				     new_file.ObjectFormat,
+				     new_file.ObjectCompressedSize, proplist);
+	
+    /* Free property list */
+    prop = proplist;
+    while (prop != NULL) {
+      previous = prop;
+      prop = prop->next;
+      Destroy_MTP_Prop_Entry(previous);
+    }
+    
+    if (ret != PTP_RC_OK) {
+      ptp_perror(params, ret);
+      printf("LIBMTP_Send_File_From_File(): Could not send object property list.\n");
+      if (ret == PTP_RC_AccessDenied) {
+	printf("ACCESS DENIED.\n");
+      } else {
+	printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+      }
+      return -1;
+    }
+  } else if (ptp_operation_issupported(params,PTP_OC_SendObjectInfo)) {
+#else // !ENABLE_MTP_ENHANCED
+  {
+#endif // ENABLE_MTP_ENHANCED
 
+  	// Create the object
+  	ret = ptp_sendobjectinfo(params, &store, &localph, &filedata->item_id, &new_file);
+  	if (ret != PTP_RC_OK) {
+    	ptp_perror(params, ret);
+    	printf("LIBMTP_Send_File_From_File_Descriptor: Could not send object info\n");
+    	if (ret == PTP_RC_AccessDenied) {
+      	printf("ACCESS DENIED.\n");
+    	} else {
+      	printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    	}
+    	return -1;
+  	}
+  }
+  
   if (filedata->filesize != (uint64_t) -1) {
     // Callbacks
     ptp_usb->callback_active = 1;
