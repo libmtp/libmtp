@@ -2,6 +2,8 @@
 
 	* src/libmtp.h.in: add "parent_id" property to LIBMTP_track_struct. 
 	* src/libmtp.c: get "parent_id" property when reading tracks.
+	* examples/emptyfolders.c: new example program for pruning empty
+	  folders. (does a dummy run by default).
 
 2006-11-19 Robert Reardon <rreardon@monkshatch.vispa.com>
 
