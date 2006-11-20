@@ -1881,16 +1881,16 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
     while (prop != NULL) {
       switch (prop->property) {
       case PTP_OPC_Name:
-  if (prop->propval.str != NULL)
-    track->title = strdup(prop->propval.str);
-  else
-    track->title = NULL;
+	if (prop->propval.str != NULL)
+	  track->title = strdup(prop->propval.str);
+	else
+	  track->title = NULL;
 	break;
       case PTP_OPC_Artist:
-  if (prop->propval.str != NULL)
-    track->artist = strdup(prop->propval.str);
-  else
-    track->artist = NULL;
+	if (prop->propval.str != NULL)
+	  track->artist = strdup(prop->propval.str);
+	else
+	  track->artist = NULL;
 	break;
       case PTP_OPC_Duration:
 	track->duration = prop->propval.u32;
@@ -1899,22 +1899,22 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
 	track->tracknumber = prop->propval.u16;
 	break;
       case PTP_OPC_Genre:
-  if (prop->propval.str != NULL)
-    track->genre = strdup(prop->propval.str);
-  else
-    track->genre = NULL;
+	if (prop->propval.str != NULL)
+	  track->genre = strdup(prop->propval.str);
+	else
+	  track->genre = NULL;
 	break;
       case PTP_OPC_AlbumName:
-  if (prop->propval.str != NULL)
-    track->album = strdup(prop->propval.str);
-  else
-    track->album = NULL;
+	if (prop->propval.str != NULL)
+	  track->album = strdup(prop->propval.str);
+	else
+	  track->album = NULL;
 	break;
       case PTP_OPC_OriginalReleaseDate:
-  if (prop->propval.str != NULL)
-    track->date = strdup(prop->propval.str);
-  else
-    track->date = NULL;
+	if (prop->propval.str != NULL)
+	  track->date = strdup(prop->propval.str);
+	else
+	  track->date = NULL;
 	break;
 	// These are, well not so important.
       case PTP_OPC_SampleRate:
@@ -2471,12 +2471,18 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   uint32_t localph = parenthandle;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   uint8_t nonconsumable = 0x00U; /* By default it is consumable */
-	uint16_t *props = NULL;
-	uint32_t propcnt = 0;
-	uint32_t i = 0;
+  uint16_t *props = NULL;
+  uint32_t propcnt = 0;
+  uint32_t i = 0;
 
   if (localph == 0) {
     localph = device->default_music_folder;
+  }
+
+  // Sanity check: no zerolength files
+  if (metadata->filesize == 0) {
+    printf("LIBMTP_Send_Track_From_File_Descriptor(): File of zero size\n");
+    return -1;
   }
 
   // Sanity check, is this really a track?
@@ -2487,7 +2493,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       metadata->filetype != LIBMTP_FILETYPE_MP4 &&
       metadata->filetype != LIBMTP_FILETYPE_UNDEF_AUDIO) {
     printf("LIBMTP_Send_Track_From_File_Descriptor: I don't think this is actually a track, strange filetype...\n");
-    nonconsumable = 0x01U; /* Not suitable for consumption */
+    nonconsumable = 0x01U; /* Not suitable for consumption, atleast it's no track! */
   }
 
   if (metadata->filetype == LIBMTP_FILETYPE_UNDEF_AUDIO) {
@@ -2821,6 +2827,11 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     // This is a stream. Set a dummy length...
     new_file.ObjectCompressedSize = 1;
   } else {
+  // Sanity check: no zerolength files
+    if (filedata->filesize == 0) {
+      printf("LIBMTP_Send_File_From_File_Descriptor(): File of zero size\n");
+      return -1;
+    }
     new_file.ObjectCompressedSize = filedata->filesize;
   }
   new_file.ObjectFormat = map_libmtp_type_to_ptp_type(filedata->filetype);

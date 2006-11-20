@@ -3,6 +3,7 @@
 	* src/ptp.h: sync to upstream libgphoto2
 	* src/ptp.c: dito.
 	* src/ptp-pack.c: dito.
+	* src/libmtp.c: check for zerolength files/tracks.
 
 2006-11-20  Andy Kelk <andy@mopoke.co.uk>
 
