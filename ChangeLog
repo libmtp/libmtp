@@ -1,3 +1,8 @@
+2006-11-20 Andy Kelk <andy@mopoke.co.uk>
+
+	* src/libmtp.h.in: add "parent_id" property to LIBMTP_track_struct. 
+	* src/libmtp.c: get "parent_id" property when reading tracks.
+
 2006-11-19 Robert Reardon <rreardon@monkshatch.vispa.com>
 
 	* src/libmtp.c: use enhanced MTP commands to create playlists and

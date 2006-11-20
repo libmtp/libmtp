@@ -1605,7 +1605,7 @@ void LIBMTP_destroy_file_t(LIBMTP_file_t *file)
 }
 
 /**
-* THIS FUNCTION IS DEPRECATED. PLEASE UPDATE YOUR CODE IN ORDER 
+* THIS FUNCTION IS DEPRECATED. PLEASE UPDATE YOUR CODE IN ORDER
  * NOT TO USE IT.
  * @see LIBMTP_Get_Filelisting_With_Callback()
  */
@@ -1636,7 +1636,7 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
  *
  * @param device a pointer to the device to get the file listing for.
  * @param callback a function to be called during the tracklisting retrieveal
- *               for displaying progress bars etc, or NULL if you don't want 
+ *               for displaying progress bars etc, or NULL if you don't want
  *               any callbacks.
  * @param data a user-defined pointer that is passed along to
  *             the <code>progress</code> function in order to
@@ -1667,7 +1667,7 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
 
     if (callback != NULL)
       callback(i, params->handles.n, data);
-    
+
     LIBMTP_file_t *file;
     PTPObjectInfo oi;
 
@@ -1875,7 +1875,7 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
     MTPPropList *proplist = NULL;
     MTPPropList *prop;
     MTPPropList *tmpprop;
-    
+
     ret = ptp_mtp_getobjectproplist(params, track->item_id, &proplist);
     prop = proplist;
     while (prop != NULL) {
@@ -2009,7 +2009,7 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
 }
 
 /**
- * THIS FUNCTION IS DEPRECATED. PLEASE UPDATE YOUR CODE IN ORDER 
+ * THIS FUNCTION IS DEPRECATED. PLEASE UPDATE YOUR CODE IN ORDER
  * NOT TO USE IT.
  * @see LIBMTP_Get_Tracklisting_With_Callback()
  */
@@ -2040,7 +2040,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
  *
  * @param device a pointer to the device to get the track listing for.
  * @param callback a function to be called during the tracklisting retrieveal
- *               for displaying progress bars etc, or NULL if you don't want 
+ *               for displaying progress bars etc, or NULL if you don't want
  *               any callbacks.
  * @param data a user-defined pointer that is passed along to
  *             the <code>progress</code> function in order to
@@ -2068,10 +2068,10 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
   }
 
   for (i = 0; i < params->handles.n; i++) {
-    
+
     if (callback != NULL)
       callback(i, params->handles.n, data);
-    
+
     LIBMTP_track_t *track;
     PTPObjectInfo oi;
 
@@ -2096,6 +2096,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
 
       // This is some sort of unique ID so we can keep track of the track.
       track->item_id = params->handles.Handler[i];
+      track->parent_id = oi.ParentObject;
 
       track->filetype = map_ptp_type_to_libmtp_type(oi.ObjectFormat);
 
@@ -2177,6 +2178,7 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
 
       // This is some sort of unique ID so we can keep track of the track.
       track->item_id = params->handles.Handler[i];
+      track->parent_id = oi.ParentObject;
 
       track->filetype = map_ptp_type_to_libmtp_type(oi.ObjectFormat);
 
@@ -2472,7 +2474,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	uint16_t *props = NULL;
 	uint32_t propcnt = 0;
 	uint32_t i = 0;
-		
+
   if (localph == 0) {
     localph = device->default_music_folder;
   }
@@ -2558,15 +2560,15 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     MTPPropList *previous = NULL;
 
     /* Send an object property list of that is supported */
-    
+
     // default handle
     if (localph == 0)
       localph = 0xFFFFFFFFU; // Set to -1
-    
+
     metadata->item_id = 0x00000000U;
-		
+
     ret = ptp_mtp_getobjectpropssupported (params, map_libmtp_type_to_ptp_type(metadata->filetype), &propcnt, &props);
-		
+
     if (ret == PTP_RC_OK)
     {
       for (i=0;i<propcnt;i++) {
@@ -2615,7 +2617,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       free(props);
     }
 
-    
+
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &metadata->item_id,
 				     map_libmtp_type_to_ptp_type(metadata->filetype),
 				     metadata->filesize, proplist);
@@ -2697,7 +2699,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     if (subcall_ret != 0) {
       printf("LIBMTP_Update_Track_Metadata(): could not set non-consumable status.\n");
       return -1;
-    }    
+    }
   }
 
   // Added object so flush handles
@@ -2867,16 +2869,16 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       localph = device->default_organizer_folder;
     }
   }
-  
+
 #ifdef ENABLE_MTP_ENHANCED
   if (ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList)) {
-    
+
     MTPPropList *proplist = NULL;
     MTPPropList *prop = NULL;
     MTPPropList *previous = NULL;
 
     ret = ptp_mtp_getobjectpropssupported(params, new_file.ObjectFormat, &propcnt, &props);
-    
+
     for (i=0;i<propcnt;i++) {
       switch (props[i]) {
       case PTP_OPC_ObjectFileName:
@@ -2884,7 +2886,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	prop->property = PTP_OPC_ObjectFileName;
 	prop->datatype = PTP_DTC_STR;
 	prop->propval.str = strdup(new_file.Filename);
-	
+
 	if (previous != NULL)
 	  previous->next = prop;
 	else
@@ -2897,7 +2899,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	prop->property = PTP_OPC_ProtectionStatus;
 	prop->datatype = PTP_DTC_UINT16;
 	prop->propval.u16 = 0x0000U; /* Not protected */
-	
+
 	if (previous != NULL)
 	  previous->next = prop;
 	else
@@ -2910,7 +2912,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	prop->property = PTP_OPC_NonConsumable;
 	prop->datatype = PTP_DTC_UINT8;
 	prop->propval.u8 = nonconsumable;
-	
+
 	if (previous != NULL)
 	  previous->next = prop;
 	else
@@ -2923,7 +2925,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	prop->property = PTP_OPC_Name;
 	prop->datatype = PTP_DTC_STR;
 	prop->propval.str = strdup(filedata->filename);
-        
+
 	if (previous != NULL)
 	  previous->next = prop;
 	else
@@ -2934,11 +2936,11 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       }
     }
     free(props);
-    
+
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &filedata->item_id,
 				     new_file.ObjectFormat,
 				     new_file.ObjectCompressedSize, proplist);
-	
+
     /* Free property list */
     prop = proplist;
     while (prop != NULL) {
@@ -2946,7 +2948,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       prop = prop->next;
       Destroy_MTP_Prop_Entry(previous);
     }
-    
+
     if (ret != PTP_RC_OK) {
       ptp_perror(params, ret);
       printf("LIBMTP_Send_File_From_File(): Could not send object property list.\n");
@@ -2975,7 +2977,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     	return -1;
   	}
   }
-  
+
   if (filedata->filesize != (uint64_t) -1) {
     // Callbacks
     ptp_usb->callback_active = 1;
@@ -3387,7 +3389,7 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
         folder->name = (char *)strdup(oi.Filename);
       else
         folder->name = NULL;
-			
+
       // Work out where to put this new item
       if(retfolders == NULL) {
 	retfolders = folder;
@@ -3878,13 +3880,13 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 
 #ifdef ENABLE_MTP_ENHANCED
   if (ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList)) {
-    
+
     MTPPropList *proplist = NULL;
     MTPPropList *prop = NULL;
     MTPPropList *previous = NULL;
 
     ret = ptp_mtp_getobjectpropssupported(params, PTP_OFC_MTP_AbstractAudioVideoPlaylist, &propcnt, &props);
-    
+
     for (i=0;i<propcnt;i++) {
       switch (props[i]) {
       case PTP_OPC_ObjectFileName:
@@ -3892,7 +3894,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 	prop->property = PTP_OPC_ObjectFileName;
 	prop->datatype = PTP_DTC_STR;
 	prop->propval.str = strdup(new_pl.Filename);
-	
+
 	if (previous != NULL)
 	  previous->next = prop;
 	else
@@ -3905,7 +3907,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 	prop->property = PTP_OPC_ProtectionStatus;
 	prop->datatype = PTP_DTC_UINT16;
 	prop->propval.u16 = 0x0000U; /* Not protected */
-	
+
 	if (previous != NULL)
 	  previous->next = prop;
 	else
@@ -3918,7 +3920,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 	prop->property = PTP_OPC_NonConsumable;
 	prop->datatype = PTP_DTC_UINT8;
 	prop->propval.u8 = nonconsumable;
-	
+
 	if (previous != NULL)
 	  previous->next = prop;
 	else
@@ -3931,7 +3933,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 	prop->property = PTP_OPC_Name;
 	prop->datatype = PTP_DTC_STR;
 	prop->propval.str = strdup(metadata->name);
-        
+
 	if (previous != NULL)
 	  previous->next = prop;
 	else
@@ -3942,11 +3944,11 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
       }
     }
     free(props);
-    
+
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &metadata->playlist_id,
 				     PTP_OFC_MTP_AbstractAudioVideoPlaylist,
 				     new_pl.ObjectCompressedSize, proplist);
-	
+
     /* Free property list */
     prop = proplist;
     while (prop != NULL) {
@@ -3954,7 +3956,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
       prop = prop->next;
       Destroy_MTP_Prop_Entry(previous);
     }
-    
+
     if (ret != PTP_RC_OK) {
       ptp_perror(params, ret);
       printf("LIBMTP_Create_New_Playlist(): Could not send object property list.\n");
@@ -4286,13 +4288,13 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
 
 #ifdef ENABLE_MTP_ENHANCED
   if (ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList)) {
-    
+
     MTPPropList *proplist = NULL;
     MTPPropList *prop = NULL;
     MTPPropList *previous = NULL;
 
     ret = ptp_mtp_getobjectpropssupported(params, PTP_OFC_MTP_AbstractAudioAlbum, &propcnt, &props);
-    
+
     for (i=0;i<propcnt;i++) {
       switch (props[i]) {
       case PTP_OPC_ObjectFileName:
@@ -4300,7 +4302,7 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
 	prop->property = PTP_OPC_ObjectFileName;
 	prop->datatype = PTP_DTC_STR;
 	prop->propval.str = strdup(new_alb.Filename);
-	
+
 	if (previous != NULL)
 	  previous->next = prop;
 	else
@@ -4313,7 +4315,7 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
 	prop->property = PTP_OPC_ProtectionStatus;
 	prop->datatype = PTP_DTC_UINT16;
 	prop->propval.u16 = 0x0000U; /* Not protected */
-	
+
 	if (previous != NULL)
 	  previous->next = prop;
 	else
@@ -4326,7 +4328,7 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
 	prop->property = PTP_OPC_NonConsumable;
 	prop->datatype = PTP_DTC_UINT8;
 	prop->propval.u8 = nonconsumable;
-	
+
 	if (previous != NULL)
 	  previous->next = prop;
 	else
@@ -4339,7 +4341,7 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
 	prop->property = PTP_OPC_Name;
 	prop->datatype = PTP_DTC_STR;
 	prop->propval.str = strdup(metadata->name);
-        
+
 	if (previous != NULL)
 	  previous->next = prop;
 	else
@@ -4350,12 +4352,12 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
       }
     }
     free(props);
-    
+
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &metadata->album_id,
 				     PTP_OFC_MTP_AbstractAudioAlbum,
 				     new_alb.ObjectCompressedSize, proplist);
-				     
-	
+
+
     /* Free property list */
     prop = proplist;
     while (prop != NULL) {
@@ -4363,7 +4365,7 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
       prop = prop->next;
       Destroy_MTP_Prop_Entry(previous);
     }
-    
+
     if (ret != PTP_RC_OK) {
       ptp_perror(params, ret);
       printf("LIBMTP_New_Album(): Could not send object property list.\n");
@@ -4396,7 +4398,7 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
-  
+
   // Update title
   ret = LIBMTP_Set_Object_String(device, metadata->album_id, PTP_OPC_Name, metadata->name);
   if (ret != 0) {
@@ -4471,7 +4473,7 @@ int LIBMTP_Send_Album_Art(LIBMTP_mtpdevice_t *device,
 
   // go ahead and send the data
   ret = ptp_mtp_setobjectpropvalue(params,id,PTP_OPC_RepresentativeSampleData,
-                            &propval,PTP_DTC_AUINT8);                                
+                            &propval,PTP_DTC_AUINT8);
   if (ret != PTP_RC_OK) {
     printf("LIBMTP_Send_Album_Art(): could not send album art\n");
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);

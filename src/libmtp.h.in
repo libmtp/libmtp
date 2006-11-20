@@ -85,9 +85,9 @@ typedef struct LIBMTP_album_struct LIBMTP_album_t; /**< @see LIBMTP_album_struct
 typedef struct LIBMTP_folder_struct LIBMTP_folder_t; /**< @see LIBMTP_folder_t */
 typedef struct LIBMTP_object_struct LIBMTP_object_t; /**< @see LIBMTP_object_t */
 
-/** 
+/**
  * The callback type definition. Notice that a progress percentage ratio
- * is easy to calculate by dividing <code>sent</code> by 
+ * is easy to calculate by dividing <code>sent</code> by
  * <code>total</code>.
  * @param sent the number of bytes sent so far
  * @param total the total number of bytes to send
@@ -98,8 +98,8 @@ typedef struct LIBMTP_object_struct LIBMTP_object_t; /**< @see LIBMTP_object_t *
 typedef int (* LIBMTP_progressfunc_t) (uint64_t const sent, uint64_t const total,
                 		void const * const data);
 
-/** 
- * @} 
+/**
+ * @}
  * @defgroup structar libmtp data structures
  * @{
  */
@@ -120,12 +120,12 @@ struct LIBMTP_device_entry_struct {
 struct LIBMTP_mtpdevice_struct {
   /** Interface number of this device */
   uint8_t interface_number;
-  /** 
-   * Parameters for this device, must be cast into 
+  /**
+   * Parameters for this device, must be cast into
    * \c (PTPParams*) before internal use.
    */
   void *params;
-  /** 
+  /**
    * USB device for this device, must be cast into
    * \c (PTP_USB*) before internal use.
    */
@@ -169,6 +169,7 @@ struct LIBMTP_file_struct {
  */
 struct LIBMTP_track_struct {
   uint32_t item_id; /**< Unique item ID */
+  uint32_t parent_id; /**< ID of parent folder */
   char *title; /**< Track title */
   char *artist; /**< Name of recording artist */
   char *genre; /**< Genre name for track */
@@ -177,7 +178,7 @@ struct LIBMTP_track_struct {
   char *filename; /**< Original filename of this track */
   uint16_t tracknumber; /**< Track number (in sequence on recording) */
   uint32_t duration; /**< Duration in milliseconds */
-  uint32_t samplerate; /**< Sample rate of original file, min 0x1f80 max 0xbb80 */	
+  uint32_t samplerate; /**< Sample rate of original file, min 0x1f80 max 0xbb80 */
   uint16_t nochannels; /**< Number of channels in this recording 0 = unknown, 1 or 2 */
   uint32_t wavecodec; /**< FourCC wave codec name */
   uint32_t bitrate; /**< (Average) bitrate for this file min=1 max=0x16e360 */
@@ -225,16 +226,16 @@ struct LIBMTP_folder_struct {
 /**
  * LIBMTP Object Structure
  */
-struct LIBMTP_object_struct { 
-  uint32_t id; 
-  uint32_t parent; 
-  uint32_t type; 
+struct LIBMTP_object_struct {
+  uint32_t id;
+  uint32_t parent;
+  uint32_t type;
   uint32_t size;
-  char *name; 
-  void *data; 
-  LIBMTP_object_t *sibling; 
-  LIBMTP_object_t *child; 
-}; 
+  char *name;
+  void *data;
+  LIBMTP_object_t *sibling;
+  LIBMTP_object_t *child;
+};
 
 /** @} */
 
@@ -265,12 +266,12 @@ char *LIBMTP_Get_Friendlyname(LIBMTP_mtpdevice_t*);
 int LIBMTP_Set_Friendlyname(LIBMTP_mtpdevice_t*, char const * const);
 char *LIBMTP_Get_Syncpartner(LIBMTP_mtpdevice_t*);
 int LIBMTP_Set_Syncpartner(LIBMTP_mtpdevice_t*, char const * const);
-int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *, uint64_t * const, 
-			uint64_t * const, char ** const storage_description, 
+int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *, uint64_t * const,
+			uint64_t * const, char ** const storage_description,
 			char ** const volume_label);
 int LIBMTP_Format_Storage(LIBMTP_mtpdevice_t *);
-int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *, 
-			    uint8_t * const, 
+int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *,
+			    uint8_t * const,
 			    uint8_t * const);
 int LIBMTP_Get_Secure_Time(LIBMTP_mtpdevice_t *, char ** const);
 int LIBMTP_Get_Device_Certificate(LIBMTP_mtpdevice_t *, char ** const);
@@ -288,14 +289,14 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *);
 LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *,
       LIBMTP_progressfunc_t const, void const * const);
 LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *, uint32_t const);
-int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t*, uint32_t, char const * const, 
+int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t*, uint32_t, char const * const,
 			LIBMTP_progressfunc_t const, void const * const);
-int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t const, int const, 
+int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t const, int const,
 			LIBMTP_progressfunc_t const, void const * const);
-int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *, char const * const, 
+int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *, char const * const,
 	                 LIBMTP_file_t * const, LIBMTP_progressfunc_t const,
 			 void const * const, uint32_t const);
-int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *, int const, 
+int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *, int const,
 	                LIBMTP_file_t * const, LIBMTP_progressfunc_t const,
 			void const * const, uint32_t const);
 /**
@@ -309,19 +310,19 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t*);
 LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t*,
       LIBMTP_progressfunc_t const, void const * const);
 LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t*, uint32_t const);
-int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t*, uint32_t, char const * const, 
+int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t*, uint32_t, char const * const,
 			LIBMTP_progressfunc_t const, void const * const);
-int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t const, int const, 
+int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t const, int const,
 			LIBMTP_progressfunc_t const, void const * const);
-int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *, 
+int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *,
 			 char const * const, LIBMTP_track_t * const,
                          LIBMTP_progressfunc_t const,
 			 void const * const, uint32_t const);
-int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *, 
+int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *,
 			 int const, LIBMTP_track_t * const,
                          LIBMTP_progressfunc_t const,
 			 void const * const, uint32_t const);
-int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *, 
+int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *,
 			LIBMTP_track_t const * const);
 int LIBMTP_Track_Exists(LIBMTP_mtpdevice_t *, uint32_t);
 /** @} */
@@ -373,7 +374,7 @@ char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *,const uint32_t, const u
 uint32_t LIBMTP_Get_U32_From_Object(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t, const uint32_t);
 uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t, const uint16_t);
 uint8_t LIBMTP_Get_U8_From_Object(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t, const uint8_t);
-int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *,const uint32_t,const uint16_t, 
+int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *,const uint32_t,const uint16_t,
                              char const * const);
 int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t, const uint32_t);
 int LIBMTP_Set_Object_U16(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t, const uint16_t);
@@ -393,8 +394,8 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *, uint32_t);
  * @defgroup File mapping The file mapping API
  * @{
  */
-int LIBMTP_Register_Filetype(char const * const, LIBMTP_filetype_t const, 
-			     uint16_t const, void const * const, 
+int LIBMTP_Register_Filetype(char const * const, LIBMTP_filetype_t const,
+			     uint16_t const, void const * const,
 			     void const * const, void const * const);
 int LIBMTP_Set_Filetype_Description(LIBMTP_filetype_t, char const * const);
 int LIBMTP_Set_Constructor(LIBMTP_filetype_t, void const * const);
