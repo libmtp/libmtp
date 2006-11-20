@@ -208,13 +208,6 @@ ptp_usb_senddata (PTPParams* params, PTPContainer* ptp,
 	return ret;
 }
 
-typedef struct _PTPDataBuffer PTPDataBuffer;
-struct _PTPDataBuffer {
-  unsigned char data[PTP_USB_BULK_HS_MAX_PACKET_LEN];
-  uint32_t length;
-  PTPDataBuffer* next;
-};
-
 uint16_t
 ptp_usb_getdata (PTPParams* params, PTPContainer* ptp,
                  unsigned char **data, unsigned int *readlen,
@@ -245,6 +238,35 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp,
 			ret = dtoh16(usbdata.code);
 			break;
 		}
+		if (usbdata.length == 0xffffffffU) {
+			/* This only happens for MTP_GetObjPropList */
+			uint32_t	tsize = PTP_USB_BULK_HS_MAX_PACKET_LEN;
+			unsigned char	*tdata = malloc(tsize);
+			uint32_t	curoff = 0;
+
+			while (1) {
+				ret=params->read_func(tdata+curoff,
+						PTP_USB_BULK_HS_MAX_PACKET_LEN, params->data, &rlen);
+				if (ret!=PTP_RC_OK) {
+					ret = PTP_ERROR_IO;
+					break;
+				}
+				if (rlen < PTP_USB_BULK_HS_MAX_PACKET_LEN) {
+					tsize += rlen;
+					break;
+				}
+				tsize += PTP_USB_BULK_HS_MAX_PACKET_LEN;
+				curoff+= PTP_USB_BULK_HS_MAX_PACKET_LEN;
+				tdata	= realloc(tdata, tsize);
+			}
+			if (to_fd == -1) {
+				*data = tdata;
+			} else {
+				write (to_fd, tdata, tsize);
+				free (tdata);
+			}
+			return PTP_RC_OK;
+		}
 		if (rlen > dtoh32(usbdata.length)) {
 			/* I observed this on iRiver MTP devices. -Marcus */
 			ptp_debug (params, "ptp2/ptp_usb_getdata: read %d bytes too much, expect problems!", rlen - dtoh32(usbdata.length)
@@ -256,171 +278,91 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp,
 		 * here. For MTP devices splitting header and data it might
 		 * be 12.
 		 */
-    
-    /* When getting property lists (and maybe others), we get
-     * usbdata.length = 0xffffffff.  So have to treat differently!
-     */
-    if (dtoh32(usbdata.length) == 0xffffffffu)
-    {      
-      if (to_fd == -1)
-      {
-        unsigned int read = 0;
-        unsigned int total_read = 0;
-        PTPDataBuffer *buffer = malloc(sizeof(PTPDataBuffer));
-        buffer->next = NULL;
-        PTPDataBuffer *buffer_start = buffer;
-        
-        if (rlen > PTP_USB_BULK_HDR_LEN)
-        {
-          // we have some payload. We know payloads are smaller than PTP_USB_BULK_HS_MAX_PACKET_LEN
-          // so fits in one buffer object
-          memcpy(&buffer->data,usbdata.payload.data,rlen - PTP_USB_BULK_HDR_LEN);
-          buffer->length = rlen - PTP_USB_BULK_HDR_LEN;
-          
-          buffer->next = malloc(sizeof(PTPDataBuffer));
-          buffer = buffer->next;
-          buffer->next = NULL;
-        }
-        
-        while (1)
-        {
-          ret = params->read_func((unsigned char *)(&(buffer->data)), sizeof(buffer->data), params->data, &read);
-          if (ret != PTP_RC_OK)
-          {
-            ret = PTP_ERROR_IO;
-            break;
-          }
-          
-          total_read += read;
-          buffer->length = read;
-          
-          if (read < PTP_USB_BULK_HS_MAX_PACKET_LEN)
-          {
-            // we've finished: short read or zero read
-            break;
-          }
-          else
-          {
-            buffer->next = malloc(sizeof(PTPDataBuffer));
-            buffer = buffer->next;
-            buffer->next = NULL;
-          }
-        }
-        
-        if (total_read > 0)
-        {
-          *data = calloc(total_read, 1);
-          unsigned char *data_buffer = *data;
-          buffer = buffer_start;
-          
-          while (buffer != NULL)
-          {
-            memcpy(data_buffer, &(buffer->data), buffer->length);
-            data_buffer += buffer->length;
-            PTPDataBuffer *next = buffer->next;
-            free(buffer);
-            buffer = next;
-          }
-          
-          if (readlen)
-            *readlen = total_read;
-        }
-        
-      }
-      else
-      {
-        // not implemented yet
-        *data = NULL;
-        break;
-      }
-    }
-    else
-    {
-      /* Evaluate full data length. */
-      len=dtoh32(usbdata.length)-PTP_USB_BULK_HDR_LEN;
+		/* Evaluate full data length. */
+		len=dtoh32(usbdata.length)-PTP_USB_BULK_HDR_LEN;
 
-      /* autodetect split header/data MTP devices */
-      if (dtoh32(usbdata.length) > PTP_USB_BULK_HDR_LEN && (rlen==PTP_USB_BULK_HDR_LEN))
-        params->split_header_data = 1;
+		/* autodetect split header/data MTP devices */
+		if (dtoh32(usbdata.length) > 12 && (rlen==12))
+			params->split_header_data = 1;
 
-      if (to_fd == -1) {
-        /* Allocate memory for data. */
-        *data=calloc(len,1);
-        if (readlen)
-          *readlen = len;
+		if (to_fd == -1) {
+			/* Allocate memory for data. */
+			*data=calloc(len,1);
+			if (readlen)
+				*readlen = len;
 
-        /* Copy first part of data to 'data' */
-        memcpy(*data,usbdata.payload.data,rlen - PTP_USB_BULK_HDR_LEN);
+			/* Copy first part of data to 'data' */
+			memcpy(*data,usbdata.payload.data,rlen - PTP_USB_BULK_HDR_LEN);
 
-        /* Is that all of data? */
-        if (len+PTP_USB_BULK_HDR_LEN<=rlen) break;
+			/* Is that all of data? */
+			if (len+PTP_USB_BULK_HDR_LEN<=rlen) break;
 
-        /* If not read the rest of it. */
-        ret=params->read_func(((unsigned char *)(*data))+
-                  rlen - PTP_USB_BULK_HDR_LEN,
-                  len-(rlen - PTP_USB_BULK_HDR_LEN),
-                  params->data, &rlen);
-        if (ret!=PTP_RC_OK) {
-          ret = PTP_ERROR_IO;
-          break;
-        }
-      } else {
-        uint32_t bytes_to_write, written;
-        uint32_t bytes_left_to_transfer;
-        void *temp_buf;
-              
-        if (readlen)
-          *readlen = len;
+			/* If not read the rest of it. */
+			ret=params->read_func(((unsigned char *)(*data))+
+					      rlen - PTP_USB_BULK_HDR_LEN,
+					      len-(rlen - PTP_USB_BULK_HDR_LEN),
+					      params->data, &rlen);
+			if (ret!=PTP_RC_OK) {
+				ret = PTP_ERROR_IO;
+				break;
+			}
+		} else {
+			uint32_t bytes_to_write, written;
+			uint32_t bytes_left_to_transfer;
+			void *temp_buf;
+						
+			if (readlen)
+				*readlen = len;
 
-        bytes_to_write = rlen - PTP_USB_BULK_HDR_LEN;
+			bytes_to_write = rlen - PTP_USB_BULK_HDR_LEN;
 
-        ret = write(to_fd, usbdata.payload.data, bytes_to_write);
-        if (ret != bytes_to_write) {
-          ret = PTP_ERROR_IO;
-          break;
-        }
+			ret = write(to_fd, usbdata.payload.data, bytes_to_write);
+			if (ret != bytes_to_write) {
+				ret = PTP_ERROR_IO;
+				break;
+			}
 
-        if (len + PTP_USB_BULK_HDR_LEN <= rlen)
-          break;
-        
-        temp_buf = malloc(FILE_BUFFER_SIZE);
-        if (temp_buf == NULL) {
-          ret = PTP_ERROR_IO;
-          break;
-        }
+			if (len + PTP_USB_BULK_HDR_LEN <= rlen)
+				break;
+			
+			temp_buf = malloc(FILE_BUFFER_SIZE);
+			if (temp_buf == NULL) {
+				ret = PTP_ERROR_IO;
+				break;
+			}
 
-        ret = PTP_RC_OK;				
-        bytes_left_to_transfer = len - (rlen - PTP_USB_BULK_HDR_LEN);
+			ret = PTP_RC_OK;				
+			bytes_left_to_transfer = len - (rlen - PTP_USB_BULK_HDR_LEN);
 
-        while (bytes_left_to_transfer > 0) {
-          bytes_to_write = ((bytes_left_to_transfer > FILE_BUFFER_SIZE) ?
-                FILE_BUFFER_SIZE : bytes_left_to_transfer);
-          
-          ret = params->read_func(temp_buf,
-                bytes_to_write,
-                params->data, &rlen);
+			while (bytes_left_to_transfer > 0) {
+				bytes_to_write = ((bytes_left_to_transfer > FILE_BUFFER_SIZE) ?
+						  FILE_BUFFER_SIZE : bytes_left_to_transfer);
+				
+				ret = params->read_func(temp_buf,
+							bytes_to_write,
+							params->data, &rlen);
 
-          if (ret != PTP_RC_OK) {
-            ret = PTP_ERROR_IO;
-            break;
-          }
+				if (ret != PTP_RC_OK) {
+					ret = PTP_ERROR_IO;
+					break;
+				}
 
-          written = write(to_fd, temp_buf, bytes_to_write);
-          if (written != bytes_to_write) {
-            ret = PTP_ERROR_IO;
-            break;
-          } else {
-            ret = PTP_RC_OK;
-          }
+				written = write(to_fd, temp_buf, bytes_to_write);
+				if (written != bytes_to_write) {
+					ret = PTP_ERROR_IO;
+					break;
+				} else {
+					ret = PTP_RC_OK;
+				}
 
-          bytes_left_to_transfer -= bytes_to_write;
-        }
+				bytes_left_to_transfer -= bytes_to_write;
+			}
 
-        free(temp_buf);
+			free(temp_buf);
 
-        if (ret != PTP_RC_OK)
-          break;
-      }
+			if (ret != PTP_RC_OK)
+				break;
+
 		}
 	} while (0);
 /*
@@ -602,18 +544,22 @@ ptp_usb_event (PTPParams* params, PTPContainer* event, int wait)
 			"PTP: reading event an error 0x%04x occurred", ret);
 		ret = PTP_ERROR_IO;
 		/* reading event error is nonfatal (for example timeout) */
-	} 
-	while (dtoh32(usbevent.length) > rlen) {
-		unsigned int newrlen = 0;
+	}
+	/* Only do the additional reads for "events". Canon IXUS 2 likes to
+	 * send unrelated data.
+	 */
+	if (dtoh16(usbevent.type) == PTP_USB_CONTAINER_EVENT) {
+		while (dtoh32(usbevent.length) > rlen) {
+			unsigned int newrlen = 0;
 
-		ret=params->check_int_fast_func(((unsigned char*)&usbevent)+rlen,
-			dtoh32(usbevent.length)-rlen,params->data,&newrlen
-		);
-		if (ret != PTP_RC_OK) {
-			break;
+			ret=params->check_int_fast_func(((unsigned char*)&usbevent)+rlen,
+				dtoh32(usbevent.length)-rlen,params->data,&newrlen
+			);
+			if (ret != PTP_RC_OK)
+				break;
+			rlen+=newrlen;
 		}
-		rlen+=newrlen;
-	} 
+	}
 	/* if we read anything over interrupt endpoint it must be an event */
 	/* build an appropriate PTPContainer */
 	event->Code=dtoh16(usbevent.code);
@@ -2619,31 +2565,21 @@ ptp_mtp_getobjectproplist (PTPParams* params, uint32_t handle, MTPPropList **pro
 {
 	uint16_t ret;
 	PTPContainer ptp;
-	int old_split_header_data;
 	unsigned char* opldata = NULL;
 	unsigned int oplsize;
 
 	PTP_CNT_INIT(ptp);
 	ptp.Code = PTP_OC_MTP_GetObjPropList;
 	ptp.Param1 = handle;
-	ptp.Param2 = 0x00000000U;  // 0x00000000U should be "all formats"
-	ptp.Param3 = 0xFFFFFFFFU; // 0xFFFFFFFFU should be "all properties"
+	ptp.Param2 = 0x00000000U;  /* 0x00000000U should be "all formats" */
+	ptp.Param3 = 0xFFFFFFFFU;  /* 0xFFFFFFFFU should be "all properties" */
 	ptp.Param4 = 0x00000000U;
 	ptp.Param5 = 0x00000000U;
 	ptp.Nparam = 5;
-
-	/* Temporary disable split headers */
-	old_split_header_data = params->split_header_data;
-	params->split_header_data = 0;
-
 	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &opldata, &oplsize);  
 	if (ret == PTP_RC_OK) ptp_unpack_OPL(params, opldata, proplist, oplsize);
-  if (opldata != NULL)
-    free(opldata);
-
-	/* Restore split headers */
-	params->split_header_data = old_split_header_data;
-
+	if (opldata != NULL)
+		free(opldata);
 	return ret;
 }
 
