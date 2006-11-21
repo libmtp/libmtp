@@ -2908,7 +2908,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	prop->property = PTP_OPC_ObjectFileName;
 	prop->datatype = PTP_DTC_STR;
 	prop->propval.str = strdup(new_file.Filename);
-
+	
 	if (previous != NULL)
 	  previous->next = prop;
 	else
@@ -2959,6 +2959,13 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     }
     free(props);
 
+    // default handle
+    if (localph == 0)
+      localph = 0xFFFFFFFFU; // Set to -1
+
+    // Must be 0x00000000U for new objects
+    filedata->item_id = 0x00000000U;
+
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &filedata->item_id,
 				     new_file.ObjectFormat,
 				     new_file.ObjectCompressedSize, proplist);
@@ -2986,18 +2993,18 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   {
 #endif // ENABLE_MTP_ENHANCED
 
-  	// Create the object
-  	ret = ptp_sendobjectinfo(params, &store, &localph, &filedata->item_id, &new_file);
-  	if (ret != PTP_RC_OK) {
-    	ptp_perror(params, ret);
-    	printf("LIBMTP_Send_File_From_File_Descriptor: Could not send object info\n");
-    	if (ret == PTP_RC_AccessDenied) {
+    // Create the object
+    ret = ptp_sendobjectinfo(params, &store, &localph, &filedata->item_id, &new_file);
+    if (ret != PTP_RC_OK) {
+      ptp_perror(params, ret);
+      printf("LIBMTP_Send_File_From_File_Descriptor: Could not send object info\n");
+      if (ret == PTP_RC_AccessDenied) {
       	printf("ACCESS DENIED.\n");
-    	} else {
+      } else {
       	printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
-    	}
-    	return -1;
-  	}
+      }
+      return -1;
+    }
   }
 
   if (filedata->filesize != (uint64_t) -1) {

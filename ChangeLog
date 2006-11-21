@@ -2,6 +2,8 @@
 
 	* src/libmtp.c: enabled enhanced mode for metadata retrieval
 	  by default.
+	* src/libmtp.c: fixed the problem with sending files using
+	  enhanced commands.
 
 2006-11-20  Linus Walleij <triad@df.lth.se>
 
