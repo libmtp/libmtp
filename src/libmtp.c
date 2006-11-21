@@ -1870,7 +1870,7 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
   PTPParams *params = (PTPParams *) device->params;
   uint32_t i;
 
-#if 0 // #ifdef ENABLE_MTP_ENHANCED
+#ifdef ENABLE_MTP_ENHANCED
   if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjPropList)) {
     MTPPropList *proplist = NULL;
     MTPPropList *prop;

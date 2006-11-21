@@ -1,3 +1,8 @@
+2006-11-21  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: enabled enhanced mode for metadata retrieval
+	  by default.
+
 2006-11-20  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp.h: sync to upstream libgphoto2
