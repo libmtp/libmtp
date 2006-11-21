@@ -3974,6 +3974,8 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
     }
     free(props);
 
+	metadata->playlist_id = 0x00000000U;
+
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &metadata->playlist_id,
 				     PTP_OFC_MTP_AbstractAudioVideoPlaylist,
 				     new_pl.ObjectCompressedSize, proplist);
@@ -4381,11 +4383,12 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
       }
     }
     free(props);
+    
+    metadata->album_id = 0x00000000U;
 
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &metadata->album_id,
 				     PTP_OFC_MTP_AbstractAudioAlbum,
 				     new_alb.ObjectCompressedSize, proplist);
-
 
     /* Free property list */
     prop = proplist;
