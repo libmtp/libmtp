@@ -2820,7 +2820,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   int i;
   uint16_t *props = NULL;
   uint32_t propcnt = 0;
-  uint8_t nonconsumable = 0x00U; /* By default it is consumable */
+  uint8_t nonconsumable = 0x01U; /* By default it is non-consumable */
 
   new_file.Filename = filedata->filename;
   if (filedata->filesize == (uint64_t) -1) {
@@ -2835,6 +2835,17 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     new_file.ObjectCompressedSize = filedata->filesize;
   }
   new_file.ObjectFormat = map_libmtp_type_to_ptp_type(filedata->filetype);
+
+  /*
+   * If this file is among the supported filetypes for this device,
+   * then it is indeed consumable.
+   */
+  for (i=0;i<params->deviceinfo.ImageFormats_len;i++) {
+    if (params->deviceinfo.ImageFormats[i] == new_file.ObjectFormat) {
+      nonconsumable = 0x00U;
+      break;
+    }
+  }
 
   /*
    * If no destination folder was given, look up a default
