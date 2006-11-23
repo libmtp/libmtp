@@ -136,23 +136,26 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
 
   /*
    * iRiver
+   * we assume that PTP_OC_MTP_GetObjPropList is essentially
+   * broken on all iRiver devices. Please test on your device
+   * if you believe it isn't!
    */
-  { "iRiver Portable Media Center", 0x1006, 0x4002, DEVICE_FLAG_NONE },
-  { "iRiver Portable Media Center", 0x1006, 0x4003, DEVICE_FLAG_NONE },
+  { "iRiver Portable Media Center", 0x1006, 0x4002, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "iRiver Portable Media Center", 0x1006, 0x4003, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // From libgphoto2 source
-  { "iRiver T10", 0x4102, 0x1113, DEVICE_FLAG_NONE },
-  { "iRiver T20 FM", 0x4102, 0x1114, DEVICE_FLAG_NONE },
-  { "iRiver U10", 0x4102, 0x1116, DEVICE_FLAG_NONE },
-  { "iRiver T10", 0x4102, 0x1117, DEVICE_FLAG_NONE },
-  { "iRiver T20", 0x4102, 0x1118, DEVICE_FLAG_NONE },
-  { "iRiver T30", 0x4102, 0x1119, DEVICE_FLAG_NONE },
+  { "iRiver T10", 0x4102, 0x1113, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "iRiver T20 FM", 0x4102, 0x1114, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "iRiver U10", 0x4102, 0x1116, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "iRiver T10", 0x4102, 0x1117, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "iRiver T20", 0x4102, 0x1118, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "iRiver T30", 0x4102, 0x1119, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by David Wolpoff
-  { "iRiver T10 2GB", 0x4102, 0x1120, DEVICE_FLAG_NONE },
+  { "iRiver T10 2GB", 0x4102, 0x1120, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Adam Torgerson
-  { "iRiver Clix", 0x4102, 0x112a, DEVICE_FLAG_NONE },
+  { "iRiver Clix", 0x4102, 0x112a, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Scott Call
-  { "iRiver H10 20GB", 0x4102, 0x2101, DEVICE_FLAG_NONE },
-  { "iRiver H10", 0x4102, 0x2102, DEVICE_FLAG_NONE },
+  { "iRiver H10 20GB", 0x4102, 0x2101, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "iRiver H10", 0x4102, 0x2102, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
 
   /*
    * Dell

@@ -1868,14 +1868,21 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
 {
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   uint32_t i;
 
 #ifdef ENABLE_MTP_ENHANCED
-  if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjPropList)) {
+  if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjPropList)
+      && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST)) {
     MTPPropList *proplist = NULL;
     MTPPropList *prop;
     MTPPropList *tmpprop;
 
+    /*
+     * This should retrieve all properties for an object, but on devices
+     * which are inherently broken it will not, so these need the
+     * special flag DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST.
+     */
     ret = ptp_mtp_getobjectproplist(params, track->item_id, &proplist);
     prop = proplist;
     while (prop != NULL) {

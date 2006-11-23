@@ -32,6 +32,12 @@
  * it is.
  */
 #define DEVICE_FLAG_UNLOAD_DRIVER 0x00000002
+/**
+ * This means that the PTP_OC_MTP_GetObjPropList is broken and
+ * won't properly return all object properties if parameter 3
+ * is set to 0xFFFFFFFFU.
+ */
+#define DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST 0x00000004
 
 /**
  * Internal USB struct.
