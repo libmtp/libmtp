@@ -1,4 +1,12 @@
-2006-11-21	Robert Reardon <rreardon@monkshatch.vispa.com>
+2006-11-23  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.h: add a new bug flag for devices that
+	  have broken PTP_OC_MTP_GetObjPropList implementations.
+	* src/libusb-glue.c: state that all iRivers have this problem.
+	* src/libmtp.c: disable the user of ptp_mtp_getobjectproplist()
+	  for these devices.
+
+2006-11-21  Robert Reardon <rreardon@monkshatch.vispa.com>
 
 	* src/libmtp.c: set handle ids for new objects to 0 when
 	  creating new albums and playlists.
