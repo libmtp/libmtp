@@ -2501,9 +2501,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       metadata->filetype != LIBMTP_FILETYPE_UNDEF_AUDIO) {
     printf("LIBMTP_Send_Track_From_File_Descriptor: I don't think this is actually a track, strange filetype...\n");
     nonconsumable = 0x01U; /* Not suitable for consumption, atleast it's no track! */
-  }
-
-  if (metadata->filetype == LIBMTP_FILETYPE_UNDEF_AUDIO) {
+  } else if (metadata->filetype == LIBMTP_FILETYPE_UNDEF_AUDIO) {
     nonconsumable = 0x01U; /* Not suitable for consumption */
   }
 
@@ -2834,7 +2832,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     // This is a stream. Set a dummy length...
     new_file.ObjectCompressedSize = 1;
   } else {
-  // Sanity check: no zerolength files
+    // Sanity check: no zerolength files
     if (filedata->filesize == 0) {
       printf("LIBMTP_Send_File_From_File_Descriptor(): File of zero size\n");
       return -1;
@@ -3855,6 +3853,12 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t cons
   return NULL;
 }
 
+/*
+ * TODO: Refactor LIBMTP_Create_New_Playlist() and
+ *       LIBMTP_Create_New_Album() to use a common
+ *       static create_new_abstract_entity() function.
+ */
+
 /**
  * This routine creates a new playlist based on the metadata
  * supplied. If the <code>tracks</code> field of the metadata
@@ -3876,7 +3880,6 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 {
   uint16_t ret;
   uint32_t store = 0;
-  PTPObjectInfo new_pl;
   uint16_t *props = NULL;
   uint32_t propcnt = 0;
   uint8_t nonconsumable = 0x00U; /* By default it is consumable */
@@ -3885,6 +3888,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   uint32_t localph = parenthandle;
   char fname[256];
   uint8_t data[2];
+  PTPObjectInfo new_pl;
 
   // Use a default folder if none given
   if (localph == 0) {
@@ -3981,11 +3985,13 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
     }
     free(props);
 
-	metadata->playlist_id = 0x00000000U;
+    metadata->playlist_id = 0x00000000U;
 
+    // TODO: try setting size to 0xFFFFFFFFU instead of 1 here, and move
+    //       the 1-byte sending function below.
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &metadata->playlist_id,
 				     PTP_OFC_MTP_AbstractAudioVideoPlaylist,
-				     new_pl.ObjectCompressedSize, proplist);
+				     1, proplist);
 
     /* Free property list */
     prop = proplist;
@@ -4009,20 +4015,20 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 #else // !ENABLE_MTP_ENHANCED
   {
 #endif // ENABLE_MTP_ENHANCED
-
-  	// Create the object
-  	ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->playlist_id, &new_pl);
-  	if (ret != PTP_RC_OK) {
-    	ptp_perror(params, ret);
-    	printf("LIBMTP_New_Playlist(): Could not send object info (the playlist itself)\n");
-    	if (ret == PTP_RC_AccessDenied) {
-      		printf("ACCESS DENIED.\n");
-    	} else {
-      		printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
-    	}
-    	return -1;
-  	}
+    // Create the object
+    ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->playlist_id, &new_pl);
+    if (ret != PTP_RC_OK) {
+      ptp_perror(params, ret);
+      printf("LIBMTP_New_Playlist(): Could not send object info (the playlist itself)\n");
+      if (ret == PTP_RC_AccessDenied) {
+	printf("ACCESS DENIED.\n");
+      } else {
+	printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+      }
+      return -1;
+    }
   }
+
   /*
    * We have to send this one blank data byte.
    * If we don't, the handle will not be created and thus there is no playlist.
@@ -4393,9 +4399,11 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
     
     metadata->album_id = 0x00000000U;
 
+    // TODO: try setting size to 0xFFFFFFFFU instead of 1 here, and move
+    //       the 1-byte sending function below.
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &metadata->album_id,
 				     PTP_OFC_MTP_AbstractAudioAlbum,
-				     new_alb.ObjectCompressedSize, proplist);
+				     1, proplist);
 
     /* Free property list */
     prop = proplist;
