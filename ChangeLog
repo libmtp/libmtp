@@ -1,3 +1,12 @@
+2006-11-25  Marcus Meissner <marcus@jet.franken.de>
+
+	* examples/hotplug.c: adding HAL style XML output for 
+	  the devices.
+	* examples/Makefile.am: fixing a bug in the automake 
+	  file (pathutils.h missing!)
+	* Makefile.am: fix the problem with re-making sources
+	  (you had to run ./autogen.sh before!)
+
 2006-11-23  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.h: add a new bug flag for devices that

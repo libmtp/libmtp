@@ -2,7 +2,8 @@ bin_PROGRAMS=connect detect tracks files hotplug \
 	folders trexist playlists getplaylist \
 	format albumart albums newplaylist emptyfolders
 
-connect_SOURCES=connect.c delfile.c getfile.c newfolder.c sendfile.c sendtr.c pathutils.c common.h
+connect_SOURCES=connect.c delfile.c getfile.c newfolder.c \
+	sendfile.c sendtr.c pathutils.c pathutils.h common.h
 detect_SOURCES=detect.c common.h
 tracks_SOURCES=tracks.c common.h
 files_SOURCES=files.c common.h
@@ -27,4 +28,3 @@ install-exec-hook:
 	ln -f -s $(DESTDIR)$(bindir)/mtp-connect $(DESTDIR)$(bindir)/mtp-newfolder
 	ln -f -s $(DESTDIR)$(bindir)/mtp-connect $(DESTDIR)$(bindir)/mtp-sendfile
 	ln -f -s $(DESTDIR)$(bindir)/mtp-connect $(DESTDIR)$(bindir)/mtp-sendtr
-	
