@@ -61,6 +61,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   
   /*
    * Creative Technology
+   * Initially the Creative devices was all we supported so these are
+   * the most thoroughly tested devices.
    */
   { "Creative Zen Vision", 0x041e, 0x411f, DEVICE_FLAG_NONE },
   { "Creative Portable Media Center", 0x041e, 0x4123, DEVICE_FLAG_NONE },
@@ -183,8 +185,10 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   /*
    * Dunlop (OEM of EGOMAN ltd?) reported by Nanomad
    * This unit is falsely detected as USB mass storage in Linux
-   * so special care is needed to blacklist the device in kernel
-   * or similar to get it properly userspace:d.
+   * prior to kernel 2.6.19 (fixed by patch from Alan Stern)
+   * so on older kernels special care is needed to remove the
+   * USB mass storage driver that erroneously binds to the device
+   * interface.
    */
   { "Dunlop MP3 player 1GB / EGOMAN MD223AFD", 0x10d6, 0x2200, DEVICE_FLAG_UNLOAD_DRIVER}
   
