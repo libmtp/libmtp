@@ -1,3 +1,8 @@
+2006-11-26  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: refactor playlist/album creation code
+	  to do things in one place.
+	
 2006-11-25  Marcus Meissner <marcus@jet.franken.de>
 
 	* examples/hotplug.c: adding HAL style XML output for 

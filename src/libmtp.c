@@ -3854,69 +3854,81 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t cons
 }
 
 /*
- * TODO: Refactor LIBMTP_Create_New_Playlist() and
- *       LIBMTP_Create_New_Album() to use a common
- *       static create_new_abstract_entity() function.
- */
-
-/**
- * This routine creates a new playlist based on the metadata
- * supplied. If the <code>tracks</code> field of the metadata
- * contains a track listing, these tracks will be added to the
- * playlist.
- * @param device a pointer to the device to create the new playlist on.
- * @param metadata the metadata for the new playlist. If the function
- *        exits with success, the <code>playlist_id</code> field of this
- *        struct will contain the new playlist ID of the playlist.
- * @param parenthandle the parent (e.g. folder) to store this playlist
- *        in. Pass in 0 to put the playlist in the root directory.
+ * This function creates a new abstract list such as a playlist
+ * or an album.
+ * 
+ * @param device a pointer to the device to create the new abstract list
+ *        on.
+ * @param name the name of the new abstract list.
+ * @param parenthandle the handle of the parent or 0 for no parent
+ *        i.e. the root folder.
+ * @param objectformat the abstract list type to create.
+ * @param suffix the ".foo" (4 characters) suffix to use for the virtual
+ *        "file" created by this operation.
+ * @param newid a pointer to a variable that will hold the new object
+ *        ID if this call is successful.
+ * @param tracks an array of tracks to associate with this list.
+ * @param no_tracks the number of tracks in the list.
  * @return 0 on success, any other value means failure.
- * @see LIBMTP_Update_Playlist()
- * @see LIBMTP_Delete_Object()
  */
-int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
-			       LIBMTP_playlist_t * const metadata,
-			       uint32_t const parenthandle)
+static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
+				    char const * const name,
+				    uint32_t const parenthandle,
+				    uint16_t const objectformat,
+				    char const * const suffix,
+				    uint32_t * const newid,
+				    uint32_t const * const tracks,
+				    uint32_t const no_tracks)
+
 {
+  int i;
+  int supported = 0;
   uint16_t ret;
   uint32_t store = 0;
   uint16_t *props = NULL;
   uint32_t propcnt = 0;
-  uint8_t nonconsumable = 0x00U; /* By default it is consumable */
-  int i;
-  PTPParams *params = (PTPParams *) device->params;
   uint32_t localph = parenthandle;
+  uint8_t nonconsumable = 0x00U; /* By default it is consumable */
+  PTPParams *params = (PTPParams *) device->params;
   char fname[256];
   uint8_t data[2];
-  PTPObjectInfo new_pl;
+  PTPObjectInfo new_object;
 
-  // Use a default folder if none given
-  if (localph == 0) {
-    localph = device->default_playlist_folder;
-  }
-
-  // .zpl is the "abstract audio/video playlist "file" suffix
-  new_pl.Filename = NULL;
-  if (strlen(metadata->name) > 4) {
-    char *suff = &metadata->name[strlen(metadata->name)-4];
-    if (!strcmp(suff, ".zpl")) {
-      // Home free.
-      new_pl.Filename = metadata->name;
+  // Check if we can create an object of this type
+  for ( i=0; i < params->deviceinfo.ImageFormats_len; i++ ) {
+    if (params->deviceinfo.ImageFormats[i] == objectformat) {
+      supported = 1;
+      break;
     }
   }
-  // If it didn't end with ".zpl" then add that here.
-  if (new_pl.Filename == NULL) {
-    strncpy(fname, metadata->name, sizeof(fname)-5);
-    strcat(fname, ".zpl");
+  if (!supported) {
+    printf("create_new_abstract_list(): player does not support this abstract type (0x%04x)\n", objectformat);
+    return -1;
+  }
+
+
+  // add the new suffix if it isn's there
+  new_object.Filename = NULL;
+  if (strlen(name) > strlen(suffix)) {
+    char const * const suff = &name[strlen(name)-strlen(suffix)];
+    if (!strcmp(suff, suffix)) {
+      // Home free.
+      new_object.Filename = (char *) name;
+    }
+  }
+  // If it didn't end with "<suffix>" then add that here.
+  if (new_object.Filename == NULL) {
+    strncpy(fname, name, sizeof(fname)-strlen(suffix)-1);
+    strcat(fname, suffix);
     fname[sizeof(fname)-1] = '\0';
-    new_pl.Filename = fname;
+    new_object.Filename = fname;
   }
 
   // Playlists created on device have size (uint32_t) -1 = 0xFFFFFFFFU, but setting:
-  // new_pl.ObjectCompressedSize = 0; <- DOES NOT WORK! (return PTP_RC_GeneralError)
-  // new_pl.ObjectCompressedSize = (uint32_t) -1; <- DOES NOT WORK! (return PTP_RC_MTP_Object_Too_Large)
-  new_pl.ObjectCompressedSize = 1;
-  new_pl.ObjectFormat = PTP_OFC_MTP_AbstractAudioVideoPlaylist;
+  // new_object.ObjectCompressedSize = 0; <- DOES NOT WORK! (return PTP_RC_GeneralError)
+  // new_object.ObjectCompressedSize = (uint32_t) -1; <- DOES NOT WORK! (return PTP_RC_MTP_Object_Too_Large)
+  new_object.ObjectCompressedSize = 1;
+  new_object.ObjectFormat = objectformat;
 
 #ifdef ENABLE_MTP_ENHANCED
   if (ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList)) {
@@ -3925,7 +3937,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
     MTPPropList *prop = NULL;
     MTPPropList *previous = NULL;
 
-    ret = ptp_mtp_getobjectpropssupported(params, PTP_OFC_MTP_AbstractAudioVideoPlaylist, &propcnt, &props);
+    ret = ptp_mtp_getobjectpropssupported(params, objectformat, &propcnt, &props);
 
     for (i=0;i<propcnt;i++) {
       switch (props[i]) {
@@ -3933,7 +3945,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 	prop = New_MTP_Prop_Entry();
 	prop->property = PTP_OPC_ObjectFileName;
 	prop->datatype = PTP_DTC_STR;
-	prop->propval.str = strdup(new_pl.Filename);
+	prop->propval.str = strdup(new_object.Filename);
 
 	if (previous != NULL)
 	  previous->next = prop;
@@ -3972,7 +3984,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 	prop = New_MTP_Prop_Entry();
 	prop->property = PTP_OPC_Name;
 	prop->datatype = PTP_DTC_STR;
-	prop->propval.str = strdup(metadata->name);
+	prop->propval.str = strdup(name);
 
 	if (previous != NULL)
 	  previous->next = prop;
@@ -3985,13 +3997,12 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
     }
     free(props);
 
-    metadata->playlist_id = 0x00000000U;
+    *newid = 0x00000000U;
 
     // TODO: try setting size to 0xFFFFFFFFU instead of 1 here, and move
     //       the 1-byte sending function below.
-    ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &metadata->playlist_id,
-				     PTP_OFC_MTP_AbstractAudioVideoPlaylist,
-				     1, proplist);
+    ret = ptp_mtp_sendobjectproplist(params, &store, &localph, newid,
+				     objectformat, 1, proplist);
 
     /* Free property list */
     prop = proplist;
@@ -4003,7 +4014,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 
     if (ret != PTP_RC_OK) {
       ptp_perror(params, ret);
-      printf("LIBMTP_Create_New_Playlist(): Could not send object property list.\n");
+      printf("create_new_abstract_list(): Could not send object property list.\n");
       if (ret == PTP_RC_AccessDenied) {
 	printf("ACCESS DENIED.\n");
       } else {
@@ -4016,10 +4027,10 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   {
 #endif // ENABLE_MTP_ENHANCED
     // Create the object
-    ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->playlist_id, &new_pl);
+    ret = ptp_sendobjectinfo(params, &store, &localph, newid, &new_object);
     if (ret != PTP_RC_OK) {
       ptp_perror(params, ret);
-      printf("LIBMTP_New_Playlist(): Could not send object info (the playlist itself)\n");
+      printf("create_new_abstract_list(): Could not send object info (the playlist itself)\n");
       if (ret == PTP_RC_AccessDenied) {
 	printf("ACCESS DENIED.\n");
       } else {
@@ -4032,29 +4043,31 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   /*
    * We have to send this one blank data byte.
    * If we don't, the handle will not be created and thus there is no playlist.
+   * TODO: see if this can be avoided with enhanced commands!
    */
   data[0] = '\0';
   data[1] = '\0';
   ret = ptp_sendobject(params, data, 1);
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);
-    printf("LIBMTP_New_Playlist(): Could not send blank object data\n");
+    printf("create_new_abstract_list(): Could not send blank object data\n");
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
 
   // Update title
-  ret = LIBMTP_Set_Object_String(device, metadata->playlist_id, PTP_OPC_Name, metadata->name);
+  // TODO: should not be needed for enhanced commands!
+  ret = LIBMTP_Set_Object_String(device, *newid, PTP_OPC_Name, name);
   if (ret != 0) {
-    printf("LIBMTP_New_Playlist(): could not set playlist name\n");
+    printf("create_new_abstract_list(): could not set entity name\n");
     return -1;
   }
 
-  if (metadata->no_tracks > 0) {
+  if (no_tracks > 0) {
     // Add tracks to the new playlist as object references.
-    ret = ptp_mtp_setobjectreferences (params, metadata->playlist_id, metadata->tracks, metadata->no_tracks);
+    ret = ptp_mtp_setobjectreferences (params, *newid, (uint32_t *) tracks, no_tracks);
     if (ret != PTP_RC_OK) {
-      printf("LIBMTP_New_Playlist(): could not add tracks as object references\n");
+      printf("create_new_abstract_list(): could not add tracks as object references\n");
       printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
       return -1;
     }
@@ -4064,6 +4077,44 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   flush_handles(device);
 
   return 0;
+}
+
+
+/**
+ * This routine creates a new playlist based on the metadata
+ * supplied. If the <code>tracks</code> field of the metadata
+ * contains a track listing, these tracks will be added to the
+ * playlist.
+ * @param device a pointer to the device to create the new playlist on.
+ * @param metadata the metadata for the new playlist. If the function
+ *        exits with success, the <code>playlist_id</code> field of this
+ *        struct will contain the new playlist ID of the playlist.
+ * @param parenthandle the parent (e.g. folder) to store this playlist
+ *        in. Pass in 0 to put the playlist in the root directory.
+ * @return 0 on success, any other value means failure.
+ * @see LIBMTP_Update_Playlist()
+ * @see LIBMTP_Delete_Object()
+ */
+int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
+			       LIBMTP_playlist_t * const metadata,
+			       uint32_t const parenthandle)
+{
+  uint32_t localph = parenthandle;
+
+  // Use a default folder if none given
+  if (localph == 0) {
+    localph = device->default_playlist_folder;
+  }
+
+  // Just create a new abstract audio/video playlist...
+  return create_new_abstract_list(device,
+				  metadata->name,
+				  localph,
+				  PTP_OFC_MTP_AbstractAudioVideoPlaylist,
+				  ".zpl",
+				  &metadata->playlist_id,
+				  metadata->tracks,
+				  metadata->no_tracks);
 }
 
 /**
@@ -4282,191 +4333,22 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
 			       LIBMTP_album_t * const metadata,
 			       uint32_t const parenthandle)
 {
-  uint16_t ret;
-  uint32_t store = 0;
-  PTPObjectInfo new_alb;
-  PTPParams *params = (PTPParams *) device->params;
   uint32_t localph = parenthandle;
-  char fname[256];
-  uint8_t data[2];
-  uint16_t *props = NULL;
-  uint32_t propcnt = 0;
-  uint8_t nonconsumable = 0x00U; /* By default it is consumable */
-
-  // Check if we can create an object of type PTP_OFC_MTP_AbstractAudioAlbum
-  int i;
-  int supported = 0;
-  for ( i=0; i < params->deviceinfo.ImageFormats_len; i++ ) {
-    if (params->deviceinfo.ImageFormats[i] == PTP_OFC_MTP_AbstractAudioAlbum) {
-      supported = 1;
-      break;
-    }
-  }
-  if (!supported) {
-    printf("LIBMTP_Create_New_Album(): Player does not support the AbstractAudioAlbum type\n");
-    return -1;
-  }
 
   // Use a default folder if none given
   if (localph == 0) {
     localph = device->default_album_folder;
   }
 
-  new_alb.Filename = NULL;
-  if (strlen(metadata->name) > 4) {
-    char *suff = &metadata->name[strlen(metadata->name)-4];
-    if (!strcmp(suff, ".alb")) {
-      new_alb.Filename = metadata->name;
-    }
-  }
-  // If it didn't end with ".alb" then add that here.
-  if (new_alb.Filename == NULL) {
-    strncpy(fname, metadata->name, sizeof(fname)-5);
-    strcat(fname, ".alb");
-    fname[sizeof(fname)-1] = '\0';
-    new_alb.Filename = fname;
-  }
-
-  new_alb.ObjectCompressedSize = 1;
-  new_alb.ObjectFormat = PTP_OFC_MTP_AbstractAudioAlbum;
-
-#ifdef ENABLE_MTP_ENHANCED
-  if (ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList)) {
-
-    MTPPropList *proplist = NULL;
-    MTPPropList *prop = NULL;
-    MTPPropList *previous = NULL;
-
-    ret = ptp_mtp_getobjectpropssupported(params, PTP_OFC_MTP_AbstractAudioAlbum, &propcnt, &props);
-
-    for (i=0;i<propcnt;i++) {
-      switch (props[i]) {
-      case PTP_OPC_ObjectFileName:
-	prop = New_MTP_Prop_Entry();
-	prop->property = PTP_OPC_ObjectFileName;
-	prop->datatype = PTP_DTC_STR;
-	prop->propval.str = strdup(new_alb.Filename);
-
-	if (previous != NULL)
-	  previous->next = prop;
-	else
-	  proplist = prop;
-	previous = prop;
-	prop->next = NULL;
-	break;
-      case PTP_OPC_ProtectionStatus:
-	prop = New_MTP_Prop_Entry();
-	prop->property = PTP_OPC_ProtectionStatus;
-	prop->datatype = PTP_DTC_UINT16;
-	prop->propval.u16 = 0x0000U; /* Not protected */
-
-	if (previous != NULL)
-	  previous->next = prop;
-	else
-	  proplist = prop;
-	previous = prop;
-	prop->next = NULL;
-	break;
-      case PTP_OPC_NonConsumable:
-	prop = New_MTP_Prop_Entry();
-	prop->property = PTP_OPC_NonConsumable;
-	prop->datatype = PTP_DTC_UINT8;
-	prop->propval.u8 = nonconsumable;
-
-	if (previous != NULL)
-	  previous->next = prop;
-	else
-	  proplist = prop;
-	previous = prop;
-	prop->next = NULL;
-	break;
-      case PTP_OPC_Name:
-	prop = New_MTP_Prop_Entry();
-	prop->property = PTP_OPC_Name;
-	prop->datatype = PTP_DTC_STR;
-	prop->propval.str = strdup(metadata->name);
-
-	if (previous != NULL)
-	  previous->next = prop;
-	else
-	  proplist = prop;
-	previous = prop;
-	prop->next = NULL;
-	break;
-      }
-    }
-    free(props);
-    
-    metadata->album_id = 0x00000000U;
-
-    // TODO: try setting size to 0xFFFFFFFFU instead of 1 here, and move
-    //       the 1-byte sending function below.
-    ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &metadata->album_id,
-				     PTP_OFC_MTP_AbstractAudioAlbum,
-				     1, proplist);
-
-    /* Free property list */
-    prop = proplist;
-    while (prop != NULL) {
-      previous = prop;
-      prop = prop->next;
-      Destroy_MTP_Prop_Entry(previous);
-    }
-
-    if (ret != PTP_RC_OK) {
-      ptp_perror(params, ret);
-      printf("LIBMTP_New_Album(): Could not send object property list.\n");
-      if (ret == PTP_RC_AccessDenied) {
-	printf("ACCESS DENIED.\n");
-      } else {
-	printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
-      }
-      return -1;
-    }
-  } else if (ptp_operation_issupported(params,PTP_OC_SendObjectInfo)) {
-#else // !ENABLE_MTP_ENHANCED
-  {
-#endif // ENABLE_MTP_ENHANCED
-    // Create the object
-    ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->album_id, &new_alb);
-    if (ret != PTP_RC_OK) {
-      ptp_perror(params, ret);
-      printf("LIBMTP_New_Album(): Could not send object info (the album itself)\n");
-      printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
-      return -1;
-    }
-  }
-  data[0] = '\0';
-  data[1] = '\0';
-  ret = ptp_sendobject(params, data, 1);
-  if (ret != PTP_RC_OK) {
-    ptp_perror(params, ret);
-    printf("LIBMTP_New_Album(): Could not send blank object data\n");
-    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
-    return -1;
-  }
-
-  // Update title
-  ret = LIBMTP_Set_Object_String(device, metadata->album_id, PTP_OPC_Name, metadata->name);
-  if (ret != 0) {
-    printf("LIBMTP_New_Album(): could not set album name\n");
-    return -1;
-  }
-
-  if (metadata->no_tracks > 0) {
-    // Add tracks to the new album as object references.
-    ret = ptp_mtp_setobjectreferences (params, metadata->album_id, metadata->tracks, metadata->no_tracks);
-    if (ret != PTP_RC_OK) {
-      printf("LIBMTP_New_Album(): could not add tracks as object references\n");
-      printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
-      return -1;
-    }
-  }
-
-  // Created new item, so flush handles
-  flush_handles(device);
-
-  return 0;
+  // Just create a new abstract album...
+  return create_new_abstract_list(device,
+				  metadata->name,
+				  localph,
+				  PTP_OFC_MTP_AbstractAudioAlbum,
+				  ".alb",
+				  &metadata->album_id,
+				  metadata->tracks,
+				  metadata->no_tracks);
 }
 
 /**
