@@ -2429,6 +2429,7 @@ static MTPPropList *New_MTP_Prop_Entry()
   prop = (MTPPropList *) malloc(sizeof(MTPPropList));
   prop->property = PTP_OPC_StorageID; /* Should be "unknown" */
   prop->datatype = PTP_DTC_UNDEF;
+  prop->ObjectHandle = 0x00000000U;
   prop->next = NULL;
   return prop;
 }
@@ -2586,6 +2587,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
         switch (props[i]) {
           case PTP_OPC_ObjectFileName:
             prop = New_MTP_Prop_Entry();
+            prop->ObjectHandle = metadata->item_id;
             prop->property = PTP_OPC_ObjectFileName;
             prop->datatype = PTP_DTC_STR;
             prop->propval.str = strdup(metadata->filename);
@@ -2599,6 +2601,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
             break;
           case PTP_OPC_ProtectionStatus:
             prop = New_MTP_Prop_Entry();
+            prop->ObjectHandle = metadata->item_id;
             prop->property = PTP_OPC_ProtectionStatus;
             prop->datatype = PTP_DTC_UINT16;
             prop->propval.u16 = 0x0000U; /* Not protected */
@@ -2612,6 +2615,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
             break;
           case PTP_OPC_NonConsumable:
             prop = New_MTP_Prop_Entry();
+            prop->ObjectHandle = metadata->item_id;
             prop->property = PTP_OPC_NonConsumable;
             prop->datatype = PTP_DTC_UINT8;
             prop->propval.u8 = nonconsumable;
@@ -2903,6 +2907,9 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     MTPPropList *proplist = NULL;
     MTPPropList *prop = NULL;
     MTPPropList *previous = NULL;
+    
+    // Must be 0x00000000U for new objects
+    filedata->item_id = 0x00000000U;
 
     ret = ptp_mtp_getobjectpropssupported(params, new_file.ObjectFormat, &propcnt, &props);
 
@@ -2910,6 +2917,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       switch (props[i]) {
       case PTP_OPC_ObjectFileName:
 	prop = New_MTP_Prop_Entry();
+  prop->ObjectHandle = filedata->item_id;
 	prop->property = PTP_OPC_ObjectFileName;
 	prop->datatype = PTP_DTC_STR;
 	prop->propval.str = strdup(new_file.Filename);
@@ -2923,6 +2931,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_ProtectionStatus:
 	prop = New_MTP_Prop_Entry();
+  prop->ObjectHandle = filedata->item_id;
 	prop->property = PTP_OPC_ProtectionStatus;
 	prop->datatype = PTP_DTC_UINT16;
 	prop->propval.u16 = 0x0000U; /* Not protected */
@@ -2936,6 +2945,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_NonConsumable:
 	prop = New_MTP_Prop_Entry();
+  prop->ObjectHandle = filedata->item_id;
 	prop->property = PTP_OPC_NonConsumable;
 	prop->datatype = PTP_DTC_UINT8;
 	prop->propval.u8 = nonconsumable;
@@ -2949,6 +2959,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_Name:
 	prop = New_MTP_Prop_Entry();
+  prop->ObjectHandle = filedata->item_id;
 	prop->property = PTP_OPC_Name;
 	prop->datatype = PTP_DTC_STR;
 	prop->propval.str = strdup(filedata->filename);
@@ -2967,9 +2978,6 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     // default handle
     if (localph == 0)
       localph = 0xFFFFFFFFU; // Set to -1
-
-    // Must be 0x00000000U for new objects
-    filedata->item_id = 0x00000000U;
 
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &filedata->item_id,
 				     new_file.ObjectFormat,
@@ -3936,6 +3944,8 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
     MTPPropList *proplist = NULL;
     MTPPropList *prop = NULL;
     MTPPropList *previous = NULL;
+    
+    *newid = 0x00000000U;
 
     ret = ptp_mtp_getobjectpropssupported(params, objectformat, &propcnt, &props);
 
@@ -3943,7 +3953,8 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
       switch (props[i]) {
       case PTP_OPC_ObjectFileName:
 	prop = New_MTP_Prop_Entry();
-	prop->property = PTP_OPC_ObjectFileName;
+  prop->ObjectHandle = *newid;      
+  prop->property = PTP_OPC_ObjectFileName;
 	prop->datatype = PTP_DTC_STR;
 	prop->propval.str = strdup(new_object.Filename);
 
@@ -3956,6 +3967,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_ProtectionStatus:
 	prop = New_MTP_Prop_Entry();
+  prop->ObjectHandle = *newid;
 	prop->property = PTP_OPC_ProtectionStatus;
 	prop->datatype = PTP_DTC_UINT16;
 	prop->propval.u16 = 0x0000U; /* Not protected */
@@ -3969,6 +3981,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_NonConsumable:
 	prop = New_MTP_Prop_Entry();
+  prop->ObjectHandle = *newid;
 	prop->property = PTP_OPC_NonConsumable;
 	prop->datatype = PTP_DTC_UINT8;
 	prop->propval.u8 = nonconsumable;
@@ -3982,6 +3995,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_Name:
 	prop = New_MTP_Prop_Entry();
+  prop->ObjectHandle = *newid;
 	prop->property = PTP_OPC_Name;
 	prop->datatype = PTP_DTC_STR;
 	prop->propval.str = strdup(name);
@@ -3996,8 +4010,6 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
       }
     }
     free(props);
-
-    *newid = 0x00000000U;
 
     // TODO: try setting size to 0xFFFFFFFFU instead of 1 here, and move
     //       the 1-byte sending function below.
