@@ -1,3 +1,8 @@
+2006-11-27  Richard Low <richard@wentnet.com>
+
+	* examples/files.c: unsigned int sized printout.
+	* examples/tracks.c: sort of the same.
+
 2006-11-26  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: object handles for proplists

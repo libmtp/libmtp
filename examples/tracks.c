@@ -2,7 +2,7 @@
 
 static void dump_trackinfo(LIBMTP_track_t *track)
 {
-  printf("Track ID: %d\n", track->item_id);
+  printf("Track ID: %u\n", track->item_id);
   if (track->title != NULL)
     printf("   Title: %s\n", track->title);
   if (track->artist != NULL)
