@@ -840,7 +840,7 @@ ptp_pack_OPL (PTPParams *params, MTPPropList *proplist, unsigned char** opldatap
 	MTPPropList *propitr;
 	unsigned char *packedprops[MAX_MTP_PROPS];
 	uint32_t packedpropslens[MAX_MTP_PROPS];
-  uint32_t packedobjecthandles[MAX_MTP_PROPS];
+	uint32_t packedobjecthandles[MAX_MTP_PROPS];
 	uint16_t packedpropsids[MAX_MTP_PROPS];
 	uint16_t packedpropstypes[MAX_MTP_PROPS];
 	uint32_t totalsize = 0;
@@ -852,7 +852,7 @@ ptp_pack_OPL (PTPParams *params, MTPPropList *proplist, unsigned char** opldatap
 	propitr = proplist;
 	while (propitr != NULL && noitems < MAX_MTP_PROPS) {
 		/* Object Handle */
-    packedobjecthandles[noitems]=propitr->ObjectHandle;
+		packedobjecthandles[noitems]=propitr->ObjectHandle;
 		totalsize += sizeof(uint32_t); /* Object ID */
 		/* Metadata type */
 		packedpropsids[noitems]=propitr->property;
