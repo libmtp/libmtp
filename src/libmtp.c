@@ -49,22 +49,23 @@
  * otherwise the libmtp.h device has to be dependent on ptp.h
  * to be installed too, and we don't want that.
  */
-typedef struct filemap_t LIBMTP_filemap_t;
-struct filemap_t {
+//typedef struct filemap_struct filemap_t;
+typedef struct filemap_struct {
   char *description; /**< Text description for the file type */
   LIBMTP_filetype_t id; /**< LIBMTP internal type for the file type */
   uint16_t ptp_id; /**< PTP ID for the filetype */
-  void *constructor; /**< Function to create the data structure for this file type */
-  void *destructor; /**< Function to destroy the data structure for this file type */
-  void *datafunc; /**< Function to fill in the data for this file type */
-  LIBMTP_filemap_t *next;
-};
+  struct filemap_struct *next;
+} filemap_t;
 
 // Global variables
 // This holds the global filetype mapping table
-static LIBMTP_filemap_t *filemap = NULL;
+static filemap_t *filemap = NULL;
 
-// Forward declarations of local functions
+/*
+ * Forward declarations of local (static) functions.
+ */
+static int register_filetype(char const * const description, LIBMTP_filetype_t const id,
+			     uint16_t const ptp_id);
 static void flush_handles(LIBMTP_mtpdevice_t *device);
 static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype);
 static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype);
@@ -75,19 +76,20 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
 static MTPPropList *New_MTP_Prop_Entry();
 static void Destroy_MTP_Prop_Entry(MTPPropList *prop);
 
-static LIBMTP_filemap_t *new_filemap_entry()
+/**
+ * Create a new file mapping entry
+ * @return a newly allocated filemapping entry.
+ */
+static filemap_t *new_filemap_entry()
 {
-  LIBMTP_filemap_t *filemap;
+  filemap_t *filemap;
 
-  filemap = (LIBMTP_filemap_t *)malloc(sizeof(LIBMTP_filemap_t));
+  filemap = (filemap_t *)malloc(sizeof(filemap_t));
 
   if( filemap != NULL ) {
     filemap->description = NULL;
     filemap->id = LIBMTP_FILETYPE_UNKNOWN;
     filemap->ptp_id = PTP_OFC_Undefined;
-    filemap->constructor = NULL;
-    filemap->destructor = NULL;
-    filemap->datafunc = NULL;
     filemap->next = NULL;
   }
 
@@ -100,16 +102,12 @@ static LIBMTP_filemap_t *new_filemap_entry()
  * @param description Text description of filetype
  * @param id libmtp internal filetype id
  * @param ptp_id PTP filetype id
- * @param constructor Pointer to function to create data structure for filetype
- * @param destructor Pointer to function to destroy data structure for filetype
- * @param datafunc Pointer to function to fill data structure
  * @return 0 for success any other value means error.
 */
-int LIBMTP_Register_Filetype(char const * const description, LIBMTP_filetype_t const id,
-			     uint16_t const ptp_id, void const * const constructor,
-			     void const * const destructor, void const * const datafunc)
+static int register_filetype(char const * const description, LIBMTP_filetype_t const id,
+			     uint16_t const ptp_id)
 {
-  LIBMTP_filemap_t *new = NULL, *current;
+  filemap_t *new = NULL, *current;
 
   // Has this LIBMTP filetype been registered before ?
   current = filemap;
@@ -132,9 +130,6 @@ int LIBMTP_Register_Filetype(char const * const description, LIBMTP_filetype_t c
       new->description = strdup(description);
     }
     new->ptp_id = ptp_id;
-    new->constructor = (void*) constructor;
-    new->destructor = (void*) destructor;
-    new->datafunc = (void*) datafunc;
 
     // Add the entry to the list
     if(filemap == NULL) {
@@ -154,183 +149,42 @@ int LIBMTP_Register_Filetype(char const * const description, LIBMTP_filetype_t c
       current->description = strdup(description);
     }
     current->ptp_id = ptp_id;
-    current->constructor = (void*) constructor;
-    current->destructor = (void*) destructor;
-    current->datafunc = (void*) datafunc;
   }
 
-  return 0;
-}
-
-/**
- * Set the description for a MTP filetype
- *
- * @param id libmtp internal filetype id
- * @param description Text description of filetype
- * @return 0 on success, any other value means error.
-*/
-int LIBMTP_Set_Filetype_Description(LIBMTP_filetype_t const id, char const * const description)
-{
-  LIBMTP_filemap_t *current;
-
-  if (filemap == NULL) {
-    return -1;
-  }
-
-  // Go through the filemap until an entry is found
-  current = filemap;
-
-  while(current != NULL) {
-    if(current->id == id) {
-      break;
-    }
-    current = current->next;
-  }
-
-  if(current == NULL) {
-    return -1;
-  }
-
-  if (current->description != NULL) {
-    free(current->description);
-    current->description = NULL;
-  }
-  if(description != NULL) {
-    current->description = strdup(description);
-  }
-  return 0;
-}
-
-/**
- * Set the constructor for a MTP filetype
- *
- * @param id libmtp internal filetype id
- * @param constructor Pointer to a constructor function
- * @return 0 on success, any other value means failure
-*/
-int LIBMTP_Set_Constructor(LIBMTP_filetype_t const id, void const * const constructor)
-{
-  LIBMTP_filemap_t *current;
-
-  if (filemap == NULL) {
-    return -1;
-  }
-
-  // Go through the filemap until an entry is found
-  current = filemap;
-
-  while(current != NULL) {
-    if(current->id == id) {
-      break;
-    }
-    current = current->next;
-  }
-
-  if (current == NULL) {
-    return -1;
-  }
-
-  current->constructor = (void*) constructor;
-  return 0;
-}
-
-/**
- * Set the destructor for a MTP filetype
- *
- * @param id libmtp internal filetype id
- * @param destructor Pointer to a destructor function
- * @return 0 on success, any other value means failure
-*/
-int LIBMTP_Set_Destructor(LIBMTP_filetype_t const id, void const * const destructor)
-{
-  LIBMTP_filemap_t *current;
-
-  if (filemap == NULL) {
-    return -1;
-  }
-
-  // Go through the filemap until an entry is found
-  current = filemap;
-
-  while(current != NULL) {
-    if(current->id == id) {
-      break;
-    }
-    current = current->next;
-  }
-
-  if(current == NULL) {
-    return -1;
-  }
-
-  current->destructor = (void *) destructor;
-  return 0;
-}
-
-/**
- * Set the datafunc for a MTP filetype
- *
- * @param id libmtp internal filetype id
- * @param datafunc Pointer to a data function
- * @return 0 on success, any other value means failure
-*/
-int LIBMTP_Set_Datafunc(LIBMTP_filetype_t const id, void const * const datafunc)
-{
-  LIBMTP_filemap_t *current;
-
-  if (filemap == NULL) {
-    return -1;
-  }
-
-  // Go through the filemap until an entry is found
-  current = filemap;
-
-  while(current != NULL) {
-    if(current->id == id) {
-      break;
-    }
-    current = current->next;
-  }
-
-  if(current == NULL) {
-    return -1;
-  }
-
-  current->datafunc = (void *) datafunc;
   return 0;
 }
 
 static void init_filemap()
 {
-  LIBMTP_Register_Filetype("RIFF WAVE file", LIBMTP_FILETYPE_WAV, PTP_OFC_WAV,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
-  LIBMTP_Register_Filetype("ISO MPEG Audio Layer 3", LIBMTP_FILETYPE_MP3, PTP_OFC_MP3,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
-  LIBMTP_Register_Filetype("Microsoft Windows Media Audio", LIBMTP_FILETYPE_WMA, PTP_OFC_MTP_WMA,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
-  LIBMTP_Register_Filetype("Ogg container format", LIBMTP_FILETYPE_OGG, PTP_OFC_MTP_OGG,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
-  LIBMTP_Register_Filetype("Audible.com Audio Codec", LIBMTP_FILETYPE_AUDIBLE, PTP_OFC_MTP_AudibleCodec,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
-  LIBMTP_Register_Filetype("Advanced Acoustic Coding", LIBMTP_FILETYPE_MP4, PTP_OFC_MTP_MP4,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
-  LIBMTP_Register_Filetype("Undefined audio file", LIBMTP_FILETYPE_UNDEF_AUDIO, PTP_OFC_MTP_UndefinedAudio,LIBMTP_new_track_t,LIBMTP_destroy_track_t,NULL);
-  LIBMTP_Register_Filetype("Microsoft Windows Media Video", LIBMTP_FILETYPE_WMV, PTP_OFC_MTP_WMV,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("Audio Video Interleave", LIBMTP_FILETYPE_AVI, PTP_OFC_AVI,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("MPEG video stream", LIBMTP_FILETYPE_MPEG, PTP_OFC_MPEG,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("Microsoft Advanced Systems Format", LIBMTP_FILETYPE_ASF, PTP_OFC_ASF,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("Apple Quicktime container format", LIBMTP_FILETYPE_QT, PTP_OFC_QT,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("Undefined video file", LIBMTP_FILETYPE_UNDEF_VIDEO, PTP_OFC_MTP_UndefinedVideo,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("JPEG file", LIBMTP_FILETYPE_JPEG, PTP_OFC_EXIF_JPEG,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("JFIF file", LIBMTP_FILETYPE_JFIF, PTP_OFC_JFIF,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("TIFF bitmap file", LIBMTP_FILETYPE_TIFF, PTP_OFC_TIFF,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("BMP bitmap file", LIBMTP_FILETYPE_BMP, PTP_OFC_BMP,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("GIF bitmap file", LIBMTP_FILETYPE_GIF, PTP_OFC_GIF,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("PICT bitmap file", LIBMTP_FILETYPE_PICT, PTP_OFC_PICT,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("Portable Network Graphics", LIBMTP_FILETYPE_PNG, PTP_OFC_PNG,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("Microsoft Windows Image Format", LIBMTP_FILETYPE_WINDOWSIMAGEFORMAT, PTP_OFC_MTP_WindowsImageFormat,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("VCalendar version 1", LIBMTP_FILETYPE_VCALENDAR1, PTP_OFC_MTP_vCalendar1,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("VCalendar version 2", LIBMTP_FILETYPE_VCALENDAR2, PTP_OFC_MTP_vCalendar2,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("VCard version 2", LIBMTP_FILETYPE_VCARD2, PTP_OFC_MTP_vCard2,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("VCard version 3", LIBMTP_FILETYPE_VCARD3, PTP_OFC_MTP_vCard3,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("Undefined Windows executable file", LIBMTP_FILETYPE_WINEXEC, PTP_OFC_MTP_UndefinedWindowsExecutable,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("Text file", LIBMTP_FILETYPE_TEXT, PTP_OFC_Text,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("HTML file", LIBMTP_FILETYPE_HTML, PTP_OFC_HTML,NULL,NULL,NULL);
-  LIBMTP_Register_Filetype("Undefined filetype", LIBMTP_FILETYPE_UNKNOWN, PTP_OFC_Undefined, NULL, NULL, NULL);
+  register_filetype("RIFF WAVE file", LIBMTP_FILETYPE_WAV, PTP_OFC_WAV);
+  register_filetype("ISO MPEG Audio Layer 3", LIBMTP_FILETYPE_MP3, PTP_OFC_MP3);
+  register_filetype("Microsoft Windows Media Audio", LIBMTP_FILETYPE_WMA, PTP_OFC_MTP_WMA);
+  register_filetype("Ogg container format", LIBMTP_FILETYPE_OGG, PTP_OFC_MTP_OGG);
+  register_filetype("Audible.com Audio Codec", LIBMTP_FILETYPE_AUDIBLE, PTP_OFC_MTP_AudibleCodec);
+  register_filetype("Advanced Acoustic Coding", LIBMTP_FILETYPE_MP4, PTP_OFC_MTP_MP4);
+  register_filetype("Undefined audio file", LIBMTP_FILETYPE_UNDEF_AUDIO, PTP_OFC_MTP_UndefinedAudio);
+  register_filetype("Microsoft Windows Media Video", LIBMTP_FILETYPE_WMV, PTP_OFC_MTP_WMV);
+  register_filetype("Audio Video Interleave", LIBMTP_FILETYPE_AVI, PTP_OFC_AVI);
+  register_filetype("MPEG video stream", LIBMTP_FILETYPE_MPEG, PTP_OFC_MPEG);
+  register_filetype("Microsoft Advanced Systems Format", LIBMTP_FILETYPE_ASF, PTP_OFC_ASF);
+  register_filetype("Apple Quicktime container format", LIBMTP_FILETYPE_QT, PTP_OFC_QT);
+  register_filetype("Undefined video file", LIBMTP_FILETYPE_UNDEF_VIDEO, PTP_OFC_MTP_UndefinedVideo);
+  register_filetype("JPEG file", LIBMTP_FILETYPE_JPEG, PTP_OFC_EXIF_JPEG);
+  register_filetype("JFIF file", LIBMTP_FILETYPE_JFIF, PTP_OFC_JFIF);
+  register_filetype("TIFF bitmap file", LIBMTP_FILETYPE_TIFF, PTP_OFC_TIFF);
+  register_filetype("BMP bitmap file", LIBMTP_FILETYPE_BMP, PTP_OFC_BMP);
+  register_filetype("GIF bitmap file", LIBMTP_FILETYPE_GIF, PTP_OFC_GIF);
+  register_filetype("PICT bitmap file", LIBMTP_FILETYPE_PICT, PTP_OFC_PICT);
+  register_filetype("Portable Network Graphics", LIBMTP_FILETYPE_PNG, PTP_OFC_PNG);
+  register_filetype("Microsoft Windows Image Format", LIBMTP_FILETYPE_WINDOWSIMAGEFORMAT, PTP_OFC_MTP_WindowsImageFormat);
+  register_filetype("VCalendar version 1", LIBMTP_FILETYPE_VCALENDAR1, PTP_OFC_MTP_vCalendar1);
+  register_filetype("VCalendar version 2", LIBMTP_FILETYPE_VCALENDAR2, PTP_OFC_MTP_vCalendar2);
+  register_filetype("VCard version 2", LIBMTP_FILETYPE_VCARD2, PTP_OFC_MTP_vCard2);
+  register_filetype("VCard version 3", LIBMTP_FILETYPE_VCARD3, PTP_OFC_MTP_vCard3);
+  register_filetype("Undefined Windows executable file", LIBMTP_FILETYPE_WINEXEC, PTP_OFC_MTP_UndefinedWindowsExecutable);
+  register_filetype("Text file", LIBMTP_FILETYPE_TEXT, PTP_OFC_Text);
+  register_filetype("HTML file", LIBMTP_FILETYPE_HTML, PTP_OFC_HTML);
+  register_filetype("Undefined filetype", LIBMTP_FILETYPE_UNKNOWN, PTP_OFC_Undefined);
 }
 
 /**
@@ -340,7 +194,7 @@ static void init_filemap()
  */
 static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype)
 {
-  LIBMTP_filemap_t *current;
+  filemap_t *current;
 
   current = filemap;
 
@@ -363,7 +217,7 @@ static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype)
  */
 static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype)
 {
-  LIBMTP_filemap_t *current;
+  filemap_t *current;
 
   current = filemap;
 
@@ -377,89 +231,6 @@ static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype)
   return LIBMTP_FILETYPE_UNKNOWN;
 }
 
-/**
- * Returns the data function for the file type
- * @param intype the PTP library interface
- * @return pointer to the data function
- */
-static void *get_datafunc(uint16_t intype)
-{
-  LIBMTP_filemap_t *current;
-
-  current = filemap;
-
-  while (current != NULL) {
-    if(current->ptp_id == intype) {
-      return current->datafunc;
-    }
-    current = current->next;
-  }
-  return NULL;
-}
-
-
-/**
- * Returns the constructor for that file type data
- * @param intype the PTP library interface type
- * @return pointer to the constructor
- */
-static void *get_constructor(uint16_t intype)
-{
-  LIBMTP_filemap_t *current;
-
-  current = filemap;
-
-  while (current != NULL) {
-    if(current->ptp_id == intype) {
-      return current->constructor;
-    }
-    current = current->next;
-  }
-  return NULL;
-}
-
-/**
- * Returns the destructor for that file type data
- * @param intype the PTP library interface type
- * @return pointer to the destructor
- */
-static void *get_destructor(uint16_t intype)
-{
-  LIBMTP_filemap_t *current;
-
-  current = filemap;
-
-  while (current != NULL) {
-    if(current->ptp_id == intype) {
-      return current->destructor;
-    }
-    current = current->next;
-  }
-  return NULL;
-}
-
-/**
- * This helper function returns a textual description for a libmtp
- * file type to be used in dialog boxes etc.
- * @param intype the libmtp internal filetype to get a description for.
- * @return a string representing the filetype, this must <b>NOT</b>
- *         be free():ed by the caller!
- */
-char const * LIBMTP_Get_Filetype_Description(LIBMTP_filetype_t intype)
-{
-  LIBMTP_filemap_t *current;
-
-  current = filemap;
-
-  while (current != NULL) {
-    if(current->id == intype) {
-      return current->description;
-    }
-    current = current->next;
-  }
-
-  return "Unknown filetype";
-}
 
 /**
  * Initialize the library. You are only supposed to call this
@@ -474,6 +245,31 @@ void LIBMTP_Init(void)
   init_filemap();
   return;
 }
+
+
+/**
+ * This helper function returns a textual description for a libmtp
+ * file type to be used in dialog boxes etc.
+ * @param intype the libmtp internal filetype to get a description for.
+ * @return a string representing the filetype, this must <b>NOT</b>
+ *         be free():ed by the caller!
+ */
+char const * LIBMTP_Get_Filetype_Description(LIBMTP_filetype_t intype)
+{
+  filemap_t *current;
+
+  current = filemap;
+
+  while (current != NULL) {
+    if(current->id == intype) {
+      return current->description;
+    }
+    current = current->next;
+  }
+
+  return "Unknown filetype";
+}
+
 
 /**
  * Retrieves a string from an object
@@ -3325,13 +3121,7 @@ void LIBMTP_destroy_object_t(LIBMTP_object_t *object, uint32_t recursive)
 
   //Use the data type destructor
   if(object->data != NULL) {
-    void (*destructor)(void *);
-
-    destructor = get_destructor(object->type);
-
-    if(destructor != NULL) {
-      (*destructor)(object->data);
-    }
+    free(object->data);
     object->data = NULL;
   }
 
@@ -3580,8 +3370,6 @@ LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter,
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
       uint32_t x = 0;
       uint32_t exclude = 0, filter_allow = 0;
-      void (*datafunc)(LIBMTP_mtpdevice_t *, uint32_t, void *);
-      void *(*constructor)(void);
 
       // Is the ObjectFormat in the list of exclusions ?
       for(x = 0; x < max_exclusions; x++) {
@@ -3611,17 +3399,6 @@ LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter,
       object->name = (char *)strdup(oi.Filename);
       object->size = oi.ObjectCompressedSize;
       object->type = oi.ObjectFormat;
-
-      // Get the function pointers for the constructor and datafunc
-      constructor = get_constructor(oi.ObjectFormat);
-      datafunc = get_datafunc(oi.ObjectFormat);
-
-      if(constructor != NULL) {
-	object->data = (*constructor)();
-	if(datafunc != NULL) {
-	  (*datafunc)(device, object->id, object->data);
-	}
-      }
 
       // Work out where to put this new item
       if(objectlist == NULL) {

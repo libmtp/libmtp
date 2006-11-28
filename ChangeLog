@@ -1,3 +1,9 @@
+2006-11-28  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: removed filetype mapping API. We can handle
+	  everything inside of libmtp now so no need for this.
+	* src/libmtp.c: dito.
+
 2006-11-27  Linus Walleij <triad@df.lth.se>
 
 	* examples/files.c: unsigned int sized printout.

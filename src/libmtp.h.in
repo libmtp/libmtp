@@ -389,21 +389,6 @@ void LIBMTP_destroy_object_t(LIBMTP_object_t *, uint32_t);
 int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *, uint32_t);
 /** @} */
 
-/**
- * @}
- * @defgroup File mapping The file mapping API
- * @{
- */
-int LIBMTP_Register_Filetype(char const * const, LIBMTP_filetype_t const,
-			     uint16_t const, void const * const,
-			     void const * const, void const * const);
-int LIBMTP_Set_Filetype_Description(LIBMTP_filetype_t, char const * const);
-int LIBMTP_Set_Constructor(LIBMTP_filetype_t, void const * const);
-int LIBMTP_Set_Destructor(LIBMTP_filetype_t, void const * const);
-int LIBMTP_Set_Datafunc(LIBMTP_filetype_t, void const * const);
-/** @} */
-
-
 /* End of C++ exports */
 #ifdef __cplusplus
 }
