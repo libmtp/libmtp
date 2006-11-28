@@ -1,7 +1,8 @@
-2006-11-27  Richard Low <richard@wentnet.com>
+2006-11-27  Linus Walleij <triad@df.lth.se>
 
 	* examples/files.c: unsigned int sized printout.
 	* examples/tracks.c: sort of the same.
+	* Makefile.am: HAL style map output by default.
 
 2006-11-26  Richard Low <richard@wentnet.com>
 
