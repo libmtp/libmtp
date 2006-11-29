@@ -1,3 +1,7 @@
+2006-11-29  Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: added new devices
+
 2006-11-29  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: remove some pointless #include <>

@@ -183,7 +183,18 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * USB mass storage driver that erroneously binds to the device
    * interface.
    */
-  { "Dunlop MP3 player 1GB / EGOMAN MD223AFD", 0x10d6, 0x2200, DEVICE_FLAG_UNLOAD_DRIVER}
+  { "Dunlop MP3 player 1GB / EGOMAN MD223AFD", 0x10d6, 0x2200, DEVICE_FLAG_UNLOAD_DRIVER},
+  
+  /*
+   * Microsoft
+   */
+  // Reported by Farooq Zaman
+  { "Microsoft Zune", 0x045e, 0x0710, DEVICE_FLAG_NONE }, 
+  
+  /*
+   * Sirius
+   */
+  { "Sirius Stiletto", 0x18f6, 0x0102, DEVICE_FLAG_NONE }
   
 };
 static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
