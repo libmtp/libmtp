@@ -12,16 +12,19 @@
  * The files libusb-glue.c/.h are just what they say: an
  * interface to libusb for the actual, physical USB traffic.
  */
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/mman.h>
-
 #include "libmtp.h"
 #include "unicode.h"
 #include "ptp.h"
 #include "libusb-glue.h"
+
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#ifdef _MSC_VER // For MSVC++
+#define USE_WINDOWS_IO_H
+#include <io.h>
+#endif
 
 /* Enable enhanced MTP commands */
 #define ENABLE_MTP_ENHANCED
@@ -66,6 +69,7 @@ static filemap_t *filemap = NULL;
  */
 static int register_filetype(char const * const description, LIBMTP_filetype_t const id,
 			     uint16_t const ptp_id);
+static void init_filemap();
 static void flush_handles(LIBMTP_mtpdevice_t *device);
 static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype);
 static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype);
@@ -73,6 +77,14 @@ static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
 				       char **unicstring, uint16_t property);
 static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat,
 			       LIBMTP_track_t *track);
+static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
+				    char const * const name,
+				    uint32_t const parenthandle,
+				    uint16_t const objectformat,
+				    char const * const suffix,
+				    uint32_t * const newid,
+				    uint32_t const * const tracks,
+				    uint32_t const no_tracks);
 static MTPPropList *New_MTP_Prop_Entry();
 static void Destroy_MTP_Prop_Entry(MTPPropList *prop);
 
@@ -2034,7 +2046,11 @@ int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id,
 
   // Open file
 #ifdef __WIN32__
+#ifdef USE_WINDOWS_IO_H
+  if ( (fd = _open(path, O_RDWR|O_CREAT|O_TRUNC|O_BINARY,_S_IREAD)) == -1 ) {
+#else
   if ( (fd = open(path, O_RDWR|O_CREAT|O_TRUNC|O_BINARY,S_IRWXU|S_IRGRP)) == -1 ) {
+#endif
 #else
   if ( (fd = open(path, O_RDWR|O_CREAT|O_TRUNC,S_IRWXU|S_IRGRP)) == -1) {
 #endif
@@ -2202,7 +2218,11 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
 
   // Open file
 #ifdef __WIN32__
+#ifdef USE_WINDOWS_IO_H
+  if ( (fd = _open(path, O_RDONLY|O_BINARY) == -1 ) {
+#else
   if ( (fd = open(path, O_RDONLY|O_BINARY) == -1 ) {
+#endif
 #else
   if ( (fd = open(path, O_RDONLY)) == -1) {
 #endif
@@ -2213,7 +2233,11 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
   ret = LIBMTP_Send_Track_From_File_Descriptor(device, fd, metadata, callback, data, parenthandle);
 
   // Close file.
+#ifdef USE_WINDOWS_IO_H
+  _close(fd);
+#else
   close(fd);
+#endif
 
   return ret;
 }
@@ -2560,7 +2584,11 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
 
   // Open file
 #ifdef __WIN32__
+#ifdef USE_WINDOWS_IO_H
+  if ( (fd = _open(path, O_RDONLY|O_BINARY) == -1 ) {
+#else
   if ( (fd = open(path, O_RDONLY|O_BINARY) == -1 ) {
+#endif
 #else
   if ( (fd = open(path, O_RDONLY)) == -1) {
 #endif
@@ -2571,7 +2599,11 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
   ret = LIBMTP_Send_File_From_File_Descriptor(device, fd, filedata, callback, data, parenthandle);
 
   // Close file.
+#ifdef USE_WINDOWS_IO_H
+  _close(fd);
+#else
   close(fd);
+#endif
 
   return ret;
 }

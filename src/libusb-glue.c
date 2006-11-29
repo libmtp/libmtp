@@ -9,23 +9,16 @@
  * use MTP devices. Include mtp-utils.h to use any of the ptp/mtp functions.
  *
  */
+#include "libmtp.h"
+#include "libusb-glue.h"
+#include "util.h"
 #include "ptp.h"
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <getopt.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <utime.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/mman.h>
 #include <usb.h>
-
-#include "libmtp.h"
-#include "libusb-glue.h"
-#include "util.h"
 
 /* To enable debug prints, switch on this */
 //#define ENABLE_USB_BULK_DEBUG
@@ -559,10 +552,16 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
      */
     if (ptp_usb->device_flags & DEVICE_FLAG_UNLOAD_DRIVER) {
       if (usb_detach_kernel_driver_np(device_handle, dev->config->interface->altsetting->bInterfaceNumber)) {
-	perror("usb_detach_kernel_driver_np()");
+	// Totally ignore this error!
+	// perror("usb_detach_kernel_driver_np()");
       }
     }
 #endif
+    // Originally only done on Windows, but shouldn't hurt.
+    if (usb_set_configuration(device_handle, dev->config->bConfigurationValue)) {
+      perror("usb_set_configuration()");
+      return -1;
+    }
     if (usb_claim_interface(device_handle, dev->config->interface->altsetting->bInterfaceNumber)) {
       perror("usb_claim_interface()");
       return -1;

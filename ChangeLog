@@ -1,3 +1,13 @@
+2006-11-29  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: remove some pointless #include <>
+	  clutter, call usb_set_configuration() as needed by
+	  Windows.
+	* src/libmtp.c: various fixups to enable use of Windows
+	  <io.h> include file.
+	* README.windows.txt: added a quick porting guide for 
+	  MSVC by Farooq Zaman.
+
 2006-11-28  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: removed filetype mapping API. We can handle
