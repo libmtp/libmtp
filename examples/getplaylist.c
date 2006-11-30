@@ -1,31 +1,22 @@
 #include "common.h"
 
-static uint32_t dump_playlist(LIBMTP_mtpdevice_t *device, uint32_t playlist_id)
+static uint32_t dump_playlist(LIBMTP_mtpdevice_t *device, LIBMTP_playlist_t *pl)
 {
-  uint32_t *items;
-  uint32_t len, ret;
   uint32_t i;
 
-  ret = LIBMTP_Get_Object_References (device, playlist_id, &items, &len);
-  if (ret != 0) {
-    printf("dump_playlist: Could not get object references\n");
-    return -1;
-  }
-
-  printf("Number of items: %u\n", len);
-  if(len > 0) {
-    for(i=0;i<len;i++) {
+  printf("Number of items: %u\n", pl->no_tracks);
+  if(pl->no_tracks > 0) {
+    for(i=0;i<pl->no_tracks;i++) {
       LIBMTP_track_t *track;
-
-      track = LIBMTP_Get_Trackmetadata(device, items[i]);
+      
+      track = LIBMTP_Get_Trackmetadata(device, pl->tracks[i]);
       if (track != NULL) {
-	printf("   %u: %s - %s\n", items[i], track->artist, track->title);
+	printf("   %u: %s - %s\n", pl->tracks[i], track->artist, track->title);
 	LIBMTP_destroy_track_t(track);
       } else {
-	printf("   %u: INVALID TRACK REFERENCE!\n", items[i]);
+	printf("   %u: INVALID TRACK REFERENCE!\n", pl->tracks[i]);
       }
     }
-    free(items);
   }
   return 0;
 }
@@ -33,6 +24,7 @@ static uint32_t dump_playlist(LIBMTP_mtpdevice_t *device, uint32_t playlist_id)
 int main (int argc, char **argv)
 {
   LIBMTP_mtpdevice_t *device;
+  LIBMTP_playlist_t *playlist;
   u_int32_t id;
   char *endptr;
 
@@ -58,10 +50,14 @@ int main (int argc, char **argv)
     printf("No devices. Connect/replug device and try again.\n");
     exit (0);
   }
-  
-  if(dump_playlist(device, id) != 0) {
-    printf("Error getting playlist from MTP device.\n");
+
+  playlist = LIBMTP_Get_Playlist(device,id);  
+
+  if (playlist != NULL) {
+    dump_playlist(device,playlist);
   }
+
+  LIBMTP_destroy_playlist_t(playlist);
   
   LIBMTP_Release_Device(device);
   printf("OK.\n");

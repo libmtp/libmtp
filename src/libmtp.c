@@ -75,6 +75,22 @@ static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype);
 static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype);
 static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
 				       char **unicstring, uint16_t property);
+static char *get_string_from_object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+				    uint16_t const attribute_id);
+static uint32_t get_u32_from_object(LIBMTP_mtpdevice_t *device,uint32_t const object_id,
+				    uint16_t const attribute_id, uint32_t const value_default);
+static uint16_t get_u16_from_object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+				    uint16_t const attribute_id, uint16_t const value_default);
+static uint8_t get_u8_from_object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+				  uint16_t const attribute_id, uint8_t const value_default);
+static int set_object_string(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+			     uint16_t const attribute_id, char const * const string);
+static int set_object_u32(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+			  uint16_t const attribute_id, uint32_t const value);
+static int set_object_u16(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+			  uint16_t const attribute_id, uint16_t const value);
+static int set_object_u8(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+			 uint16_t const attribute_id, uint8_t const value);
 static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat,
 			       LIBMTP_track_t *track);
 static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
@@ -293,7 +309,7 @@ char const * LIBMTP_Get_Filetype_Description(LIBMTP_filetype_t intype)
  *         must bee <code>free()</code>:ed by the caller after
  *         use.
  */
-char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+static char *get_string_from_object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 				    uint16_t const attribute_id)
 {
   PTPPropertyValue propval;
@@ -325,7 +341,7 @@ char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const o
  * @param value_default Default value to return on failure
  * @return the value
  */
-uint32_t LIBMTP_Get_U32_From_Object(LIBMTP_mtpdevice_t *device,uint32_t const object_id,
+static uint32_t get_u32_from_object(LIBMTP_mtpdevice_t *device,uint32_t const object_id,
 				    uint16_t const attribute_id, uint32_t const value_default)
 {
   PTPPropertyValue propval;
@@ -357,7 +373,7 @@ uint32_t LIBMTP_Get_U32_From_Object(LIBMTP_mtpdevice_t *device,uint32_t const ob
  * @param value_default Default value to return on failure
  * @return a value
  */
-uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+static uint16_t get_u16_from_object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 				    uint16_t const attribute_id, uint16_t const value_default)
 {
   PTPPropertyValue propval;
@@ -389,7 +405,7 @@ uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const o
  * @param value_default Default value to return on failure
  * @return a value
  */
-uint8_t LIBMTP_Get_U8_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+static uint8_t get_u8_from_object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 				  uint16_t const attribute_id, uint8_t const value_default)
 {
   PTPPropertyValue propval;
@@ -421,7 +437,7 @@ uint8_t LIBMTP_Get_U8_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const obj
  * @param string string value to set
  * @return 0 on success, any other value means failure
  */
-int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+static int set_object_string(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 			     uint16_t const attribute_id, char const * const string)
 {
   PTPPropertyValue propval;
@@ -435,7 +451,7 @@ int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t const object_i
   propval.str = (char *) string;
   ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_STR);
   if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Set_Object_String(): could not set object string.\n");
+    printf("set_object_string(): could not set object string.\n");
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
@@ -452,7 +468,7 @@ int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t const object_i
  * @param value 32-bit unsigned integer to set
  * @return 0 on success, any other value means failure
  */
-int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+static int set_object_u32(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 			  uint16_t const attribute_id, uint32_t const value)
 {
   PTPPropertyValue propval;
@@ -466,7 +482,7 @@ int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
   propval.u32 = value;
   ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UINT32);
   if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Set_Object_U32(): could not set unsigned 32bit integer property.\n");
+    printf("set_object_u32(): could not set unsigned 32bit integer property.\n");
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
@@ -483,7 +499,7 @@ int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
  * @param value 16-bit unsigned integer to set
  * @return 0 on success, any other value means failure
  */
-int LIBMTP_Set_Object_U16(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+static int set_object_u16(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 			  uint16_t const attribute_id, uint16_t const value)
 {
   PTPPropertyValue propval;
@@ -497,7 +513,7 @@ int LIBMTP_Set_Object_U16(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
   propval.u16 = value;
   ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UINT16);
   if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Set_Object_U16(): could not set unsigned 16bit integer property.\n");
+    printf("set_object_u16(): could not set unsigned 16bit integer property.\n");
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return 1;
   }
@@ -514,8 +530,8 @@ int LIBMTP_Set_Object_U16(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
  * @param value 8-bit unsigned integer to set
  * @return 0 on success, any other value means failure
  */
-int LIBMTP_Set_Object_U8(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
-			  uint16_t const attribute_id, uint8_t const value)
+static int set_object_u8(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+			 uint16_t const attribute_id, uint8_t const value)
 {
   PTPPropertyValue propval;
   PTPParams *params = (PTPParams *) device->params;
@@ -528,69 +544,7 @@ int LIBMTP_Set_Object_U8(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
   propval.u8 = value;
   ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UINT8);
   if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Set_Object_U8(): could not set unsigned 8bit integer property.\n");
-    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
-    return 1;
-  }
-
-  return 0;
-}
-
-/**
- * Gets an array of object ids associated with a specified object
- *
- * @param device a pointer to an MTP device.
- * @param object_id Object reference
- * @param items array of unsigned 32-bit integers
- * @param len length of array
- * @return 0 on success, any other value means failure
- */
-int LIBMTP_Get_Object_References(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
-				 uint32_t **items, uint32_t *len)
-{
-  PTPParams *params = (PTPParams *) device->params;
-  uint16_t ret;
-
-  // A device must be attached
-  if (device == NULL ) {
-    *items = NULL;
-    *len = 0;
-    return 1;
-  }
-
-  ret = ptp_mtp_getobjectreferences (params, object_id, items, len);
-  if (ret != PTP_RC_OK) {
-    ptp_perror(params, ret);
-    printf("LIBMTP_Get_Object_References: Could not get object references\n");
-    return 1;
-  }
-
-  return 0;
-}
-
-/**
- * Sets an array of object ids associated with a specified object
- *
- * @param device a pointer to an MTP device.
- * @param object_id Object reference
- * @param items array of unsigned 32-bit integers
- * @param len length of array
- * @return 0 on success, any other value means failure
- */
-int LIBMTP_Set_Object_References(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
-				 uint32_t const * const items, uint32_t const len)
-{
-  PTPParams *params = (PTPParams *) device->params;
-  uint16_t ret;
-
-  if (device == NULL || items == NULL) {
-    return 1;
-  }
-
-  ret = ptp_mtp_setobjectreferences (params, object_id, (uint32_t *) items, len);
-  if (ret != PTP_RC_OK) {
-    ptp_perror(params, ret);
-    printf("LIBMTP_Set_Object_References: Could not set object references\n");
+    printf("set_object_u8(): could not set unsigned 8bit integer property.\n");
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return 1;
   }
@@ -1327,43 +1281,6 @@ int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *device, uint16_t ** const
   return 0;
 }
 
-
-/**
- * This creates a new MTP object structure and allocates memory
- * for it. Notice that if you add strings to this structure they
- * will be freed by the corresponding <code>LIBMTP_destroy_object_t</code>
- * operation later, so be careful of using strdup() when assigning
- * strings, e.g.:
- *
- * <pre>
- * LIBMTP_object_t *object = LIBMTP_new_object_t();
- * object->name = strdup(namestr);
- * ....
- * LIBMTP_destroy_object_t(file);
- * </pre>
- *
- * @return a pointer to the newly allocated structure.
- * @see LIBMTP_destroy_object_t()
- */
-LIBMTP_object_t *LIBMTP_new_object_t(void)
-{
-  LIBMTP_object_t *new = (LIBMTP_object_t *) malloc(sizeof(LIBMTP_object_t));
-  if (new == NULL) {
-    return NULL;
-  }
-
-  new->id = 0;
-  new->parent = 0;
-  new->type = LIBMTP_FILETYPE_UNKNOWN;
-  new->size = 0;
-  new->name = NULL;
-  new->data = NULL;
-  new->sibling = NULL;
-  new->child = NULL;
-
-  return new;
-}
-
 /**
  * This creates a new file metadata structure and allocates memory
  * for it. Notice that if you add strings to this structure they
@@ -1774,47 +1691,47 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
       for (i=0;i<propcnt;i++) {
 	switch (props[i]) {
 	case PTP_OPC_Name:
-	  track->title = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Name);
+	  track->title = get_string_from_object(device, track->item_id, PTP_OPC_Name);
 	  break;
 	case PTP_OPC_Artist:
-	  track->artist = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Artist);
+	  track->artist = get_string_from_object(device, track->item_id, PTP_OPC_Artist);
 	  break;
 	case PTP_OPC_Duration:
-	  track->duration = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_Duration, 0);
+	  track->duration = get_u32_from_object(device, track->item_id, PTP_OPC_Duration, 0);
 	  break;
 	case PTP_OPC_Track:
-	  track->tracknumber = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_Track, 0);
+	  track->tracknumber = get_u16_from_object(device, track->item_id, PTP_OPC_Track, 0);
 	  break;
 	case PTP_OPC_Genre:
-	  track->genre = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_Genre);
+	  track->genre = get_string_from_object(device, track->item_id, PTP_OPC_Genre);
 	  break;
 	case PTP_OPC_AlbumName:
-	  track->album = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_AlbumName);
+	  track->album = get_string_from_object(device, track->item_id, PTP_OPC_AlbumName);
 	  break;
 	case PTP_OPC_OriginalReleaseDate:
-	  track->date = LIBMTP_Get_String_From_Object(device, track->item_id, PTP_OPC_OriginalReleaseDate);
+	  track->date = get_string_from_object(device, track->item_id, PTP_OPC_OriginalReleaseDate);
 	  break;
 	  // These are, well not so important.
 	case PTP_OPC_SampleRate:
-	  track->samplerate = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_SampleRate, 0);
+	  track->samplerate = get_u32_from_object(device, track->item_id, PTP_OPC_SampleRate, 0);
 	  break;
 	case PTP_OPC_NumberOfChannels:
-	  track->nochannels = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_NumberOfChannels, 0);
+	  track->nochannels = get_u16_from_object(device, track->item_id, PTP_OPC_NumberOfChannels, 0);
 	  break;
 	case PTP_OPC_AudioWAVECodec:
-	  track->wavecodec = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_AudioWAVECodec, 0);
+	  track->wavecodec = get_u32_from_object(device, track->item_id, PTP_OPC_AudioWAVECodec, 0);
 	  break;
 	case PTP_OPC_AudioBitRate:
-	  track->bitrate = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_AudioBitRate, 0);
+	  track->bitrate = get_u32_from_object(device, track->item_id, PTP_OPC_AudioBitRate, 0);
 	  break;
 	case PTP_OPC_BitRateType:
-	  track->bitratetype = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_BitRateType, 0);
+	  track->bitratetype = get_u16_from_object(device, track->item_id, PTP_OPC_BitRateType, 0);
 	  break;
 	case PTP_OPC_Rating:
-	  track->rating = LIBMTP_Get_U16_From_Object(device, track->item_id, PTP_OPC_Rating, 0);
+	  track->rating = get_u16_from_object(device, track->item_id, PTP_OPC_Rating, 0);
 	  break;
 	case PTP_OPC_UseCount:
-	  track->usecount = LIBMTP_Get_U32_From_Object(device, track->item_id, PTP_OPC_UseCount, 0);
+	  track->usecount = get_u32_from_object(device, track->item_id, PTP_OPC_UseCount, 0);
 	  break;
 	}
       }
@@ -2530,7 +2447,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   }
   if (nonconsumable != 0x00U) {
     /* Flag it as non-consumable if it is */
-    subcall_ret = LIBMTP_Set_Object_U8(device, metadata->item_id, PTP_OPC_NonConsumable, nonconsumable);
+    subcall_ret = set_object_u8(device, metadata->item_id, PTP_OPC_NonConsumable, nonconsumable);
     if (subcall_ret != 0) {
       printf("LIBMTP_Update_Track_Metadata(): could not set non-consumable status.\n");
       return -1;
@@ -2920,7 +2837,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
       switch (props[i]) {
       case PTP_OPC_Name:
 	// Update title
-	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Name, metadata->title);
+	ret = set_object_string(device, metadata->item_id, PTP_OPC_Name, metadata->title);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set track title\n");
 	  return -1;
@@ -2928,7 +2845,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_AlbumName:
 	// Update album
-	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_AlbumName, metadata->album);
+	ret = set_object_string(device, metadata->item_id, PTP_OPC_AlbumName, metadata->album);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set track album name\n");
 	  return -1;
@@ -2936,7 +2853,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_Artist:
 	// Update artist
-	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Artist, metadata->artist);
+	ret = set_object_string(device, metadata->item_id, PTP_OPC_Artist, metadata->artist);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set track artist name\n");
 	  return -1;
@@ -2944,7 +2861,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_Genre:
 	// Update genre
-	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_Genre, metadata->genre);
+	ret = set_object_string(device, metadata->item_id, PTP_OPC_Genre, metadata->genre);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set track genre name\n");
 	  return -1;
@@ -2953,7 +2870,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
       case PTP_OPC_Duration:
 	// Update duration
 	if (metadata->duration != 0) {
-	  ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_Duration, metadata->duration);
+	  ret = set_object_u32(device, metadata->item_id, PTP_OPC_Duration, metadata->duration);
 	  if (ret != 0) {
 	    printf("LIBMTP_Update_Track_Metadata(): could not set track duration\n");
 	    return -1;
@@ -2963,7 +2880,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
       case PTP_OPC_Track:
 	// Update track number.
 	if (metadata->tracknumber != 0) {
-	  ret = LIBMTP_Set_Object_U16(device, metadata->item_id, PTP_OPC_Track, metadata->tracknumber);
+	  ret = set_object_u16(device, metadata->item_id, PTP_OPC_Track, metadata->tracknumber);
 	  if (ret != 0) {
 	    printf("LIBMTP_Update_Track_Metadata(): could not set track tracknumber\n");
 	    return -1;
@@ -2972,7 +2889,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_OriginalReleaseDate:
 	// Update creation datetime
-	ret = LIBMTP_Set_Object_String(device, metadata->item_id, PTP_OPC_OriginalReleaseDate, metadata->date);
+	ret = set_object_string(device, metadata->item_id, PTP_OPC_OriginalReleaseDate, metadata->date);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set track release date\n");
 	  return -1;
@@ -2982,7 +2899,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
       case PTP_OPC_SampleRate:
 	// Update sample rate
 	if (metadata->samplerate != 0) {
-	  ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_SampleRate, metadata->samplerate);
+	  ret = set_object_u32(device, metadata->item_id, PTP_OPC_SampleRate, metadata->samplerate);
 	  if (ret != 0) {
 	    printf("LIBMTP_Update_Track_Metadata(): could not set samplerate\n");
 	    return -1;
@@ -2992,7 +2909,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
       case PTP_OPC_NumberOfChannels:
 	// Update number of channels
 	if (metadata->nochannels != 0) {
-	  ret = LIBMTP_Set_Object_U16(device, metadata->item_id, PTP_OPC_NumberOfChannels, metadata->nochannels);
+	  ret = set_object_u16(device, metadata->item_id, PTP_OPC_NumberOfChannels, metadata->nochannels);
 	  if (ret != 0) {
 	    printf("LIBMTP_Update_Track_Metadata(): could not set number of channels\n");
 	    return -1;
@@ -3002,7 +2919,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
       case PTP_OPC_AudioWAVECodec:
 	// Update WAVE codec
 	if (metadata->wavecodec != 0) {
-	  ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_AudioWAVECodec, metadata->wavecodec);
+	  ret = set_object_u32(device, metadata->item_id, PTP_OPC_AudioWAVECodec, metadata->wavecodec);
 	  if (ret != 0) {
 	    printf("LIBMTP_Update_Track_Metadata(): could not set WAVE codec\n");
 	    return -1;
@@ -3012,7 +2929,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
       case PTP_OPC_AudioBitRate:
 	// Update bitrate
 	if (metadata->bitrate != 0) {
-	  ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_AudioBitRate, metadata->bitrate);
+	  ret = set_object_u32(device, metadata->item_id, PTP_OPC_AudioBitRate, metadata->bitrate);
 	  if (ret != 0) {
 	    printf("LIBMTP_Update_Track_Metadata(): could not set bitrate\n");
 	    return -1;
@@ -3022,7 +2939,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
       case PTP_OPC_BitRateType:
 	// Update bitrate type
 	if (metadata->bitratetype != 0) {
-	  ret = LIBMTP_Set_Object_U16(device, metadata->item_id, PTP_OPC_BitRateType, metadata->bitratetype);
+	  ret = set_object_u16(device, metadata->item_id, PTP_OPC_BitRateType, metadata->bitratetype);
 	  if (ret != 0) {
 	    printf("LIBMTP_Update_Track_Metadata(): could not set bitratetype\n");
 	    return -1;
@@ -3033,7 +2950,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	// Update user rating
 	// TODO: shall this be set for rating 0?
 	if (metadata->rating != 0) {
-	  ret = LIBMTP_Set_Object_U16(device, metadata->item_id, PTP_OPC_Rating, metadata->rating);
+	  ret = set_object_u16(device, metadata->item_id, PTP_OPC_Rating, metadata->rating);
 	  if (ret != 0) {
 	    printf("LIBMTP_Update_Track_Metadata(): could not set user rating\n");
 	    return -1;
@@ -3042,7 +2959,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_UseCount:
 	// Update use count, set even to zero if desired.
-	ret = LIBMTP_Set_Object_U32(device, metadata->item_id, PTP_OPC_UseCount, metadata->usecount);
+	ret = set_object_u32(device, metadata->item_id, PTP_OPC_UseCount, metadata->usecount);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set use count\n");
 	  return -1;
@@ -3122,42 +3039,6 @@ LIBMTP_folder_t *LIBMTP_new_folder_t(void)
   new->sibling = NULL;
   new->child = NULL;
   return new;
-}
-
-/**
- *
- * This deletes the memory for an object structure
- * and makes use of the registered destructor for the object
- * type data.
- *
- * @param object object structure to destroy
- * @param recurse indicate if the call should recursively delete
- * the object. Specify 1 for recursion.
- * @see LIBMTP_new_object_t()
- */
-void LIBMTP_destroy_object_t(LIBMTP_object_t *object, uint32_t recursive)
-{
-  if(object == NULL) {
-    return;
-  }
-
-  //Destroy from the bottom up
-  if(recursive==1) {
-    LIBMTP_destroy_object_t(object->child, recursive);
-    object->child = NULL;
-    LIBMTP_destroy_object_t(object->sibling, recursive);
-    object->sibling = NULL;
-  }
-
-  if(object->name != NULL) free(object->name);
-
-  //Use the data type destructor
-  if(object->data != NULL) {
-    free(object->data);
-    object->data = NULL;
-  }
-
-  free(object);
 }
 
 /**
@@ -3332,161 +3213,6 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name, uint32_t p
   return new_id;
 }
 
-
-/**
- * Helper function. Returns a folder structure for a
- * specified id.
- *
- * @param objectlist list of objects to search
- * @id id of object to look for
- * @return a object or NULL if not found
- */
-LIBMTP_object_t *LIBMTP_Find_Object(LIBMTP_object_t *objectlist, uint32_t id)
-{
-  LIBMTP_object_t *ret = NULL;
-
-  if(objectlist == NULL) {
-    return NULL;
-  }
-
-  if(objectlist->id == id) {
-    return objectlist;
-  }
-
-  if(objectlist->sibling) {
-    ret = LIBMTP_Find_Object(objectlist->sibling, id);
-  }
-
-  if(objectlist->child && ret == NULL) {
-    ret = LIBMTP_Find_Object(objectlist->child, id);
-  }
-
-  return ret;
-}
-
-/**
- * This returns a list of objects on the current MTP device,
- * selected by a filter based on PTP object ID:s.
- *
- * @param device a pointer to the device to get the object listing for.
- * @param filter array of unsigned 32-bit integers specifying which types
- *        to include in the list
- * @param filter_len length of filter array in 32-bit words
- * @param exclusions array of unsigned 32-bit integers specifying which types
- *        to exclude from the list
- * @param exclusion_len length of exclusion array
- * @return a list of objects
- * @see LIBMTP_destroy_object_t()
- */
-LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *device, uint32_t *filter,
-				  uint32_t filter_len, uint32_t *exclusions, uint32_t exclusion_len)
-{
-  uint32_t i = 0;
-  LIBMTP_object_t *objectlist = NULL;
-  PTPParams *params = (PTPParams *) device->params;
-  uint32_t max_exclusions = 0;
-  uint32_t max_filter = 0;
-
-  // Get all the handles if we haven't already done that
-  if (params->handles.Handler == NULL) {
-    flush_handles(device);
-  }
-
-  if(filter != NULL) max_filter = filter_len;
-  if(exclusions != NULL) max_exclusions = exclusion_len;
-
-  for (i = 0; i < params->handles.n; i++) {
-    LIBMTP_object_t *object;
-    PTPObjectInfo oi;
-
-    if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
-      uint32_t x = 0;
-      uint32_t exclude = 0, filter_allow = 0;
-
-      // Is the ObjectFormat in the list of exclusions ?
-      for(x = 0; x < max_exclusions; x++) {
-	if (oi.ObjectFormat == exclusions[x]) {
-	  exclude = 1;
-	  break;
-	}
-      }
-      if(exclude == 1) {
-	continue;
-      }
-
-      // Is the ObjectFormat in the filter ?
-      for(x = 0; x < max_filter; x++) {
-	if (oi.ObjectFormat == filter[x]) {
-	  filter_allow = 1;
-	  break;
-	}
-      }
-      if(filter_allow == 0) {
-	continue;
-      }
-
-      object = LIBMTP_new_object_t();
-      object->id = params->handles.Handler[i];
-      object->parent = oi.ParentObject;
-      object->name = (char *)strdup(oi.Filename);
-      object->size = oi.ObjectCompressedSize;
-      object->type = oi.ObjectFormat;
-
-      // Work out where to put this new item
-      if(objectlist == NULL) {
-        objectlist = object;
-        continue;
-      } else {
-        LIBMTP_object_t *parent_object;
-        LIBMTP_object_t *current_object;
-
-        parent_object = LIBMTP_Find_Object(objectlist, object->parent);
-
-        if(parent_object == NULL) {
-	  current_object = objectlist;
-        } else {
-          if(parent_object->child == NULL) {
-            parent_object->child = object;
-            continue;
-          } else {
-            current_object = parent_object->child;
-          }
-	}
-
-        while(current_object->sibling != NULL) {
-          current_object=current_object->sibling;
-        }
-        current_object->sibling = object;
-      }
-    }
-  }
-
-  return objectlist;
-}
-
-/**
- * Debug function that dumps out some textual representation
- * of an object list.
- *
- * @param list object list returned from LIBMTP_Make_List
- *
- * @see LIBMTP_Make_List()
- */
-void LIBMTP_Dump_List(LIBMTP_object_t *list)
-{
-  if(list == NULL) return;
-
-  printf("Id    : %u\n", list->id);
-  printf("Parent: %u\n", list->parent);
-  printf("Size  : %u\n", list->size);
-  printf("Name  : %s\n", (list->name ? list->name : ""));
-  printf("Type  : 0x%04x\n", list->type);
-  printf("--\n");
-
-  LIBMTP_Dump_List(list->child);
-  LIBMTP_Dump_List(list->sibling);
-}
-
 /**
  * This creates a new playlist metadata structure and allocates memory
  * for it. Notice that if you add strings to this structure they
@@ -3579,7 +3305,7 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *device)
       pl = LIBMTP_new_playlist_t();
 
       // Ignoring the io.Filename field.
-      pl->name = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name);
+      pl->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
 
       // This is some sort of unique playlist ID so we can keep track of it
       pl->playlist_id = params->handles.Handler[i];
@@ -3649,7 +3375,7 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t cons
       pl = LIBMTP_new_playlist_t();
 
       // Ignoring the io.Filename field.
-      pl->name = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name);
+      pl->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
 
       // This is some sort of unique playlist ID so we can keep track of it
       pl->playlist_id = params->handles.Handler[i];
@@ -3878,7 +3604,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 
   // Update title
   // TODO: should not be needed for enhanced commands!
-  ret = LIBMTP_Set_Object_String(device, *newid, PTP_OPC_Name, name);
+  ret = set_object_string(device, *newid, PTP_OPC_Name, name);
   if (ret != 0) {
     printf("create_new_abstract_list(): could not set entity name\n");
     return -1;
@@ -3959,7 +3685,7 @@ int LIBMTP_Update_Playlist(LIBMTP_mtpdevice_t *device,
   PTPParams *params = (PTPParams *) device->params;
 
   // Update title
-  ret = LIBMTP_Set_Object_String(device, metadata->playlist_id, PTP_OPC_Name, metadata->name);
+  ret = set_object_string(device, metadata->playlist_id, PTP_OPC_Name, metadata->name);
   if (ret != 0) {
     printf("LIBMTP_Update_Playlist(): could not set playlist name\n");
     return -1;
@@ -4055,7 +3781,7 @@ LIBMTP_album_t *LIBMTP_Get_Album_List(LIBMTP_mtpdevice_t *device)
 
       // Allocate a new album type
       alb = LIBMTP_new_album_t();
-      alb->name = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name);
+      alb->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
       alb->album_id = params->handles.Handler[i];
 
       // Then get the track listing for this album
@@ -4118,7 +3844,7 @@ LIBMTP_album_t *LIBMTP_Get_Album(LIBMTP_mtpdevice_t *device, uint32_t const albi
 
       // Allocate a new album type
       alb = LIBMTP_new_album_t();
-      alb->name = LIBMTP_Get_String_From_Object(device, params->handles.Handler[i], PTP_OPC_Name);
+      alb->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
       alb->album_id = params->handles.Handler[i];
       ret = ptp_mtp_getobjectreferences(params, alb->album_id, &alb->tracks, &alb->no_tracks);
       if (ret != PTP_RC_OK) {
@@ -4253,7 +3979,7 @@ int LIBMTP_Update_Album(LIBMTP_mtpdevice_t *device,
   PTPParams *params = (PTPParams *) device->params;
 
   // Update title
-  ret = LIBMTP_Set_Object_String(device, metadata->album_id, PTP_OPC_Name, metadata->name);
+  ret = set_object_string(device, metadata->album_id, PTP_OPC_Name, metadata->name);
   if (ret != 0) {
     printf("LIBMTP_Update_Album(): could not set album name\n");
     return -1;

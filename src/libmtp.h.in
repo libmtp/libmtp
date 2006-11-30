@@ -223,20 +223,6 @@ struct LIBMTP_folder_struct {
   LIBMTP_folder_t *child; /**< Child folder or NULL if no children */
 };
 
-/**
- * LIBMTP Object Structure
- */
-struct LIBMTP_object_struct {
-  uint32_t id;
-  uint32_t parent;
-  uint32_t type;
-  uint32_t size;
-  char *name;
-  void *data;
-  LIBMTP_object_t *sibling;
-  LIBMTP_object_t *child;
-};
-
 /** @} */
 
 /* Make functions available for C++ */
@@ -370,22 +356,6 @@ int LIBMTP_Send_Album_Art(LIBMTP_mtpdevice_t *, uint32_t const, uint8_t * const,
  * @defgroup objects The object management API.
  * @{
  */
-char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t);
-uint32_t LIBMTP_Get_U32_From_Object(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t, const uint32_t);
-uint16_t LIBMTP_Get_U16_From_Object(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t, const uint16_t);
-uint8_t LIBMTP_Get_U8_From_Object(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t, const uint8_t);
-int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *,const uint32_t,const uint16_t,
-                             char const * const);
-int LIBMTP_Set_Object_U32(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t, const uint32_t);
-int LIBMTP_Set_Object_U16(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t, const uint16_t);
-int LIBMTP_Set_Object_U8(LIBMTP_mtpdevice_t *,const uint32_t, const uint16_t, const uint8_t);
-int LIBMTP_Get_Object_References(LIBMTP_mtpdevice_t *, const uint32_t, uint32_t **, uint32_t *);
-int LIBMTP_Set_Object_References(LIBMTP_mtpdevice_t *, const uint32_t, uint32_t const * const, const uint32_t);
-LIBMTP_object_t *LIBMTP_Make_List(LIBMTP_mtpdevice_t *, uint32_t *, uint32_t, uint32_t *, uint32_t);
-LIBMTP_object_t *LIBMTP_Find_Object(LIBMTP_object_t *, const uint32_t);
-void LIBMTP_Dump_List(LIBMTP_object_t *);
-LIBMTP_object_t *LIBMTP_new_object_t(void);
-void LIBMTP_destroy_object_t(LIBMTP_object_t *, uint32_t);
 int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *, uint32_t);
 /** @} */
 

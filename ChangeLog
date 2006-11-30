@@ -1,3 +1,9 @@
+2006-11-30  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: removed external object interface.
+	* src/libmtp.c: dito. Made all object manipulation functions
+	  static.
+	
 2006-11-29  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: added new devices
