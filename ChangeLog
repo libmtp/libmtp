@@ -1,3 +1,7 @@
+2006-11-30  Richard Low <richard@wentent.com>
+
+	* src/libmtp.c: memset PTPObjectInfo structs to 0
+
 2006-11-30  Matthew Wilcox <matthew@wil.cx>
 
 	* src/ptp.c: on some devices, surplus packet data is 

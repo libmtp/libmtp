@@ -2397,8 +2397,8 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   {
 #endif // ENABLE_MTP_ENHANCED
     PTPObjectInfo new_track;
-		
-		memset(&new_track, 0, sizeof(PTPObjectInfo));
+	
+    memset(&new_track, 0, sizeof(PTPObjectInfo));
 
     /* Else use the fallback compatibility mode */
     new_track.Filename = metadata->filename;
@@ -2577,8 +2577,8 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   uint16_t *props = NULL;
   uint32_t propcnt = 0;
   uint8_t nonconsumable = 0x01U; /* By default it is non-consumable */
-	
-	memset(&new_file, 0, sizeof(PTPObjectInfo));
+
+  memset(&new_file, 0, sizeof(PTPObjectInfo));
 
   new_file.Filename = filedata->filename;
   if (filedata->filesize == (uint64_t) -1) {
