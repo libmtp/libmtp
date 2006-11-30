@@ -568,11 +568,13 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
       }
     }
 #endif
-    // Originally only done on Windows, but shouldn't hurt.
+#ifdef __WIN32__
+    // Only needed on Windows
     if (usb_set_configuration(device_handle, dev->config->bConfigurationValue)) {
       perror("usb_set_configuration()");
       return -1;
     }
+#endif
     if (usb_claim_interface(device_handle, dev->config->interface->altsetting->bInterfaceNumber)) {
       perror("usb_claim_interface()");
       return -1;
