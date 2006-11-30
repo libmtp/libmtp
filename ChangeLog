@@ -1,5 +1,8 @@
 2006-11-30  Linus Walleij <triad@df.lth.se>
 
+	* configure.ac: this *is* gonna be libmtp 0.1.0!
+	* src/Makefile.am: age interface to 4-0-0 to indicate that
+	  intefaces have been removed.
 	* src/libmtp.h.in: removed external object interface.
 	* src/libmtp.c: dito. Made all object manipulation functions
 	  static.
