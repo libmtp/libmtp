@@ -1,3 +1,11 @@
+2006-11-30  Matthew Wilcox <matthew@wil.cx>
+
+	* src/ptp.c: on some devices, surplus packet data is 
+	  sometimes returned during read, i.e. a header of the
+	  next package is typically attacked to the incoming 
+	  data, as if someone was sending several packets at 
+	  once. If this happens we buffer the surplus packet.
+
 2006-11-30  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: this *is* gonna be libmtp 0.1.0!
