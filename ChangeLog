@@ -1,3 +1,9 @@
+2006-11-30  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.c: make Matthews patch thread-safe and fix it
+	  so it will handle more than one surplus packet.
+	* src/ptp.h: dito.
+
 2006-11-30  Richard Low <richard@wentent.com>
 
 	* src/libmtp.c: memset PTPObjectInfo structs to 0
