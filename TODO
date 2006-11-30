@@ -1,33 +1,44 @@
 TODO file:
 ----------
 
-* Add a callback to the track and file scanning functions and 
-  bump library interface.
 
-* Modify LIBMTP_device_entry_struct to contain a field for "flags"
-  which can be used to identify different special device 
-  characteristics (bugs...) on certain devices. Also add "flags"
-  to device struct, so that it remains easily accessible for the
-  session, and bump library interface.
+SPEEDUP fixes:
 
-* SPEED: File chunk size (ptp.c) increase to good size.
+1. SPEED: Cache the object info for all items on the device.
+  Right now, ptp_getobjectinfo() is called repeatedly on the same
+  objects during startup, track listing, file listing, playlist listing,
+  album listing and whatever we implement tomorrow. A lot of useless
+  communication can be saved by cacheing this info. Notice that this
+  needs to be updated whenever flush_handles() is called too.
 
-* SPEED: Cache the supported object properties at first read/startup.
+2. SPEED: Cache the supported object properties at first read/startup.
+  then use the cache to check for supported props instead of calling
+  out to PTP with ptp_mtp_getobjectpropssupported() every time.
+  The cache would be an array of size params->deviceinfo.ImageFormats_len
+  with a list for each format of the properties it will support. Notice 
+  that this needs to be updated whenever flush_handles() is called too.
 
-* SPEED: use the enhanced functions to get all props for one object
-  in a single go!
+3. SPEED: Cache track metadata, file metadata etc, perhaps this is not 
+  desirable since the application using libmtp will do this anyway.
 
-* Make abstract playlists really become size -1 when created as 
+4. SPEED: Whenever we add an object (file, track, playlist...) we
+  should only need to update the cache with relevant data. Atleast for
+  speed caches 1 and 2 above.
+
+
+FEATURE fixes:
+
+1. FEATURE: Make abstract playlists really become size -1 when created as 
   the ones created on the device instead of the current 1 byte size.
-  (Is this even possible?)
+  (Is this possible using enhanced commands? See TODO remarks in
+  the create_abstract_entity() function)
 
-* Support abstract MTP album (0xBA03) just like playlists. Too
-  bad that Creative Zen Micro do not support them, they group the
-  albums by using the metadata instead. Support representative
-  sample (i.e. album cover).
-
-* Support playback and volume setting on devices that have it.
+2. FEATURE: Support playback and volume setting on devices that have it.
   (I don't have one that does - Linus.)
 
-* Make an API that can return several devices not just connect to the
-  first one...
+3. FEATURE: Make an API that can return several devices and let the user 
+  choose which one to operate, not just connect to the first one...
+
+4. FEATURE: Support relevant events. MTP devices seen in existance provide
+  events for "object added" and "object deleted". These should result in
+  atleast a call to the flus_handles() function.
