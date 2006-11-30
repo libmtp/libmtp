@@ -208,64 +208,49 @@ ptp_usb_senddata (PTPParams* params, PTPContainer* ptp,
 	return ret;
 }
 
-static uint16_t
-ptp_usb_getpacket(PTPParams *params, PTPUSBBulkContainer **packet,
-							unsigned int *end_p)
-{
-	static unsigned char buffer[PTP_USB_BULK_HS_MAX_PACKET_LEN];
-	static unsigned int next = 0;
-	static unsigned int end = 0;
-	uint32_t length;
-
-	if (next == 0) {
-		uint16_t ret = params->read_func(buffer,
-			PTP_USB_BULK_HS_MAX_PACKET_LEN, params->data, &end);
-		if (ret != PTP_RC_OK)
-			return ret;
-	}
-
-	*packet = (PTPUSBBulkContainer *)(buffer + next);
-	length = dtoh32((*packet)->length);
-
-	if (next + length >= end) {
-		next = 0;
-		*end_p = end;
-	} else {
-		next = length;
-		*end_p = length;
-	}
-
-	return PTP_RC_OK;
-}
-
 uint16_t
 ptp_usb_getdata (PTPParams* params, PTPContainer* ptp,
                  unsigned char **data, unsigned int *readlen,
                  int to_fd)
 {
 	uint16_t ret;
-	PTPUSBBulkContainer *usbdata;
+	PTPUSBBulkContainer usbdata;
+
+	PTP_CNT_INIT(usbdata);
 
 	if (to_fd == -1 &&  *data != NULL)
 		return PTP_ERROR_BADPARAM;
 
 	do {
 		unsigned int len, rlen;
+
 		/* read the header and potentially the first data */
-		ret = ptp_usb_getpacket(params, &usbdata, &rlen);
+		if (params->surplus_packet_sz > 0) {
+			/* If there is a buffered packet, use it. */
+			memcpy((unsigned char *)&usbdata, params->surplus_packet, params->surplus_packet_sz);
+			rlen = params->surplus_packet_sz;
+			free(params->surplus_packet);
+			params->surplus_packet = NULL;
+			params->surplus_packet_sz = 0;
+			/* Here this signifies a "virtual read" */
+			ret = PTP_RC_OK;
+		} else {
+			ret=params->read_func((unsigned char *)&usbdata,
+					      sizeof(usbdata), params->data, &rlen);
+		}
 		if (ret!=PTP_RC_OK) {
 			ret = PTP_ERROR_IO;
 			break;
 		} else
-		if (dtoh16(usbdata->type)!=PTP_USB_CONTAINER_DATA) {
+		if (dtoh16(usbdata.type)!=PTP_USB_CONTAINER_DATA) {
 			ret = PTP_ERROR_DATA_EXPECTED;
 			break;
 		} else
-		if (dtoh16(usbdata->code)!=ptp->Code) {
-			ret = dtoh16(usbdata->code);
+		if (dtoh16(usbdata.code)!=ptp->Code) {
+			ret = dtoh16(usbdata.code);
 			break;
 		}
-		if (usbdata->length == 0xffffffffU) {
+		if (usbdata.length == 0xffffffffU) {
 			/* This only happens for MTP_GetObjPropList */
 			uint32_t	tsize = PTP_USB_BULK_HS_MAX_PACKET_LEN;
 			unsigned char	*tdata = malloc(tsize);
@@ -294,16 +279,39 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp,
 			}
 			return PTP_RC_OK;
 		}
+		if (rlen > dtoh32(usbdata.length)) {
+			/*
+			 * Buffer the surplus packet if it is >= PTP_USB_BULK_HDR_LEN
+			 * (i.e. it is probably an entire package)
+			 * else discard it as erroneous surplus data. This will even
+			 * work if more than 2 packets appear in the same transaction,
+			 * they will just be iteratively handled.
+			 *
+			 * Marcus observed stray bytes on iRiver devices, these are
+			 * still discarded.
+			 */
+			unsigned int packlen = dtoh32(usbdata.length);
+			unsigned int surplen = rlen - packlen;
+
+			if (surplen >= PTP_USB_BULK_HDR_LEN) {
+				params->surplus_packet = (uint8_t *) malloc(surplen);
+				memcpy(params->surplus_packet, (uint8_t *) (&usbdata + packlen), surplen);
+				params->surplus_packet_sz = surplen;
+			} else {
+				ptp_debug (params, "ptp2/ptp_usb_getdata: read %d bytes too much, expect problems!", rlen - dtoh32(usbdata.length));
+			}
+			rlen = packlen;
+		}
 
 		/* For most PTP devices rlen is 512 == sizeof(usbdata)
 		 * here. For MTP devices splitting header and data it might
 		 * be 12.
 		 */
 		/* Evaluate full data length. */
-		len = dtoh32(usbdata->length) - PTP_USB_BULK_HDR_LEN;
+		len=dtoh32(usbdata.length)-PTP_USB_BULK_HDR_LEN;
 
 		/* autodetect split header/data MTP devices */
-		if (dtoh32(usbdata->length) > 12 && (rlen==12))
+		if (dtoh32(usbdata.length) > 12 && (rlen==12))
 			params->split_header_data = 1;
 
 		if (to_fd == -1) {
@@ -313,7 +321,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp,
 				*readlen = len;
 
 			/* Copy first part of data to 'data' */
-			memcpy(*data,usbdata->payload.data,rlen - PTP_USB_BULK_HDR_LEN);
+			memcpy(*data,usbdata.payload.data,rlen - PTP_USB_BULK_HDR_LEN);
 
 			/* Is that all of data? */
 			if (len+PTP_USB_BULK_HDR_LEN<=rlen) break;
@@ -337,7 +345,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp,
 
 			bytes_to_write = rlen - PTP_USB_BULK_HDR_LEN;
 
-			ret = write(to_fd, usbdata->payload.data, bytes_to_write);
+			ret = write(to_fd, usbdata.payload.data, bytes_to_write);
 			if (ret != bytes_to_write) {
 				ret = PTP_ERROR_IO;
 				break;
@@ -400,19 +408,21 @@ ptp_usb_getresp (PTPParams* params, PTPContainer* resp)
 {
 	uint16_t ret;
 	unsigned int rlen;
-	PTPUSBBulkContainer *usbresp;
+	PTPUSBBulkContainer usbresp;
 
+	PTP_CNT_INIT(usbresp);
 	/* read response, it should never be longer than sizeof(usbresp) */
-	ret = ptp_usb_getpacket(params, &usbresp, &rlen);
+	ret=params->read_func((unsigned char *)&usbresp,
+				sizeof(usbresp), params->data, &rlen);
 
 	if (ret!=PTP_RC_OK) {
 		ret = PTP_ERROR_IO;
 	} else
-	if (dtoh16(usbresp->type)!=PTP_USB_CONTAINER_RESPONSE) {
+	if (dtoh16(usbresp.type)!=PTP_USB_CONTAINER_RESPONSE) {
 		ret = PTP_ERROR_RESP_EXPECTED;
 	} else
-	if (dtoh16(usbresp->code)!=resp->Code) {
-		ret = dtoh16(usbresp->code);
+	if (dtoh16(usbresp.code)!=resp->Code) {
+		ret = dtoh16(usbresp.code);
 	}
 	if (ret!=PTP_RC_OK) {
 /*		ptp_error (params,
@@ -421,14 +431,14 @@ ptp_usb_getresp (PTPParams* params, PTPContainer* resp)
 		return ret;
 	}
 	/* build an appropriate PTPContainer */
-	resp->Code=dtoh16(usbresp->code);
+	resp->Code=dtoh16(usbresp.code);
 	resp->SessionID=params->session_id;
-	resp->Transaction_ID=dtoh32(usbresp->trans_id);
-	resp->Param1=dtoh32(usbresp->payload.params.param1);
-	resp->Param2=dtoh32(usbresp->payload.params.param2);
-	resp->Param3=dtoh32(usbresp->payload.params.param3);
-	resp->Param4=dtoh32(usbresp->payload.params.param4);
-	resp->Param5=dtoh32(usbresp->payload.params.param5);
+	resp->Transaction_ID=dtoh32(usbresp.trans_id);
+	resp->Param1=dtoh32(usbresp.payload.params.param1);
+	resp->Param2=dtoh32(usbresp.payload.params.param2);
+	resp->Param3=dtoh32(usbresp.payload.params.param3);
+	resp->Param4=dtoh32(usbresp.payload.params.param4);
+	resp->Param5=dtoh32(usbresp.payload.params.param5);
 	return ret;
 }
 
@@ -659,6 +669,9 @@ ptp_opensession (PTPParams* params, uint32_t session)
 	params->session_id=0x00000000;
 	/* TransactionID should be set to 0 also! */
 	params->transaction_id=0x0000000;
+	/* zero out surplus packet buffer */
+	params->surplus_packet = NULL;
+	params->surplus_packet_sz = 0;
 	
 	PTP_CNT_INIT(ptp);
 	ptp.Code=PTP_OC_OpenSession;
@@ -685,6 +698,12 @@ ptp_closesession (PTPParams* params)
 
 	ptp_debug(params,"PTP: Closing session");
 
+	/* free any dangling surplus packet */
+	if (params->surplus_packet_sz > 0) {
+		free(params->surplus_packet);
+		params->surplus_packet = NULL;
+		params->surplus_packet_sz = 0;
+	}
 	PTP_CNT_INIT(ptp);
 	ptp.Code=PTP_OC_CloseSession;
 	ptp.Nparam=0;

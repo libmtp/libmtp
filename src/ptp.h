@@ -1156,6 +1156,10 @@ struct _PTPParams {
 	/* iconv converters */
 	iconv_t cd_locale_to_ucs2;
 	iconv_t cd_ucs2_to_locale;
+
+	/* surplus packet */
+	uint8_t		*surplus_packet;
+	uint16_t	surplus_packet_sz;
 };
 
 /* last, but not least - ptp functions */
