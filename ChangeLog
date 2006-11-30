@@ -5,6 +5,8 @@
 	  next package is typically attacked to the incoming 
 	  data, as if someone was sending several packets at 
 	  once. If this happens we buffer the surplus packet.
+	* src/libusb-glue.c: revert my own mistakes by making
+	  them Windows-only.
 
 2006-11-30  Linus Walleij <triad@df.lth.se>
 
