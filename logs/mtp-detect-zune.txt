@@ -1,0 +1,601 @@
+found 4 busses
+Autodetected device "Zune" (VID=045e,PID=0710) is known.
+PTP: Opening session
+Connected to MTP device.
+USB low-level info:
+   bcdUSB: 512
+   bDeviceClass: 255
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 045e
+   idProduct: 0710
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Device flags: 0x00000000
+Device info:
+   Manufacturer: Microsoft
+   Model: Zune
+   Device version: 01.01.00322.00-00309
+   Serial number: 009bdb53 - 0aedbc4e - 80bd1ff8 - 8ee00652
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0; microsoft.com/WMDRMPD:10.1; microsoft.com/WMPPD: 11.1; microsoft.com/WMPMCPREMCONT: 1.0;microsoft.com/AAVT: 1.0; microsoft.com/WMDRMND: 1.0; microsoft.com/MTPZ: 1.0;
+Supported operations:
+   1001: Get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   100f: Format storage
+   1010: Reset device
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   1019: Move object
+   101b: Get partial object
+   9810: Get object references
+   9811: Set object references
+   9802: Get object property description
+   9807: Get interdependent property description
+   9801: Get object properties supported
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9806: Set object property list
+   9808: Send object property list
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Set meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Unknown(910a)
+   910b: Unknown(910b)
+   9201: Unknown(9201)
+   9202: Unknown(9202)
+   9204: Unknown(9204)
+   9212: Unknown(9212)
+   9213: Unknown(9213)
+   9214: Unknown(9214)
+   9215: Unknown(9215)
+   9216: Unknown(9216)
+   9170: Unknown(9170)
+   9171: Unknown(9171)
+   9172: Unknown(9172)
+   9173: Unknown(9173)
+   9180: Unknown(9180)
+   9181: Unknown(9181)
+   9182: Unknown(9182)
+   9183: Unknown(9183)
+   9184: Unknown(9184)
+   9185: Unknown(9185)
+Events supported:
+   None.
+Device Properties Supported:
+   0xd181: Unknown property
+   0xd101: Secure Time
+   0xd401: Synchronization Partner
+   0x5001: Battery Level
+   0xd102: Device Certificate
+   0xd402: Device Friendly Name
+   0x5002: Functional Mode
+   0xd405: Device Icon
+   0xd103: Unknown property
+   0xd211: Unknown property
+   0xd131: Unknown property
+   0xd132: Unknown property
+   0xd215: Unknown property
+   0xd216: Unknown property
+Playable File (Object) Types and Object Properties Supported:
+   3009: MP3
+      dc44: Name
+      dc04: ObjectSize
+      dc08: DateCreated
+      dc89: Duration
+      dc09: DateModified
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc8a: Rating
+      dc0a: Keywords
+      dc8f: SubscriptionContentID
+      dc4f: NonConsumable
+      dc07: ObjectFileName
+      da82: unknown(da82)
+      daa2: unknown(daa2)
+      dc02: ObjectFormat
+      dc8b: Track
+      dc0b: ParentObject
+      daa1: unknown(daa1)
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+      daa0: unknown(daa0)
+      de9a: AudioBitRate
+      dc9a: AlbumName
+      dc46: Artist
+      dc97: EffectiveRating
+      dc8c: Genre
+      dc95: MetaGenre
+      dc91: UseCount
+      de93: SampleRate
+      de99: AudioWAVECodec
+      de94: NumberOfChannels
+   b901: WMA
+      dc44: Name
+      dc04: ObjectSize
+      dc08: DateCreated
+      dc89: Duration
+      dc09: DateModified
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc8a: Rating
+      dc0a: Keywords
+      dc8f: SubscriptionContentID
+      dc4f: NonConsumable
+      dc07: ObjectFileName
+      da82: unknown(da82)
+      daa2: unknown(daa2)
+      dc02: ObjectFormat
+      dc8b: Track
+      dc0b: ParentObject
+      daa1: unknown(daa1)
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+      daa0: unknown(daa0)
+      de9a: AudioBitRate
+      dc9a: AlbumName
+      dc46: Artist
+      dc97: EffectiveRating
+      dc8c: Genre
+      dc95: MetaGenre
+      dc91: UseCount
+      de93: SampleRate
+      de99: AudioWAVECodec
+      de94: NumberOfChannels
+   300c: ASF
+      da84: unknown(da84)
+      dc44: Name
+      dc04: ObjectSize
+      dc88: Height
+      dc08: DateCreated
+      dc89: Duration
+      dc09: DateModified
+      de9d: FramesPerThousandSeconds
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc0a: Keywords
+      dc8f: SubscriptionContentID
+      dc4f: NonConsumable
+      dc87: Width
+      dc47: DateAuthored
+      dc07: ObjectFileName
+      da82: unknown(da82)
+      daa2: unknown(daa2)
+      dc02: ObjectFormat
+      dc4b: CopyrightInformation
+      dc0b: ParentObject
+      dea1: unknown(dea1)
+      da81: unknown(da81)
+      daa1: unknown(daa1)
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      da83: unknown(da83)
+      dc03: ProtectionStatus
+      dea0: EncodingQuality
+      daa0: unknown(daa0)
+      de9e: KeyFrameDistance
+      dc9e: SubDescription
+      dc4c: Source
+      dc8c: Genre
+      dc95: MetaGenre
+      de94: NumberOfChannels
+      dc94: ParentalRating
+      da86: unknown(da86)
+      da85: unknown(da85)
+      dc98: Subtitle
+      de9a: AudioBitRate
+      de99: AudioWAVECodec
+      de92: BitRateType
+      de9f: BufferSize
+      de93: SampleRate
+      de97: ScanDepth
+      de91: TotalBitRate
+      de9b: VideoFourCCCodec
+      de9c: VideoBitRate
+   b215: Unknown(b215)
+      dc44: Name
+      dc04: ObjectSize
+      dc08: DateCreated
+      dc89: Duration
+      dc09: DateModified
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc8a: Rating
+      dc0a: Keywords
+      dc8f: SubscriptionContentID
+      dc4f: NonConsumable
+      dc07: ObjectFileName
+      da82: unknown(da82)
+      daa2: unknown(daa2)
+      dc02: ObjectFormat
+      dc8b: Track
+      dc0b: ParentObject
+      daa1: unknown(daa1)
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+      daa0: unknown(daa0)
+      de9a: AudioBitRate
+      dc9a: AlbumName
+      dc46: Artist
+      dc97: EffectiveRating
+      dc8c: Genre
+      dc95: MetaGenre
+      dc91: UseCount
+      de93: SampleRate
+      de99: AudioWAVECodec
+      de94: NumberOfChannels
+   b903: Unknown(b903)
+      dc44: Name
+      dc04: ObjectSize
+      dc08: DateCreated
+      dc89: Duration
+      dc09: DateModified
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc8a: Rating
+      dc0a: Keywords
+      dc8f: SubscriptionContentID
+      dc4f: NonConsumable
+      dc07: ObjectFileName
+      da82: unknown(da82)
+      daa2: unknown(daa2)
+      dc02: ObjectFormat
+      dc8b: Track
+      dc0b: ParentObject
+      daa1: unknown(daa1)
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+      daa0: unknown(daa0)
+      de9a: AudioBitRate
+      dc9a: AlbumName
+      dc46: Artist
+      dc97: EffectiveRating
+      dc8c: Genre
+      dc95: MetaGenre
+      dc91: UseCount
+      de93: SampleRate
+      de99: AudioWAVECodec
+      de94: NumberOfChannels
+   b981: WMV
+      da84: unknown(da84)
+      dc44: Name
+      dc04: ObjectSize
+      dc88: Height
+      dc08: DateCreated
+      dc89: Duration
+      dc09: DateModified
+      de9d: FramesPerThousandSeconds
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc0a: Keywords
+      dc8f: SubscriptionContentID
+      dc4f: NonConsumable
+      dc87: Width
+      dc47: DateAuthored
+      dc07: ObjectFileName
+      da82: unknown(da82)
+      daa2: unknown(daa2)
+      dc02: ObjectFormat
+      dc4b: CopyrightInformation
+      dc0b: ParentObject
+      dea1: unknown(dea1)
+      da81: unknown(da81)
+      daa1: unknown(daa1)
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      da83: unknown(da83)
+      dc03: ProtectionStatus
+      dea0: EncodingQuality
+      daa0: unknown(daa0)
+      de9e: KeyFrameDistance
+      dc9e: SubDescription
+      dc4c: Source
+      dc8c: Genre
+      dc95: MetaGenre
+      de94: NumberOfChannels
+      dc94: ParentalRating
+      da86: unknown(da86)
+      da85: unknown(da85)
+      dc98: Subtitle
+      de9a: AudioBitRate
+      de99: AudioWAVECodec
+      de92: BitRateType
+      de9f: BufferSize
+      de93: SampleRate
+      de97: ScanDepth
+      de91: TotalBitRate
+      de9b: VideoFourCCCodec
+      de9c: VideoBitRate
+   3801: JPEG
+      dc44: Name
+      dc04: ObjectSize
+      dc88: Height
+      dc08: DateCreated
+      dc09: DateModified
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc0a: Keywords
+      dc8f: SubscriptionContentID
+      dc4f: NonConsumable
+      dc87: Width
+      dc47: DateAuthored
+      dc07: ObjectFileName
+      daa2: unknown(daa2)
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      daa1: unknown(daa1)
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+      daa0: unknown(daa0)
+   3001: Association/Directory
+      dc44: Name
+      dc04: ObjectSize
+      dc08: DateCreated
+      dc09: DateModified
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc0a: Keywords
+      dc4f: NonConsumable
+      dc07: ObjectFileName
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+   ba03: Abstract Audio Album
+      dc84: RepresentativeSampleWidth
+      dc44: Name
+      dc04: ObjectSize
+      dc08: DateCreated
+      dc09: DateModified
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc0a: Keywords
+      dc4f: NonConsumable
+      dc07: ObjectFileName
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc81: RepresentativeSampleFormat
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      dc83: RepresentativeSampleHeight
+      dc03: ProtectionStatus
+      dc86: RepresentativeSampleData
+      dc46: Artist
+      dc8c: Genre
+   ba02: Abstract Image Album
+      dc44: Name
+      dc04: ObjectSize
+      dc08: DateCreated
+      dc09: DateModified
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc0a: Keywords
+      dc4f: NonConsumable
+      dc47: DateAuthored
+      dc07: ObjectFileName
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+   ba05: Abstract Audio Video Playlist
+      dc44: Name
+      dc04: ObjectSize
+      dc08: DateCreated
+      dc09: DateModified
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc0a: Keywords
+      dc4f: NonConsumable
+      dc07: ObjectFileName
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+   b211: Unknown(b211)
+      dc44: Name
+      dc04: ObjectSize
+      dc08: DateCreated
+      dc09: DateModified
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc0a: Keywords
+      dc4f: NonConsumable
+      dc07: ObjectFileName
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+      da91: unknown(da91)
+   b212: Unknown(b212)
+      dc04: ObjectSize
+      dc08: DateCreated
+      dc09: DateModified
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc0a: Keywords
+      dc4f: NonConsumable
+      dc07: ObjectFileName
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+   b213: Unknown(b213)
+      dc04: ObjectSize
+      dc08: DateCreated
+      dc09: DateModified
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc0a: Keywords
+      dc4f: NonConsumable
+      dc07: ObjectFileName
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+      da94: unknown(da94)
+      da92: unknown(da92)
+      da95: unknown(da95)
+      da96: unknown(da96)
+      da93: unknown(da93)
+   b214: Unknown(b214)
+      dc04: ObjectSize
+      dc08: DateCreated
+      dc09: DateModified
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc0a: Keywords
+      dc4f: NonConsumable
+      dc07: ObjectFileName
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+   3000: Undefined Type
+      dc44: Name
+      dc04: ObjectSize
+      dc08: DateCreated
+      dc09: DateModified
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc0a: Keywords
+      dc4f: NonConsumable
+      dc07: ObjectFileName
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+   b802: Firmware
+      dc44: Name
+      dc04: ObjectSize
+      dc08: DateCreated
+      dc09: DateModified
+      dc9d: DRMStatus
+      dc0d: unknown(dc0d)
+      dc0a: Keywords
+      dc4f: NonConsumable
+      dc07: ObjectFileName
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc01: StorageID
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+Special directories:
+   Default music folder: 0x05000001
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x0500001a
+   Default video folder: 0x0500001e
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: israr
+   Synchronization partner: {4A93BE2A-DE7D-41E6-BA37-8E9E77D43860}
+   Total bytes on device: 29806592000 (28425 MB)
+   Free bytes on device: 29201039360 (27848 MB)
+   Storage description: "Storage"
+   Volume label: "009bdb53 - 0aedbc4e - 80bd1ff8 - 8ee00652"
+   Battery level 93 of 100 (93%)
+libmtp supported (playable) filetypes:
+   ISO MPEG Audio Layer 3
+   Microsoft Windows Media Audio
+   Microsoft Advanced Systems Format
+   Microsoft Windows Media Video
+   JPEG file
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20061130
+55:58:20Z#</VALUE><FLAG>DRM_CLK_SET</FL
+AG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID
+private="1">tm
+q3e34l4CtX25kjz3J8nsmfKqw=</UNIQUEID><PUBLICKEY
+private="1">D04XYszO/wvt2uvOYlaC
+PPl+BFqZqfJgKYFjft0/QHHwai8cnNs1Dw==</PUBLICKEY><KEYDATA>UhIa619WPksS1o2/jWQ
+0ppw
+gAhA=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>SnnlhYtieeqE2ZEoBVD6IQy02Vmtu5Q
+3mpf
+0yTgWmsJb8mU5AeRmGw==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>WyIbw1IYah2TFKQp9
+XQhJ
+vnK/5Q=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.105.187</
+SECU
+RITYVERSION><CERTIFICATE
+private="1">D04XYszO/wvt2uvOYlaCPPl+BFqZqfJgKYFjft0/QHH
+wai8cnNs1DwIEabtlwAm9JhutpvU05UpZa3Hh/EBgFQwcFQecoUCHdusPkQrgPIFqHW0/</CERTI
+FICA
+TE></FALLBACK><CERTIFICATE
+type="GROUP"><DATA><NAME>Zune</NAME><MANUFACTURER>Mic
+rosoft</MANUFACTURER><MAKE>Zune Player
+1000</MAKE><DISTRIBUTOR>Microsoft</DISTRI
+BUTOR><MODEL>1090</MODEL><SECURITYLEVEL>2000</SECURITYLEVEL><HARDWARE_VER_MA
+JOR>
+1</HARDWARE_VER_MAJOR><HARDWARE_VER_MINOR>0</HARDWARE_VER_MINOR><FIRMWARE_VE
+R_MA
+JOR>1</FIRMWARE_VER_MAJOR><FIRMWARE_VER_MINOR>0</FIRMWARE_VER_MINOR><FEATURE
+S><C
+LOCK>2</CLOCK><SECURECLOCK><URL>http://go.microsoft.com/fwlink/?LinkId=25817
+</UR
+L><PUBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLI
+CKEY
+></SECURECLOCK><METERING>1</METERING><LICENSE_ACQ>1</LICENSE_ACQ><LICENSE_SY
+NC>1
+</LICENSE_SYNC><ENCRYPTION>0</ENCRYPTION><SYMMETRIC_OPT>1</SYMMETRIC_OPT><SU
+PPOR
+T_REVOCATION><GUID>{CD75E604-543D-4A9C-9F09-FE6D24E8BF90}</GUID><GUID>{3129E
+375-
+CEB0-47D5-9CCA-9DB74CFD4332}</GUID></SUPPORT_REVOCATION></FEATURES><LIMITS><
+MAXC
+HAINDEPTH>2</MAXCHAINDEPTH><MAXLICENSESIZE>10240</MAXLICENSESIZE><MAXHEADERS
+IZE>
+5120</MAXHEADERSIZE></LIMITS><PUBLICKEY>zXee2YI/Sm37UJC4uo+Y007Ae2cWp9rkpWh3
+MZUM
+5YLR/2EfN/0eJg==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>7PBZocSID0BEc3vXxC
+C5hK
+H812eSH/Vd8oH5ZAlem9Qw7YTxKd12Bg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CER
+TIFI
+CATE
+type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>1311
+</AUTH_ID><PUBLICKEY>4787Lq08I+Jx5129GMlYE4pkBQrPT8+TV5fiuThMguE054UrOmpMHg=
+=</P
+UBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>OUJXV1Ek088aF0pSz12wHVgNYk9IAgGMezwzN
+p7vp
+rMv7K1ZJDdMiQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE
+type="AUTHORIZ
+ATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCs
+e!gz
+6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>j/UOGELgk
+J99g
+MvrGKyp3Y7FQ190FKtYE8t/vMvB3d73LBOFK76iXQ==</MSDRM_SIGNATURE_VALUE></CERTIFI
+CATE
+></DEVCERT>
