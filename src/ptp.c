@@ -225,13 +225,13 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp,
 		unsigned int len, rlen;
 
 		/* read the header and potentially the first data */
-		if (params->surplus_packet_sz > 0) {
-			/* If there is a buffered packet, use it. */
-			memcpy((unsigned char *)&usbdata, params->surplus_packet, params->surplus_packet_sz);
-			rlen = params->surplus_packet_sz;
-			free(params->surplus_packet);
-			params->surplus_packet = NULL;
-			params->surplus_packet_sz = 0;
+		if (params->response_packet_size > 0) {
+			/* If there is a buffered packet, just use it. */
+			memcpy((unsigned char *)&usbdata, params->response_packet, params->response_packet_size);
+			rlen = params->response_packet_size;
+			free(params->response_packet);
+			params->response_packet = NULL;
+			params->response_packet_size = 0;
 			/* Here this signifies a "virtual read" */
 			ret = PTP_RC_OK;
 		} else {
@@ -281,7 +281,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp,
 		}
 		if (rlen > dtoh32(usbdata.length)) {
 			/*
-			 * Buffer the surplus packet if it is >= PTP_USB_BULK_HDR_LEN
+			 * Buffer the surplus response packet if it is >= PTP_USB_BULK_HDR_LEN
 			 * (i.e. it is probably an entire package)
 			 * else discard it as erroneous surplus data. This will even
 			 * work if more than 2 packets appear in the same transaction,
@@ -294,9 +294,9 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp,
 			unsigned int surplen = rlen - packlen;
 
 			if (surplen >= PTP_USB_BULK_HDR_LEN) {
-				params->surplus_packet = (uint8_t *) malloc(surplen);
-				memcpy(params->surplus_packet, (uint8_t *) (&usbdata + packlen), surplen);
-				params->surplus_packet_sz = surplen;
+				params->response_packet = (uint8_t *) malloc(surplen);
+				memcpy(params->response_packet, (uint8_t *) (&usbdata + packlen), surplen);
+				params->response_packet_size = surplen;
 			} else {
 				ptp_debug (params, "ptp2/ptp_usb_getdata: read %d bytes too much, expect problems!", rlen - dtoh32(usbdata.length));
 			}
@@ -669,9 +669,9 @@ ptp_opensession (PTPParams* params, uint32_t session)
 	params->session_id=0x00000000;
 	/* TransactionID should be set to 0 also! */
 	params->transaction_id=0x0000000;
-	/* zero out surplus packet buffer */
-	params->surplus_packet = NULL;
-	params->surplus_packet_sz = 0;
+	/* zero out response packet buffer */
+	params->response_packet = NULL;
+	params->response_packet_size = 0;
 	
 	PTP_CNT_INIT(ptp);
 	ptp.Code=PTP_OC_OpenSession;
@@ -698,11 +698,11 @@ ptp_closesession (PTPParams* params)
 
 	ptp_debug(params,"PTP: Closing session");
 
-	/* free any dangling surplus packet */
-	if (params->surplus_packet_sz > 0) {
-		free(params->surplus_packet);
-		params->surplus_packet = NULL;
-		params->surplus_packet_sz = 0;
+	/* free any dangling response packet */
+	if (params->response_packet_size > 0) {
+		free(params->response_packet);
+		params->response_packet = NULL;
+		params->response_packet_size = 0;
 	}
 	PTP_CNT_INIT(ptp);
 	ptp.Code=PTP_OC_CloseSession;
