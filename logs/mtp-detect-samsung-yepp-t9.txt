@@ -1,0 +1,185 @@
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 272
+   bDeviceClass: 255
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 04e8
+   idProduct: 507f
+   IN endpoint maxpacket: 64 bytes
+   OUT endpoint maxpacket: 64 bytes
+   Device flags: 0x00000000
+Device info:
+   Manufacturer: Samsung Electronics Co.,Ltd.
+   Model: Samsung YP-T9
+   Device version: V1.00
+   Serial number: 7A9FE484000000E9
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0; microsoft.com/WMPPD: 10.0; microsoft.com/WMDRMPD: 10.1microsoft.com/WMPPD: 11.,; 
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   100f: Format storage
+   1010: Reset device
+   1011: Self test device
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9805: Get object property list
+   9806: Set object property list
+   9810: Get object references
+   9811: Set object references
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Unknown(910a)
+Events supported:
+   None.
+Device Properties Supported:
+   0x5001: Battery Level
+   0xd402: Device Friendly Name
+   0xd101: Secure Time
+   0xd102: Device Certificate
+   0x5011: Date Time
+Playable File (Object) Types and Object Properties Supported:
+   3000: Undefined Type
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc0b: ParentObject
+      dc4f: NonConsumable
+      dc44: Name
+   3001: Association/Directory
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc0b: ParentObject
+      dc4f: NonConsumable
+      dc44: Name
+   3009: MP3
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc0b: ParentObject
+      dc4f: NonConsumable
+      dc44: Name
+      dc46: Artist
+      dc8b: Track
+      dc8c: Genre
+      dc9a: AlbumName
+      de9a: AudioBitRate
+      dc03: ProtectionStatus
+      de99: AudioWAVECodec
+      de93: SampleRate
+      de94: NumberOfChannels
+      dc8a: Rating
+      dc89: Duration
+   b901: WMA
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc0b: ParentObject
+      dc4f: NonConsumable
+      dc44: Name
+      dc46: Artist
+      dc8b: Track
+      dc8c: Genre
+      dc9a: AlbumName
+      de9a: AudioBitRate
+      dc03: ProtectionStatus
+      de99: AudioWAVECodec
+      de93: SampleRate
+      de94: NumberOfChannels
+      dc8a: Rating
+      dc89: Duration
+   ba05: Abstract Audio Video Playlist
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc0b: ParentObject
+      dc4f: NonConsumable
+      dc44: Name
+   3801: JPEG
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc0b: ParentObject
+      dc4f: NonConsumable
+      dc44: Name
+Special directories:
+   Default music folder: 0x00008001
+   Default playlist folder: 0x00008002
+   Default picture folder: 0x00008004
+   Default video folder: 0x00008005
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: (NULL)
+   Synchronization partner: (NULL)
+   Total bytes on device: 3920896000 (3739 MB)
+   Free bytes on device: 3886161920 (3706 MB)
+   Storage description: "Samsung YP-T9 Storage"
+   Volume label: "7a9fe484000000e9"
+   Battery level 60 of 100 (60%)
+libmtp supported (playable) filetypes:
+   ISO MPEG Audio Layer 3
+   Microsoft Windows Media Audio
+   JPEG file
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20060911 18:51:22Z#</VALUE><FLAG>DRM_CLK_NEEDS_REFRESH</FLAG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID
+private="1">CgoKCgoKCgoKCgoKCgoKCgoKCgo=</UNIQUEID><PUBLICKEY
+private="1">LUYvz+oPOBIR2OM+rmiV1NesxAtS1GbXrGJ5KTSSYSKLWDteKvKqNg==</PUBLICKEY><KEYDATA>SRD81CpKpIt0FzG
+wiZmXBlgFjN8=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>jYvAh4EEtIpFJczOcPYMiheliQeHZFketgWLUNlIhd3woaJ5eY6
+XBA==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>nZrrzPrtSob0+7BSXjdTlRBUJwU=</SYMSIGNATURE></CERTIFICATE><FAL
+LBACK><SECURITYVERSION>2.4.105.105</SECURITYVERSION><CERTIFICATE
+private="1">LUYvz+oPOBIR2OM+rmiV1NesxAtS1GbXrGJ5KTSSYSKLWDteKvKqNgIEaWklJ12Ln+6CxMFLhl0lqNrdE+GcY/Jjyj1W
+LNQ1cl236PXPnGhBweRO</CERTIFICATE></FALLBACK><CERTIFICATE
+type="GROUP"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><FEATURES><CLOCK>2</CLOCK><SECURECLOCK><URL>http:/
+/go.microsoft.com/fwlink/?LinkId=25817</URL><PUBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*
+ikYGA==</PUBLICKEY></SECURECLOCK><METERING>1</METERING><LICENSE_ACQ>1</LICENSE_ACQ><LICENSE_SYNC>1</LICE
+NSE_SYNC><ENCRYPTION>1</ENCRYPTION><SYMMETRIC_OPT>1</SYMMETRIC_OPT></FEATURES><LIMITS><MAXCHAINDEPTH>2</
+MAXCHAINDEPTH><MAXLICENSESIZE>10240</MAXLICENSESIZE><MAXHEADERSIZE>5120</MAXHEADERSIZE></LIMITS><PUBLICK
+EY>2hOkxOCK1QPe10JHYvfVUjYjLBMzXCftotZMbbB+VhO0gpWYnFSNJA==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>zVg
+OV3F4q2xlvMfFBZtW/YaNhE/9IBGpQpxDJG4cljg81O1sxP/KhA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE
+type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>1229</AUTH_ID><PUBLICKEY>8l60FgPW
+1vHhfaAFYkoYXMMHTFZCfCf98BXPcKJLbBjofB1fy8Bcbw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>LpLd030TMk4F6v
+2kAjf3LecPk0UOgCjPmQrGsKUfmyRBTRujDP3/LQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE
+type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zi
+zKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>YoS6xu8BvaENyvqIISjhFbO5wmakFMYg2/C8ALN0uuXvYRV
+e3JJZYw==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
