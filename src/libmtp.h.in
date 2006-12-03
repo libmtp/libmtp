@@ -349,7 +349,6 @@ LIBMTP_album_t *LIBMTP_Get_Album_List(LIBMTP_mtpdevice_t *);
 LIBMTP_album_t *LIBMTP_Get_Album(LIBMTP_mtpdevice_t *, uint32_t const);
 int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *, LIBMTP_album_t * const, uint32_t const);
 int LIBMTP_Update_Album(LIBMTP_mtpdevice_t *, LIBMTP_album_t const * const);
-int LIBMTP_Send_Album_Art(LIBMTP_mtpdevice_t *, uint32_t const, uint8_t * const, uint32_t const);
 
 /**
  * @}
@@ -357,6 +356,8 @@ int LIBMTP_Send_Album_Art(LIBMTP_mtpdevice_t *, uint32_t const, uint8_t * const,
  * @{
  */
 int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *, uint32_t);
+int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *, uint32_t const, 
+				uint8_t const * const, uint32_t const);
 /** @} */
 
 /* End of C++ exports */

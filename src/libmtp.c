@@ -3959,41 +3959,38 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
 }
 
 /**
- * This routine sends cover art for an album object. This uses the
- * RepresentativeSampleData property of the album, if the device
- * supports it. The data should be of a format acceptable to the
- * player (for iRiver and Creative, this seems to be JPEG) and
- * must not be too large. (for a Creative, max seems to be about 20KB.)
+ * This routine sends a representative sample (image) to associate 
+ * with an object that supports this kind of metadata, such as 
+ * cover art for an album object. This uses the RepresentativeSampleData 
+ * property of the object, if the device supports it. The data should be 
+ * of a format acceptable to the player (for iRiver and Creative albums, 
+ * this seems to be JPEG) and must not be too large. (for a Creative, 
+ * max seems to be about 20KB.)
  * TODO: there must be a way to find the max size for an ObjectPropertyValue.
- * @param device a pointer to the device which the album is on.
- * @param id unique id of the album object.
- * @param imagedata pointer to an array of uint8_t containing the image data.
- * @param imagesize number of bytes in the image.
+ * @param device a pointer to the device which the object is on.
+ * @param id unique id of the object to set artwork for.
+ * @param data pointer to an array of uint8_t containing the representative 
+ *        sample data.
+ * @param size number of bytes in the sample.
  * @return 0 on success, any other value means failure.
  * @see LIBMTP_Create_New_Album()
  */
-int LIBMTP_Send_Album_Art(LIBMTP_mtpdevice_t *device,
-                          uint32_t const id,
-                          uint8_t * const imagedata,
-                          uint32_t const imagesize)
+int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
+				      uint32_t const id,
+				      uint8_t const * const data,
+				      uint32_t const size)
 {
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
   PTPPropertyValue propval;
-
   int i;
-  propval.a.count = imagesize;
-  propval.a.v = malloc(sizeof(PTPPropertyValue) * imagesize);
-  for (i = 0; i < imagesize; i++) {
-    propval.a.v[i].u8 = imagedata[i];
-  }
 
   // check that we can send album art
   uint16_t *props = NULL;
   uint32_t propcnt = 0;
   ret = ptp_mtp_getobjectpropssupported(params, PTP_OFC_MTP_AbstractAudioAlbum, &propcnt, &props);
   if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Send_Album_Art(): could not get object properties\n");
+    printf("LIBMTP_Send_Representative_Sample(): could not get object properties\n");
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
@@ -4003,18 +4000,26 @@ int LIBMTP_Send_Album_Art(LIBMTP_mtpdevice_t *device,
       supported = 1;
   }
   if (!supported) {
-    printf("LIBMTP_Send_Album_Art(): device doesn't support RepresentativeSampleData\n");
+    printf("LIBMTP_Send_Representative_Sample(): object type doesn't support RepresentativeSampleData\n");
     return -1;
   }
 
   // go ahead and send the data
+  propval.a.count = size;
+  propval.a.v = malloc(sizeof(PTPPropertyValue) * size);
+  for (i = 0; i < size; i++) {
+    propval.a.v[i].u8 = data[i];
+  }
+  
   ret = ptp_mtp_setobjectpropvalue(params,id,PTP_OPC_RepresentativeSampleData,
                             &propval,PTP_DTC_AUINT8);
   if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Send_Album_Art(): could not send album art\n");
+    printf("LIBMTP_Send_Representative_Sample(): could not send album art\n");
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    free(propval.a.v);
     return -1;
   }
+  free(propval.a.v);
   return 0;
 }
 

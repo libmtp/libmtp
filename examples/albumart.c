@@ -98,7 +98,7 @@ int main (int argc, char **argv) {
   album->tracks = ids;
   int ret = LIBMTP_Create_New_Album(device,album,0);
   if (ret == 0) {
-    ret = LIBMTP_Send_Album_Art(device,album->album_id,(uint8_t *) imagedata,filesize);
+    ret = LIBMTP_Send_Representative_Sample(device,album->album_id,(uint8_t *) imagedata,filesize);
     if (ret != 0) {
       printf("Couldn't send album art\n");
     }
