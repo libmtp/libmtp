@@ -71,6 +71,7 @@ static int register_filetype(char const * const description, LIBMTP_filetype_t c
 			     uint16_t const ptp_id);
 static void init_filemap();
 static void flush_handles(LIBMTP_mtpdevice_t *device);
+static int check_if_file_fits(LIBMTP_mtpdevice_t *device, uint64_t const filesize);
 static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype);
 static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype);
 static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
@@ -1081,6 +1082,10 @@ int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *device, uint64_t * const total,
   PTPStorageInfo storageInfo;
   PTPParams *params = (PTPParams *) device->params;
 
+  if (!ptp_operation_issupported(params,PTP_OC_GetStorageInfo)) {
+    return -1;
+  }
+  
   if (ptp_getstorageinfo(params, device->storage_id, &storageInfo) != PTP_RC_OK) {
     printf("LIBMTP_Get_Diskinfo(): failed to get disk info\n");
     *total = 0;
@@ -1096,6 +1101,46 @@ int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *device, uint64_t * const total,
 
   return 0;
 }
+
+
+/**
+ * Checks if the device can stora a file of this size or
+ * if it's too big.
+ * @param device a pointer to the device.
+ * @param filesize the size of the file to check whether it will fit.
+ * @return 0 if the file fits, any other value means failure.
+ */
+static int check_if_file_fits(LIBMTP_mtpdevice_t *device, uint64_t const filesize) {
+  PTPParams *params = (PTPParams *) device->params;
+  uint64_t total;
+  uint64_t freebytes;
+  char *stdes = NULL;
+  char *vollab = NULL;
+  int ret;
+
+  // If we cannot check the storage, no big deal.
+  if (!ptp_operation_issupported(params,PTP_OC_GetStorageInfo)) {
+    return 0;
+  }
+  
+  ret = LIBMTP_Get_Storageinfo(device, &total, &freebytes, &stdes, &vollab);
+  if (stdes != NULL) {
+    free(stdes);
+  }
+  if (vollab != NULL) {
+    free(vollab);
+  }
+  if (ret != 0) {
+    return -1;
+  } else {
+    if (filesize > freebytes) {
+      printf("check_if_file_fits(): device storage is full.\n");
+      return -1;
+    }
+  }
+  return 0;
+}
+
 
 
 /**
@@ -2220,6 +2265,11 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   uint32_t propcnt = 0;
   uint32_t i = 0;
 
+  subcall_ret = check_if_file_fits(device, metadata->filesize);
+  if (subcall_ret != 0) {
+    return -1;
+  }
+
   if (localph == 0) {
     localph = device->default_music_folder;
   }
@@ -2574,9 +2624,15 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   int i;
+  int subcall_ret;
   uint16_t *props = NULL;
   uint32_t propcnt = 0;
   uint8_t nonconsumable = 0x01U; /* By default it is non-consumable */
+
+  subcall_ret = check_if_file_fits(device, filedata->filesize);
+  if (subcall_ret != 0) {
+    return -1;
+  }
 
   memset(&new_file, 0, sizeof(PTPObjectInfo));
 
