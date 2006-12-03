@@ -120,3 +120,27 @@ need some command-line hacking to get you stuff copied over in
 one direction host -> device. The examples/ directory contains a script
 created for the Creative Zen Microphoto by Nicolas Tetreault.
 
+
+It's Not Our Bug!
+-----------------
+
+Some MTP devices have strange pecularities. We try to work around
+these whenever we can, sometimes we cannot work around it or we 
+cannot test your solution.
+
+* The Zen Vision:M (possibly more Creative Zens) has a firmware bug
+  that makes it drop the last two characters off a playlist name.
+  It is fixed in later firmware.
+
+* The iRiver devices (possibly all of them) cannot handle the 
+  enhanced GetObjectPropList MTP command (0x9805) properly. So 
+  they have been banned from using it.
+
+* The Samsung Yepp T9 has several strange characteristics, some
+  that we've managed to work around. (For example it will return
+  multiple PTP packages in a single transaction.)
+
+* Very few devices that implement GetObjectPropList (0x9805) will
+  return the entire object list if you request a list for object
+  0xffffffffu. (But they should.) So we're currently not using 
+  that feature.

@@ -4,11 +4,22 @@ Richard Low <richard@wentnet.com>
 Linus Walleij <triad@df.lth.se>
 
 We both came to do libmtp after working on the libnjb
-project.
+project, which was all about Creative Technology devices
+implementing the OaSIS and PDE protocols.
 
 libmtp is however largely based on libptp2, which was created by
-Mariusz Woloszyn <emsi@ipartners.pl>
+Mariusz Woloszyn <emsi@ipartners.pl> as part of gPhoto2 then
+derived into its own project.
 
 We later started to use libgphoto2 which is also based on the same
 code as libptp2 but with large contributions from
-Marcus Meissner <marcus@jet.franken.de>
+Marcus Meissner <marcus@jet.franken.de>. Marcus is also a 
+contributor on libmtp from time to time and we're great friends.
+
+Other contributors to libmtp include:
+
+Andy Kelk <andy@mopoke.co.uk>
+Daniel <danielw@iinet.net.au>
+Dave Kelly <libmtp@ravelox.co.uk>
+Matthew Wilcox <matthew@wil.cx>
+Robert Reardon <rreardon@monkshatch.vispa.com>
