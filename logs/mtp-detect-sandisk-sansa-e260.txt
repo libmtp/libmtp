@@ -1,0 +1,253 @@
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   bMaxPacketSize0: 64
+   idVendor: 0781
+   idProduct: 7420
+Device info:
+   Manufacturer: SanDisk
+   Model: Sansa e260
+   Device version: PP5022AF-05.51-S301-00.12-S301.00.12A-D, (Build 169.20)
+   Serial number: 00000000-00000000-0319b387-edfbf414-00000000
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com/WMDRMPD:10.1; portalplayer.com: 1.0; 
+Supported operations:
+   0x1014
+   0x1015
+   0x1016
+   0x1017
+   0x1001
+   0x1002
+   0x1003
+   0x1004
+   0x1005
+   0x1006
+   0x1007
+   0x1008
+   0x1009
+   0x101b
+   0x100c
+   0x100d
+   0x100b
+   0x1012
+   0x100f
+   0x9801
+   0x9802
+   0x9803
+   0x9804
+   0x9805
+   0x9806
+   0x9810
+   0x9811
+   0x9201
+   0x9101
+   0x9102
+   0x9103
+   0x9104
+   0x9105
+   0x9106
+   0x9107
+   0x9108
+   0x9109
+   0x910a
+   0x910b
+Events supported:
+   None.
+Device Properties Supported:
+   0x5001: Battery Level
+   0xd101: Secure Time
+   0xd102: Device Certificate
+   0xd401: Synchronization Partner
+   0xd402: Device Friendly Name
+Playable File (Object) Types and Object Properties Supported:
+   3001: Association/Directory
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+      dc03: ProtectionStatus
+      dc09: DateModified
+   3009: MP3
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc8b: Track
+      dc99: OriginalReleaseDate
+      dc0a: Keywords
+      dc44: Name
+      dc46: Artist
+      dc8c: Genre
+      dc9a: AlbumName
+      dc89: Duration
+      de9a: AudioBitRate
+      de93: SampleRate
+      de94: NumberOfChannels
+      dc8a: Rating
+      dc91: UseCount
+      d901: unknown(d901)
+   3008: MS Wave
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc8b: Track
+      dc99: OriginalReleaseDate
+      dc0a: Keywords
+      dc44: Name
+      dc46: Artist
+      dc8c: Genre
+      dc9a: AlbumName
+      dc89: Duration
+      de9a: AudioBitRate
+      de93: SampleRate
+      de94: NumberOfChannels
+      dc8a: Rating
+      dc91: UseCount
+      d901: unknown(d901)
+   ba05: Abstract Audio Video Playlist
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+      dc03: ProtectionStatus
+      dc09: DateModified
+   ba03: Abstract Audio Album
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc0a: Keywords
+      dc44: Name
+      dc46: Artist
+      dc8c: Genre
+      dc81: RepresentativeSampleFormat
+      dc86: RepresentativeSampleData
+      dc83: RepresentativeSampleHeight
+      dc84: RepresentativeSampleWidth
+   b901: WMA
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc8b: Track
+      dc99: OriginalReleaseDate
+      dc0a: Keywords
+      dc44: Name
+      dc46: Artist
+      dc8c: Genre
+      dc9a: AlbumName
+      dc89: Duration
+      de9a: AudioBitRate
+      de93: SampleRate
+      de94: NumberOfChannels
+      de99: AudioWAVECodec
+      dc8a: Rating
+      dc91: UseCount
+      d901: unknown(d901)
+Special directories:
+   Default music folder: 0x00000000
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x00000000
+   Default video folder: 0x00000000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+MTP-specific device properties:
+   Owner name: Sansa e260
+   Total bytes on device: 3988194052 (3803 MB)
+   Free bytes on device: 2961216260 (2824 MB)
+   Storage description: "PPI NAND"
+   Volume label: "VOL0_Sansa_e260_00000000-00000000-0319b387-edfbf414-00000000"
+   Battery level 100 of 100 (100%)
+libmtp supported (playable) filetypes:
+   ISO MPEG Audio Layer 3
+   RIFF WAVE file
+   Microsoft Windows Media Audio
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20060627
+15:57:48Z#</VALUE><FLAG>DRM_CLK_SET</FLAG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE
+type="DEVICE"><DATA><UNIQUEID
+private="1">AAAAAAAAAACHsxkDFPT77QAAAAA=</UNIQUEID><PUBLICKEY
+private="1">AR66YamKIBXU+DTH1c3Hp6N+QAMww7WW3RY1CROIPppe4olxuaFEPw==</PUBLIC
+KEY><KEYDATA>+b8713YcGKFtxiQfdPJiC56hgYY=</KEYDATA></DATA><MSDRM_SIGNATURE_V
+ALUE>2SmZjpj7YN1KbN3vVJ3P3e0Z0knd6Cwl8e4ckVIS2DbMdlnPd21OJg==</MSDRM_SIGNATU
+RE_VALUE><SYMSIGNATURE>myYX8w0j3LJ3ps9rtSFOSDb4gY4=</SYMSIGNATURE></CERTIFIC
+ATE><FALLBACK><SECURITYVERSION>2.4.104.93</SECURITYVERSION><CERTIFICATE
+private="1">AR66YamKIBXU+DTH1c3Hp6N+QAMww7WW3RY1CROIPppe4olxuaFEPwIEaF3ImuAp
+oRMryFIUqED6nkYnGenqOCshcvAMIe7siWZZFHpJZAlHGYJ3</CERTIFICATE></FALLBACK><CE
+RTIFICATE
+type="GROUP"><DATA><NAME>Sansa e200 Series</NAME>
+   <MANUFACTURER>SanDisk Corporation</MANUFACTURER>
+   <MAKE>MicroStar Internatioal</MAKE>
+   <SECURITYLEVEL>2000</SECURITYLEVEL>
+   <FEATURES>
+        <CLOCK>2</CLOCK>
+          <SECURECLOCK>
+                <URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL>
+                <PUBLICKEY>
+!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==
+</PUBLICKEY>
+          </SECURECLOCK>
+        <METERING>1</METERING>
+        <LICENSE_ACQ>1</LICENSE_ACQ>
+        <LICENSE_SYNC>1</LICENSE_SYNC>
+        <ENCRYPTION>1</ENCRYPTION>
+    <SYMMETRIC_OPT>1</SYMMETRIC_OPT>
+    </FEATURES>
+    <LIMITS>
+        <MAXCHAINDEPTH>2</MAXCHAINDEPTH>
+        <MAXLICENSESIZE>10240</MAXLICENSESIZE>
+        <MAXHEADERSIZE>5120</MAXHEADERSIZE>
+   
+</LIMITS><PUBLICKEY>n4ahYQBHQ72FRfkzvy7BruWYDSilgfObLpzG0M8SNcfDGWvJhvbrhA==
+</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>lB5HvVHvcXLb0QiYfskM3Wu0eXtx9Tw0QI
+iCoKLhBIer0k3ablA4Zg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE
+type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>961</
+AUTH_ID><PUBLICKEY>vjU5IwzlqSww/T8ihHxTDmbw1hVeXXG8oNVvgBBYFinhSvQ1e0gNEQ==<
+/PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>3DU5omHe8sFqztXjYZ9vNr2/DkLabfYH5VI
+fWrf+XXA+RNASNDpnTg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE
+type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOg
+ktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATU
+RE_VALUE>sw5Aa1lOYIBJ6TcDvUa1Dxd2HicA66aj6r/YW2pFvx9L8Oiy/zawbQ==</MSDRM_SIG
+NATURE_VALUE></CERTIFICATE></DEVCERT>
+
+Device description WMPInfo.xml file:
+<DeviceInfo>
+    <WMP
+DeviceID="{127324EE-2106-4B27-BA8B-F3208325037E}"
+RelationshipID="{0282FE0B-E1AE-48ED-B630-7F801A3B147B}"/>
+</DeviceInfo>

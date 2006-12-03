@@ -1,0 +1,252 @@
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 0471
+   idProduct: 014b
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Device flags: 0x00000000
+Device info:
+   Manufacturer: Philips
+   Model: Philips PTP device
+   Device version: PP5022AF-05.40-PP07-05.40-MG02-00.01-DT, 2.1
+   Serial number:            95960199M
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com/WMDRMPD:10.1;microsoft.com/WMPPD: 10.0; portalplayer.com: 1.0; 
+Supported operations:
+   1014: Get device property description
+   1015: Get device property value
+   1001: Get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   101b: Get partial object
+   100c: Send object info
+   100d: Send object
+   100b: Delete object
+   1012: Set object protection
+   100f: Format storage
+   1016: Set device property value
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9805: Get object property list
+   9806: Set object property list
+   9810: Get object references
+   9811: Set object references
+   9201: Unknown(9201)
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Set meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Unknown(910a)
+   910b: Unknown(910b)
+Events supported:
+   None.
+Device Properties Supported:
+   0x5001: Battery Level
+   0xd101: Secure Time
+   0xd102: Device Certificate
+   0xd401: Synchronization Partner
+   0xd402: Device Friendly Name
+Playable File (Object) Types and Object Properties Supported:
+   3001: Association/Directory
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+   3009: MP3
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc8b: Track
+      dc99: OriginalReleaseDate
+      dc0a: Keywords
+      dc44: Name
+      dc46: Artist
+      dc8c: Genre
+      dc9a: AlbumName
+      dc89: Duration
+      de9a: AudioBitRate
+      de93: SampleRate
+      de94: NumberOfChannels
+      dc8a: Rating
+      dc91: UseCount
+      d901: unknown(d901)
+   3008: MS Wave
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc8b: Track
+      dc99: OriginalReleaseDate
+      dc0a: Keywords
+      dc44: Name
+      dc46: Artist
+      dc8c: Genre
+      dc9a: AlbumName
+      dc89: Duration
+      de9a: AudioBitRate
+      de93: SampleRate
+      de94: NumberOfChannels
+      dc8a: Rating
+      dc91: UseCount
+      d901: unknown(d901)
+   3801: JPEG
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc99: OriginalReleaseDate
+      dc44: Name
+      dc8a: Rating
+   ba05: Abstract Audio Video Playlist
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+   ba03: Abstract Audio Album
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc0a: Keywords
+      dc44: Name
+      dc46: Artist
+      dc8c: Genre
+      dc81: RepresentativeSampleFormat
+      dc86: RepresentativeSampleData
+      dc83: RepresentativeSampleHeight
+      dc84: RepresentativeSampleWidth
+   b901: WMA
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc8b: Track
+      dc99: OriginalReleaseDate
+      dc0a: Keywords
+      dc44: Name
+      dc46: Artist
+      dc8c: Genre
+      dc9a: AlbumName
+      dc89: Duration
+      de9a: AudioBitRate
+      de93: SampleRate
+      de94: NumberOfChannels
+      de99: AudioWAVECodec
+      dc8a: Rating
+      dc91: UseCount
+      d901: unknown(d901)
+Special directories:
+   Default music folder: 0x00050000
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x00030000
+   Default video folder: 0x00000000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: Philips GoGear
+   Synchronization partner: (NULL)
+   Total bytes on device: 29972721172 (28584 MB)
+   Free bytes on device: 29846908436 (28464 MB)
+   Storage description: "Philips HDD"
+   Volume label: "VOL0_GOGEAR_95960199M"
+   Battery level 100 of 100 (100%)
+libmtp supported (playable) filetypes:
+   ISO MPEG Audio Layer 3
+   RIFF WAVE file
+   JPEG file
+   Microsoft Windows Media Audio
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20051224
+06:36:39Z#</VALUE><FLAG>DRM_CLK_NOT_SET</FLAG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE
+type="DEVICE"><DATA><UNIQUEID
+private="1">ICAgICAgICAgICA5NTk2MDE5OU0=</UNIQUEID><PUBLICKEY
+private="1">jBhMqa0lBCpOYWsFK8LkfJAdLH945Kv0pd3mhfqmc5PKin6qmwxCFw==</PUBLICKEY><KEYDATA>29XvtV3A70+LV4diJUsGJ3wV4xI=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>tZUX1sBduQ4NrV/xMaAHIz7GfyNO8w5IUGIM2ORrAvMt0vz3qFL6Xg==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>O4YrsP5oIBYnxd98jdocdKXlYXw=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.102.77</SECURITYVERSION><CERTIFICATE
+private="1">jBhMqa0lBCpOYWsFK8LkfJAdLH945Kv0pd3mhfqmc5PKin6qmwxCFwIEZk3zHJZ2v8JcDBZ2lvcL07mtOM8xKZR8jikVFBru9znaDWLLXgIltZ1u</CERTIFICATE></FALLBACK><CERTIFICATE
+type="GROUP"><DATA><NAME>HDD63xx</NAME>
+    <MANUFACTURER>MiTAC Technology Corp.</MANUFACTURER>
+    <MAKE>Philips Mobile Infotainment</MAKE>
+    <DISTRIBUTOR>Koninklijke Philips Electronics
+N.V.</DISTRIBUTOR>
+    <MODEL>00</MODEL>
+    <SECURITYLEVEL>2000</SECURITYLEVEL>
+    <HARDWARE_VER_MAJOR>00</HARDWARE_VER_MAJOR>
+    <HARDWARE_VER_MINOR>10</HARDWARE_VER_MINOR>
+    <FIRMWARE_VER_MAJOR>01</FIRMWARE_VER_MAJOR>
+    <FIRMWARE_VER_MINOR>00</FIRMWARE_VER_MINOR>
+    <FEATURES>
+        <CLOCK>2</CLOCK>
+        <SECURECLOCK>
+           
+<URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL>
+           
+<PUBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY>
+        </SECURECLOCK>
+        <METERING>1</METERING>
+        <LICENSE_ACQ>0</LICENSE_ACQ>
+        <LICENSE_SYNC>1</LICENSE_SYNC>
+        <ENCRYPTION>1</ENCRYPTION>
+        <SYMMETRIC_OPT>1</SYMMETRIC_OPT>
+    </FEATURES>
+    <LIMITS>
+        <MAXCHAINDEPTH>5</MAXCHAINDEPTH>
+        <MAXLICENSESIZE>10240</MAXLICENSESIZE>
+        <MAXHEADERSIZE>5120</MAXHEADERSIZE>
+   
+</LIMITS><PUBLICKEY>iGsKDv08tZMvr6joKFlDDsGWT1IFtS8dN1g3w397Te6K1Vf0Hmliaw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>WRgzjEdWwFxP1Y+LXq/HmDjXynKlQ1kcEZ7E/iFslde05/pdH7CJHA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE
+type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>433</AUTH_ID><PUBLICKEY>yP70OqmSYjdJMD8v4GtqIwZM6Yfn0jm4klhiFfv2RTPSUXme8q6ahA==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>Crh93A1ab47cAuDaAwKCb6+07yd6fenkSfGt+UXP93LL7Ddz628RTA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE
+type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>Fzxv+lyKgidFdY65Dhau17C8iR0YQzvgVP+fSwalJLvym9QEyZdqEQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>

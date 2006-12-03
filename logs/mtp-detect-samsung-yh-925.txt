@@ -1,0 +1,219 @@
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   bMaxPacketSize0: 64
+   idVendor: 04e8
+   idProduct: 502f
+Device info:
+   Manufacturer: Samsung
+   Model: Samsung PTP Device
+   Device version: PP5020AF-05.22-PP05-05.22-PP05-05.22-DT, (Build 130)
+   Serial number: 3fff0040-0010c837-00000000-0000003f-00000000
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com/WMDRMPD: 10.1
+Supported operations:
+   0x1014
+   0x1015
+   0x1001
+   0x1002
+   0x1003
+   0x1004
+   0x1005
+   0x1007
+   0x1008
+   0x1009
+   0x101b
+   0x100c
+   0x100d
+   0x100b
+   0x1012
+   0x1016
+   0x9801
+   0x9802
+   0x9803
+   0x9805
+   0x9806
+   0x9810
+   0x9811
+   0x9101
+   0x9102
+   0x9103
+   0x9104
+   0x9105
+   0x9106
+   0x9107
+   0x9108
+   0x9109
+Events supported:
+   None.
+Device Properties Supported:
+   0x5001: Battery Level
+   0xd101: Secure Time
+   0xd102: Device Certificate
+   0xd402: Device Friendly Name
+Playable File (Object) Types and Object Properties Supported:
+   3001: Association/Directory
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      de93: SampleRate
+      de94: NumberOfChannels
+      de99: AudioWAVECodec
+      dc8a: Rating
+   3009: MP3
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc8b: Track
+      dc99: OriginalReleaseDate
+      dc44: Name
+      dc46: Artist
+      dc8c: Genre
+      dc9a: AlbumName
+      dc89: Duration
+      de9a: AudioBitRate
+      de93: SampleRate
+      de94: NumberOfChannels
+      de99: AudioWAVECodec
+      dc8a: Rating
+   3008: MS Wave
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc44: Name
+      dc89: Duration
+      de93: SampleRate
+      de94: NumberOfChannels
+      de99: AudioWAVECodec
+      dc8a: Rating
+   3801: JPEG
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      de93: SampleRate
+      de94: NumberOfChannels
+      de99: AudioWAVECodec
+      dc8a: Rating
+   ba05: Abstract Audio Video Playlist
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      de93: SampleRate
+      de94: NumberOfChannels
+      de99: AudioWAVECodec
+      dc8a: Rating
+   b901: WMA
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc8b: Track
+      dc99: OriginalReleaseDate
+      dc44: Name
+      dc46: Artist
+      dc8c: Genre
+      dc9a: AlbumName
+      dc89: Duration
+      de9a: AudioBitRate
+      de93: SampleRate
+      de94: NumberOfChannels
+      de99: AudioWAVECodec
+      dc8a: Rating
+Special directories:
+   Default music folder: 0x00040000
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x00000000
+   Default video folder: 0x00000000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: Samsung YH-925
+   Synchronization partner: (NULL)
+   Total bytes on device: 19990446080 (19064 MB)
+   Free bytes on device: 19888260096 (18966 MB)
+   Storage description: "PPI HDD"
+   Volume label: "NO NAME    "
+   Battery level 93 of 100 (93%)
+libmtp supported (playable) filetypes:
+   ISO MPEG Audio Layer 3
+   RIFF WAVE file
+   JPEG file
+   Microsoft Windows Media Audio
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20060203 
+21:15:40Z#</VALUE><FLAG>DRM_CLK_NOT_SET</FLAG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0">
+<CERTIFICATE type="DEVICE">
+<DATA><UNIQUEID 
+private="1">QAD/PzfIEAAAAAAAPwAAAAAAAAA=</UNIQUEID><PUBLICKEY 
+private="1">3a3gYfqlBf0VU9QGlqAwF6cq8R/wMVcZZAdhdYpXOzk2LLaqETC7ZA==</PUBLIC
+KEY><KEYDATA>oELEJ44dgHzjcEZSfQnf37FdY60=</KEYDATA></DATA><MSDRM_SIGNATURE_V
+ALUE>Fxzo92f839/8lM/9aeyWT0lIFmiwQmDOueraM3oBCHfTHBgDOGDICg==</MSDRM_SIGNATU
+RE_VALUE><SYMSIGNATURE>Y16XrFWkakK10EscljNwDyPaM5k=</SYMSIGNATURE></CERTIFIC
+ATE><FALLBACK><SECURITYVERSION>2.4.101.87</SECURITYVERSION><CERTIFICATE 
+private="1">3a3gYfqlBf0VU9QGlqAwF6cq8R/wMVcZZAdhdYpXOzk2LLaqETC7ZAIEZVemZT1N
+jbFZ7WahsQQA5H3rHOsWhSOI53bGHDrw2rkd/jGmz0524DR0</CERTIFICATE></FALLBACK>
+<CERTIFICATE type="GROUP">
+<DATA><SECURITYLEVEL>2000</SECURITYLEVEL><FEATURES><CLOCK>2</CL
+OCK><SECURECLOCK><URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL><PUB
+LICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY><
+/SECURECLOCK><METERING>1</METERING><LICENSE_ACQ>1</LICENSE_ACQ><LICENSE_SYNC
+>1</LICENSE_SYNC><ENCRYPTION>1</ENCRYPTION><SYMMETRIC_OPT>1</SYMMETRIC_OPT><
+/FEATURES><LIMITS><MAXCHAINDEPTH>2</MAXCHAINDEPTH><MAXLICENSESIZE>10240</MAX
+LICENSESIZE><MAXHEADERSIZE>5120</MAXHEADERSIZE></LIMITS><PUBLICKEY>fM517PmyQ
+hbdKTUZaKlz687KxTD0ttFPo5HcltpSVgN9iN6OSe4VGw==</PUBLICKEY></DATA><MSDRM_SIG
+NATURE_VALUE>BzCgrr7SYaHM6hPsHOj9wMfT9Dn7o2vL8GfGIVpR0lTf6JqM0kskZw==</MSDRM
+_SIGNATURE_VALUE>
+</CERTIFICATE>
+<CERTIFICATE type="AUTHORIZATION">
+<DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>187</
+AUTH_ID><PUBLICKEY>6ZDJjbq0X2Mjcil1dC4zpj1JsESE8OYoyMht8O+d4vbgXPha+hXYJw==<
+/PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>q+myxvwrxLK9va28WHcYeMYPKzOBSH/kH/e
+t5BGPhVjPybFaDKnzNQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE 
+type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOg
+ktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATU
+RE_VALUE>M3Km8EZAyFGkkJBZBFJdXekswz85u5tXZWyiUo7sCcVLlidoPHl5AA==</MSDRM_SIG
+NATURE_VALUE>
+</CERTIFICATE>
+</DEVCERT>
