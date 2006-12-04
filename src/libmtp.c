@@ -2261,8 +2261,6 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   uint32_t localph = parenthandle;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   uint8_t nonconsumable = 0x00U; /* By default it is consumable */
-  uint16_t *props = NULL;
-  uint32_t propcnt = 0;
   uint32_t i = 0;
 
   subcall_ret = check_if_file_fits(device, metadata->filesize);
@@ -2357,8 +2355,10 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     MTPPropList *proplist = NULL;
     MTPPropList *prop = NULL;
     MTPPropList *previous = NULL;
+    uint16_t *props = NULL;
+    uint32_t propcnt = 0;
 
-    /* Send an object property list of that is supported */
+    /* Send an object property list if that is supported */
 
     // default handle
     if (localph == 0)
