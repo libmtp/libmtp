@@ -164,7 +164,7 @@ ptp_pack_string(PTPParams *params, char *string, unsigned char* data, uint16_t o
 	for (i=0;i<packedlen && i< PTP_MAXSTRLEN; i++) {
 		htod16a(&data[offset+i*2+1],ucs2str[i]);
 	}
-  htod16a(&data[offset+i*2+1],0x0000);
+	htod16a(&data[offset+i*2+1],0x0000);
 
 	/* The returned length is in number of characters */
 	*len = (uint8_t) packedlen+1;
