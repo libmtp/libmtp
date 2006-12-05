@@ -92,13 +92,18 @@ int main (int argc, char **argv) {
     return 0;
   }
 
+  LIBMTP_filesampledata_t *albumart = LIBMTP_new_filesampledata_t();
+  albumart->data = imagedata;
+  albumart->size = filesize;
+  albumart->filetype = LIBMTP_FILETYPE_JPEG;
+
   LIBMTP_album_t *album = LIBMTP_new_album_t();
   album->name = albumname;
   album->no_tracks = idcount;
   album->tracks = ids;
   int ret = LIBMTP_Create_New_Album(device,album,0);
   if (ret == 0) {
-    ret = LIBMTP_Send_Representative_Sample(device,album->album_id,(uint8_t *) imagedata,filesize);
+    ret = LIBMTP_Send_Representative_Sample(device,album->album_id, albumart);
     if (ret != 0) {
       printf("Couldn't send album art\n");
     }

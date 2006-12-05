@@ -84,6 +84,7 @@ typedef struct LIBMTP_playlist_struct LIBMTP_playlist_t; /**< @see LIBMTP_playli
 typedef struct LIBMTP_album_struct LIBMTP_album_t; /**< @see LIBMTP_album_struct */
 typedef struct LIBMTP_folder_struct LIBMTP_folder_t; /**< @see LIBMTP_folder_t */
 typedef struct LIBMTP_object_struct LIBMTP_object_t; /**< @see LIBMTP_object_t */
+typedef struct LIBMTP_filesampledata_struct LIBMTP_filesampledata_t; /**< @see LIBMTP_filesample_t */
 
 /**
  * The callback type definition. Notice that a progress percentage ratio
@@ -223,6 +224,18 @@ struct LIBMTP_folder_struct {
   LIBMTP_folder_t *child; /**< Child folder or NULL if no children */
 };
 
+/**
+ * LIBMTP Object RepresentativeSampleData Structure
+ */
+struct LIBMTP_filesampledata_struct {
+  uint32_t width; /**< Width of sample if it is an image */
+  uint32_t height; /**< Height of sample if it is an image */
+  uint32_t duration; /**< Duration in milliseconds if it is audio */
+  LIBMTP_filetype_t filetype; /**< Filetype used for the sample */
+  uint64_t size; /**< Size of sample data in bytes */
+  char *data; /**< Sample data */
+};
+
 /** @} */
 
 /* Make functions available for C++ */
@@ -285,6 +298,10 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *, char const * const,
 int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *, int const,
 	                LIBMTP_file_t * const, LIBMTP_progressfunc_t const,
 			void const * const, uint32_t const);
+LIBMTP_filesampledata_t *LIBMTP_new_filesampledata_t(void);
+int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *, uint32_t const,
+                          LIBMTP_filesampledata_t *);
+
 /**
  * @}
  * @defgroup tracks The track management API.
@@ -356,8 +373,7 @@ int LIBMTP_Update_Album(LIBMTP_mtpdevice_t *, LIBMTP_album_t const * const);
  * @{
  */
 int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *, uint32_t);
-int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *, uint32_t const, 
-				uint8_t const * const, uint32_t const);
+
 /** @} */
 
 /* End of C++ exports */
