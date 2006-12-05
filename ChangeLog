@@ -1,3 +1,12 @@
+2006-11-16  Robert Reardon <rreardon@monkshatch.vispa.com>
+
+	* src/libmtp.c: abstract Send_Representative_Sample() so
+	  it can send samples for any format that supports it
+	* src/libmtp.h.in: same as above
+	* examples/albumart.c: altered to use new abstract function above
+	* example/thumb.c: sample program to upload thumbnails
+	* example/Makefile.am: add sample thumbnail program
+
 2006-12-03  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: check space on disk before sending
