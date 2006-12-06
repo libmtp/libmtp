@@ -112,6 +112,9 @@ int main (int argc, char **argv) {
     printf("Couldn't create album object\n");
   }
 
+  LIBMTP_destroy_filesampledata_t(albumart);
+  LIBMTP_destroy_album_t(album);
+
   LIBMTP_Release_Device(device);
   printf("OK.\n");
   return 0;

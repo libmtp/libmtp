@@ -299,6 +299,10 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *, int const,
 	                LIBMTP_file_t * const, LIBMTP_progressfunc_t const,
 			void const * const, uint32_t const);
 LIBMTP_filesampledata_t *LIBMTP_new_filesampledata_t(void);
+void LIBMTP_destroy_filesampledata_t(LIBMTP_filesampledata_t *);
+int LIBMTP_Get_Representative_Sample_Format(LIBMTP_mtpdevice_t *,
+                        LIBMTP_filetype_t const,
+                        LIBMTP_filesampledata_t **);
 int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *, uint32_t const,
                           LIBMTP_filesampledata_t *);
 

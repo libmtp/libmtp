@@ -3030,8 +3030,9 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	// neither will we change the filename.
       }
     }
-    return 0;
+    free(props);
   }
+  return 0;
 }
 
 /**
@@ -3548,8 +3549,8 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
       switch (props[i]) {
       case PTP_OPC_ObjectFileName:
 	prop = New_MTP_Prop_Entry();
-  prop->ObjectHandle = *newid;      
-  prop->property = PTP_OPC_ObjectFileName;
+	prop->ObjectHandle = *newid;      
+	prop->property = PTP_OPC_ObjectFileName;
 	prop->datatype = PTP_DTC_STR;
 	prop->propval.str = strdup(new_object.Filename);
 
@@ -3562,7 +3563,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_ProtectionStatus:
 	prop = New_MTP_Prop_Entry();
-  prop->ObjectHandle = *newid;
+	prop->ObjectHandle = *newid;
 	prop->property = PTP_OPC_ProtectionStatus;
 	prop->datatype = PTP_DTC_UINT16;
 	prop->propval.u16 = 0x0000U; /* Not protected */
@@ -3576,7 +3577,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_NonConsumable:
 	prop = New_MTP_Prop_Entry();
-  prop->ObjectHandle = *newid;
+	prop->ObjectHandle = *newid;
 	prop->property = PTP_OPC_NonConsumable;
 	prop->datatype = PTP_DTC_UINT8;
 	prop->propval.u8 = nonconsumable;
@@ -3590,7 +3591,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_Name:
 	prop = New_MTP_Prop_Entry();
-  prop->ObjectHandle = *newid;
+	prop->ObjectHandle = *newid;
 	prop->property = PTP_OPC_Name;
 	prop->datatype = PTP_DTC_STR;
 	prop->propval.str = strdup(name);
@@ -3982,6 +3983,120 @@ LIBMTP_filesampledata_t *LIBMTP_new_filesampledata_t(void)
   return new;
 }
 
+/**
+ * This destroys a file sample metadata type.
+ * @param sample the file sample metadata to be destroyed.
+ */
+void LIBMTP_destroy_filesampledata_t(LIBMTP_filesampledata_t * sample)
+{
+  if (sample == NULL) {
+    return;
+  }
+  if (sample->data != NULL) {
+    free(sample->data);
+  }
+  free(sample);
+}
+
+/**
+ * This routine figures out whether a certain filetype supports
+ * representative samples (small thumbnail images) or not. This
+ * typically applies to JPEG files, MP3 files and Album abstract
+ * playlists, but in theory any filetype could support representative
+ * samples.
+ * @param device a pointer to the device which is to be examined.
+ * @param the filetype to examine, and return the representative sample
+ *        properties for.
+ * @param sample this will contain a new sample type with the fields
+ *        filled in with suitable default values. For example, the
+ *        supported sample type will be set, the supported height and
+ *        width will be set to max values if it is an image sample,
+ *        and duration will also be given some suitable default value
+ *        which should not be exceeded on audio samples. If the 
+ *        device does not support samples for this filetype, this
+ *        pointer will be NULL. If it is not NULL, the user must
+ *        destroy this struct with <code>LIBMTP_destroy_filesampledata_t()</code>
+ *        after use.
+ * @return 0 on success, any other value means failure.
+ * @see LIBMTP_Send_Representative_Sample()
+ * @see LIBMTP_Create_New_Album()
+ */
+int LIBMTP_Get_Representative_Sample_Format(LIBMTP_mtpdevice_t *device,
+					    LIBMTP_filetype_t const filetype,
+					    LIBMTP_filesampledata_t ** sample)
+{
+  uint16_t ret;
+  PTPParams *params = (PTPParams *) device->params;
+  uint16_t *props = NULL;
+  uint32_t propcnt = 0;
+  int i;
+  // TODO: Get rid of these when we can properly query the device.
+  int support_data = 0;
+  int support_format = 0;
+  int support_height = 0;
+  int support_width = 0;
+  int support_duration = 0;
+
+  // Default to no type supported.
+  *sample = NULL;
+  
+  ret = ptp_mtp_getobjectpropssupported(params, map_libmtp_type_to_ptp_type(filetype), &propcnt, &props);
+  if (ret != PTP_RC_OK) {
+    printf("LIBMTP_Get_Representative_Sample_Format(): could not get object properties\n");
+    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+    return -1;
+  }
+  /*
+   * TODO: when walking through these object properties, make calls to
+   * a new function in ptp.h/ptp.c that can send the command 
+   * PTP_OC_MTP_GetObjectPropDesc to get max/min values of the properties
+   * supported.
+   */
+  for (i = 0; i < propcnt; i++) {
+    switch(props[i]) {
+    case PTP_OPC_RepresentativeSampleData:
+      support_data = 1;
+      break;
+    case PTP_OPC_RepresentativeSampleFormat:
+      support_format = 1;
+      break;
+    case PTP_OPC_RepresentativeSampleSize:
+      break;
+    case PTP_OPC_RepresentativeSampleHeight:
+      support_height = 1;
+      break;
+    case PTP_OPC_RepresentativeSampleWidth:
+      support_width = 1;
+      break;
+    case PTP_OPC_RepresentativeSampleDuration:
+      support_duration = 1;
+      break;
+    default:
+      break;
+    }
+  }
+  free(props);
+
+  /*
+   * TODO: figure out what format, max height and width, or duration is actually
+   * supported on this device.
+   */
+  if (support_data && support_format && support_height && support_width && !support_duration) {
+    // Something that supports height and width and not duration is likely to be JPEG
+    LIBMTP_filesampledata_t *retsam = LIBMTP_new_filesampledata_t();
+    retsam->filetype = LIBMTP_FILETYPE_JPEG;
+    retsam->width = 100;
+    retsam->height = 100;
+    *sample = retsam;
+  } else if (support_data && support_format && !support_height && !support_width && support_duration) {
+    // Another qualified guess
+    LIBMTP_filesampledata_t *retsam = LIBMTP_new_filesampledata_t();
+    retsam->filetype = LIBMTP_FILETYPE_MP3;
+    retsam->duration = 2000; // 2 seconds
+    *sample = retsam;
+  }
+  return 0;
+}
 
 /**
  * This routine sends representative sample data for an object.
@@ -3996,6 +4111,7 @@ LIBMTP_filesampledata_t *LIBMTP_new_filesampledata_t(void)
  *        sample data.
  * @param size number of bytes in the sample.
  * @return 0 on success, any other value means failure.
+ * @see LIBMTP_Get_Representative_Sample_Format()
  * @see LIBMTP_Create_New_Album()
  */
 int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
@@ -4007,7 +4123,9 @@ int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
   PTPPropertyValue propval;
   PTPObjectInfo oi;
   int i;
-
+  uint16_t *props = NULL;
+  uint32_t propcnt = 0;
+  int supported = 0;
 
   // get the file format for the object we're going to send representative data for
   ret = ptp_getobjectinfo(device->params, id, &oi);
@@ -4019,25 +4137,27 @@ int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
   }
 
   // check that we can send representative sample data for this object format
-  uint16_t *props = NULL;
-  uint32_t propcnt = 0;
   ret = ptp_mtp_getobjectpropssupported(params, oi.ObjectFormat, &propcnt, &props);
   if (ret != PTP_RC_OK) {
     printf("LIBMTP_Send_Representative_Sample(): could not get object properties\n");
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
-  int supported = 0;
+
   for (i = 0; i < propcnt; i++) {
-    if (props[i] == PTP_OPC_RepresentativeSampleData)
+    if (props[i] == PTP_OPC_RepresentativeSampleData) {
       supported = 1;
+      break;
+    }
   }
   if (!supported) {
+    free(props);
     printf("LIBMTP_Send_Representative_Sample(): object type doesn't support RepresentativeSampleData\n");
     return -1;
   }
+  free(props);
   
-  // go ahead and send the data
+  // Go ahead and send the data
   propval.a.count = sampledata->size;
   propval.a.v = malloc(sizeof(PTPPropertyValue) * sampledata->size);
   for (i = 0; i < sampledata->size; i++) {
@@ -4045,7 +4165,7 @@ int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
   }
   
   ret = ptp_mtp_setobjectpropvalue(params,id,PTP_OPC_RepresentativeSampleData,
-                            &propval,PTP_DTC_AUINT8);
+				   &propval,PTP_DTC_AUINT8);
   if (ret != PTP_RC_OK) {
     printf("LIBMTP_Send_Representative_Sample(): could not send sample data\n");
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
@@ -4053,6 +4173,13 @@ int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
     return -1;
   }
   free(propval.a.v);
+
+  /*
+   * TODO: Send Representative Sample Height, Width and Size here if it is an
+   * image (typically JPEG) thumbnail, send Duration and Size if it is an audio
+   * sample (MP3, WAV etc).
+   */
+
   return 0;
 }
 

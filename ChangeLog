@@ -1,3 +1,10 @@
+2006-12-06  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: extend the respresentative sample API a bit.
+	* src/libmtp.c: dito.
+	* examples/albumart.c: free memory after use.
+	* examples/thumb.c: dito.
+
 2006-12-04  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp.c: enable split headers on sending object lists again.

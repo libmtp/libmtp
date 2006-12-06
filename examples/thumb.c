@@ -88,6 +88,7 @@ int main (int argc, char **argv) {
   }
 
   free(imagedata);
+  LIBMTP_destroy_filesampledata_t(thumb);
 
   LIBMTP_Release_Device(device);
   printf("OK.\n");
