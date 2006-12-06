@@ -4,6 +4,7 @@
 	* src/libmtp.c: dito.
 	* examples/albumart.c: free memory after use.
 	* examples/thumb.c: dito.
+	* RELEASE this as libmtp 0.1.0!
 
 2006-12-04  Linus Walleij <triad@df.lth.se>
 
