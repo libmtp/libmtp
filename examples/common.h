@@ -12,5 +12,6 @@
 #include <unistd.h>
 #endif
 #else
+// Only if using MSVC...
 #include "..\windows\getopt.h"
 #endif
