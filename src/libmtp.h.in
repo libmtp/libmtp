@@ -149,6 +149,8 @@ struct LIBMTP_mtpdevice_struct {
   uint32_t default_zencast_folder;
   /** Default Album folder */
   uint32_t default_album_folder;
+  /** Default Text folder */
+  uint32_t default_text_folder;
   /** Per device iconv() converters, only used internally */
   void *cd;
 };

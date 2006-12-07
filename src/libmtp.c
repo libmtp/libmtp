@@ -594,7 +594,6 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   uint16_t ret;
   uint32_t i;
   LIBMTP_mtpdevice_t *tmpdevice;
-	uint8_t remaining_directories;
 
   // Allocate a parameter block
   params = (PTPParams *) malloc(sizeof(PTPParams));
@@ -672,6 +671,8 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   tmpdevice->default_organizer_folder = 0;
   tmpdevice->default_zencast_folder = 0;
   tmpdevice->default_album_folder = 0;
+  tmpdevice->default_text_folder = 0;
+
 
   /*
    * Then get the handles and try to locate the default folders.
@@ -683,8 +684,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
    * Remaining directories to get the handles to.
    * We can stop when done this to save time
    */
-  remaining_directories = 7;
-  for (i = 0; i < params->handles.n && remaining_directories > 0; i++) {
+  for (i = 0; i < params->handles.n; i++) {
     PTPObjectInfo oi;
     if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
       // Ignore non-folders
@@ -692,34 +692,34 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 	continue;
       if ( oi.Filename == NULL)
 	continue;
-      if (!strcmp(oi.Filename, "Music")) {
+      if (!strcmp(oi.Filename, "My Music") ||
+	  !strcmp(oi.Filename, "Music")) {
 	tmpdevice->default_music_folder = params->handles.Handler[i];
-	remaining_directories--;
 	continue;
       } else if ((!strcmp(oi.Filename, "My Playlists")) ||
-       			 (!strcmp(oi.Filename, "Playlists"))) {
+		 (!strcmp(oi.Filename, "Playlists"))) {
 	tmpdevice->default_playlist_folder = params->handles.Handler[i];
-	remaining_directories--;
 	continue;
-      } else if (!strcmp(oi.Filename, "Pictures")) {
+      } else if (!strcmp(oi.Filename, "My Pictures") ||
+		 !strcmp(oi.Filename, "Pictures")) {
 	tmpdevice->default_picture_folder = params->handles.Handler[i];
-	remaining_directories--;
 	continue;
-      } else if (!strcmp(oi.Filename, "Video")) {
+      } else if (!strcmp(oi.Filename, "My Video") ||
+		 !strcmp(oi.Filename, "Video")) {
 	tmpdevice->default_video_folder = params->handles.Handler[i];
-	remaining_directories--;
 	continue;
       } else if (!strcmp(oi.Filename, "My Organizer")) {
 	tmpdevice->default_organizer_folder = params->handles.Handler[i];
-	remaining_directories--;
 	continue;
       } else if (!strcmp(oi.Filename, "ZENcast")) {
 	tmpdevice->default_zencast_folder = params->handles.Handler[i];
-	remaining_directories--;
 	continue;
-      } else if (!strcmp(oi.Filename, "Albums")) {
+      } else if (!strcmp(oi.Filename, "My Albums") ||
+		 !strcmp(oi.Filename, "Albums")) {
 	tmpdevice->default_album_folder = params->handles.Handler[i];
-	remaining_directories--;
+	continue;
+      } else if (!strcmp(oi.Filename, "Text")) {
+	tmpdevice->default_text_folder = params->handles.Handler[i];
 	continue;
       }
     } else {
@@ -876,6 +876,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
   printf("   Default organizer folder: 0x%08x\n", device->default_organizer_folder);
   printf("   Default zencast folder: 0x%08x\n", device->default_zencast_folder);
   printf("   Default album folder: 0x%08x\n", device->default_album_folder);
+  printf("   Default text folder: 0x%08x\n", device->default_text_folder);
 }
 
 /**
@@ -2703,6 +2704,8 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	       of == PTP_OFC_MTP_vCard3 ||
 	       of == PTP_OFC_MTP_UndefinedCalendarItem) {
       localph = device->default_organizer_folder;
+    } else if (of == PTP_OFC_Text) {
+      localph = device->default_text_folder;
     }
   }
 
