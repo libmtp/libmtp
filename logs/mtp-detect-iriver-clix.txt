@@ -1,0 +1,342 @@
+USB low-level info:
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 4102
+   idProduct: 112a
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Device flags: 0x00000004
+Device info:
+   Manufacturer: iriver
+   Model: iriver clix
+   Device version: MTP-1.11-N-EST
+   Serial number: 533ffd92000000da3230303530313031
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com/WMDRMPD: 10.1; microsoft.com/WMPPD: 10.0;
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   100f: Format storage
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   101b: Get partial object
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9806: Set object property list
+   9808: Send object property list
+   9810: Get object references
+   9811: Set object references
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Unknown(910a)
+   910b: Unknown(910b)
+   9201: Unknown(9201)
+Events supported:
+   None.
+Device Properties Supported:
+   0x5001: Battery Level
+   0xd401: Synchronization Partner
+   0xd402: Device Friendly Name
+   0xd405: Device Icon
+   0xd101: Secure Time
+   0xd102: Device Certificate
+Playable File (Object) Types and Object Properties Supported:
+   3000: Undefined Type
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc44: Name
+      dc4f: NonConsumable
+      dc08: DateCreated
+   3001: Association/Directory
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc44: Name
+      dc4f: NonConsumable
+      dc08: DateCreated
+   3004: Text
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc44: Name
+      dc4f: NonConsumable
+      dc08: DateCreated
+   3009: MP3
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc44: Name
+      dc4f: NonConsumable
+      dc08: DateCreated
+      dc46: Artist
+      dc8b: Track
+      dc8c: Genre
+      dc9a: AlbumName
+      de93: SampleRate
+      de94: NumberOfChannels
+      de9a: AudioBitRate
+      de99: AudioWAVECodec
+      dc89: Duration
+      dc8a: Rating
+      dc91: UseCount
+      dc99: OriginalReleaseDate
+      dc9b: AlbumArtist
+      d901: unknown(d901)
+      de93: SampleRate
+      de9a: AudioBitRate
+      de99: AudioWAVECodec
+   300a: MS AVI
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc44: Name
+      dc4f: NonConsumable
+      dc08: DateCreated
+      dc87: Width
+      dc88: Height
+      de91: TotalBitRate
+      de9b: VideoFourCCCodec
+      de9c: VideoBitRate
+      de9d: FramesPerThousandSeconds
+   300c: ASF
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc44: Name
+      dc4f: NonConsumable
+      dc08: DateCreated
+      dc46: Artist
+      dc8b: Track
+      dc8c: Genre
+      dc9a: AlbumName
+      de93: SampleRate
+      de94: NumberOfChannels
+      de9a: AudioBitRate
+      de99: AudioWAVECodec
+      dc89: Duration
+      dc8a: Rating
+      dc91: UseCount
+      dc99: OriginalReleaseDate
+      dc9b: AlbumArtist
+      d901: unknown(d901)
+      de93: SampleRate
+      de9a: AudioBitRate
+      de99: AudioWAVECodec
+   3801: JPEG
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc44: Name
+      dc4f: NonConsumable
+      dc08: DateCreated
+      dc87: Width
+      dc88: Height
+      dc81: RepresentativeSampleFormat
+      dc83: RepresentativeSampleHeight
+      dc84: RepresentativeSampleWidth
+      dc86: RepresentativeSampleData
+   b901: WMA
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc44: Name
+      dc4f: NonConsumable
+      dc08: DateCreated
+      dc46: Artist
+      dc8b: Track
+      dc8c: Genre
+      dc9a: AlbumName
+      de93: SampleRate
+      de94: NumberOfChannels
+      de9a: AudioBitRate
+      de99: AudioWAVECodec
+      dc89: Duration
+      dc8a: Rating
+      dc91: UseCount
+      dc99: OriginalReleaseDate
+      dc9b: AlbumArtist
+      d901: unknown(d901)
+      de93: SampleRate
+      de9a: AudioBitRate
+      de99: AudioWAVECodec
+   b902: OGG
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc44: Name
+      dc4f: NonConsumable
+      dc08: DateCreated
+      dc46: Artist
+      dc8b: Track
+      dc8c: Genre
+      dc9a: AlbumName
+      de93: SampleRate
+      de94: NumberOfChannels
+      de9a: AudioBitRate
+      de99: AudioWAVECodec
+      dc89: Duration
+      dc8a: Rating
+      dc91: UseCount
+      dc99: OriginalReleaseDate
+      dc9b: AlbumArtist
+      d901: unknown(d901)
+      de93: SampleRate
+      de9a: AudioBitRate
+      de99: AudioWAVECodec
+   ba03: Abstract Audio Album
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc44: Name
+      dc4f: NonConsumable
+      dc08: DateCreated
+      dc9b: AlbumArtist
+      dc81: RepresentativeSampleFormat
+      dc83: RepresentativeSampleHeight
+      dc84: RepresentativeSampleWidth
+      dc86: RepresentativeSampleData
+      dc8c: Genre
+   ba05: Abstract Audio Video Playlist
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc44: Name
+      dc4f: NonConsumable
+      dc08: DateCreated
+   ba82: Unknown(ba82)
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc44: Name
+      dc4f: NonConsumable
+      dc08: DateCreated
+Special directories:
+   Default music folder: 0x00070000
+   Default playlist folder: 0x00060000
+   Default picture folder: 0x00090000
+   Default video folder: 0x00010000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00080000
+MTP-specific device properties:
+   Friendly name: iriver clix
+   Synchronization partner: (NULL)
+   Total bytes on device: 2005729280 (1912 MB)
+   Free bytes on device: 174833664 (166 MB)
+   Storage description: "iriver clix files"
+   Volume label: "dfpdnpcjaaaaaakncdadadfdadbdadbd"
+   Battery level 4 of 4 (100%)
+libmtp supported (playable) filetypes:
+   Text file
+   ISO MPEG Audio Layer 3
+   Audio Video Interleave
+   Microsoft Advanced Systems Format
+   JPEG file
+   Microsoft Windows Media Audio
+   Ogg container format
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20061207 06:41:47Z#</VALUE><FLAG>DRM_CLK_SET</FL
+AG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">Cg
+oKCgoKCgoKCgoKCgoKCgoKCgo=</UNIQUEID><PUBLICKEY private="1">7cVY8s5uhwcwJZBCKY0N
+zjwdqwa6eafIWthcYw/oCNPK6gB0fzxxNQ==</PUBLICKEY><KEYDATA>3TG4cp+JFr12+hWLOdquLkb
+rXf4=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>VyF9BrkcNPOlgrMPN7Ldd86Exk8CyzpcW7F
+ehyuAAtXTB4Ns5JXeZA==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>pY98DivHN3zgKe/0MPv2w
+Px2+7Q=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.102.3</SECURI
+TYVERSION><CERTIFICATE private="1">7cVY8s5uhwcwJZBCKY0Nzjwdqwa6eafIWthcYw/oCNPK6
+gB0fzxxNQIEZgPBcUIyUBSjrPOpAasS0zG/uY/xA2MSYeYMBFyXNJzlaYDonEw76411</CERTIFICATE
+></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>iRiver H10 Series</NAME><MANUF
+ACTURER>iRiver</MANUFACTURER><MAKE>iRiver</MAKE><DISTRIBUTOR>ReignCom</DISTRIBUT
+OR><MODEL>H10</MODEL><SECURITYLEVEL>2000</SECURITYLEVEL><HARDWARE_VER_MAJOR>1</H
+ARDWARE_VER_MAJOR><HARDWARE_VER_MINOR>0</HARDWARE_VER_MINOR><FIRMWARE_VER_MAJOR>
+1</FIRMWARE_VER_MAJOR><FIRMWARE_VER_MINOR>0</FIRMWARE_VER_MINOR><FEATURES><CLOCK
+>2</CLOCK><SECURECLOCK><URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL><P
+UBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY></S
+ECURECLOCK><METERING>1</METERING><LICENSE_ACQ>1</LICENSE_ACQ><LICENSE_SYNC>1</LI
+CENSE_SYNC><ENCRYPTION>1</ENCRYPTION><SYMMETRIC_OPT>1</SYMMETRIC_OPT></FEATURES>
+<LIMITS><MAXCHAINDEPTH>2</MAXCHAINDEPTH><MAXLICENSESIZE>10240</MAXLICENSESIZE><M
+AXHEADERSIZE>5120</MAXHEADERSIZE></LIMITS><PUBLICKEY>8jeq4PyJZUL8NpU2+/tgvUZC9ij
+n3RdlK3wd04Iws6oXHoA+D6vFfQ==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>HZ85tGf5V
+nDwKLGq2S0OlK/oJCKbCx3A2yudzMOv8ERwi6drHW5xOA==</MSDRM_SIGNATURE_VALUE></CERTIFI
+CATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL>
+<AUTH_ID>359</AUTH_ID><PUBLICKEY>DpMhgaZkXUFNFIs4KJe7S9MZYwuE1bBic6AV6wAc7Ir0Stf
+x8U+SKw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>GWscwHnDoSazgB+YOP2D7xrqDifWE
+FztujqAWwrkM7onynIcfOBBMQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE ty
+pe="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYa
+EEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>Q
+ndHdJ4ZoSgvokVCOWsqVnvuckGL5cn6Vrua0j4tcGBrjD9PgNd0AA==</MSDRM_SIGNATURE_VALUE><                                             /CERTIFICATE></DEVCERT>
