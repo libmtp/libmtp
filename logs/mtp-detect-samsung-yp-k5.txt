@@ -1,0 +1,218 @@
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 04e8
+   idProduct: 505a
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Device flags: 0x00000000
+Device info:
+   Manufacturer: Samsung Inc.
+   Model: Samsung YP-K5
+   Device version: Ver.1.03 WA JN
+   Serial number: 3464BDD400016951E712133FF0021F16ble.com: 1.0;
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com/WMDRMPD: 10.1;audible.com: 1.0;
+Supported operations:
+   1001: Get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   100f: Format storage
+   1010: Reset device
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   1017: Reset device property value
+   9810: Get object references
+   9811: Set object references
+   9802: Get object property description
+   9801: Get object properties supported
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9806: Set object property list
+   101b: Get partial object
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Set meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Unknown(910a)
+   910b: Unknown(910b)
+Events supported:
+   None.
+Device Properties Supported:
+   0x5001: Battery Level
+   0xd401: Synchronization Partner
+   0xd402: Device Friendly Name
+   0xd101: Secure Time
+   0xd102: Device Certificate
+Playable File (Object) Types and Object Properties Supported:
+   3009: MP3
+      dc97: EffectiveRating
+      dc8a: Rating
+      dc44: Name
+      dc01: StorageID
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc09: DateModified
+      dc4f: NonConsumable
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+      dc8b: Track
+      de9a: AudioBitRate
+      dc46: Artist
+      dc8c: Genre
+      de93: SampleRate
+      de94: NumberOfChannels
+      dc9a: AlbumName
+      dc89: Duration
+      de99: AudioWAVECodec
+      dc99: OriginalReleaseDate
+   b901: WMA
+      dc97: EffectiveRating
+      dc8a: Rating
+      dc44: Name
+      dc01: StorageID
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc09: DateModified
+      dc4f: NonConsumable
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+      dc8b: Track
+      de9a: AudioBitRate
+      dc46: Artist
+      dc8c: Genre
+      de93: SampleRate
+      de94: NumberOfChannels
+      dc9a: AlbumName
+      dc89: Duration
+      de99: AudioWAVECodec
+      dc99: OriginalReleaseDate
+   3801: JPEG
+      dc97: EffectiveRating
+      dc8a: Rating
+      dc44: Name
+      dc01: StorageID
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc09: DateModified
+      dc4f: NonConsumable
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+   3001: Association/Directory
+      dc97: EffectiveRating
+      dc8a: Rating
+      dc44: Name
+      dc01: StorageID
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc09: DateModified
+      dc4f: NonConsumable
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+   ba05: Abstract Audio Video Playlist
+      dc97: EffectiveRating
+      dc8a: Rating
+      dc44: Name
+      dc01: StorageID
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc09: DateModified
+      dc4f: NonConsumable
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+   3000: Undefined Type
+      dc97: EffectiveRating
+      dc8a: Rating
+      dc44: Name
+      dc01: StorageID
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc09: DateModified
+      dc4f: NonConsumable
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+   b802: Firmware
+      dc97: EffectiveRating
+      dc8a: Rating
+      dc44: Name
+      dc01: StorageID
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc09: DateModified
+      dc4f: NonConsumable
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+   ba03: Abstract Audio Album
+      dc97: EffectiveRating
+      dc8a: Rating
+      dc44: Name
+      dc01: StorageID
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc09: DateModified
+      dc4f: NonConsumable
+      dc02: ObjectFormat
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc03: ProtectionStatus
+      dc46: Artist
+      dc8c: Genre
+Special directories:
+   Default music folder: 0x20000003
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x20000004
+   Default video folder: 0x00000000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: Samsung YP-K5
+   Synchronization partner: Longhorn Sync Engine
+   Total bytes on device: 1035599872 (987 MB)
+   Free bytes on device: 995304899 (949 MB)
+   Storage description: "Internal Storage"
+   Volume label: "3464BDD400016951E712133FF0021F16gine"
+   Battery level 100 of 100 (100%)
+libmtp supported (playable) filetypes:
+   ISO MPEG Audio Layer 3
+   Microsoft Windows Media Audio
+   JPEG file
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#19700101 00:00:00Z#</VALUE><FLAG>DRM_CLK_NOT_SET</FLAG></DRMCLOCK>AG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">NGS91AABaVHnEhM/8AIfFgAAAAA=</UNIQUEID><PUBLICKEY private="1">lb+TWhA19FA+sD+8fEw8PAaJamIZIWURWRZ4x8z5tZ1cKDzwwQiVNg==</PUBLICKEY><KEYDATA>6EIECFXN5pF4h4/xXnBvWm0X3Ko=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>3ZpQV/dynAhxFjt2SFd1WBnuNTqRRT7NGJ6ur0OVfSjCU/+Ny588dg==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>NNMbAxV9x2JNUmpoTKn+EGL4zF0=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.104.243</SECURITYVERSION><CERTIFICATE private="1">lb+TWhA19FA+sD+8fEw8PAaJamIZIWURWRZ4x8z5tZ1cKDzwwQiVNgIEaPPAdAIRpqxdInYSUyr7KfBg4sZaQvPhyKizDQrsIfus/7CH5bxWeG5e</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>YP-K5</NAME><MANUFACTURER>Samsung</MANUFACTURER><MAKE>Samsung</MAKE><DISTRIBUTOR>WorldWideImporters</DISTRIBUTOR><MODEL>YP-K5</MODEL><SECURITYLEVEL>2000</SECURITYLEVEL><HARDWARE_VER_MAJOR>1</HARDWARE_VER_MAJOR><HARDWARE_VER_MINOR>0</HARDWARE_VER_MINOR><FIRMWARE_VER_MAJOR>1</FIRMWARE_VER_MAJOR><FIRMWARE_VER_MINOR>0</FIRMWARE_VER_MINOR><FEATURES><CLOCK>2</CLOCK><SECURECLOCK><URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL><PUBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY></SECURECLOCK><METERING>1</METERING><LICENSE_ACQ>0</LICENSE_ACQ><LICENSE_SYNC>1</LICENSE_SYNC><ENCRYPTION>0</ENCRYPTION><SYMMETRIC_OPT>1</SYMMETRIC_OPT></FEATURES><LIMITS><MAXCHAINDEPTH>2</MAXCHAINDEPTH><MAXLICENSESIZE>10240</MAXLICENSESIZE><MAXHEADERSIZE>5120</MAXHEADERSIZE></LIMITS><PUBLICKEY>QZt5UOW2pMsgDW5jPJeSa0oC3yE44+ivNp4dZps6Ofkk3LeLWwX0UQ==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>WUq0iNivBCcNDPHJa//l7X698WTcN1vmBtumyrUjwIxay9XBj0BiVA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>1111</AUTH_ID><PUBLICKEY>xXZnNTfy+kMtWdcE4fV1VKU6Q0XXOtOYmynpZzxuCWaMZQVNduZPLA==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>Le5pFakN0g5yVyafphKn3wWwqkaVys9oEvA+DzQM6yBInixDJPI8aQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>8h+2HXlPASFEa+MnBC6pt4Aikxl/0WuSJQc7cgHZCRQ0+rY02tpQCA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
+
