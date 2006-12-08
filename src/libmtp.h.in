@@ -74,6 +74,7 @@ typedef enum {
   LIBMTP_FILETYPE_WINEXEC,
   LIBMTP_FILETYPE_TEXT,
   LIBMTP_FILETYPE_HTML,
+  LIBMTP_FILETYPE_FIRMWARE,
   LIBMTP_FILETYPE_UNKNOWN
 } LIBMTP_filetype_t;
 typedef struct LIBMTP_device_entry_struct LIBMTP_device_entry_t; /**< @see LIBMTP_device_entry_struct */

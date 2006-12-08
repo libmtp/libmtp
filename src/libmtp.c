@@ -213,6 +213,7 @@ static void init_filemap()
   register_filetype("Undefined Windows executable file", LIBMTP_FILETYPE_WINEXEC, PTP_OFC_MTP_UndefinedWindowsExecutable);
   register_filetype("Text file", LIBMTP_FILETYPE_TEXT, PTP_OFC_Text);
   register_filetype("HTML file", LIBMTP_FILETYPE_HTML, PTP_OFC_HTML);
+  register_filetype("Firmware file", LIBMTP_FILETYPE_FIRMWARE, PTP_OFC_MTP_Firmware);
   register_filetype("Undefined filetype", LIBMTP_FILETYPE_UNKNOWN, PTP_OFC_Undefined);
 }
 
