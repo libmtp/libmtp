@@ -159,7 +159,7 @@ ptp_pack_string(PTPParams *params, char *string, unsigned char* data, uint16_t o
 		return;
 	}
 	
-	/* number of characters + leading 0 */
+	/* number of characters including terminating 0 (PTP standard confirmed) */
 	htod8a(&data[offset],packedlen+1);
 	for (i=0;i<packedlen && i< PTP_MAXSTRLEN; i++) {
 		htod16a(&data[offset+i*2+1],ucs2str[i]);
