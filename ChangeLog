@@ -1,4 +1,4 @@
-2006-12-04  Robert Reardon <rreardon@monkshatch.vispa.com>
+2006-12-12  Robert Reardon <rreardon@monkshatch.vispa.com>
 
 	* src/libmtp.c: Send_Representative_Sample() updated to
 	  set image height and width, or audio duration and size.
