@@ -4183,7 +4183,30 @@ int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
    * image (typically JPEG) thumbnail, send Duration and Size if it is an audio
    * sample (MP3, WAV etc).
    */
-
+  
+  /* Set the height and width if the sample is an image, otherwise just
+   * set the duration and size */
+  switch(sampledata->filetype) {
+  	case LIBMTP_FILETYPE_JPEG:
+  	case LIBMTP_FILETYPE_JFIF:
+  	case LIBMTP_FILETYPE_TIFF:
+  	case LIBMTP_FILETYPE_BMP:
+  	case LIBMTP_FILETYPE_GIF:
+  	case LIBMTP_FILETYPE_PICT:
+  	case LIBMTP_FILETYPE_PNG:
+		// For images, set the height and width
+		set_object_u32(device, id, PTP_OPC_RepresentativeSampleHeight, sampledata->height);
+  		set_object_u32(device, id, PTP_OPC_RepresentativeSampleWidth, sampledata->width);		
+  		break;
+  	default:
+  		// For anything not an image, set the duration and size
+		set_object_u32(device, id, PTP_OPC_RepresentativeSampleDuration, sampledata->duration);
+		set_object_u32(device, id, PTP_OPC_RepresentativeSampleSize, sampledata->size);
+		break;  		
+  }
+  
+  
+    
   return 0;
 }
 
