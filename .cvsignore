@@ -21,4 +21,5 @@ libmtp.sh
 stamp-h1
 libmtp.rules
 libmtp.usermap
+libmtp.fdi
 ltmain.sh
