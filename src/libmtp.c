@@ -3687,7 +3687,6 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
   PTPParams *params = (PTPParams *) device->params;
   char fname[256];
   uint8_t data[2];
-  PTPObjectInfo new_object;
 
   // Check if we can create an object of this type
   for ( i=0; i < params->deviceinfo.ImageFormats_len; i++ ) {
@@ -3701,29 +3700,21 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
-
   // add the new suffix if it isn's there
-  new_object.Filename = NULL;
+  fname[0] = '\0';
   if (strlen(name) > strlen(suffix)) {
     char const * const suff = &name[strlen(name)-strlen(suffix)];
     if (!strcmp(suff, suffix)) {
       // Home free.
-      new_object.Filename = (char *) name;
+      strncpy(fname, name, sizeof(fname));
     }
   }
   // If it didn't end with "<suffix>" then add that here.
-  if (new_object.Filename == NULL) {
+  if (fname[0] == '\0') {
     strncpy(fname, name, sizeof(fname)-strlen(suffix)-1);
     strcat(fname, suffix);
     fname[sizeof(fname)-1] = '\0';
-    new_object.Filename = fname;
   }
-
-  // Playlists created on device have size (uint32_t) -1 = 0xFFFFFFFFU, but setting:
-  // new_object.ObjectCompressedSize = 0; <- DOES NOT WORK! (return PTP_RC_GeneralError)
-  // new_object.ObjectCompressedSize = (uint32_t) -1; <- DOES NOT WORK! (return PTP_RC_MTP_Object_Too_Large)
-  new_object.ObjectCompressedSize = 1;
-  new_object.ObjectFormat = objectformat;
 
 #ifdef ENABLE_MTP_ENHANCED
   if (ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList)) {
@@ -3743,7 +3734,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	prop->ObjectHandle = *newid;      
 	prop->property = PTP_OPC_ObjectFileName;
 	prop->datatype = PTP_DTC_STR;
-	prop->propval.str = strdup(new_object.Filename);
+	prop->propval.str = strdup(fname);
 
 	if (previous != NULL)
 	  previous->next = prop;
@@ -3800,6 +3791,10 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 
     // TODO: try setting size to 0xFFFFFFFFU instead of 1 here, and move
     //       the 1-byte sending function below.
+    // Playlists created on device have size (uint32_t) -1 = 0xFFFFFFFFU, but setting:
+    // new_object.ObjectCompressedSize = 0; <- DOES NOT WORK! (return PTP_RC_GeneralError)
+    // new_object.ObjectCompressedSize = (uint32_t) -1; <- DOES NOT WORK! 
+    // (return PTP_RC_MTP_Object_Too_Large or 0xa809 whatever that is)
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, newid,
 				     objectformat, 1, proplist);
 
@@ -3821,10 +3816,17 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
       }
       return -1;
     }
+
   } else if (ptp_operation_issupported(params,PTP_OC_SendObjectInfo)) {
 #else // !ENABLE_MTP_ENHANCED
   {
 #endif // ENABLE_MTP_ENHANCED
+    PTPObjectInfo new_object;
+
+    new_object.Filename = fname;
+    new_object.ObjectCompressedSize = 1;
+    new_object.ObjectFormat = objectformat;
+
     // Create the object
     ret = ptp_sendobjectinfo(params, &store, &localph, newid, &new_object);
     if (ret != PTP_RC_OK) {
@@ -3853,7 +3855,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
-
+  
   // Update title
   // TODO: should not be needed for enhanced commands!
   ret = set_object_string(device, *newid, PTP_OPC_Name, name);
