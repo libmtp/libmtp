@@ -86,6 +86,7 @@ typedef struct LIBMTP_album_struct LIBMTP_album_t; /**< @see LIBMTP_album_struct
 typedef struct LIBMTP_folder_struct LIBMTP_folder_t; /**< @see LIBMTP_folder_t */
 typedef struct LIBMTP_object_struct LIBMTP_object_t; /**< @see LIBMTP_object_t */
 typedef struct LIBMTP_filesampledata_struct LIBMTP_filesampledata_t; /**< @see LIBMTP_filesample_t */
+typedef struct LIBMTP_devicestorage_struct LIBMTP_devicestorage_t; /**< @see LIBMTP_devicestorage_t */
 
 /**
  * The callback type definition. Notice that a progress percentage ratio
@@ -134,6 +135,7 @@ struct LIBMTP_mtpdevice_struct {
   void *usbinfo;
   /** The storage ID for this device */
   uint32_t storage_id;
+  LIBMTP_devicestorage_t *storage;
   /** The maximum battery level for this device */
   uint8_t maximum_battery_level;
   /** Default music folder */
@@ -239,6 +241,24 @@ struct LIBMTP_filesampledata_struct {
   char *data; /**< Sample data */
 };
 
+/**
+ * LIBMTP Device Storage structure
+ */
+struct LIBMTP_devicestorage_struct {
+  uint32_t id;
+  uint16_t StorageType;
+  uint16_t FilesystemType;
+  uint16_t AccessCapability;
+  uint64_t MaxCapacity;
+  uint64_t FreeSpaceInBytes;
+  uint64_t FreeSpaceInObjects;
+  char *StorageDescription;
+  char *VolumeIdentifier;
+  LIBMTP_devicestorage_t *next;
+  LIBMTP_devicestorage_t *prev;
+};
+  
+
 /** @} */
 
 /* Make functions available for C++ */
@@ -268,9 +288,6 @@ char *LIBMTP_Get_Friendlyname(LIBMTP_mtpdevice_t*);
 int LIBMTP_Set_Friendlyname(LIBMTP_mtpdevice_t*, char const * const);
 char *LIBMTP_Get_Syncpartner(LIBMTP_mtpdevice_t*);
 int LIBMTP_Set_Syncpartner(LIBMTP_mtpdevice_t*, char const * const);
-int LIBMTP_Get_Storageinfo(LIBMTP_mtpdevice_t *, uint64_t * const,
-			uint64_t * const, char ** const storage_description,
-			char ** const volume_label);
 int LIBMTP_Format_Storage(LIBMTP_mtpdevice_t *);
 int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *,
 			    uint8_t * const,
@@ -278,6 +295,12 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *,
 int LIBMTP_Get_Secure_Time(LIBMTP_mtpdevice_t *, char ** const);
 int LIBMTP_Get_Device_Certificate(LIBMTP_mtpdevice_t *, char ** const);
 int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *, uint16_t ** const, uint16_t * const);
+
+#define LIBMTP_STORAGE_SORTBY_NOTSORTED 0
+#define LIBMTP_STORAGE_SORTBY_FREESPACE 1
+#define LIBMTP_STORAGE_SORTBY_MAXSPACE  2
+
+int LIBMTP_Get_Storage(LIBMTP_mtpdevice_t *, int const);
 
 /**
  * @}
