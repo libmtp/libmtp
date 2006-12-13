@@ -1,0 +1,142 @@
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 4102
+   idProduct: 2101
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Device flags: 0x00000000
+Device info:
+   Manufacturer: iriver
+   Model: iriver Device
+   Device version: PP5020AF-01.02-FRE-MT-DT, (Build 129)
+   Serial number: 3fff0040-0010c837-00000000-0000003f-36310000
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com/WMDRMPD: 10.1
+Supported operations:
+   1014: Get device property description
+   1015: Get device property value
+   1001: Get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   101b: Get partial object
+   100c: Send object info
+   100d: Send object
+   100b: Delete object
+   1012: Set object protection
+   1016: Set device property value
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9805: Get object property list
+   9806: Set object property list
+   9810: Get object references
+   9811: Set object references
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Set meter response
+   9108: Clean data store
+   9109: Get license state
+Events supported:
+   None.
+Device Properties Supported:
+   0x5001: Battery Level
+   0xd101: Secure Time
+   0xd102: Device Certificate
+   0xd402: Device Friendly Name
+Playable File (Object) Types and Object Properties Supported:
+   3001: Association/Directory
+   3009: MP3
+   3008: MS Wave
+   3801: JPEG
+   ba05: Abstract Audio Video Playlist
+   b901: WMA
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc8b: Track
+      dc99: OriginalReleaseDate
+      dc44: Name
+      dc46: Artist
+      dc8c: Genre
+      dc9a: AlbumName
+      dc89: Duration
+      de9a: AudioBitRate
+      de93: SampleRate
+      de94: NumberOfChannels
+      de99: AudioWAVECodec
+      dc8a: Rating
+Special directories:
+   Default music folder: 0x00000000
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x00000000
+   Default video folder: 0x00000000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: iriver H10 20GC
+   Synchronization partner: (NULL)
+   Total bytes on device: 19994066944 (19067 MB)
+   Free bytes on device: 1643121664 (1567 MB)
+   Storage description: "iriver HDD"
+   Volume label: "H10_20GB"
+   Battery level 176 of 100 (176%)
+libmtp supported (playable) filetypes:
+   ISO MPEG Audio Layer 3
+   RIFF WAVE file
+   JPEG file
+   Microsoft Windows Media Audio
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20061030
+20:30:04Z#</VALUE><FLAG>DRM_CLK_NEEDS_REFRESH</FLAG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID
+private="1">QAD/PzfIEAAAAAAAPwAAAAAAMTY=</UNIQUEID><PUBLICKEY
+private="1">FQBk2GzllIEzGlDOml7u6bqep4er94r3KKYJuEKcsn1ODyL2z8D3Ew==</PUBLICKEY>
+<KEYDATA>KrDm/ouWvbmZJxFfUwGxeoUglus=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>S3Z
+Iz9wduynaJZaZvQgs/NqGGxJL1mGTieY2A1rYkn0+fUMUc6Djcw==</MSDRM_SIGNATURE_VALUE><SY
+MSIGNATURE>261d87MS77pUbix3Cnfuq5eNH94=</SYMSIGNATURE></CERTIFICATE><FALLBACK><S
+ECURITYVERSION>2.4.101.59</SECURITYVERSION><CERTIFICATE private="1">FQBk2GzllIEz
+GlDOml7u6bqep4er94r3KKYJuEKcsn1ODyL2z8D3EwIEZTsZnkCC5cxjRgmjXeaAMuNdn2RsNykcD+hj
+KESFyhpVZDJoyWVin7RD</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><NA
+ME>iRiver H10 Series</NAME><MANUFACTURER>iRiver</MANUFACTURER><MAKE>iRiver</MAKE
+><DISTRIBUTOR>ReignCom</DISTRIBUTOR><MODEL>H10</MODEL><SECURITYLEVEL>2000</SECUR
+ITYLEVEL><HARDWARE_VER_MAJOR>1</HARDWARE_VER_MAJOR><HARDWARE_VER_MINOR>0</HARDWA
+RE_VER_MINOR><FIRMWARE_VER_MAJOR>1</FIRMWARE_VER_MAJOR><FIRMWARE_VER_MINOR>0</FI
+RMWARE_VER_MINOR><FEATURES><CLOCK>2</CLOCK><SECURECLOCK><URL>http://go.microsoft
+.com/fwlink/?LinkId=25817</URL
+ ><PUBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY
+></SECURECLOCK><METERING>1</METERING><LICENSE_ACQ>1</LICENSE_ACQ><LICENSE_SYNC>1
+</LICENSE_SYNC><ENCRYPTION>1</ENCRYPTION><SYMMETRIC_OPT>1</SYMMETRIC_OPT></FEATU
+RES><LIMITS><MAXCHAINDEPTH>2</MAXCHAINDEPTH><MAXLICENSESIZE>10240</MAXLICENSESIZ
+E><MAXHEADERSIZE>5120</MAXHEADERSIZE></LIMITS><PUBLICKEY>anriOiRlE5HtYKyjesddaEu
+A7Hha3F3gn0l1J3T6lzRRwX9TKrGmWA==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>iZeXW
+IVwHQsIfNuYamP+4+/emoVa+qDvr6rtxKFvY3tw9YxKtRveSA==</MSDRM_SIGNATURE_VALUE></CER
+TIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLE
+VEL><AUTH_ID>159</AUTH_ID><PUBLICKEY>uTJijzQAocsraT8vDT4rY4klgmorx3ejgic57TT4scC
+JSpSnj5YkaA==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>GspA/RcLJHtiUqdOwiGn0DfGo
+wAyKCKxBSNdFD20ArIxGnT+SqwQeg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICAT
+E type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgkt
+nbYaEEi4teCse!gz6RvTPuC!zizKJl
+ pU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>SGUL1ilPv1AhZ4LcGX0d2Da4QD
+XtUmpZCbsbD4NRLzgHHU6zEKzdYA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
