@@ -38,10 +38,6 @@ int main (int argc, char **argv)
   LIBMTP_mtpdevice_t *device;
   LIBMTP_file_t *files;
   uint32_t xmlfileid = 0;
-  uint64_t totalbytes;
-  uint64_t freebytes;
-  char *storage_description;
-  char *volume_label;
   char *friendlyname;
   char *syncpartner;
   char *sectime;

@@ -168,7 +168,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Toshiba Gigabeat S", 0x0930, 0x0010, DEVICE_FLAG_NONE },
   // Reported by Rob Brown
   { "Toshiba Gigabeat P10", 0x0930, 0x0011, DEVICE_FLAG_NONE },
-
+  
   /*
    * Archos
    */
@@ -194,7 +194,14 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   /*
    * Sirius
    */
-  { "Sirius Stiletto", 0x18f6, 0x0102, DEVICE_FLAG_NONE }
+  { "Sirius Stiletto", 0x18f6, 0x0102, DEVICE_FLAG_NONE },
+
+  /*
+   * Canon
+   * This is actually a camera, but it has a Microsoft device descriptor
+   * and reports itself as supporting the MTP extension.
+   */
+  {"Canon PowerShot A640 (PTP/MTP mode)", 0x04a9, 0x3139, DEVICE_FLAG_NONE }
   
 };
 static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
