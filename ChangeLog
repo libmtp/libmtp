@@ -3,7 +3,7 @@
 	* src/ptp.c: add 0xD901 flag as BuyNow property of objects.
 	* src/ptp.h: ditto.
 
-2006-12-12  Daniel <danielw@iinet.net.au>
+2006-12-12  Daniel Williams <danielw@iinet.net.au>
 
 	* src/libmtp.h.in: revamped storage API.
 	* src/libmtp.c: dito.
@@ -173,7 +173,7 @@
 	* examples/newplaylist.c: demo program for creating new playlists
 	* examples/Makefile.am: add demo newplaylists program
 
-2006-11-19  Daniel <danielw@iinet.net.au>
+2006-11-19  Daniel Williams <danielw@iinet.net.au>
 
 	* src/libusb-glue.c: fix error on reconnect.
 	
