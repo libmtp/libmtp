@@ -3712,7 +3712,7 @@ struct {
 	{PTP_OPC_KeyFrameDistance,"KeyFrameDistance"},
 	{PTP_OPC_BufferSize,"BufferSize"},
 	{PTP_OPC_EncodingQuality,"EncodingQuality"},
-	{PTP_OPC_BuyNow,"BuyNow"},
+	{PTP_OPC_BuyFlag,"BuyFlag"},
 };
 
 int
