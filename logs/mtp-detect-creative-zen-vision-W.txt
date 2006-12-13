@@ -1,0 +1,388 @@
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 255
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 041e
+   idProduct: 4153
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Device flags: 0x00000000
+Device info:
+   Manufacturer: Creative Technology Ltd
+   Model: Creative ZEN Vision W
+   Device version: 1.01.02_0.00.24
+   Serial number: 00023C03E4549F5DE96ACF53DF68FBB4
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0;microsoft.com/WMPPD: 10.0;microsoft.com/WMDRMPD: 10.1;audible.com: 1.0; 
+Supported operations:
+   1001: Get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1007: Get object handles
+   100c: Send object info
+   100d: Send object
+   100f: Format storage
+   1014: Get device property description
+   1015: Get device property value
+   1006: Get number of objects
+   1008: Get object info
+   1009: Get object
+   100b: Delete object
+   1010: Reset device
+   1016: Set device property value
+   1017: Reset device property value
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9806: Set object property list
+   9808: Send object property list
+   9807: Get interdependent property description
+   9810: Get object references
+   9811: Set object references
+   9201: Unknown(9201)
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Set meter response
+   9108: Clean data store
+   9109: Get license state
+Events supported:
+   None.
+Device Properties Supported:
+   0x5001: Battery Level
+   0xd401: Synchronization Partner
+   0xd402: Device Friendly Name
+   0xd101: Secure Time
+   0xd102: Device Certificate
+   0xd201: Unknown property
+Playable File (Object) Types and Object Properties Supported:
+   3009: MP3
+      de99: AudioWAVECodec
+      de9a: AudioBitRate
+      dc46: Artist
+      dc89: Duration
+      dc8b: Track
+      dc8c: Genre
+      dc99: OriginalReleaseDate
+      dc9a: AlbumName
+      de93: SampleRate
+      de94: NumberOfChannels
+      de95: AudioBitDepth
+      dc91: UseCount
+      dc8a: Rating
+      d901: unknown(d901)
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   b901: WMA
+      de99: AudioWAVECodec
+      de9a: AudioBitRate
+      dc46: Artist
+      dc89: Duration
+      dc8b: Track
+      dc8c: Genre
+      dc99: OriginalReleaseDate
+      dc9a: AlbumName
+      de93: SampleRate
+      de94: NumberOfChannels
+      de95: AudioBitDepth
+      dc91: UseCount
+      dc8a: Rating
+      d901: unknown(d901)
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   3008: MS Wave
+      dc46: Artist
+      dc89: Duration
+      dc8b: Track
+      dc8c: Genre
+      dc99: OriginalReleaseDate
+      dc9a: AlbumName
+      de93: SampleRate
+      de94: NumberOfChannels
+      de95: AudioBitDepth
+      dc91: UseCount
+      dc8a: Rating
+      d901: unknown(d901)
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   b904: Audible.com Codec
+      da01: unknown(da01)
+      da02: unknown(da02)
+      da03: unknown(da03)
+      dc46: Artist
+      dc89: Duration
+      dc8b: Track
+      dc8c: Genre
+      dc99: OriginalReleaseDate
+      dc9a: AlbumName
+      de93: SampleRate
+      de94: NumberOfChannels
+      de95: AudioBitDepth
+      dc91: UseCount
+      dc8a: Rating
+      d901: unknown(d901)
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   ba05: Abstract Audio Video Playlist
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   ba01: Abstract Multimedia Album
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   ba03: Abstract Audio Album
+      dc86: RepresentativeSampleData
+      dc81: RepresentativeSampleFormat
+      dc83: RepresentativeSampleHeight
+      dc82: RepresentativeSampleSize
+      dc84: RepresentativeSampleWidth
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   3801: JPEG
+      dc88: Height
+      dc86: RepresentativeSampleData
+      dc81: RepresentativeSampleFormat
+      dc83: RepresentativeSampleHeight
+      dc82: RepresentativeSampleSize
+      dc84: RepresentativeSampleWidth
+      dc87: Width
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   300a: MS AVI
+      de99: AudioWAVECodec
+      de9a: AudioBitRate
+      de9d: FramesPerThousandSeconds
+      dc88: Height
+      de91: TotalBitRate
+      de9b: VideoFourCCCodec
+      de9c: VideoBitRate
+      dc87: Width
+      dc86: RepresentativeSampleData
+      dc81: RepresentativeSampleFormat
+      dc83: RepresentativeSampleHeight
+      dc82: RepresentativeSampleSize
+      dc84: RepresentativeSampleWidth
+      dc89: Duration
+      de93: SampleRate
+      de94: NumberOfChannels
+      de95: AudioBitDepth
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   300c: ASF
+      de99: AudioWAVECodec
+      de9a: AudioBitRate
+      de9d: FramesPerThousandSeconds
+      dc88: Height
+      de91: TotalBitRate
+      de9b: VideoFourCCCodec
+      de9c: VideoBitRate
+      dc87: Width
+      dc86: RepresentativeSampleData
+      dc81: RepresentativeSampleFormat
+      dc83: RepresentativeSampleHeight
+      dc82: RepresentativeSampleSize
+      dc84: RepresentativeSampleWidth
+      dc89: Duration
+      de93: SampleRate
+      de94: NumberOfChannels
+      de95: AudioBitDepth
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   b982: MP4
+      de99: AudioWAVECodec
+      de9a: AudioBitRate
+      de9d: FramesPerThousandSeconds
+      dc88: Height
+      de91: TotalBitRate
+      de9b: VideoFourCCCodec
+      de9c: VideoBitRate
+      dc87: Width
+      dc86: RepresentativeSampleData
+      dc81: RepresentativeSampleFormat
+      dc83: RepresentativeSampleHeight
+      dc82: RepresentativeSampleSize
+      dc84: RepresentativeSampleWidth
+      dc89: Duration
+      de93: SampleRate
+      de94: NumberOfChannels
+      de95: AudioBitDepth
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   300b: MPEG
+      de99: AudioWAVECodec
+      de9a: AudioBitRate
+      de9d: FramesPerThousandSeconds
+      dc88: Height
+      de91: TotalBitRate
+      de9b: VideoFourCCCodec
+      de9c: VideoBitRate
+      dc87: Width
+      dc86: RepresentativeSampleData
+      dc81: RepresentativeSampleFormat
+      dc83: RepresentativeSampleHeight
+      dc82: RepresentativeSampleSize
+      dc84: RepresentativeSampleWidth
+      dc89: Duration
+      de93: SampleRate
+      de94: NumberOfChannels
+      de95: AudioBitDepth
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   b981: WMV
+      de99: AudioWAVECodec
+      de9a: AudioBitRate
+      de9d: FramesPerThousandSeconds
+      dc88: Height
+      de91: TotalBitRate
+      de9b: VideoFourCCCodec
+      de9c: VideoBitRate
+      dc87: Width
+      dc86: RepresentativeSampleData
+      dc81: RepresentativeSampleFormat
+      dc83: RepresentativeSampleHeight
+      dc82: RepresentativeSampleSize
+      dc84: RepresentativeSampleWidth
+      dc89: Duration
+      de93: SampleRate
+      de94: NumberOfChannels
+      de95: AudioBitDepth
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   bb83: vCard3
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   be03: vCalendar2
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   3000: Undefined Type
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   3001: Association/Directory
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   b802: Firmware
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+Special directories:
+   Default music folder: 0x0000005c
+   Default playlist folder: 0x00000060
+   Default picture folder: 0x0000006c
+   Default video folder: 0x00000070
+   Default organizer folder: 0x00000068
+   Default zencast folder: 0x00000078
