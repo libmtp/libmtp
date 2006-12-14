@@ -1,3 +1,9 @@
+2006-12-14  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: make get_first_storage_freespace() always query
+	  the first storage when the space is requested. And some other
+	  janitorial stuff.
+	
 2006-12-13  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: one more device.

@@ -723,7 +723,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 
   tmpdevice->storage = NULL;
   if (LIBMTP_Get_Storage(tmpdevice,LIBMTP_STORAGE_SORTBY_NOTSORTED) == -1) {
-    printf("LIBMTP_Get_First_Device: Get Storage information failed");
+    printf("LIBMTP_Get_First_Device(): Get Storage information failed");
   }
   return tmpdevice;
 
@@ -800,19 +800,20 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
  */
 static void free_storage_list(LIBMTP_mtpdevice_t *device)
 {
-  LIBMTP_devicestorage_t *libmtpstorage;
-  LIBMTP_devicestorage_t *libmtpstoragenext;
+  LIBMTP_devicestorage_t *storage;
+  LIBMTP_devicestorage_t *tmp;
 
-  libmtpstorage = device->storage;
-  while(libmtpstorage != NULL) {
-    libmtpstoragenext = libmtpstorage->next;
-    if (libmtpstorage->StorageDescription != NULL)
-      free(libmtpstorage->StorageDescription);
-    if (libmtpstorage->VolumeIdentifier != NULL)
-      free(libmtpstorage->VolumeIdentifier);
-
-    free(libmtpstorage);
-    libmtpstorage = libmtpstoragenext;
+  storage = device->storage;
+  while(storage != NULL) {  
+    if (storage->StorageDescription != NULL) {
+      free(storage->StorageDescription);
+    }
+    if (storage->VolumeIdentifier != NULL) {
+      free(storage->VolumeIdentifier);
+    }
+    tmp = storage;
+    storage = storage->next;
+    free(tmp);
   }
   device->storage = NULL;
 
@@ -915,10 +916,36 @@ static uint32_t get_first_storageid(LIBMTP_mtpdevice_t *device)
 static int get_first_storage_freespace(LIBMTP_mtpdevice_t *device,uint64_t *freespace)
 {
   LIBMTP_devicestorage_t *storage = device->storage;
+  PTPParams *params = (PTPParams *) device->params;
 
-  if(storage == NULL)
+  if(storage == NULL) {
     return -1;
-  if(storage->FreeSpaceInBytes == 0xFFFFFFFFU)
+  }
+  // Always query the device about this, since some models explicitly
+  // needs that.
+  if (ptp_operation_issupported(params,PTP_OC_GetStorageInfo)) {
+    PTPStorageInfo storageInfo;
+    
+    if (ptp_getstorageinfo(params, storage->id, &storageInfo) != PTP_RC_OK) {
+      printf("get_first_storage_freespace(): Could not get storage info\n");
+      return -1;
+    }
+    if (storage->StorageDescription != NULL) {
+      free(storage->StorageDescription);
+    }
+    if (storage->VolumeIdentifier != NULL) {
+      free(storage->VolumeIdentifier);
+    }
+    storage->StorageType = storageInfo.StorageType;
+    storage->FilesystemType = storageInfo.FilesystemType;
+    storage->AccessCapability = storageInfo.AccessCapability;
+    storage->MaxCapacity = storageInfo.MaxCapability;
+    storage->FreeSpaceInBytes = storageInfo.FreeSpaceInBytes;
+    storage->FreeSpaceInObjects = storageInfo.FreeSpaceInImages;
+    storage->StorageDescription = storageInfo.StorageDescription;
+    storage->VolumeIdentifier = storageInfo.VolumeLabel;
+  }
+  if(storage->FreeSpaceInBytes == (uint64_t) -1)
     return -1;
   *freespace = storage->FreeSpaceInBytes;
   return 0;
@@ -935,7 +962,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
   int i;
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
-  LIBMTP_devicestorage_t *libmtpstorage = device->storage;
+  LIBMTP_devicestorage_t *storage = device->storage;
 
   printf("USB low-level info:\n");
   dump_usbinfo(ptp_usb);
@@ -1000,19 +1027,19 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
     }
   }
 
-  if(libmtpstorage != NULL && ptp_operation_issupported(params,PTP_OC_GetStorageInfo)) {
+  if(storage != NULL && ptp_operation_issupported(params,PTP_OC_GetStorageInfo)) {
     printf("Storage Devices:\n");
-    while(libmtpstorage != NULL) {
-      printf("   StorageID: 0x%08x\n",libmtpstorage->id);
-      printf("      StorageType: 0x%04x\n",libmtpstorage->StorageType);
-      printf("      FilesystemType: 0x%04x\n",libmtpstorage->FilesystemType);
-      printf("      AccessCapability: 0x%04x\n",libmtpstorage->AccessCapability);
-      printf("      MaxCapacity: %lld\n",libmtpstorage->MaxCapacity);
-      printf("      FreeSpaceInBytes: %lld\n",libmtpstorage->FreeSpaceInBytes);
-      printf("      FreeSpaceInObjects: %lld\n",libmtpstorage->FreeSpaceInObjects);
-      printf("      StorageDescription: %s\n",libmtpstorage->StorageDescription);
-      printf("      VolumeIdentifier: %s\n",libmtpstorage->VolumeIdentifier);
-      libmtpstorage = libmtpstorage->next;
+    while(storage != NULL) {
+      printf("   StorageID: 0x%08x\n",storage->id);
+      printf("      StorageType: 0x%04x\n",storage->StorageType);
+      printf("      FilesystemType: 0x%04x\n",storage->FilesystemType);
+      printf("      AccessCapability: 0x%04x\n",storage->AccessCapability);
+      printf("      MaxCapacity: %lld\n",storage->MaxCapacity);
+      printf("      FreeSpaceInBytes: %lld\n",storage->FreeSpaceInBytes);
+      printf("      FreeSpaceInObjects: %lld\n",storage->FreeSpaceInObjects);
+      printf("      StorageDescription: %s\n",storage->StorageDescription);
+      printf("      VolumeIdentifier: %s\n",storage->VolumeIdentifier);
+      storage = storage->next;
     }
   }
 
@@ -1438,15 +1465,15 @@ int LIBMTP_Get_Storage(LIBMTP_mtpdevice_t *device, int const sortby)
   PTPStorageInfo storageInfo;
   PTPParams *params = (PTPParams *) device->params;
   PTPStorageIDs storageIDs;
-  LIBMTP_devicestorage_t *libmtpstorage = NULL;
-  LIBMTP_devicestorage_t *libmtpstorageprev = NULL;
+  LIBMTP_devicestorage_t *storage = NULL;
+  LIBMTP_devicestorage_t *storageprev = NULL;
 
   if (device->storage != NULL)
     free_storage_list(device);
 
   // if (!ptp_operation_issupported(params,PTP_OC_GetStorageIDs)) 
   //   return -1;
-  if (! ptp_getstorageids (params, &storageIDs) == PTP_RC_OK) 
+  if (!ptp_getstorageids (params, &storageIDs) == PTP_RC_OK) 
     return -1;
   if (storageIDs.n < 1) 
     return -1;
@@ -1454,25 +1481,25 @@ int LIBMTP_Get_Storage(LIBMTP_mtpdevice_t *device, int const sortby)
   if (!ptp_operation_issupported(params,PTP_OC_GetStorageInfo)) {
     for (i = 0; i < storageIDs.n; i++) {
 
-      libmtpstorage = (LIBMTP_devicestorage_t *) malloc(sizeof(LIBMTP_devicestorage_t));
-      libmtpstorage->prev = libmtpstorageprev;
-      if (libmtpstorageprev != NULL)
-        libmtpstorageprev->next = libmtpstorage;
+      storage = (LIBMTP_devicestorage_t *) malloc(sizeof(LIBMTP_devicestorage_t));
+      storage->prev = storageprev;
+      if (storageprev != NULL)
+        storageprev->next = storage;
       if (device->storage == NULL) 
-        device->storage = libmtpstorage;
+        device->storage = storage;
 
-      libmtpstorage->id = storageIDs.Storage[i];
-      libmtpstorage->StorageType = 0x0000U; // Undefined
-      libmtpstorage->FilesystemType = 0x0000U; // Undefined
-      libmtpstorage->AccessCapability = 0x0000U; // Read-write
-      libmtpstorage->MaxCapacity = 0;
-      libmtpstorage->FreeSpaceInBytes = 0xFFFFFFFFU;
-      libmtpstorage->FreeSpaceInObjects = 0xFFFFFFFFU;
-      libmtpstorage->StorageDescription = NULL;
-      libmtpstorage->VolumeIdentifier = NULL;
-      libmtpstorage->next = NULL;
+      storage->id = storageIDs.Storage[i];
+      storage->StorageType = PTP_ST_Undefined;
+      storage->FilesystemType = PTP_FST_Undefined;
+      storage->AccessCapability = PTP_AC_ReadWrite;
+      storage->MaxCapacity = (uint64_t) -1;
+      storage->FreeSpaceInBytes = (uint64_t) -1;
+      storage->FreeSpaceInObjects = (uint64_t) -1;
+      storage->StorageDescription = strdup("Unknown storage");
+      storage->VolumeIdentifier = strdup("Unknown volume");
+      storage->next = NULL;
 
-      libmtpstorageprev = libmtpstorage;
+      storageprev = storage;
     }
     free(storageIDs.Storage);
     return 1;
@@ -1486,28 +1513,28 @@ int LIBMTP_Get_Storage(LIBMTP_mtpdevice_t *device, int const sortby)
 	return -1;
       }
 
-      libmtpstorage = (LIBMTP_devicestorage_t *) malloc(sizeof(LIBMTP_devicestorage_t));
-      libmtpstorage->prev = libmtpstorageprev;
-      if (libmtpstorageprev != NULL)
-        libmtpstorageprev->next = libmtpstorage;
+      storage = (LIBMTP_devicestorage_t *) malloc(sizeof(LIBMTP_devicestorage_t));
+      storage->prev = storageprev;
+      if (storageprev != NULL)
+        storageprev->next = storage;
       if (device->storage == NULL)
-        device->storage = libmtpstorage;
+        device->storage = storage;
 
-      libmtpstorage->id = storageIDs.Storage[i];
-      libmtpstorage->StorageType = storageInfo.StorageType;
-      libmtpstorage->FilesystemType = storageInfo.FilesystemType;
-      libmtpstorage->AccessCapability = storageInfo.AccessCapability;
-      libmtpstorage->MaxCapacity = storageInfo.MaxCapability;
-      libmtpstorage->FreeSpaceInBytes = storageInfo.FreeSpaceInBytes;
-      libmtpstorage->FreeSpaceInObjects = storageInfo.FreeSpaceInImages;
-      libmtpstorage->StorageDescription = storageInfo.StorageDescription;
-      libmtpstorage->VolumeIdentifier = storageInfo.VolumeLabel;
-      libmtpstorage->next = NULL;
+      storage->id = storageIDs.Storage[i];
+      storage->StorageType = storageInfo.StorageType;
+      storage->FilesystemType = storageInfo.FilesystemType;
+      storage->AccessCapability = storageInfo.AccessCapability;
+      storage->MaxCapacity = storageInfo.MaxCapability;
+      storage->FreeSpaceInBytes = storageInfo.FreeSpaceInBytes;
+      storage->FreeSpaceInObjects = storageInfo.FreeSpaceInImages;
+      storage->StorageDescription = storageInfo.StorageDescription;
+      storage->VolumeIdentifier = storageInfo.VolumeLabel;
+      storage->next = NULL;
 
-      libmtpstorageprev = libmtpstorage;
+      storageprev = storage;
     }
 
-    libmtpstorage->next = NULL;
+    storage->next = NULL;
 
     sort_storage_by(device,sortby);
     free(storageIDs.Storage);
@@ -4376,25 +4403,23 @@ int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
   /* Set the height and width if the sample is an image, otherwise just
    * set the duration and size */
   switch(sampledata->filetype) {
-  	case LIBMTP_FILETYPE_JPEG:
-  	case LIBMTP_FILETYPE_JFIF:
-  	case LIBMTP_FILETYPE_TIFF:
-  	case LIBMTP_FILETYPE_BMP:
-  	case LIBMTP_FILETYPE_GIF:
-  	case LIBMTP_FILETYPE_PICT:
-  	case LIBMTP_FILETYPE_PNG:
-		// For images, set the height and width
-		set_object_u32(device, id, PTP_OPC_RepresentativeSampleHeight, sampledata->height);
-  		set_object_u32(device, id, PTP_OPC_RepresentativeSampleWidth, sampledata->width);		
-  		break;
-  	default:
-  		// For anything not an image, set the duration and size
-		set_object_u32(device, id, PTP_OPC_RepresentativeSampleDuration, sampledata->duration);
-		set_object_u32(device, id, PTP_OPC_RepresentativeSampleSize, sampledata->size);
-		break;  		
+  case LIBMTP_FILETYPE_JPEG:
+  case LIBMTP_FILETYPE_JFIF:
+  case LIBMTP_FILETYPE_TIFF:
+  case LIBMTP_FILETYPE_BMP:
+  case LIBMTP_FILETYPE_GIF:
+  case LIBMTP_FILETYPE_PICT:
+  case LIBMTP_FILETYPE_PNG:
+    // For images, set the height and width
+    set_object_u32(device, id, PTP_OPC_RepresentativeSampleHeight, sampledata->height);
+    set_object_u32(device, id, PTP_OPC_RepresentativeSampleWidth, sampledata->width);		
+    break;
+  default:
+    // For anything not an image, set the duration and size
+    set_object_u32(device, id, PTP_OPC_RepresentativeSampleDuration, sampledata->duration);
+    set_object_u32(device, id, PTP_OPC_RepresentativeSampleSize, sampledata->size);
+    break;  		
   }
-  
-  
     
   return 0;
 }
