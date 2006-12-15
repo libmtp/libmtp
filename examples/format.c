@@ -42,7 +42,8 @@ int main (int argc, char **argv)
   printf("you will not be able to undo this operation.\n");
   printf("Continue? (y/n)\n");
   if (prompt() == 0) {
-    ret = LIBMTP_Format_Storage(device);
+    // This will just format the first storage.
+    ret = LIBMTP_Format_Storage(device, device->storage);
   } else {
     printf("Aborted.\n");
     ret = 0;

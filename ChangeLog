@@ -1,3 +1,11 @@
+2006-12-15  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: make the format function take a storage as
+	  parameter. Add comments to device storage.
+	* src/libmtp.c: dito, fix up some code and docs.
+	* examples/format.c: make the format command comply with
+	  the new API.
+
 2006-12-14  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: make get_first_storage_freespace() always query

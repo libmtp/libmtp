@@ -133,8 +133,11 @@ struct LIBMTP_mtpdevice_struct {
    * \c (PTP_USB*) before internal use.
    */
   void *usbinfo;
-  /** The storage ID for this device */
-  uint32_t storage_id;
+  /** 
+   * The storage for this device, do not use strings in here without 
+   * copying them first, and beware that this list may be rebuilt at
+   * any time.
+   */
   LIBMTP_devicestorage_t *storage;
   /** The maximum battery level for this device */
   uint8_t maximum_battery_level;
@@ -245,17 +248,17 @@ struct LIBMTP_filesampledata_struct {
  * LIBMTP Device Storage structure
  */
 struct LIBMTP_devicestorage_struct {
-  uint32_t id;
-  uint16_t StorageType;
-  uint16_t FilesystemType;
-  uint16_t AccessCapability;
-  uint64_t MaxCapacity;
-  uint64_t FreeSpaceInBytes;
-  uint64_t FreeSpaceInObjects;
-  char *StorageDescription;
-  char *VolumeIdentifier;
-  LIBMTP_devicestorage_t *next;
-  LIBMTP_devicestorage_t *prev;
+  uint32_t id; /**< Unique ID for this storage */
+  uint16_t StorageType; /**< Storage type */
+  uint16_t FilesystemType; /**< Filesystem type */
+  uint16_t AccessCapability; /**< Access capability */
+  uint64_t MaxCapacity; /**< Maximum capability */
+  uint64_t FreeSpaceInBytes; /**< Free space in bytes */
+  uint64_t FreeSpaceInObjects; /**< Free space in objects */
+  char *StorageDescription; /**< A brief description of this storage */
+  char *VolumeIdentifier; /**< A volume identifier */
+  LIBMTP_devicestorage_t *next; /**< Next storage, follow this link until NULL */
+  LIBMTP_devicestorage_t *prev; /**< Previous storage */
 };
   
 
@@ -288,7 +291,6 @@ char *LIBMTP_Get_Friendlyname(LIBMTP_mtpdevice_t*);
 int LIBMTP_Set_Friendlyname(LIBMTP_mtpdevice_t*, char const * const);
 char *LIBMTP_Get_Syncpartner(LIBMTP_mtpdevice_t*);
 int LIBMTP_Set_Syncpartner(LIBMTP_mtpdevice_t*, char const * const);
-int LIBMTP_Format_Storage(LIBMTP_mtpdevice_t *);
 int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *,
 			    uint8_t * const,
 			    uint8_t * const);
@@ -301,6 +303,8 @@ int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *, uint16_t ** const, uint
 #define LIBMTP_STORAGE_SORTBY_MAXSPACE  2
 
 int LIBMTP_Get_Storage(LIBMTP_mtpdevice_t *, int const);
+int LIBMTP_Format_Storage(LIBMTP_mtpdevice_t *, LIBMTP_devicestorage_t *);
+
 
 /**
  * @}

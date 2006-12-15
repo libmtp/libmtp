@@ -1309,10 +1309,11 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device,
  * WARNING: This WILL delete all data from the device. Make sure you've
  * got confirmation from the user BEFORE you call this function.
  *
- * @param device a pointer to the device to format.
+ * @param device a pointer to the device containing the storage to format.
+ * @param storage the actual storage to format.
  * @return 0 on success, any other value means failure.
  */
-int LIBMTP_Format_Storage(LIBMTP_mtpdevice_t *device)
+int LIBMTP_Format_Storage(LIBMTP_mtpdevice_t *device, LIBMTP_devicestorage_t *storage)
 {
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
@@ -1321,9 +1322,9 @@ int LIBMTP_Format_Storage(LIBMTP_mtpdevice_t *device)
     printf("LIBMTP_Format_Storage(): device cannot format storage\n");
     return -1;
   }
-  ret = ptp_formatstore(params, device->storage_id);
+  ret = ptp_formatstore(params, storage->id);
   if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Format_Storage(): failed to format storage\n");
+    printf("LIBMTP_Format_Storage(): failed to format storage %s\n", storage->StorageDescription);
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }
@@ -1449,7 +1450,11 @@ int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *device, uint16_t ** const
 /**
  * This function retrieves all the storage id's of a device and there
  * properties. Then creates a linked list and puts the list head into 
- * the device struct. It also optionally sorts this list.
+ * the device struct. It also optionally sorts this list. If you want
+ * to display storage information in your application you should call
+ * this function, then dereference the device struct 
+ * (<code>device->storage</code>) to get out information on the storage.
+ *
  * @param device a pointer to the device to get the filetype capabilities for.
  * @param sortby an integer that determines the sorting of the storage list. 
  *        Valid sort methods are defined in libmtp.h with beginning with
