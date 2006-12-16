@@ -1,3 +1,9 @@
+2006-12-16  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.c: sync to upstream.
+	* src/ptp.h: dito.
+	* src/ptp-pack.c: dito.
+	
 2006-12-15  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: make the format function take a storage as
