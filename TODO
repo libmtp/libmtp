@@ -20,6 +20,7 @@ SPEEDUP fixes:
 
 3. SPEED: Cache track metadata, file metadata etc, perhaps this is not 
   desirable since the application using libmtp will do this anyway.
+  (libgphoto2 does it, see http://svn.sourceforge.net/viewvc/gphoto/trunk/libgphoto2/camlibs/ptp2/library.c?r1=9491&r2=9590)
 
 4. SPEED: Whenever we add an object (file, track, playlist...) we
   should only need to update the cache with relevant data. Atleast for
