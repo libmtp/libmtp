@@ -152,6 +152,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "iRiver T30", 0x4102, 0x1119, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by David Wolpoff
   { "iRiver T10 2GB", 0x4102, 0x1120, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Rough guess this is the MTP device ID...
+  { "iRiver N12", 0x4102, 0x1122, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Adam Torgerson
   { "iRiver Clix", 0x4102, 0x112a, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Scott Call
