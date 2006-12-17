@@ -2675,6 +2675,8 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     new_track.Filename = metadata->filename;
     new_track.ObjectCompressedSize = metadata->filesize;
     new_track.ObjectFormat = map_libmtp_type_to_ptp_type(metadata->filetype);
+		new_track.StorageID = store;
+		new_track.ParentObject = parenthandle;
 
     // Create the object
     ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->item_id, &new_track);
@@ -3098,7 +3100,10 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
  *        of this metadata are set to NULL (strings) or 0
  *        (numerical values) they will be discarded and the
  *        track will not be tagged with these blank values.
- * @return 0 on success, any other value means failure.
+ * @return 0 on success, any other value means failure. If some
+ *        or all of the properties fail to update we will still
+ *        return success. On some devices (notably iRiver T30)
+ *        properties that exist cannot be updated.
  */
 int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 				 LIBMTP_track_t const * const metadata)
@@ -3123,7 +3128,6 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	ret = set_object_string(device, metadata->item_id, PTP_OPC_Name, metadata->title);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set track title\n");
-	  return -1;
 	}
 	break;
       case PTP_OPC_AlbumName:
@@ -3131,7 +3135,6 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	ret = set_object_string(device, metadata->item_id, PTP_OPC_AlbumName, metadata->album);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set track album name\n");
-	  return -1;
 	}
 	break;
       case PTP_OPC_Artist:
@@ -3139,7 +3142,6 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	ret = set_object_string(device, metadata->item_id, PTP_OPC_Artist, metadata->artist);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set track artist name\n");
-	  return -1;
 	}
 	break;
       case PTP_OPC_Genre:
@@ -3147,7 +3149,6 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	ret = set_object_string(device, metadata->item_id, PTP_OPC_Genre, metadata->genre);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set track genre name\n");
-	  return -1;
 	}
 	break;
       case PTP_OPC_Duration:
@@ -3156,7 +3157,6 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  ret = set_object_u32(device, metadata->item_id, PTP_OPC_Duration, metadata->duration);
 	  if (ret != 0) {
 	    printf("LIBMTP_Update_Track_Metadata(): could not set track duration\n");
-	    return -1;
 	  }
 	}
 	break;
@@ -3166,7 +3166,6 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  ret = set_object_u16(device, metadata->item_id, PTP_OPC_Track, metadata->tracknumber);
 	  if (ret != 0) {
 	    printf("LIBMTP_Update_Track_Metadata(): could not set track tracknumber\n");
-	    return -1;
 	  }
 	}
 	break;
@@ -3175,7 +3174,6 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	ret = set_object_string(device, metadata->item_id, PTP_OPC_OriginalReleaseDate, metadata->date);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set track release date\n");
-	  return -1;
 	}
 	break;
       // These are, well not so important.
@@ -3185,7 +3183,6 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  ret = set_object_u32(device, metadata->item_id, PTP_OPC_SampleRate, metadata->samplerate);
 	  if (ret != 0) {
 	    printf("LIBMTP_Update_Track_Metadata(): could not set samplerate\n");
-	    return -1;
 	  }
 	}
 	break;
@@ -3195,7 +3192,6 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  ret = set_object_u16(device, metadata->item_id, PTP_OPC_NumberOfChannels, metadata->nochannels);
 	  if (ret != 0) {
 	    printf("LIBMTP_Update_Track_Metadata(): could not set number of channels\n");
-	    return -1;
 	  }
 	}
 	break;
@@ -3205,7 +3201,6 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  ret = set_object_u32(device, metadata->item_id, PTP_OPC_AudioWAVECodec, metadata->wavecodec);
 	  if (ret != 0) {
 	    printf("LIBMTP_Update_Track_Metadata(): could not set WAVE codec\n");
-	    return -1;
 	  }
 	}
 	break;
@@ -3215,7 +3210,6 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  ret = set_object_u32(device, metadata->item_id, PTP_OPC_AudioBitRate, metadata->bitrate);
 	  if (ret != 0) {
 	    printf("LIBMTP_Update_Track_Metadata(): could not set bitrate\n");
-	    return -1;
 	  }
 	}
 	break;
@@ -3225,7 +3219,6 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  ret = set_object_u16(device, metadata->item_id, PTP_OPC_BitRateType, metadata->bitratetype);
 	  if (ret != 0) {
 	    printf("LIBMTP_Update_Track_Metadata(): could not set bitratetype\n");
-	    return -1;
 	  }
 	}
 	break;
@@ -3236,7 +3229,6 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  ret = set_object_u16(device, metadata->item_id, PTP_OPC_Rating, metadata->rating);
 	  if (ret != 0) {
 	    printf("LIBMTP_Update_Track_Metadata(): could not set user rating\n");
-	    return -1;
 	  }
 	}
 	break;
@@ -3245,7 +3237,6 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	ret = set_object_u32(device, metadata->item_id, PTP_OPC_UseCount, metadata->usecount);
 	if (ret != 0) {
 	  printf("LIBMTP_Update_Track_Metadata(): could not set use count\n");
-	  return -1;
 	}
 	break;
 
