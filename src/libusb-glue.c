@@ -134,14 +134,18 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   /*
    * iRiver
    * we assume that PTP_OC_MTP_GetObjPropList is essentially
-   * broken on all iRiver devices. Please test on your device
-   * if you believe it isn't!
+   * broken on all iRiver devices, meaning it simply won't return
+   * all properties for a file when asking for metadata 0xffffffff. 
+   * Please test on your device if you believe it isn't broken!
+   * Some devices from http://www.mtp-ums.net/viewdeviceinfo.php
    */
   { "iRiver Portable Media Center", 0x1006, 0x4002, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   { "iRiver Portable Media Center", 0x1006, 0x4003, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // From libgphoto2 source
   { "iRiver T10", 0x4102, 0x1113, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   { "iRiver T20 FM", 0x4102, 0x1114, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // This appears at the MTP-UMS site
+  { "iRiver T20", 0x4102, 0x1115, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   { "iRiver U10", 0x4102, 0x1116, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   { "iRiver T10", 0x4102, 0x1117, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   { "iRiver T20", 0x4102, 0x1118, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
