@@ -1,3 +1,7 @@
+2006-12-19  Matthew Wilcox <matthew@wil.cx>
+
+	* src/ptp.c: fix a (serious) short file bug.
+
 2006-12-17  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: don't bail out on failures when setting
