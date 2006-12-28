@@ -29,7 +29,7 @@ EXTRA_DIST=libmtp.h.in libmtp.sym ptp-pack.c
 #  increment AGE, Otherwise AGE is reset to 0. If CURRENT has changed, 
 #  REVISION is set to 0, otherwise REVISION is incremented.
 # ---------------------------------------------------------------------------
-CURRENT=4
+CURRENT=5
 REVISION=0
 AGE=0
 SOVERSION=$(CURRENT):$(REVISION):$(AGE)
