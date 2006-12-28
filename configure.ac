@@ -3,7 +3,7 @@ AC_PREREQ(2.52)
 AC_INIT([libmtp], [0.1.0], [libmtp-users@lists.sourceforge.net])
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([src/libmtp.c])
-AC_CONFIG_HEADER([config.h])
+AM_CONFIG_HEADER(config.h)
 
 # This can be overridden by the command line switch
 if test "$program_prefix" = NONE; then
