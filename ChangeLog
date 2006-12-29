@@ -3,6 +3,7 @@
 	* src/libmtp.c: Made abstract list creation to be more
 	  WMP like
 	* src/libusb-glue.c: added Philips GoGear SA9200
+	* src/ptp-pack.c: fixed packing bug in ptp_pack_OI
 
 2006-12-29  Marcus Meissner <meissner@suse.de>
 
