@@ -222,9 +222,9 @@ static struct usb_device* find_device (int busn, int devicen, short force);
 static void find_endpoints(struct usb_device *dev, int* inep, int* inep_maxpacket, int* outep, int* outep_maxpacket, int* intep);
 static void clear_stall(PTP_USB* ptp_usb);
 static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev);
-static short ptp_write_func (unsigned char *bytes, unsigned int size, void *data);
-static short ptp_read_func (unsigned char *bytes, unsigned int size, void *data, unsigned int *readbytes);
-static short ptp_check_int (unsigned char *bytes, unsigned int size, void *data, unsigned int *rlen);
+static short ptp_write_func (unsigned long,PTPDataHandler*,void *data,unsigned long*);
+static short ptp_read_func (unsigned long,PTPDataHandler*,void *data,unsigned long*);
+static short ptp_check_int (unsigned long,PTPDataHandler*,void *, unsigned long *);
 static int usb_clear_stall_feature(PTP_USB* ptp_usb, int ep);
 static int usb_get_endpoint_status(PTP_USB* ptp_usb, int ep, uint16_t* status);
 
@@ -399,34 +399,41 @@ void dump_usbinfo(PTP_USB *ptp_usb)
 // Based on same function on library.c in libgphoto2
 #define CONTEXT_BLOCK_SIZE	0x100000
 static short
-ptp_read_func (unsigned char *bytes, unsigned int size, void *data, unsigned int *readbytes)
-{
+ptp_read_func (
+	unsigned long size, PTPDataHandler *handler,void *data,
+	unsigned long *readbytes
+) {
   PTP_USB *ptp_usb = (PTP_USB *)data;
-  int toread = 0;
+  unsigned long toread = 0;
   int result = 0;
-  int curread = 0;
+  unsigned long curread = 0, written;
+  unsigned char *bytes;
   /* Split into small blocks. Too large blocks (>1x MB) would
    * timeout.
    */
+  bytes = malloc(CONTEXT_BLOCK_SIZE);
   while (curread < size) {
     toread = size - curread;
     if (toread > CONTEXT_BLOCK_SIZE)
       toread = CONTEXT_BLOCK_SIZE;
-    
-    result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep,(char *)(bytes+curread), toread, ptpcam_usb_timeout);
+
+    result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, (char*)bytes, toread, ptpcam_usb_timeout);
     if (result == 0) {
-      result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep,(char *)(bytes+curread), toread, ptpcam_usb_timeout);
+      result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, (char*)bytes, toread, ptpcam_usb_timeout);
     }
     if (result < 0)
       return PTP_ERROR_IO;
 #ifdef ENABLE_USB_BULK_DEBUG
     printf("<==USB IN\n");
-    data_dump_ascii (stdout,(bytes+curread),result,16);
+    data_dump_ascii (stdout,bytes,result,16);
 #endif
+    handler->putfunc (NULL, handler->private, result, bytes, &written);
     curread += result;
     if (result < toread) /* short reads are common */
       break;
   }
+  if (readbytes) *readbytes = curread;
+  free (bytes);
 
   // Increase counters, call callback
   if (ptp_usb->callback_active) {
@@ -445,7 +452,6 @@ ptp_read_func (unsigned char *bytes, unsigned int size, void *data, unsigned int
   }
   
   if (result > 0) {
-    *readbytes = curread;
     return (PTP_RC_OK);
   } else {
     return PTP_ERROR_IO;
@@ -454,13 +460,20 @@ ptp_read_func (unsigned char *bytes, unsigned int size, void *data, unsigned int
 
 // Based on same function on library.c in libgphoto2
 static short
-ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
-{
+ptp_write_func (
+        unsigned long   size,
+        PTPDataHandler  *handler,
+        void            *data,
+        unsigned long   *written
+) {
   PTP_USB *ptp_usb = (PTP_USB *)data;
-  int towrite = 0;
+  unsigned long towrite = 0;
   int result = 0;
-  int curwrite = 0;
+  unsigned long curwrite = 0;
+  unsigned char *bytes;
   
+  bytes = malloc(CONTEXT_BLOCK_SIZE);
+  if (!bytes) return PTP_ERROR_IO;
   /*
    * gp_port_write returns (in case of success) the number of bytes
    * written. Too large blocks (>5x MB) could timeout.
@@ -469,7 +482,8 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
     towrite = size-curwrite;
     if (towrite > CONTEXT_BLOCK_SIZE)
       towrite = CONTEXT_BLOCK_SIZE;
-    result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)(bytes+curwrite),towrite,ptpcam_usb_timeout);
+    handler->getfunc (NULL, handler->private,towrite,bytes,&towrite);
+    result = USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char*)bytes,towrite,ptpcam_usb_timeout);
 #ifdef ENABLE_USB_BULK_DEBUG
     printf("USB OUT==>\n");
     data_dump_ascii (stdout,(bytes+curwrite),towrite,16);
@@ -480,6 +494,8 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
     if (result < towrite) /* short writes happen */
       break;
   }
+  free (bytes);
+  if (written) *written = curwrite;
 
   // Increase counters, call callback
   if (ptp_usb->callback_active) {
@@ -528,16 +544,21 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
 }
 
 // This is a bit hackish at the moment. I wonder if it even works.
-static short ptp_check_int (unsigned char *bytes, unsigned int size, void *data, unsigned int *rlen)
-{
+static short ptp_check_int (
+	unsigned long size, PTPDataHandler *handler,void *data,
+	unsigned long *readbytes
+) {
   PTP_USB *ptp_usb = (PTP_USB *)data;
   int result;
+  unsigned char bytes[64];
+
+  if (size>64) return PTP_ERROR_IO;
   
   result=USB_BULK_READ(ptp_usb->handle, ptp_usb->intep,(char *)bytes,size,ptpcam_usb_timeout);
   if (result==0)
     result = USB_BULK_READ(ptp_usb->handle, ptp_usb->intep,(char *) bytes, size, ptpcam_usb_timeout);
   if (result >= 0) {
-    *rlen = result;
+    handler->putfunc (NULL, handler->private, result, bytes, readbytes);
     return (PTP_RC_OK);
   } else {
     return PTP_ERROR_IO;
