@@ -118,6 +118,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Philips HDD1630/17", 0x0471, 0x014c, DEVICE_FLAG_NONE },
   // From Gerhard Mekenkamp
   { "Philips GoGear Audio", 0x0471, 0x0165, DEVICE_FLAG_NONE },
+  // from XNJB forum
+  { "Philips GoGear SA9200", 0x0471, 0x014f, DEVICE_FLAG_NONE },
 
   /*
    * SanDisk

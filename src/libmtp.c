@@ -3812,14 +3812,8 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
     }
     free(props);
 
-    // TODO: try setting size to 0xFFFFFFFFU instead of 1 here, and move
-    //       the 1-byte sending function below.
-    // Playlists created on device have size (uint32_t) -1 = 0xFFFFFFFFU, but setting:
-    // new_object.ObjectCompressedSize = 0; <- DOES NOT WORK! (return PTP_RC_GeneralError)
-    // new_object.ObjectCompressedSize = (uint32_t) -1; <- DOES NOT WORK! 
-    // (return PTP_RC_MTP_Object_Too_Large or 0xa809 whatever that is)
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, newid,
-				     objectformat, 1, proplist);
+				     objectformat, 0, proplist);
 
     /* Free property list */
     prop = proplist;
@@ -3837,6 +3831,15 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
       } else {
 	printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
       }
+      return -1;
+    }
+    
+    // now send the blank objet
+    ret = ptp_sendobject(params, NULL, 0);
+    if (ret != PTP_RC_OK) {
+      ptp_perror(params, ret);
+      printf("create_new_abstract_list(): Could not send blank object data\n");
+      printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
       return -1;
     }
 
@@ -3862,29 +3865,27 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
       }
       return -1;
     }
-  }
-
-  /*
-   * We have to send this one blank data byte.
-   * If we don't, the handle will not be created and thus there is no playlist.
-   * TODO: see if this can be avoided with enhanced commands!
-   */
-  data[0] = '\0';
-  data[1] = '\0';
-  ret = ptp_sendobject(params, data, 1);
-  if (ret != PTP_RC_OK) {
-    ptp_perror(params, ret);
-    printf("create_new_abstract_list(): Could not send blank object data\n");
-    printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
-    return -1;
-  }
-  
-  // Update title
-  // TODO: should not be needed for enhanced commands!
-  ret = set_object_string(device, *newid, PTP_OPC_Name, name);
-  if (ret != 0) {
-    printf("create_new_abstract_list(): could not set entity name\n");
-    return -1;
+	
+    /*
+     * We have to send this one blank data byte.
+     * If we don't, the handle will not be created and thus there is no playlist.
+     */
+    data[0] = '\0';
+    data[1] = '\0';
+    ret = ptp_sendobject(params, data, 1);
+    if (ret != PTP_RC_OK) {
+      ptp_perror(params, ret);
+      printf("create_new_abstract_list(): Could not send blank object data\n");
+      printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
+      return -1;
+    }
+	
+    // Update title
+    ret = set_object_string(device, *newid, PTP_OPC_Name, name);
+    if (ret != 0) {
+      printf("create_new_abstract_list(): could not set entity name\n");
+      return -1;
+    }
   }
 
   if (no_tracks > 0) {
