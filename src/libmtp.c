@@ -189,12 +189,17 @@ static int register_filetype(char const * const description, LIBMTP_filetype_t c
 
 static void init_filemap()
 {
+  register_filetype("MediaCard", LIBMTP_FILETYPE_MEDIACARD, PTP_OFC_MTP_MediaCard);
   register_filetype("RIFF WAVE file", LIBMTP_FILETYPE_WAV, PTP_OFC_WAV);
-  register_filetype("ISO MPEG Audio Layer 3", LIBMTP_FILETYPE_MP3, PTP_OFC_MP3);
+  register_filetype("ISO MPEG-1 Audio Layer 3", LIBMTP_FILETYPE_MP3, PTP_OFC_MP3);
+  register_filetype("ISO MPEG-1 Audio Layer 2", LIBMTP_FILETYPE_MP2, PTP_OFC_MTP_MP2);
   register_filetype("Microsoft Windows Media Audio", LIBMTP_FILETYPE_WMA, PTP_OFC_MTP_WMA);
   register_filetype("Ogg container format", LIBMTP_FILETYPE_OGG, PTP_OFC_MTP_OGG);
+  register_filetype("Free Lossless Audio Codec (FLAC)", LIBMTP_FILETYPE_FLAC, PTP_OFC_MTP_FLAC);
+  register_filetype("Advanced Audio Coding (AAC)/MPEG-2 Part 7/MPEG-4 Part 3", LIBMTP_FILETYPE_AAC, PTP_OFC_MTP_AAC);
+  register_filetype("MPEG-4 Part 14 Container Format (Audio Empahsis)", LIBMTP_FILETYPE_M4A, PTP_OFC_MTP_M4A);
+  register_filetype("MPEG-4 Part 14 Container Format (Audio+Video Empahsis)", LIBMTP_FILETYPE_MP4, PTP_OFC_MTP_MP4);
   register_filetype("Audible.com Audio Codec", LIBMTP_FILETYPE_AUDIBLE, PTP_OFC_MTP_AudibleCodec);
-  register_filetype("Advanced Acoustic Coding", LIBMTP_FILETYPE_MP4, PTP_OFC_MTP_MP4);
   register_filetype("Undefined audio file", LIBMTP_FILETYPE_UNDEF_AUDIO, PTP_OFC_MTP_UndefinedAudio);
   register_filetype("Microsoft Windows Media Video", LIBMTP_FILETYPE_WMV, PTP_OFC_MTP_WMV);
   register_filetype("Audio Video Interleave", LIBMTP_FILETYPE_AVI, PTP_OFC_AVI);
@@ -203,6 +208,8 @@ static void init_filemap()
   register_filetype("Apple Quicktime container format", LIBMTP_FILETYPE_QT, PTP_OFC_QT);
   register_filetype("Undefined video file", LIBMTP_FILETYPE_UNDEF_VIDEO, PTP_OFC_MTP_UndefinedVideo);
   register_filetype("JPEG file", LIBMTP_FILETYPE_JPEG, PTP_OFC_EXIF_JPEG);
+  register_filetype("JP2 file", LIBMTP_FILETYPE_JP2, PTP_OFC_JP2);
+  register_filetype("JPX file", LIBMTP_FILETYPE_JPX, PTP_OFC_JPX);
   register_filetype("JFIF file", LIBMTP_FILETYPE_JFIF, PTP_OFC_JFIF);
   register_filetype("TIFF bitmap file", LIBMTP_FILETYPE_TIFF, PTP_OFC_TIFF);
   register_filetype("BMP bitmap file", LIBMTP_FILETYPE_BMP, PTP_OFC_BMP);
@@ -217,6 +224,11 @@ static void init_filemap()
   register_filetype("Undefined Windows executable file", LIBMTP_FILETYPE_WINEXEC, PTP_OFC_MTP_UndefinedWindowsExecutable);
   register_filetype("Text file", LIBMTP_FILETYPE_TEXT, PTP_OFC_Text);
   register_filetype("HTML file", LIBMTP_FILETYPE_HTML, PTP_OFC_HTML);
+  register_filetype("XML file", LIBMTP_FILETYPE_XML, PTP_OFC_MTP_XMLDocument);
+  register_filetype("DOC file", LIBMTP_FILETYPE_DOC, PTP_OFC_MTP_MSWordDocument);
+  register_filetype("XLS file", LIBMTP_FILETYPE_XLS, PTP_OFC_MTP_MSExcelSpreadsheetXLS);
+  register_filetype("PPT file", LIBMTP_FILETYPE_PPT, PTP_OFC_MTP_MSPowerpointPresentationPPT);
+  register_filetype("MHT file", LIBMTP_FILETYPE_MHT, PTP_OFC_MTP_MHTCompiledHTMLDocument);
   register_filetype("Firmware file", LIBMTP_FILETYPE_FIRMWARE, PTP_OFC_MTP_Firmware);
   register_filetype("Undefined filetype", LIBMTP_FILETYPE_UNKNOWN, PTP_OFC_Undefined);
 }
@@ -2081,8 +2093,12 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
       // all known audio track files?
       if ( oi.ObjectFormat != PTP_OFC_WAV &&
 	   oi.ObjectFormat != PTP_OFC_MP3 &&
+	   oi.ObjectFormat != PTP_OFC_MTP_MP2 &&
 	   oi.ObjectFormat != PTP_OFC_MTP_WMA &&
 	   oi.ObjectFormat != PTP_OFC_MTP_OGG &&
+	   oi.ObjectFormat != PTP_OFC_MTP_FLAC &&
+	   oi.ObjectFormat != PTP_OFC_MTP_AAC &&
+	   oi.ObjectFormat != PTP_OFC_MTP_M4A &&
 	   oi.ObjectFormat != PTP_OFC_MTP_MP4 &&
 	   oi.ObjectFormat != PTP_OFC_MTP_UndefinedAudio ) {
 	// printf("Not a music track (format: %d), skipping...\n",oi.ObjectFormat);
@@ -2164,8 +2180,12 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
       // Ignore stuff we don't know how to handle...
       if ( oi.ObjectFormat != PTP_OFC_WAV &&
 	   oi.ObjectFormat != PTP_OFC_MP3 &&
+	   oi.ObjectFormat != PTP_OFC_MTP_MP2 &&
 	   oi.ObjectFormat != PTP_OFC_MTP_WMA &&
 	   oi.ObjectFormat != PTP_OFC_MTP_OGG &&
+	   oi.ObjectFormat != PTP_OFC_MTP_FLAC &&
+	   oi.ObjectFormat != PTP_OFC_MTP_AAC &&
+	   oi.ObjectFormat != PTP_OFC_MTP_M4A &&
 	   oi.ObjectFormat != PTP_OFC_MTP_MP4 &&
 	   oi.ObjectFormat != PTP_OFC_MTP_UndefinedAudio ) {
 	return NULL;
@@ -2502,8 +2522,12 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   // Sanity check, is this really a track?
   if (metadata->filetype != LIBMTP_FILETYPE_WAV &&
       metadata->filetype != LIBMTP_FILETYPE_MP3 &&
+      metadata->filetype != LIBMTP_FILETYPE_MP2 &&
       metadata->filetype != LIBMTP_FILETYPE_WMA &&
       metadata->filetype != LIBMTP_FILETYPE_OGG &&
+      metadata->filetype != LIBMTP_FILETYPE_FLAC &&
+      metadata->filetype != LIBMTP_FILETYPE_AAC &&
+      metadata->filetype != LIBMTP_FILETYPE_M4A &&
       metadata->filetype != LIBMTP_FILETYPE_MP4 &&
       metadata->filetype != LIBMTP_FILETYPE_UNDEF_AUDIO) {
     printf("LIBMTP_Send_Track_From_File_Descriptor: I don't think this is actually a track, strange filetype...\n");
@@ -2898,9 +2922,15 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     uint16_t of = new_file.ObjectFormat;
     if (of == PTP_OFC_WAV ||
 	of == PTP_OFC_MP3 ||
+	of == PTP_OFC_MTP_MP2 ||
 	of == PTP_OFC_MTP_WMA ||
 	of == PTP_OFC_MTP_OGG ||
-	of == PTP_OFC_MTP_MP4 ||
+	of == PTP_OFC_MTP_FLAC ||
+	of == PTP_OFC_MTP_AAC ||
+	of == PTP_OFC_MTP_M4A ||
+	of == PTP_OFC_AIFF ||
+	//of == PTP_OFC_MTP_MP4 || 	/* ambiguous mp4 can contain video */
+	of == PTP_OFC_MTP_AudibleCodec ||
 	of == PTP_OFC_MTP_UndefinedAudio) {
       localph = device->default_music_folder;
     } else if (of == PTP_OFC_MTP_WMV ||
@@ -2908,11 +2938,16 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	       of == PTP_OFC_MPEG ||
 	       of == PTP_OFC_ASF ||
 	       of == PTP_OFC_QT ||
+	       of == PTP_OFC_MTP_3GP ||
+	       of == PTP_OFC_MTP_MP4 || /* ambiguous mp4 can also contain only audio */
 	       of == PTP_OFC_MTP_UndefinedVideo) {
       localph = device->default_video_folder;
     } else if (of == PTP_OFC_EXIF_JPEG ||
+	       of == PTP_OFC_JP2 ||
+	       of == PTP_OFC_JPX ||
 	       of == PTP_OFC_JFIF ||
 	       of == PTP_OFC_TIFF ||
+	       of == PTP_OFC_TIFF_IT ||
 	       of == PTP_OFC_BMP ||
 	       of == PTP_OFC_GIF ||
 	       of == PTP_OFC_PICT ||
@@ -2926,7 +2961,8 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	       of == PTP_OFC_MTP_vCard3 ||
 	       of == PTP_OFC_MTP_UndefinedCalendarItem) {
       localph = device->default_organizer_folder;
-    } else if (of == PTP_OFC_Text) {
+    } else if (of == PTP_OFC_Text
+		) {
       localph = device->default_text_folder;
     }
   }

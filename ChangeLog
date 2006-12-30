@@ -1,3 +1,22 @@
+2006-12-30  Orson Teodoro <orsonteodoro@yahoo.com>
+
+	* src/ptp.h: added WMDRMPD, WMDRMND, WMPPD, WPDWCN extension
+	  codes. added more format object codes flac, m4a, 3gp, aac,
+          xml, xls, ppt, etc.  0x9101-0x910B identfiers are infixed
+	  with WMDRMPD. Added more object properties codes (0xDCD3-0xDD72).
+	  Added more device property codes.
+	  Changed PTP_OFC_MTP_WindowsImageFormat to 0xb881 reflect spec.
+        * src/ptp.c: added changes to reflect new extensions, object
+	  codes, device property codes.
+	* src/libmtp.c: modified mp4 to reflect it is a container format
+	  not a codec.  Added more descriptions in init_filemap(). mp4
+          container format is ambiguous in
+	  LIBMTP_Send_File_From_File_Descriptor(). Audio? video? both?.
+	  mp4 searched in video by default.  Added comments about this.
+          Added support for the new format object types.
+	* src/libmtp.h.in: added constants to reflect changes to
+          init_filemap().
+
 2006-12-30  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: fixed bug in debug printing
