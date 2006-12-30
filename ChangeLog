@@ -1,3 +1,8 @@
+2006-12-30  Linus Walleij <triad@df.lth.se>
+
+	* examples/pathutils.c: reflect new filetypes.
+	* examples/sendtr.c: dito.
+
 2006-12-30  Orson Teodoro <orsonteodoro@yahoo.com>
 
 	* src/ptp.h: added WMDRMPD, WMDRMND, WMPPD, WPDWCN extension
