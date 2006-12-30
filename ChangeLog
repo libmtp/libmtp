@@ -1,3 +1,7 @@
+2006-12-30  Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: fixed bug in debug printing
+
 2006-12-29  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: Made abstract list creation to be more

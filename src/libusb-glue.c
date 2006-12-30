@@ -488,7 +488,7 @@ ptp_write_func (
     result = USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char*)bytes,towrite,ptpcam_usb_timeout);
 #ifdef ENABLE_USB_BULK_DEBUG
     printf("USB OUT==>\n");
-    data_dump_ascii (stdout,(bytes+curwrite),towrite,16);
+    data_dump_ascii (stdout,bytes,towrite,16);
 #endif
     if (result < 0)
       return PTP_ERROR_IO;
