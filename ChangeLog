@@ -1,3 +1,9 @@
+2006-12-31  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: bump to 0.1.2.
+	* src/Makefile.am: bump interface revision. (Compatible.)
+	* RELEASE 0.1.2.
+
 2006-12-30  Linus Walleij <triad@df.lth.se>
 
 	* examples/pathutils.c: reflect new filetypes.
