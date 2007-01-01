@@ -1,3 +1,10 @@
+2007-01-01  Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: split headers/packet size fix
+	* src/ptp.c: ditto
+	* src/ptp.h: ditto
+	* src/libusb-glue.c: ditto
+
 2007-01-01  Orson Teodoro <orsonteodoro@yahoo.com>
 
 	* src/ptp.h: changed some WMDRMND def codes to AAVT def codes. 

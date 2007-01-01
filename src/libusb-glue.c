@@ -399,7 +399,7 @@ void dump_usbinfo(PTP_USB *ptp_usb)
 
 
 // Based on same function on library.c in libgphoto2
-#define CONTEXT_BLOCK_SIZE	0x100000
+#define CONTEXT_BLOCK_SIZE	0x10000
 static short
 ptp_read_func (
 	unsigned long size, PTPDataHandler *handler,void *data,
@@ -484,6 +484,9 @@ ptp_write_func (
     towrite = size-curwrite;
     if (towrite > CONTEXT_BLOCK_SIZE)
       towrite = CONTEXT_BLOCK_SIZE;
+    else
+      if (towrite > ptp_usb->outep_maxpacket && towrite % ptp_usb->outep_maxpacket != 0)
+        towrite -= towrite % ptp_usb->outep_maxpacket;
     handler->getfunc (NULL, handler->private,towrite,bytes,&towrite);
     result = USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char*)bytes,towrite,ptpcam_usb_timeout);
 #ifdef ENABLE_USB_BULK_DEBUG
@@ -521,6 +524,10 @@ ptp_write_func (
   if (!ptp_usb->callback_active) {
     // Then terminate an even packet boundary write with a zero length packet
     if ((size % ptp_usb->outep_maxpacket) == 0) {
+#ifdef ENABLE_USB_BULK_DEBUG
+      printf("USB OUT==>\n");
+      printf("Zero Write\n");
+#endif
       result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)"x",0,ptpcam_usb_timeout);
     }
   } else if (ptp_usb->current_transfer_complete == ptp_usb->current_transfer_total) {
@@ -528,6 +535,10 @@ ptp_write_func (
     uint64_t actual_xfer_size = ptp_usb->current_transfer_total - 2*PTP_USB_BULK_HDR_LEN;
     
     if ((actual_xfer_size % ptp_usb->outep_maxpacket) == 0) {
+#ifdef ENABLE_USB_BULK_DEBUG
+      printf("USB OUT==>\n");
+      printf("Zero Write\n");
+#endif
       result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)"x",0,ptpcam_usb_timeout);
     }
     // Set as complete and disable callback, just as good. 
