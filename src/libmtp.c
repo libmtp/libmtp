@@ -618,7 +618,6 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
     printf("LIBMTP panic: could not open iconv() converters to/from UCS-2!\n");
     return NULL;
   }
-  params->split_header_data = 0;
 
   ptp_usb = (PTP_USB *) malloc(sizeof(PTP_USB));
   // Callbacks and stuff

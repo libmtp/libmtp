@@ -803,6 +803,8 @@ ptp_opensession (PTPParams* params, uint32_t session)
 	/* zero out response packet buffer */
 	params->response_packet = NULL;
 	params->response_packet_size = 0;
+	/* no split headers */
+	params->split_header_data = 0;
 	
 	PTP_CNT_INIT(ptp);
 	ptp.Code=PTP_OC_OpenSession;

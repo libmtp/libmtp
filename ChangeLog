@@ -1,3 +1,9 @@
+2007-01-01  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: move default setting of split headers
+	  off to ptp.c open session.
+	* src/ptp.c: dito.
+
 2007-01-01  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: split headers/packet size fix
