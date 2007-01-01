@@ -1,3 +1,9 @@
+2007-01-01  Orson Teodoro <orsonteodoro@yahoo.com>
+
+	* src/ptp.h: changed some WMDRMND def codes to AAVT def codes. 
+	  addition of AAVT error codes.
+	* src/ptp.c: changes to reflect modifications done in ptp.h
+
 2006-12-31  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bump to 0.1.2.
