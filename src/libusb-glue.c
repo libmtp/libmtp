@@ -418,6 +418,8 @@ ptp_read_func (
     toread = size - curread;
     if (toread > CONTEXT_BLOCK_SIZE)
       toread = CONTEXT_BLOCK_SIZE;
+    else if (toread > ptp_usb->outep_maxpacket)
+      toread -= toread % ptp_usb->outep_maxpacket;
 
     result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, (char*)bytes, toread, ptpcam_usb_timeout);
     if (result == 0) {

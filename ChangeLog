@@ -1,3 +1,9 @@
+2007-01-02  Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: another try at split headers/packet sizes
+	* src/ptp.c: ditto
+	* src/libusb-glue.c: ditto
+
 2007-01-01  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: move default setting of split headers

@@ -2702,14 +2702,8 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 		new_track.StorageID = store;
 		new_track.ParentObject = parenthandle;
     
-    // get split headers correct
-    if (ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList))
-      params->split_header_data = 1;
-    
     // Create the object
     ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->item_id, &new_track);
-    
-    params->split_header_data = 0;
     
     if (ret != PTP_RC_OK) {
       ptp_perror(params, ret);
@@ -2731,14 +2725,8 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_complete = 0;
   ptp_usb->current_transfer_callback = callback;
   ptp_usb->current_transfer_callback_data = data;
-  
-  // get split headers correct
-  if (ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList))
-    params->split_header_data = 1;
 
   ret = ptp_sendobject_fromfd(params, fd, metadata->filesize);
-  
-  params->split_header_data = 0;
 
   ptp_usb->callback_active = 0;
   ptp_usb->current_transfer_callback = NULL;
@@ -3098,10 +3086,6 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       return -1;
     }
   }
-
-  // get split headers correct
-  if (ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList))
-    params->split_header_data = 1;
     
   if (filedata->filesize != (uint64_t) -1) {
     // Callbacks
@@ -3129,8 +3113,6 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     }
   }
-  
-  params->split_header_data = 0;
 
   if (ret != PTP_RC_OK) {
     ptp_perror(params, ret);

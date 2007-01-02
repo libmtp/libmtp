@@ -310,6 +310,10 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		/* Evaluate full data length. */
 		len=dtoh32(usbdata.length)-PTP_USB_BULK_HDR_LEN;
 
+		/* autodetect split header/data MTP devices */ 	 
+		if (dtoh32(usbdata.length) > 12 && (rlen==12)) 	 
+			params->split_header_data = 1;
+
 		data = malloc(PTP_USB_BULK_HS_MAX_PACKET_LEN);
 		/* Copy first part of data to 'data' */
 		handler->putfunc(
@@ -2848,9 +2852,6 @@ ptp_mtp_sendobjectproplist (PTPParams* params, uint32_t* store, uint32_t* parent
 	ptp.Param5 = (uint32_t) (objectsize & 0xffffffffU);
 	ptp.Nparam = 5;
   
-	// we always use a split header here
-	params->split_header_data = 1;
-
 	/* Set object handle to 0 for a new object */
 	oplsize = ptp_pack_OPL(params,proplist,&opldata);
 	ret = ptp_transaction(params, &ptp, PTP_DP_SENDDATA, oplsize, &opldata, NULL); 
@@ -2858,9 +2859,6 @@ ptp_mtp_sendobjectproplist (PTPParams* params, uint32_t* store, uint32_t* parent
 	*store = ptp.Param1;
 	*parenthandle = ptp.Param2;
 	*handle = ptp.Param3; 
-
-	params->split_header_data = 0;
-
 	return ret;
 }
 
