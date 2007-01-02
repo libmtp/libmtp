@@ -1,3 +1,8 @@
+2007-01-02  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: fix up comments, remove things 
+	  refering to stuff we don't have.
+
 2007-01-02  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: another try at split headers/packet sizes

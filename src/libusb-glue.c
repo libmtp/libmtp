@@ -398,7 +398,23 @@ void dump_usbinfo(PTP_USB *ptp_usb)
 }
 
 
-// Based on same function on library.c in libgphoto2
+/*
+ * ptp_read_func() and ptp_write_func() are
+ * based on same functions in library.c in libgphoto2.
+ * Much reading packet logs and having fun with trials and errors
+ * reveals that WMP / Windows is probably using an algorithm like this
+ * for large transfers:
+ *
+ * 1. Send the command (0x0c bytes) if headers are split, else, send 
+ *    command plus sizeof(endpoint) - 0x0c bytes.
+ * 2. Send first packet, max size to be sizeof(endpoint) but only when using
+ *    split headers. Else goto 3.
+ * 3. REPEAT send 0x10000 byte chunks UNTIL remaining bytes < 0x10000
+ *    We call 0x10000 CONTEXT_BLOCK_SIZE.
+ * 4. Send remaining bytes MOD sizeof(endpoint)
+ * 5. Send remaining bytes. If this happens to be exactly sizeof(endpoint)
+ *    then also send a zero-length package.
+ */
 #define CONTEXT_BLOCK_SIZE	0x10000
 static short
 ptp_read_func (
@@ -408,11 +424,11 @@ ptp_read_func (
   PTP_USB *ptp_usb = (PTP_USB *)data;
   unsigned long toread = 0;
   int result = 0;
-  unsigned long curread = 0, written;
+  unsigned long curread = 0;
+  unsigned long written;
   unsigned char *bytes;
-  /* Split into small blocks. Too large blocks (>1x MB) would
-   * timeout.
-   */
+
+  // This is the largest block we'll need to read in.
   bytes = malloc(CONTEXT_BLOCK_SIZE);
   while (curread < size) {
     toread = size - curread;
@@ -462,7 +478,6 @@ ptp_read_func (
   }
 }
 
-// Based on same function on library.c in libgphoto2
 static short
 ptp_write_func (
         unsigned long   size,
@@ -475,13 +490,10 @@ ptp_write_func (
   int result = 0;
   unsigned long curwrite = 0;
   unsigned char *bytes;
-  
+
+  // This is the largest block we'll need to read in.  
   bytes = malloc(CONTEXT_BLOCK_SIZE);
   if (!bytes) return PTP_ERROR_IO;
-  /*
-   * gp_port_write returns (in case of success) the number of bytes
-   * written. Too large blocks (>5x MB) could timeout.
-   */
   while (curwrite < size) {
     towrite = size-curwrite;
     if (towrite > CONTEXT_BLOCK_SIZE)
@@ -618,7 +630,7 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
     }
 #endif
 #ifdef __WIN32__
-    // Only needed on Windows
+    // Only needed on Windows, and cause problems on other platforms.
     if (usb_set_configuration(device_handle, dev->config->bConfigurationValue)) {
       perror("usb_set_configuration()");
       return -1;
