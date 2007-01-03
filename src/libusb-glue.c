@@ -545,10 +545,7 @@ ptp_write_func (
       result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)"x",0,ptpcam_usb_timeout);
     }
   } else if (ptp_usb->current_transfer_complete == ptp_usb->current_transfer_total) {
-    // This is the amount actually transfered in this large transaction.
-    uint64_t actual_xfer_size = ptp_usb->current_transfer_total - 2*PTP_USB_BULK_HDR_LEN;
-    
-    if ((actual_xfer_size % ptp_usb->outep_maxpacket) == 0) {
+    if ((towrite % ptp_usb->outep_maxpacket) == 0) {
 #ifdef ENABLE_USB_BULK_DEBUG
       printf("USB OUT==>\n");
       printf("Zero Write\n");

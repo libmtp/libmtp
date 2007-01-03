@@ -1,3 +1,7 @@
+2007-01-03  Richard Low
+
+	* src/libusb-glue.c: fix zero write bug
+
 2007-01-02  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: fix up comments, remove things 
