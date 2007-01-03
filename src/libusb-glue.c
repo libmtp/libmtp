@@ -516,9 +516,11 @@ ptp_write_func (
   free (bytes);
   if (written) *written = curwrite;
 
-  // Increase counters, call callback
+  // Increase counters
+  ptp_usb->current_transfer_complete += curwrite;
+  
+  // call callback
   if (ptp_usb->callback_active) {
-    ptp_usb->current_transfer_complete += curwrite;
     if (ptp_usb->current_transfer_complete > ptp_usb->current_transfer_total) {
       // Fishy... but some commands have unpredictable lengths.
       // send last update and disable callback.
@@ -532,19 +534,8 @@ ptp_write_func (
     }
   }
   
-  // If this is the last transfer (callbacks only active if this function called repeatedly with
-  // new data, otherwise this is a single large transaction which ends here).
-  // a request and the bulk send header.
-  if (!ptp_usb->callback_active) {
-    // Then terminate an even packet boundary write with a zero length packet
-    if ((size % ptp_usb->outep_maxpacket) == 0) {
-#ifdef ENABLE_USB_BULK_DEBUG
-      printf("USB OUT==>\n");
-      printf("Zero Write\n");
-#endif
-      result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)"x",0,ptpcam_usb_timeout);
-    }
-  } else if (ptp_usb->current_transfer_complete == ptp_usb->current_transfer_total) {
+  // If this is the last transfer send a zero write if required
+  if (ptp_usb->current_transfer_complete >= ptp_usb->current_transfer_total) {
     if ((towrite % ptp_usb->outep_maxpacket) == 0) {
 #ifdef ENABLE_USB_BULK_DEBUG
       printf("USB OUT==>\n");
@@ -552,16 +543,11 @@ ptp_write_func (
 #endif
       result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)"x",0,ptpcam_usb_timeout);
     }
-    // Set as complete and disable callback, just as good. 
-    // This also blocks callbacks from the following response command.
-    if (ptp_usb->current_transfer_callback != NULL) {
-      (void) ptp_usb->current_transfer_callback(ptp_usb->current_transfer_total, // Both total = 100%
-						ptp_usb->current_transfer_total, // Both total = 100%
-						ptp_usb->current_transfer_callback_data);
-    }
-    ptp_usb->callback_active = 0;
   }
-
+  
+  if (ptp_usb->current_transfer_complete == ptp_usb->current_transfer_total)
+    ptp_usb->callback_active = 0;
+  
   if (result < 0)
     return PTP_ERROR_IO;
   return PTP_RC_OK;

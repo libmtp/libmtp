@@ -1,6 +1,7 @@
 2007-01-03  Richard Low
 
 	* src/libusb-glue.c: fix zero write bug
+	* src/ptp.c: ditto
 
 2007-01-02  Linus Walleij <triad@df.lth.se>
 

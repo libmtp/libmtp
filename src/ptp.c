@@ -23,6 +23,7 @@
 #define _BSD_SOURCE
 #include <config.h>
 #include "ptp.h"
+#include "libusb-glue.h"
 
 #include <stdlib.h>
 #include <stdarg.h>
@@ -159,6 +160,9 @@ ptp_usb_senddata (PTPParams* params, PTPContainer* ptp,
 	usbdata.type	= htod16(PTP_USB_CONTAINER_DATA);
 	usbdata.code	= htod16(ptp->Code);
 	usbdata.trans_id= htod32(ptp->Transaction_ID);
+  
+	((PTP_USB*)params->data)->current_transfer_complete = 0;
+	((PTP_USB*)params->data)->current_transfer_total = size;
 
 	if (params->split_header_data) {
 		datawlen = 0;
