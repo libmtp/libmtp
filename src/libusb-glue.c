@@ -20,6 +20,8 @@
 #include <string.h>
 #include <usb.h>
 
+#include "ptp-pack.c"
+
 /* To enable debug prints, switch on this */
 //#define ENABLE_USB_BULK_DEBUG
 
@@ -226,7 +228,6 @@ static void clear_stall(PTP_USB* ptp_usb);
 static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev);
 static short ptp_write_func (unsigned long,PTPDataHandler*,void *data,unsigned long*);
 static short ptp_read_func (unsigned long,PTPDataHandler*,void *data,unsigned long*);
-static short ptp_check_int (unsigned long,PTPDataHandler*,void *, unsigned long *);
 static int usb_clear_stall_feature(PTP_USB* ptp_usb, int ep);
 static int usb_get_endpoint_status(PTP_USB* ptp_usb, int ep, uint16_t* status);
 
@@ -397,6 +398,40 @@ void dump_usbinfo(PTP_USB *ptp_usb)
   // TODO: add in string dumps for iManufacturer, iProduct, iSerialnumber...
 }
 
+static void
+ptp_debug (PTPParams *params, const char *format, ...)
+{  
+        va_list args;
+
+        va_start (args, format);
+        if (params->debug_func!=NULL)
+                params->debug_func (params->data, format, args);
+        else
+	{
+                vfprintf (stderr, format, args);
+		fprintf (stderr,"\n");
+		fflush (stderr);
+	}
+        va_end (args);
+}  
+
+static void
+ptp_error (PTPParams *params, const char *format, ...)
+{  
+        va_list args;
+
+        va_start (args, format);
+        if (params->error_func!=NULL)
+                params->error_func (params->data, format, args);
+        else
+	{
+                vfprintf (stderr, format, args);
+		fprintf (stderr,"\n");
+		fflush (stderr);
+	}
+        va_end (args);
+}
+
 
 /*
  * ptp_read_func() and ptp_write_func() are
@@ -553,36 +588,463 @@ ptp_write_func (
   return PTP_RC_OK;
 }
 
-// This is a bit hackish at the moment. I wonder if it even works.
-static short ptp_check_int (
-	unsigned long size, PTPDataHandler *handler,void *data,
-	unsigned long *readbytes
-) {
-  PTP_USB *ptp_usb = (PTP_USB *)data;
-  int result;
-  unsigned char bytes[64];
+/* memory data get/put handler */
+typedef struct {
+	unsigned char	*data;
+	unsigned long	size, curoff;
+} PTPMemHandlerPrivate;
 
-  if (size>64) return PTP_ERROR_IO;
-  
-  result=USB_BULK_READ(ptp_usb->handle, ptp_usb->intep,(char *)bytes,size,ptpcam_usb_timeout);
-  if (result==0)
-    result = USB_BULK_READ(ptp_usb->handle, ptp_usb->intep,(char *) bytes, size, ptpcam_usb_timeout);
-  if (result >= 0) {
-    handler->putfunc (NULL, handler->private, result, bytes, readbytes);
-    return (PTP_RC_OK);
-  } else {
-    return PTP_ERROR_IO;
-  }
+static uint16_t
+memory_getfunc(PTPParams* params, void* private,
+	       unsigned long wantlen, unsigned char *data,
+	       unsigned long *gotlen
+) {
+	PTPMemHandlerPrivate* priv = (PTPMemHandlerPrivate*)private;
+	unsigned long tocopy = wantlen;
+
+	if (priv->curoff + tocopy > priv->size)
+		tocopy = priv->size - priv->curoff;
+	memcpy (data, priv->data + priv->curoff, tocopy);
+	priv->curoff += tocopy;
+	*gotlen = tocopy;
+	return PTP_RC_OK;
 }
+
+static uint16_t
+memory_putfunc(PTPParams* params, void* private,
+	       unsigned long sendlen, unsigned char *data,
+	       unsigned long *putlen
+) {
+	PTPMemHandlerPrivate* priv = (PTPMemHandlerPrivate*)private;
+
+	if (priv->curoff + sendlen > priv->size) {
+		priv->data = realloc (priv->data, priv->curoff+sendlen);
+		priv->size = priv->curoff + sendlen;
+	}
+	memcpy (priv->data + priv->curoff, data, sendlen);
+	priv->curoff += sendlen;
+	*putlen = sendlen;
+	return PTP_RC_OK;
+}
+
+/* init private struct for receiving data. */
+static uint16_t
+ptp_init_recv_memory_handler(PTPDataHandler *handler) {
+	PTPMemHandlerPrivate* priv;
+	priv = malloc (sizeof(PTPMemHandlerPrivate));
+	handler->private = priv;
+	handler->getfunc = memory_getfunc;
+	handler->putfunc = memory_putfunc;
+	priv->data = NULL;
+	priv->size = 0;
+	priv->curoff = 0;
+	return PTP_RC_OK;
+}
+
+/* init private struct and put data in for sending data.
+ * data is still owned by caller.
+ */
+static uint16_t
+ptp_init_send_memory_handler(PTPDataHandler *handler,
+	unsigned char *data, unsigned long len
+) {
+	PTPMemHandlerPrivate* priv;
+	priv = malloc (sizeof(PTPMemHandlerPrivate));
+	if (!priv)
+		return PTP_RC_GeneralError;
+	handler->private = priv;
+	handler->getfunc = memory_getfunc;
+	handler->putfunc = memory_putfunc;
+	priv->data = data;
+	priv->size = len;
+	priv->curoff = 0;
+	return PTP_RC_OK;
+}
+
+/* free private struct + data */
+static uint16_t
+ptp_exit_send_memory_handler (PTPDataHandler *handler) {
+	PTPMemHandlerPrivate* priv = (PTPMemHandlerPrivate*)handler->private;
+	/* data is owned by caller */
+	free (priv);
+	return PTP_RC_OK;
+}
+
+/* hand over our internal data to caller */
+static uint16_t
+ptp_exit_recv_memory_handler (PTPDataHandler *handler,
+	unsigned char **data, unsigned long *size
+) {
+	PTPMemHandlerPrivate* priv = (PTPMemHandlerPrivate*)handler->private;
+	*data = priv->data;
+	*size = priv->size;
+	free (priv);
+	return PTP_RC_OK;
+}
+
+/* send / receive functions */
+
+uint16_t
+ptp_usb_sendreq (PTPParams* params, PTPContainer* req)
+{
+	uint16_t ret;
+	PTPUSBBulkContainer usbreq;
+	PTPDataHandler	memhandler;
+	unsigned long written, towrite;
+
+	/* build appropriate USB container */
+	usbreq.length=htod32(PTP_USB_BULK_REQ_LEN-
+		(sizeof(uint32_t)*(5-req->Nparam)));
+	usbreq.type=htod16(PTP_USB_CONTAINER_COMMAND);
+	usbreq.code=htod16(req->Code);
+	usbreq.trans_id=htod32(req->Transaction_ID);
+	usbreq.payload.params.param1=htod32(req->Param1);
+	usbreq.payload.params.param2=htod32(req->Param2);
+	usbreq.payload.params.param3=htod32(req->Param3);
+	usbreq.payload.params.param4=htod32(req->Param4);
+	usbreq.payload.params.param5=htod32(req->Param5);
+	/* send it to responder */
+	towrite = PTP_USB_BULK_REQ_LEN-(sizeof(uint32_t)*(5-req->Nparam));
+	ptp_init_send_memory_handler (&memhandler, (unsigned char*)&usbreq, towrite);
+	ret=ptp_write_func(
+		towrite,
+		&memhandler,
+		params->data,
+		&written
+	);
+	ptp_exit_send_memory_handler (&memhandler);
+	if (ret!=PTP_RC_OK) {
+		ret = PTP_ERROR_IO;
+/*		ptp_error (params,
+			"PTP: request code 0x%04x sending req error 0x%04x",
+			req->Code,ret); */
+	}
+	if (written != towrite) {
+		ptp_error (params, 
+			"PTP: request code 0x%04x sending req wrote only %ld bytes instead of %d",
+			written, towrite
+		);
+		ret = PTP_ERROR_IO;
+	}
+	return ret;
+}
+
+uint16_t
+ptp_usb_senddata (PTPParams* params, PTPContainer* ptp,
+		  unsigned long size, PTPDataHandler *handler
+) {
+	uint16_t ret;
+	int wlen, datawlen;
+	unsigned long written;
+	PTPUSBBulkContainer usbdata;
+	uint32_t bytes_left_to_transfer;
+	PTPDataHandler memhandler;
+
+	/* build appropriate USB container */
+	usbdata.length	= htod32(PTP_USB_BULK_HDR_LEN+size);
+	usbdata.type	= htod16(PTP_USB_CONTAINER_DATA);
+	usbdata.code	= htod16(ptp->Code);
+	usbdata.trans_id= htod32(ptp->Transaction_ID);
+  
+	((PTP_USB*)params->data)->current_transfer_complete = 0;
+	((PTP_USB*)params->data)->current_transfer_total = size;
+
+	if (params->split_header_data) {
+		datawlen = 0;
+		wlen = PTP_USB_BULK_HDR_LEN;
+	} else {
+		unsigned long gotlen;
+		/* For all camera devices. */
+		datawlen = (size<PTP_USB_BULK_PAYLOAD_LEN)?size:PTP_USB_BULK_PAYLOAD_LEN;
+		wlen = PTP_USB_BULK_HDR_LEN + datawlen;
+		ret = handler->getfunc(params, handler->private, datawlen, usbdata.payload.data, &gotlen);
+		if (ret != PTP_RC_OK)
+			return ret;
+		if (gotlen != datawlen)
+			return PTP_RC_GeneralError;
+	}
+	ptp_init_send_memory_handler (&memhandler, (unsigned char *)&usbdata, wlen);
+	/* send first part of data */
+	ret = ptp_write_func(wlen, &memhandler, params->data, &written);
+	ptp_exit_send_memory_handler (&memhandler);
+	if (ret!=PTP_RC_OK) {
+		ret = PTP_ERROR_IO;
+/*		ptp_error (params,
+		"PTP: request code 0x%04x sending data error 0x%04x",
+			ptp->Code,ret);*/
+		return ret;
+	}
+	if (size <= datawlen) return ret;
+	/* if everything OK send the rest */
+	bytes_left_to_transfer = size-datawlen;
+	ret = PTP_RC_OK;
+	while(bytes_left_to_transfer > 0) {
+		ret = ptp_write_func (bytes_left_to_transfer, handler, params->data, &written);
+		if (ret != PTP_RC_OK)
+			break;
+		if (written == 0) {
+			ret = PTP_ERROR_IO;
+			break;
+		}
+		bytes_left_to_transfer -= written;
+	}
+	if (ret!=PTP_RC_OK)
+		ret = PTP_ERROR_IO;
+	return ret;
+}
+
+static uint16_t ptp_usb_getpacket(PTPParams *params,
+		PTPUSBBulkContainer *packet, unsigned long *rlen)
+{
+	PTPDataHandler	memhandler;
+	uint16_t	ret;
+	unsigned char	*x = NULL;
+
+	/* read the header and potentially the first data */
+	if (params->response_packet_size > 0) {
+		/* If there is a buffered packet, just use it. */
+		memcpy(packet, params->response_packet, params->response_packet_size);
+		*rlen = params->response_packet_size;
+		free(params->response_packet);
+		params->response_packet = NULL;
+		params->response_packet_size = 0;
+		/* Here this signifies a "virtual read" */
+		return PTP_RC_OK;
+	}
+	ptp_init_recv_memory_handler (&memhandler);
+	ret = ptp_read_func( sizeof(*packet), &memhandler, params->data, rlen);
+	ptp_exit_recv_memory_handler (&memhandler, &x, rlen);
+	if (x) {
+		memcpy (packet, x, *rlen);
+		free (x);
+	}
+	return ret;
+}
+
+uint16_t
+ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
+{
+	uint16_t ret;
+	PTPUSBBulkContainer usbdata;
+	unsigned char	*data;
+	unsigned long	written;
+
+	memset(&usbdata,0,sizeof(usbdata));
+	do {
+		unsigned long len, rlen;
+
+		ret = ptp_usb_getpacket(params, &usbdata, &rlen);
+		if (ret!=PTP_RC_OK) {
+			ret = PTP_ERROR_IO;
+			break;
+		} else
+		if (dtoh16(usbdata.type)!=PTP_USB_CONTAINER_DATA) {
+			ret = PTP_ERROR_DATA_EXPECTED;
+			break;
+		} else
+		if (dtoh16(usbdata.code)!=ptp->Code) {
+			ret = dtoh16(usbdata.code);
+			break;
+		}
+		if (usbdata.length == 0xffffffffU) {
+			/* stuff data directly to passed data handler */
+			while (1) {
+				unsigned long readdata;
+				int xret;
+
+				xret = ptp_read_func(
+					PTP_USB_BULK_HS_MAX_PACKET_LEN,
+					handler,
+					params->data,
+					&readdata
+				);
+				if (xret == -1)
+					return PTP_ERROR_IO;
+				if (readdata < PTP_USB_BULK_HS_MAX_PACKET_LEN)
+					break;
+			}
+			return PTP_RC_OK;
+		}
+		if (rlen > dtoh32(usbdata.length)) {
+			/*
+			 * Buffer the surplus response packet if it is >=
+			 * PTP_USB_BULK_HDR_LEN
+			 * (i.e. it is probably an entire package)
+			 * else discard it as erroneous surplus data.
+			 * This will even work if more than 2 packets appear
+			 * in the same transaction, they will just be handled
+			 * iteratively.
+			 *
+			 * Marcus observed stray bytes on iRiver devices;
+			 * these are still discarded.
+			 */
+			unsigned int packlen = dtoh32(usbdata.length);
+			unsigned int surplen = rlen - packlen;
+
+			if (surplen >= PTP_USB_BULK_HDR_LEN) {
+				params->response_packet = malloc(surplen);
+				memcpy(params->response_packet,
+				       (uint8_t *) &usbdata + packlen, surplen);
+				params->response_packet_size = surplen;
+			} else {
+				ptp_debug (params, "ptp2/ptp_usb_getdata: read %d bytes too much, expect problems!", rlen - dtoh32(usbdata.length));
+			}
+			rlen = packlen;
+		}
+
+		/* For most PTP devices rlen is 512 == sizeof(usbdata)
+		 * here. For MTP devices splitting header and data it might
+		 * be 12.
+		 */
+		/* Evaluate full data length. */
+		len=dtoh32(usbdata.length)-PTP_USB_BULK_HDR_LEN;
+
+		/* autodetect split header/data MTP devices */
+		if (dtoh32(usbdata.length) > 12 && (rlen==12))
+			params->split_header_data = 1;
+
+		data = malloc(PTP_USB_BULK_HS_MAX_PACKET_LEN);
+		/* Copy first part of data to 'data' */
+		handler->putfunc(
+			params, handler->private, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data,
+			&written
+		);
+
+		/* Is that all of data? */
+		if (len+PTP_USB_BULK_HDR_LEN<=rlen) break;
+
+		/* If not read the rest of it. */
+		ret=ptp_read_func(len - (rlen - PTP_USB_BULK_HDR_LEN),
+				      handler,
+				      params->data, &rlen);
+		if (ret!=PTP_RC_OK) {
+			ret = PTP_ERROR_IO;
+			break;
+		}
+	} while (0);
+/*
+	if (ret!=PTP_RC_OK) {
+		ptp_error (params,
+		"PTP: request code 0x%04x getting data error 0x%04x",
+			ptp->Code, ret);
+	}*/
+	return ret;
+}
+
+uint16_t
+ptp_usb_getresp (PTPParams* params, PTPContainer* resp)
+{
+	uint16_t ret;
+	unsigned long rlen;
+	PTPUSBBulkContainer usbresp;
+
+	memset(&usbresp,0,sizeof(usbresp));
+	/* read response, it should never be longer than sizeof(usbresp) */
+	ret = ptp_usb_getpacket(params, &usbresp, &rlen);
+
+	if (ret!=PTP_RC_OK) {
+		ret = PTP_ERROR_IO;
+	} else
+	if (dtoh16(usbresp.type)!=PTP_USB_CONTAINER_RESPONSE) {
+		ret = PTP_ERROR_RESP_EXPECTED;
+	} else
+	if (dtoh16(usbresp.code)!=resp->Code) {
+		ret = dtoh16(usbresp.code);
+	}
+	if (ret!=PTP_RC_OK) {
+/*		ptp_error (params,
+		"PTP: request code 0x%04x getting resp error 0x%04x",
+			resp->Code, ret);*/
+		return ret;
+	}
+	/* build an appropriate PTPContainer */
+	resp->Code=dtoh16(usbresp.code);
+	resp->SessionID=params->session_id;
+	resp->Transaction_ID=dtoh32(usbresp.trans_id);
+	resp->Param1=dtoh32(usbresp.payload.params.param1);
+	resp->Param2=dtoh32(usbresp.payload.params.param2);
+	resp->Param3=dtoh32(usbresp.payload.params.param3);
+	resp->Param4=dtoh32(usbresp.payload.params.param4);
+	resp->Param5=dtoh32(usbresp.payload.params.param5);
+	return ret;
+}
+
+/* Event handling functions */
+
+/* PTP Events wait for or check mode */
+#define PTP_EVENT_CHECK			0x0000	/* waits for */
+#define PTP_EVENT_CHECK_FAST		0x0001	/* checks */
+
+static inline uint16_t
+ptp_usb_event (PTPParams* params, PTPContainer* event, int wait)
+{
+	uint16_t ret;
+	int result;
+	unsigned long rlen;
+	PTPUSBEventContainer usbevent;
+	PTP_USB *ptp_usb = (PTP_USB *)(params->data);
+
+	memset(&usbevent,0,sizeof(usbevent));
+
+	if ((params==NULL) || (event==NULL)) 
+		return PTP_ERROR_BADPARAM;
+	ret = PTP_RC_OK;
+	switch(wait) {
+	case PTP_EVENT_CHECK:
+		result=USB_BULK_READ(ptp_usb->handle, ptp_usb->intep,(char *)&usbevent,sizeof(usbevent),ptpcam_usb_timeout);
+		if (result==0)
+			result = USB_BULK_READ(ptp_usb->handle, ptp_usb->intep,(char *) &usbevent, sizeof(usbevent), ptpcam_usb_timeout);
+		if (result < 0) ret = PTP_ERROR_IO;
+		break;
+	case PTP_EVENT_CHECK_FAST:
+		result=USB_BULK_READ(ptp_usb->handle, ptp_usb->intep,(char *)&usbevent,sizeof(usbevent),ptpcam_usb_timeout);
+		if (result==0)
+			result = USB_BULK_READ(ptp_usb->handle, ptp_usb->intep,(char *) &usbevent, sizeof(usbevent), ptpcam_usb_timeout);
+		if (result < 0) ret = PTP_ERROR_IO;
+		break;
+	default:
+		ret=PTP_ERROR_BADPARAM;
+		break;
+	}
+	if (ret!=PTP_RC_OK) {
+		ptp_error (params,
+			"PTP: reading event an error 0x%04x occurred", ret);
+		return PTP_ERROR_IO;
+	}
+	rlen = result;
+	if (rlen < 8) {
+		ptp_error (params,
+			"PTP: reading event an short read of %ld bytes occurred", rlen);
+		return PTP_ERROR_IO;
+	}
+	/* if we read anything over interrupt endpoint it must be an event */
+	/* build an appropriate PTPContainer */
+	event->Code=dtoh16(usbevent.code);
+	event->SessionID=params->session_id;
+	event->Transaction_ID=dtoh32(usbevent.trans_id);
+	event->Param1=dtoh32(usbevent.param1);
+	event->Param2=dtoh32(usbevent.param2);
+	event->Param3=dtoh32(usbevent.param3);
+	return ret;
+}
+
+uint16_t
+ptp_usb_event_check (PTPParams* params, PTPContainer* event) {
+
+	return ptp_usb_event (params, event, PTP_EVENT_CHECK_FAST);
+}
+
+uint16_t
+ptp_usb_event_wait (PTPParams* params, PTPContainer* event) {
+
+	return ptp_usb_event (params, event, PTP_EVENT_CHECK);
+}
+
 
 static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev)
 {
   usb_dev_handle *device_handle;
   
-  params->write_func=ptp_write_func;
-  params->read_func=ptp_read_func;
-  params->check_int_func=ptp_check_int;
-  params->check_int_fast_func=ptp_check_int;
   params->error_func=NULL;
   params->debug_func=NULL;
   params->sendreq_func=ptp_usb_sendreq;

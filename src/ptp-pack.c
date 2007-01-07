@@ -364,8 +364,8 @@ ptp_unpack_SI (PTPParams *params, unsigned char* data, PTPStorageInfo *si, unsig
 #define PTP_oi_filenamelen		52
 #define PTP_oi_Filename			53
 
-// the max length assuming zero length dates. We have need 3
-// bytes for these.
+/* the max length assuming zero length dates. We have need 3 */
+/* bytes for these. */
 #define PTP_oi_MaxLen PTP_oi_Filename+(PTP_MAXSTRLEN+1)*2+3
 
 static inline uint32_t

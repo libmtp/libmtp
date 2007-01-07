@@ -1285,9 +1285,6 @@ typedef struct _PTPDataHandler {
 	void			*private;
 } PTPDataHandler;
 
-/* PTP <-> lowlevel IO layer read/write functions */
-typedef short (* PTPIOReadFunc)	(unsigned long size, PTPDataHandler*, void*, unsigned long*readlen);
-typedef short (* PTPIOWriteFunc)(unsigned long size, PTPDataHandler*, void *data, unsigned long *written);
 /*
  * This functions take PTP oriented arguments and send them over an
  * appropriate data layer doing byteorder conversion accordingly.
@@ -1314,12 +1311,7 @@ typedef void (* PTPDebugFunc) (void *data, const char *format, va_list args)
 struct _PTPParams {
 	/* data layer byteorder */
 	uint8_t		byteorder;
-
-	/* IO: Data layer IO functions */
-	PTPIOReadFunc	read_func;
-	PTPIOWriteFunc	write_func;
-	PTPIOReadFunc	check_int_func;
-	PTPIOReadFunc	check_int_fast_func;
+	uint16_t	maxpacketsize;
 
 	/* PTP IO: Custom IO functions */
 	PTPIOSendReq	sendreq_func;

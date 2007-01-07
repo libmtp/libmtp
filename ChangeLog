@@ -1,3 +1,14 @@
+2006-01-07  Marcus Meissner <meissner@suse.de>
+
+	* src/ptp.c: sync to upstream libgphoto2.
+	* src/ptp.h: dito.
+	* src/ptp-pack.c: dito.
+	* libusb-glue.c: fixes to move low-level functions
+	  out of ptp.c and into this libmtp-specific portion.
+	  libgphoto2 has been similarly altered to use a usb.c
+	  file for the low-level stuff. (This was a long needed
+	  split anyway.)
+
 2007-01-03  Richard Low
 
 	* src/libusb-glue.c: fix zero write bug
