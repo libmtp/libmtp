@@ -2,7 +2,8 @@
 
 	* src/libusb-glue.c: (re)introduce de-halting of endpoints
 	  as this is needed by VMWare emulation. Must check whether
-	  this causes problems for other archs!
+	  this causes problems for other archs! Problem was reported
+	  by Orson Teodoro under i686 Gentoo, with a suggested patch.
 
 2006-01-07  Marcus Meissner <meissner@suse.de>
 
