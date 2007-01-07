@@ -1,3 +1,8 @@
+2007-01-07  Orson Teodoro <orsonteodoro@yahoo.com>
+
+	* src/ptp.h: Encoding profile.
+	* src/ptp.c: Dito.
+
 2006-01-07  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: (re)introduce de-halting of endpoints
