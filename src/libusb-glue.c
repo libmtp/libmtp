@@ -1092,38 +1092,62 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
 
 static void clear_stall(PTP_USB* ptp_usb)
 {
-  uint16_t status=0;
+  uint16_t status;
   int ret;
   
   /* check the inep status */
+  status = 0;
   ret = usb_get_endpoint_status(ptp_usb,ptp_usb->inep,&status);
-  if (ret<0) perror ("inep: usb_get_endpoint_status()");
-  /* and clear the HALT condition if happend */
-  else if (status) {
-    printf("Resetting input pipe!\n");
-    ret=usb_clear_stall_feature(ptp_usb,ptp_usb->inep);
-    /*usb_clear_halt(ptp_usb->handle,ptp_usb->inep); */
-    if (ret<0)perror ("usb_clear_stall_feature()");
+  if (ret<0) {
+    perror ("inep: usb_get_endpoint_status()");
+  } else if (status) {
+    printf("Clearing stall on IN endpoint\n");
+    ret = usb_clear_stall_feature(ptp_usb,ptp_usb->inep);
+    if (ret<0) {
+      perror ("usb_clear_stall_feature()");
+    }
   }
-  status=0;
   
   /* check the outep status */
-  ret=usb_get_endpoint_status(ptp_usb,ptp_usb->outep,&status);
-  if (ret<0) perror ("outep: usb_get_endpoint_status()");
-  /* and clear the HALT condition if happend */
-  else if (status) {
-    printf("Resetting output pipe!\n");
-    ret=usb_clear_stall_feature(ptp_usb,ptp_usb->outep);
-    /*usb_clear_halt(ptp_usb->handle,ptp_usb->outep); */
-    if (ret<0)perror ("usb_clear_stall_feature()");
+  status=0;
+  ret = usb_get_endpoint_status(ptp_usb,ptp_usb->outep,&status);
+  if (ret<0) {
+    perror("outep: usb_get_endpoint_status()");
+  } else if (status) {
+    printf("Clearing stall on OUT endpoint\n");
+    ret = usb_clear_stall_feature(ptp_usb,ptp_usb->outep);
+    if (ret<0) {
+      perror("usb_clear_stall_feature()");
+    }
   }
-  
-  /*usb_clear_halt(ptp_usb->handle,ptp_usb->intep); */
+
+  /* TODO: do we need this for INTERRUPT (ptp_usb->intep) too? */
+}
+
+static void clear_halt(PTP_USB* ptp_usb)
+{
+  int ret;
+
+  ret = usb_clear_halt(ptp_usb->handle,ptp_usb->inep);
+  if (ret<0) {
+    perror("usb_clear_halt() on IN endpoint");
+  }
+  ret = usb_clear_halt(ptp_usb->handle,ptp_usb->outep);
+  if (ret<0) {
+    perror("usb_clear_halt() on OUT endpoint");
+  }
+  ret = usb_clear_halt(ptp_usb->handle,ptp_usb->intep);
+  if (ret<0) {
+    perror("usb_clear_halt() on INTERRUPT endpoint");
+  }
 }
 
 static void close_usb(PTP_USB* ptp_usb, uint8_t interfaceNumber)
 {
+  // Clear any stalled endpoints
   clear_stall(ptp_usb);
+  // Clear halts on any endpoints
+  clear_halt(ptp_usb);
   // Added to clear some stuff on the OUT endpoint
   // TODO: is this good on the Mac too?
   usb_resetep(ptp_usb->handle, ptp_usb->outep);

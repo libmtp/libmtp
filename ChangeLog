@@ -1,3 +1,9 @@
+2006-01-07  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: (re)introduce de-halting of endpoints
+	  as this is needed by VMWare emulation. Must check whether
+	  this causes problems for other archs!
+
 2006-01-07  Marcus Meissner <meissner@suse.de>
 
 	* src/ptp.c: sync to upstream libgphoto2.
@@ -9,7 +15,7 @@
 	  file for the low-level stuff. (This was a long needed
 	  split anyway.)
 
-2007-01-03  Richard Low
+2007-01-03  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: fix zero write bug
 	* src/ptp.c: ditto
