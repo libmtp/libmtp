@@ -467,44 +467,46 @@ ptp_read_func (
   bytes = malloc(CONTEXT_BLOCK_SIZE);
   while (curread < size) {
     toread = size - curread;
-    if (toread > CONTEXT_BLOCK_SIZE)
+    if (toread > CONTEXT_BLOCK_SIZE) {
       toread = CONTEXT_BLOCK_SIZE;
-    else if (toread > ptp_usb->outep_maxpacket)
+    } else if (toread > ptp_usb->outep_maxpacket) {
       toread -= toread % ptp_usb->outep_maxpacket;
+    }
 
     result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, (char*)bytes, toread, ptpcam_usb_timeout);
     if (result == 0) {
       result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, (char*)bytes, toread, ptpcam_usb_timeout);
     }
-    if (result < 0)
+    if (result < 0) {
       return PTP_ERROR_IO;
+    }
 #ifdef ENABLE_USB_BULK_DEBUG
     printf("<==USB IN\n");
     data_dump_ascii (stdout,bytes,result,16);
 #endif
-    handler->putfunc (NULL, handler->private, result, bytes, &written);
+    handler->putfunc(NULL, handler->private, result, bytes, &written);
+    ptp_usb->current_transfer_complete += result;
     curread += result;
+
+    // Increase counters, call callback
+    if (ptp_usb->callback_active) {
+      if (ptp_usb->current_transfer_complete >= ptp_usb->current_transfer_total) {
+	// send last update and disable callback.
+	ptp_usb->current_transfer_complete = ptp_usb->current_transfer_total;
+	ptp_usb->callback_active = 0;
+      }
+      if (ptp_usb->current_transfer_callback != NULL) {
+	(void) ptp_usb->current_transfer_callback(ptp_usb->current_transfer_complete,
+						  ptp_usb->current_transfer_total,
+						  ptp_usb->current_transfer_callback_data);
+      }
+    }  
+
     if (result < toread) /* short reads are common */
       break;
   }
   if (readbytes) *readbytes = curread;
   free (bytes);
-
-  // Increase counters, call callback
-  if (ptp_usb->callback_active) {
-    ptp_usb->current_transfer_complete += curread;
-    if (ptp_usb->current_transfer_complete > ptp_usb->current_transfer_total) {
-      // Fishy... but some commands have unpredictable lengths.
-      // send last update and disable callback.
-      ptp_usb->current_transfer_complete = ptp_usb->current_transfer_total;
-      ptp_usb->callback_active = 0;
-    }
-    if (ptp_usb->current_transfer_callback != NULL) {
-      (void) ptp_usb->current_transfer_callback(ptp_usb->current_transfer_complete,
-						ptp_usb->current_transfer_total,
-						ptp_usb->current_transfer_callback_data);
-    }
-  }
   
   if (result > 0) {
     return (PTP_RC_OK);
@@ -528,47 +530,54 @@ ptp_write_func (
 
   // This is the largest block we'll need to read in.  
   bytes = malloc(CONTEXT_BLOCK_SIZE);
-  if (!bytes) return PTP_ERROR_IO;
+  if (!bytes) {
+    return PTP_ERROR_IO;
+  }
   while (curwrite < size) {
     towrite = size-curwrite;
-    if (towrite > CONTEXT_BLOCK_SIZE)
+    if (towrite > CONTEXT_BLOCK_SIZE) {
       towrite = CONTEXT_BLOCK_SIZE;
-    else
-      if (towrite > ptp_usb->outep_maxpacket && towrite % ptp_usb->outep_maxpacket != 0)
+    } else {
+      // This magic makes packets the same size that WMP send them.
+      if (towrite > ptp_usb->outep_maxpacket && towrite % ptp_usb->outep_maxpacket != 0) {
         towrite -= towrite % ptp_usb->outep_maxpacket;
-    handler->getfunc (NULL, handler->private,towrite,bytes,&towrite);
+      }
+    }
+    handler->getfunc(NULL, handler->private,towrite,bytes,&towrite);
     result = USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char*)bytes,towrite,ptpcam_usb_timeout);
 #ifdef ENABLE_USB_BULK_DEBUG
     printf("USB OUT==>\n");
     data_dump_ascii (stdout,bytes,towrite,16);
 #endif
-    if (result < 0)
+    if (result < 0) {
       return PTP_ERROR_IO;
+    }
+    // Increase counters
+    ptp_usb->current_transfer_complete += result;
     curwrite += result;
+
+    // call callback
+    if (ptp_usb->callback_active) {
+      if (ptp_usb->current_transfer_complete >= ptp_usb->current_transfer_total) {
+	// send last update and disable callback.
+	ptp_usb->current_transfer_complete = ptp_usb->current_transfer_total;
+	ptp_usb->callback_active = 0;
+      }
+      if (ptp_usb->current_transfer_callback != NULL) {
+	(void) ptp_usb->current_transfer_callback(ptp_usb->current_transfer_complete,
+						  ptp_usb->current_transfer_total,
+						  ptp_usb->current_transfer_callback_data);
+      }
+    }
     if (result < towrite) /* short writes happen */
       break;
   }
   free (bytes);
-  if (written) *written = curwrite;
-
-  // Increase counters
-  ptp_usb->current_transfer_complete += curwrite;
-  
-  // call callback
-  if (ptp_usb->callback_active) {
-    if (ptp_usb->current_transfer_complete > ptp_usb->current_transfer_total) {
-      // Fishy... but some commands have unpredictable lengths.
-      // send last update and disable callback.
-      ptp_usb->current_transfer_complete = ptp_usb->current_transfer_total;
-      ptp_usb->callback_active = 0;
-    }
-    if (ptp_usb->current_transfer_callback != NULL) {
-      (void) ptp_usb->current_transfer_callback(ptp_usb->current_transfer_complete,
-						ptp_usb->current_transfer_total,
-						ptp_usb->current_transfer_callback_data);
-    }
+  if (written) {
+    *written = curwrite;
   }
   
+
   // If this is the last transfer send a zero write if required
   if (ptp_usb->current_transfer_complete >= ptp_usb->current_transfer_total) {
     if ((towrite % ptp_usb->outep_maxpacket) == 0) {
@@ -579,10 +588,7 @@ ptp_write_func (
       result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)"x",0,ptpcam_usb_timeout);
     }
   }
-  
-  if (ptp_usb->current_transfer_complete == ptp_usb->current_transfer_total)
-    ptp_usb->callback_active = 0;
-  
+    
   if (result < 0)
     return PTP_ERROR_IO;
   return PTP_RC_OK;

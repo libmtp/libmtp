@@ -1,3 +1,10 @@
+2007-01-09  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: repair callbacks, structure the code just
+	  a little bit.
+	* src/libmtp.c: don't assign values to writes or reads, use the
+	  PTP transport intrinsics instead.
+	
 2007-01-07  Orson Teodoro <orsonteodoro@yahoo.com>
 
 	* src/ptp.h: Encoding profile.
