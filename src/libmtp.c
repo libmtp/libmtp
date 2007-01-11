@@ -1304,7 +1304,7 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device,
 
   ret = ptp_getdevicepropvalue(params, PTP_DPC_BatteryLevel, &propval, PTP_DTC_UINT8);
   if (ret != PTP_RC_OK) {
-    printf("LIBMTP_Get_Batterylevel(): could not get devcie property value.\n");
+    printf("LIBMTP_Get_Batterylevel(): could not get device property value.\n");
     printf("Return code: 0x%04x (look this up in ptp.h for an explanation).\n",  ret);
     return -1;
   }

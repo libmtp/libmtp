@@ -1,3 +1,8 @@
+2007-01-11  Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: a zero read fix
+	* src/libmtp.c: fix spelling mistake
+
 2007-01-09  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: repair callbacks, structure the code just

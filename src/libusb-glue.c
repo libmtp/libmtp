@@ -227,7 +227,7 @@ static void find_endpoints(struct usb_device *dev, int* inep, int* inep_maxpacke
 static void clear_stall(PTP_USB* ptp_usb);
 static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev);
 static short ptp_write_func (unsigned long,PTPDataHandler*,void *data,unsigned long*);
-static short ptp_read_func (unsigned long,PTPDataHandler*,void *data,unsigned long*);
+static short ptp_read_func (unsigned long,PTPDataHandler*,void *data,unsigned long*,int);
 static int usb_clear_stall_feature(PTP_USB* ptp_usb, int ep);
 static int usb_get_endpoint_status(PTP_USB* ptp_usb, int ep, uint16_t* status);
 
@@ -454,7 +454,8 @@ ptp_error (PTPParams *params, const char *format, ...)
 static short
 ptp_read_func (
 	unsigned long size, PTPDataHandler *handler,void *data,
-	unsigned long *readbytes
+	unsigned long *readbytes,
+	int readzero
 ) {
   PTP_USB *ptp_usb = (PTP_USB *)data;
   unsigned long toread = 0;
@@ -474,15 +475,16 @@ ptp_read_func (
     }
 
     result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, (char*)bytes, toread, ptpcam_usb_timeout);
-    if (result == 0) {
-      result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, (char*)bytes, toread, ptpcam_usb_timeout);
-    }
+    
     if (result < 0) {
       return PTP_ERROR_IO;
     }
 #ifdef ENABLE_USB_BULK_DEBUG
     printf("<==USB IN\n");
-    data_dump_ascii (stdout,bytes,result,16);
+    if (result == 0)
+      printf("Zero Read\n");
+    else
+      data_dump_ascii (stdout,bytes,result,16);
 #endif
     handler->putfunc(NULL, handler->private, result, bytes, &written);
     ptp_usb->current_transfer_complete += result;
@@ -507,6 +509,19 @@ ptp_read_func (
   }
   if (readbytes) *readbytes = curread;
   free (bytes);
+  
+  // there might be a zero packet waiting for us...
+  if (readzero && curread % ptp_usb->outep_maxpacket == 0) {
+    char temp;
+    int zeroresult = 0;
+#ifdef ENABLE_USB_BULK_DEBUG
+    printf("<==USB IN\n");
+    printf("Zero Read\n");
+#endif
+    zeroresult = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, &temp, 0, ptpcam_usb_timeout);
+    if (zeroresult != 0)
+      printf("LIBMTP panic: unable to read in zero packet, response 0x%04x", zeroresult);
+  }
   
   if (result > 0) {
     return (PTP_RC_OK);
@@ -818,7 +833,7 @@ static uint16_t ptp_usb_getpacket(PTPParams *params,
 		return PTP_RC_OK;
 	}
 	ptp_init_recv_memory_handler (&memhandler);
-	ret = ptp_read_func( sizeof(*packet), &memhandler, params->data, rlen);
+	ret = ptp_read_func( sizeof(*packet), &memhandler, params->data, rlen, 0);
 	ptp_exit_recv_memory_handler (&memhandler, &x, rlen);
 	if (x) {
 		memcpy (packet, x, *rlen);
@@ -862,7 +877,8 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 					PTP_USB_BULK_HS_MAX_PACKET_LEN,
 					handler,
 					params->data,
-					&readdata
+					&readdata,
+          0
 				);
 				if (xret == -1)
 					return PTP_ERROR_IO;
@@ -922,7 +938,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		/* If not read the rest of it. */
 		ret=ptp_read_func(len - (rlen - PTP_USB_BULK_HDR_LEN),
 				      handler,
-				      params->data, &rlen);
+				      params->data, &rlen, 1);
 		if (ret!=PTP_RC_OK) {
 			ret = PTP_ERROR_IO;
 			break;
