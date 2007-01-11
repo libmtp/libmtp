@@ -1,3 +1,10 @@
+2007-01-11  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.sym: updated symbol table for mingw32 but does
+	  anyone use this? Also I believe one could auto-generate
+	  this some way, just haven't figured out how... Perhaps with
+	  a funky script that massage libmtp.h if nothing else.
+
 2007-01-11  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: a zero read fix
