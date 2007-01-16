@@ -1,3 +1,9 @@
+2007-01-16  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: bump and release 0.1.3.
+	* src/Makefile.am: bump interface REVISION. Nothing changed
+	  externally really.
+
 2007-01-11  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.sym: updated symbol table for mingw32 but does
