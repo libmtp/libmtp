@@ -1,3 +1,12 @@
+2007-01-20  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: error stack handling like in libnjb.
+	  just bare bones implementation as of now but the idea
+	  should be clearly visible. TODO: add a plethora of
+	  errors and adjust examples to make use of the error
+	  stack.
+	* src/libmtp.c: dito.
+	
 2007-01-20  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: new device 'Philips PSA235'

@@ -89,7 +89,16 @@ typedef enum {
   LIBMTP_FILETYPE_JPX,
   LIBMTP_FILETYPE_UNKNOWN
 } LIBMTP_filetype_t;
+/**
+ * These are the numbered error codes. You can also
+ * get string representations for errors.
+ */
+typedef enum {
+  LIBMTP_ERROR_NONE,
+  LIBMTP_ERROR_GENERAL
+} LIBMTP_error_number_t;
 typedef struct LIBMTP_device_entry_struct LIBMTP_device_entry_t; /**< @see LIBMTP_device_entry_struct */
+typedef struct LIBMTP_error_struct LIBMTP_error_t; /**< @see LIBMTP_error_struct */
 typedef struct LIBMTP_mtpdevice_struct LIBMTP_mtpdevice_t; /**< @see LIBMTP_mtpdevice_struct */
 typedef struct LIBMTP_file_struct LIBMTP_file_t; /**< @see LIBMTP_file_struct */
 typedef struct LIBMTP_track_struct LIBMTP_track_t; /**< @see LIBMTP_track_struct */
@@ -120,13 +129,22 @@ typedef int (* LIBMTP_progressfunc_t) (uint64_t const sent, uint64_t const total
  */
 
 /**
- * A data structure to hold MTP device entries
+ * A data structure to hold MTP device entries.
  */
 struct LIBMTP_device_entry_struct {
   char *name; /**< The descriptive name of this device */
   uint16_t vendor_id; /**< Vendor ID for this device */
   uint16_t product_id; /**< Product ID for this device */
   uint32_t device_flags; /**< Bugs, device specifics etc */
+};
+
+/**
+ * A data structure to hold errors from the library.
+ */
+struct LIBMTP_error_struct {
+  LIBMTP_error_number_t errornumber;
+  char *error_text;
+  LIBMTP_error_t *next;
 };
 
 /**
@@ -151,6 +169,11 @@ struct LIBMTP_mtpdevice_struct {
    * any time.
    */
   LIBMTP_devicestorage_t *storage;
+  /**
+   * The error stack. This shall be handled using the error getting
+   * and clearing functions, not by dereferencing this list.
+   */
+  LIBMTP_error_t *errorstack;
   /** The maximum battery level for this device */
   uint8_t maximum_battery_level;
   /** Default music folder */
@@ -309,6 +332,9 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *,
 int LIBMTP_Get_Secure_Time(LIBMTP_mtpdevice_t *, char ** const);
 int LIBMTP_Get_Device_Certificate(LIBMTP_mtpdevice_t *, char ** const);
 int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *, uint16_t ** const, uint16_t * const);
+LIBMTP_error_t *LIBMTP_Get_Errorstack(LIBMTP_mtpdevice_t*);
+void LIBMTP_Clear_Errorstack(LIBMTP_mtpdevice_t*);
+void LIBMTP_Dump_Errorstack(LIBMTP_mtpdevice_t*);
 
 #define LIBMTP_STORAGE_SORTBY_NOTSORTED 0
 #define LIBMTP_STORAGE_SORTBY_FREESPACE 1

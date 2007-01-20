@@ -70,6 +70,9 @@ static filemap_t *filemap = NULL;
 static int register_filetype(char const * const description, LIBMTP_filetype_t const id,
 			     uint16_t const ptp_id);
 static void init_filemap();
+static void add_error_to_errorstack(LIBMTP_mtpdevice_t *device,
+				    LIBMTP_error_number_t errornumber,
+				    char const * const error_text);
 static void flush_handles(LIBMTP_mtpdevice_t *device);
 static void free_storage_list(LIBMTP_mtpdevice_t *device);
 static int sort_storage_by(LIBMTP_mtpdevice_t *device, int const sortby);
@@ -668,6 +671,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   tmpdevice->params = (void *) params;
   tmpdevice->usbinfo = (void *) ptp_usb;
   tmpdevice->maximum_battery_level = batteryLevelMax;
+  tmpdevice->errorstack = NULL;
 
   // Set all default folders to 0 == root directory
   tmpdevice->default_music_folder = 0;
@@ -767,11 +771,102 @@ void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
     free(params->handles.Handler);
     params->handles.Handler = NULL;
   }
+  // Clear error stack
+  LIBMTP_Clear_Errorstack(device);
   // Free iconv() converters...
   iconv_close(params->cd_locale_to_ucs2);
   iconv_close(params->cd_ucs2_to_locale);
   free_storage_list(device);
   free(device);
+}
+
+/**
+ * This can be used by any libmtp-intrinsic code that
+ * need to stack up an error on the stack.
+ */
+static void add_error_to_errorstack(LIBMTP_mtpdevice_t *device,
+				    LIBMTP_error_number_t errornumber,
+				    char const * const error_text)
+{
+  LIBMTP_error_t *newerror;
+  
+  newerror = (LIBMTP_error_t *) malloc(sizeof(LIBMTP_error_t));
+  newerror->errornumber = errornumber;
+  newerror->error_text = strdup(error_text);
+  if (device->errorstack == NULL) {
+    device->errorstack = newerror;
+  } else {
+    LIBMTP_error_t *tmp = device->errorstack;
+    
+    while (tmp->next != NULL) {
+      tmp = tmp->next;
+    }
+    tmp->next = newerror;
+  }
+}
+
+/**
+ * This returns the error stack for a device in case you
+ * need to either reference the error numbers (e.g. when
+ * creating multilingual apps with multiple-language text
+ * representations for each error number) or when you need
+ * to build a multi-line error text widget or something like
+ * that. You need to call the <code>LIBMTP_Clear_Errorstack</code>
+ * to clear it when you're finished with it.
+ * @param device a pointer to the MTP device to get the error
+ *        stack for.
+ * @return the error stack or NULL if there are no errors
+ *         on the stack.
+ * @see LIBMTP_Clear_Errorstack()
+ * @see LIBMTP_Dump_Errorstack()
+ */
+LIBMTP_error_t *LIBMTP_Get_Errorstack(LIBMTP_mtpdevice_t *device)
+{
+  return device->errorstack;
+}
+
+/**
+ * This function clears the error stack of a device and frees
+ * any memory used by it. Call this when you're finished with
+ * using the errors.
+ * @param device a pointer to the MTP device to clear the error
+ *        stack for.
+ */
+void LIBMTP_Clear_Errorstack(LIBMTP_mtpdevice_t *device)
+{
+  LIBMTP_error_t *tmp = device->errorstack;
+  
+  while (tmp != NULL) {
+    LIBMTP_error_t *tmp2;
+    
+    if (tmp->error_text != NULL) {
+      free(tmp->error_text);
+    }
+    tmp2 = tmp;
+    tmp = tmp->next;
+    free(tmp2);
+  }
+  device->errorstack = NULL;
+}
+
+/**
+ * This function dumps the error stack to <code>stderr</code>.
+ * (You still have to clear the stack though.)
+ * @param device a pointer to the MTP device to dump the error
+ *        stack for.
+ */
+void LIBMTP_Dump_Errorstack(LIBMTP_mtpdevice_t *device)
+{
+  LIBMTP_error_t *tmp = device->errorstack;
+
+  while (tmp != NULL) {
+    if (tmp->error_text != NULL) {
+      fprintf(stderr, "Error %d: %s\n", tmp->errornumber, tmp->error_text);
+    } else {
+      fprintf(stderr, "Error %d: (unknown)\n", tmp->errornumber);
+    }
+    tmp = tmp->next;
+  }
 }
 
 /**
