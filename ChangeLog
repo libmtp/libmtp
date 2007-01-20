@@ -1,3 +1,7 @@
+2007-01-20  Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: new device 'Philips PSA235'
+
 2007-01-16  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bump and release 0.1.3.

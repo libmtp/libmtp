@@ -122,6 +122,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Philips GoGear Audio", 0x0471, 0x0165, DEVICE_FLAG_NONE },
   // from XNJB forum
   { "Philips GoGear SA9200", 0x0471, 0x014f, DEVICE_FLAG_NONE },
+  // from XNJB user
+  { "Philips PSA235", 0x0471, 0x7e01, DEVICE_FLAG_NONE },
 
   /*
    * SanDisk
