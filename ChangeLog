@@ -1,3 +1,7 @@
+2007-01-21  Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: more new devices
+
 2007-01-20  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: error stack handling like in libnjb.
