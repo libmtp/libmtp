@@ -9,3 +9,5 @@ Makefile
 *.gphoto2
 *.lo
 *.loT
+*.orig
+
