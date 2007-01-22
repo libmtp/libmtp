@@ -1,3 +1,27 @@
+2007-01-22  Linus Walleij <triad@df.lth.se>
+
+	* examples/albumart.c: use the new errostack.
+	* examples/delfile.c: dito.
+	* examples/detect.c: dito.
+	* examples/emptyfolders.c: dito.
+	* examples/format.c: dito.
+	* examples/getfile.c: dito.
+	* examples/getplaylist.c: dito.
+	* examples/newfolder.c: dito.
+	* examples/newplaylist.c: dito.
+	* examples/playlists.c: dito.
+	* examples/sendfile.c: dito.
+	* examples/sendtr.c: dito.
+	* examples/thumb.c: dito.
+	* src/libmtp.c: add some errors to the stack so we can
+	  see how it's to be used. (Just a first try...)
+	
+2007-01-22  Ted Bullock <tbullock@canada.com>
+
+	* src/libusb-glue.c: first hack at creating an interface
+	  to retrieve multiple devices.
+	* src/libmtp.h.in: new error codes related to multiple devices.
+
 2007-01-21  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: more new devices

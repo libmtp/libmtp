@@ -15,6 +15,8 @@ static uint32_t dump_playlist(LIBMTP_mtpdevice_t *device, LIBMTP_playlist_t *pl)
 	LIBMTP_destroy_track_t(track);
       } else {
 	printf("   %u: INVALID TRACK REFERENCE!\n", pl->tracks[i]);
+	LIBMTP_Dump_Errorstack(device);
+	LIBMTP_Clear_Errorstack(device);
       }
     }
   }

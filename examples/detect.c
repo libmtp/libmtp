@@ -101,6 +101,7 @@ int main (int argc, char **argv)
   } else {
     // Silently ignore. Some devices does not support getting the 
     // battery level.
+    LIBMTP_Clear_Errorstack(device);
   }
 
   ret = LIBMTP_Get_Supported_Filetypes(device, &filetypes, &filetypes_len);
@@ -111,6 +112,9 @@ int main (int argc, char **argv)
     for (i = 0; i < filetypes_len; i++) {
       printf("   %s\n", LIBMTP_Get_Filetype_Description(filetypes[i]));
     }
+  } else {
+    LIBMTP_Dump_Errorstack(device);
+    LIBMTP_Clear_Errorstack(device);
   }
 
   // Secure time XML fragment
@@ -118,6 +122,9 @@ int main (int argc, char **argv)
   if (ret == 0 && sectime != NULL) {
     printf("\nSecure Time:\n%s\n", sectime);
     free(sectime);
+  } else {
+    // Silently ignore - there may be devices not supporting secure time.
+    LIBMTP_Clear_Errorstack(device);
   }
 
   // Device certificate XML fragment
@@ -125,6 +132,9 @@ int main (int argc, char **argv)
   if (ret == 0 && devcert != NULL) {
     printf("\nDevice Certificate:\n%s\n", devcert);
     free(devcert);
+  } else {
+    // Silently ignore - there may be devices not supporting dev cert.
+    LIBMTP_Clear_Errorstack(device);
   }
 
   // Try to get Media player device info XML file...
@@ -163,6 +173,9 @@ int main (int argc, char **argv)
 	  printf("\nDevice description WMPInfo.xml file:\n");
 	  dump_xml_fragment(buf, readbytes);
 	}
+      } else {
+	LIBMTP_Dump_Errorstack(device);
+	LIBMTP_Clear_Errorstack(device);
       }
       fclose(xmltmp);
     }

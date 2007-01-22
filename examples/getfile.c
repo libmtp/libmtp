@@ -22,6 +22,8 @@ getfile_function(char * from_path,char * to_path)
     printf("Getting %s to %s\n",from_path,to_path);
     if (LIBMTP_Get_File_To_File(device, id, to_path, progress, NULL) != 0 ) {
       printf("\nError getting file from MTP device.\n");
+      LIBMTP_Dump_Errorstack(device);
+      LIBMTP_Clear_Errorstack(device);
     }
   }
 }

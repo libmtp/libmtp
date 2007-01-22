@@ -24,6 +24,8 @@ delfile_function(char * path)
     int ret = 1;
     ret = LIBMTP_Delete_Object(device, id);
     if (ret != 0) {
+      LIBMTP_Dump_Errorstack(device);
+      LIBMTP_Clear_Errorstack(device);
       printf("Failed to remove file\n");
     }
   }
@@ -74,6 +76,8 @@ void delfile_command(int argc, char **argv)
     }
     if ( ret != 0 ) {
       printf("Failed to delete file:%s\n",argv[i]);
+      LIBMTP_Dump_Errorstack(device);
+      LIBMTP_Clear_Errorstack(device);
       ret = 1;
     }
   }

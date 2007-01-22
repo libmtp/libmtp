@@ -37,6 +37,8 @@ newfolder_function(char * path)
   int newid = LIBMTP_Create_Folder(device, folder, id);
   if (newid == 0) {
     printf("Folder creation failed.\n");
+    LIBMTP_Dump_Errorstack(device);
+    LIBMTP_Clear_Errorstack(device);
   } else {
     printf("New folder created with ID: %d\n", newid);
   }

@@ -106,10 +106,14 @@ int main (int argc, char **argv) {
     ret = LIBMTP_Send_Representative_Sample(device,album->album_id, albumart);
     if (ret != 0) {
       printf("Couldn't send album art\n");
+      LIBMTP_Dump_Errorstack(device);
+      LIBMTP_Clear_Errorstack(device);
     }
   }
   else {
     printf("Couldn't create album object\n");
+    LIBMTP_Dump_Errorstack(device);
+    LIBMTP_Clear_Errorstack(device);
   }
 
   LIBMTP_destroy_filesampledata_t(albumart);

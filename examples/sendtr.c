@@ -202,7 +202,13 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pt
       
     printf("Sending track...\n");
     ret = LIBMTP_Send_Track_From_File(device, from_path, trackmeta, progress, NULL, parent_id);
-    printf("New track ID: %d\n", trackmeta->item_id);
+    if (ret != 0) {
+      printf("Error sending track.\n");
+      LIBMTP_Dump_Errorstack(device);
+      LIBMTP_Clear_Errorstack(device);
+    } else {
+      printf("New track ID: %d\n", trackmeta->item_id);
+    }
 
     LIBMTP_destroy_track_t(trackmeta);
   
@@ -212,76 +218,75 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pt
 }
 
 void sendtrack_command (int argc, char **argv) {
-    int opt;
-    extern int optind;
-    extern char *optarg;
-    char *partist = NULL;
-    char *ptitle = NULL;
-    char *pgenre = NULL;
-    char *pcodec = NULL;
-    char *palbum = NULL;
-    uint16_t tracknum = 0;
-    uint16_t length = 0;
-    uint16_t year = 0;
-    uint16_t quiet = 0;
-    char *lang;
-      while ( (opt = getopt(argc, argv, "qD:t:a:l:c:g:n:d:y:")) != -1 ) {
-        switch (opt) {
-        case 't':
-          ptitle = strdup(optarg);
-          break;
-        case 'a':
-          partist = strdup(optarg);
-          break;
-        case 'l':
-          palbum = strdup(optarg);
-          break;
-        case 'c':
-          pcodec = strdup(optarg); // FIXME: DSM check for MP3, WAV or WMA
-          break;
-        case 'g':
-          pgenre = strdup(optarg);
-          break;
-        case 'n':
-          tracknum = atoi(optarg);
-          break;
-        case 'd':
-          length = atoi(optarg);
-          break;
-        case 'y':
-          year = atoi(optarg);
-          break;
-        case 'q':
-          quiet = 1;
-          break;
-        default:
-          sendtrack_usage();
-        }
+  int opt;
+  extern int optind;
+  extern char *optarg;
+  char *partist = NULL;
+  char *ptitle = NULL;
+  char *pgenre = NULL;
+  char *pcodec = NULL;
+  char *palbum = NULL;
+  uint16_t tracknum = 0;
+  uint16_t length = 0;
+  uint16_t year = 0;
+  uint16_t quiet = 0;
+  char *lang;
+  while ( (opt = getopt(argc, argv, "qD:t:a:l:c:g:n:d:y:")) != -1 ) {
+    switch (opt) {
+    case 't':
+      ptitle = strdup(optarg);
+      break;
+    case 'a':
+      partist = strdup(optarg);
+      break;
+    case 'l':
+      palbum = strdup(optarg);
+      break;
+    case 'c':
+      pcodec = strdup(optarg); // FIXME: DSM check for MP3, WAV or WMA
+      break;
+    case 'g':
+      pgenre = strdup(optarg);
+      break;
+    case 'n':
+      tracknum = atoi(optarg);
+      break;
+    case 'd':
+      length = atoi(optarg);
+      break;
+    case 'y':
+      year = atoi(optarg);
+      break;
+    case 'q':
+      quiet = 1;
+      break;
+    default:
+      sendtrack_usage();
+    }
+  }
+  argc -= optind;
+  argv += optind;
+  
+  if ( argc != 2 ) {
+    printf("You need to pass a filename and destination.\n");
+    sendtrack_usage();
+  }
+  /*
+   * Check environment variables $LANG and $LC_CTYPE
+   * to see if we want to support UTF-8 unicode
+   */
+  lang = getenv("LANG");
+  if (lang != NULL) {
+    if (strlen(lang) > 5) {
+      char *langsuff = &lang[strlen(lang)-5];
+      if (strcmp(langsuff, "UTF-8")) {
+	printf("Your system does not appear to have UTF-8 enabled ($LANG=\"%s\")\n", lang);
+	printf("If you want to have support for diacritics and Unicode characters,\n");
+	printf("please switch your locale to an UTF-8 locale, e.g. \"en_US.UTF-8\".\n");
       }
-      argc -= optind;
-      argv += optind;
-
-      if ( argc != 2 ) {
-        printf("You need to pass a filename and destination.\n");
-        sendtrack_usage();
-      }
-      /*
- *        * Check environment variables $LANG and $LC_CTYPE
- *               * to see if we want to support UTF-8 unicode
- *                      */
-      lang = getenv("LANG");
-      if (lang != NULL) {
-        if (strlen(lang) > 5) {
-          char *langsuff = &lang[strlen(lang)-5];
-          if (strcmp(langsuff, "UTF-8")) {
-            printf("Your system does not appear to have UTF-8 enabled ($LANG=\"%s\")\n", lang);
-            printf("If you want to have support for diacritics and Unicode characters,\n");
-            printf("please switch your locale to an UTF-8 locale, e.g. \"en_US.UTF-8\".\n");
-          }
-        }
-      }
-
-      printf("%s,%s,%s,%s,%s,%s,%d%d,%d\n",argv[0],argv[1],partist,ptitle,pgenre,palbum,tracknum, length, year);
-      sendtrack_function(argv[0],argv[1],partist,ptitle,pgenre,palbum, tracknum, length, year);
+    }
+  }
+  
+  printf("%s,%s,%s,%s,%s,%s,%d%d,%d\n",argv[0],argv[1],partist,ptitle,pgenre,palbum,tracknum, length, year);
+  sendtrack_function(argv[0],argv[1],partist,ptitle,pgenre,palbum, tracknum, length, year);
 }
-

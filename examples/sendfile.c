@@ -37,7 +37,6 @@ int sendfile_function(char * from_path, char *to_path)
   }
 
   filesize = (uint64_t) sb.st_size;
-
   filename = basename(from_path);
   parent_id = parse_path (to_path,files,folders);
   if (parent_id == -1) {
@@ -45,7 +44,6 @@ int sendfile_function(char * from_path, char *to_path)
     return 0;
   }
   
-
   genfile = LIBMTP_new_file_t();
   genfile->filesize = filesize;
   genfile->filename = strdup(filename);
@@ -53,8 +51,12 @@ int sendfile_function(char * from_path, char *to_path)
 
   printf("Sending file...\n");
   ret = LIBMTP_Send_File_From_File(device, from_path, genfile, progress, NULL, parent_id);
-
   printf("\n");
+  if (ret != 0) {
+    printf("Error sending file.\n");
+    LIBMTP_Dump_Errorstack(device);
+    LIBMTP_Clear_Errorstack(device);
+  }
 
   LIBMTP_destroy_file_t(genfile);
 

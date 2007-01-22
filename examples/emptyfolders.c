@@ -21,8 +21,10 @@ static void prune_empty_folders(LIBMTP_mtpdevice_t *device, LIBMTP_file_t *files
     if(found == 0) { // no files claim this as a parent
       printf("empty folder %u (%s)\n",folderlist->folder_id,folderlist->name);
       if(do_delete) {
-        if (LIBMTP_Delete_Object(device,folderlist->folder_id)) {
+        if (LIBMTP_Delete_Object(device,folderlist->folder_id) != 0) {
           printf("Couldn't delete folder %u\n",folderlist->folder_id);
+	  LIBMTP_Dump_Errorstack(device);
+	  LIBMTP_Clear_Errorstack(device);
         }
       }
     }

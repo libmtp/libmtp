@@ -50,8 +50,10 @@ int main (int argc, char **argv)
   }
 
   if ( ret != 0 ) {
-    LIBMTP_Release_Device(device);
     printf("Failed to format device.\n");
+    LIBMTP_Dump_Errorstack(device);
+    LIBMTP_Clear_Errorstack(device);
+    LIBMTP_Release_Device(device);
     return 1;
   }
 

@@ -96,8 +96,11 @@ typedef enum {
 typedef enum {
   LIBMTP_ERROR_NONE,
   LIBMTP_ERROR_GENERAL,
+  LIBMTP_ERROR_PTP_LAYER,
+  LIBMTP_ERROR_USB_LAYER,
+  LIBMTP_ERROR_MEMORY_ALLOCATION,
   LIBMTP_ERROR_N0_DEVICE_ATTACHED,
-  LIBMTP_ERROR_MEMORY_ALLOCATION
+  LIBMTP_ERROR_STORAGE_FULL
 } LIBMTP_error_number_t;
 typedef struct LIBMTP_device_entry_struct LIBMTP_device_entry_t; /**< @see LIBMTP_device_entry_struct */
 typedef struct LIBMTP_error_struct LIBMTP_error_t; /**< @see LIBMTP_error_struct */

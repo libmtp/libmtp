@@ -85,6 +85,8 @@ int main (int argc, char **argv) {
   ret = LIBMTP_Send_Representative_Sample(device,id,thumb);
   if (ret != 0) {
     printf("Couldn't send thumbnail\n");
+    LIBMTP_Dump_Errorstack(device);
+    LIBMTP_Clear_Errorstack(device);
   }
 
   free(imagedata);
@@ -94,4 +96,3 @@ int main (int argc, char **argv) {
   printf("OK.\n");
   return 0;
 }
-
