@@ -242,13 +242,31 @@ static short ptp_read_func (unsigned long,PTPDataHandler*,void *data,unsigned lo
 static int usb_clear_stall_feature(PTP_USB* ptp_usb, int ep);
 static int usb_get_endpoint_status(PTP_USB* ptp_usb, int ep, uint16_t* status);
 
-
-int get_device_list(LIBMTP_device_entry_t ** const devices, int * const numdevs)
+/**
+ * Get a list of the supported USB devices.
+ *
+ * The developers depend on users of this library to constantly
+ * add in to the list of supported devices. What we need is the
+ * device name, USB Vendor ID (VID) and USB Product ID (PID).
+ * put this into a bug ticket at the project homepage, please.
+ * The VID/PID is used to let e.g. udev lift the device to
+ * console userspace access when it's plugged in.
+ *
+ * @param devices a pointer to a pointer that will hold a device
+ *        list after the call to this function, if it was
+ *        successful.
+ * @param numdevs a pointer to an integer that will hold the number
+ *        of devices in the device list if the call was successful.
+ * @return 0 if the list was successfull retrieved, any other
+ *        value means failure.
+ */
+int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t ** const devices, int * const numdevs)
 {
   *devices = (LIBMTP_device_entry_t *) &mtp_device_table;
   *numdevs = mtp_device_table_size;
   return 0;
 }
+
 
 static struct usb_bus* init_usb()
 {

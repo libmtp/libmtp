@@ -581,30 +581,6 @@ static int set_object_u8(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 }
 
 /**
- * Get a list of the supported devices.
- *
- * The developers depend on users of this library to constantly
- * add in to the list of supported devices. What we need is the
- * device name, USB Vendor ID (VID) and USB Product ID (PID).
- * put this into a bug ticket at the project homepage, please.
- * The VID/PID is used to let e.g. udev lift the device to
- * console userspace access when it's plugged in.
- *
- * @param devices a pointer to a pointer that will hold a device
- *        list after the call to this function, if it was
- *        successful.
- * @param numdevs a pointer to an integer that will hold the number
- *        of devices in the device list if the call was successful.
- * @return 0 if the list was successfull retrieved, any other
- *        value means failure.
- */
-int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t ** const devices, int * const numdevs)
-{
-  // Just dispatch to libusb glue file...
-  return get_device_list(devices, numdevs);
-}
-
-/**
  * Get the first connected MTP device. There is currently no API for
  * retrieveing multiple devices.
  * @return a device pointer.

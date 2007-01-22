@@ -15,6 +15,12 @@
 	* examples/thumb.c: dito.
 	* src/libmtp.c: add some errors to the stack so we can
 	  see how it's to be used. (Just a first try...)
+	* src/libusb-glue.c: move the LIBMTP_Get_Supported_Devices()
+	  function into this file cause it only return USB devices
+	  anyway and could be renamed LIBMTP_Get_Supported_USB_Devices()
+	  (but let's not do that renaming since it would break the API).
+	  For now let's understand this is a USB-only function by
+	  simply putting it in the libusb-glue.c file.
 	
 2007-01-22  Ted Bullock <tbullock@canada.com>
 

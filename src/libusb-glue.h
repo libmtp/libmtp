@@ -61,7 +61,6 @@ struct _PTP_USB {
   uint32_t device_flags;
 };
 
-int get_device_list(LIBMTP_device_entry_t ** const devices, int * const numdevs);
 int open_device (int busn, int devn, short force, PTP_USB *ptp_usb, PTPParams *params, struct usb_device **dev);
 void dump_usbinfo(PTP_USB *ptp_usb);
 void close_device (PTP_USB *ptp_usb, PTPParams *params, uint8_t interfaceNumber);
