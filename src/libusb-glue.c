@@ -5,6 +5,13 @@
  *  Modified by Linus Walleij 2006-03-06
  *  (Notice that Anglo-Saxons use little-endian dates and Swedes use big-endian dates.)
  *
+ *  Licensed under the LGPL GNU Lesser General Public License.
+ *
+ *  Copyright Richard Low (c) 2005-2007
+ *  Copyright Linus Walleij (c) 2006-2007
+ *  Copyright Marcus Meissner (c) 2006-2007
+ *  Copyright Ted Bullock (c) 2007
+ *
  * This file adds some utils (many copied from ptpcam.c from libptp2) to
  * use MTP devices. Include mtp-utils.h to use any of the ptp/mtp functions.
  *
@@ -346,6 +353,178 @@ static struct usb_device *probe_usb_bus_for_mtp_devices(void)
   }
   // If nothing was found we end up here.
   return NULL;
+}
+
+/**
+ * Check for the Microsoft OS device descriptor and return device struct
+ * if the device is MTP-compliant. The function will only recognize
+ * a single device connected to the USB bus.
+ * @param MTPDeviceList dynamic array of pointers to usb devices with MTP 
+ * properties. Be sure to call free(MTPDeviceList).
+ * @param numdevices number of devices in MTPDeviceList Dynamic Array
+ * @return an MTP-compliant USB device if one was found, else NULL.
+ */
+static LIBMTP_error_number_t get_mtp_usb_device_list(
+		struct usb_device ** MTPDeviceList,
+		uint8_t *numdevices)
+{
+  /* Initialize number of MTP USB devices to 0 */
+  *numdevices = 0;
+  MTPDeviceList = NULL;
+
+  struct usb_bus *bus = init_usb();
+  for (; bus != NULL; bus = bus->next)
+  {
+    struct usb_device *dev = bus->devices;
+    for (; dev != NULL; dev = dev->next)
+    {
+      usb_dev_handle *devh;
+      unsigned char buf[1024], cmd;
+      int ret;
+      
+      /* Attempt to open Device on this port */
+      devh = usb_open(dev);
+      if (devh == NULL)
+      {
+        /* Could not open this device, continue */
+        continue;
+      }
+
+      /* Read the special descriptor */
+      ret = usb_get_descriptor(devh, 0x03, 0xee, buf, sizeof(buf));
+
+      /* Check if descriptor length is at least 10 bytes */
+      if (ret < 10)
+      {
+        usb_close(devh);
+        continue;
+      }
+      
+      /* Check if this device has a Microsoft Descriptor */
+      if (!((buf[2] == 'M') && (buf[4] == 'S') &&
+            (buf[6] == 'F') && (buf[8] == 'T')))
+      {
+        usb_close(devh);
+        continue;
+      }
+      
+      /* Check if device responds to control message 1 or if there is an error*/      
+      cmd = buf[16];
+      ret = usb_control_msg (devh,
+                              USB_ENDPOINT_IN|USB_RECIP_DEVICE|USB_TYPE_VENDOR,
+                              cmd,
+                              0,
+                              4,
+                              (char *) buf,
+                              sizeof(buf),
+                              1000);
+
+      /* If this is true, the device either isn't MTP or there was an error */
+      if (ret <= 0x15)
+      {
+        /* TODO: If there was an error, flag it and let the user know somehow */
+        /* if(ret == -1) {} */
+        usb_close(devh);
+        continue;
+      }
+      
+      /* Check if device is MTP or if it is something like a USB Mass Storage 
+         device with Janus DRM support */
+      if ((buf[0x12] != 'M') || (buf[0x13] != 'T') || (buf[0x14] != 'P'))
+      {
+        usb_close(devh);
+        continue;
+      }
+      
+      /* After this point we are probably dealing with an MTP device */
+
+      /* Check if device responds to control message 2 or if there is an error*/
+      ret = usb_control_msg (devh,
+                              USB_ENDPOINT_IN|USB_RECIP_DEVICE|USB_TYPE_VENDOR,
+                              cmd,
+                              0,
+                              5,
+                              (char *) buf,
+                              sizeof(buf),
+                              1000);
+      
+      /* If this is true, the device errored against control message 2 */
+      if (ret == -1)
+      {
+        /* TODO: Implement callback function to let managing program know there
+           was a problem, along with description of the problem */
+        fprintf(stderr, "Potential MTP Device with VendorID:%04x and "
+                        "ProductID:%04x encountered an error responding to "
+                        "control message 2. Problems may arrise but continuing",
+                        dev->descriptor.idVendor, dev->descriptor.idProduct);
+      }
+      else if (ret <= 0x15)
+      {
+        /* TODO: Implement callback function to let managing program know there
+           was a problem, along with description of the problem */
+        fprintf(stderr, "Potential MTP Device with VendorID:%04x and "
+                        "ProductID:%04x responded to control message 2 with a "
+                        "response that was too short. Problems may arrise but "
+                        "continuing",
+                        dev->descriptor.idVendor, dev->descriptor.idProduct);
+      }
+      else if ((buf[0x12] != 'M') || (buf[0x13] != 'T') || (buf[0x14] != 'P'))
+      {
+        /* TODO: Implement callback function to let managing program know there
+           was a problem, along with description of the problem */
+        fprintf(stderr, "Potential MTP Device with VendorID:%04x and "
+                        "ProductID:%04x encountered an error responding to "
+                        "control message 2. Problems may arrise but continuing",
+                        dev->descriptor.idVendor, dev->descriptor.idProduct);
+      }
+      
+      /* Close the USB device handle */
+      usb_close(devh);
+      
+      /* Append this usb device to the MTP USB Device List */
+      if(MTPDeviceList == NULL)
+      {
+        MTPDeviceList = (struct usb_device **)malloc(sizeof(void *));
+        /* Check for allocation Error */
+        if(MTPDeviceList == NULL)
+        {
+          /* TODO: Implement callback function to let managing applications know
+             there was a memory allocation problem */
+          fprintf(stderr, "Memory Allocation Problem: unable to connect MTP "
+                          "Device with VendorID:%04x and ProductID:%04x. ",
+                          dev->descriptor.idVendor, dev->descriptor.idProduct);
+          return LIBMTP_ERROR_MEMORY_ALLOCATION;
+        }
+        MTPDeviceList[0] = dev;
+        (*numdevices)++;
+      }
+      else
+      {
+        MTPDeviceList = (struct usb_device **)realloc(
+                                                MTPDeviceList,
+                                                *numdevices + 1);
+        
+        /* Check for allocation Error */
+        if(MTPDeviceList == NULL)
+        {
+          /* TODO: Implement callback function to let managing applications know
+             there was a memory allocation problem */
+          fprintf(stderr, "Memory Allocation Problem: unable to connect MTP "
+                          "Device with VendorID:%04x and ProductID:%04x. ",
+                          dev->descriptor.idVendor, dev->descriptor.idProduct);
+          return LIBMTP_ERROR_MEMORY_ALLOCATION;
+        }
+        MTPDeviceList[*numdevices] = dev;
+        (*numdevices)++;
+      }
+    }
+  }
+
+  /* If nothing was found we end up here. */
+  if(MTPDeviceList == NULL)
+    return LIBMTP_ERROR_N0_DEVICE_ATTACHED;
+  else
+    return LIBMTP_ERROR_NONE;
 }
 
 /**

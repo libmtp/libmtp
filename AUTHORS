@@ -5,7 +5,7 @@ Linus Walleij <triad@df.lth.se>
 
 We both came to do libmtp after working on the libnjb
 project, which was all about Creative Technology devices
-implementing the OaSIS and PDE protocols.
+implementing the OASiS and PDE protocols.
 
 libmtp is however largely based on libptp2, which was created by
 Mariusz Woloszyn <emsi@ipartners.pl> as part of gPhoto2 then
@@ -24,3 +24,4 @@ Dave Kelly <libmtp@ravelox.co.uk>
 Matthew Wilcox <matthew@wil.cx>
 Robert Reardon <rreardon@monkshatch.vispa.com>
 Orson Teodoro <orsonteodoro@yahoo.com>
+Ted Bullock <tbullock@canada.com>
