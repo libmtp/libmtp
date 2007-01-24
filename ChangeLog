@@ -1,3 +1,10 @@
+2007-01-24  Ted Bullock <tbullock@canada.com>
+
+	* src/libusb-glue.c: new function to retrieve multiple device
+	  instances.
+	* src/libusb-glue.h: dito.
+	* src/libmtp.h.in: new error codes.
+
 2007-01-22  Linus Walleij <triad@df.lth.se>
 
 	* examples/albumart.c: use the new errostack.
