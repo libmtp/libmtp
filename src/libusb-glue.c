@@ -145,6 +145,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "SanDisk Sansa e200", 0x0781, 0x7420, DEVICE_FLAG_NONE },
   // Reported by gonkflea@users.sourceforge.net
   { "SanDisk Sansa e260", 0x0781, 0x7420, DEVICE_FLAG_NONE },
+  // Reported by anonymous user at sourceforge.net
+  { "SanDisk Sansa c250", 0x0781, 0x7450, DEVICE_FLAG_NONE },
 
   /*
    * iRiver
