@@ -1,19 +1,31 @@
 /*
- *  libusb-glue.c
+ * \file libusb-glue.c
+ * Low-level USB interface glue towards libusb.
  *
- *  Created by Richard Low on 24/12/2005. (as mtp-utils.c)
- *  Modified by Linus Walleij 2006-03-06
- *  (Notice that Anglo-Saxons use little-endian dates and Swedes use big-endian dates.)
+ * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
+ * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2006-2007 Marcus Meissner
+ * Copyright (C) 2007 Ted Bullock
  *
- *  Licensed under the LGPL GNU Lesser General Public License.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
  *
- *  Copyright Richard Low (c) 2005-2007
- *  Copyright Linus Walleij (c) 2006-2007
- *  Copyright Marcus Meissner (c) 2006-2007
- *  Copyright Ted Bullock (c) 2007
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * This file adds some utils (many copied from ptpcam.c from libptp2) to
- * use MTP devices. Include mtp-utils.h to use any of the ptp/mtp functions.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ *
+ * Created by Richard Low on 24/12/2005. (as mtp-utils.c)
+ * Modified by Linus Walleij 2006-03-06
+ *  (Notice that Anglo-Saxons use little-endian dates and Swedes 
+ *   use big-endian dates.)
  *
  */
 #include "libmtp.h"

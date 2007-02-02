@@ -1,5 +1,24 @@
 /**
  * \file libmtp.c
+ *
+ * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ *
  * This file provides an interface "glue" to the underlying
  * PTP implementation from libgphoto2. It uses some local
  * code to convert from/to UTF-8 (stored in unicode.c/.h)
@@ -12,6 +31,7 @@
  * The files libusb-glue.c/.h are just what they say: an
  * interface to libusb for the actual, physical USB traffic.
  */
+
 #include "libmtp.h"
 #include "unicode.h"
 #include "ptp.h"
