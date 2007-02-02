@@ -5,7 +5,8 @@
 	* src/ptp-pack.c: dito.
 	* src/libmtp.c: make changes necessary to handle
 	  the new iconv(3) code in ptp-pack.c. People will have to
-	  use recent stdlibc, glibc or libiconv.
+	  use recent stdlibc, glibc or libiconv. Also call new memory
+	  clean-up functions.
 
 2007-01-24  Ted Bullock <tbullock@canada.com>
 

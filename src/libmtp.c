@@ -726,11 +726,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   // Then close it again.
  error_handler:
   close_device(ptp_usb, params, interface_number);
-  // TODO: libgphoto2 does not seem to be able to free the deviceinfo
-  // ptp_free_deviceinfo(&params->deviceinfo);
-  if (params->handles.Handler != NULL) {
-    free(params->handles.Handler);
-  }
+  ptp_free_params(params);
   return NULL;
 }
 
@@ -744,18 +740,12 @@ void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
 
   close_device(ptp_usb, params, device->interface_number);
-  // Free the device info and any handler
-  // TODO: libgphoto2 does not seem to be able to free the deviceinfo
-  // ptp_free_deviceinfo(&params->deviceinfo);
-  if (params->handles.Handler != NULL) {
-    free(params->handles.Handler);
-    params->handles.Handler = NULL;
-  }
   // Clear error stack
   LIBMTP_Clear_Errorstack(device);
   // Free iconv() converters...
   iconv_close(params->cd_locale_to_ucs2);
   iconv_close(params->cd_ucs2_to_locale);
+  ptp_free_params(params);
   free_storage_list(device);
   free(device);
 }
