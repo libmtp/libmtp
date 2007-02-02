@@ -57,6 +57,9 @@ typedef struct _PTPContainer PTPContainer;
  * implementations seem to have chosen this value, which also
  * happens to be the size of an USB 2.0 HS endpoint, even though
  * this is not necessary.
+ *
+ * Previously we had this as 4096 for MTP devices. We have found
+ * and fixed the bugs that made this necessary and it can be 512 again.
  */
 #define PTP_USB_BULK_HS_MAX_PACKET_LEN	512
 #define PTP_USB_BULK_HDR_LEN		(2*sizeof(uint32_t)+2*sizeof(uint16_t))
@@ -1533,6 +1536,8 @@ int ptp_property_issupported	(PTPParams* params, uint16_t property);
 void ptp_free_devicepropdesc	(PTPDevicePropDesc* dpd);
 void ptp_free_devicepropvalue	(uint16_t dt, PTPPropertyValue* dpd);
 void ptp_free_objectpropdesc	(PTPObjectPropDesc* dpd);
+void ptp_free_params		(PTPParams *params);
+
 void ptp_perror			(PTPParams* params, uint16_t error);
 
 const char*

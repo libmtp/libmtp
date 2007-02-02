@@ -1,3 +1,12 @@
+2007-02-02  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.c: sync upstream.
+	* src/ptp.h: dito.
+	* src/ptp-pack.c: dito.
+	* src/libmtp.c: make changes necessary to handle
+	  the new iconv(3) code in ptp-pack.c. People will have to
+	  use recent stdlibc, glibc or libiconv.
+
 2007-01-24  Ted Bullock <tbullock@canada.com>
 
 	* src/libusb-glue.c: new function to retrieve multiple device

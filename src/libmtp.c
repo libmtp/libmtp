@@ -30,23 +30,6 @@
 #define ENABLE_MTP_ENHANCED
 
 /*
- * On MacOS (Darwin) and *BSD we're not using glibc, but libiconv.
- * glibc knows that UCS-2 is to be in the local machine endianness,
- * whereas libiconv does not. So we construct this macro to get
- * things right. Reportedly, glibc 2.1.3 has a bug so that UCS-2
- * is always bigendian though, we would need to work around that
- * too...
- */
-#ifndef __GLIBC__
-#define UCS_2_INTERNAL "UCS-2-INTERNAL"
-#else
-#if (__GLIBC__ == 2 && __GLIBC_MINOR__ <= 1 )
-#error "Too old glibc. This versions iconv() implementation cannot be trusted."
-#endif
-#define UCS_2_INTERNAL "UCS-2"
-#endif
-
-/*
  * This is a mapping between libmtp internal MTP filetypes and
  * the libgphoto2/PTP equivalent defines. We need this because
  * otherwise the libmtp.h device has to be dependent on ptp.h
@@ -595,13 +578,23 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   uint16_t ret;
   uint32_t i;
   LIBMTP_mtpdevice_t *tmpdevice;
+  char *device_ucs2_scheme;
 
   // Allocate a parameter block
   params = (PTPParams *) malloc(sizeof(PTPParams));
-  params->cd_locale_to_ucs2 = iconv_open(UCS_2_INTERNAL, "UTF-8");
-  params->cd_ucs2_to_locale = iconv_open("UTF-8", UCS_2_INTERNAL);
+  // This will probably always be little endian...
+  params->byteorder = PTP_DL_LE;
+  if (params->byteorder == PTP_DL_LE) {
+    device_ucs2_scheme = "UCS-2LE";
+  } else {
+    // Won't happen with current code. (See above.)
+    device_ucs2_scheme = "UCS-2BE";
+  }
+  params->cd_locale_to_ucs2 = iconv_open(device_ucs2_scheme, "UTF-8");
+  params->cd_ucs2_to_locale = iconv_open("UTF-8", device_ucs2_scheme);
   if (params->cd_locale_to_ucs2 == (iconv_t) -1 || params->cd_ucs2_to_locale == (iconv_t) -1) {
     printf("LIBMTP panic: could not open iconv() converters to/from UCS-2!\n");
+    printf("Too old stdlibc, glibc and libiconv?\n");
     return NULL;
   }
 
