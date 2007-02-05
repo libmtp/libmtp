@@ -1,3 +1,24 @@
+/** 
+ * \file files.c
+ * Example program that lists all files on a device.
+ *
+ * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
 #include "common.h"
 
 static void dump_fileinfo(LIBMTP_file_t *file)
@@ -32,6 +53,8 @@ int main (int argc, char **argv)
   files = LIBMTP_Get_Filelisting_With_Callback(device, NULL, NULL);
   if (files == NULL) {
     printf("No files.\n");
+    LIBMTP_Dump_Errorstack(device);
+    LIBMTP_Clear_Errorstack(device);
   } else {
     LIBMTP_file_t *file, *tmp;
     file = files;

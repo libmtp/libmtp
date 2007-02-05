@@ -4,6 +4,22 @@
 	* src/libusb-glue.h: LGPL boilerplate.
 	* src/unicode.h: LGPL boilerplate.
 	* src/util.h: LGPL boilerplate.
+	* examples/albumart.c: LGPL boilerplate, crediting Andy.
+	* examples/pathutils.h: LGPL boilerplate, crediting Chris.
+	* examples/pathutils.c: LGPL boilerplate, crediting me and Chris.
+	* examples/common.h: LGPL boilerplate.
+	* examples/albums.c: LGPL boilerplate, crediting Chris.
+	* examples/connect.c: LGPL boilerplate, crediting Chris.
+	* examples/delfile.c: LGPL boilerplate, crediting me and Chris.
+	* examples/detect.c: LGPL boilerplate.
+	* examples/emptyfolders.c: LGPL boilerplate, crediting Andy.
+	* examples/files.c: LGPL boilerplate.
+	* examples/folders.c: LGPL boilerplate.
+	* examples/format.c: LGPL boilerplate.
+	* examples/getfile.c: LGPL boilerplate, crediting me and Chris.
+	* examples/getplaylist.c: LGPL boilerplate.
+	* examples/hotplug.c: LGPL boilerplate, crediting me and Marcus.
+	* examples/newfolder.c: LGPL boilerplate, crediting me and Chris.
 
 2007-02-02  Linus Walleij <triad@df.lth.se>
 
