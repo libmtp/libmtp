@@ -1,3 +1,10 @@
+2007-02-05  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: LGPL boilerplate.
+	* src/libusb-glue.h: LGPL boilerplate.
+	* src/unicode.h: LGPL boilerplate.
+	* src/util.h: LGPL boilerplate.
+
 2007-02-02  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp.c: sync upstream.
