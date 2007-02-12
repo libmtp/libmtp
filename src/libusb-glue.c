@@ -536,6 +536,9 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(
       }
       else
       {
+        /* Record current list of devices in case of memory allocation error */
+        struct usb_device **LeakPrevent = MTPDeviceList;
+        
         MTPDeviceList = (struct usb_device **)realloc(
                                                 MTPDeviceList,
                                                 *numdevices + 1);
@@ -543,6 +546,14 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(
         /* Check for allocation Error */
         if(MTPDeviceList == NULL)
         {
+          /* Free the pre-existing list of devices to prevent memory leak */
+          int i;
+          for(i = 0; i < *numdevices; i++)
+          {
+            free(LeakPrevent[i]);
+            LeakPrevent[i] = NULL;
+          }
+          
           /* TODO: Implement callback function to let managing applications know
              there was a memory allocation problem */
           fprintf(stderr, "Memory Allocation Problem: unable to connect MTP "
@@ -1613,6 +1624,8 @@ static LIBMTP_error_number_t get_mtp_usb_known_devices(
           }
           else
           {
+            /* Record current list of devices in case of memory alloc error */
+            struct usb_device **LeakPrevent = MTPDeviceList;
             MTPDeviceList = (struct usb_device **)realloc(
                                                     MTPDeviceList,
                                                     *numdevices + 1);
@@ -1620,6 +1633,13 @@ static LIBMTP_error_number_t get_mtp_usb_known_devices(
             /* Check for allocation Error */
             if(MTPDeviceList == NULL)
             {
+              /* Free the pre-existing list of devices to prevent memory leak */
+              int i;
+              for(i = 0; i < *numdevices; i++)
+              {
+                free(LeakPrevent[i]);
+                LeakPrevent[i] = NULL;
+              }
               /* TODO: Implement callback function to let managing applications
                  know there was a memory allocation problem */
               fprintf(stderr, "Memory Allocation Error: unable to connect MTP "
@@ -1659,7 +1679,7 @@ static LIBMTP_error_number_t get_mtp_usb_known_devices(
  * @param numdevices number of devices connected to the machine
  * @return Error Codes as per the type definition
  */ 
- LIBMTP_error_number_t connect_mtp_devices (PTPParams **params,
+LIBMTP_error_number_t connect_mtp_devices (PTPParams **params,
                                             PTP_USB **ptp_usb,
                                             uint8_t **interfaceNumber,
                                             uint8_t *numdevices)
@@ -1718,6 +1738,24 @@ static LIBMTP_error_number_t get_mtp_usb_known_devices(
   /* Check for allocation Error */
   if(params == NULL || ptp_usb == NULL || interfaceNumber == NULL)
   {
+    /* Prevent Memory Leaks */
+    if(params != NULL)
+    {
+      free(params);
+      params = NULL;
+    }
+    
+    if(ptp_usb != NULL)
+    {
+      free(ptp_usb);
+      ptp_usb = NULL;
+    }
+    
+    if(interfaceNumber != NULL)
+    {
+      free(interfaceNumber);
+      interfaceNumber = NULL;
+    }
     /* TODO: Implement callback function to let managing applications know
         there was a memory allocation problem */
     fprintf(stderr, "Memory Allocation Problem: libmtp line: %d", __LINE__);
@@ -1737,8 +1775,10 @@ static LIBMTP_error_number_t get_mtp_usb_known_devices(
       for(z = 0; z <= i - 1; z++)
       {
         free(params[z]);
+        params[z] = NULL;
       }
       free(MTPDeviceList);
+      MTPDeviceList = NULL;
       
       /* TODO: Implement callback function to let managing applications know
          there was a memory allocation problem */
@@ -1756,10 +1796,25 @@ static LIBMTP_error_number_t get_mtp_usb_known_devices(
       for(z = 0; z <= i - 1; z++)
       {
         free(params[z]);
+        params[z] = NULL;
+        
         free(ptp_usb[z]);
+        ptp_usb[z] = NULL;
       }
       free(params[i]);
+      params[i] = NULL;
+      
+      free(params);
+      params = NULL;
+      
+      free(ptp_usb);
+      ptp_usb = NULL;
+
+      free(interfaceNumber);
+      interfaceNumber = NULL;
+      
       free(MTPDeviceList);
+      MTPDeviceList = NULL;
 
       /* TODO: Implement callback function to let managing applications know
           there was a memory allocation problem */
@@ -1834,10 +1889,24 @@ static LIBMTP_error_number_t get_mtp_usb_known_devices(
       /* Prevent Memory Leaks */
       for(z = 0; z <= i; z++)
       {
-        free(params[i]);
-        free(ptp_usb[i]);
+        free(params[z]);
+        params[z] = NULL;
+        
+        free(ptp_usb[z]);
+        ptp_usb[z] = NULL;
       }
+      free(params);
+      params = NULL;
+      
+      free(ptp_usb);
+      ptp_usb = NULL;
+
+      free(interfaceNumber);
+      interfaceNumber = NULL;
+      
       free(MTPDeviceList);
+      MTPDeviceList = NULL;
+      
       return LIBMTP_ERROR_CONNECTING;
     }
     
@@ -1856,9 +1925,22 @@ static LIBMTP_error_number_t get_mtp_usb_known_devices(
         for(z = 0; z <= i; z++)
         {
           free(params[z]);
+          params[z] = NULL;
+          
           free(ptp_usb[z]);
+          ptp_usb[z] = NULL;
         }
+        free(params);
+        params = NULL;
+        
+        free(ptp_usb);
+        ptp_usb = NULL;
+
+        free(interfaceNumber);
+        interfaceNumber = NULL;
+        
         free(MTPDeviceList);
+        MTPDeviceList = NULL;
 
         return LIBMTP_ERROR_CONNECTING;
       }
@@ -1894,20 +1976,38 @@ static LIBMTP_error_number_t get_mtp_usb_known_devices(
     /* Configure interface number */
     /* Check for allocation Error */
     interfaceNumber[i] = (uint8_t *)malloc(sizeof(uint8_t));
-    if(ptp_usb[i] == NULL)
+    if(interfaceNumber[i] == NULL)
     {
       int z;
       /* Prevent Memory Leaks */
       for(z = 0; z <= i - 1; z++)
       {
         free(interfaceNumber[z]);
+        interfaceNumber[z] = NULL;
+        
         free(params[z]);
+        params[z] = NULL;
+        
         free(ptp_usb[z]);
+        ptp_usb[z] = NULL;
       }
       free(ptp_usb[i]);
+      ptp_usb[i] = NULL;
+      
       free(params[i]);
-      free(interfaceNumber[i]);
+      params[i] = NULL;
+
+      free(params);
+      params = NULL;
+      
+      free(ptp_usb);
+      ptp_usb = NULL;
+
+      free(interfaceNumber);
+      interfaceNumber = NULL;
+      
       free(MTPDeviceList);
+      MTPDeviceList = NULL;
 
       /* TODO: Implement callback function to let managing applications know
           there was a memory allocation problem */
