@@ -1305,6 +1305,10 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
   params->getdata_func=ptp_usb_getdata;
   params->data=ptp_usb;
   params->transaction_id=0;
+  /*
+   * This is hardcoded here since we have no devices whatsoever that are BE.
+   * Change this the day we run into our first BE device (if ever).
+   */
   params->byteorder = PTP_DL_LE;
   
   if ((device_handle = usb_open(dev))){

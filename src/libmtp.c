@@ -602,7 +602,10 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 
   // Allocate a parameter block
   params = (PTPParams *) malloc(sizeof(PTPParams));
-  // This will probably always be little endian...
+  /*
+   * This will probably always be little endian...
+   * Change this code to adopt the day we run into a BE device.
+   */
   params->byteorder = PTP_DL_LE;
   if (params->byteorder == PTP_DL_LE) {
     device_ucs2_scheme = "UCS-2LE";
