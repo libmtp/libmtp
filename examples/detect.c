@@ -3,6 +3,7 @@
  * Example program to detect a device and list capabilities.
  *
  * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -56,7 +57,7 @@ static void dump_xml_fragment(uint8_t *buf, uint32_t len)
 
 int main (int argc, char **argv)
 {
-  LIBMTP_mtpdevice_t *device;
+  LIBMTP_mtpdevice_t *device, *iter;
   LIBMTP_file_t *files;
   uint32_t xmlfileid = 0;
   char *friendlyname;
@@ -89,12 +90,39 @@ int main (int argc, char **argv)
     }
   }
 
-  device = LIBMTP_Get_First_Device();
-  if (device == NULL) {
-    printf("No devices.\n");
-    exit (0);
+  fprintf(stdout, "Attempting to connect device(s)\n");
+
+  switch(LIBMTP_Get_Connected_Devices(&device))
+  {
+  case LIBMTP_ERROR_N0_DEVICE_ATTACHED:
+    fprintf(stdout, "Detect: No Devices have been found\n");
+    return 0;
+  case LIBMTP_ERROR_CONNECTING:
+    fprintf(stderr, "Detect: There has been an error connecting. Exiting\n");
+    return 1;
+  case LIBMTP_ERROR_MEMORY_ALLOCATION:
+    fprintf(stderr, "Detect: Encountered a Memory Allocation Error. Exiting\n");
+    return 1;
+ 
+  /* Unknown general errors - This should never execute */
+  case LIBMTP_ERROR_GENERAL:
+  default:
+    fprintf(stderr, "Detect: There has been an unknown error, please report "
+                    "this to the libmtp developers\n");
+  return 1;
+
+  /* Successfully connected at least one device, so continue */
+  case LIBMTP_ERROR_NONE:
+    fprintf(stdout, "Detect: Successfully connected\n");
+    fflush(stdout);
   }
 
+  /* iterate through connected MTP devices */
+  for(iter = device; iter != NULL; iter = iter->next)
+  {
+  
+  LIBMTP_Dump_Errorstack(device);
+  LIBMTP_Clear_Errorstack(device);
   LIBMTP_Dump_Device_Info(device);
   
   printf("MTP-specific device properties:\n");
@@ -202,8 +230,9 @@ int main (int argc, char **argv)
     }
   }
 
+  } /* End For Loop */
   // King Fisher of Triad rocks your world!
-  LIBMTP_Release_Device(device);
+  LIBMTP_Release_Device_List(device);
   printf("OK.\n");
   exit (0);
 }

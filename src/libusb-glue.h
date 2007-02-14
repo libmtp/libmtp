@@ -88,7 +88,7 @@ void close_device (PTP_USB *ptp_usb, PTPParams *params, uint8_t interfaceNumber)
 uint16_t connect_first_device(PTPParams *params, PTP_USB *ptp_usb, uint8_t *interfaceNumber);
 LIBMTP_error_number_t find_usb_devices (PTPParams **params,
                                             PTP_USB **ptp_usb,
-                                            uint8_t **interfaceNumber,
+                                            uint8_t interfaceNumber[],
                                             uint8_t *numdevices);
 
 /* connect_first_device return codes */

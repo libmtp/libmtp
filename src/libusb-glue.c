@@ -402,6 +402,44 @@ static struct usb_device *probe_usb_bus_for_mtp_devices(void)
 }
 
 /**
+ * Small recursive function to append a new usb_device to the linked list of
+ * USB MTP devices
+ * @param dev dynamic linked list of pointers to usb devices with MTP 
+ * properties.
+ * @param next New USB MTP device to be added to list
+ * @return nothing
+ */
+static void append_to_MTP_list(struct usb_device *dev,
+                                struct usb_device *next)
+{
+  if(dev->next != NULL) {
+    append_to_MTP_list(dev->next, next);
+    return; 
+  }
+  
+  dev->next = next;
+  next->next = NULL;
+  return;
+}
+
+/**
+ * Small recursive function to free dynamic memory allocated to the linked list
+ * of USB MTP devices
+ * @param dev dynamic linked list of pointers to usb devices with MTP 
+ * properties.
+ * @return nothing
+ */
+static void free_MTP_list(struct usb_device *dev)
+{
+  if(dev->next != NULL) {
+    free_MTP_list(dev->next);
+  }
+  
+  free(dev);
+  return;
+}
+
+/**
  * Check for the Microsoft OS device descriptor and return device struct
  * if the device is MTP-compliant. The function will only recognize
  * a single device connected to the USB bus.
@@ -416,7 +454,6 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(
 {
   /* Initialize number of MTP USB devices to 0 */
   *numdevices = 0;
-  MTPDeviceList = NULL;
 
   struct usb_bus *bus = init_usb();
   for (; bus != NULL; bus = bus->next)
@@ -526,59 +563,60 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(
       
       /* Close the USB device handle */
       usb_close(devh);
-      
+  
       /* Append this usb device to the MTP USB Device List */
-      if(MTPDeviceList == NULL)
+      if(*MTPDeviceList == NULL)
       {
-        MTPDeviceList = (struct usb_device **)malloc(sizeof(void *));
+        *MTPDeviceList = (struct usb_device *)malloc(
+                                                sizeof(struct usb_device));
         /* Check for allocation Error */
-        if(MTPDeviceList == NULL)
+        if(*MTPDeviceList == NULL)
         {
-          /* TODO: Implement callback function to let managing applications know
-             there was a memory allocation problem */
-          fprintf(stderr, "Memory Allocation Problem: unable to connect MTP "
-                          "Device with VendorID:%04x and ProductID:%04x. ",
-                          dev->descriptor.idVendor, dev->descriptor.idProduct);
+          /* 
+            * TODO: Implement callback function to let managing applications 
+            * know there was a memory allocation problem
+            */
+          fprintf(stderr, "Memory Allocation Problem: unable to connect "
+                          "MTP Device with VID:%04x and PID:%04x.",
+                          dev->descriptor.idVendor,
+                          dev->descriptor.idProduct);
           return LIBMTP_ERROR_MEMORY_ALLOCATION;
         }
-        MTPDeviceList[0] = dev;
+        memcpy(*MTPDeviceList, dev, sizeof(struct usb_device));
+        (*MTPDeviceList)->next = NULL;
         (*numdevices)++;
       }
       else
       {
-        /* Record current list of devices in case of memory allocation error */
-        struct usb_device **LeakPrevent = MTPDeviceList;
-        
-        MTPDeviceList = (struct usb_device **)realloc(
-                                                MTPDeviceList,
-                                                *numdevices + 1);
+        struct usb_device *tmp;
+        tmp = (struct usb_device *)malloc(sizeof(struct usb_device));
         
         /* Check for allocation Error */
-        if(MTPDeviceList == NULL)
+        if(tmp == NULL)
         {
-          /* Free the pre-existing list of devices to prevent memory leak */
-          int i;
-          for(i = 0; i < *numdevices; i++)
-          {
-            free(LeakPrevent[i]);
-            LeakPrevent[i] = NULL;
-          }
-          
-          /* TODO: Implement callback function to let managing applications know
-             there was a memory allocation problem */
-          fprintf(stderr, "Memory Allocation Problem: unable to connect MTP "
-                          "Device with VendorID:%04x and ProductID:%04x. ",
-                          dev->descriptor.idVendor, dev->descriptor.idProduct);
+          /* 
+            * TODO: Implement callback function to let managing applications 
+            * know there was a memory allocation problem
+            */
+          fprintf(stderr, "Memory Allocation Problem: unable to connect "
+                          "MTP Device with VID:%04x and PID:%04x.",
+                          dev->descriptor.idVendor,
+                          dev->descriptor.idProduct);
+          free_MTP_list(*MTPDeviceList);
           return LIBMTP_ERROR_MEMORY_ALLOCATION;
         }
-        MTPDeviceList[*numdevices] = dev;
-        (*numdevices)++;
+        else
+        {
+          memcpy(tmp, dev, sizeof(struct usb_device));
+          append_to_MTP_list(*MTPDeviceList, tmp);
+          (*numdevices)++;
+        }
       }
     }
   }
 
   /* If nothing was found we end up here. */
-  if(MTPDeviceList == NULL)
+  if(*MTPDeviceList == NULL)
     return LIBMTP_ERROR_N0_DEVICE_ATTACHED;
   else
     return LIBMTP_ERROR_NONE;
@@ -1618,53 +1656,52 @@ static LIBMTP_error_number_t get_mtp_usb_known_devices(
   	      dev->descriptor.idProduct == device->product_id )
   	    {
           /* Append this usb device to the MTP USB Device List */
-          if(MTPDeviceList == NULL)
+          if(*MTPDeviceList == NULL)
           {
-            MTPDeviceList = (struct usb_device **)malloc(sizeof(void *));
+            *MTPDeviceList = (struct usb_device *)malloc(
+                                                    sizeof(struct usb_device));
             /* Check for allocation Error */
-            if(MTPDeviceList == NULL)
+            if(*MTPDeviceList == NULL)
             {
-              /* TODO: Implement callback function to let managing applications
-                 know there was a memory allocation problem */
-              fprintf(stderr, "Memory Allocation Error: unable to connect MTP "
-                              "Device with VendorID:%04x and ProductID:%04x.\n",
+              /* 
+               * TODO: Implement callback function to let managing applications 
+               * know there was a memory allocation problem
+               */
+              fprintf(stderr, "Memory Allocation Problem: unable to connect "
+                              "MTP Device with VID:%04x and PID:%04x.",
                               dev->descriptor.idVendor,
                               dev->descriptor.idProduct);
-              
               return LIBMTP_ERROR_MEMORY_ALLOCATION;
             }
-            MTPDeviceList[0] = dev;
+            memcpy(*MTPDeviceList, dev, sizeof(struct usb_device));
+            (*MTPDeviceList)->next = NULL;
             (*numdevices)++;
           }
           else
           {
-            /* Record current list of devices in case of memory alloc error */
-            struct usb_device **LeakPrevent = MTPDeviceList;
-            MTPDeviceList = (struct usb_device **)realloc(
-                                                    MTPDeviceList,
-                                                    *numdevices + 1);
+            struct usb_device *tmp;
+            tmp = (struct usb_device *)malloc(sizeof(struct usb_device));
             
             /* Check for allocation Error */
-            if(MTPDeviceList == NULL)
+            if(tmp == NULL)
             {
-              /* Free the pre-existing list of devices to prevent memory leak */
-              int i;
-              for(i = 0; i < *numdevices; i++)
-              {
-                free(LeakPrevent[i]);
-                LeakPrevent[i] = NULL;
-              }
-              /* TODO: Implement callback function to let managing applications
-                 know there was a memory allocation problem */
-              fprintf(stderr, "Memory Allocation Error: unable to connect MTP "
-                              "Device with VendorID:%04x and ProductID:%04x.\n",
+              /* 
+               * TODO: Implement callback function to let managing applications 
+               * know there was a memory allocation problem
+               */
+              fprintf(stderr, "Memory Allocation Problem: unable to connect "
+                              "MTP Device with VID:%04x and PID:%04x.",
                               dev->descriptor.idVendor,
                               dev->descriptor.idProduct);
-              
+              free_MTP_list(*MTPDeviceList);
               return LIBMTP_ERROR_MEMORY_ALLOCATION;
             }
-            MTPDeviceList[*numdevices] = dev;
-            (*numdevices)++;
+            else
+            {
+              memcpy(tmp, dev, sizeof(struct usb_device));
+              append_to_MTP_list(*MTPDeviceList, tmp);
+              (*numdevices)++;
+            }
           }
           
           /* Found this device, continue with search for more devices */
@@ -1676,10 +1713,272 @@ static LIBMTP_error_number_t get_mtp_usb_known_devices(
   }
   
   /* If nothing was found we end up here. */
-  if(MTPDeviceList == NULL)
+  if(*MTPDeviceList == NULL)
     return LIBMTP_ERROR_N0_DEVICE_ATTACHED;
   else
     return LIBMTP_ERROR_NONE;
+}
+
+static LIBMTP_error_number_t prime_device_memory(PTPParams *params[],
+                                            PTP_USB *ptp_usb[],
+                                            uint8_t numdevices,
+                                            uint8_t current_device)
+{
+  if(current_device < numdevices)
+  {
+    /* Allocate a parameter box */
+    params[current_device] = (PTPParams *) malloc(sizeof(PTPParams));
+    ptp_usb[current_device] = (PTP_USB *) malloc(sizeof(PTP_USB));
+
+    /* Check for allocation Error */
+    if(params[current_device] == NULL || ptp_usb[current_device] == NULL)
+    {
+      /* Prevent Memory Leaks */
+      if(params[current_device] != NULL)
+      {
+        free(params[current_device]);
+        params[current_device] = NULL;
+      }
+        
+      if(ptp_usb[current_device] != NULL)
+      {
+        free(ptp_usb[current_device]);
+        ptp_usb[current_device] = NULL;
+      }
+      
+      /* This device has not been allocated but try to continue */
+      prime_device_memory(params, ptp_usb, numdevices, current_device+1);
+      return LIBMTP_ERROR_MEMORY_ALLOCATION;
+    }
+    
+    /* Callbacks and stuff */
+    ptp_usb[current_device]->callback_active = 0;
+    ptp_usb[current_device]->current_transfer_total = 0;
+    ptp_usb[current_device]->current_transfer_complete = 0;
+    ptp_usb[current_device]->current_transfer_callback = NULL;
+      
+    /* Reset device flags */
+    ptp_usb[current_device]->device_flags = DEVICE_FLAG_NONE;
+
+    /* This device has been allocated, continue with next device */
+    return prime_device_memory(params, ptp_usb, numdevices, current_device+1);
+  }
+
+  /* This is the recursive exit command */  
+  return LIBMTP_ERROR_NONE;
+}
+
+static void assign_known_device_flags(struct usb_device *dev,
+                                       PTP_USB *ptp_usb[],
+                                       uint8_t current_device)
+{
+  if(dev == NULL)
+    return;
+  
+  /* Search through known device list and set correct device flags */
+  int j;
+  for(j = 0; j < mtp_device_table_size; j++)
+  {
+    if(dev->descriptor.idVendor ==
+                    mtp_device_table[j].vendor_id &&
+        dev->descriptor.idProduct ==
+                    mtp_device_table[j].product_id)
+    {
+    	/* This device is known, assign the correct device flags */
+    	/* Note that ptp_usb[current_device] could potentially be NULL */
+    	if(ptp_usb[current_device] != NULL)
+    	{
+      	ptp_usb[current_device]->device_flags = 
+    	                  mtp_device_table[j].device_flags;
+
+        /* This device is known to the developers */
+        fprintf(stderr, "Device %d (VID=%04x and PID=%04x) is a %s.\n", 
+                        current_device + 1,
+                        dev->descriptor.idVendor,
+                        dev->descriptor.idProduct,
+                        mtp_device_table[j].name);
+    	}
+      
+      /* Start the next recursion */
+      assign_known_device_flags(dev->next, ptp_usb, current_device + 1);
+      return;
+    }
+  }
+
+  /* This device is unknown to the developers */
+  fprintf(stderr, "Device %d (VID=%04x and PID=%04x) is UNKNOWN.\n", 
+          current_device + 1,
+          dev->descriptor.idVendor,
+          dev->descriptor.idProduct);
+  fprintf(stderr, "Please report this VID/PID and the device model to the "
+                  "libmtp development team\n");
+
+  /* Start the next recursion */
+  assign_known_device_flags(dev->next, ptp_usb, current_device + 1);
+
+  return;
+}
+
+LIBMTP_error_number_t configure_usb_devices(struct usb_device *device,
+                                            PTPParams *params[],
+                                            PTP_USB *ptp_usb[],
+                                            uint8_t current_device)
+{
+  struct usb_endpoint_descriptor *ep;
+  PTPDeviceInfo deviceinfo;
+  uint16_t ret=0;
+  int n;
+
+  /* Exit Condition */
+  if(device == NULL)
+    return LIBMTP_ERROR_NONE;
+  
+  /* This device will not be configured but try to continue */
+  if(ptp_usb[current_device] == NULL)
+  {
+    configure_usb_devices(device->next, params, ptp_usb, current_device + 1);
+    return LIBMTP_ERROR_MEMORY_ALLOCATION;
+  }
+
+  /* TODO: Will this always be little endian? */
+  params[current_device]->byteorder = PTP_DL_LE;
+  params[current_device]->cd_locale_to_ucs2 = iconv_open("UCS-2LE", "UTF-8");
+  params[current_device]->cd_ucs2_to_locale = iconv_open("UTF-8", "UCS-2LE");
+  
+  if(params[current_device]->cd_locale_to_ucs2 == (iconv_t) -1 ||
+        params[current_device]->cd_ucs2_to_locale == (iconv_t) -1)
+  {
+    fprintf(stderr, "LIBMTP: Cannot open iconv() converters to/from UCS-2!\n"
+                    "Too old stdlibc, glibc and libiconv?\n");
+
+    if(params[current_device] != NULL)
+    {
+      free(params[current_device]);
+      params[current_device] = NULL;
+    }
+    
+    if(ptp_usb[current_device] != NULL)
+    {
+      free(ptp_usb[current_device]);
+      ptp_usb[current_device] = NULL;
+    }
+ 
+    configure_usb_devices(device->next, params, ptp_usb, current_device + 1);
+    return LIBMTP_ERROR_CONNECTING;
+  }
+    
+  ep = device->config->interface->altsetting->endpoint;
+  n = device->config->interface->altsetting->bNumEndpoints;
+  
+  /* Assign endpoints to usbinfo... */
+  find_endpoints(device,
+                &ptp_usb[current_device]->inep,
+                &ptp_usb[current_device]->inep_maxpacket,
+                &ptp_usb[current_device]->outep,
+                &ptp_usb[current_device]->outep_maxpacket,
+                &ptp_usb[current_device]->intep);
+  
+  fprintf(stderr, "Attempt to initialize device %d\n", current_device+1);
+  /* Attempt to initialize this device, if unable, then try next device */
+  if (init_ptp_usb(params[current_device], ptp_usb[current_device], device) < 0)
+  {
+    if(params[current_device] != NULL)
+    {
+      free(params[current_device]);
+      params[current_device] = NULL;
+    }
+    
+    if(ptp_usb[current_device] != NULL)
+    {
+      free(ptp_usb[current_device]);
+      ptp_usb[current_device] = NULL;
+    }
+ 
+    fprintf(stderr, "Error: Unable to initialize device %d\n", current_device+1);
+    configure_usb_devices(device->next, params, ptp_usb, current_device + 1);
+    return LIBMTP_ERROR_CONNECTING;
+  }
+  fprintf(stderr, "Device %d initialized\n", current_device+1);
+  
+  /* This works in situations where previous bad applications
+      have not used LIBMTP_Release_Device on exit */
+  fprintf(stderr, "Try to open session for Device %d\n", current_device+1);
+  if ((ret = ptp_opensession(params[current_device], 1)) == PTP_ERROR_IO)
+  {
+  	fprintf(stderr, "PTP ERROR IO: Trying again after resetting USB\n");
+    close_usb(ptp_usb[current_device],
+          device->config->interface->altsetting->bInterfaceNumber);
+    
+    if(init_ptp_usb(params[current_device], ptp_usb[current_device], device) <0)
+    {
+      if(params[current_device] != NULL)
+      {
+        free(params[current_device]);
+        params[current_device] = NULL;
+      }
+      
+      if(ptp_usb[current_device] != NULL)
+      {
+        free(ptp_usb[current_device]);
+        ptp_usb[current_device] = NULL;
+      }
+   
+      fprintf(stderr, "Error: Reinitialize device %d failed\n", current_device+1);
+      configure_usb_devices(device->next, params, ptp_usb, current_device + 1);
+      return LIBMTP_ERROR_CONNECTING;
+    }
+	
+	  /* Device has been reset, try again */
+	  fprintf(stderr, "Try to open session on Device %d again\n", current_device+1);
+	  ret = ptp_opensession(params[current_device], 1);
+	}
+	
+	/* Was the transaction id invalid? Try again */
+  if (ret == PTP_RC_InvalidTransactionID)
+  {
+    fprintf(stderr, "Transaction ID was invalid, increment and try again\n");
+    params[current_device]->transaction_id += 10;
+    ret = ptp_opensession(params[current_device], 1);
+  }
+
+  if (ret != PTP_RC_SessionAlreadyOpened && ret != PTP_RC_OK)
+  {
+    fprintf(stderr, "Could not open session! "
+                    "(Return code %d)\n  Try to reset the device.\n",
+                    ret);
+    usb_release_interface(ptp_usb[current_device]->handle,
+            device->config->interface->altsetting->bInterfaceNumber);
+  }
+  else
+  {
+    fprintf(stderr, "Session for Device %d opened\n", current_device + 1);
+  }
+  
+  /* It is permissible to call this before opening the session */
+  if (ptp_getdeviceinfo(params[current_device], &deviceinfo) != PTP_RC_OK)
+  {
+    fprintf(stderr, "Could not get device info!\n");
+    usb_release_interface(ptp_usb[current_device]->handle,
+        device->config->interface->altsetting->bInterfaceNumber);
+    
+    /* Give up on this device and try with the next */
+    if(params[current_device] != NULL)
+    {
+      free(params[current_device]);
+      params[current_device] = NULL;
+    }
+    
+    if(ptp_usb[current_device] != NULL)
+    {
+      free(ptp_usb[current_device]);
+      ptp_usb[current_device] = NULL;
+    }
+  
+    configure_usb_devices(device->next, params, ptp_usb, current_device + 1);
+    return LIBMTP_ERROR_CONNECTING;
+  } 
+
+  return configure_usb_devices(device->next, params, ptp_usb,current_device+1);
 }
 
 /**
@@ -1689,27 +1988,24 @@ static LIBMTP_error_number_t get_mtp_usb_known_devices(
  * 
  * @param params Dynamic array of USB parameters
  * @param ptp_usb USB information
- * @param interfaceNumber USB interface number
- * @param numdevices number of devices connected to the machine
+ * @param interfaceNumber USB interface number (static size 256 bytes)
+ * @param numdevices number of devices connected to the machine 
  * @return Error Codes as per the type definition
  */ 
 LIBMTP_error_number_t find_usb_devices (PTPParams **params,
                                             PTP_USB **ptp_usb,
-                                            uint8_t **interfaceNumber,
+                                            uint8_t interfaceNumber[],
                                             uint8_t *numdevices)
 {
   struct usb_device *MTPDeviceList = NULL;
+  LIBMTP_error_number_t ret;
   uint8_t i;
  
   /* Recover list of attached USB devices that match MTP criteria */
   switch(get_mtp_usb_device_list (&MTPDeviceList, numdevices))
   {
   /* These values should never occur at this point */
-  case LIBMTP_ERROR_STORAGE_FULL:
-  case LIBMTP_ERROR_USB_LAYER:
-  case LIBMTP_ERROR_PTP_LAYER:
-  case LIBMTP_ERROR_CONNECTING:
-  case LIBMTP_ERROR_GENERAL:
+  default:
     return LIBMTP_ERROR_GENERAL;
     
   /* Memory Allocation Error, return */
@@ -1728,12 +2024,8 @@ LIBMTP_error_number_t find_usb_devices (PTPParams **params,
     case LIBMTP_ERROR_N0_DEVICE_ATTACHED:
       return LIBMTP_ERROR_N0_DEVICE_ATTACHED;
 
-    /* These value should never occur at this point */
-    case LIBMTP_ERROR_STORAGE_FULL:
-    case LIBMTP_ERROR_USB_LAYER:
-    case LIBMTP_ERROR_PTP_LAYER:
-    case LIBMTP_ERROR_CONNECTING:
-    case LIBMTP_ERROR_GENERAL:
+    /* We should never execute this */
+    default:
       return LIBMTP_ERROR_GENERAL;
     
     /* Found at least one device, but don't handle this here */
@@ -1745,301 +2037,60 @@ LIBMTP_error_number_t find_usb_devices (PTPParams **params,
   }
   
   /* Allocate Memory Appropriately and Initialize*/
-  params = (PTPParams **)malloc(*numdevices);
-  ptp_usb = (PTP_USB **)malloc(*numdevices);
-  interfaceNumber = (uint8_t **)malloc(*numdevices);
+  *params = (PTPParams *)malloc(*numdevices * sizeof(void *));
+  *ptp_usb = (PTP_USB *)malloc(*numdevices * sizeof(void *));
   
   /* Check for allocation Error */
-  if(params == NULL || ptp_usb == NULL || interfaceNumber == NULL)
+  if(*params == NULL || *ptp_usb == NULL)
   {
     /* Prevent Memory Leaks */
-    if(params != NULL)
+    if(*params != NULL)
     {
-      free(params);
-      params = NULL;
+      free(*params);
+      *params = NULL;
     }
     
-    if(ptp_usb != NULL)
+    if(*ptp_usb != NULL)
     {
-      free(ptp_usb);
-      ptp_usb = NULL;
+      free(*ptp_usb);
+      *ptp_usb = NULL;
     }
-    
-    if(interfaceNumber != NULL)
-    {
-      free(interfaceNumber);
-      interfaceNumber = NULL;
-    }
+
     /* TODO: Implement callback function to let managing applications know
         there was a memory allocation problem */
     fprintf(stderr, "Memory Allocation Problem: libmtp line: %d", __LINE__);
     return LIBMTP_ERROR_MEMORY_ALLOCATION;
   }
+
+  fprintf(stderr, "Found %d device(s)\n", *numdevices);
+  fprintf(stderr, "Priming USB PTP Memory\n");
+  ret =  prime_device_memory(&(*params), &(*ptp_usb), *numdevices, 0);
+  fprintf(stderr, "prime_device_memory error code: %d\n", ret);
+
+  fprintf(stderr, "Assigning Device Flags to known device(s)\n");
+  assign_known_device_flags(MTPDeviceList, &(*ptp_usb), 0);
   
-  /* BEGIN Dynamic Memory Allocation */
-  for(i = 0; i < *numdevices; i++)
-  {  
-    /* Allocate a parameter box */
-    params[i] = (PTPParams *) malloc(sizeof(PTPParams));
-    /* Check for allocation Error */
-    if(params[i] == NULL)
-    {
-      int z;
-      /* Prevent Memory Leaks */
-      for(z = 0; z <= i - 1; z++)
-      {
-        free(params[z]);
-        params[z] = NULL;
-      }
-      free(MTPDeviceList);
-      MTPDeviceList = NULL;
-      
-      /* TODO: Implement callback function to let managing applications know
-         there was a memory allocation problem */
-      fprintf(stderr, "Memory Allocation Problem: libmtp line: %d", __LINE__);
-      
-      return LIBMTP_ERROR_MEMORY_ALLOCATION;
-    }
-
-    ptp_usb[i] = (PTP_USB *) malloc(sizeof(PTP_USB));
-    /* Check for allocation Error */
-    if(ptp_usb[i] == NULL)
-    {
-      int z;
-      /* Prevent Memory Leaks */
-      for(z = 0; z <= i - 1; z++)
-      {
-        free(params[z]);
-        params[z] = NULL;
-        
-        free(ptp_usb[z]);
-        ptp_usb[z] = NULL;
-      }
-      free(params[i]);
-      params[i] = NULL;
-      
-      free(params);
-      params = NULL;
-      
-      free(ptp_usb);
-      ptp_usb = NULL;
-
-      free(interfaceNumber);
-      interfaceNumber = NULL;
-      
-      free(MTPDeviceList);
-      MTPDeviceList = NULL;
-
-      /* TODO: Implement callback function to let managing applications know
-          there was a memory allocation problem */
-      fprintf(stderr, "Memory Allocation Problem: libmtp line: %d", __LINE__);
-      
-      return LIBMTP_ERROR_MEMORY_ALLOCATION;
-    }
-
-    /* Callbacks and stuff */
-    ptp_usb[i]->callback_active = 0;
-    ptp_usb[i]->current_transfer_total = 0;
-    ptp_usb[i]->current_transfer_complete = 0;
-    ptp_usb[i]->current_transfer_callback = NULL;
-    
-    
-    /* Reset device flags */
-    ptp_usb[i]->device_flags = DEVICE_FLAG_NONE;
-  } /* END Dynamic Memory Allocation */
+  fprintf(stderr, "Configuring Device(s)\n");
+  ret = configure_usb_devices(MTPDeviceList, &(*params), &(*ptp_usb), 0);
+  fprintf(stderr, "configure_usb_devices error code: %d\n", ret);
   
-  /* For known devices, set correct device flags */
-  for(i = 0; i < *numdevices; i++)
+  /* Configure interface number */
   {
-    int j;
-    for(j = 0; j < mtp_device_table_size; j++)
+    struct usb_device *tmp = MTPDeviceList;
+    for(i = 0; tmp != NULL && i < sizeof(interfaceNumber); i++,tmp = tmp->next)
     {
-      if (MTPDeviceList[i].descriptor.idVendor == 
-                      mtp_device_table[j].vendor_id &&
-          MTPDeviceList[i].descriptor.idProduct ==
-                      mtp_device_table[j].product_id)
-      {
-      	ptp_usb[i]->device_flags = 
-      	                  mtp_device_table[j].device_flags;
-        break;
-      }
-    }
-
-    /* This device is unknown to the developers */
-    if (j == mtp_device_table_size)
-    {
-      fprintf(stderr, "Device with VID=%04x and PID=%04x is UNKNOWN.\n", 
-        MTPDeviceList[i].descriptor.idVendor,
-        MTPDeviceList[i].descriptor.idProduct);
-      fprintf(stderr, "Please report this VID/PID and the device model to the\n"
-                      "libmtp development team");
+      interfaceNumber[i] = 
+          tmp->config->interface->altsetting->bInterfaceNumber;
     }
   }
-  
-  for(i = 0; i < *numdevices; i++)
-  {
-    struct usb_endpoint_descriptor *ep;
-    PTPDeviceInfo deviceinfo;
-    uint16_t ret=0;
-    int n;
-    
-    ep = MTPDeviceList[i].config->interface->altsetting->endpoint;
-    n = MTPDeviceList[i].config->interface->altsetting->bNumEndpoints;
-    
-    /* Assign endpoints to usbinfo... */
-    find_endpoints(&MTPDeviceList[i],
-                  &ptp_usb[i]->inep,
-                  &ptp_usb[i]->inep_maxpacket,
-                  &ptp_usb[i]->outep,
-                  &ptp_usb[i]->outep_maxpacket,
-                  &ptp_usb[i]->intep);
-                  
-    /* Attempt to initialize this device */
-    if (init_ptp_usb(params[i],
-         ptp_usb[i],
-         &MTPDeviceList[i]) < 0)
-    {
-      int z;
-      /* Prevent Memory Leaks */
-      for(z = 0; z <= i; z++)
-      {
-        free(params[z]);
-        params[z] = NULL;
-        
-        free(ptp_usb[z]);
-        ptp_usb[z] = NULL;
-      }
-      free(params);
-      params = NULL;
       
-      free(ptp_usb);
-      ptp_usb = NULL;
-
-      free(interfaceNumber);
-      interfaceNumber = NULL;
-      
-      free(MTPDeviceList);
-      MTPDeviceList = NULL;
-      
-      return LIBMTP_ERROR_CONNECTING;
-    }
-    
-    /* This works in situations where previous bad applications
-       have not used LIBMTP_Release_Device on exit */
-    if (ptp_opensession(params[i], 1) == PTP_ERROR_IO)
-    {
-    	fprintf(stderr, "PTP ERROR IO: Trying again after resetting USB");
-      close_usb(ptp_usb[i],
-            MTPDeviceList[i].config->interface->altsetting->bInterfaceNumber);
-      
-      if (init_ptp_usb(params[i], ptp_usb[i], &MTPDeviceList[i]) < 0)
-      {
-        int z;
-        /* Prevent Memory Leaks */
-        for(z = 0; z <= i; z++)
-        {
-          free(params[z]);
-          params[z] = NULL;
-          
-          free(ptp_usb[z]);
-          ptp_usb[z] = NULL;
-        }
-        free(params);
-        params = NULL;
-        
-        free(ptp_usb);
-        ptp_usb = NULL;
-
-        free(interfaceNumber);
-        interfaceNumber = NULL;
-        
-        free(MTPDeviceList);
-        MTPDeviceList = NULL;
-
-        return LIBMTP_ERROR_CONNECTING;
-      }
-  	
-  	  ret = ptp_opensession(params[i], 1);
-  	}
-  	  
-	  if (ret == PTP_RC_InvalidTransactionID)
-	  {
-      params[i]->transaction_id += 10;
-      ret = ptp_opensession(params[i], 1);
-    }
-
-    if (ret != PTP_RC_SessionAlreadyOpened && ret != PTP_RC_OK)
-    {
-      fprintf(stderr, "Could not open session! "
-                      "(Return code %d)\n  Try to reset the device.\n",
-                      ret);
-      usb_release_interface(ptp_usb[i]->handle,
-             MTPDeviceList[i].config->interface->altsetting->bInterfaceNumber);
-    }
-    
-    /* It is permissible to call this before opening the session */
-    if (ptp_getdeviceinfo(params[i], &deviceinfo) 
-        != PTP_RC_OK)
-    {
-      fprintf(stderr, "Could not get device info!\n");
-      usb_release_interface(ptp_usb[i]->handle,
-          MTPDeviceList[i].config->interface->altsetting->bInterfaceNumber);
-      return LIBMTP_ERROR_CONNECTING;
-    } 
-    
-    /* Configure interface number */
-    /* Check for allocation Error */
-    interfaceNumber[i] = (uint8_t *)malloc(sizeof(uint8_t));
-    if(interfaceNumber[i] == NULL)
-    {
-      int z;
-      /* Prevent Memory Leaks */
-      for(z = 0; z <= i - 1; z++)
-      {
-        free(interfaceNumber[z]);
-        interfaceNumber[z] = NULL;
-        
-        free(params[z]);
-        params[z] = NULL;
-        
-        free(ptp_usb[z]);
-        ptp_usb[z] = NULL;
-      }
-      free(ptp_usb[i]);
-      ptp_usb[i] = NULL;
-      
-      free(params[i]);
-      params[i] = NULL;
-
-      free(params);
-      params = NULL;
-      
-      free(ptp_usb);
-      ptp_usb = NULL;
-
-      free(interfaceNumber);
-      interfaceNumber = NULL;
-      
-      free(MTPDeviceList);
-      MTPDeviceList = NULL;
-
-      /* TODO: Implement callback function to let managing applications know
-          there was a memory allocation problem */
-      fprintf(stderr, "Memory Allocation Problem: libmtp line: %d", __LINE__);
-      
-      return LIBMTP_ERROR_MEMORY_ALLOCATION;
-    }
-    *(interfaceNumber[i]) = 
-        MTPDeviceList[i].config->interface->altsetting->bInterfaceNumber;
-  }
-  
   if(MTPDeviceList)
   {
-    free(MTPDeviceList);
+    free_MTP_list(MTPDeviceList);
     MTPDeviceList = NULL;
   }
   /* we're connected, return OK */
-  return LIBMTP_ERROR_NONE;
+  return ret;
 } 
 
 static void find_endpoints(struct usb_device *dev, int* inep, int* inep_maxpacket, int* outep, int *outep_maxpacket, int* intep)

@@ -765,7 +765,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
  * list creation
  */
 static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
-                                                    uint8_t **interface_number,
+                                                    uint8_t interface_number[],
                                                     PTPParams **params,
                                                     PTP_USB **ptp_usb,
                                                     uint8_t current_device)
@@ -778,38 +778,6 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
     
     /* Clear any handlers */
     params[current_device]->handles.Handler = NULL;
-    
-    /* TODO: Will this always be little endian? */
-    params[current_device]->byteorder = PTP_DL_LE;
-    params[current_device]->cd_locale_to_ucs2 = iconv_open("UCS-2LE", "UTF-8");
-    params[current_device]->cd_ucs2_to_locale = iconv_open("UTF-8", "UCS-2LE");
-    
-    if(params[current_device]->cd_locale_to_ucs2 == (iconv_t) -1 ||
-         params[current_device]->cd_ucs2_to_locale == (iconv_t) -1)
-    {
-      fprintf(stderr, "LIBMTP: Cannot open iconv() converters to/from UCS-2!\n"
-                      "Too old stdlibc, glibc and libiconv?\n");
-
-      /* Prevent memory leaks for this device */
-      free(interface_number[current_device]);
-      interface_number[current_device] = NULL;
-      
-      free(ptp_usb[current_device]);
-      ptp_usb[current_device] = NULL;
-      
-      free(params[current_device]);
-      params[current_device] = NULL;
-      
-      /* Try again with the next device, although this will probably be
-       * pointless... We still need to clear out the buffer and this is as
-       * good a way as any
-       */
-      return create_usb_mtp_devices(numdevices, 
-                                      interface_number,
-                                      params,
-                                      ptp_usb,
-                                      current_device + 1);
-    }
     
     /* Allocate dynamic space for our device */
     mtp_device = (LIBMTP_mtpdevice_t *)malloc(sizeof(LIBMTP_mtpdevice_t));
@@ -826,9 +794,6 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
                       current_device);
       
       /* Prevent memory leaks for this device */
-      free(interface_number[current_device]);
-      interface_number[current_device] = NULL;
-      
       free(ptp_usb[current_device]);
       ptp_usb[current_device] = NULL;
       
@@ -851,9 +816,6 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
                       "number %u, trying to continue", current_device);
                       
       /* Prevent memory leaks for this device */
-      free(interface_number[current_device]);
-      interface_number[current_device] = NULL;
-      
       free(ptp_usb[current_device]);
       ptp_usb[current_device] = NULL;
       
@@ -869,15 +831,22 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
     }
     
     /* Copy device information to mtp_device structure */
-    mtp_device->interface_number = *interface_number[current_device];
+    mtp_device->interface_number = interface_number[current_device];
     mtp_device->params = (void *) params[current_device];
     mtp_device->usbinfo = (void *) ptp_usb[current_device];
     
-    /* Free this since it's value was copied, not it's address */
-    free(interface_number[current_device]);
-    
     /* No Errors yet for this device */
     mtp_device->errorstack = NULL;
+
+    /* Cache the device information */
+    if (ptp_getdeviceinfo(params[current_device],
+                              &params[current_device]->deviceinfo) != PTP_RC_OK)
+    {
+      add_error_to_errorstack(mtp_device,
+                        LIBMTP_ERROR_CONNECTING,
+                        "Unable to read device information. Recommend "
+                        "disconnecting this device\n");
+    }
 
     /* Default Max Battery Level, we will adjust this if possible */
     mtp_device->maximum_battery_level = 100;
@@ -1032,13 +1001,13 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
  */
 LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **DevList)
 {
+  uint8_t interface_number[256];
+  uint8_t numdevices = 0;
   /* Dynamically allocated PTP and USB information - be sure to call free()*/
-  uint8_t *interface_number;
   PTPParams *params;
   PTP_USB *ptp_usb;
-  uint8_t numdevices = 0;
 
-  switch(find_usb_devices(&params, &ptp_usb, &interface_number, &numdevices))
+  switch(find_usb_devices(&params, &ptp_usb, interface_number, &numdevices))
   {
   /* Specific Errors or Messages that connect_mtp_devices should return */
   case LIBMTP_ERROR_N0_DEVICE_ATTACHED:
@@ -1063,18 +1032,31 @@ LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **DevList)
 
   /* Assign linked list of devices */
   *DevList = create_usb_mtp_devices(numdevices,
-                                    &interface_number,
+                                    interface_number,
                                     &params,
                                     &ptp_usb,
                                     0);
                                     
   /* TODO: Add wifi device access here */
-  
-  free(interface_number);
-  free(params);
-  free(ptp_usb);
 
   return LIBMTP_ERROR_NONE;
+}
+
+/**
+ * This closes and releases an allocated MTP device.
+ * @param device a pointer to the MTP device to release.
+ */
+void LIBMTP_Release_Device_List(LIBMTP_mtpdevice_t *device)
+{
+  if(device != NULL)
+  {
+    if(device->next != NULL)
+    {
+      LIBMTP_Release_Device_List(device->next);
+    }
+    
+    LIBMTP_Release_Device(device);
+  }
 }
 
 /**

@@ -345,6 +345,7 @@ int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t ** const, int * cons
 int LIBMTP_Detect_Descriptor(uint16_t*,uint16_t*);
 LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void);
 LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **);
+void LIBMTP_Release_Device_List(LIBMTP_mtpdevice_t*);
 void LIBMTP_Release_Device(LIBMTP_mtpdevice_t*);
 void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t*);
 char *LIBMTP_Get_Modelname(LIBMTP_mtpdevice_t*);
