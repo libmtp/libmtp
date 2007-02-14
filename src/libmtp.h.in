@@ -4,6 +4,7 @@
  *
  * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
+ * Copyright (C) 2007 Ted Bullock
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -217,6 +218,9 @@ struct LIBMTP_mtpdevice_struct {
   uint32_t default_text_folder;
   /** Per device iconv() converters, only used internally */
   void *cd;
+  
+  /** Pointer to next device in linked list; NULL if this is the last device */
+  LIBMTP_mtpdevice_t *next;
 };
 
 /**
@@ -340,6 +344,7 @@ int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t ** const, int * cons
  */
 int LIBMTP_Detect_Descriptor(uint16_t*,uint16_t*);
 LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void);
+LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **);
 void LIBMTP_Release_Device(LIBMTP_mtpdevice_t*);
 void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t*);
 char *LIBMTP_Get_Modelname(LIBMTP_mtpdevice_t*);

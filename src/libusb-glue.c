@@ -1683,7 +1683,7 @@ static LIBMTP_error_number_t get_mtp_usb_known_devices(
  * @param numdevices number of devices connected to the machine
  * @return Error Codes as per the type definition
  */ 
-LIBMTP_error_number_t connect_mtp_devices (PTPParams **params,
+LIBMTP_error_number_t find_usb_devices (PTPParams **params,
                                             PTP_USB **ptp_usb,
                                             uint8_t **interfaceNumber,
                                             uint8_t *numdevices)

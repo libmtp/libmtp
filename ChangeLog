@@ -1,3 +1,13 @@
+2007-02-12  Ted Bullock  <tbullock@canada.com>
+
+	* src/libmtp.c: Two new functions (create_usb_mtp_devices and 
+	LIBMTP_Get_Connected_Devices) to add support for multiple devices
+	to client applications
+	* src/libmtp.h: Added LIBMTP_Get_Connected_Devices as a publicly
+	accessible function
+	*libusb-glue.c: Renamed connect_mtp_devices to find_usb_devices
+	*libusb-glue.h: Renamed connect_mtp_devices to find_usb_devices
+
 2007-02-09  Ted Bullock  <tbullock@canada.com>
 
 	* src/libusb-glue.c: Addressed a number of potential memory leaks in
