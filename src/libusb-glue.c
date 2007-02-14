@@ -241,7 +241,13 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   /*
    * Nokia
    */
-  {"Nokia Mobile Phones (MTP mode)", 0x0421, 0x04e1, DEVICE_FLAG_NONE }
+  {"Nokia Mobile Phones (MTP mode)", 0x0421, 0x04e1, DEVICE_FLAG_NONE },
+
+  /*
+   * LOGIK
+   * Sold in the UK, seem to be manufactured by CCTech in China.
+   */
+  {"Logik LOG DAX MP3 and DAB Player", 0x13d1, 0x7002, DEVICE_FLAG_NONE }
 };
 static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
 
