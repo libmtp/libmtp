@@ -119,6 +119,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Samsung Yepp T9", 0x04e8, 0x507f, DEVICE_FLAG_NONE },
   // From a rouge .INF file
   { "Samsung YH-999 Portable Media Center", 0x04e8, 0x5a0f, DEVICE_FLAG_NONE },
+  // From Lionel Bouton
+  { "Samsung X830 Mobile Phone", 0x04e8, 0x6702, DEVICE_FLAG_NONE },
 
   /*
    * Intel
