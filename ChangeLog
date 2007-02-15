@@ -6,32 +6,32 @@
 
 	* examples/folders.c: Updated to use new multi device code
 	* src/libmtp.c: Fixed potential memory leaks
-	* src/libusb-glue.c: Fixed potential memory leaks and fixed device release
-	segfault for multiple devices
+	* src/libusb-glue.c: Fixed potential memory leaks and fixed device 
+	  release segfault for multiple devices
 
 2007-02-14  Ted Bullock  <tbullock@canada.com>
 
-	* src/libusb-glue.c: Wrote three new recursive functions to avoid extreme
-	levels of multiple indirection and to clean the code up a bit for multiple
-	devices.
-	* examples/detect.c: Adjusted function calls to use new multiple device
-	code.
+	* src/libusb-glue.c: Wrote three new recursive functions to avoid 
+	  extreme levels of multiple indirection and to clean the code up 
+	  a bit for multiple devices.
+	* examples/detect.c: Adjusted function calls to use new multiple 
+	  device code.
 	* src/libmtp.h.in: Added prototype for LIBMTP_Release_Device_List
 
 2007-02-12  Ted Bullock  <tbullock@canada.com>
 
 	* src/libmtp.c: Two new functions (create_usb_mtp_devices and 
-	LIBMTP_Get_Connected_Devices) to add support for multiple devices
-	to client applications
+	  LIBMTP_Get_Connected_Devices) to add support for multiple devices
+	  to client applications
 	* src/libmtp.h: Added LIBMTP_Get_Connected_Devices as a publicly
-	accessible function
+	  accessible function
 	*libusb-glue.c: Renamed connect_mtp_devices to find_usb_devices
 	*libusb-glue.h: Renamed connect_mtp_devices to find_usb_devices
 
 2007-02-09  Ted Bullock  <tbullock@canada.com>
 
 	* src/libusb-glue.c: Addressed a number of potential memory leaks in
-	the new multiple device code
+	  the new multiple device code
 
 2007-02-05  Linus Walleij <triad@df.lth.se>
 
