@@ -766,8 +766,8 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
  */
 static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
                                                     uint8_t interface_number[],
-                                                    PTPParams **params,
-                                                    PTP_USB **ptp_usb,
+                                                    PTPParams *params[],
+                                                    PTP_USB *ptp_usb[],
                                                     uint8_t current_device)
 { 
   /* Check if there are devices left to connect */
@@ -808,6 +808,11 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
                                       current_device + 1);
     }
     
+    /* Copy device information to mtp_device structure */
+    mtp_device->interface_number = interface_number[current_device];
+    mtp_device->params = params[current_device];
+    mtp_device->usbinfo = ptp_usb[current_device];
+    
     /* Cache the device information for later use */
     if (ptp_getdeviceinfo(params[current_device],
                           &params[current_device]->deviceinfo) != PTP_RC_OK)
@@ -821,6 +826,7 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
       
       free(params[current_device]);
       params[current_device] = NULL;
+      free(mtp_device);
       
       /* try again with the next device */
       return create_usb_mtp_devices(numdevices, 
@@ -829,11 +835,6 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
                                       ptp_usb,
                                       current_device + 1);
     }
-    
-    /* Copy device information to mtp_device structure */
-    mtp_device->interface_number = interface_number[current_device];
-    mtp_device->params = (void *) params[current_device];
-    mtp_device->usbinfo = (void *) ptp_usb[current_device];
     
     /* No Errors yet for this device */
     mtp_device->errorstack = NULL;
@@ -1004,8 +1005,8 @@ LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **DevList)
   uint8_t interface_number[256];
   uint8_t numdevices = 0;
   /* Dynamically allocated PTP and USB information - be sure to call free()*/
-  PTPParams *params;
-  PTP_USB *ptp_usb;
+  PTPParams **params;
+  PTP_USB **ptp_usb;
 
   switch(find_usb_devices(&params, &ptp_usb, interface_number, &numdevices))
   {
@@ -1033,11 +1034,14 @@ LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **DevList)
   /* Assign linked list of devices */
   *DevList = create_usb_mtp_devices(numdevices,
                                     interface_number,
-                                    &params,
-                                    &ptp_usb,
+                                    params,
+                                    ptp_usb,
                                     0);
                                     
   /* TODO: Add wifi device access here */
+  
+  free(params);
+  free(ptp_usb);
 
   return LIBMTP_ERROR_NONE;
 }
@@ -1074,6 +1078,7 @@ void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
   // Free iconv() converters...
   iconv_close(params->cd_locale_to_ucs2);
   iconv_close(params->cd_ucs2_to_locale);
+  free(ptp_usb);  
   ptp_free_params(params);
   free_storage_list(device);
   free(device);

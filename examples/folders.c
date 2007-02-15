@@ -3,6 +3,7 @@
  * Example program that lists all folders on a device.
  *
  * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,30 +40,59 @@ static void dump_folder_list(LIBMTP_folder_t *folderlist, int level)
 
 int main (int argc, char **argv)
 {
-  LIBMTP_mtpdevice_t *device;
+  LIBMTP_mtpdevice_t *device, *iter;
   LIBMTP_folder_t *folders;
 
   LIBMTP_Init();
-  device = LIBMTP_Get_First_Device();
-  if (device == NULL) {
-    printf("No devices.\n");
-    exit (0);
+  fprintf(stdout, "Attempting to connect device(s)\n");
+
+  switch(LIBMTP_Get_Connected_Devices(&device))
+  {
+  case LIBMTP_ERROR_N0_DEVICE_ATTACHED:
+    fprintf(stdout, "mtp-folders: No Devices have been found\n");
+    return 0;
+  case LIBMTP_ERROR_CONNECTING:
+    fprintf(stderr, "mtp-folders: There has been an error connecting. Exit\n");
+    return 1;
+  case LIBMTP_ERROR_MEMORY_ALLOCATION:
+    fprintf(stderr, "mtp-folders: Memory Allocation Error. Exit\n");
+    return 1;
+ 
+  /* Unknown general errors - This should never execute */
+  case LIBMTP_ERROR_GENERAL:
+  default:
+    fprintf(stderr, "mtp-folders: Unknown error, please report "
+                    "this to the libmtp developers\n");
+  return 1;
+
+  /* Successfully connected at least one device, so continue */
+  case LIBMTP_ERROR_NONE:
+    fprintf(stdout, "mtp-folders: Successfully connected\n");
+    fflush(stdout);
   }
   
-  // Get folder listing.
-  folders = LIBMTP_Get_Folder_List(device);
-  
-  if (folders == NULL) {
-    printf("No folders found\n");
+  /* iterate through connected MTP devices */
+  for(iter = device; iter != NULL; iter = iter->next)
+  {
     LIBMTP_Dump_Errorstack(device);
-    LIBMTP_Clear_Errorstack(device);
-  } else {
-    dump_folder_list(folders,0);
+    LIBMTP_Clear_Errorstack(device);    /* Get folder listing */
+
+    folders = LIBMTP_Get_Folder_List(device);
+    
+    if (folders == NULL) {
+      fprintf(stdout, "No folders found\n");
+      LIBMTP_Dump_Errorstack(device);
+      LIBMTP_Clear_Errorstack(device);
+    } else {
+      dump_folder_list(folders,0);
+    }
+
+    LIBMTP_destroy_folder_t(folders);
   }
 
-  LIBMTP_destroy_folder_t(folders);
-
-  LIBMTP_Release_Device(device);
+  
+  LIBMTP_Release_Device_List(device);
   printf("OK.\n");
-  exit (0);
+
+  return 0;
 }

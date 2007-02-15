@@ -1751,14 +1751,9 @@ static LIBMTP_error_number_t prime_device_memory(PTPParams *params[],
       return LIBMTP_ERROR_MEMORY_ALLOCATION;
     }
     
-    /* Callbacks and stuff */
-    ptp_usb[current_device]->callback_active = 0;
-    ptp_usb[current_device]->current_transfer_total = 0;
-    ptp_usb[current_device]->current_transfer_complete = 0;
-    ptp_usb[current_device]->current_transfer_callback = NULL;
-      
-    /* Reset device flags */
-    ptp_usb[current_device]->device_flags = DEVICE_FLAG_NONE;
+    /* Start with a blank slate (includes setting device_flags to 0) */
+    memset(params[current_device], 0, sizeof(PTPParams));
+    memset(ptp_usb[current_device], 0, sizeof(PTP_USB));
 
     /* This device has been allocated, continue with next device */
     return prime_device_memory(params, ptp_usb, numdevices, current_device+1);
@@ -1825,7 +1820,6 @@ LIBMTP_error_number_t configure_usb_devices(struct usb_device *device,
                                             uint8_t current_device)
 {
   struct usb_endpoint_descriptor *ep;
-  PTPDeviceInfo deviceinfo;
   uint16_t ret=0;
   int n;
 
@@ -1948,6 +1942,7 @@ LIBMTP_error_number_t configure_usb_devices(struct usb_device *device,
                     ret);
     usb_release_interface(ptp_usb[current_device]->handle,
             device->config->interface->altsetting->bInterfaceNumber);
+    return LIBMTP_ERROR_CONNECTING;
   }
   else
   {
@@ -1955,7 +1950,8 @@ LIBMTP_error_number_t configure_usb_devices(struct usb_device *device,
   }
   
   /* It is permissible to call this before opening the session */
-  if (ptp_getdeviceinfo(params[current_device], &deviceinfo) != PTP_RC_OK)
+  if (ptp_getdeviceinfo(params[current_device],
+                            &params[current_device]->deviceinfo) != PTP_RC_OK)
   {
     fprintf(stderr, "Could not get device info!\n");
     usb_release_interface(ptp_usb[current_device]->handle,
@@ -1992,8 +1988,8 @@ LIBMTP_error_number_t configure_usb_devices(struct usb_device *device,
  * @param numdevices number of devices connected to the machine 
  * @return Error Codes as per the type definition
  */ 
-LIBMTP_error_number_t find_usb_devices (PTPParams **params,
-                                            PTP_USB **ptp_usb,
+LIBMTP_error_number_t find_usb_devices (PTPParams ***params,
+                                            PTP_USB ***ptp_usb,
                                             uint8_t interfaceNumber[],
                                             uint8_t *numdevices)
 {
@@ -2037,8 +2033,8 @@ LIBMTP_error_number_t find_usb_devices (PTPParams **params,
   }
   
   /* Allocate Memory Appropriately and Initialize*/
-  *params = (PTPParams *)malloc(*numdevices * sizeof(void *));
-  *ptp_usb = (PTP_USB *)malloc(*numdevices * sizeof(void *));
+  *params = (PTPParams **)malloc(*numdevices * sizeof(void *));
+  *ptp_usb = (PTP_USB **)malloc(*numdevices * sizeof(void *));
   
   /* Check for allocation Error */
   if(*params == NULL || *ptp_usb == NULL)
@@ -2064,14 +2060,14 @@ LIBMTP_error_number_t find_usb_devices (PTPParams **params,
 
   fprintf(stderr, "Found %d device(s)\n", *numdevices);
   fprintf(stderr, "Priming USB PTP Memory\n");
-  ret =  prime_device_memory(&(*params), &(*ptp_usb), *numdevices, 0);
+  ret =  prime_device_memory(*params, *ptp_usb, *numdevices, 0);
   fprintf(stderr, "prime_device_memory error code: %d\n", ret);
 
   fprintf(stderr, "Assigning Device Flags to known device(s)\n");
-  assign_known_device_flags(MTPDeviceList, &(*ptp_usb), 0);
+  assign_known_device_flags(MTPDeviceList, *ptp_usb, 0);
   
   fprintf(stderr, "Configuring Device(s)\n");
-  ret = configure_usb_devices(MTPDeviceList, &(*params), &(*ptp_usb), 0);
+  ret = configure_usb_devices(MTPDeviceList, *params, *ptp_usb, 0);
   fprintf(stderr, "configure_usb_devices error code: %d\n", ret);
   
   /* Configure interface number */

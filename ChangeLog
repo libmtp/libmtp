@@ -1,3 +1,10 @@
+2007-02-15  Ted Bullock  <tbullock@canada.com>
+
+	* examples/folders.c: Updated to use new multi device code
+	* src/libmtp.c: Fixed potential memory leaks
+	* src/libusb-glue.c: Fixed potential memory leaks and fixed device release
+	segfault for multiple devices
+
 2007-02-14  Ted Bullock  <tbullock@canada.com>
 
 	* src/libusb-glue.c: Wrote three new recursive functions to avoid extreme
