@@ -1,6 +1,14 @@
 2007-02-15  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: Adding some sanity checks to error stack code.
+	* examples/newplaylist.c: LGPL boilerplate, crediting Robert.
+	* examples/playlists.c: LGPL boilerplate.
+	* examples/sendfile.c: LGPL boilerplate, crediting me and Chris.
+	* examples/sendtr.c: LGPL boilerplate, crediting me, Chris,
+	  Shaun, Enrique.
+	* examples/thumb.c: LGPL boilerplate, crediting Robert.
+	* examples/tracks.c: LGPL boilerplate.
+	* examples/trexist.c: LGPL boilerplate, crediting noone.
 
 2007-02-15  Ted Bullock  <tbullock@canada.com>
 
