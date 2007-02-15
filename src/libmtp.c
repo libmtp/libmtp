@@ -1106,6 +1106,7 @@ static void add_error_to_errorstack(LIBMTP_mtpdevice_t *device,
   newerror->error_text = strdup(error_text);
   if (device->errorstack == NULL) {
     device->errorstack = newerror;
+    device->errorstack->next = NULL;
   } else {
     LIBMTP_error_t *tmp = device->errorstack;
     
