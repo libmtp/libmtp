@@ -772,7 +772,7 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
 { 
   /* Check if there are devices left to connect */
   if(current_device < numdevices)
-  {
+    {
     LIBMTP_mtpdevice_t *mtp_device;
     uint32_t i;
     
@@ -789,7 +789,7 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
           device and attempt to continue */
 
       /* TODO: This error statement could probably be a bit more robust */
-      fprintf(stderr, "LIBMTP: connect_usb_devices encountered a memory "
+      fprintf(stderr, "LIBMTP PANIC: connect_usb_devices encountered a memory "
                       "allocation error with device %u, trying to continue",
                       current_device);
       
@@ -817,7 +817,7 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
     if (ptp_getdeviceinfo(params[current_device],
                           &params[current_device]->deviceinfo) != PTP_RC_OK)
     {
-      fprintf(stderr, "LIBMTP: Unable to read device information on device "
+      fprintf(stderr, "LIBMTP PANIC: Unable to read device information on device "
                       "number %u, trying to continue", current_device);
                       
       /* Prevent memory leaks for this device */
@@ -844,9 +844,9 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
                               &params[current_device]->deviceinfo) != PTP_RC_OK)
     {
       add_error_to_errorstack(mtp_device,
-                        LIBMTP_ERROR_CONNECTING,
-                        "Unable to read device information. Recommend "
-                        "disconnecting this device\n");
+			      LIBMTP_ERROR_CONNECTING,
+			      "Unable to read device information. Recommend "
+			      "disconnecting this device\n");
     }
 
     /* Default Max Battery Level, we will adjust this if possible */
@@ -986,7 +986,7 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
                                               params,
                                               ptp_usb,
                                               current_device + 1);
-        
+    
     return mtp_device;
   }
   /* No more devices, end recursive function */
@@ -1086,7 +1086,10 @@ void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
 
 /**
  * This can be used by any libmtp-intrinsic code that
- * need to stack up an error on the stack.
+ * need to stack up an error on the stack. You are only
+ * supposed to add errors to the error stack using this
+ * function, do not create and reference error entries
+ * directly.
  */
 static void add_error_to_errorstack(LIBMTP_mtpdevice_t *device,
 				    LIBMTP_error_number_t errornumber,
@@ -1094,6 +1097,10 @@ static void add_error_to_errorstack(LIBMTP_mtpdevice_t *device,
 {
   LIBMTP_error_t *newerror;
   
+  if (device == NULL) {
+    fprintf(stderr, "LIBMTP PANIC: Trying to add error to a NULL device!\n");
+    return;
+  }
   newerror = (LIBMTP_error_t *) malloc(sizeof(LIBMTP_error_t));
   newerror->errornumber = errornumber;
   newerror->error_text = strdup(error_text);
@@ -1116,10 +1123,16 @@ static void add_ptp_error_to_errorstack(LIBMTP_mtpdevice_t *device,
 					uint16_t ptp_error,
 					char const * const error_text)
 {
-  char outstr[256];
-  snprintf(outstr, sizeof(outstr), "PTP Layer error %04x: %s", ptp_error, error_text);
-  add_error_to_errorstack(device, LIBMTP_ERROR_PTP_LAYER, outstr);
-  add_error_to_errorstack(device, LIBMTP_ERROR_PTP_LAYER, "(Look this up in ptp.h for an explanation.)");
+  if (device == NULL) {
+    fprintf(stderr, "LIBMTP PANIC: Trying to add PTP error to a NULL device!\n");
+    return;
+  } else {
+    char outstr[256];
+    snprintf(outstr, sizeof(outstr), "PTP Layer error %04x: %s", ptp_error, error_text);
+    outstr[sizeof(outstr)-1] = '\0';
+    add_error_to_errorstack(device, LIBMTP_ERROR_PTP_LAYER, outstr);
+    add_error_to_errorstack(device, LIBMTP_ERROR_PTP_LAYER, "(Look this up in ptp.h for an explanation.)");
+  }
 }
 
 /**
@@ -1139,6 +1152,9 @@ static void add_ptp_error_to_errorstack(LIBMTP_mtpdevice_t *device,
  */
 LIBMTP_error_t *LIBMTP_Get_Errorstack(LIBMTP_mtpdevice_t *device)
 {
+  if (device == NULL) {
+    fprintf(stderr, "LIBMTP PANIC: Trying to get the error stack of a NULL device!\n");
+  }
   return device->errorstack;
 }
 
@@ -1151,19 +1167,23 @@ LIBMTP_error_t *LIBMTP_Get_Errorstack(LIBMTP_mtpdevice_t *device)
  */
 void LIBMTP_Clear_Errorstack(LIBMTP_mtpdevice_t *device)
 {
-  LIBMTP_error_t *tmp = device->errorstack;
+  if (device == NULL) {
+    fprintf(stderr, "LIBMTP PANIC: Trying to clear the error stack of a NULL device!\n");
+  } else {
+    LIBMTP_error_t *tmp = device->errorstack;
   
-  while (tmp != NULL) {
-    LIBMTP_error_t *tmp2;
-    
-    if (tmp->error_text != NULL) {
-      free(tmp->error_text);
+    while (tmp != NULL) {
+      LIBMTP_error_t *tmp2;
+      
+      if (tmp->error_text != NULL) {
+	free(tmp->error_text);
+      }
+      tmp2 = tmp;
+      tmp = tmp->next;
+      free(tmp2);
     }
-    tmp2 = tmp;
-    tmp = tmp->next;
-    free(tmp2);
+    device->errorstack = NULL;
   }
-  device->errorstack = NULL;
 }
 
 /**
@@ -1174,15 +1194,19 @@ void LIBMTP_Clear_Errorstack(LIBMTP_mtpdevice_t *device)
  */
 void LIBMTP_Dump_Errorstack(LIBMTP_mtpdevice_t *device)
 {
-  LIBMTP_error_t *tmp = device->errorstack;
+  if (device == NULL) {
+    fprintf(stderr, "LIBMTP PANIC: Trying to dump the error stack of a NULL device!\n");
+  } else {
+    LIBMTP_error_t *tmp = device->errorstack;
 
-  while (tmp != NULL) {
-    if (tmp->error_text != NULL) {
-      fprintf(stderr, "Error %d: %s\n", tmp->errornumber, tmp->error_text);
-    } else {
-      fprintf(stderr, "Error %d: (unknown)\n", tmp->errornumber);
+    while (tmp != NULL) {
+      if (tmp->error_text != NULL) {
+	fprintf(stderr, "Error %d: %s\n", tmp->errornumber, tmp->error_text);
+      } else {
+	fprintf(stderr, "Error %d: (unknown)\n", tmp->errornumber);
+      }
+      tmp = tmp->next;
     }
-    tmp = tmp->next;
   }
 }
 
