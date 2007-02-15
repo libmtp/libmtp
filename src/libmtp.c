@@ -1796,6 +1796,7 @@ static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
 			       PTP_DTC_AUINT16);
   if (ret != PTP_RC_OK) {
     // TODO: add a note on WHICH property that we failed to get.
+    *unicstring = NULL;
     add_ptp_error_to_errorstack(device, ret, "get_device_unicode_property(): failed to get unicode property.");
     return -1;
   }
