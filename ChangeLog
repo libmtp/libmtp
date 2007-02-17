@@ -1,3 +1,7 @@
+2007-02-17  Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: Debug output fixes
+
 2007-02-15  Robert Reardon <rreardon@monkshatch.vispa.com>
 
 	* src/libmtp.c: Fix a segfault in new error handling code.

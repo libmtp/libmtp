@@ -744,6 +744,9 @@ ptp_read_func (
 
   // This is the largest block we'll need to read in.
   bytes = malloc(CONTEXT_BLOCK_SIZE);
+#ifdef ENABLE_USB_BULK_DEBUG
+  printf("Total size to read: 0x%04x bytes\n", size);
+#endif
   while (curread < size) {
     toread = size - curread;
     if (toread > CONTEXT_BLOCK_SIZE) {
@@ -752,7 +755,13 @@ ptp_read_func (
       toread -= toread % ptp_usb->outep_maxpacket;
     }
 
+#ifdef ENABLE_USB_BULK_DEBUG
+    printf("Reading in 0x%04x bytes\n", toread);
+#endif
     result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, (char*)bytes, toread, ptpcam_usb_timeout);
+#ifdef ENABLE_USB_BULK_DEBUG
+    printf("Result of read: 0x%04x\n", result);
+#endif
     
     if (result < 0) {
       return PTP_ERROR_IO;
@@ -1021,7 +1030,7 @@ ptp_usb_sendreq (PTPParams* params, PTPContainer* req)
 	if (written != towrite) {
 		ptp_error (params, 
 			"PTP: request code 0x%04x sending req wrote only %ld bytes instead of %d",
-			written, towrite
+			req->Code, written, towrite
 		);
 		ret = PTP_ERROR_IO;
 	}
