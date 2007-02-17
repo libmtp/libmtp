@@ -1063,7 +1063,7 @@ ptp_usb_senddata (PTPParams* params, PTPContainer* ptp,
 	} else {
 		unsigned long gotlen;
 		/* For all camera devices. */
-		datawlen = (size<PTP_USB_BULK_PAYLOAD_LEN)?size:PTP_USB_BULK_PAYLOAD_LEN;
+		datawlen = (size<PTP_USB_BULK_PAYLOAD_LEN_WRITE)?size:PTP_USB_BULK_PAYLOAD_LEN_WRITE;
 		wlen = PTP_USB_BULK_HDR_LEN + datawlen;
 		ret = handler->getfunc(params, handler->private, datawlen, usbdata.payload.data, &gotlen);
 		if (ret != PTP_RC_OK)
@@ -1120,7 +1120,7 @@ static uint16_t ptp_usb_getpacket(PTPParams *params,
 		return PTP_RC_OK;
 	}
 	ptp_init_recv_memory_handler (&memhandler);
-	ret = ptp_read_func( sizeof(*packet), &memhandler, params->data, rlen, 0);
+	ret = ptp_read_func(PTP_USB_BULK_HS_MAX_PACKET_LEN_READ, &memhandler, params->data, rlen, 0);
 	ptp_exit_recv_memory_handler (&memhandler, &x, rlen);
 	if (x) {
 		memcpy (packet, x, *rlen);
@@ -1161,7 +1161,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 				int xret;
 
 				xret = ptp_read_func(
-					PTP_USB_BULK_HS_MAX_PACKET_LEN,
+					PTP_USB_BULK_HS_MAX_PACKET_LEN_READ,
 					handler,
 					params->data,
 					&readdata,
@@ -1169,7 +1169,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 				);
 				if (xret == -1)
 					return PTP_ERROR_IO;
-				if (readdata < PTP_USB_BULK_HS_MAX_PACKET_LEN)
+				if (readdata < PTP_USB_BULK_HS_MAX_PACKET_LEN_READ)
 					break;
 			}
 			return PTP_RC_OK;
@@ -1212,7 +1212,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		if (dtoh32(usbdata.length) > 12 && (rlen==12))
 			params->split_header_data = 1;
 
-		data = malloc(PTP_USB_BULK_HS_MAX_PACKET_LEN);
+		data = malloc(PTP_USB_BULK_HS_MAX_PACKET_LEN_READ);
 		/* Copy first part of data to 'data' */
 		handler->putfunc(
 			params, handler->private, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data,

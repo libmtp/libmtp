@@ -1,8 +1,9 @@
 2007-02-17  Richard Low <richard@wentnet.com>
 
-	* src/libusb-glue.c: Debug output fixes
+	* src/libusb-glue.c: Debug output fixes and read/write sizes changed
 	* src/libmtp.c: memset params to 0 to avoid freeing unalloced
 	  memory
+	* src/ptp.h: read/write sizes changed
 
 2007-02-15  Robert Reardon <rreardon@monkshatch.vispa.com>
 
