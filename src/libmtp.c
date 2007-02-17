@@ -603,6 +603,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 
   // Allocate a parameter block
   params = (PTPParams *) malloc(sizeof(PTPParams));
+  memset(params, 0, sizeof(PTPParams));
   /*
    * This will probably always be little endian...
    * Change this code to adopt the day we run into a BE device.

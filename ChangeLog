@@ -1,6 +1,8 @@
 2007-02-17  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: Debug output fixes
+	* src/libmtp.c: memset params to 0 to avoid freeing unalloced
+	  memory
 
 2007-02-15  Robert Reardon <rreardon@monkshatch.vispa.com>
 
