@@ -23,3 +23,8 @@ libmtp.rules
 libmtp.usermap
 libmtp.fdi
 ltmain.sh
+.cdtproject
+.project
+depcomb
+install-sh
+missing
