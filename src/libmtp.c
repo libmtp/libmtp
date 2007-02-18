@@ -585,174 +585,52 @@ static int set_object_u8(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 }
 
 /**
+ * THIS FUNCTION IS DEPRECATED. PLEASE UPDATE YOUR CODE IN ORDER
+ * NOT TO USE IT.
+ * @see LIBMTP_Get_Connected_Devices()
+ * 
  * Get the first connected MTP device. There is currently no API for
  * retrieveing multiple devices.
  * @return a device pointer.
  */
 LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 {
-  uint8_t interface_number;
-  PTPParams *params;
-  PTP_USB *ptp_usb;
-  PTPDevicePropDesc dpd;
-  uint8_t batteryLevelMax = 100; // Some default
-  uint16_t ret;
-  uint32_t i;
-  LIBMTP_mtpdevice_t *tmpdevice;
-  char *device_ucs2_scheme;
+  LIBMTP_mtpdevice_t *first_device = NULL;
+  
+  fprintf(stderr,   "WARNING: LIBMTP_Get_First_Device is deprecated\n"
+                    "Please update your source to use the new API\n"
+                    "LIBMTP_Get_Connected_Devices and "
+                    "LIBMTP_Release_Device_List\n");
 
-  // Allocate a parameter block
-  params = (PTPParams *) malloc(sizeof(PTPParams));
-  memset(params, 0, sizeof(PTPParams));
-  /*
-   * This will probably always be little endian...
-   * Change this code to adopt the day we run into a BE device.
-   */
-  params->byteorder = PTP_DL_LE;
-  if (params->byteorder == PTP_DL_LE) {
-    device_ucs2_scheme = "UCS-2LE";
-  } else {
-    // Won't happen with current code. (See above.)
-    device_ucs2_scheme = "UCS-2BE";
+  switch(LIBMTP_Get_Connected_Devices(&first_device))
+  {
+    /* Specific Errors or Messages that connect_mtp_devices should return */
+  case LIBMTP_ERROR_N0_DEVICE_ATTACHED:
+    fprintf(stderr, "LIBMTP_Get_First_Device: No Devices Attached\n");
+    break;
+
+  case LIBMTP_ERROR_CONNECTING:
+    fprintf(stderr, "LIBMTP_Get_First_Device: Error Connecting\n");
+    break;
+
+  case LIBMTP_ERROR_MEMORY_ALLOCATION:
+    fprintf(stderr, "LIBMTP_Get_First_Device: Memory Alloc Error\n");
+    break;
+  
+  /* Unknown general errors - This should never execute */
+  case LIBMTP_ERROR_GENERAL:
+  default:
+    fprintf(stderr, "LIBMTP_Get_First_Device: Unknown Connection Error\n");
+
+    break;
+  
+  /* Successfully connect at least one device, so continue */
+  case LIBMTP_ERROR_NONE:
+    fprintf(stderr, "WARNING: LIBMTP_Get_First_Device is deprecated\n");
+    break;
   }
-  params->cd_locale_to_ucs2 = iconv_open(device_ucs2_scheme, "UTF-8");
-  params->cd_ucs2_to_locale = iconv_open("UTF-8", device_ucs2_scheme);
-  if (params->cd_locale_to_ucs2 == (iconv_t) -1 || params->cd_ucs2_to_locale == (iconv_t) -1) {
-    printf("LIBMTP panic: could not open iconv() converters to/from UCS-2!\n");
-    printf("Too old stdlibc, glibc and libiconv?\n");
-    return NULL;
-  }
-
-  ptp_usb = (PTP_USB *) malloc(sizeof(PTP_USB));
-  // Callbacks and stuff
-  ptp_usb->callback_active = 0;
-  ptp_usb->current_transfer_total = 0;
-  ptp_usb->current_transfer_complete = 0;
-  ptp_usb->current_transfer_callback = NULL;
-
-  ret = connect_first_device(params, ptp_usb, &interface_number);
-
-  switch (ret)
-    {
-    case PTP_CD_RC_CONNECTED:
-      printf("Connected to MTP device.\n");
-      break;
-    case PTP_CD_RC_NO_DEVICES:
-      printf("No MTP devices.\n");
-      return NULL;
-    case PTP_CD_RC_ERROR_CONNECTING:
-      printf("Connection error.\n");
-      return NULL;
-    }
-
-  // Make sure there are no handlers
-  params->handles.Handler = NULL;
-
-  // Just cache the device information for any later use.
-  if (ptp_getdeviceinfo(params, &params->deviceinfo) != PTP_RC_OK) {
-    goto error_handler;
-  }
-
-  // Get battery maximum level
-  if (ptp_property_issupported(params, PTP_DPC_BatteryLevel)) {
-    if (ptp_getdevicepropdesc(params, PTP_DPC_BatteryLevel, &dpd) != PTP_RC_OK) {
-      // No error stack to put this on... Must just print.
-      printf("LIBMTP_Get_First_Device(): Unable to retrieve battery max level.\n");
-      goto error_handler;
-    }
-    // if is NULL, just leave as default
-    if (dpd.FORM.Range.MaximumValue.u8 != 0) {
-      batteryLevelMax = dpd.FORM.Range.MaximumValue.u8;
-    }
-    ptp_free_devicepropdesc(&dpd);
-  }
-
-  // OK everything got this far, so it is time to create a device struct!
-  tmpdevice = (LIBMTP_mtpdevice_t *) malloc(sizeof(LIBMTP_mtpdevice_t));
-  tmpdevice->interface_number = interface_number;
-  tmpdevice->params = (void *) params;
-  tmpdevice->usbinfo = (void *) ptp_usb;
-  tmpdevice->maximum_battery_level = batteryLevelMax;
-  tmpdevice->errorstack = NULL;
-
-  // Set all default folders to 0 == root directory
-  tmpdevice->default_music_folder = 0;
-  tmpdevice->default_playlist_folder = 0;
-  tmpdevice->default_picture_folder = 0;
-  tmpdevice->default_video_folder = 0;
-  tmpdevice->default_organizer_folder = 0;
-  tmpdevice->default_zencast_folder = 0;
-  tmpdevice->default_album_folder = 0;
-  tmpdevice->default_text_folder = 0;
-
-
-  /*
-   * Then get the handles and try to locate the default folders.
-   * This has the desired side effect of cacheing all handles from
-   * the device which speeds up later operations.
-   */
-  flush_handles(tmpdevice);
-  /*
-   * Remaining directories to get the handles to.
-   * We can stop when done this to save time
-   */
-  for (i = 0; i < params->handles.n; i++) {
-    PTPObjectInfo oi;
-    uint16_t ret;
-
-    ret = ptp_getobjectinfo(params, params->handles.Handler[i], &oi);
-    if (ret == PTP_RC_OK) {
-      // Ignore non-folders
-      if ( oi.ObjectFormat != PTP_OFC_Association )
-	continue;
-      if ( oi.Filename == NULL)
-	continue;
-      if (!strcmp(oi.Filename, "My Music") ||
-	  !strcmp(oi.Filename, "Music")) {
-	tmpdevice->default_music_folder = params->handles.Handler[i];
-	continue;
-      } else if ((!strcmp(oi.Filename, "My Playlists")) ||
-		 (!strcmp(oi.Filename, "Playlists"))) {
-	tmpdevice->default_playlist_folder = params->handles.Handler[i];
-	continue;
-      } else if (!strcmp(oi.Filename, "My Pictures") ||
-		 !strcmp(oi.Filename, "Pictures")) {
-	tmpdevice->default_picture_folder = params->handles.Handler[i];
-	continue;
-      } else if (!strcmp(oi.Filename, "My Video") ||
-		 !strcmp(oi.Filename, "Video")) {
-	tmpdevice->default_video_folder = params->handles.Handler[i];
-	continue;
-      } else if (!strcmp(oi.Filename, "My Organizer")) {
-	tmpdevice->default_organizer_folder = params->handles.Handler[i];
-	continue;
-      } else if (!strcmp(oi.Filename, "ZENcast")) {
-	tmpdevice->default_zencast_folder = params->handles.Handler[i];
-	continue;
-      } else if (!strcmp(oi.Filename, "My Albums") ||
-		 !strcmp(oi.Filename, "Albums")) {
-	tmpdevice->default_album_folder = params->handles.Handler[i];
-	continue;
-      } else if (!strcmp(oi.Filename, "Text")) {
-	tmpdevice->default_text_folder = params->handles.Handler[i];
-	continue;
-      }
-    } else {
-      add_ptp_error_to_errorstack(tmpdevice, ret, "LIBMTP_Get_First_Device(): Found a bad handle, trying to ignore it.");
-    }
-  }
-
-  tmpdevice->storage = NULL;
-  if (LIBMTP_Get_Storage(tmpdevice,LIBMTP_STORAGE_SORTBY_NOTSORTED) == -1) {
-    add_error_to_errorstack(tmpdevice, LIBMTP_ERROR_GENERAL, "LIBMTP_Get_First_Device(): Get Storage information failed.");
-  }
-  return tmpdevice;
-
-  // Then close it again.
- error_handler:
-  close_device(ptp_usb, params, interface_number);
-  ptp_free_params(params);
-  return NULL;
+  
+  return first_device;
 }
 
 /**
