@@ -1,5 +1,5 @@
 /** 
- * \file delfile.c
+ * \file detect.c
  * Example program to detect a device and list capabilities.
  *
  * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
@@ -129,23 +129,23 @@ int main (int argc, char **argv)
   // The friendly name
   friendlyname = LIBMTP_Get_Friendlyname(device);
   if (friendlyname == NULL) {
-    printf("   Friendly name: (NULL)\n");
+    fprintf(stdout, "   Friendly name: (NULL)\n");
   } else {
-    printf("   Friendly name: %s\n", friendlyname);
+    fprintf(stdout, "   Friendly name: %s\n", friendlyname);
     free(friendlyname);
   }
   syncpartner = LIBMTP_Get_Syncpartner(device);
   if (syncpartner == NULL) {
-    printf("   Synchronization partner: (NULL)\n");
+    fprintf(stdout, "   Synchronization partner: (NULL)\n");
   } else {
-    printf("   Synchronization partner: %s\n", syncpartner);
+   fprintf(stdout, "   Synchronization partner: %s\n", syncpartner);
     free(syncpartner);
   }
 
   // Some battery info
   ret = LIBMTP_Get_Batterylevel(device, &maxbattlevel, &currbattlevel);
   if (ret == 0) {
-    printf("   Battery level %d of %d (%d%%)\n",currbattlevel, maxbattlevel, 
+    fprintf(stdout, "   Battery level %d of %d (%d%%)\n",currbattlevel, maxbattlevel, 
 	   (int) ((float) currbattlevel/ (float) maxbattlevel * 100.0));
   } else {
     // Silently ignore. Some devices does not support getting the 
@@ -159,7 +159,7 @@ int main (int argc, char **argv)
     
     printf("libmtp supported (playable) filetypes:\n");
     for (i = 0; i < filetypes_len; i++) {
-      printf("   %s\n", LIBMTP_Get_Filetype_Description(filetypes[i]));
+      fprintf(stdout, "   %s\n", LIBMTP_Get_Filetype_Description(filetypes[i]));
     }
   } else {
     LIBMTP_Dump_Errorstack(device);
@@ -169,7 +169,7 @@ int main (int argc, char **argv)
   // Secure time XML fragment
   ret = LIBMTP_Get_Secure_Time(device, &sectime);
   if (ret == 0 && sectime != NULL) {
-    printf("\nSecure Time:\n%s\n", sectime);
+    fprintf(stdout, "\nSecure Time:\n%s\n", sectime);
     free(sectime);
   } else {
     // Silently ignore - there may be devices not supporting secure time.
@@ -177,12 +177,15 @@ int main (int argc, char **argv)
   }
 
   // Device certificate XML fragment
+  fprintf(stdout, "Trying to acquire device certificate\n");
   ret = LIBMTP_Get_Device_Certificate(device, &devcert);
   if (ret == 0 && devcert != NULL) {
-    printf("\nDevice Certificate:\n%s\n", devcert);
+    fprintf(stdout, "\nDevice Certificate:\n%s\n", devcert);
     free(devcert);
   } else {
-    // Silently ignore - there may be devices not supporting dev cert.
+    fprintf(stdout, "Unable to acquire device certificate, perhaps this device "
+                    "does not support this\n");
+    LIBMTP_Dump_Errorstack(device);
     LIBMTP_Clear_Errorstack(device);
   }
 
@@ -192,39 +195,58 @@ int main (int argc, char **argv)
     LIBMTP_file_t *file, *tmp;
     file = files;
     while (file != NULL) {
-      if (!strcmp(file->filename, "WMPInfo.xml")) {
-	xmlfileid = file->item_id;
+      if (!strcmp(file->filename, "WMPInfo.xml"))
+      {
+        fprintf(stdout, "Found WMPInfo.xml\n");
+        xmlfileid = file->item_id;
       }
       tmp = file;
       file = file->next;
       LIBMTP_destroy_file_t(tmp);
     }
   }
-  if (xmlfileid != 0) {
+  if (xmlfileid != 0)
+  {
     FILE *xmltmp = tmpfile();
     int tmpfile = fileno(xmltmp);
     
-    if (tmpfile != -1) {
+    if (tmpfile != -1)
+    {
       int ret = LIBMTP_Get_Track_To_File_Descriptor(device, xmlfileid, tmpfile, NULL, NULL);
-      if (ret == 0) {
-	uint8_t *buf = NULL;
-	uint32_t readbytes;
+      if (ret == 0)
+      {
+        uint8_t *buf = NULL;
+        uint32_t readbytes;
+        
+        fprintf(stdout, "Grabbed WMPInfo.xml File Descriptor\n");
 
-	buf = malloc(XML_BUFSIZE);
-	if (buf == NULL) {
-	  printf("Could not allocate %08x bytes...\n", XML_BUFSIZE);
-	  exit(1);
-	}
-	lseek(tmpfile, 0, SEEK_SET);
-	readbytes = read(tmpfile, (void*) buf, XML_BUFSIZE);
+        buf = malloc(XML_BUFSIZE);
+        if (buf == NULL)
+        {
+          printf("Could not allocate %08x bytes...\n", XML_BUFSIZE);
+          exit(1);
+        }
+        
+        lseek(tmpfile, 0, SEEK_SET);
+        readbytes = read(tmpfile, (void*) buf, XML_BUFSIZE);
 	
-	if (readbytes >= 2 && readbytes < XML_BUFSIZE) {
-	  printf("\nDevice description WMPInfo.xml file:\n");
-	  dump_xml_fragment(buf, readbytes);
-	}
-      } else {
-	LIBMTP_Dump_Errorstack(device);
-	LIBMTP_Clear_Errorstack(device);
+        if (readbytes >= 2 && readbytes < XML_BUFSIZE)
+        {
+          fprintf(stdout, "\nDevice description WMPInfo.xml file:\n");
+          dump_xml_fragment(buf, readbytes);
+        }
+        else
+        {
+          fprintf(stdout, "Unable to read WMPInfo.xml for this device\n"
+                          "Read %u bytes which should have been between\n"
+                          "2 and %d bytes long.\n",
+                          readbytes, XML_BUFSIZE);
+        }
+      }
+      else
+      {
+        LIBMTP_Dump_Errorstack(device);
+        LIBMTP_Clear_Errorstack(device);
       }
       fclose(xmltmp);
     }
