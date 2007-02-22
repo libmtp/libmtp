@@ -74,6 +74,16 @@ int main (int argc, char **argv)
   /* iterate through connected MTP devices */
   for(iter = device; iter != NULL; iter = iter->next)
   {
+  	char *friendlyname;
+    /* Echo the friendly name so we know which device we are working with */
+    friendlyname = LIBMTP_Get_Friendlyname(iter);
+    if (friendlyname == NULL) {
+      printf("Friendly name: (NULL)\n");
+    } else {
+      printf("Friendly name: %s\n", friendlyname);
+      free(friendlyname);
+    }
+    
     LIBMTP_Dump_Errorstack(iter);
     LIBMTP_Clear_Errorstack(iter);    /* Get folder listing */
 
