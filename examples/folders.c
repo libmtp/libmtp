@@ -74,15 +74,15 @@ int main (int argc, char **argv)
   /* iterate through connected MTP devices */
   for(iter = device; iter != NULL; iter = iter->next)
   {
-    LIBMTP_Dump_Errorstack(device);
-    LIBMTP_Clear_Errorstack(device);    /* Get folder listing */
+    LIBMTP_Dump_Errorstack(iter);
+    LIBMTP_Clear_Errorstack(iter);    /* Get folder listing */
 
-    folders = LIBMTP_Get_Folder_List(device);
+    folders = LIBMTP_Get_Folder_List(iter);
     
     if (folders == NULL) {
       fprintf(stdout, "No folders found\n");
-      LIBMTP_Dump_Errorstack(device);
-      LIBMTP_Clear_Errorstack(device);
+      LIBMTP_Dump_Errorstack(iter);
+      LIBMTP_Clear_Errorstack(iter);
     } else {
       dump_folder_list(folders,0);
     }
@@ -91,7 +91,7 @@ int main (int argc, char **argv)
   }
 
   
-  LIBMTP_Release_Device_List(device);
+  LIBMTP_Release_Device_List(iter);
   printf("OK.\n");
 
   return 0;
