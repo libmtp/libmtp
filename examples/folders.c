@@ -91,7 +91,7 @@ int main (int argc, char **argv)
   }
 
   
-  LIBMTP_Release_Device_List(iter);
+  LIBMTP_Release_Device_List(device);
   printf("OK.\n");
 
   return 0;
