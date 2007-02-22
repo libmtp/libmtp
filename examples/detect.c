@@ -121,20 +121,20 @@ int main (int argc, char **argv)
   for(iter = device; iter != NULL; iter = iter->next)
   {
   
-  LIBMTP_Dump_Errorstack(device);
-  LIBMTP_Clear_Errorstack(device);
-  LIBMTP_Dump_Device_Info(device);
+  LIBMTP_Dump_Errorstack(iter);
+  LIBMTP_Clear_Errorstack(iter);
+  LIBMTP_Dump_Device_Info(iter);
   
   printf("MTP-specific device properties:\n");
   // The friendly name
-  friendlyname = LIBMTP_Get_Friendlyname(device);
+  friendlyname = LIBMTP_Get_Friendlyname(iter);
   if (friendlyname == NULL) {
     fprintf(stdout, "   Friendly name: (NULL)\n");
   } else {
     fprintf(stdout, "   Friendly name: %s\n", friendlyname);
     free(friendlyname);
   }
-  syncpartner = LIBMTP_Get_Syncpartner(device);
+  syncpartner = LIBMTP_Get_Syncpartner(iter);
   if (syncpartner == NULL) {
     fprintf(stdout, "   Synchronization partner: (NULL)\n");
   } else {
@@ -143,17 +143,17 @@ int main (int argc, char **argv)
   }
 
   // Some battery info
-  ret = LIBMTP_Get_Batterylevel(device, &maxbattlevel, &currbattlevel);
+  ret = LIBMTP_Get_Batterylevel(iter, &maxbattlevel, &currbattlevel);
   if (ret == 0) {
     fprintf(stdout, "   Battery level %d of %d (%d%%)\n",currbattlevel, maxbattlevel, 
 	   (int) ((float) currbattlevel/ (float) maxbattlevel * 100.0));
   } else {
     // Silently ignore. Some devices does not support getting the 
     // battery level.
-    LIBMTP_Clear_Errorstack(device);
+    LIBMTP_Clear_Errorstack(iter);
   }
 
-  ret = LIBMTP_Get_Supported_Filetypes(device, &filetypes, &filetypes_len);
+  ret = LIBMTP_Get_Supported_Filetypes(iter, &filetypes, &filetypes_len);
   if (ret == 0) {
     uint16_t i;
     
@@ -162,35 +162,35 @@ int main (int argc, char **argv)
       fprintf(stdout, "   %s\n", LIBMTP_Get_Filetype_Description(filetypes[i]));
     }
   } else {
-    LIBMTP_Dump_Errorstack(device);
-    LIBMTP_Clear_Errorstack(device);
+    LIBMTP_Dump_Errorstack(iter);
+    LIBMTP_Clear_Errorstack(iter);
   }
 
   // Secure time XML fragment
-  ret = LIBMTP_Get_Secure_Time(device, &sectime);
+  ret = LIBMTP_Get_Secure_Time(iter, &sectime);
   if (ret == 0 && sectime != NULL) {
     fprintf(stdout, "\nSecure Time:\n%s\n", sectime);
     free(sectime);
   } else {
     // Silently ignore - there may be devices not supporting secure time.
-    LIBMTP_Clear_Errorstack(device);
+    LIBMTP_Clear_Errorstack(iter);
   }
 
   // Device certificate XML fragment
   fprintf(stdout, "Trying to acquire device certificate\n");
-  ret = LIBMTP_Get_Device_Certificate(device, &devcert);
+  ret = LIBMTP_Get_Device_Certificate(iter, &devcert);
   if (ret == 0 && devcert != NULL) {
     fprintf(stdout, "\nDevice Certificate:\n%s\n", devcert);
     free(devcert);
   } else {
     fprintf(stdout, "Unable to acquire device certificate, perhaps this device "
                     "does not support this\n");
-    LIBMTP_Dump_Errorstack(device);
-    LIBMTP_Clear_Errorstack(device);
+    LIBMTP_Dump_Errorstack(iter);
+    LIBMTP_Clear_Errorstack(iter);
   }
 
   // Try to get Media player device info XML file...
-  files = LIBMTP_Get_Filelisting_With_Callback(device, NULL, NULL);
+  files = LIBMTP_Get_Filelisting_With_Callback(iter, NULL, NULL);
   if (files != NULL) {
     LIBMTP_file_t *file, *tmp;
     file = files;
@@ -212,7 +212,7 @@ int main (int argc, char **argv)
     
     if (tmpfile != -1)
     {
-      int ret = LIBMTP_Get_Track_To_File_Descriptor(device, xmlfileid, tmpfile, NULL, NULL);
+      int ret = LIBMTP_Get_Track_To_File_Descriptor(iter, xmlfileid, tmpfile, NULL, NULL);
       if (ret == 0)
       {
         uint8_t *buf = NULL;
@@ -245,16 +245,17 @@ int main (int argc, char **argv)
       }
       else
       {
-        LIBMTP_Dump_Errorstack(device);
-        LIBMTP_Clear_Errorstack(device);
+        LIBMTP_Dump_Errorstack(iter);
+        LIBMTP_Clear_Errorstack(iter);
       }
       fclose(xmltmp);
     }
   }
 
   } /* End For Loop */
-  // King Fisher of Triad rocks your world!
+
   LIBMTP_Release_Device_List(device);
   printf("OK.\n");
-  exit (0);
+  
+  return 0; 
 }
