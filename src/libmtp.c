@@ -629,6 +629,13 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
     fprintf(stderr, "WARNING: LIBMTP_Get_First_Device is deprecated\n");
     break;
   }
+
+  /* Only return the first device, release the rest */
+  if(first_device->next != NULL)
+  {
+    LIBMTP_Release_Device_List(first_device->next);
+    first_device->next = NULL;
+  }
   
   return first_device;
 }
