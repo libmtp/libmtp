@@ -3,6 +3,7 @@
  * Example program that lists the albums on the device.
  *
  * Copyright (C) 2006 Chris A. Debenham <chris@adebenham.com>
+ * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,26 +30,62 @@ static void dump_albuminfo(LIBMTP_album_t *album)
 }
 
 int main () {
-  LIBMTP_mtpdevice_t *device = NULL;
+  LIBMTP_mtpdevice_t *device_list, *iter;
 
   LIBMTP_Init();
-  device = LIBMTP_Get_First_Device();
-  if (device == NULL) {
-    printf("No devices.\n");
+    
+  switch(LIBMTP_Get_Connected_Devices(&device_list))
+  {
+  case LIBMTP_ERROR_N0_DEVICE_ATTACHED:
+    fprintf(stdout, "mtp-albums: No Devices have been found\n");
     return 0;
-  }
+  case LIBMTP_ERROR_CONNECTING:
+    fprintf(stderr, "mtp-albums: There has been an error connecting. Exit\n");
+    return 1;
+  case LIBMTP_ERROR_MEMORY_ALLOCATION:
+    fprintf(stderr, "mtp-albums: Memory Allocation Error. Exit\n");
+    return 1;
+ 
+  /* Unknown general errors - This should never execute */
+  case LIBMTP_ERROR_GENERAL:
+  default:
+    fprintf(stderr, "mtp-albums: Unknown error, please report "
+                    "this to the libmtp developers\n");
+  return 1;
 
-  LIBMTP_album_t *albums,*album,*tmp;
-  albums = LIBMTP_Get_Album_List(device);
-  album = albums;
-  while (album != NULL) {
-    dump_albuminfo(album);
-    tmp = album;
-    album = album->next;
-    LIBMTP_destroy_album_t(tmp);
+  /* Successfully connected at least one device, so continue */
+  case LIBMTP_ERROR_NONE:
+    fprintf(stdout, "mtp-albums: Successfully connected\n");
+    fflush(stdout);
   }
-     
-  LIBMTP_Release_Device(device);
+  
+  /* iterate through connected MTP devices */
+  for(iter = device_list; iter != NULL; iter = iter->next)
+  {
+    char *friendlyname;
+    LIBMTP_album_t *album_list, *album, *tmp;
+    
+    /* Echo the friendly name so we know which device we are working with */
+    friendlyname = LIBMTP_Get_Friendlyname(iter);
+    if (friendlyname == NULL) {
+      printf("Retrieving Albums on Device with name: (NULL)\n");
+    } else {
+      printf("Retrieving Albums on Device with name: %s\n", friendlyname);
+      free(friendlyname);
+    }
+    
+    album_list = LIBMTP_Get_Album_List(iter);
+    album = album_list;
+    while(album != NULL)
+    {
+      dump_albuminfo(album);
+      tmp = album;
+      album = album->next;
+      LIBMTP_destroy_album_t(tmp);
+    }
+  }
+  
+  LIBMTP_Release_Device_List(device_list);
   printf("OK.\n");
   return 0;
 }
