@@ -1,3 +1,9 @@
+2007-02-23  Ted Bullock  <tbullock@canada.com>
+
+	* examples/detect.c: Stub out probe functionality
+	* libusb-glue.c: Remove old uni-device cruft code
+	* libusb-glue.h: Remove old uni-device cruft code
+	
 2007-02-22  Ted Bullock  <tbullock@canada.com>
 
 	* examples/albums.c: Updated to use new multi device code
