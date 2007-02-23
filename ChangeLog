@@ -1,8 +1,12 @@
+2007-02-23  Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: Fix crash when no devices connected
+
 2007-02-23  Ted Bullock  <tbullock@canada.com>
 
 	* examples/detect.c: Stub out probe functionality
-	* libusb-glue.c: Remove old uni-device cruft code
-	* libusb-glue.h: Remove old uni-device cruft code
+	* src/libusb-glue.c: Remove old uni-device cruft code
+	* src/libusb-glue.h: Remove old uni-device cruft code
 	
 2007-02-22  Ted Bullock  <tbullock@canada.com>
 

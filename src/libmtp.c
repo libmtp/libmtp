@@ -607,22 +607,21 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
     /* Specific Errors or Messages that connect_mtp_devices should return */
   case LIBMTP_ERROR_N0_DEVICE_ATTACHED:
     fprintf(stderr, "LIBMTP_Get_First_Device: No Devices Attached\n");
-    break;
+    return NULL;
 
   case LIBMTP_ERROR_CONNECTING:
     fprintf(stderr, "LIBMTP_Get_First_Device: Error Connecting\n");
-    break;
+    return NULL;
 
   case LIBMTP_ERROR_MEMORY_ALLOCATION:
     fprintf(stderr, "LIBMTP_Get_First_Device: Memory Alloc Error\n");
-    break;
+    return NULL;
   
   /* Unknown general errors - This should never execute */
   case LIBMTP_ERROR_GENERAL:
   default:
     fprintf(stderr, "LIBMTP_Get_First_Device: Unknown Connection Error\n");
-
-    break;
+    return NULL;
   
   /* Successfully connect at least one device, so continue */
   case LIBMTP_ERROR_NONE:
