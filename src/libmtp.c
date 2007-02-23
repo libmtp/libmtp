@@ -585,23 +585,14 @@ static int set_object_u8(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 }
 
 /**
- * THIS FUNCTION IS DEPRECATED. PLEASE UPDATE YOUR CODE IN ORDER
- * NOT TO USE IT.
- * @see LIBMTP_Get_Connected_Devices()
- * 
- * Get the first connected MTP device. There is currently no API for
- * retrieveing multiple devices.
+ * Get the first (as in "first in the list of") connected MTP device.
  * @return a device pointer.
+ * @see LIBMTP_Get_Connected_Devices()
  */
 LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 {
   LIBMTP_mtpdevice_t *first_device = NULL;
   
-  fprintf(stderr,   "WARNING: LIBMTP_Get_First_Device is deprecated\n"
-                    "Please update your source to use the new API\n"
-                    "LIBMTP_Get_Connected_Devices and "
-                    "LIBMTP_Release_Device_List\n");
-
   switch(LIBMTP_Get_Connected_Devices(&first_device))
   {
     /* Specific Errors or Messages that connect_mtp_devices should return */
@@ -625,7 +616,6 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   
   /* Successfully connect at least one device, so continue */
   case LIBMTP_ERROR_NONE:
-    fprintf(stderr, "WARNING: LIBMTP_Get_First_Device is deprecated\n");
     break;
   }
 

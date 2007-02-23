@@ -1,3 +1,7 @@
+2007-02-23  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: Undeprecate getting first device code.
+	
 2007-02-23  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: Fix crash when no devices connected
@@ -17,8 +21,8 @@
 2007-02-18  Ted Bullock  <tbullock@canada.com>
 
 	* src/libmtp.c: Altered the function LIBMTP_Get_First_Device
-	to wrap around the multi device API. Also added deprecation
-	warnings to avoid using this function
+	  to wrap around the multi device API. Also added deprecation
+	  warnings to avoid using this function
 
 2007-02-17  Richard Low <richard@wentnet.com>
 
