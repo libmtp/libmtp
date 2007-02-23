@@ -442,7 +442,8 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(
            was a problem, along with description of the problem */
         fprintf(stderr, "Potential MTP Device with VendorID:%04x and "
                         "ProductID:%04x encountered an error responding to "
-                        "control message 2. Problems may arrise but continuing",
+                        "control message 2.\n"
+                        "Problems may arrise but continuing\n",
                         dev->descriptor.idVendor, dev->descriptor.idProduct);
       }
       else if (ret <= 0x15)
@@ -452,7 +453,7 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(
         fprintf(stderr, "Potential MTP Device with VendorID:%04x and "
                         "ProductID:%04x responded to control message 2 with a "
                         "response that was too short. Problems may arrise but "
-                        "continuing",
+                        "continuing\n",
                         dev->descriptor.idVendor, dev->descriptor.idProduct);
       }
       else if ((buf[0x12] != 'M') || (buf[0x13] != 'T') || (buf[0x14] != 'P'))
@@ -461,7 +462,8 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(
            was a problem, along with description of the problem */
         fprintf(stderr, "Potential MTP Device with VendorID:%04x and "
                         "ProductID:%04x encountered an error responding to "
-                        "control message 2. Problems may arrise but continuing",
+                        "control message 2\n"
+                        "Problems may arrise but continuing\n",
                         dev->descriptor.idVendor, dev->descriptor.idProduct);
       }
       
@@ -481,7 +483,7 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(
             * know there was a memory allocation problem
             */
           fprintf(stderr, "Memory Allocation Problem: unable to connect "
-                          "MTP Device with VID:%04x and PID:%04x.",
+                          "MTP Device with VID:%04x and PID:%04x.\n",
                           dev->descriptor.idVendor,
                           dev->descriptor.idProduct);
           return LIBMTP_ERROR_MEMORY_ALLOCATION;
@@ -503,7 +505,7 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(
             * know there was a memory allocation problem
             */
           fprintf(stderr, "Memory Allocation Problem: unable to connect "
-                          "MTP Device with VID:%04x and PID:%04x.",
+                          "MTP Device with VID:%04x and PID:%04x.\n",
                           dev->descriptor.idVendor,
                           dev->descriptor.idProduct);
           free_MTP_list(*MTPDeviceList);
