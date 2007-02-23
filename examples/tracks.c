@@ -3,6 +3,7 @@
  * Example program to list the tracks on a device.
  *
  * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -73,32 +74,67 @@ static void dump_trackinfo(LIBMTP_track_t *track)
 
 int main (int argc, char **argv)
 {
-  LIBMTP_mtpdevice_t *device;
+  LIBMTP_mtpdevice_t *device_list, *iter;
   LIBMTP_track_t *tracks;
 
   LIBMTP_Init();
-  device = LIBMTP_Get_First_Device();
-  if (device == NULL) {
-    printf("No devices.\n");
-    exit (0);
+  fprintf(stdout, "Attempting to connect device(s)\n");
+
+  switch(LIBMTP_Get_Connected_Devices(&device_list))
+  {
+  case LIBMTP_ERROR_N0_DEVICE_ATTACHED:
+    fprintf(stdout, "mtp-folders: No Devices have been found\n");
+    return 0;
+  case LIBMTP_ERROR_CONNECTING:
+    fprintf(stderr, "mtp-folders: There has been an error connecting. Exit\n");
+    return 1;
+  case LIBMTP_ERROR_MEMORY_ALLOCATION:
+    fprintf(stderr, "mtp-folders: Memory Allocation Error. Exit\n");
+    return 1;
+ 
+  /* Unknown general errors - This should never execute */
+  case LIBMTP_ERROR_GENERAL:
+  default:
+    fprintf(stderr, "mtp-folders: Unknown error, please report "
+                    "this to the libmtp developers\n");
+  return 1;
+
+  /* Successfully connected at least one device, so continue */
+  case LIBMTP_ERROR_NONE:
+    fprintf(stdout, "mtp-folders: Successfully connected\n");
+    fflush(stdout);
   }
   
-  // Get track listing.
-  tracks = LIBMTP_Get_Tracklisting_With_Callback(device, NULL, NULL);
-  if (tracks == NULL) {
-    printf("No tracks.\n");
-  } else {
-    LIBMTP_track_t *track, *tmp;
-    track = tracks;
-    while (track != NULL) {
-      dump_trackinfo(track);
-      tmp = track;
-      track = track->next;
-      LIBMTP_destroy_track_t(tmp);
+  /* iterate through connected MTP devices */
+  for(iter = device_list; iter != NULL; iter = iter->next)
+  {
+  	char *friendlyname;
+    /* Echo the friendly name so we know which device we are working with */
+    friendlyname = LIBMTP_Get_Friendlyname(iter);
+    if (friendlyname == NULL) {
+      printf("Friendly name: (NULL)\n");
+    } else {
+      printf("Friendly name: %s\n", friendlyname);
+      free(friendlyname);
     }
+  
+	  // Get track listing.
+	  tracks = LIBMTP_Get_Tracklisting_With_Callback(iter, NULL, NULL);
+	  if (tracks == NULL) {
+	    printf("No tracks.\n");
+	  } else {
+	    LIBMTP_track_t *track, *tmp;
+	    track = tracks;
+	    while (track != NULL) {
+	      dump_trackinfo(track);
+	      tmp = track;
+	      track = track->next;
+	      LIBMTP_destroy_track_t(tmp);
+	    }
+	  }
   }
     
-  LIBMTP_Release_Device(device);
+  LIBMTP_Release_Device_List(device_list);
   printf("OK.\n");
   exit (0);
 }

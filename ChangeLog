@@ -1,6 +1,8 @@
 2007-02-22  Ted Bullock  <tbullock@canada.com>
 
 	* examples/albums.c: Updated to use new multi device code
+	* examples/tracks.c: Updated to use new multi device code
+	* examples/files.c: Updated to use new multi device code
 
 2007-02-18  Ted Bullock  <tbullock@canada.com>
 
