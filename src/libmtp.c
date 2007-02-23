@@ -596,7 +596,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   switch(LIBMTP_Get_Connected_Devices(&first_device))
   {
     /* Specific Errors or Messages that connect_mtp_devices should return */
-  case LIBMTP_ERROR_N0_DEVICE_ATTACHED:
+  case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
     fprintf(stderr, "LIBMTP_Get_First_Device: No Devices Attached\n");
     return NULL;
 
@@ -886,9 +886,9 @@ LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **DevList)
   switch(find_usb_devices(&params, &ptp_usb, interface_number, &numdevices))
   {
   /* Specific Errors or Messages that connect_mtp_devices should return */
-  case LIBMTP_ERROR_N0_DEVICE_ATTACHED:
+  case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
     *DevList = NULL;
-    return LIBMTP_ERROR_N0_DEVICE_ATTACHED;
+    return LIBMTP_ERROR_NO_DEVICE_ATTACHED;
   case LIBMTP_ERROR_CONNECTING:
     *DevList = NULL;
     return LIBMTP_ERROR_CONNECTING;

@@ -523,7 +523,7 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(
 
   /* If nothing was found we end up here. */
   if(*MTPDeviceList == NULL)
-    return LIBMTP_ERROR_N0_DEVICE_ATTACHED;
+    return LIBMTP_ERROR_NO_DEVICE_ATTACHED;
   else
     return LIBMTP_ERROR_NONE;
 }
@@ -1422,7 +1422,7 @@ static struct usb_device* find_device (int busn, int devn, short force)
  * @param numdevices pointer to the value representing the number of devices
  * being returned through MTPDeviceList
  * @return LIBMTP_ERROR_NONE implies that devices have been found, scan the list
- * appropriately. LIBMTP_ERROR_N0_DEVICE_ATTACHED implies that no devices have
+ * appropriately. LIBMTP_ERROR_NO_DEVICE_ATTACHED implies that no devices have
  * been found. LIBMTP_ERROR_MEMORY_ALLOCATION states that there has been a
  * memory allocation error, free any dynamically allocated memory and return
  * this value.
@@ -1507,7 +1507,7 @@ static LIBMTP_error_number_t get_mtp_usb_known_devices(
   
   /* If nothing was found we end up here. */
   if(*MTPDeviceList == NULL)
-    return LIBMTP_ERROR_N0_DEVICE_ATTACHED;
+    return LIBMTP_ERROR_NO_DEVICE_ATTACHED;
   else
     return LIBMTP_ERROR_NONE;
 }
@@ -1802,7 +1802,7 @@ LIBMTP_error_number_t find_usb_devices (PTPParams ***params,
     return LIBMTP_ERROR_MEMORY_ALLOCATION;
 
   /* Auto-detection did not find any MTP devices, search known device list */
-  case LIBMTP_ERROR_N0_DEVICE_ATTACHED:
+  case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
     switch(get_mtp_usb_known_devices (&MTPDeviceList, numdevices))
     {
     /* Memory Allocation Error, return */
@@ -1810,8 +1810,8 @@ LIBMTP_error_number_t find_usb_devices (PTPParams ***params,
       return LIBMTP_ERROR_MEMORY_ALLOCATION;
     
     /* No devices are attached, return */
-    case LIBMTP_ERROR_N0_DEVICE_ATTACHED:
-      return LIBMTP_ERROR_N0_DEVICE_ATTACHED;
+    case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
+      return LIBMTP_ERROR_NO_DEVICE_ATTACHED;
 
     /* We should never execute this */
     default:

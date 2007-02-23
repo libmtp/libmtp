@@ -47,7 +47,7 @@ int main (int argc, char **argv)
 
   switch(LIBMTP_Get_Connected_Devices(&device_list))
   {
-  case LIBMTP_ERROR_N0_DEVICE_ATTACHED:
+  case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
     fprintf(stdout, "mtp-files: No Devices have been found\n");
     return 0;
   case LIBMTP_ERROR_CONNECTING:

@@ -11,6 +11,8 @@
 	* examples/detect.c: Stub out probe functionality
 	* src/libusb-glue.c: Remove old uni-device cruft code
 	* src/libusb-glue.h: Remove old uni-device cruft code
+	* Replace LIBMTP_ERROR_N0_DEVICE_ATTACHED with
+		LIBMTP_ERROR_NO_DEVICE_ATTACHED across entire project
 	
 2007-02-22  Ted Bullock  <tbullock@canada.com>
 

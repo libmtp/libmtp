@@ -96,7 +96,7 @@ int main (int argc, char **argv)
 
   switch(LIBMTP_Get_Connected_Devices(&device))
   {
-  case LIBMTP_ERROR_N0_DEVICE_ATTACHED:
+  case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
     fprintf(stdout, "Detect: No Devices have been found\n");
     return 0;
   case LIBMTP_ERROR_CONNECTING:
