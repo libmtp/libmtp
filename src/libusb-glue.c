@@ -960,7 +960,7 @@ ptp_usb_senddata (PTPParams* params, PTPContainer* ptp,
 	usbdata.trans_id= htod32(ptp->Transaction_ID);
   
 	((PTP_USB*)params->data)->current_transfer_complete = 0;
-	((PTP_USB*)params->data)->current_transfer_total = size;
+	((PTP_USB*)params->data)->current_transfer_total = size+PTP_USB_BULK_HDR_LEN;
 
 	if (params->split_header_data) {
 		datawlen = 0;
