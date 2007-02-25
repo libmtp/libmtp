@@ -37,9 +37,16 @@ FEATURE fixes:
 2. FEATURE: Support playback and volume setting on devices that have it.
   (I don't have one that does - Linus.)
 
-3. FEATURE: Make an API that can return several devices and let the user 
-  choose which one to operate, not just connect to the first one...
-
 4. FEATURE: Support relevant events. MTP devices seen in existance provide
   events for "object added" and "object deleted". These should result in
   atleast a call to the flus_handles() function.
+
+5. FEATURE: Have libmtp optionally create a folder hierarchy such as
+  /Album/Artist/Song.mp3 on the device. Currently it'll only put songs
+  into some /Music or /My Music folder if one exists.
+
+
+THOSE ARE ALREADY DONE:
+
+1. FEATURE: Make an API that can return several devices and let the user 
+  choose which one to operate, not just connect to the first one...

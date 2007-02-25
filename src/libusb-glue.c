@@ -104,7 +104,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // From libgphoto2
   { "Samsung YH-820", 0x04e8, 0x502e, DEVICE_FLAG_NONE },
   // Contributed by polux2001@users.sourceforge.net
-  { "Samsung YH-925", 0x04e8, 0x502f, DEVICE_FLAG_NONE },
+  { "Samsung YH-925(-GS)", 0x04e8, 0x502f, DEVICE_FLAG_NONE },
   // Contributed by aronvanammers on SourceForge
   { "Samsung YH-925GS", 0x04e8, 0x5024, DEVICE_FLAG_NONE },
   // Contributed by anonymous person on SourceForge
