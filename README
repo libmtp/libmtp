@@ -140,6 +140,10 @@ cannot test your solution.
   that we've managed to work around. (For example it will return
   multiple PTP packages in a single transaction.)
 
+* The early firmware for Philips HDD players is known to be 
+  problematic. Please upgrade to as new firmware as you can get.
+  (Yes this requires some kind of Windows Installation I think.)
+
 * Very few devices that implement GetObjectPropList (0x9805) will
   return the entire object list if you request a list for object
   0xffffffffu. (But they should.) So we're currently not using 
