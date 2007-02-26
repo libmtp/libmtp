@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 
 #define XML_BUFSIZE 0x10000
 
@@ -190,6 +191,8 @@ int main (int argc, char **argv)
     LIBMTP_Dump_Errorstack(iter);
     LIBMTP_Clear_Errorstack(iter);
   }
+          LIBMTP_Dump_Errorstack(iter);
+          LIBMTP_Clear_Errorstack(iter);
 
   // Try to get Media player device info XML file...
   files = LIBMTP_Get_Filelisting_With_Callback(iter, NULL, NULL);
@@ -197,7 +200,8 @@ int main (int argc, char **argv)
     LIBMTP_file_t *file, *tmp;
     file = files;
     while (file != NULL) {
-      if (!strcmp(file->filename, "WMPInfo.xml"))
+      if (!strcmp(file->filename, "WMPInfo.xml") ||
+      		!strcmp(file->filename, "WMPinfo.xml"))
       {
         fprintf(stdout, "Found WMPInfo.xml\n");
         xmlfileid = file->item_id;
@@ -210,11 +214,15 @@ int main (int argc, char **argv)
   if (xmlfileid != 0)
   {
     FILE *xmltmp = tmpfile();
-    int tmpfile = fileno(xmltmp);
+    int tmpfiledescriptor = fileno(xmltmp);
     
-    if (tmpfile != -1)
+    if (tmpfiledescriptor != -1)
     {
-      int ret = LIBMTP_Get_Track_To_File_Descriptor(iter, xmlfileid, tmpfile, NULL, NULL);
+      int ret = LIBMTP_Get_Track_To_File_Descriptor(iter,
+      																							xmlfileid,
+      																							tmpfiledescriptor,
+      																							NULL,
+      																							NULL);
       if (ret == 0)
       {
         uint8_t *buf = NULL;
@@ -226,11 +234,14 @@ int main (int argc, char **argv)
         if (buf == NULL)
         {
           printf("Could not allocate %08x bytes...\n", XML_BUFSIZE);
-          exit(1);
+          LIBMTP_Dump_Errorstack(iter);
+          LIBMTP_Clear_Errorstack(iter);
+          LIBMTP_Release_Device_List(device);
+          return 1;
         }
         
-        lseek(tmpfile, 0, SEEK_SET);
-        readbytes = read(tmpfile, (void*) buf, XML_BUFSIZE);
+        lseek(tmpfiledescriptor, 0, SEEK_SET);
+        readbytes = read(tmpfiledescriptor, (void*) buf, XML_BUFSIZE);
 	
         if (readbytes >= 2 && readbytes < XML_BUFSIZE)
         {
@@ -239,11 +250,11 @@ int main (int argc, char **argv)
         }
         else
         {
-          fprintf(stdout, "Unable to read WMPInfo.xml for this device\n"
-                          "Read %u bytes which should have been between\n"
-                          "2 and %d bytes long.\n",
-                          readbytes, XML_BUFSIZE);
+          perror("Unable to read WMPInfo.xml");
+          LIBMTP_Dump_Errorstack(iter);
+          LIBMTP_Clear_Errorstack(iter);
         }
+        free(buf);
       }
       else
       {
