@@ -203,6 +203,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    */
   { "Toshiba Gigabeat MEGF-40", 0x0930, 0x0009, DEVICE_FLAG_NONE },
   { "Toshiba Gigabeat", 0x0930, 0x000c, DEVICE_FLAG_NONE },
+  // Reported by Nicholas Tripp
+  { "Toshiba Gigabeat P20", 0x0930, 0x000f, DEVICE_FLAG_NONE },
   // From libgphoto2
   { "Toshiba Gigabeat S", 0x0930, 0x0010, DEVICE_FLAG_NONE },
   // Reported by Rob Brown
