@@ -1599,7 +1599,6 @@ static int check_if_file_fits(LIBMTP_mtpdevice_t *device, uint64_t const filesiz
 }
 
 
-
 /**
  * This function retrieves the current battery level on the device.
  * @param device a pointer to the device to get the battery level for.
@@ -3481,11 +3480,30 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 
   // First see which properties can be set on this file format and apply accordingly
   // i.e only try to update this metadata for object tags that exist on the current player.
-  ret = ptp_mtp_getobjectpropssupported (params, map_libmtp_type_to_ptp_type(metadata->filetype), &propcnt, &props);
+  ret = ptp_mtp_getobjectpropssupported(params, map_libmtp_type_to_ptp_type(metadata->filetype), &propcnt, &props);
   if (ret != PTP_RC_OK) {
     // Just bail out for now, nothing is ever set.
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): could not retrieve supported object properties.");
     return -1;
   } else {
+    // We must have this operation!
+    if (!ptp_operation_issupported(params,PTP_OC_MTP_SetObjectPropValue)) {
+      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): operation PTP_OC_MTP_SetObjectPropValue "
+			      "(0x9804) is not supported by this device.");
+      if (ptp_operation_issupported(params,PTP_OC_MTP_SetObjPropList)) {
+	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "Your device supports only operation "
+				"PTP_OC_MTP_SetObjPropList (0x9806) but we haven't\n"
+				"implemented that operation yet. So wait or bug the libmtp development team!"
+				"Your file is fine but we cannot set metadata.");
+	/*
+	 * FIXME: implement support for PTP_OC_MTP_SetObjPropList and use it here.
+	 */
+      } else {
+	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
+				"Your device doesn't seem to support any known way of setting metadata.");
+      }
+      return -1;
+    }
     for (i=0;i<propcnt;i++) {
       switch (props[i]) {
       case PTP_OPC_Name:
