@@ -483,7 +483,12 @@ static int set_object_string(LIBMTP_mtpdevice_t *device, uint32_t const object_i
   if (device == NULL || string == NULL) {
     return -1;
   }
-
+  
+  if (!ptp_operation_issupported(params,PTP_OC_MTP_SetObjectPropValue)) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "set_object_string(): could not set object string: "
+				"PTP_OC_MTP_SetObjectPropValue not supported.");
+    return -1;
+  }
   propval.str = (char *) string;
   ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_STR);
   if (ret != PTP_RC_OK) {
@@ -514,6 +519,11 @@ static int set_object_u32(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
     return -1;
   }
 
+  if (!ptp_operation_issupported(params,PTP_OC_MTP_SetObjectPropValue)) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "set_object_u32(): could not set unsigned 32bit integer property: "
+				"PTP_OC_MTP_SetObjectPropValue not supported.");
+    return -1;
+  }
   propval.u32 = value;
   ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UINT32);
   if (ret != PTP_RC_OK) {
@@ -544,6 +554,11 @@ static int set_object_u16(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
     return 1;
   }
 
+  if (!ptp_operation_issupported(params,PTP_OC_MTP_SetObjectPropValue)) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "set_object_u16(): could not set unsigned 16bit integer property: "
+				"PTP_OC_MTP_SetObjectPropValue not supported.");
+    return -1;
+  }
   propval.u16 = value;
   ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UINT16);
   if (ret != PTP_RC_OK) {
@@ -574,6 +589,11 @@ static int set_object_u8(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
     return 1;
   }
 
+  if (!ptp_operation_issupported(params,PTP_OC_MTP_SetObjectPropValue)) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "set_object_u8(): could not set unsigned 8bit integer property: "
+			    "PTP_OC_MTP_SetObjectPropValue not supported.");
+    return -1;
+  }
   propval.u8 = value;
   ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UINT8);
   if (ret != PTP_RC_OK) {
@@ -3077,7 +3097,8 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   subcall_ret = LIBMTP_Update_Track_Metadata(device, metadata);
   if (subcall_ret != 0) {
     // Subcall will add error to errorstack
-    (void) LIBMTP_Delete_Object(device, metadata->item_id);
+    // We used to delete the file here, but don't... It might be OK after all.
+    // (void) LIBMTP_Delete_Object(device, metadata->item_id);
     return -1;
   }
   if (nonconsumable != 0x00U) {
