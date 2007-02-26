@@ -191,8 +191,6 @@ int main (int argc, char **argv)
     LIBMTP_Dump_Errorstack(iter);
     LIBMTP_Clear_Errorstack(iter);
   }
-          LIBMTP_Dump_Errorstack(iter);
-          LIBMTP_Clear_Errorstack(iter);
 
   // Try to get Media player device info XML file...
   files = LIBMTP_Get_Filelisting_With_Callback(iter, NULL, NULL);
@@ -219,10 +217,10 @@ int main (int argc, char **argv)
     if (tmpfiledescriptor != -1)
     {
       int ret = LIBMTP_Get_Track_To_File_Descriptor(iter,
-      																							xmlfileid,
-      																							tmpfiledescriptor,
-      																							NULL,
-      																							NULL);
+                                                    xmlfileid,
+                                                    tmpfiledescriptor,
+                                                    NULL,
+                                                    NULL);
       if (ret == 0)
       {
         uint8_t *buf = NULL;
