@@ -1,15 +1,21 @@
+2007-02-27  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.c: Synced in upstream version which removes the 
+	  offending line.
+	
 2007-02-22  Ted Bullock  <tbullock@canada.com>
 
-	* src/ptp.c: Comment out line in ptp_exit_fd_handler that was closing a 
-	  file descriptor.  This is not the responsibility of the PTP Layer.
-	  Defect and solution found by Rob Reardon
+	* src/ptp.c: Comment out line in ptp_exit_fd_handler that was 
+	  closing a file descriptor.  This is not the responsibility of 
+	  the PTP Layer. Defect and solution found by Rob Reardon
 
 2007-02-26  Linus Walleij <triad@df.lth.se>
 
-	* src/libmtp.c: Implement a check for PTP_OC_MTP_SetObjectPropValue in the 
-	  LIBMTP_Update_Track_Metadata() function, there are obviously devices that
-	  do not support this, but only PTP_OC_MTP_SetObjPropList instead (such as
-	  the Samsung YH 925-GS), but we haven't implemented that yet. Problems are 
+	* src/libmtp.c: Implement a check for PTP_OC_MTP_SetObjectPropValue 
+	  in the LIBMTP_Update_Track_Metadata() function, there are 
+	  obviously devices that do not support this, but only 
+	  PTP_OC_MTP_SetObjPropList instead (such as the Samsung YH 925-GS), 
+	  but we haven't implemented that yet. Problems are 
 	  atleast reported correctly now.
 
 2007-02-24  Richard Low <richard@wentnet.com>
