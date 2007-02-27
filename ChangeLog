@@ -2,6 +2,9 @@
 
 	* src/ptp.c: Synced in upstream version which removes the 
 	  offending line.
+	* src/libmtp.c: replaces strcmp() for strcasecmp() in folder
+	  detection since Windows and some devices (such as iRivers)
+	  ignore case and user capital letters for default folders.
 	
 2007-02-22  Ted Bullock  <tbullock@canada.com>
 

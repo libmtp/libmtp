@@ -820,47 +820,47 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
         continue;
       
       /* Is this the Music Folder */
-      if (!strcmp(oi.Filename, "My Music") ||
-          !strcmp(oi.Filename, "Music"))
+      if (!strcasecmp(oi.Filename, "My Music") ||
+          !strcasecmp(oi.Filename, "Music"))
       {
         mtp_device->default_music_folder = 
                           params[current_device]->handles.Handler[i];
       }
-      else if (!strcmp(oi.Filename, "My Playlists") ||
-                !strcmp(oi.Filename, "Playlists"))
+      else if (!strcasecmp(oi.Filename, "My Playlists") ||
+                !strcasecmp(oi.Filename, "Playlists"))
       {
         mtp_device->default_playlist_folder =
                           params[current_device]->handles.Handler[i];
       }
-      else if (!strcmp(oi.Filename, "My Pictures") ||
-                !strcmp(oi.Filename, "Pictures"))
+      else if (!strcasecmp(oi.Filename, "My Pictures") ||
+                !strcasecmp(oi.Filename, "Pictures"))
       {
         mtp_device->default_picture_folder = 
                           params[current_device]->handles.Handler[i];
       }
-      else if (!strcmp(oi.Filename, "My Video") ||
-                !strcmp(oi.Filename, "Video"))
+      else if (!strcasecmp(oi.Filename, "My Video") ||
+                !strcasecmp(oi.Filename, "Video"))
       {
         mtp_device->default_video_folder = 
                           params[current_device]->handles.Handler[i];
       }
-      else if (!strcmp(oi.Filename, "My Organizer"))
+      else if (!strcasecmp(oi.Filename, "My Organizer"))
       {
         mtp_device->default_organizer_folder =
                           params[current_device]->handles.Handler[i];
       }
-      else if (!strcmp(oi.Filename, "ZENcast"))
+      else if (!strcasecmp(oi.Filename, "ZENcast"))
       {
         mtp_device->default_zencast_folder = 
                           params[current_device]->handles.Handler[i];
       }
-      else if (!strcmp(oi.Filename, "My Albums") ||
-                !strcmp(oi.Filename, "Albums"))
+      else if (!strcasecmp(oi.Filename, "My Albums") ||
+                !strcasecmp(oi.Filename, "Albums"))
       {
         mtp_device->default_album_folder = 
                           params[current_device]->handles.Handler[i];
       }
-      else if (!strcmp(oi.Filename, "Text"))
+      else if (!strcasecmp(oi.Filename, "Text"))
       {
 	      mtp_device->default_text_folder =
 	                        params[current_device]->handles.Handler[i];
