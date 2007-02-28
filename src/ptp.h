@@ -81,8 +81,8 @@ struct _PTPUSBBulkContainer {
 			uint32_t param4;
 			uint32_t param5;
 		} params;
-    // this must be set to the maximum of PTP_USB_BULK_PAYLOAD_LEN_WRITE
-    // and PTP_USB_BULK_PAYLOAD_LEN_READ
+       /* this must be set to the maximum of PTP_USB_BULK_PAYLOAD_LEN_WRITE 
+        * and PTP_USB_BULK_PAYLOAD_LEN_READ */
 		unsigned char data[PTP_USB_BULK_PAYLOAD_LEN_READ];
 	} payload;
 };
