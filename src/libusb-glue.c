@@ -620,7 +620,7 @@ ptp_error (PTPParams *params, const char *format, ...)
 
 /*
  * ptp_read_func() and ptp_write_func() are
- * based on same functions in library.c in libgphoto2.
+ * based on same functions usb.c in libgphoto2.
  * Much reading packet logs and having fun with trials and errors
  * reveals that WMP / Windows is probably using an algorithm like this
  * for large transfers:
@@ -1072,7 +1072,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 					handler,
 					params->data,
 					&readdata,
-          0
+					0
 				);
 				if (xret == -1)
 					return PTP_ERROR_IO;
