@@ -61,11 +61,20 @@
 #define DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST 0x00000004
 /**
  * This means the device doesn't send zero packets to indicate
- * end of transfer on transfer boundary. Instead, exactly one
- * extra byte is sent at the end of the transfer if the size is
- * an integer multiple of USB1.1 endpoint size (64 bytes)
+ * end of transfer when the transfer boundary occurs at a 
+ * multiple of 64 bytes (the USB 1.1 endpoint size). Instead, 
+ * exactly one extra byte is sent at the end of the transfer 
+ * if the size is an integer multiple of USB 1.1 endpoint size 
+ * (64 bytes).
+ *
+ * This behaviour is most probably a workaround due to the fact 
+ * that the hardware USB slave controller in the device cannot 
+ * handle zero writes at all, and the usage of the USB 1.1 
+ * endpoint size is due to the fact that the device will "gear 
+ * down" on a USB 1.1 hub, and since 64 bytes is a multiple of 
+ * 512 bytes, it will work with USB 1.1 and USB 2.0 alike.
  */
-#define DEVICE_FLAG_EXTRA_BYTES 0x00000008
+#define DEVICE_FLAG_NO_ZERO_READS 0x00000008
 
 /**
  * Internal USB struct.

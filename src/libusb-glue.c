@@ -172,26 +172,26 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * Please test on your device if you believe it isn't broken!
    * Some devices from http://www.mtp-ums.net/viewdeviceinfo.php
    */
-  { "iRiver Portable Media Center", 0x1006, 0x4002, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_EXTRA_BYTES },
-  { "iRiver Portable Media Center", 0x1006, 0x4003, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_EXTRA_BYTES },
+  { "iRiver Portable Media Center", 0x1006, 0x4002, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS },
+  { "iRiver Portable Media Center", 0x1006, 0x4003, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS },
   // From libgphoto2 source
-  { "iRiver T10", 0x4102, 0x1113, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_EXTRA_BYTES },
-  { "iRiver T20 FM", 0x4102, 0x1114, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_EXTRA_BYTES },
+  { "iRiver T10", 0x4102, 0x1113, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS },
+  { "iRiver T20 FM", 0x4102, 0x1114, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS },
   // This appears at the MTP-UMS site
-  { "iRiver T20", 0x4102, 0x1115, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_EXTRA_BYTES },
-  { "iRiver U10", 0x4102, 0x1116, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_EXTRA_BYTES },
-  { "iRiver T10", 0x4102, 0x1117, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_EXTRA_BYTES },
-  { "iRiver T20", 0x4102, 0x1118, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_EXTRA_BYTES },
-  { "iRiver T30", 0x4102, 0x1119, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_EXTRA_BYTES },
+  { "iRiver T20", 0x4102, 0x1115, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS },
+  { "iRiver U10", 0x4102, 0x1116, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS },
+  { "iRiver T10", 0x4102, 0x1117, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS },
+  { "iRiver T20", 0x4102, 0x1118, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS },
+  { "iRiver T30", 0x4102, 0x1119, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS },
   // Reported by David Wolpoff
-  { "iRiver T10 2GB", 0x4102, 0x1120, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_EXTRA_BYTES },
+  { "iRiver T10 2GB", 0x4102, 0x1120, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS },
   // Rough guess this is the MTP device ID...
-  { "iRiver N12", 0x4102, 0x1122, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_EXTRA_BYTES },
+  { "iRiver N12", 0x4102, 0x1122, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS },
   // Reported by Adam Torgerson
-  { "iRiver Clix", 0x4102, 0x112a, DEVICE_FLAG_EXTRA_BYTES },
+  { "iRiver Clix", 0x4102, 0x112a, DEVICE_FLAG_NO_ZERO_READS },
   // Reported by Scott Call
-  { "iRiver H10 20GB", 0x4102, 0x2101, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_EXTRA_BYTES },
-  { "iRiver H10", 0x4102, 0x2102, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_EXTRA_BYTES },
+  { "iRiver H10 20GB", 0x4102, 0x2101, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS },
+  { "iRiver H10", 0x4102, 0x2102, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS },
 
   /*
    * Dell
@@ -634,6 +634,10 @@ ptp_error (PTPParams *params, const char *format, ...)
  * 4. Send remaining bytes MOD sizeof(endpoint)
  * 5. Send remaining bytes. If this happens to be exactly sizeof(endpoint)
  *    then also send a zero-length package.
+ *
+ * Further there is some special quirks to handle zero reads from the
+ * device, since some devices can't do them at all due to shortcomings
+ * of the USB slave controller in the device.
  */
 #define CONTEXT_BLOCK_SIZE_1	0x3e00
 #define CONTEXT_BLOCK_SIZE_2  0x200
@@ -650,7 +654,7 @@ ptp_read_func (
   unsigned long curread = 0;
   unsigned long written;
   unsigned char *bytes;
-  int expectextrabyte = 0;
+  int expect_terminator_byte = 0;
 
   // This is the largest block we'll need to read in.
   bytes = malloc(CONTEXT_BLOCK_SIZE);
@@ -665,9 +669,9 @@ ptp_read_func (
       // this is the last packet
       toread = size - curread;
       // this is equivalent to zero read for these devices
-      if (readzero && ptp_usb->device_flags & DEVICE_FLAG_EXTRA_BYTES && toread % 64 == 0) {
+      if (readzero && ptp_usb->device_flags & DEVICE_FLAG_NO_ZERO_READS && toread % 64 == 0) {
         toread += 1;
-        expectextrabyte = 1;
+        expect_terminator_byte = 1;
       }
     }
     else if (curread == 0)
@@ -700,7 +704,7 @@ ptp_read_func (
 #endif
     
     // want to discard extra byte
-    if (expectextrabyte && result == toread)
+    if (expect_terminator_byte && result == toread)
       result--;
     
     handler->putfunc(NULL, handler->private, result, bytes, &written);
@@ -728,9 +732,12 @@ ptp_read_func (
   free (bytes);
   
   // there might be a zero packet waiting for us...
-  if (readzero && !(ptp_usb->device_flags & DEVICE_FLAG_EXTRA_BYTES) && curread % ptp_usb->outep_maxpacket == 0) {
+  if (readzero && 
+      !(ptp_usb->device_flags & DEVICE_FLAG_NO_ZERO_READS) && 
+      curread % ptp_usb->outep_maxpacket == 0) {
     char temp;
     int zeroresult = 0;
+
 #ifdef ENABLE_USB_BULK_DEBUG
     printf("<==USB IN\n");
     printf("Zero Read\n");
@@ -1126,7 +1133,9 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 				       (uint8_t *) &usbdata + packlen, surplen);
 				params->response_packet_size = surplen;
 			} else {
-				ptp_debug (params, "ptp2/ptp_usb_getdata: read %d bytes too much, expect problems!", rlen - dtoh32(usbdata.length));
+				ptp_debug (params, "ptp2/ptp_usb_getdata: read %d bytes "
+					   "too much, expect problems!", 
+					   rlen - dtoh32(usbdata.length));
 			}
 			rlen = packlen;
 		}
@@ -1149,34 +1158,34 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 			&written
 		);
     
-    if (((PTP_USB *)params->data)->device_flags & DEVICE_FLAG_EXTRA_BYTES && len+PTP_USB_BULK_HDR_LEN == PTP_USB_BULK_HS_MAX_PACKET_LEN_READ)
-    {
+		if (((PTP_USB *)params->data)->device_flags & DEVICE_FLAG_NO_ZERO_READS && 
+		    len+PTP_USB_BULK_HDR_LEN == PTP_USB_BULK_HS_MAX_PACKET_LEN_READ) {
 #ifdef ENABLE_USB_DEBUG
-      printf("Reading in extra terminating byte\n");
+		  printf("Reading in extra terminating byte\n");
 #endif
-      // need to read in extra byte and discard it
-      int result = 0;
-      char byte = 0;
-      PTP_USB *ptp_usb = (PTP_USB *)params->data;
-      result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, &byte, 1, ptpcam_usb_timeout);
-      
-      if (result != 1)
-        printf("Could not read in extra byte for PTP_USB_BULK_HS_MAX_PACKET_LEN_READ long file, return value 0x%04x\n", result);
-    }
-    
+		  // need to read in extra byte and discard it
+		  int result = 0;
+		  char byte = 0;
+		  PTP_USB *ptp_usb = (PTP_USB *)params->data;
+		  result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, &byte, 1, ptpcam_usb_timeout);
+		  
+		  if (result != 1)
+		    printf("Could not read in extra byte for PTP_USB_BULK_HS_MAX_PACKET_LEN_READ long file, return value 0x%04x\n", result);
+		}
+		
 		/* Is that all of data? */
 		if (len+PTP_USB_BULK_HDR_LEN<=rlen) break;
- 
-    ret=ptp_read_func(len - (rlen - PTP_USB_BULK_HDR_LEN),
-      handler,
-      params->data, &rlen, 1);
-      
+		
+		ret=ptp_read_func(len - (rlen - PTP_USB_BULK_HDR_LEN),
+				  handler,
+				  params->data, &rlen, 1);
+		
 		if (ret!=PTP_RC_OK) {
-			ret = PTP_ERROR_IO;
-			break;
+		  ret = PTP_ERROR_IO;
+		  break;
 		}
 	} while (0);
-/*
+	/*
 	if (ret!=PTP_RC_OK) {
 		ptp_error (params,
 		"PTP: request code 0x%04x getting data error 0x%04x",

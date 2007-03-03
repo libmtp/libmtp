@@ -1,3 +1,12 @@
+2007-02-28  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.h: Tiresome ramblings to explain exactly what
+	  the (no renamed) device flag DEVICE_FLAG_NO_ZERO_READS really 
+	  means.
+	* src/libusb-glue.c: Renamed flag. Indent code :-) Reading the code
+	  and being impressed by our ability to iron out the root cause
+	  of this kinda weird thing...
+
 2007-03-03  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: (hopefully) fixed iRiver read errors. Enabled
