@@ -5,7 +5,7 @@
 	  means.
 	* src/libusb-glue.c: Renamed flag. Indent code :-) Reading the code
 	  and being impressed by our ability to iron out the root cause
-	  of this kinda weird thing...
+	  of this kinda weird thing... Fix a few compile warnings.
 
 2007-03-03  Richard Low <richard@wentnet.com>
 

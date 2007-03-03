@@ -682,7 +682,8 @@ ptp_read_func (
     else if (toread == CONTEXT_BLOCK_SIZE_2)
       toread = CONTEXT_BLOCK_SIZE_1;
     else
-      printf("unexpected toread size 0x%04x, 0x%04x remaining bytes\n", toread, size-curread);
+      printf("unexpected toread size 0x%04x, 0x%04x remaining bytes\n", 
+	     (unsigned int) toread, (unsigned int) (size-curread));
 
 #ifdef ENABLE_USB_BULK_DEBUG
     printf("Reading in 0x%04x bytes\n", toread);
@@ -1656,7 +1657,7 @@ static void assign_known_device_flags(struct usb_device *dev,
   return;
 }
 
-LIBMTP_error_number_t configure_usb_devices(struct usb_device *device,
+static LIBMTP_error_number_t configure_usb_devices(struct usb_device *device,
                                             PTPParams *params[],
                                             PTP_USB *ptp_usb[],
                                             uint8_t current_device)
