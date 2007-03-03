@@ -1,3 +1,9 @@
+2007-02-22  Ted Bullock  <tbullock@canada.com>
+
+	* src/libusb-glue.c: Don't echo warnings about reading a single
+		extra byte on devices in which DEVICE_FLAG_NO_ZERO_READS has
+		been set
+
 2007-02-28  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.h: Tiresome ramblings to explain exactly what

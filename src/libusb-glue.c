@@ -1133,7 +1133,10 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 				memcpy(params->response_packet,
 				       (uint8_t *) &usbdata + packlen, surplen);
 				params->response_packet_size = surplen;
-			} else {
+			/* Ignore reading one extra byte if device flags have been set */
+			} else if( !(((PTP_USB *)params->data)->device_flags &
+																						DEVICE_FLAG_NO_ZERO_READS &&
+									rlen - dtoh32(usbdata.length) == 1)) {
 				ptp_debug (params, "ptp2/ptp_usb_getdata: read %d bytes "
 					   "too much, expect problems!", 
 					   rlen - dtoh32(usbdata.length));
