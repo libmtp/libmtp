@@ -59,6 +59,13 @@
  * is set to 0xFFFFFFFFU.
  */
 #define DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST 0x00000004
+/**
+ * This means the device doesn't send zero packets to indicate
+ * end of transfer on transfer boundary. Instead, exactly one
+ * extra byte is sent at the end of the transfer if the size is
+ * an integer multiple of USB1.1 endpoint size (64 bytes)
+ */
+#define DEVICE_FLAG_EXTRA_BYTES 0x00000008
 
 /**
  * Internal USB struct.
