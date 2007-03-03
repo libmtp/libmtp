@@ -194,6 +194,7 @@ int main (int argc, char **argv)
   }
 
   // Try to get Media player device info XML file...
+  fprintf(stdout, "Trying to print WMPInfo.xml if it exists\n");
   files = LIBMTP_Get_Filelisting_With_Callback(iter, NULL, NULL);
   if (files != NULL) {
     LIBMTP_file_t *file, *tmp;
@@ -202,7 +203,6 @@ int main (int argc, char **argv)
       if (!strcmp(file->filename, "WMPInfo.xml") ||
       		!strcmp(file->filename, "WMPinfo.xml"))
       {
-        fprintf(stdout, "Found WMPInfo.xml\n");
         xmlfileid = file->item_id;
       }
       tmp = file;
@@ -210,6 +210,8 @@ int main (int argc, char **argv)
       LIBMTP_destroy_file_t(tmp);
     }
   }
+  if (xmlfileid == 0)
+  	fprintf(stdout, "WMPInfo.xml Does not exist on this device\n");
   if (xmlfileid != 0)
   {
     FILE *xmltmp = tmpfile();
@@ -226,8 +228,6 @@ int main (int argc, char **argv)
       {
         uint8_t *buf = NULL;
         uint32_t readbytes;
-        
-        fprintf(stdout, "Grabbed WMPInfo.xml File Descriptor\n");
 
         buf = malloc(XML_BUFSIZE);
         if (buf == NULL)
