@@ -69,6 +69,7 @@ int main (int argc, char **argv)
   uint16_t filetypes_len;
   uint8_t maxbattlevel;
   uint8_t currbattlevel;
+  uint32_t numdevices;
   int ret;
   int probeonly = 0;
 
@@ -116,8 +117,8 @@ int main (int argc, char **argv)
 
   /* Successfully connected at least one device, so continue */
   case LIBMTP_ERROR_NONE:
-    fprintf(stdout, "Detect: Successfully connected\n");
-    fflush(stdout);
+  	numdevices = LIBMTP_Number_Devices_In_List(device);
+    fprintf(stdout, "Detect: Successfully connected %u devices\n", numdevices);
   }
 
   /* iterate through connected MTP devices */

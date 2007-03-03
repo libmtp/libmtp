@@ -890,6 +890,21 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
 }
 
 /**
+ * Get the number of devices that are available in the listed device list
+ * @param DevList Pointer to a linked list of devices
+ * @return Number of devices in the device list DevList
+ */ 
+uint32_t LIBMTP_Number_Devices_In_List(LIBMTP_mtpdevice_t *DevList)
+{
+	uint32_t numdevices = 0;
+	LIBMTP_mtpdevice_t *iter;
+	for(iter = DevList; iter != NULL; iter = iter->next)
+		numdevices++;
+		
+	return numdevices;
+}
+
+/**
  * Get the first connected MTP device node in the linked list of devices.
  * Currently this only provides access to USB devices
  * @param Pointer to first device (if possible), filled after function executes
