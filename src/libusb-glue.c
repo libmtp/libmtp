@@ -1725,7 +1725,6 @@ static LIBMTP_error_number_t configure_usb_devices(struct usb_device *device,
                 &ptp_usb[current_device]->outep_maxpacket,
                 &ptp_usb[current_device]->intep);
   
-  fprintf(stderr, "Attempt to initialize device %d\n", current_device+1);
   /* Attempt to initialize this device, if unable, then try next device */
   if (init_ptp_usb(params[current_device], ptp_usb[current_device], device) < 0)
   {
@@ -1745,14 +1744,12 @@ static LIBMTP_error_number_t configure_usb_devices(struct usb_device *device,
     configure_usb_devices(device->next, params, ptp_usb, current_device + 1);
     return LIBMTP_ERROR_CONNECTING;
   }
-  fprintf(stderr, "Device %d initialized\n", current_device+1);
   
   /* This works in situations where previous bad applications
       have not used LIBMTP_Release_Device on exit */
-  fprintf(stderr, "Try to open session for Device %d\n", current_device+1);
   if ((ret = ptp_opensession(params[current_device], 1)) == PTP_ERROR_IO)
   {
-  	fprintf(stderr, "PTP ERROR IO: Trying again after resetting USB\n");
+  	fprintf(stderr, "PTP_ERROR_IO: Trying again after resetting USB\n");
     close_usb(ptp_usb[current_device],
           device->config->interface->altsetting->bInterfaceNumber);
     
@@ -1770,13 +1767,12 @@ static LIBMTP_error_number_t configure_usb_devices(struct usb_device *device,
         ptp_usb[current_device] = NULL;
       }
    
-      fprintf(stderr, "Error: Reinitialize device %d failed\n", current_device+1);
+      fprintf(stderr, "Could not open session on device %d\n", current_device+1);
       configure_usb_devices(device->next, params, ptp_usb, current_device + 1);
       return LIBMTP_ERROR_CONNECTING;
     }
 	
 	  /* Device has been reset, try again */
-	  fprintf(stderr, "Try to open session on Device %d again\n", current_device+1);
 	  ret = ptp_opensession(params[current_device], 1);
 	}
 	
@@ -1796,10 +1792,6 @@ static LIBMTP_error_number_t configure_usb_devices(struct usb_device *device,
     usb_release_interface(ptp_usb[current_device]->handle,
             device->config->interface->altsetting->bInterfaceNumber);
     return LIBMTP_ERROR_CONNECTING;
-  }
-  else
-  {
-    fprintf(stderr, "Session for Device %d opened\n", current_device + 1);
   }
   
   /* It is permissible to call this before opening the session */
