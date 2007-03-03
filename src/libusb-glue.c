@@ -1632,12 +1632,19 @@ static void assign_known_device_flags(struct usb_device *dev,
       	ptp_usb[current_device]->device_flags = 
     	                  mtp_device_table[j].device_flags;
 
+/**
+ *  TODO:
+ *	Preferable to not do this with #ifdef ENABLE_USB_BULK_DEBUG but there is 
+ *	currently no other compile time debug option
+ */ 
+#ifdef ENABLE_USB_BULK_DEBUG
         /* This device is known to the developers */
         fprintf(stderr, "Device %d (VID=%04x and PID=%04x) is a %s.\n", 
                         current_device + 1,
                         dev->descriptor.idVendor,
                         dev->descriptor.idProduct,
                         mtp_device_table[j].name);
+#endif
     	}
       
       /* Start the next recursion */
@@ -1904,17 +1911,15 @@ LIBMTP_error_number_t find_usb_devices (PTPParams ***params,
     return LIBMTP_ERROR_MEMORY_ALLOCATION;
   }
 
-  fprintf(stderr, "Found %d device(s)\n", *numdevices);
-  fprintf(stderr, "Priming USB PTP Memory\n");
-  ret =  prime_device_memory(*params, *ptp_usb, *numdevices, 0);
-  fprintf(stderr, "prime_device_memory error code: %d\n", ret);
+  ret = prime_device_memory(*params, *ptp_usb, *numdevices, 0);
+  if(ret)
+  	fprintf(stderr, "prime_device_memory error code: %d\n", ret);
 
-  fprintf(stderr, "Assigning Device Flags to known device(s)\n");
   assign_known_device_flags(MTPDeviceList, *ptp_usb, 0);
   
-  fprintf(stderr, "Configuring Device(s)\n");
   ret = configure_usb_devices(MTPDeviceList, *params, *ptp_usb, 0);
-  fprintf(stderr, "configure_usb_devices error code: %d\n", ret);
+  if(ret)
+    fprintf(stderr, "configure_usb_devices error code: %d\n", ret);
   
   /* Configure interface number */
   {

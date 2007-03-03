@@ -925,6 +925,16 @@ LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **DevList)
   /* Successfully connect at least one device, so continue */
   case LIBMTP_ERROR_NONE:;
   }
+  
+
+/**
+ * 	TODO: 
+ *	Preferable to not do this with #ifdef ENABLE_USB_BULK_DEBUG but there is 
+ *	currently no other compile time debug option
+ */ 
+#ifdef ENABLE_USB_BULK_DEBUG
+  fprintf(stdout, "Connected %u devices", numdevices);
+#endif  
 
   /* Assign linked list of devices */
   *DevList = create_usb_mtp_devices(numdevices,
