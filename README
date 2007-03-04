@@ -136,6 +136,11 @@ cannot test your solution.
   enhanced GetObjectPropList MTP command (0x9805) properly. So 
   they have been banned from using it.
 
+* iRiver devices have problems with older versions of libmtp and
+  with new devices libmtp does not know of as of yet, since it
+  has an oldstyle USB device controller that cannot handle zero
+  writes. (Register your device with us!)
+
 * The Samsung Yepp T9 has several strange characteristics, some
   that we've managed to work around. (For example it will return
   multiple PTP packages in a single transaction.)

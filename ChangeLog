@@ -1,14 +1,20 @@
+2007-03-04  Linus Walleij <triad@df.lth.se>
+
+	* src/Makefile.am: bump library interface to libmtp.so.5.2.0
+	  backwards compatible with any libmtp.so.5 interface, for
+	  imminent libmtp 0.1.4 release.
+	
 2007-03-03  Ted Bullock  <tbullock@canada.com>
 
 	* src/libusb-glue.c: Don't echo warnings about reading a single
-		extra byte on devices in which DEVICE_FLAG_NO_ZERO_READS has
-		been set
+	  extra byte on devices in which DEVICE_FLAG_NO_ZERO_READS has
+	  been set
 	* src/libmtp.c: New API function to retrieve the number of devices
-		in a list of connected devices
+	  in a list of connected devices
 	* src/libmtp.h: New API function to retrieve the number of devices
-		in a list of connected devices
+	  in a list of connected devices
 	* examples/detect.c: Use new API function to count number of devices
-		that were detected
+	  that were detected
 
 2007-03-03  Linus Walleij <triad@df.lth.se>
 

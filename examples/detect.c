@@ -91,7 +91,7 @@ int main (int argc, char **argv)
 //      exit(1);
 //    }
     fprintf(stdout, "LIBMTP Panic: Probing has been disabled until it has "
-  								"been refactored to\nuse multiple devices\n");
+	    "been refactored to\nuse multiple devices\n");
   }
 
   fprintf(stdout, "Attempting to connect device(s)\n");
