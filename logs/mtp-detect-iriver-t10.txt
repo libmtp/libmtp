@@ -1,15 +1,23 @@
+PTP: Opening session
+Attempting to connect device(s)
+Detect: Successfully connected 1 devices
 USB low-level info:
    Using kernel interface "usbfs"
-   bcdUSB: 53504
-   bDeviceClass: 17
-   bDeviceSubClass: 0
-   bDeviceProtocol: 0
-   idVendor: 5001
-   idProduct: d401
+   bcdUSB: 20000
+   bDeviceClass: 111
+   bDeviceSubClass: 46
+   bDeviceProtocol: 111
+   idVendor: 0067
+   idProduct: b7f9
    IN endpoint maxpacket: 512 bytes
    OUT endpoint maxpacket: 512 bytes
-   Device flags: 0x00000004
+   Device flags: 0x0000000c
 Device info:
+   Manufacturer: iriver
+   Model: iriver MP3 T10
+   Device version: MTP-1.76-N-ENG
+   Serial number: 03bff80f000000f03230303630313031
+   Vendor extension ID: 0x00000006
    Vendor extension description: microsoft.com/WMDRMPD: 10.1; audible.com: 1.0
 Supported operations:
    1001: get device info
@@ -140,15 +148,16 @@ Playable File (Object) Types and Object Properties Supported:
 Storage Devices:
    StorageID: 0x00010001
       StorageType: 0x0003
-      FilesystemType: 0x0002
+      FilesystemType: 0x0PTP: Closing session
+002
       AccessCapability: 0x0000
       MaxCapacity: 2044428288
-      FreeSpaceInBytes: 2043805696
+      FreeSpaceInBytes: 1842839552
       FreeSpaceInObjects: 4294967295
       StorageDescription: iriver MP3 T10 files
       VolumeIdentifier: daplippaaaaaaaapcdadadgdadbdadbd
 Special directories:
-   Default music folder: 0x00000000
+   Default music folder: 0x00040000
    Default playlist folder: 0x00000000
    Default picture folder: 0x00000000
    Default video folder: 0x00000000
@@ -167,5 +176,16 @@ libmtp supported (playable) filetypes:
    Audible.com Audio Codec
 
 Secure Time:
-<DRMCLOCK type="status"><VALUE>#20060224 18:15:46Z#</VALUE><FLAG>DRM_CLK_NEEDS_REFRESH</FLAG></DRMCLOCK>
+<DRMCLOCK type="status"><VALUE>#20070304 00:12:49Z#</VALUE><FLAG>DRM_CLK_SET</FLAG></DRMCLOCK>
+Trying to acquire device certificate
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">CgoKCgoKCgoKCgoKCgoKCgoKCgo=</UNIQUEID><PUBLICKEY private="1">7RqSopOusCYv5QMC3DVLKa4yyoOzIqGmCLyWjCzXiUw30sdRJ00aJg==</PUBLICKEY><KEYDATA>9mavUe/KTsOYKWu0vTg/wK1U2Rs=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>B5CPcB+XffZRMK/9eFOV1lshKjq2It2UldHXeDOwg1QMWXQoLn8RQg==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>wlP+Zc1g451zJMVLnom5cbcmpf0=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.102.3</SECURITYVERSION><CERTIFICATE private="1">7RqSopOusCYv5QMC3DVLKa4yyoOzIqGmCLyWjCzXiUw30sdRJ00aJgIEZgPhNl4IaMaz8zFguv1JT6b8s81PSKRaaY/GmNhCUe8fl9+WOZtAfUVD</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>iRiver H10 Series</NAME><MANUFACTURER>iRiver</MANUFACTURER><MAKE>iRiver</MAKE><DISTRIBUTOR>ReignCom</DISTRIBUTOR><MODEL>H10</MODEL><SECURITYLEVEL>2000</SECURITYLEVEL><HARDWARE_VER_MAJOR>1</HARDWARE_VER_MAJOR><HARDWARE_VER_MINOR>0</HARDWARE_VER_MINOR><FIRMWARE_VER_MAJOR>1</FIRMWARE_VER_MAJOR><FIRMWARE_VER_MINOR>0</FIRMWARE_VER_MINOR><FEATURES><CLOCK>2</CLOCK><SECURECLOCK><URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL><PUBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY></SECURECLOCK><METERING>1</METERING><LICENSE_ACQ>1</LICENSE_ACQ><LICENSE_SYNC>1</LICENSE_SYNC><ENCRYPTION>1</ENCRYPTION><SYMMETRIC_OPT>1</SYMMETRIC_OPT></FEATURES><LIMITS><MAXCHAINDEPTH>2</MAXCHAINDEPTH><MAXLICENSESIZE>10240</MAXLICENSESIZE><MAXHEADERSIZE>5120</MAXHEADERSIZE></LIMITS><PUBLICKEY>8jeq4PyJZUL8NpU2+/tgvUZC9ijn3RdlK3wd04Iws6oXHoA+D6vFfQ==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>HZ85tGf5VnDwKLGq2S0OlK/oJCKbCx3A2yudzMOv8ERwi6drHW5xOA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>359</AUTH_ID><PUBLICKEY>DpMhgaZkXUFNFIs4KJe7S9MZYwuE1bBic6AV6wAc7Ir0Stfx8U+SKw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>GWscwHnDoSazgB+YOP2D7xrqDifWEFztujqAWwrkM7onynIcfOBBMQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>QndHdJ4ZoSgvokVCOWsqVnvuckGL5cn6Vrua0j4tcGBrjD9PgNd0AA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
+Trying to print WMPInfo.xml if it exists
+
+Device description WMPInfo.xml file:
+<DeviceInfo>
+    <WMP DeviceID="{437C6424-0B80-4069-9762-60CF3966336F}" RelationshipID="{00000000-0000-0000-0000-000000000000}"/>
+</DeviceInfo>
+
 OK.
