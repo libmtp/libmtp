@@ -181,7 +181,6 @@ int main (int argc, char **argv)
   }
 
   // Device certificate XML fragment
-  fprintf(stdout, "Trying to acquire device certificate\n");
   ret = LIBMTP_Get_Device_Certificate(iter, &devcert);
   if (ret == 0 && devcert != NULL) {
     fprintf(stdout, "\nDevice Certificate:\n%s\n", devcert);
@@ -194,7 +193,6 @@ int main (int argc, char **argv)
   }
 
   // Try to get Media player device info XML file...
-  fprintf(stdout, "Trying to print WMPInfo.xml if it exists\n");
   files = LIBMTP_Get_Filelisting_With_Callback(iter, NULL, NULL);
   if (files != NULL) {
     LIBMTP_file_t *file, *tmp;
