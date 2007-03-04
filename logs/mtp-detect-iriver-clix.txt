@@ -1,20 +1,23 @@
+Attempting to connect device(s)
+Detect: Successfully connected 1 devices
 USB low-level info:
-   bcdUSB: 512
-   bDeviceClass: 0
-   bDeviceSubClass: 0
-   bDeviceProtocol: 0
-   idVendor: 4102
-   idProduct: 112a
+   Using kernel interface "usbfs"
+   bcdUSB: 24933
+   bDeviceClass: 116
+   bDeviceSubClass: 104
+   bDeviceProtocol: 103
+   idVendor: 6574
+   idProduct: 4320
    IN endpoint maxpacket: 512 bytes
    OUT endpoint maxpacket: 512 bytes
-   Device flags: 0x00000004
+   Device flags: 0x00000008
 Device info:
    Manufacturer: iriver
    Model: iriver clix
-   Device version: MTP-1.11-N-EST
-   Serial number: 533ffd92000000da3230303530313031
+   Device version: MTP-2.01-N-ENG
+   Serial number: 41dff81c000000f33230303530313031
    Vendor extension ID: 0x00000006
-   Vendor extension description: microsoft.com/WMDRMPD: 10.1; microsoft.com/WMPPD: 10.0;
+   Vendor extension description: microsoft.com/WMDRMPD: 10.1; microsoft.com/WMPPD: 10.0; audible.com: 1.0;
 Supported operations:
    1001: get device info
    1002: Open session
@@ -51,9 +54,9 @@ Supported operations:
    9107: Get meter response
    9108: Clean data store
    9109: Get license state
-   910a: Unknown(910a)
-   910b: Unknown(910b)
-   9201: Unknown(9201)
+   910a: Send WMDRM-PD Command
+   910b: Send WMDRM-PD Request
+   9201: Report Added/Deleted Items
 Events supported:
    None.
 Device Properties Supported:
@@ -63,6 +66,7 @@ Device Properties Supported:
    0xd405: Device Icon
    0xd101: Secure Time
    0xd102: Device Certificate
+   0xd100: Unknown property
 Playable File (Object) Types and Object Properties Supported:
    3000: Undefined Type
       dc01: StorageID
@@ -121,10 +125,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc91: UseCount
       dc99: OriginalReleaseDate
       dc9b: AlbumArtist
-      d901: unknown(d901)
-      de93: SampleRate
-      de9a: AudioBitRate
-      de99: AudioWAVECodec
+      d901: BuyFlag
    300a: MS AVI
       dc01: StorageID
       dc02: ObjectFormat
@@ -136,6 +137,9 @@ Playable File (Object) Types and Object Properties Supported:
       dc44: Name
       dc4f: NonConsumable
       dc08: DateCreated
+      de93: SampleRate
+      de9a: AudioBitRate
+      de99: AudioWAVECodec
       dc87: Width
       dc88: Height
       de91: TotalBitRate
@@ -166,10 +170,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc91: UseCount
       dc99: OriginalReleaseDate
       dc9b: AlbumArtist
-      d901: unknown(d901)
-      de93: SampleRate
-      de9a: AudioBitRate
-      de99: AudioWAVECodec
+      d901: BuyFlag
    3801: JPEG
       dc01: StorageID
       dc02: ObjectFormat
@@ -211,10 +212,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc91: UseCount
       dc99: OriginalReleaseDate
       dc9b: AlbumArtist
-      d901: unknown(d901)
-      de93: SampleRate
-      de9a: AudioBitRate
-      de99: AudioWAVECodec
+      d901: BuyFlag
    b902: OGG
       dc01: StorageID
       dc02: ObjectFormat
@@ -239,10 +237,36 @@ Playable File (Object) Types and Object Properties Supported:
       dc91: UseCount
       dc99: OriginalReleaseDate
       dc9b: AlbumArtist
-      d901: unknown(d901)
+      d901: BuyFlag
+   b904: Audible.com Codec
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+      dc44: Name
+      dc4f: NonConsumable
+      dc08: DateCreated
+      dc46: Artist
+      dc8b: Track
+      dc8c: Genre
+      dc9a: AlbumName
       de93: SampleRate
+      de94: NumberOfChannels
       de9a: AudioBitRate
       de99: AudioWAVECodec
+      dc89: Duration
+      dc8a: Rating
+      dc91: UseCount
+      dc99: OriginalReleaseDate
+      dc9b: AlbumArtist
+      d901: BuyFlag
+      da00: unknown(da00)
+      da01: unknown(da01)
+      da02: unknown(da02)
+      da03: unknown(da03)
    ba03: Abstract Audio Album
       dc01: StorageID
       dc02: ObjectFormat
@@ -260,6 +284,8 @@ Playable File (Object) Types and Object Properties Supported:
       dc84: RepresentativeSampleWidth
       dc86: RepresentativeSampleData
       dc8c: Genre
+      dc82: RepresentativeSampleSize
+      d901: BuyFlag
    ba05: Abstract Audio Video Playlist
       dc01: StorageID
       dc02: ObjectFormat
@@ -271,7 +297,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc44: Name
       dc4f: NonConsumable
       dc08: DateCreated
-   ba82: Unknown(ba82)
+   ba82: XMLDocument
       dc01: StorageID
       dc02: ObjectFormat
       dc03: ProtectionStatus
@@ -282,61 +308,49 @@ Playable File (Object) Types and Object Properties Supported:
       dc44: Name
       dc4f: NonConsumable
       dc08: DateCreated
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0003
+      FilesystemType: 0x0002
+      AccessCapability: 0x0000
+      MaxCapacity: 2005729280
+      FreeSpaceInBytes: 1368358912
+      FreeSpaceInObjects: 4294967295
+      StorageDescription: iriver clix files
+      VolumeIdentifier: bepnipmbaaaaaadpcdadadfdadbdadbd
 Special directories:
    Default music folder: 0x00070000
-   Default playlist folder: 0x00060000
-   Default picture folder: 0x00090000
+   Default playlist folder: 0x00090000
+   Default picture folder: 0x000a0000
    Default video folder: 0x00010000
    Default organizer folder: 0x00000000
    Default zencast folder: 0x00000000
    Default album folder: 0x00080000
+   Default text folder: 0x00020000
 MTP-specific device properties:
    Friendly name: iriver clix
    Synchronization partner: (NULL)
-   Total bytes on device: 2005729280 (1912 MB)
-   Free bytes on device: 174833664 (166 MB)
-   Storage description: "iriver clix files"
-   Volume label: "dfpdnpcjaaaaaakncdadadfdadbdadbd"
    Battery level 4 of 4 (100%)
 libmtp supported (playable) filetypes:
    Text file
-   ISO MPEG Audio Layer 3
+   ISO MPEG-1 Audio Layer 3
    Audio Video Interleave
    Microsoft Advanced Systems Format
    JPEG file
    Microsoft Windows Media Audio
    Ogg container format
+   Audible.com Audio Codec
+   XML file
 
 Secure Time:
-<DRMCLOCK type="status"><VALUE>#20061207 06:41:47Z#</VALUE><FLAG>DRM_CLK_SET</FL
-AG></DRMCLOCK>
+<DRMCLOCK type="status"><VALUE>#20070304 01:11:30Z#</VALUE><FLAG>DRM_CLK_SET</FLAG></DRMCLOCK>
 
 Device Certificate:
-<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">Cg
-oKCgoKCgoKCgoKCgoKCgoKCgo=</UNIQUEID><PUBLICKEY private="1">7cVY8s5uhwcwJZBCKY0N
-zjwdqwa6eafIWthcYw/oCNPK6gB0fzxxNQ==</PUBLICKEY><KEYDATA>3TG4cp+JFr12+hWLOdquLkb
-rXf4=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>VyF9BrkcNPOlgrMPN7Ldd86Exk8CyzpcW7F
-ehyuAAtXTB4Ns5JXeZA==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>pY98DivHN3zgKe/0MPv2w
-Px2+7Q=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.102.3</SECURI
-TYVERSION><CERTIFICATE private="1">7cVY8s5uhwcwJZBCKY0Nzjwdqwa6eafIWthcYw/oCNPK6
-gB0fzxxNQIEZgPBcUIyUBSjrPOpAasS0zG/uY/xA2MSYeYMBFyXNJzlaYDonEw76411</CERTIFICATE
-></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>iRiver H10 Series</NAME><MANUF
-ACTURER>iRiver</MANUFACTURER><MAKE>iRiver</MAKE><DISTRIBUTOR>ReignCom</DISTRIBUT
-OR><MODEL>H10</MODEL><SECURITYLEVEL>2000</SECURITYLEVEL><HARDWARE_VER_MAJOR>1</H
-ARDWARE_VER_MAJOR><HARDWARE_VER_MINOR>0</HARDWARE_VER_MINOR><FIRMWARE_VER_MAJOR>
-1</FIRMWARE_VER_MAJOR><FIRMWARE_VER_MINOR>0</FIRMWARE_VER_MINOR><FEATURES><CLOCK
->2</CLOCK><SECURECLOCK><URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL><P
-UBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY></S
-ECURECLOCK><METERING>1</METERING><LICENSE_ACQ>1</LICENSE_ACQ><LICENSE_SYNC>1</LI
-CENSE_SYNC><ENCRYPTION>1</ENCRYPTION><SYMMETRIC_OPT>1</SYMMETRIC_OPT></FEATURES>
-<LIMITS><MAXCHAINDEPTH>2</MAXCHAINDEPTH><MAXLICENSESIZE>10240</MAXLICENSESIZE><M
-AXHEADERSIZE>5120</MAXHEADERSIZE></LIMITS><PUBLICKEY>8jeq4PyJZUL8NpU2+/tgvUZC9ij
-n3RdlK3wd04Iws6oXHoA+D6vFfQ==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>HZ85tGf5V
-nDwKLGq2S0OlK/oJCKbCx3A2yudzMOv8ERwi6drHW5xOA==</MSDRM_SIGNATURE_VALUE></CERTIFI
-CATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL>
-<AUTH_ID>359</AUTH_ID><PUBLICKEY>DpMhgaZkXUFNFIs4KJe7S9MZYwuE1bBic6AV6wAc7Ir0Stf
-x8U+SKw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>GWscwHnDoSazgB+YOP2D7xrqDifWE
-FztujqAWwrkM7onynIcfOBBMQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE ty
-pe="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYa
-EEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>Q
-ndHdJ4ZoSgvokVCOWsqVnvuckGL5cn6Vrua0j4tcGBrjD9PgNd0AA==</MSDRM_SIGNATURE_VALUE><                                             /CERTIFICATE></DEVCERT>
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">CgoKCgoKCgoKCgoKCgoKCgoKCgo=</UNIQUEID><PUBLICKEY private="1">7cVY8s5uhwcwJZBCKY0Nzjwdqwa6eafIWthcYw/oCNPK6gB0fzxxNQ==</PUBLICKEY><KEYDATA>3TG4cp+JFr12+hWLOdquLkbrXf4=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>VyF9BrkcNPOlgrMPN7Ldd86Exk8CyzpcW7FehyuAAtXTB4Ns5JXeZA==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>pY98DivHN3zgKe/0MPv2wPx2+7Q=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.102.3</SECURITYVERSION><CERTIFICATE private="1">7cVY8s5uhwcwJZBCKY0Nzjwdqwa6eafIWthcYw/oCNPK6gB0fzxxNQIEZgPBcUIyUBSjrPOpAasS0zG/uY/xA2MSYeYMBFyXNJzlaYDonEw76411</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>iRiver H10 Series</NAME><MANUFACTURER>iRiver</MANUFACTURER><MAKE>iRiver</MAKE><DISTRIBUTOR>ReignCom</DISTRIBUTOR><MODEL>H10</MODEL><SECURITYLEVEL>2000</SECURITYLEVEL><HARDWARE_VER_MAJOR>1</HARDWARE_VER_MAJOR><HARDWARE_VER_MINOR>0</HARDWARE_VER_MINOR><FIRMWARE_VER_MAJOR>1</FIRMWARE_VER_MAJOR><FIRMWARE_VER_MINOR>0</FIRMWARE_VER_MINOR><FEATURES><CLOCK>2</CLOCK><SECURECLOCK><URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL><PUBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY></SECURECLOCK><METERING>1</METERING><LICENSE_ACQ>1</LICENSE_ACQ><LICENSE_SYNC>1</LICENSE_SYNC><ENCRYPTION>1</ENCRYPTION><SYMMETRIC_OPT>1</SYMMETRIC_OPT></FEATURES><LIMITS><MAXCHAINDEPTH>2</MAXCHAINDEPTH><MAXLICENSESIZE>10240</MAXLICENSESIZE><MAXHEADERSIZE>5120</MAXHEADERSIZE></LIMITS><PUBLICKEY>8jeq4PyJZUL8NpU2+/tgvUZC9ijn3RdlK3wd04Iws6oXHoA+D6vFfQ==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>HZ85tGf5VnDwKLGq2S0OlK/oJCKbCx3A2yudzMOv8ERwi6drHW5xOA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>359</AUTH_ID><PUBLICKEY>DpMhgaZkXUFNFIs4KJe7S9MZYwuE1bBic6AV6wAc7Ir0Stfx8U+SKw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>GWscwHnDoSazgB+YOP2D7xrqDifWEFztujqAWwrkM7onynIcfOBBMQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>QndHdJ4ZoSgvokVCOWsqVnvuckGL5cn6Vrua0j4tcGBrjD9PgNd0AA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
+
+Device description WMPInfo.xml file:
+<DeviceInfo>
+    <WMP DeviceID="{31528368-5BB4-4238-8FC7-D0F17EF163CE}" RelationshipID="{00000000-0000-0000-0000-000000000000}"/>
+</DeviceInfo>
+
+OK.
