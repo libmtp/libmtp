@@ -651,130 +651,118 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 
 /**
  * Recursive function that adds MTP devices to a linked list
- * @param The number of detected USB devices
- * @param Dynamic array of interface numbers
- * @param Dynamic array of PTP parameters
- * @param Dynamic array of USB PTP devices
- * @param The device number currently being created in relation to numdevices
+ * @param numdevices The number of detected USB devices
+ * @param interface_number Dynamic array of interface numbers
+ * @param params Dynamic array of PTP parameters
+ * @param ptp_usb Dynamic array of USB PTP devices
  * @return a device pointer to a newly created mtpdevice (used in linked
  * list creation
  */
 static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
-                                                    uint8_t interface_number[],
-                                                    PTPParams *params[],
-                                                    PTP_USB *ptp_usb[],
-                                                    uint8_t current_device)
-{ 
-  /* Check if there are devices left to connect */
-  if(current_device < numdevices)
-    {
+						   uint8_t interface_number[],
+						   PTPParams *params[],
+						   PTP_USB *ptp_usb[])
+{
+  uint8_t i;
+  LIBMTP_mtpdevice_t *mtp_device_list = NULL;
+  LIBMTP_mtpdevice_t *current_device = NULL;
+  PTPParams *current_params;
+  
+  for (i = 0; i < numdevices; i++) {
     LIBMTP_mtpdevice_t *mtp_device;
-    uint32_t i;
+    uint32_t j;
     
     /* Clear any handlers */
-    params[current_device]->handles.Handler = NULL;
+    params[i]->handles.Handler = NULL;
     
     /* Allocate dynamic space for our device */
-    mtp_device = (LIBMTP_mtpdevice_t *)malloc(sizeof(LIBMTP_mtpdevice_t));
+    mtp_device = (LIBMTP_mtpdevice_t *) malloc(sizeof(LIBMTP_mtpdevice_t));
     
     /* Check if there was a memory allocation error */
-    if(mtp_device == NULL)
-    {
+    if(mtp_device == NULL) {
       /* There has been an memory allocation error. We are going to ignore this
-          device and attempt to continue */
-
+	 device and attempt to continue */
+      
       /* TODO: This error statement could probably be a bit more robust */
       fprintf(stderr, "LIBMTP PANIC: connect_usb_devices encountered a memory "
-                      "allocation error with device %u, trying to continue",
-                      current_device);
+	      "allocation error with device %u, trying to continue",
+	      i);
       
       /* Prevent memory leaks for this device */
-      free(ptp_usb[current_device]);
-      ptp_usb[current_device] = NULL;
+      free(ptp_usb[i]);
+      ptp_usb[i] = NULL;
       
-      free(params[current_device]);
-      params[current_device] = NULL;
+      free(params[i]);
+      params[i] = NULL;
       
       /* We have freed a bit of memory so try again with the next device */
-      return create_usb_mtp_devices(numdevices, 
-                                      interface_number,
-                                      params,
-                                      ptp_usb,
-                                      current_device + 1);
+      continue;
     }
     
     /* Copy device information to mtp_device structure */
-    mtp_device->interface_number = interface_number[current_device];
-    mtp_device->params = params[current_device];
-    mtp_device->usbinfo = ptp_usb[current_device];
+    mtp_device->interface_number = interface_number[i];
+    mtp_device->params = params[i];
+    mtp_device->usbinfo = ptp_usb[i];
+    current_params = params[i];
     
     /* Cache the device information for later use */
-    if (ptp_getdeviceinfo(params[current_device],
-                          &params[current_device]->deviceinfo) != PTP_RC_OK)
-    {
+    if (ptp_getdeviceinfo(current_params,
+			  &current_params->deviceinfo) != PTP_RC_OK) {
       fprintf(stderr, "LIBMTP PANIC: Unable to read device information on device "
-                      "number %u, trying to continue", current_device);
-                      
-      /* Prevent memory leaks for this device */
-      free(ptp_usb[current_device]);
-      ptp_usb[current_device] = NULL;
+	      "number %u, trying to continue", i);
       
-      free(params[current_device]);
-      params[current_device] = NULL;
+      /* Prevent memory leaks for this device */
+      free(ptp_usb[i]);
+      ptp_usb[i] = NULL;
+      
+      free(current_params);
+      current_params = NULL;
       free(mtp_device);
       
       /* try again with the next device */
-      return create_usb_mtp_devices(numdevices, 
-                                      interface_number,
-                                      params,
-                                      ptp_usb,
-                                      current_device + 1);
+      continue;
     }
     
     /* No Errors yet for this device */
     mtp_device->errorstack = NULL;
-
+    
     /* Cache the device information */
-    if (ptp_getdeviceinfo(params[current_device],
-                              &params[current_device]->deviceinfo) != PTP_RC_OK)
-    {
+    if (ptp_getdeviceinfo(current_params,
+			  &current_params->deviceinfo) != PTP_RC_OK) {
       add_error_to_errorstack(mtp_device,
 			      LIBMTP_ERROR_CONNECTING,
 			      "Unable to read device information. Recommend "
 			      "disconnecting this device\n");
     }
-
+    
     /* Default Max Battery Level, we will adjust this if possible */
     mtp_device->maximum_battery_level = 100;
     
     /* Check if device supports reading maximum battery level */
-    if(ptp_property_issupported( params[current_device],
-                                               PTP_DPC_BatteryLevel))
-    {
+    if(ptp_property_issupported( current_params,
+				 PTP_DPC_BatteryLevel)) {
       PTPDevicePropDesc dpd;
       
       /* Try to read maximum battery level */
-      if(ptp_getdevicepropdesc( params[current_device],
-                                            PTP_DPC_BatteryLevel,
-                                            &dpd) != PTP_RC_OK)
-      {
-        add_error_to_errorstack(mtp_device,
-                                LIBMTP_ERROR_CONNECTING,
-                                "Unable to read Maximum Battery Level for this "
-                                "device even though the device supposedly "
-                                "supports this functionality");
+      if(ptp_getdevicepropdesc(current_params,
+			       PTP_DPC_BatteryLevel,
+			       &dpd) != PTP_RC_OK) {
+	add_error_to_errorstack(mtp_device,
+				LIBMTP_ERROR_CONNECTING,
+				"Unable to read Maximum Battery Level for this "
+				"device even though the device supposedly "
+				"supports this functionality");
       }
-
+      
       /* TODO: is this appropriate? */
       /* If max battery level is 0 then leave the default, otherwise assign */
-      if (dpd.FORM.Range.MaximumValue.u8 != 0)
-      {
-        mtp_device->maximum_battery_level = dpd.FORM.Range.MaximumValue.u8;
+      if (dpd.FORM.Range.MaximumValue.u8 != 0) {
+	mtp_device->maximum_battery_level = dpd.FORM.Range.MaximumValue.u8;
       }
       
       ptp_free_devicepropdesc(&dpd);
     }
-
+    
     /* Set all default folders to 0 (root directory) */
     mtp_device->default_music_folder = 0;
     mtp_device->default_playlist_folder = 0;
@@ -796,121 +784,112 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
      * Remaining directories to get the handles to.
      * We can stop when done this to save time
      */
-    for(i = 0; i < params[current_device]->handles.n; i++)
-    {
+    for(j = 0; j < current_params->handles.n; j++) {
       PTPObjectInfo oi;
       uint16_t ret;
-
-      ret = ptp_getobjectinfo( params[current_device],
-                            params[current_device]->handles.Handler[i],
-                            &oi);
-                            
-      if (ret != PTP_RC_OK)
-      {
-        add_error_to_errorstack(mtp_device,
-                                LIBMTP_ERROR_CONNECTING,
-                                "Found a bad handle, trying to ignore it.");
-        continue;
+      
+      ret = ptp_getobjectinfo(current_params,
+			      current_params->handles.Handler[j],
+			      &oi);
+      
+      if (ret != PTP_RC_OK) {
+	add_error_to_errorstack(mtp_device,
+				LIBMTP_ERROR_CONNECTING,
+				"Found a bad handle, trying to ignore it.");
+	continue;
       }
       
       /* Ignore handles that point to non-folders */
       if(oi.ObjectFormat != PTP_OFC_Association)
-        continue;
+	continue;
       if ( oi.Filename == NULL)
-        continue;
+	continue;
       
       /* Is this the Music Folder */
       if (!strcasecmp(oi.Filename, "My Music") ||
-          !strcasecmp(oi.Filename, "Music"))
-      {
-        mtp_device->default_music_folder = 
-                          params[current_device]->handles.Handler[i];
+	  !strcasecmp(oi.Filename, "Music")) {
+	mtp_device->default_music_folder = 
+	  current_params->handles.Handler[j];
       }
       else if (!strcasecmp(oi.Filename, "My Playlists") ||
-                !strcasecmp(oi.Filename, "Playlists"))
-      {
-        mtp_device->default_playlist_folder =
-                          params[current_device]->handles.Handler[i];
+	       !strcasecmp(oi.Filename, "Playlists")) {
+	mtp_device->default_playlist_folder =
+	  current_params->handles.Handler[j];
       }
       else if (!strcasecmp(oi.Filename, "My Pictures") ||
-                !strcasecmp(oi.Filename, "Pictures"))
-      {
-        mtp_device->default_picture_folder = 
-                          params[current_device]->handles.Handler[i];
+	       !strcasecmp(oi.Filename, "Pictures")) {
+	mtp_device->default_picture_folder = 
+	  current_params->handles.Handler[j];
       }
       else if (!strcasecmp(oi.Filename, "My Video") ||
-                !strcasecmp(oi.Filename, "Video"))
-      {
-        mtp_device->default_video_folder = 
-                          params[current_device]->handles.Handler[i];
+	       !strcasecmp(oi.Filename, "Video")) {
+	mtp_device->default_video_folder = 
+	  current_params->handles.Handler[j];
       }
-      else if (!strcasecmp(oi.Filename, "My Organizer"))
-      {
-        mtp_device->default_organizer_folder =
-                          params[current_device]->handles.Handler[i];
+      else if (!strcasecmp(oi.Filename, "My Organizer")) {
+	mtp_device->default_organizer_folder =
+	  current_params->handles.Handler[j];
       }
-      else if (!strcasecmp(oi.Filename, "ZENcast"))
-      {
-        mtp_device->default_zencast_folder = 
-                          params[current_device]->handles.Handler[i];
+      else if (!strcasecmp(oi.Filename, "ZENcast")) {
+	mtp_device->default_zencast_folder = 
+	  current_params->handles.Handler[j];
       }
       else if (!strcasecmp(oi.Filename, "My Albums") ||
-                !strcasecmp(oi.Filename, "Albums"))
-      {
-        mtp_device->default_album_folder = 
-                          params[current_device]->handles.Handler[i];
+	       !strcasecmp(oi.Filename, "Albums")) {
+	mtp_device->default_album_folder = 
+	  current_params->handles.Handler[j];
       }
-      else if (!strcasecmp(oi.Filename, "Text"))
-      {
-	      mtp_device->default_text_folder =
-	                        params[current_device]->handles.Handler[i];
-	    }
+      else if (!strcasecmp(oi.Filename, "Text")) {
+	mtp_device->default_text_folder =
+	  current_params->handles.Handler[j];
+      }
     }
     
     /* Set initial storage information */
     mtp_device->storage = NULL;
-    if (LIBMTP_Get_Storage(mtp_device, LIBMTP_STORAGE_SORTBY_NOTSORTED) == -1)
-    {
+    if (LIBMTP_Get_Storage(mtp_device, LIBMTP_STORAGE_SORTBY_NOTSORTED) == -1) {
       add_error_to_errorstack(mtp_device,
-                              LIBMTP_ERROR_GENERAL,
-                              "Get Storage information failed.");
+			      LIBMTP_ERROR_GENERAL,
+			      "Get Storage information failed.");
     }
     
-    mtp_device->next = create_usb_mtp_devices(numdevices, 
-                                              interface_number,
-                                              params,
-                                              ptp_usb,
-                                              current_device + 1);
-    
-    return mtp_device;
+    /* Add the device to the list */
+    mtp_device->next = NULL;
+    if (mtp_device_list == NULL) {
+      mtp_device_list = current_device = mtp_device;
+    } else {
+      current_device->next = mtp_device;
+      current_device = mtp_device;
+    }
   }
-  /* No more devices, end recursive function */
-  else
-    return NULL;
+  return mtp_device_list;
 }
 
 /**
  * Get the number of devices that are available in the listed device list
- * @param DevList Pointer to a linked list of devices
- * @return Number of devices in the device list DevList
+ * @param device_list Pointer to a linked list of devices
+ * @return Number of devices in the device list device_list
+ * @see LIBMTP_Get_Connected_Devices()
  */ 
-uint32_t LIBMTP_Number_Devices_In_List(LIBMTP_mtpdevice_t *DevList)
+uint32_t LIBMTP_Number_Devices_In_List(LIBMTP_mtpdevice_t *device_list)
 {
-	uint32_t numdevices = 0;
-	LIBMTP_mtpdevice_t *iter;
-	for(iter = DevList; iter != NULL; iter = iter->next)
-		numdevices++;
-		
-	return numdevices;
+  uint32_t numdevices = 0;
+  LIBMTP_mtpdevice_t *iter;
+  for(iter = device_list; iter != NULL; iter = iter->next)
+    numdevices++;
+  
+  return numdevices;
 }
 
 /**
  * Get the first connected MTP device node in the linked list of devices.
  * Currently this only provides access to USB devices
- * @param Pointer to first device (if possible), filled after function executes
+ * @param device_list A list of devices ready to be used by the caller. You
+ *        need to know how many there are.
  * @return Any error information gathered from device connections
+ * @see LIBMTP_Number_Devices_In_List()
  */
-LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **DevList)
+LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **device_list)
 {
   uint8_t interface_number[256];
   uint8_t numdevices = 0;
@@ -922,19 +901,19 @@ LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **DevList)
   {
   /* Specific Errors or Messages that connect_mtp_devices should return */
   case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
-    *DevList = NULL;
+    *device_list = NULL;
     return LIBMTP_ERROR_NO_DEVICE_ATTACHED;
   case LIBMTP_ERROR_CONNECTING:
-    *DevList = NULL;
+    *device_list = NULL;
     return LIBMTP_ERROR_CONNECTING;
   case LIBMTP_ERROR_MEMORY_ALLOCATION:
-    *DevList = NULL;
+    *device_list = NULL;
     return LIBMTP_ERROR_MEMORY_ALLOCATION;
   
   /* Unknown general errors - This should never execute */
   case LIBMTP_ERROR_GENERAL:
   default:
-    *DevList = NULL;
+    *device_list = NULL;
     return LIBMTP_ERROR_GENERAL;
   
   /* Successfully connect at least one device, so continue */
@@ -942,11 +921,10 @@ LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **DevList)
   }
 
   /* Assign linked list of devices */
-  *DevList = create_usb_mtp_devices(numdevices,
+  *device_list = create_usb_mtp_devices(numdevices,
                                     interface_number,
                                     params,
-                                    ptp_usb,
-                                    0);
+                                    ptp_usb);
                                     
   /* TODO: Add wifi device access here */
   

@@ -1,3 +1,14 @@
+2007-03-05  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: rewrite recursive function to linear.
+	* src/libusb-glue.h: create a wrapper type for the
+	  device list instead of abusing the libusb device "next"
+	  field in our code.
+	* src/libusb-glue.c: rewrite all recursive functions to
+	  linear, use wrapper objects, don't copy the libusb device
+	  struct, instead just store a pointer to it. This magically
+	  solved a bug...
+	
 2007-03-04  Linus Walleij <triad@df.lth.se>
 
 	* src/Makefile.am: bump library interface to libmtp.so.5.2.0

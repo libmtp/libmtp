@@ -98,6 +98,12 @@ struct _PTP_USB {
   uint32_t device_flags;
 };
 
+struct mtpdevice_list_struct {
+  struct usb_device *libusb_device;
+  struct mtpdevice_list_struct *next;
+};
+typedef struct mtpdevice_list_struct mtpdevice_list_t;
+
 int open_device (int busn, int devn, short force, PTP_USB *ptp_usb, PTPParams *params, struct usb_device **dev);
 void dump_usbinfo(PTP_USB *ptp_usb);
 void close_device (PTP_USB *ptp_usb, PTPParams *params, uint8_t interfaceNumber);
