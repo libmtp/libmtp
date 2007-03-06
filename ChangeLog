@@ -1,3 +1,9 @@
+2007-03-06  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: rewrote one more function to be 
+	  non-recursive, perhaps I found the remaining bug, just
+	  cannot see that right now, will test tomorrow.
+	
 2007-03-05  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: rewrite recursive function to linear.

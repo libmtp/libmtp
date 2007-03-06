@@ -1479,61 +1479,42 @@ static LIBMTP_error_number_t get_mtp_usb_known_devices(
     return LIBMTP_ERROR_NONE;
 }
 
-static LIBMTP_error_number_t prime_device_memory(PTPParams *params[],
-                                            PTP_USB *ptp_usb[],
-                                            uint8_t numdevices,
-                                            uint8_t current_device)
+static LIBMTP_error_number_t prime_device_memory(PTPParams **params,
+						 PTP_USB **ptp_usb,
+						 uint8_t numdevices)
 {
-  if(current_device < numdevices)
-  {
+  int i;
+ 
+  for (i = 0; i < numdevices; i++) {
     /* Allocate a parameter box */
-    params[current_device] = (PTPParams *) malloc(sizeof(PTPParams));
-    ptp_usb[current_device] = (PTP_USB *) malloc(sizeof(PTP_USB));
-
+    params[i] = (PTPParams *) malloc(sizeof(PTPParams));
+    ptp_usb[i] = (PTP_USB *) malloc(sizeof(PTP_USB));
+    
     /* Check for allocation Error */
-    if(params[current_device] == NULL || ptp_usb[current_device] == NULL)
-    {
-      /* Prevent Memory Leaks */
-      if(params[current_device] != NULL)
-      {
-        free(params[current_device]);
-        params[current_device] = NULL;
-      }
-        
-      if(ptp_usb[current_device] != NULL)
-      {
-        free(ptp_usb[current_device]);
-        ptp_usb[current_device] = NULL;
-      }
-      
-      /* This device has not been allocated but try to continue */
-      prime_device_memory(params, ptp_usb, numdevices, current_device+1);
+    if(params[i] == NULL || ptp_usb[i] == NULL) {
+      /* Error and deallocation of memory will be handled by caller. */
       return LIBMTP_ERROR_MEMORY_ALLOCATION;
     }
     
     /* Start with a blank slate (includes setting device_flags to 0) */
-    memset(params[current_device], 0, sizeof(PTPParams));
-    memset(ptp_usb[current_device], 0, sizeof(PTP_USB));
-
-    /* This device has been allocated, continue with next device */
-    return prime_device_memory(params, ptp_usb, numdevices, current_device+1);
+    memset(params[i], 0, sizeof(PTPParams));
+    memset(ptp_usb[i], 0, sizeof(PTP_USB));
   }
-
-  /* This is the recursive exit command */  
   return LIBMTP_ERROR_NONE;
 }
 
 static void assign_known_device_flags(mtpdevice_list_t *devlist,
-				      PTP_USB *ptp_usb[],
-				      uint8_t current_device)
+				      PTP_USB **ptp_usb)
 {
   int i;
   mtpdevice_list_t *tmplist;
+  uint8_t current_device;
   
   if(devlist == NULL)
     return;
   
   tmplist = devlist;
+  current_device = 0;
   
   /* Search through known device list and set correct device flags */
   while (tmplist != NULL) {
@@ -1576,6 +1557,7 @@ static void assign_known_device_flags(mtpdevice_list_t *devlist,
 	      "libmtp development team\n");
     }
     tmplist = tmplist->next;
+    current_device++;
   }
 }
 
@@ -1751,23 +1733,29 @@ LIBMTP_error_number_t find_usb_devices(PTPParams ***params,
         there was a memory allocation problem */
     fprintf(stderr, "Memory Allocation Problem: libmtp line: %d", __LINE__);
     ret = LIBMTP_ERROR_MEMORY_ALLOCATION;
-    goto find_usb_devices_error_exit;
+    goto find_usb_devices_error_exit_second;
+  }
+  /* Nullfill pointers */
+  for (i = 0; i < *numdevices; i++) {
+    *params[i] = NULL;
+    *ptp_usb[i] = NULL;
   }
 
-  ret = prime_device_memory(*params, *ptp_usb, *numdevices, 0);
+  /* Then prime them */
+  ret = prime_device_memory(*params, *ptp_usb, *numdevices);
   if(ret) {
     fprintf(stderr, "prime_device_memory error code: %d\n", ret);
-    goto find_usb_devices_error_exit;
+    goto find_usb_devices_error_exit_first;
   }
 
   /* Assign specific device flags and detect unknown devices */
-  assign_known_device_flags(mtp_device_list, *ptp_usb, 0);
+  assign_known_device_flags(mtp_device_list, *ptp_usb);
   
   /* Configure the devices */
   ret = configure_usb_devices(mtp_device_list, *params, *ptp_usb);
   if(ret) {
     fprintf(stderr, "configure_usb_devices error code: %d\n", ret);
-    goto find_usb_devices_error_exit;
+    goto find_usb_devices_error_exit_first;
   }
   
   /* Configure interface numbers */
@@ -1789,7 +1777,19 @@ LIBMTP_error_number_t find_usb_devices(PTPParams ***params,
   /* we're connected to all devices, return OK */
   return ret;
 
- find_usb_devices_error_exit:
+ find_usb_devices_error_exit_first:
+  /* Free up any wasted memory */
+  for (i = 0; i < *numdevices; i++) {
+    if (*params[i] != NULL) {
+      free(*params[i]);
+    }
+  }
+  for (i = 0; i < *numdevices; i++) {
+    if (*ptp_usb[i] != NULL) {
+      free(*ptp_usb[i]);
+    }
+  }
+ find_usb_devices_error_exit_second:
   if (*params != NULL) {
     free(*params);
     *params = NULL;
