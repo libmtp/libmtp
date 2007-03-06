@@ -390,6 +390,11 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(
       unsigned char buf[1024], cmd;
       int ret;
       
+      /* Don't examine hubs (no point in that) */
+      if (dev->descriptor.bDeviceClass == USB_CLASS_HUB) {
+	continue;
+      }
+
       /* Attempt to open Device on this port */
       devh = usb_open(dev);
       if (devh == NULL) {
@@ -1581,7 +1586,7 @@ static LIBMTP_error_number_t configure_usb_devices(mtpdevice_list_t *devicelist,
        params[current_device]->cd_ucs2_to_locale == (iconv_t) -1) {
       fprintf(stderr, "LIBMTP PANIC: Cannot open iconv() converters to/from UCS-2!\n"
 	      "Too old stdlibc, glibc and libiconv?\n");
-      goto error_connecting;
+      return LIBMTP_ERROR_CONNECTING;
     }
     
     // ep = device->config->interface->altsetting->endpoint;
@@ -1598,7 +1603,7 @@ static LIBMTP_error_number_t configure_usb_devices(mtpdevice_list_t *devicelist,
     /* Attempt to initialize this device, if unable, then try next device */
     if (init_ptp_usb(params[current_device], ptp_usb[current_device], tmplist->libusb_device) < 0) {
       fprintf(stderr, "Error: Unable to initialize device %d\n", current_device+1);
-      goto error_connecting;
+      return LIBMTP_ERROR_CONNECTING;
     }
   
     /*
@@ -1611,7 +1616,7 @@ static LIBMTP_error_number_t configure_usb_devices(mtpdevice_list_t *devicelist,
       
       if(init_ptp_usb(params[current_device], ptp_usb[current_device], tmplist->libusb_device) <0) {
 	fprintf(stderr, "LIBMTP PANIC: Could not open session on device %d\n", current_device+1);
-	goto error_connecting;
+	return LIBMTP_ERROR_CONNECTING;
       }
 	
       /* Device has been reset, try again */
@@ -1640,8 +1645,8 @@ static LIBMTP_error_number_t configure_usb_devices(mtpdevice_list_t *devicelist,
       fprintf(stderr, "Could not get device info!\n");
       usb_release_interface(ptp_usb[current_device]->handle,
 			    tmplist->libusb_device->config->interface->altsetting->bInterfaceNumber);
-      goto error_connecting;
-    } 
+      return LIBMTP_ERROR_CONNECTING;
+    }
 
     tmplist = tmplist->next;
     current_device++;
@@ -1649,9 +1654,6 @@ static LIBMTP_error_number_t configure_usb_devices(mtpdevice_list_t *devicelist,
 
   /* Exit with the nice list */
   return LIBMTP_ERROR_NONE;
-  
- error_connecting:
-  return LIBMTP_ERROR_CONNECTING;
 }
 
 /**
