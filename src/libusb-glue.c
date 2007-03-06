@@ -1453,22 +1453,18 @@ static LIBMTP_error_number_t get_mtp_usb_known_devices(
   for(; bus != NULL; bus = bus->next) {
     struct usb_device *dev = bus->devices;
     for(; dev != NULL; dev = dev->next) {
-      const LIBMTP_device_entry_t * device = mtp_device_table;
-      int i = 0;
-      
-      /* Loop over the list of supported devices */
-      while(i++ < mtp_device_table_size) {  	  
-	if (dev->descriptor.bDeviceClass != USB_CLASS_HUB && 
-	    dev->descriptor.idVendor == device->vendor_id &&
-	    dev->descriptor.idProduct == device->product_id ) {
-	  /* Append this usb device to the MTP USB Device List */
+      int i;
+
+      for(i = 0; i < mtp_device_table_size; i++) {
+	if(dev->descriptor.bDeviceClass != USB_CLASS_HUB && 
+	   dev->descriptor.idVendor == mtp_device_table[i].vendor_id &&
+	   dev->descriptor.idProduct == mtp_device_table[i].product_id) {
+	  /* Append this usb device to the MTP device list */
 	  *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, dev);
+	  (*numdevices)++;
+	  break;
 	}
       }
-      
-      /* Found this device, continue with search for more devices */
-      device++;
-      break;
     }
   }
   
@@ -1507,14 +1503,11 @@ static void assign_known_device_flags(mtpdevice_list_t *devlist,
 				      PTP_USB **ptp_usb)
 {
   int i;
-  mtpdevice_list_t *tmplist;
-  uint8_t current_device;
+  mtpdevice_list_t *tmplist = devlist;
+  uint8_t current_device = 0;
   
   if(devlist == NULL)
     return;
-  
-  tmplist = devlist;
-  current_device = 0;
   
   /* Search through known device list and set correct device flags */
   while (tmplist != NULL) {
