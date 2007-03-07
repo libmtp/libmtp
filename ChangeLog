@@ -2,7 +2,11 @@
 
 	* src/libusb-glue.c: remove libgphoto2 functions that we
 	  don't use.
-	* src/libmtp.c: shrink code.
+	* src/libusb-glue.h: export the free_mtpdevice_list() function,
+	  new signature of find_usb_devices().	
+	* src/libmtp.c: shrink code, pass as list of devices instead of
+	  several huge arrays between libmtp.c and USB glue layer in
+	  libusb-glue.c using the nifty list struct defined in libusb-glue.h.
 
 2007-03-06  Linus Walleij <triad@df.lth.se>
 

@@ -100,6 +100,9 @@ struct _PTP_USB {
 
 struct mtpdevice_list_struct {
   struct usb_device *libusb_device;
+  PTPParams *params;
+  PTP_USB *ptp_usb;
+  uint8_t interface_number;
   struct mtpdevice_list_struct *next;
 };
 typedef struct mtpdevice_list_struct mtpdevice_list_t;
@@ -107,10 +110,8 @@ typedef struct mtpdevice_list_struct mtpdevice_list_t;
 int open_device (int busn, int devn, short force, PTP_USB *ptp_usb, PTPParams *params, struct usb_device **dev);
 void dump_usbinfo(PTP_USB *ptp_usb);
 void close_device (PTP_USB *ptp_usb, PTPParams *params, uint8_t interfaceNumber);
-LIBMTP_error_number_t find_usb_devices (PTPParams ***params,
-                                            PTP_USB ***ptp_usb,
-                                            uint8_t interfaceNumber[],
-                                            uint8_t *numdevices);
+LIBMTP_error_number_t find_usb_devices(mtpdevice_list_t **devlist);
+void free_mtpdevice_list(mtpdevice_list_t *devlist);
 
 /* connect_first_device return codes */
 #define PTP_CD_RC_CONNECTED	0

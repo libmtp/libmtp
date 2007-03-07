@@ -658,22 +658,20 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
  * @return a device pointer to a newly created mtpdevice (used in linked
  * list creation
  */
-static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
-						   uint8_t interface_number[],
-						   PTPParams *params[],
-						   PTP_USB *ptp_usb[])
+static LIBMTP_mtpdevice_t * create_usb_mtp_devices(mtpdevice_list_t *devices)
 {
-  uint8_t i;
+  uint8_t i = 1;
   LIBMTP_mtpdevice_t *mtp_device_list = NULL;
   LIBMTP_mtpdevice_t *current_device = NULL;
   PTPParams *current_params;
+  mtpdevice_list_t *tmplist = devices;
   
-  for (i = 0; i < numdevices; i++) {
+  while (tmplist != NULL) {
     LIBMTP_mtpdevice_t *mtp_device;
     uint32_t j;
     
     /* Clear any handlers */
-    params[i]->handles.Handler = NULL;
+    tmplist->params->handles.Handler = NULL;
     
     /* Allocate dynamic space for our device */
     mtp_device = (LIBMTP_mtpdevice_t *) malloc(sizeof(LIBMTP_mtpdevice_t));
@@ -689,21 +687,21 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
 	      i);
       
       /* Prevent memory leaks for this device */
-      free(ptp_usb[i]);
-      ptp_usb[i] = NULL;
+      free(tmplist->ptp_usb);
+      tmplist->ptp_usb = NULL;
       
-      free(params[i]);
-      params[i] = NULL;
+      free(tmplist->params);
+      tmplist->params = NULL;
       
       /* We have freed a bit of memory so try again with the next device */
       continue;
     }
     
     /* Copy device information to mtp_device structure */
-    mtp_device->interface_number = interface_number[i];
-    mtp_device->params = params[i];
-    mtp_device->usbinfo = ptp_usb[i];
-    current_params = params[i];
+    mtp_device->interface_number = tmplist->interface_number;
+    mtp_device->params = tmplist->params;
+    mtp_device->usbinfo = tmplist->ptp_usb;
+    current_params = tmplist->params;
     
     /* Cache the device information for later use */
     if (ptp_getdeviceinfo(current_params,
@@ -712,8 +710,8 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
 	      "number %u, trying to continue", i);
       
       /* Prevent memory leaks for this device */
-      free(ptp_usb[i]);
-      ptp_usb[i] = NULL;
+      free(tmplist->ptp_usb);
+      tmplist->ptp_usb = NULL;
       
       free(current_params);
       current_params = NULL;
@@ -861,6 +859,9 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(uint8_t numdevices,
       current_device->next = mtp_device;
       current_device = mtp_device;
     }
+
+    tmplist = tmplist->next;
+    i++;
   }
   return mtp_device_list;
 }
@@ -891,30 +892,20 @@ uint32_t LIBMTP_Number_Devices_In_List(LIBMTP_mtpdevice_t *device_list)
  */
 LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **device_list)
 {
-  uint8_t interface_numbers[256];
-  uint8_t numdevices = 0;
-  /* Dynamically allocated PTP and USB information - be sure to call free()*/
-  PTPParams **params;
-  PTP_USB **ptp_usb;
+  mtpdevice_list_t *devices;
   LIBMTP_error_number_t ret;
 
-  ret = find_usb_devices(&params, &ptp_usb, interface_numbers, &numdevices);
+  ret = find_usb_devices(&devices);
   if (ret != LIBMTP_ERROR_NONE) {
     *device_list = NULL;
     return ret;
   }
 
   /* Assign linked list of devices */
-  *device_list = create_usb_mtp_devices(numdevices,
-                                    interface_numbers,
-                                    params,
-                                    ptp_usb);
-                                    
+  *device_list = create_usb_mtp_devices(devices);
+
   /* TODO: Add wifi device access here */
-  
-  /* These lists are no longer needed from here (info is part of the device struct) */
-  free(params);
-  free(ptp_usb);
+  free_mtpdevice_list(devices);
 
   return LIBMTP_ERROR_NONE;
 }
