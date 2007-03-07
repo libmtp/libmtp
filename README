@@ -132,6 +132,15 @@ cannot test your solution.
   that makes it drop the last two characters off a playlist name.
   It is fixed in later firmware.
 
+* Sandisk sansa c150 and probably several other Sandisk devices 
+  (and possibly devices from other manufacturers) have a dual
+  mode with MTP and USB mass storage. The device will initially
+  claim to be mass storage so udev will capture is and make the
+  use of MTP mode impossible. One way of avoiding it seems to
+  be to blacklist the "usb-storage" module in 
+  /etc/modprobe.c/blacklist with a row like this:
+  "blacklist usb-storage".
+
 * The iRiver devices (possibly all of them) cannot handle the 
   enhanced GetObjectPropList MTP command (0x9805) properly. So 
   they have been banned from using it.

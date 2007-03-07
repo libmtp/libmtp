@@ -7,6 +7,7 @@
 	* src/libmtp.c: shrink code, pass as list of devices instead of
 	  several huge arrays between libmtp.c and USB glue layer in
 	  libusb-glue.c using the nifty list struct defined in libusb-glue.h.
+	* Eventually release libmtp 0.1.4.
 
 2007-03-06  Linus Walleij <triad@df.lth.se>
 
