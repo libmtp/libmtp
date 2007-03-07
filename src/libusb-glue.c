@@ -264,7 +264,6 @@ int ptpcam_usb_timeout = USB_TIMEOUT;
 // Local functions
 static struct usb_bus* init_usb();
 static void close_usb(PTP_USB* ptp_usb, uint8_t interfaceNumber);
-static struct usb_device* find_device (int busn, int devicen, short force);
 static void find_endpoints(struct usb_device *dev, int* inep, int* inep_maxpacket, int* outep, int* outep_maxpacket, int* intep);
 static void clear_stall(PTP_USB* ptp_usb);
 static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev);
@@ -1398,40 +1397,6 @@ static void close_usb(PTP_USB* ptp_usb, uint8_t interfaceNumber)
   usb_close(ptp_usb->handle);
 }
 
-
-/*
- find_device() returns the pointer to a usb_device structure matching
- given busn, devicen numbers. If any or both of arguments are 0 then the
- first matching PTP device structure is returned. 
- */
-static struct usb_device* find_device (int busn, int devn, short force)
-{
-  struct usb_bus *bus;
-  struct usb_device *dev;
-  
-  bus=init_usb();
-  for (; bus; bus = bus->next)
-    for (dev = bus->devices; dev; dev = dev->next)
-      /* somtimes dev->config is null, not sure why... */
-      if (dev->config != NULL)
-	if (dev->descriptor.bDeviceClass!=USB_CLASS_HUB)
-	  {
-	    int curbusn, curdevn;
-	    
-	    curbusn=strtol(bus->dirname,NULL,10);
-	    curdevn=strtol(dev->filename,NULL,10);
-	    
-	    if (devn==0) {
-	      if (busn==0) return dev;
-	      if (curbusn==busn) return dev;
-	    } else {
-	      if ((busn==0)&&(curdevn==devn)) return dev;
-	      if ((curbusn==busn)&&(curdevn==devn)) return dev;
-	    }
-	  }
-  return NULL;
-}
-
 /**
  * This function scans through the connected usb devices on a machine and
  * if they match known Vendor and Product identifiers appends them to the
@@ -1829,31 +1794,6 @@ static void find_endpoints(struct usb_device *dev, int* inep, int* inep_maxpacke
 	}
     }
   }
-}
-
-int open_device (int busn, int devn, short force, PTP_USB *ptp_usb, PTPParams *params, struct usb_device **dev)
-{
-#ifdef DEBUG
-  printf("dev %i\tbus %i\n",devn,busn);
-#endif
-  
-  *dev=find_device(busn,devn,force);
-  if (*dev==NULL) {
-    fprintf(stderr,"could not find any device matching given "
-	    "bus/dev numbers\n");
-    exit(-1);
-  }
-  find_endpoints(*dev,&ptp_usb->inep,&ptp_usb->inep_maxpacket,&ptp_usb->outep,&ptp_usb->outep_maxpacket,&ptp_usb->intep);
-  
-  if (init_ptp_usb(params, ptp_usb, *dev) < 0) {
-    return -1;
-  }
-  if (ptp_opensession(params,1)!=PTP_RC_OK) {
-    fprintf(stderr,"ERROR: Could not open session!\n");
-    close_usb(ptp_usb, (*dev)->config->interface->altsetting->bInterfaceNumber);
-    return -1;
-  }
-  return 0;
 }
 
 void close_device (PTP_USB *ptp_usb, PTPParams *params, uint8_t interfaceNumber)
