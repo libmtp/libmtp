@@ -352,11 +352,10 @@ static mtpdevice_list_t *append_to_mtpdevice_list(mtpdevice_list_t *devlist,
  */
 static void free_mtpdevice_list(mtpdevice_list_t *devlist)
 {
-  mtpdevice_list_t *tmplist;
+  mtpdevice_list_t *tmplist = devlist;
 
   if (devlist == NULL)
     return;
-  tmplist = devlist;
   while (tmplist != NULL) {
     mtpdevice_list_t *tmp = tmplist;
     tmplist = tmplist->next;
@@ -1648,43 +1647,21 @@ LIBMTP_error_number_t find_usb_devices(PTPParams ***params,
   /* Reset to zero found, list is NULL too... */
   *numdevices = 0;
   /* Recover list of attached USB devices that match MTP criteria */
-  switch(get_mtp_usb_device_list (&mtp_device_list, numdevices)) {
-  /* These values should never occur at this point */
-  default:
-    return LIBMTP_ERROR_GENERAL;
-    
-  /* Memory Allocation Error, return */
-  case LIBMTP_ERROR_MEMORY_ALLOCATION:
-    return LIBMTP_ERROR_MEMORY_ALLOCATION;
-
-  /* Auto-detection did not find any MTP devices, then search known device 
-   * list.
-   * FIXME: if there are both auto-detected and non-autodetected devices
-   *        attached, the non-autodetected ones will not be found!!
-   *        This behaviour is a leftover from the old function that could
-   *        only retrieve ONE device. What we need to do is make a union
-   *        of both lists.
-   */
-  case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
-    switch(get_mtp_usb_known_devices (&mtp_device_list, numdevices)) {
-    /* Memory Allocation Error, return */
-    case LIBMTP_ERROR_MEMORY_ALLOCATION:
-      return LIBMTP_ERROR_MEMORY_ALLOCATION;
-    
-    /* No devices are attached, return */
-    case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
-      return LIBMTP_ERROR_NO_DEVICE_ATTACHED;
-
-    /* We should never execute this */
-    default:
-      return LIBMTP_ERROR_GENERAL;
-    
-    /* Found at least one device, but don't handle this here */
-    case LIBMTP_ERROR_NONE:;
-    }
-    
-  /* Found at least one device, continue along */
-  case LIBMTP_ERROR_NONE:;
+  ret = get_mtp_usb_device_list (&mtp_device_list, numdevices);
+  if (ret == LIBMTP_ERROR_NO_DEVICE_ATTACHED) {
+    /* Auto-detection did not find any MTP devices, then search known device 
+     * list.
+     *
+     * FIXME: if there are both auto-detected and non-autodetected devices
+     *        attached, the non-autodetected ones will not be found!!
+     *        This behaviour is a leftover from the old function that could
+     *        only retrieve ONE device. What we need to do is make a union
+     *        of both lists.
+     */
+    ret = get_mtp_usb_known_devices (&mtp_device_list, numdevices);
+  }
+  if (ret != LIBMTP_ERROR_NONE) {
+    return ret;
   }
   
   /* Allocate Memory Appropriately and Initialize*/
@@ -1695,7 +1672,7 @@ LIBMTP_error_number_t find_usb_devices(PTPParams ***params,
   if(*params == NULL || *ptp_usb == NULL) {
     /* TODO: Implement callback function to let managing applications know
         there was a memory allocation problem */
-    fprintf(stderr, "Memory Allocation Problem: libmtp line: %d", __LINE__);
+    fprintf(stderr, "LIBMTP PANIC: Memory Allocation Problem: libmtp line: %d", __LINE__);
     ret = LIBMTP_ERROR_MEMORY_ALLOCATION;
     goto find_usb_devices_error_exit_second;
   }
@@ -1708,7 +1685,7 @@ LIBMTP_error_number_t find_usb_devices(PTPParams ***params,
   /* Then prime them */
   ret = prime_device_memory(*params, *ptp_usb, *numdevices);
   if(ret) {
-    fprintf(stderr, "prime_device_memory error code: %d\n", ret);
+    fprintf(stderr, "LIBMTP PANIC: prime_device_memory() error code: %d on line %d\n", ret, __LINE__);
     goto find_usb_devices_error_exit_first;
   }
 
@@ -1718,7 +1695,7 @@ LIBMTP_error_number_t find_usb_devices(PTPParams ***params,
   /* Configure the devices */
   ret = configure_usb_devices(mtp_device_list, *params, *ptp_usb);
   if(ret) {
-    fprintf(stderr, "configure_usb_devices error code: %d\n", ret);
+    fprintf(stderr, "LIBMTP PANIC: configure_usb_devices() error code: %d on line %d\n", ret, __LINE__);
     goto find_usb_devices_error_exit_first;
   }
   
