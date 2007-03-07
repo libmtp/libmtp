@@ -500,8 +500,6 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
  * mechanisms. The idea is that a script may want to know if the
  * just plugged-in device was an MTP device or not.
  * 
- * FUNCTION STUBBED OUT FOR FURTHER EXAMINITATION LATER
- * 
  * @param vid the Vendor ID (VID) of the first device found.
  * @param pid the Product ID (PID) of the first device found.
  * @return the number of detected devices or -1 if the call
@@ -509,8 +507,17 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
  */
 int LIBMTP_Detect_Descriptor(uint16_t *vid, uint16_t *pid)
 {
-  /* TODO: Find a way to make this work with the multiple device code */
-  *vid = *pid = 0;
+  mtpdevice_list_t *devlist;
+  LIBMTP_error_number_t ret;  
+
+  ret = get_mtp_usb_device_list(&devlist);
+  if (ret != LIBMTP_ERROR_NONE) {
+    *vid = *pid = 0;
+    return -1;
+  }
+  *vid = devlist->libusb_device->descriptor.idVendor;
+  *pid = devlist->libusb_device->descriptor.idProduct;
+  free_mtpdevice_list(devlist);
   return 1;
 }
 
