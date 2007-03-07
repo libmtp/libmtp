@@ -2,6 +2,7 @@
 
 	* src/libusb-glue.c: remove libgphoto2 functions that we
 	  don't use.
+	* src/libmtp.c: shrink code.
 
 2007-03-06  Linus Walleij <triad@df.lth.se>
 

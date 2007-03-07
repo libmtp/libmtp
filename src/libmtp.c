@@ -891,43 +891,28 @@ uint32_t LIBMTP_Number_Devices_In_List(LIBMTP_mtpdevice_t *device_list)
  */
 LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **device_list)
 {
-  uint8_t interface_number[256];
+  uint8_t interface_numbers[256];
   uint8_t numdevices = 0;
   /* Dynamically allocated PTP and USB information - be sure to call free()*/
   PTPParams **params;
   PTP_USB **ptp_usb;
+  LIBMTP_error_number_t ret;
 
-  switch(find_usb_devices(&params, &ptp_usb, interface_number, &numdevices))
-  {
-  /* Specific Errors or Messages that connect_mtp_devices should return */
-  case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
+  ret = find_usb_devices(&params, &ptp_usb, interface_numbers, &numdevices);
+  if (ret != LIBMTP_ERROR_NONE) {
     *device_list = NULL;
-    return LIBMTP_ERROR_NO_DEVICE_ATTACHED;
-  case LIBMTP_ERROR_CONNECTING:
-    *device_list = NULL;
-    return LIBMTP_ERROR_CONNECTING;
-  case LIBMTP_ERROR_MEMORY_ALLOCATION:
-    *device_list = NULL;
-    return LIBMTP_ERROR_MEMORY_ALLOCATION;
-  
-  /* Unknown general errors - This should never execute */
-  case LIBMTP_ERROR_GENERAL:
-  default:
-    *device_list = NULL;
-    return LIBMTP_ERROR_GENERAL;
-  
-  /* Successfully connect at least one device, so continue */
-  case LIBMTP_ERROR_NONE:;
+    return ret;
   }
 
   /* Assign linked list of devices */
   *device_list = create_usb_mtp_devices(numdevices,
-                                    interface_number,
+                                    interface_numbers,
                                     params,
                                     ptp_usb);
                                     
   /* TODO: Add wifi device access here */
   
+  /* These lists are no longer needed from here (info is part of the device struct) */
   free(params);
   free(ptp_usb);
 
