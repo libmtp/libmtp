@@ -26,7 +26,6 @@ SPEEDUP fixes:
   should only need to update the cache with relevant data. Atleast for
   speed caches 1 and 2 above.
 
-
 FEATURE fixes:
 
 1. FEATURE: Make abstract playlists really become size -1 when created as 
@@ -37,14 +36,34 @@ FEATURE fixes:
 2. FEATURE: Support playback and volume setting on devices that have it.
   (I don't have one that does - Linus.)
 
-4. FEATURE: Support relevant events. MTP devices seen in existance provide
+3. FEATURE: Support relevant events. MTP devices seen in existance provide
   events for "object added" and "object deleted". These should result in
   atleast a call to the flus_handles() function.
 
-5. FEATURE: Have libmtp optionally create a folder hierarchy such as
+4. FEATURE: Have libmtp optionally create a folder hierarchy such as
   /Album/Artist/Song.mp3 on the device. Currently it'll only put songs
   into some /Music or /My Music folder if one exists.
 
+5. FEATURE: Integrate libmtp with HAL / D-Bus so applications can dynamically
+	know when a device has been plugged in or removed. Need a mechanism to 
+	connect a specific hal UDI.
+	
+6. FEATURE: Mechanism to retrieve the DevIcon.fil (Windows ICO format) and 
+	DevLogo.fil (PNG Format) images from the device (if available).	Convert 
+	DevIcon.fil to something usable (PNG)?
+	(Does this belong directly in libmtp or in a layer above?)
+
+7. FEATURE: GNOME-VFS Module for integrated GNOME Support (libmtp-gnome-vfs)
+	Ability to access MTP devices through mtp:// in nautilus
+
+8. FEATURE: KDE KIO Module for integrated KDE Support (libmtp_kio)
+	Ability to acces MTP devices through mtp:// in konqueror
+
+9. FEATURE: Shared device access so that multiple client applications can have
+	an open connection to the device at the same time via a handle. For example,
+	it should be somehow possible to run mtp-detect at the same time as amarok or 
+	mtpfs is connected to a device. This would require some form of resource
+	sharing.
 
 THOSE ARE ALREADY DONE:
 
