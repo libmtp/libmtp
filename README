@@ -80,7 +80,32 @@ bug report system there.
 If you happen upon a device which libmtp claims it cannot
 autodetect, please submit the vendor ID and device ID 
 as a bug, patch or feature request on the Sourceforge
-bug tracker at our homepage.
+bug tracker at our homepage. If it gives a sensible 
+output from "mtp-detect" then please attach the result as
+well as it teach us some stuff about your device.
+
+If your device is problematic we are curious of how it
+works under Windows, so we enjoy reading USB packet sniffs
+that reveal the low-level traffic carried out between
+Windows Media Player and your device. This can be done 
+using the trial version of HHD Softwares software-only
+USB monitor. You need to get a copy of version 2.37 since
+the newer trial versions won't let you carry out the 
+needed packet sniffs. (As of 2007-03-10 a copy can be found
+at: http://www.cobbleware.com/files/usb-monitor-237.exe)
+There are other USB monitors as well, some more expensive
+alternatives use hardware and even measure electronic
+characteristics of the traffic (which is far too much 
+detail for us).
+
+If you want to poke around to see if your device has some
+special pecularities, you can test some special device
+flags (defined in src/libusb-glue.h) by inserting them
+together with your device entry in src/libusb-glue.c.
+Flags can be tested in isolation or catenated with "|"
+(binary OR). If relatives to your device use a certain
+flag, chances are high that a new device will need it
+too, typically from the same manufacturer.
 
 
 Calendar and contact support:
@@ -136,19 +161,22 @@ cannot test your solution.
   (and possibly devices from other manufacturers) have a dual
   mode with MTP and USB mass storage. The device will initially
   claim to be mass storage so udev will capture is and make the
-  use of MTP mode impossible. One way of avoiding it seems to
+  use of MTP mode impossible. One way of avoiding it could be to
   be to blacklist the "usb-storage" module in 
   /etc/modprobe.c/blacklist with a row like this:
-  "blacklist usb-storage".
+  "blacklist usb-storage". Some have even removed the
+  "usb-storage.ko" (kernel module file) to avoid loading.
 
-* The iRiver devices (possibly all of them) cannot handle the 
+* The iriver devices (possibly all of them) cannot handle the 
   enhanced GetObjectPropList MTP command (0x9805) properly. So 
   they have been banned from using it.
 
-* iRiver devices have problems with older versions of libmtp and
+* iriver devices have problems with older versions of libmtp and
   with new devices libmtp does not know of as of yet, since it
   has an oldstyle USB device controller that cannot handle zero
-  writes. (Register your device with us!)
+  writes. (Register your device with us!) All their devices are
+  likely to need a special device flag in the src/libusb-glue.c
+  database.
 
 * The Samsung Yepp T9 has several strange characteristics, some
   that we've managed to work around. (For example it will return
