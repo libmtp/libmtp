@@ -157,6 +157,12 @@ cannot test your solution.
   that makes it drop the last two characters off a playlist name.
   It is fixed in later firmware.
 
+* For Creative Technology devices, there are hard limits on how
+  many files can be put onto the device. For a 30 GiB device (like
+  the Zen Xtra) the limit is 6000, for a 60 GiB device the limit
+  is 15000 files. For further Creative pecularities, see the
+  FAQ sections at www.nomadness.net.
+
 * Sandisk sansa c150 and probably several other Sandisk devices 
   (and possibly devices from other manufacturers) have a dual
   mode with MTP and USB mass storage. The device will initially
