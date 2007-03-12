@@ -11,3 +11,5 @@ libmtp.rules: examples/hotplug
 	examples/hotplug -u > libmtp.rules
 libmtp.fdi: examples/hotplug
 	examples/hotplug -H > libmtp.fdi
+
+CLEANFILES = libmtp.usermap libmtp.rules libmtp.fdi

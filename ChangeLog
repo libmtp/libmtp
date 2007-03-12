@@ -1,3 +1,7 @@
+2007-03-12  Linus Walleij <triad@df.lth.se>
+
+	* Makefile.am: cleanup patch from Rafael Laboissiere.
+
 2007-03-07  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: remove libgphoto2 functions that we
