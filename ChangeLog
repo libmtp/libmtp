@@ -1,6 +1,11 @@
 2007-03-12  Linus Walleij <triad@df.lth.se>
 
 	* Makefile.am: cleanup patch from Rafael Laboissiere.
+	* src/libusb-glue.c: refactored device detection code to 
+	  immediately test if the device is in the known devices list if it 
+	  does not feature a MTP device descriptor. This fixes the problem 
+	  of not being able to mix devices with proper descriptors and 
+	  non-detected devices.
 
 2007-03-07  Linus Walleij <triad@df.lth.se>
 

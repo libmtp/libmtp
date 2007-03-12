@@ -366,13 +366,126 @@ void free_mtpdevice_list(mtpdevice_list_t *devlist)
 }
 
 /**
- * Check for the Microsoft OS device descriptor and return device struct
- * if the device is MTP-compliant. The function will only recognize
- * a single device connected to the USB bus.
+ * This checks if a device has an MTP descriptor.
+ * @param dev a device struct from libusb.
+ * @return 1 if the device is MTP compliant, 0 if not.
+ */
+static int device_has_descriptor(struct usb_device *dev)
+{
+  usb_dev_handle *devh;
+  unsigned char buf[1024], cmd;
+  int ret;
+  
+  /* Don't examine hubs (no point in that) */
+  if (dev->descriptor.bDeviceClass == USB_CLASS_HUB) {
+    return 0;
+  }
+  
+  /* Attempt to open Device on this port */
+  devh = usb_open(dev);
+  if (devh == NULL) {
+    /* Could not open this device */
+    return 0;
+  }
+  
+  /* Read the special descriptor */
+  ret = usb_get_descriptor(devh, 0x03, 0xee, buf, sizeof(buf));
+  
+  /* Check if descriptor length is at least 10 bytes */
+  if (ret < 10) {
+    usb_close(devh);
+    return 0;
+  }
+      
+  /* Check if this device has a Microsoft Descriptor */
+  if (!((buf[2] == 'M') && (buf[4] == 'S') &&
+	(buf[6] == 'F') && (buf[8] == 'T'))) {
+    usb_close(devh);
+    return 0;
+  }
+      
+  /* Check if device responds to control message 1 or if there is an error */
+  cmd = buf[16];
+  ret = usb_control_msg (devh,
+			 USB_ENDPOINT_IN|USB_RECIP_DEVICE|USB_TYPE_VENDOR,
+			 cmd,
+			 0,
+			 4,
+			 (char *) buf,
+			 sizeof(buf),
+			 1000);
+  
+  /* If this is true, the device either isn't MTP or there was an error */
+  if (ret <= 0x15) {
+    /* TODO: If there was an error, flag it and let the user know somehow */
+    /* if(ret == -1) {} */
+    usb_close(devh);
+    return 0;
+  }
+  
+  /* Check if device is MTP or if it is something like a USB Mass Storage 
+     device with Janus DRM support */
+  if ((buf[0x12] != 'M') || (buf[0x13] != 'T') || (buf[0x14] != 'P')) {
+    usb_close(devh);
+    return 0;
+  }
+      
+  /* After this point we are probably dealing with an MTP device */
+
+  /* Check if device responds to control message 2 or if there is an error*/
+  ret = usb_control_msg (devh,
+			 USB_ENDPOINT_IN|USB_RECIP_DEVICE|USB_TYPE_VENDOR,
+			 cmd,
+			 0,
+			 5,
+			 (char *) buf,
+			 sizeof(buf),
+			 1000);
+  
+  /* If this is true, the device errored against control message 2 */
+  if (ret == -1) {
+    /* TODO: Implement callback function to let managing program know there
+       was a problem, along with description of the problem */
+    fprintf(stderr, "Potential MTP Device with VendorID:%04x and "
+	    "ProductID:%04x encountered an error responding to "
+	    "control message 2.\n"
+	    "Problems may arrise but continuing\n",
+	    dev->descriptor.idVendor, dev->descriptor.idProduct);
+  } else if (ret <= 0x15) {
+    /* TODO: Implement callback function to let managing program know there
+       was a problem, along with description of the problem */
+    fprintf(stderr, "Potential MTP Device with VendorID:%04x and "
+	    "ProductID:%04x responded to control message 2 with a "
+	    "response that was too short. Problems may arrise but "
+	    "continuing\n",
+	    dev->descriptor.idVendor, dev->descriptor.idProduct);
+  } else if ((buf[0x12] != 'M') || (buf[0x13] != 'T') || (buf[0x14] != 'P')) {
+    /* TODO: Implement callback function to let managing program know there
+       was a problem, along with description of the problem */
+    fprintf(stderr, "Potential MTP Device with VendorID:%04x and "
+	    "ProductID:%04x encountered an error responding to "
+	    "control message 2\n"
+	    "Problems may arrise but continuing\n",
+	    dev->descriptor.idVendor, dev->descriptor.idProduct);
+  }
+  
+  /* Close the USB device handle */
+  usb_close(devh);
+  return 1;
+}
+
+/**
+ * This function scans through the connected usb devices on a machine and
+ * if they match known Vendor and Product identifiers appends them to the
+ * dynamic array mtp_device_list. Be sure to call 
+ * <code>free(mtp_device_list)</code> when you are done with it, assuming it
+ * is not NULL.
  * @param mtp_device_list dynamic array of pointers to usb devices with MTP 
  *        properties (if this list is not empty, new entries will be appended
  *        to the list).
- * @return an MTP-compliant USB device if one was found, else NULL.
+ * @return LIBMTP_ERROR_NONE implies that devices have been found, scan the list
+ *        appropriately. LIBMTP_ERROR_NO_DEVICE_ATTACHED implies that no devices have
+ *        been found.
  */
 static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_device_list)
 {
@@ -381,116 +494,31 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
   for (; bus != NULL; bus = bus->next) {
     struct usb_device *dev = bus->devices;
     for (; dev != NULL; dev = dev->next) {
-      usb_dev_handle *devh;
-      unsigned char buf[1024], cmd;
-      int ret;
-      
-      /* Don't examine hubs (no point in that) */
-      if (dev->descriptor.bDeviceClass == USB_CLASS_HUB) {
-	continue;
+      if (device_has_descriptor(dev)) {
+	/* Append this usb device to the MTP USB Device List */
+	*mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, dev);
+      } else {
+	/* Check if it's in the known devices list then */
+	int i;
+	
+	for(i = 0; i < mtp_device_table_size; i++) {
+	  if(dev->descriptor.bDeviceClass != USB_CLASS_HUB && 
+	     dev->descriptor.idVendor == mtp_device_table[i].vendor_id &&
+	     dev->descriptor.idProduct == mtp_device_table[i].product_id) {
+	    /* Append this usb device to the MTP device list */
+	    *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, dev);
+	    break;
+	  }
+	}
       }
-
-      /* Attempt to open Device on this port */
-      devh = usb_open(dev);
-      if (devh == NULL) {
-        /* Could not open this device, continue */
-        continue;
-      }
-
-      /* Read the special descriptor */
-      ret = usb_get_descriptor(devh, 0x03, 0xee, buf, sizeof(buf));
-
-      /* Check if descriptor length is at least 10 bytes */
-      if (ret < 10) {
-        usb_close(devh);
-        continue;
-      }
-      
-      /* Check if this device has a Microsoft Descriptor */
-      if (!((buf[2] == 'M') && (buf[4] == 'S') &&
-            (buf[6] == 'F') && (buf[8] == 'T'))) {
-        usb_close(devh);
-        continue;
-      }
-      
-      /* Check if device responds to control message 1 or if there is an error*/      
-      cmd = buf[16];
-      ret = usb_control_msg (devh,
-			     USB_ENDPOINT_IN|USB_RECIP_DEVICE|USB_TYPE_VENDOR,
-			     cmd,
-			     0,
-			     4,
-			     (char *) buf,
-			     sizeof(buf),
-			     1000);
-      
-      /* If this is true, the device either isn't MTP or there was an error */
-      if (ret <= 0x15) {
-        /* TODO: If there was an error, flag it and let the user know somehow */
-        /* if(ret == -1) {} */
-        usb_close(devh);
-        continue;
-      }
-      
-      /* Check if device is MTP or if it is something like a USB Mass Storage 
-         device with Janus DRM support */
-      if ((buf[0x12] != 'M') || (buf[0x13] != 'T') || (buf[0x14] != 'P')) {
-        usb_close(devh);
-        continue;
-      }
-      
-      /* After this point we are probably dealing with an MTP device */
-
-      /* Check if device responds to control message 2 or if there is an error*/
-      ret = usb_control_msg (devh,
-                              USB_ENDPOINT_IN|USB_RECIP_DEVICE|USB_TYPE_VENDOR,
-                              cmd,
-                              0,
-                              5,
-                              (char *) buf,
-                              sizeof(buf),
-                              1000);
-      
-      /* If this is true, the device errored against control message 2 */
-      if (ret == -1) {
-        /* TODO: Implement callback function to let managing program know there
-           was a problem, along with description of the problem */
-        fprintf(stderr, "Potential MTP Device with VendorID:%04x and "
-		"ProductID:%04x encountered an error responding to "
-		"control message 2.\n"
-		"Problems may arrise but continuing\n",
-		dev->descriptor.idVendor, dev->descriptor.idProduct);
-      } else if (ret <= 0x15) {
-        /* TODO: Implement callback function to let managing program know there
-           was a problem, along with description of the problem */
-        fprintf(stderr, "Potential MTP Device with VendorID:%04x and "
-		"ProductID:%04x responded to control message 2 with a "
-		"response that was too short. Problems may arrise but "
-		"continuing\n",
-		dev->descriptor.idVendor, dev->descriptor.idProduct);
-      } else if ((buf[0x12] != 'M') || (buf[0x13] != 'T') || (buf[0x14] != 'P')) {
-        /* TODO: Implement callback function to let managing program know there
-           was a problem, along with description of the problem */
-        fprintf(stderr, "Potential MTP Device with VendorID:%04x and "
-		"ProductID:%04x encountered an error responding to "
-		"control message 2\n"
-		"Problems may arrise but continuing\n",
-		dev->descriptor.idVendor, dev->descriptor.idProduct);
-      }
-      
-      /* Close the USB device handle */
-      usb_close(devh);
-      
-      /* Append this usb device to the MTP USB Device List */
-      *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, dev);
     }
   }
   
   /* If nothing was found we end up here. */
-  if(*mtp_device_list == NULL)
+  if(*mtp_device_list == NULL) {
     return LIBMTP_ERROR_NO_DEVICE_ATTACHED;
-  else
-    return LIBMTP_ERROR_NONE;
+  }
+  return LIBMTP_ERROR_NONE;
 }
 
 /**
@@ -1399,47 +1427,6 @@ static void close_usb(PTP_USB* ptp_usb, uint8_t interfaceNumber)
   usb_close(ptp_usb->handle);
 }
 
-/**
- * This function scans through the connected usb devices on a machine and
- * if they match known Vendor and Product identifiers appends them to the
- * dynamic array mtp_device_list. Be sure to call 
- * <code>free(mtp_device_list)</code> when you are done with it, assuming it
- * is not NULL.
- *
- * @param mtp_device_list dynamic array of pointers to usb devices known to
- *        be valid MTP devices
- * @return LIBMTP_ERROR_NONE implies that devices have been found, scan the list
- *        appropriately. LIBMTP_ERROR_NO_DEVICE_ATTACHED implies that no devices have
- *        been found.
- */
-static LIBMTP_error_number_t get_mtp_usb_known_devices(mtpdevice_list_t **mtp_device_list)
-{
-  /* Scan through all attached usb and devices */
-  struct usb_bus *bus = init_usb();
-  for(; bus != NULL; bus = bus->next) {
-    struct usb_device *dev = bus->devices;
-    for(; dev != NULL; dev = dev->next) {
-      int i;
-
-      for(i = 0; i < mtp_device_table_size; i++) {
-	if(dev->descriptor.bDeviceClass != USB_CLASS_HUB && 
-	   dev->descriptor.idVendor == mtp_device_table[i].vendor_id &&
-	   dev->descriptor.idProduct == mtp_device_table[i].product_id) {
-	  /* Append this usb device to the MTP device list */
-	  *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, dev);
-	  break;
-	}
-      }
-    }
-  }
-  
-  /* If nothing was found we end up here. */
-  if(*mtp_device_list == NULL)
-    return LIBMTP_ERROR_NO_DEVICE_ATTACHED;
-  else
-    return LIBMTP_ERROR_NONE;
-}
-
 static LIBMTP_error_number_t prime_device_memory(mtpdevice_list_t *devlist)
 {
   mtpdevice_list_t *tmplist = devlist;
@@ -1620,20 +1607,12 @@ LIBMTP_error_number_t find_usb_devices(mtpdevice_list_t **devlist)
   mtpdevice_list_t *mtp_device_list = NULL;
   LIBMTP_error_number_t ret;
 
-  /* Recover list of attached USB devices that match MTP criteria */
+  /*
+   * Recover list of attached USB devices that match MTP criteria, i.e.
+   * it either has an MTP device descriptor or it is in the known
+   * devices list.
+   */
   ret = get_mtp_usb_device_list (&mtp_device_list);
-  if (ret == LIBMTP_ERROR_NO_DEVICE_ATTACHED) {
-    /* Auto-detection did not find any MTP devices, then search known device 
-     * list.
-     *
-     * FIXME: if there are both auto-detected and non-autodetected devices
-     *        attached, the non-autodetected ones will not be found!!
-     *        This behaviour is a leftover from the old function that could
-     *        only retrieve ONE device. What we need to do is make a union
-     *        of both lists.
-     */
-    ret = get_mtp_usb_known_devices (&mtp_device_list);
-  }
   if (ret != LIBMTP_ERROR_NONE) {
     return ret;
   }
