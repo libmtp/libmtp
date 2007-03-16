@@ -1,3 +1,12 @@
+2007-03-16  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.h: introducing yet another device flag for the
+	  irivers bugged firmwares, this is for the Alzheimer disease that
+	  cause irivers to forget that OGG files are OGG files.
+	* src/libmtp.c: dito.
+	* src/libusb-glue.c: introduce this flag for all iriver devices.
+	* examples/pathutils.c: found a (small) bug.
+
 2007-03-12  Linus Walleij <triad@df.lth.se>
 
 	* Makefile.am: cleanup patch from Rafael Laboissiere.

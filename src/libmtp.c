@@ -2400,6 +2400,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
   LIBMTP_track_t *retracks = NULL;
   LIBMTP_track_t *curtrack = NULL;
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
 
   // Get all the handles if we haven't already done that
   if (params->handles.Handler == NULL) {
@@ -2430,7 +2431,10 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
 	   oi.ObjectFormat != PTP_OFC_MTP_AAC &&
 	   oi.ObjectFormat != PTP_OFC_MTP_M4A &&
 	   oi.ObjectFormat != PTP_OFC_MTP_MP4 &&
-	   oi.ObjectFormat != PTP_OFC_MTP_UndefinedAudio ) {
+	   oi.ObjectFormat != PTP_OFC_MTP_UndefinedAudio &&
+	   // This row lets through undefined files for examination since they may be forgotten OGG files.
+	   (oi.ObjectFormat != PTP_OFC_Undefined || !(ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER))
+	   ) {
 	// printf("Not a music track (format: %d), skipping...\n",oi.ObjectFormat);
 	continue;
       }
@@ -2451,6 +2455,30 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
       }
 
       get_track_metadata(device, oi.ObjectFormat, track);
+
+      /*
+       * A special quirk for iriver devices that doesn't quite
+       * remember that some files marked as "unknown" type are
+       * actually OGG files. We look at the filename extension
+       * and see if it happens that this was atleast named "ogg"
+       * and fall back on this heuristic approach in that case, 
+       * for these bugged devices only.
+       */
+      if (track->filetype == LIBMTP_FILETYPE_UNKNOWN &&
+	  ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER) {
+	// Repair forgotten OGG filetype
+	char *ptype;
+
+	ptype = rindex(track->filename,'.')+1;
+	if (ptype != NULL && !strcasecmp (ptype, "ogg")) {
+	  // Fix it.
+	  track->filetype = LIBMTP_FILETYPE_OGG;
+	} else {
+	  // This was not an OGG file so discard it and continue
+	  LIBMTP_destroy_track_t(track);
+	  continue;
+	}
+      }
 
       // Add track to a list that will be returned afterwards.
       if (retracks == NULL) {

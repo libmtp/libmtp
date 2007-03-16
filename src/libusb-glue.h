@@ -75,6 +75,18 @@
  * 512 bytes, it will work with USB 1.1 and USB 2.0 alike.
  */
 #define DEVICE_FLAG_NO_ZERO_READS 0x00000008
+/**
+ * This flag means that the device is prone to forgetting the
+ * OGG container file type, so that libmtp must look at the
+ * filename extensions in order to determine that a file is
+ * actually OGG. This is a clear and present firmware bug, and
+ * while firmware bugs should be fixed in firmware, we like
+ * OGG so much that we back it by introducing this flag.
+ * The error has only been seen on iriver devices. Turning this
+ * flag on won't hurt anything, just that the check against
+ * filename extension will be done for files of "unknown" type.
+ */
+#define DEVICE_FLAG_IRIVER_OGG_ALZHEIMER 0x00000010
 
 /**
  * Internal USB struct.

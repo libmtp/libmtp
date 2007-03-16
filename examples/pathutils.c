@@ -20,8 +20,8 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "common.h"
-#include "string.h"
 #include "pathutils.h"
+#include <string.h>
 #include <libgen.h>
 
 /* Find the folder_id of a given path
