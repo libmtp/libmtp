@@ -286,7 +286,12 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * LOGIK
    * Sold in the UK, seem to be manufactured by CCTech in China.
    */
-  {"Logik LOG DAX MP3 and DAB Player", 0x13d1, 0x7002, DEVICE_FLAG_NONE }
+  {"Logik LOG DAX MP3 and DAB Player", 0x13d1, 0x7002, DEVICE_FLAG_NONE },
+
+  /*
+   * Other strange stuff.
+   */
+  {"Isabella's prototype", 0x0b20, 0xddee, DEVICE_FLAG_NONE }
 };
 static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
 
