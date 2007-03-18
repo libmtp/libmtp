@@ -1,8 +1,8 @@
 2007-03-18  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: new devices. Some of the Samsung players may
-	  need DEVICE_FLAG_NO_ZERO_READS to be set (the YP-K5 may need
-	  this in particular but unconfirmed).
+	  need DEVICE_FLAG_NO_ZERO_READS to be set - I only know the YP-K5
+	  needs it.
 
 2007-03-16  Linus Walleij <triad@df.lth.se>
 
