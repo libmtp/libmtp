@@ -123,6 +123,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Samsung YH-999 Portable Media Center", 0x04e8, 0x5a0f, DEVICE_FLAG_NONE },
   // From Lionel Bouton
   { "Samsung X830 Mobile Phone", 0x04e8, 0x6702, DEVICE_FLAG_NONE },
+  // From XNJB user
+  { "Samsung YP-Z5", 0x04e8, 0x503c, DEVICE_FLAG_NONE },
 
   /*
    * Intel
@@ -149,6 +151,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Philips GoGear SA9200", 0x0471, 0x014f, DEVICE_FLAG_NONE },
   // from XNJB user
   { "Philips PSA235", 0x0471, 0x7e01, DEVICE_FLAG_NONE },
+  // from discussion forum
+  { "Philips GoGear HDD085/00", 0x0471, 0x014d, DEVICE_FLAG_NONE },
 
   /*
    * SanDisk
@@ -167,6 +171,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "SanDisk Sansa e260", 0x0781, 0x7420, DEVICE_FLAG_NONE },
   // Reported by anonymous user at sourceforge.net
   { "SanDisk Sansa c250", 0x0781, 0x7450, DEVICE_FLAG_NONE },
+  // Reported by XNJB user
+  { "SanDisk Sansa e280", 0x0781, 0x7421, DEVICE_FLAG_NONE },
 
   /*
    * iRiver
@@ -736,9 +742,15 @@ ptp_read_func (
     
     // want to discard extra byte
     if (expect_terminator_byte && result == toread)
+    {
+#ifdef ENABLE_USB_BULK_DEBUG
+      printf("<==USB IN\nDiscarding extra byte\n");
+#endif
       result--;
+    }
     
     handler->putfunc(NULL, handler->private, result, bytes, &written);
+    
     ptp_usb->current_transfer_complete += result;
     curread += result;
 
