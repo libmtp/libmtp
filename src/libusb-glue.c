@@ -156,23 +156,21 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
 
   /*
    * SanDisk
+   * several devices (c150 for sure) are definately dual-mode and must 
+   * have the USB mass storage driver that hooks them unloaded first.
    */
   // Reported by Brian Robison
-  { "SanDisk Sansa m240", 0x0781, 0x7400, DEVICE_FLAG_NONE },
-  /*
-   * Reported by tangent_@users.sourceforge.net
-   * this one is definately dual-mode and must be blocked from
-   * being taken by USB mass storage first.
-   */
+  { "SanDisk Sansa m230/m240", 0x0781, 0x7400, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by tangent_@users.sourceforge.net
   { "SanDisk Sansa c150", 0x0781, 0x7410, DEVICE_FLAG_UNLOAD_DRIVER },
   // From libgphoto2 source
-  { "SanDisk Sansa e200", 0x0781, 0x7420, DEVICE_FLAG_NONE },
+  { "SanDisk Sansa e200", 0x0781, 0x7420, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by gonkflea@users.sourceforge.net
-  { "SanDisk Sansa e260", 0x0781, 0x7420, DEVICE_FLAG_NONE },
+  { "SanDisk Sansa e260", 0x0781, 0x7420, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by anonymous user at sourceforge.net
-  { "SanDisk Sansa c250", 0x0781, 0x7450, DEVICE_FLAG_NONE },
+  { "SanDisk Sansa c250", 0x0781, 0x7450, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by XNJB user
-  { "SanDisk Sansa e280", 0x0781, 0x7421, DEVICE_FLAG_NONE },
+  { "SanDisk Sansa e280", 0x0781, 0x7421, DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
    * iRiver
