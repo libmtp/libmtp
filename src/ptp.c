@@ -2513,6 +2513,7 @@ ptp_mtp_setobjectproplist (PTPParams* params, MTPPropList *proplist)
 	ptp.Code = PTP_OC_MTP_SetObjPropList;
 	ptp.Nparam = 0;
   
+	/* Set object handle to 0 for a new object */
 	oplsize = ptp_pack_OPL(params,proplist,&opldata);
 	ret = ptp_transaction(params, &ptp, PTP_DP_SENDDATA, oplsize, &opldata, NULL); 
 	free(opldata);
