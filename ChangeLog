@@ -1,3 +1,10 @@
+2007-03-22  Richard Low <richard@wentnet.com>
+
+	* src/ptp.c: PTP_OC_MTP_SetObjPropList implementation
+	* src/ptp.h: ditto
+	* src/libmtp.c: Use PTP_OC_MTP_SetObjPropList when updating track
+	  metadata.
+
 2007-03-18  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: new devices. Some of the Samsung players may
