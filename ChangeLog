@@ -1,3 +1,12 @@
+2007-03-23  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: refactored MTP property list handling code to make
+	  things simple. Removed the flag for MTP enhanced: there are devices
+	  that will not work without MTP enhanced (for example the Samsung YP-K5
+	  will only support setting object property lists, not individual object
+	  properties, leaving out parts of the MTP basic subset), thus we are 
+	  allowed to reverse-engineer and implement this for interoperability.
+
 2007-03-22  Richard Low <richard@wentnet.com>
 
 	* src/ptp.c: PTP_OC_MTP_SetObjPropList implementation
