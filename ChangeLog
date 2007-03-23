@@ -6,6 +6,11 @@
 	  will only support setting object property lists, not individual object
 	  properties, leaving out parts of the MTP basic subset), thus we are 
 	  allowed to reverse-engineer and implement this for interoperability.
+	  I also made the output from LIBMTP_Dump_Device_Info() considerably
+	  more verbose, plotting out the ranges and possible enumerated values 
+	  of all object properties. For example you can see that the secret
+	  values associated with Audible.com property 0xda01 is an enumerated 
+	  value that can be 2, 3 or 4 (etc).
 
 2007-03-22  Richard Low <richard@wentnet.com>
 

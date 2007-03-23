@@ -1330,8 +1330,185 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 	add_ptp_error_to_errorstack(device, ret, "LIBMTP_Dump_Device_Info(): error on query for object properties.");
       } else {
 	for (j=0;j<propcnt;j++) {
+	  PTPObjectPropDesc opd;
+	  int k;
+	  
 	  (void) ptp_render_mtp_propname(props[j],sizeof(txt),txt);
-	  printf("      %04x: %s\n", props[j], txt);
+	  printf("      %04x: %s", props[j], txt);
+	  // Get a more verbose description
+	  ret = ptp_mtp_getobjectpropdesc(params, props[j], params->deviceinfo.ImageFormats[i], &opd);
+	  if (ret != PTP_RC_OK) {
+	    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Dump_Device_Info(): "
+				    "could not get property description.");
+	    break;
+	  }
+
+	  if (opd.DataType == PTP_DTC_STR) {
+	    printf(" STRING data type");
+	  } else {
+	    if (opd.DataType & PTP_DTC_ARRAY_MASK) {
+	      printf(" array of");
+	    }
+
+	    switch (opd.DataType & (~PTP_DTC_ARRAY_MASK)) {
+
+	    case PTP_DTC_UNDEF:
+	      printf(" UNDEFINED data type");
+	      break;
+	      
+	    case PTP_DTC_INT8:
+	      printf(" INT8 data type");
+	      switch (opd.FormFlag) {
+	      case PTP_DPFF_Range:
+		printf(" range: MIN %d, MAX %d, STEP %d",
+		       opd.FORM.Range.MinimumValue.i8,
+		       opd.FORM.Range.MaximumValue.i8,
+		       opd.FORM.Range.StepSize.i8);
+		break;
+	      case PTP_DPFF_Enumeration:
+		printf(" enumeration: ");
+		for(k=0;k<opd.FORM.Enum.NumberOfValues;k++) {
+		  printf("%d, ", opd.FORM.Enum.SupportedValue[k].i8);
+		}
+		break;
+	      default:
+		printf(" ANY 8BIT VALUE form");
+		break;
+	      }
+	      break;
+	      
+	    case PTP_DTC_UINT8:
+	      printf(" UINT8 data type");
+	      switch (opd.FormFlag) {
+	      case PTP_DPFF_Range:
+		printf(" range: MIN %d, MAX %d, STEP %d",
+		       opd.FORM.Range.MinimumValue.u8,
+		       opd.FORM.Range.MaximumValue.u8,
+		       opd.FORM.Range.StepSize.u8);
+		break;
+	      case PTP_DPFF_Enumeration:
+		printf(" enumeration: ");
+		for(k=0;k<opd.FORM.Enum.NumberOfValues;k++) {
+		  printf("%d, ", opd.FORM.Enum.SupportedValue[k].u8);
+		}
+		break;
+	      default:
+		printf(" ANY 8BIT VALUE form");
+		break;
+	      }
+	      break;
+	      
+	    case PTP_DTC_INT16:
+	      printf(" INT16 data type");
+	      switch (opd.FormFlag) {
+	      case PTP_DPFF_Range:
+	      printf(" range: MIN %d, MAX %d, STEP %d",
+		     opd.FORM.Range.MinimumValue.i16,
+		     opd.FORM.Range.MaximumValue.i16,
+		     opd.FORM.Range.StepSize.i16);
+	      break;
+	      case PTP_DPFF_Enumeration:
+		printf(" enumeration: ");
+		for(k=0;k<opd.FORM.Enum.NumberOfValues;k++) {
+		  printf("%d, ", opd.FORM.Enum.SupportedValue[k].i16);
+		}
+		break;
+	      default:
+		printf(" ANY 16BIT VALUE form");
+		break;
+	      }
+	      break;
+	      
+	    case PTP_DTC_UINT16:
+	      printf(" UINT16 data type");
+	      switch (opd.FormFlag) {
+	      case PTP_DPFF_Range:
+		printf(" range: MIN %d, MAX %d, STEP %d",
+		       opd.FORM.Range.MinimumValue.u16,
+		       opd.FORM.Range.MaximumValue.u16,
+		       opd.FORM.Range.StepSize.u16);
+		break;
+	      case PTP_DPFF_Enumeration:
+		printf(" enumeration: ");
+		for(k=0;k<opd.FORM.Enum.NumberOfValues;k++) {
+		  printf("%d, ", opd.FORM.Enum.SupportedValue[k].u16);
+		}
+		break;
+	      default:
+		printf(" ANY 16BIT VALUE form");
+		break;
+	      }
+	      break;
+	      
+	    case PTP_DTC_INT32:
+	      printf(" INT32 data type");
+	      switch (opd.FormFlag) {
+	      case PTP_DPFF_Range:
+		printf(" range: MIN %d, MAX %d, STEP %d",
+		       opd.FORM.Range.MinimumValue.i32,
+		       opd.FORM.Range.MaximumValue.i32,
+		       opd.FORM.Range.StepSize.i32);
+		break;
+	      case PTP_DPFF_Enumeration:
+		printf(" enumeration: ");
+		for(k=0;k<opd.FORM.Enum.NumberOfValues;k++) {
+		  printf("%d, ", opd.FORM.Enum.SupportedValue[k].i32);
+		}
+		break;
+	      default:
+		printf(" ANY 32BIT VALUE form");
+		break;
+	      }
+	      break;
+	      
+	    case PTP_DTC_UINT32:
+	      printf(" UINT32 data type");
+	      switch (opd.FormFlag) {
+	      case PTP_DPFF_Range:
+		printf(" range: MIN %d, MAX %d, STEP %d",
+		       opd.FORM.Range.MinimumValue.u32,
+		       opd.FORM.Range.MaximumValue.u32,
+		       opd.FORM.Range.StepSize.u32);
+		break;
+	      case PTP_DPFF_Enumeration:
+		printf(" enumeration: ");
+		for(k=0;k<opd.FORM.Enum.NumberOfValues;k++) {
+		  printf("%d, ", opd.FORM.Enum.SupportedValue[k].u32);
+		}
+		break;
+	      default:
+		printf(" ANY 32BIT VALUE form");
+		break;
+	      }
+	      break;
+	      
+	    case PTP_DTC_INT64:
+	      printf(" INT64 data type");
+	      break;
+	      
+	    case PTP_DTC_UINT64:
+	      printf(" UINT64 data type");
+	      break;
+	      
+	    case PTP_DTC_INT128:
+	      printf(" INT128 data type");
+	      break;
+	      
+	    case PTP_DTC_UINT128:
+	      printf(" UINT128 data type");
+	      break;
+	      
+	    default:
+	      printf(" UNKNOWN data type");
+	      break;
+	    }
+	  }
+	  if (opd.GetSet) {
+	    printf(" GET/SET");
+	  } else {
+	    printf(" READ ONLY");
+	  }
+	  printf("\n");
 	}
 	free(props);
       }
