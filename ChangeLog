@@ -1,8 +1,3 @@
-2007-03-24  Richard Low <richard@wentnet.com>
-
-	* src/libusb-glue.c: give in and give all Samsungs
-	  DEVICE_FLAG_NO_ZERO_READS
-
 2007-03-23  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: refactored MTP property list handling code to make

@@ -102,29 +102,29 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * We suspect that more of these are dual mode.
    */
   // From libgphoto2
-  { "Samsung YH-820", 0x04e8, 0x502e, DEVICE_FLAG_NO_ZERO_READS },
+  { "Samsung YH-820", 0x04e8, 0x502e, DEVICE_FLAG_NONE },
   // Contributed by polux2001@users.sourceforge.net
-  { "Samsung YH-925(-GS)", 0x04e8, 0x502f, DEVICE_FLAG_NO_ZERO_READS },
+  { "Samsung YH-925(-GS)", 0x04e8, 0x502f, DEVICE_FLAG_NONE },
   // Contributed by aronvanammers on SourceForge
-  { "Samsung YH-925GS", 0x04e8, 0x5024, DEVICE_FLAG_NO_ZERO_READS },
+  { "Samsung YH-925GS", 0x04e8, 0x5024, DEVICE_FLAG_NONE },
   // Contributed by anonymous person on SourceForge
-  { "Samsung YP-T7J", 0x04e8, 0x5047, DEVICE_FLAG_NO_ZERO_READS },
+  { "Samsung YP-T7J", 0x04e8, 0x5047, DEVICE_FLAG_NONE },
   // Reported by cstrickler@gmail.com
-  { "Samsung YP-U2J (YP-U2JXB/XAA)", 0x04e8, 0x5054, DEVICE_FLAG_NO_ZERO_READS },
+  { "Samsung YP-U2J (YP-U2JXB/XAA)", 0x04e8, 0x5054, DEVICE_FLAG_NONE },
   // Reported by Andrew Benson
-  { "Samsung YP-F2J", 0x04e8, 0x5057, DEVICE_FLAG_DUALMODE | DEVICE_FLAG_NO_ZERO_READS },
+  { "Samsung YP-F2J", 0x04e8, 0x5057, DEVICE_FLAG_DUALMODE },
   // Reported by Patrick <skibler@gmail.com>
   { "Samsung YP-K5", 0x04e8, 0x505a, DEVICE_FLAG_NO_ZERO_READS },
   // Reported by Matthew Wilcox <matthew@wil.cx>
-  { "Samsung YP-T9", 0x04e8, 0x507f, DEVICE_FLAG_NO_ZERO_READS },
+  { "Samsung YP-T9", 0x04e8, 0x507f, DEVICE_FLAG_NONE },
   // From Paul Clinch
-  { "Samsung YP-K3", 0x04e8, 0x5081, DEVICE_FLAG_NO_ZERO_READS },
+  { "Samsung YP-K3", 0x04e8, 0x5081, DEVICE_FLAG_NONE },
   // From a rouge .INF file
-  { "Samsung YH-999 Portable Media Center", 0x04e8, 0x5a0f, DEVICE_FLAG_NO_ZERO_READS },
+  { "Samsung YH-999 Portable Media Center", 0x04e8, 0x5a0f, DEVICE_FLAG_NONE },
   // From Lionel Bouton
-  { "Samsung X830 Mobile Phone", 0x04e8, 0x6702, DEVICE_FLAG_NO_ZERO_READS },
+  { "Samsung X830 Mobile Phone", 0x04e8, 0x6702, DEVICE_FLAG_NONE },
   // From XNJB user
-  { "Samsung YP-Z5", 0x04e8, 0x503c, DEVICE_FLAG_NO_ZERO_READS },
+  { "Samsung YP-Z5", 0x04e8, 0x503c, DEVICE_FLAG_NONE },
 
   /*
    * Intel
