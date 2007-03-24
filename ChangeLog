@@ -1,3 +1,7 @@
+2007-03-24  Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: fixed bug in zero read code
+
 2007-03-23  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: refactored MTP property list handling code to make

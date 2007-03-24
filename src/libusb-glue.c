@@ -1204,7 +1204,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
     
 		if (((PTP_USB *)params->data)->device_flags & DEVICE_FLAG_NO_ZERO_READS && 
 		    len+PTP_USB_BULK_HDR_LEN == PTP_USB_BULK_HS_MAX_PACKET_LEN_READ) {
-#ifdef ENABLE_USB_DEBUG
+#ifdef ENABLE_USB_BULK_DEBUG
 		  printf("Reading in extra terminating byte\n");
 #endif
 		  // need to read in extra byte and discard it
@@ -1215,8 +1215,19 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		  
 		  if (result != 1)
 		    printf("Could not read in extra byte for PTP_USB_BULK_HS_MAX_PACKET_LEN_READ long file, return value 0x%04x\n", result);
-		}
-		
+		} else if (len+PTP_USB_BULK_HDR_LEN == PTP_USB_BULK_HS_MAX_PACKET_LEN_READ && params->split_header_data == 0) {
+#ifdef ENABLE_USB_BULK_DEBUG
+      printf("Reading in zero packet after header\n");
+#endif
+      int zeroresult = 0;
+      char zerobyte = 0;
+      PTP_USB *ptp_usb = (PTP_USB *)params->data;
+      zeroresult = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, &zerobyte, 0, ptpcam_usb_timeout);
+      
+      if (zeroresult != 0)
+        printf("LIBMTP panic: unable to read in zero packet, response 0x%04x", zeroresult);
+    }
+    
 		/* Is that all of data? */
 		if (len+PTP_USB_BULK_HDR_LEN<=rlen) break;
 		
