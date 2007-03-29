@@ -43,6 +43,8 @@ int main (int argc, char **argv)
   LIBMTP_mtpdevice_t *device_list, *iter;
   LIBMTP_file_t *files;
 
+  fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
+
   LIBMTP_Init();
 
   switch(LIBMTP_Get_Connected_Devices(&device_list))

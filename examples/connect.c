@@ -96,6 +96,9 @@ int main (int argc, char **argv)
 
 
   LIBMTP_Init();
+
+  fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
+
   device = LIBMTP_Get_First_Device();
   if (device == NULL) {
     printf("No devices.\n");

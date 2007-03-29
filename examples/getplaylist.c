@@ -51,6 +51,8 @@ int main (int argc, char **argv)
   u_int32_t id;
   char *endptr;
 
+  fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
+
   // We need file ID
   if ( argc != 2 ) {
     fprintf(stderr, "Just a playlist ID is required\n");

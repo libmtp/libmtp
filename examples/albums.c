@@ -34,6 +34,8 @@ int main () {
 
   LIBMTP_Init();
     
+  fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
+
   switch(LIBMTP_Get_Connected_Devices(&device_list))
   {
   case LIBMTP_ERROR_NO_DEVICE_ATTACHED:

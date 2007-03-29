@@ -40,6 +40,8 @@ int main (int argc, char **argv) {
   uint32_t *tmp = NULL;
   char *playlistname = NULL;
  
+  fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
+
   while ( (opt = getopt(argc, argv, "hn:i:")) != -1 ) {
     switch (opt) {
     case 'h':

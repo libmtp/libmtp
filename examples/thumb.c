@@ -44,6 +44,8 @@ int main (int argc, char **argv) {
   struct stat statbuff;
   int ret;
 
+  fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
+
   while ( (opt = getopt(argc, argv, "hi:")) != -1 ) {
     switch (opt) {
     case 'h':

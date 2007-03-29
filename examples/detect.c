@@ -75,25 +75,7 @@ int main (int argc, char **argv)
 
   LIBMTP_Init();
 
-  if (argc > 1 && !strcmp(argv[1], "-p")) {
-    probeonly = 1;
-  }
-
-  if (probeonly) {
-//    uint16_t vid;
-//    uint16_t pid;
-//
-//    ret = LIBMTP_Detect_Descriptor(&vid, &pid);
-//    if (ret > 0) {
-//      printf("DETECTED MTP DEVICE WITH VID:%04x, PID:%04X\n", vid, pid);
-//      exit(0);
-//    } else {
-//      exit(1);
-//    }
-    fprintf(stdout, "LIBMTP Panic: Probing has been disabled until it has "
-	    "been refactored to\nuse multiple devices\n");
-  }
-
+  fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
   fprintf(stdout, "Attempting to connect device(s)\n");
 
   switch(LIBMTP_Get_Connected_Devices(&device))

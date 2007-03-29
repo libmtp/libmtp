@@ -60,6 +60,9 @@ int main (int argc, char **argv)
   // check if we're doing a dummy run
   int do_delete = 0;
   int opt;
+
+  fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
+
   while ( (opt = getopt(argc, argv, "d")) != -1 ) {
     switch (opt) {
     case 'd':

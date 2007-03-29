@@ -1,3 +1,8 @@
+2007-03-28  Ted Bullock <tbullock@canada.com>
+
+	* examples/*.c: Print library version number on execution of examples
+	* src/libmtp.h.in: New version number string to aid version echoing
+
 2007-03-26  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bump version to 0.1.5, release 0.1.5!

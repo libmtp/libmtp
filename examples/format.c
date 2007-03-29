@@ -51,6 +51,8 @@ int main (int argc, char **argv)
   LIBMTP_mtpdevice_t *device;
   int ret;
 
+  fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
+
   LIBMTP_Init();
   device = LIBMTP_Get_First_Device();
   if (device == NULL) {

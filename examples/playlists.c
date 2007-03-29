@@ -50,6 +50,8 @@ int main (int argc, char **argv)
   LIBMTP_mtpdevice_t *device;
   LIBMTP_playlist_t *playlists;
 
+  fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
+
   LIBMTP_Init();
   device = LIBMTP_Get_First_Device();
   if (device == NULL) {
