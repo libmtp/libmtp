@@ -39,7 +39,11 @@ static void dump_trackinfo(LIBMTP_track_t *track)
     printf("   Origfilename: %s\n", track->filename);
   printf("   Track number: %d\n", track->tracknumber);
   printf("   Duration: %d milliseconds\n", track->duration);
+#ifdef __WIN32__
+  printf("   File size %I64u bytes\n", track->filesize);
+#else
   printf("   File size %llu bytes\n", track->filesize);
+#endif
   printf("   Filetype: %s\n", LIBMTP_Get_Filetype_Description(track->filetype));
   if (track->samplerate != 0) {
     printf("   Sample rate: %u Hz\n", track->samplerate);

@@ -1,7 +1,12 @@
+2007-04-02  Linus Walleij <triad@df.lth.se>
+
+	* examples/files.c: some WIN32 64bit prefix fixup.
+	* examples/tracks.c: dito.
+	
 2007-03-28  Ted Bullock <tbullock@canada.com>
 
-	* examples/*.c: Print library version number on execution of examples
-	* src/libmtp.h.in: New version number string to aid version echoing
+	* examples/*.c: Print library version number on execution of examples.
+	* src/libmtp.h.in: New version number string to aid version echoing.
 
 2007-03-26  Linus Walleij <triad@df.lth.se>
 
