@@ -196,3 +196,82 @@ cannot test your solution.
   return the entire object list if you request a list for object
   0xffffffffu. (But they should.) So we're currently not using 
   that feature.
+
+
+Lost symbols
+------------
+
+Shared libraries can be troublesome to users not experienced with
+them. The following is a condensed version of a generic question 
+that has appeared on the libmtp mailing list from time to time.
+
+> PTP: Opening session
+> Queried Creative Zen Vision:M
+> gnomad2: relocation error: gnomad2: undefined symbol:
+> LIBMTP_Get_Storageinfo
+> (...)
+> Are these type of errors related to libmtp or something else?
+
+The problem is of a generic nature, and related to dynamic library 
+loading. It is colloquially known as "dependency hell".
+(http://en.wikipedia.org/wiki/Dependency_hell)
+
+The gnomad2 application calls upon the dynamic linker in Linux to
+resolve the symbol "LIBMTP_Get_Storageinfo" or any other symbol
+(ELF symbol, or link point or whatever you want to call them, a
+symbol is a label on a memory address that the linker shall 
+resolve from label to actual address.)
+For generic information on this subject see the INSTALL file and
+this Wikipedia page:
+
+http://en.wikipedia.org/wiki/Library_(computing)
+
+When Linux /lib/ld-linux.so.X is called to link the symbols compiled 
+into gnomad2 (or any other executable using libmtp), it examines the 
+ELF file for the libmtp.so.X file it finds first and cannot resolve 
+the symbol "LIBMTP_Get_Storageinfo" (or whichever symbol you have a
+problem witj) from it, since it's probably not there. There are many 
+possible causes of this symbol breakage:
+
+1) You installed precompiled libmtp and gnomad2 packages (RPMs, debs
+    whatever) that do not match up. Typical cause: your gnomad2 package was
+    built against a newer version of libmtp than what's installed on your
+    machine. Another typical cause: you installed a package you found on
+    the web, somewhere, the dependency resolution system did not protest
+    properly (as it should) or you forced it to install anyway, ignoring
+    some warnings.
+
+2) You compiled libmtp and/or gnomad2 from source, installing both or
+    either in /usr/local/lib and /usr/local/bin. This means at compile-time
+    gnomad2 finds the libmtp library in /usr/local/lib but at runtime, it
+    depends on the Linux system wide library loader (/lib/ld-linux.so.X) in
+    order to resolve the symbols. This loader will look into the file
+    /etc/ld.so.conf and/or the folder /etc/ld.so.conf.d in order to find
+    paths to libraries to be used for resolving the symbols. If you have
+    some older version of libmtp in e.g. /usr/lib (typically installed by a
+    package manager) it will take precedence over the new version you just
+    installed in /usr/local/lib and the newly compiled library in
+    /usr/local/lib will *not* be used, resulting in this error message.
+
+3) You really did install the very latest versions (as of writing libmtp
+    0.1.5 and gnomad2 2.8.11) from source and there really is no
+    pre-installed package of either on your machine. In that case I'm
+    totally lost, I have no idea what's causing this.
+
+Typical remedies:
+
+1) If you don't want to mess around with your system and risk these
+    situations, only use pre-packaged software that came with the
+    distribution or its official support channels. If it still breaks,
+    blame your distribution, they're not packaging correctly. Relying on
+    properly packaged software and not installing things yourself *is* the
+    Linux solution to the "dependency hell" problem.
+
+2) Read about dynamically linked library handling until the stuff I wrote
+    about in the previous list sounds like music to your ears, inspect
+    your /lib, /usr/lib, /usr/local/lib, /etc/ld.so.conf and the
+    /etc/ld.so.conf.d, remove all pre-packed versions using RPM, APT,
+    YaST or whatever your distribution uses, compile libmtp and gnomad2
+    (or whatever) from source only and you will be enlighted.
+
+I don't know if this helps you, it's the best answer we can give.
