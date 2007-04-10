@@ -252,6 +252,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Archos 104 (MTP mode)", 0x0e79, 0x120a, DEVICE_FLAG_NONE },
   // Added by Jan Binder
   { "Archos XS202 (MTP mode)", 0x0e79, 0x1208, DEVICE_FLAG_NONE },
+  // Reported by Etienne Chauchot <chauchot.etienne@free.fr>
+  { "Archos 504 (MTP mode)", 0x0e79, 0x1307, DEVICE_FLAG_NONE },
 
   /*
    * Dunlop (OEM of EGOMAN ltd?) reported by Nanomad
