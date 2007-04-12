@@ -76,7 +76,8 @@ int main (int argc, char **argv)
     case style_udev:
       printf("# UDEV-style hotplug map for libmtp\n");
       printf("# Put this file in /etc/udev/rules.d\n\n");
-      printf("SUBSYSTEM!=\"usb_device\", ACTION!=\"add\", GOTO=\"libmtp_rules_end\"\n\n");
+      printf("SUBSYSTEM!=\"usb_device\", GOTO=\"libmtp_rules_end\"\n");
+      printf("ACTION!=\"add\", GOTO=\"libmtp_rules_end\"\n\n");
       break;
     case style_usbmap:
       printf("# This usermap will call the script \"libmtp.sh\" whenever a known MTP device is attached.\n\n");
