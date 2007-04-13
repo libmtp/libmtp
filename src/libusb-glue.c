@@ -152,7 +152,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // from XNJB user
   { "Philips PSA235", 0x0471, 0x7e01, DEVICE_FLAG_NONE },
   // from discussion forum
-  { "Philips HDD085/00", 0x0471, 0x014d, DEVICE_FLAG_NONE },
+  { "Philips HDD085/00 & HDD082/17", 0x0471, 0x014d, DEVICE_FLAG_NONE },
 
   /*
    * SanDisk
@@ -171,6 +171,9 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "SanDisk Sansa c250", 0x0781, 0x7450, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by XNJB user
   { "SanDisk Sansa e280", 0x0781, 0x7421, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by XNJB user
+  { "SanDisk Sansa Connect", 0x0781, 0x7480, DEVICE_FLAG_UNLOAD_DRIVER },
+  
 
   /*
    * iRiver
