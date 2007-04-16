@@ -119,8 +119,9 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Samsung YP-T9", 0x04e8, 0x507f, DEVICE_FLAG_NONE },
   // From Paul Clinch
   { "Samsung YP-K3", 0x04e8, 0x5081, DEVICE_FLAG_NONE },
-  // From a rouge .INF file
-  { "Samsung YH-999 Portable Media Center", 0x04e8, 0x5a0f, DEVICE_FLAG_NONE },
+  // From a rouge .INF file,
+  // this device ID seems to have been recycled for the Samsung SGH-A707 Cingular cellphone
+  { "Samsung YH-999 Portable Media Center / Samsung SGH-A707", 0x04e8, 0x5a0f, DEVICE_FLAG_NONE },
   // From Lionel Bouton
   { "Samsung X830 Mobile Phone", 0x04e8, 0x6702, DEVICE_FLAG_NONE },
   // From XNJB user
