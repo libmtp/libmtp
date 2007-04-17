@@ -1,3 +1,7 @@
+2007-04-17  Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: new device
+
 2007-04-13  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: new devices
