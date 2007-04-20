@@ -59,6 +59,9 @@ FEATURE fixes:
 	mtpfs is connected to a device. This would require some form of resource
 	sharing.
 
+10.FEATURE: Support extracting the device icon so that userlevel apps can use
+	this to get a device representation.
+
 THOSE ARE ALREADY DONE:
 
 1. FEATURE: Make an API that can return several devices and let the user 
