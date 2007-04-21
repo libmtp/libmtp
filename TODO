@@ -48,10 +48,9 @@ FEATURE fixes:
 	know when a device has been plugged in or removed. Need a mechanism to 
 	connect a specific hal UDI.
 	
-6. FEATURE: Mechanism to retrieve the DevIcon.fil (Windows ICO format) and 
-	DevLogo.fil (PNG Format) images from the device (if available).	Convert 
-	DevIcon.fil to something usable (PNG)?
-	(Does this belong directly in libmtp or in a layer above?)
+6. FEATURE: Mechanism to retrieve the device icon device property, else if not
+	present, look for DevIcon.fil (Windows ICO format) and 
+	DevLogo.fil (PNG Format) images from the device (if available).
 
 9. FEATURE: Shared device access so that multiple client applications can have
 	an open connection to the device at the same time via a handle. For example,
@@ -59,8 +58,6 @@ FEATURE fixes:
 	mtpfs is connected to a device. This would require some form of resource
 	sharing.
 
-10.FEATURE: Support extracting the device icon so that userlevel apps can use
-	this to get a device representation.
 
 THOSE ARE ALREADY DONE:
 
