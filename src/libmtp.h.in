@@ -279,6 +279,8 @@ struct LIBMTP_playlist_struct {
 struct LIBMTP_album_struct {
   uint32_t album_id; /**< Unique playlist ID */
   char *name; /**< Name of album */
+  char *artist; /**< Name of album artist */
+  char *genre; /**< Genre of album */
   uint32_t *tracks; /**< The tracks in this album */
   uint32_t no_tracks; /**< The number of tracks in this album */
   LIBMTP_album_t *next; /**< Next album or NULL if last album */

@@ -1,3 +1,10 @@
+2007-04-23  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: extend LIBMTP_album_t to include fields for
+	  artist and genre. This is sort of required so we must change
+	  the API to have it working properly.
+	* src/libmtp.c: dito. Reflect changes in implementation.
+
 2007-04-18  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp.c: sync to upstream gPhoto source.

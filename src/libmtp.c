@@ -107,6 +107,8 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
 			       LIBMTP_track_t *track);
 static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 				    char const * const name,
+				    char const * const artist,
+				    char const * const genre,
 				    uint32_t const parenthandle,
 				    uint16_t const objectformat,
 				    char const * const suffix,
@@ -4510,6 +4512,8 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t cons
  */
 static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 				    char const * const name,
+				    char const * const artist,
+				    char const * const genre,
 				    uint32_t const parenthandle,
 				    uint16_t const objectformat,
 				    char const * const suffix,
@@ -4563,7 +4567,6 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 
     MTPPropList *proplist = NULL;
     MTPPropList *prop = NULL;
-    MTPPropList *previous = NULL;
     
     *newid = 0x00000000U;
 
@@ -4577,13 +4580,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	prop->property = PTP_OPC_ObjectFileName;
 	prop->datatype = PTP_DTC_STR;
 	prop->propval.str = strdup(fname);
-
-	if (previous != NULL)
-	  previous->next = prop;
-	else
-	  proplist = prop;
-	previous = prop;
-	prop->next = NULL;
+	proplist = add_mtp_prop_to_proplist(proplist, prop);
 	break;
       case PTP_OPC_ProtectionStatus:
 	prop = new_mtp_prop_entry();
@@ -4591,13 +4588,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	prop->property = PTP_OPC_ProtectionStatus;
 	prop->datatype = PTP_DTC_UINT16;
 	prop->propval.u16 = 0x0000U; /* Not protected */
-
-	if (previous != NULL)
-	  previous->next = prop;
-	else
-	  proplist = prop;
-	previous = prop;
-	prop->next = NULL;
+	proplist = add_mtp_prop_to_proplist(proplist, prop);
 	break;
       case PTP_OPC_NonConsumable:
 	prop = new_mtp_prop_entry();
@@ -4605,27 +4596,37 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	prop->property = PTP_OPC_NonConsumable;
 	prop->datatype = PTP_DTC_UINT8;
 	prop->propval.u8 = nonconsumable;
-
-	if (previous != NULL)
-	  previous->next = prop;
-	else
-	  proplist = prop;
-	previous = prop;
-	prop->next = NULL;
+	proplist = add_mtp_prop_to_proplist(proplist, prop);
 	break;
       case PTP_OPC_Name:
-	prop = new_mtp_prop_entry();
-	prop->ObjectHandle = *newid;
-	prop->property = PTP_OPC_Name;
-	prop->datatype = PTP_DTC_STR;
-	prop->propval.str = strdup(name);
-
-	if (previous != NULL)
-	  previous->next = prop;
-	else
-	  proplist = prop;
-	previous = prop;
-	prop->next = NULL;
+	if (name != NULL) {
+	  prop = new_mtp_prop_entry();
+	  prop->ObjectHandle = *newid;
+	  prop->property = PTP_OPC_Name;
+	  prop->datatype = PTP_DTC_STR;
+	  prop->propval.str = strdup(name);
+	  proplist = add_mtp_prop_to_proplist(proplist, prop);
+	}
+	break;
+      case PTP_OPC_Artist:
+	if (artist != NULL) {
+	  prop = new_mtp_prop_entry();
+	  prop->ObjectHandle = *newid;
+	  prop->property = PTP_OPC_Artist;
+	  prop->datatype = PTP_DTC_STR;
+	  prop->propval.str = strdup(artist);
+	  proplist = add_mtp_prop_to_proplist(proplist, prop);
+	}
+	break;
+      case PTP_OPC_Genre:
+	if (genre != NULL) {
+	  prop = new_mtp_prop_entry();
+	  prop->ObjectHandle = *newid;
+	  prop->property = PTP_OPC_Genre;
+	  prop->datatype = PTP_DTC_STR;
+	  prop->propval.str = strdup(genre);
+	  proplist = add_mtp_prop_to_proplist(proplist, prop);
+	}
 	break;
       }
     }
@@ -4682,11 +4683,32 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
     }
 	
     // Update title
-    ret = set_object_string(device, *newid, PTP_OPC_Name, name);
-    if (ret != 0) {
-      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity name.");
-      return -1;
+    if (name != NULL) {
+      ret = set_object_string(device, *newid, PTP_OPC_Name, name);
+      if (ret != 0) {
+	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity name.");
+	return -1;
+      }
     }
+    
+    // Update artist
+    if (artist != NULL) {
+      ret = set_object_string(device, *newid, PTP_OPC_Artist, artist);
+      if (ret != 0) {
+	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity artist.");
+	return -1;
+      }
+    }
+
+    // Update genre
+    if (genre != NULL) {
+      ret = set_object_string(device, *newid, PTP_OPC_Genre, genre);
+      if (ret != 0) {
+	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity genre.");
+	return -1;
+      }
+    }
+    
   }
 
   if (no_tracks > 0) {
@@ -4734,6 +4756,8 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   // Just create a new abstract audio/video playlist...
   return create_new_abstract_list(device,
 				  metadata->name,
+				  NULL,
+				  NULL,
 				  localph,
 				  PTP_OFC_MTP_AbstractAudioVideoPlaylist,
 				  ".zpl",
@@ -4798,6 +4822,8 @@ LIBMTP_album_t *LIBMTP_new_album_t(void)
   }
   new->album_id = 0;
   new->name = NULL;
+  new->artist = NULL;
+  new->genre = NULL;
   new->tracks = NULL;
   new->no_tracks = 0;
   new->next = NULL;
@@ -4817,6 +4843,10 @@ void LIBMTP_destroy_album_t(LIBMTP_album_t *album)
   }
   if (album->name != NULL)
     free(album->name);
+  if (album->artist != NULL)
+    free(album->artist);
+  if (album->genre != NULL)
+    free(album->genre);
   if (album->tracks != NULL)
     free(album->tracks);
   free(album);
@@ -4859,7 +4889,10 @@ LIBMTP_album_t *LIBMTP_Get_Album_List(LIBMTP_mtpdevice_t *device)
 
       // Allocate a new album type
       alb = LIBMTP_new_album_t();
+      // Get metadata for it.
       alb->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
+      alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Artist);
+      alb->genre = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Genre);
       alb->album_id = params->handles.Handler[i];
 
       // Then get the track listing for this album
@@ -4922,8 +4955,10 @@ LIBMTP_album_t *LIBMTP_Get_Album(LIBMTP_mtpdevice_t *device, uint32_t const albi
 
       // Allocate a new album type
       alb = LIBMTP_new_album_t();
-      alb->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
       alb->album_id = params->handles.Handler[i];
+      alb->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
+      alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Artist);
+      alb->genre = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Genre);
       ret = ptp_mtp_getobjectreferences(params, alb->album_id, &alb->tracks, &alb->no_tracks);
       if (ret != PTP_RC_OK) {
 	add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Album: Could not get object references.");
@@ -4968,6 +5003,8 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
   // Just create a new abstract album...
   return create_new_abstract_list(device,
 				  metadata->name,
+				  metadata->artist,
+				  metadata->genre,
 				  localph,
 				  PTP_OFC_MTP_AbstractAudioAlbum,
 				  ".alb",
