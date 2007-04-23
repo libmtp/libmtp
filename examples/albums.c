@@ -24,9 +24,11 @@
 
 static void dump_albuminfo(LIBMTP_album_t *album)
 {
-  printf("Album ID:%d\n",album->album_id);
-  printf("    Name:%s\n",album->name);
-  printf("  Tracks:%d\n\n",album->no_tracks);
+  printf("Album ID: %d\n",album->album_id);
+  printf("    Name:   %s\n",album->name);
+  printf("    Artist: %s\n", album->artist);
+  printf("    Genre:  %s\n", album->genre);
+  printf("  Tracks: %d\n\n",album->no_tracks);
 }
 
 int main () {
