@@ -300,7 +300,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * LOGIK
    * Sold in the UK, seem to be manufactured by CCTech in China.
    */
-  {"Logik LOG DAX MP3 and DAB Player", 0x13d1, 0x7002, DEVICE_FLAG_NONE },
+  {"Logik LOG DAX MP3 and DAB Player", 0x13d1, 0x7002, DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
    * Other strange stuff.
