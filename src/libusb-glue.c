@@ -303,6 +303,11 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   {"Logik LOG DAX MP3 and DAB Player", 0x13d1, 0x7002, DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
+   * RCA / Thomson
+   */
+  {"Thomson Opal / RCA Lyra MC4002", 0x069b, 0x0777, DEVICE_FLAG_NONE },
+
+  /*
    * Other strange stuff.
    */
   {"Isabella's prototype", 0x0b20, 0xddee, DEVICE_FLAG_NONE }
