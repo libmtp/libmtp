@@ -1122,7 +1122,6 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 {
 	uint16_t ret;
 	PTPUSBBulkContainer usbdata;
-	unsigned char	*data;
 	unsigned long	written;
 
 	memset(&usbdata,0,sizeof(usbdata));
@@ -1205,7 +1204,6 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		if (dtoh32(usbdata.length) > 12 && (rlen==12))
 			params->split_header_data = 1;
 
-		data = malloc(PTP_USB_BULK_HS_MAX_PACKET_LEN_READ);
 		/* Copy first part of data to 'data' */
 		handler->putfunc(
 			params, handler->private, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data,

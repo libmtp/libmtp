@@ -1,3 +1,7 @@
+2007-04-26  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: memory leak: dangling, unused poiter killed.
+
 2007-04-23  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: extend LIBMTP_album_t to include fields for
