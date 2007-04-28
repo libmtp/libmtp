@@ -1,3 +1,7 @@
+2007-04-28  Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: new device
+
 2007-04-26  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: memory leak: dangling, unused poiter killed.

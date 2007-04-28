@@ -310,7 +310,12 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   /*
    * Other strange stuff.
    */
-  {"Isabella's prototype", 0x0b20, 0xddee, DEVICE_FLAG_NONE }
+  {"Isabella's prototype", 0x0b20, 0xddee, DEVICE_FLAG_NONE },
+  
+  /*
+   * NTT DoCoMo
+   */
+  {"FOMA F903iX HIGH-SPEED", 0x04c5, 0x1140, DEVICE_FLAG_NONE }
 };
 static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
 
