@@ -167,13 +167,12 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // Reported by tangent_@users.sourceforge.net
   { "SanDisk Sansa c150", 0x0781, 0x7410, DEVICE_FLAG_UNLOAD_DRIVER },
   // From libgphoto2 source
-  { "SanDisk Sansa e200", 0x0781, 0x7420, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by gonkflea@users.sourceforge.net
-  { "SanDisk Sansa e260", 0x0781, 0x7420, DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by anonymous user at sourceforge.net
-  { "SanDisk Sansa c250", 0x0781, 0x7450, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "SanDisk Sansa e200/e260", 0x0781, 0x7420, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by XNJB user
   { "SanDisk Sansa e280", 0x0781, 0x7421, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by anonymous user at sourceforge.net
+  { "SanDisk Sansa c250", 0x0781, 0x7450, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by XNJB user, and Miguel de Icaza <miguel@gnome.org>
   // This has no dual-mode so no need to unload any driver.
   { "SanDisk Sansa Connect", 0x0781, 0x7480, DEVICE_FLAG_NONE },
