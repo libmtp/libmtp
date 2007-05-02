@@ -1,0 +1,157 @@
+libmtp version: 0.1.5
+
+Attempting to connect device(s)
+Detect: Successfully connected 1 devices
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 0e79
+   idProduct: 1307
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Device flags: 0x00000002
+Device info:
+   Manufacturer: ARCHOS
+   Model: a504
+   Device version: 1.6.20  
+   Serial number: C5B8X71AC13UGG
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0; microsoft.com/WMDRMPD: 10.1; microsoft.com/WMPPD: 10.0;
+Supported operations:
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+   1001: get device info
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   1017: Reset device property value
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   100f: Format storage
+   1010: Reset device
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100c: Send object info
+   100d: Send object
+   100b: Delete object
+   1019: Move object
+   101a: Copy object
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9806: Set object property list
+   9807: Get interdependent property description
+   9808: Send object property list
+   9810: Get object references
+   9811: Set object references
+   101b: Get partial object
+   9201: Report Added/Deleted Items
+Events supported:
+   0x4001
+   0x4004
+   0x4005
+   0x400a
+Device Properties Supported:
+   0xd101: Secure Time
+   0xd102: Device Certificate
+   0x5001: Battery Level
+   0xd401: Synchronization Partner
+   0xd402: Device Friendly Name
+Playable File (Object) Types and Object Properties Supported:
+   3000: Undefined Type
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc42: SyncID STRING data type GET/SET
+      dc44: Name STRING data type GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+   3009: MP3
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc89: Duration UINT32 data type range: MIN 1, MAX -1, STEP 1 READ ONLY
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc92: SkipCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  GET/SET
+      de93: SampleRate UINT32 data type range: MIN 8000, MAX 48000, STEP 1 READ ONLY
+      de9a: AudioBitRate UINT32 data type range: MIN 1000, MAX 327680, STEP 1 READ ONLY
+      de99: AudioWAVECodec UINT32 data type enumeration: 85,  READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/hannels UINT16 data type enumeration: 1, 2,  GET/SET
+      de93: SampleRate UINT32 data type range: MIN 8000, MAX 96000, STEP 1 READ ONLY
+      de9a: AudioBitRate UINT32 data type rype enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc89: Duration UINT32 data type range: MIN 1, MAX -1, STEP 1 READ ONLY
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc92: SkipCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  GET/SET
+      de93: SampleRate UINT32 data type range: MIN 8000, MAX 96000, STEP 1 READ ONLY
+      de9a: AudioBitRate UINT32 data type range: MIN 8000, MAX 320000, STEP 1 READ ONLY
+      de99: AudioWAVECodec UINT32 data type enumeration: 255,  RE SyncID STRING data type GET/SET
+      dc99: OriginalReleaseDate STRING range:onsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc42: SyncID STRING data type GET/SET
+      dc99: OriginalReleaseDate STRING data type GET/SET
+      dc44: EncodingProfile STRING data type GET/SET
+      de91: TotalBitRate UINT32 data type range: MIN 10240, MAX 13312000, STEP 1 READ ONLY
+      dc4f: NonConsumable UINT8 daation: 1, 17, 85, 353,  READ ONLY
+      de9c: VideoBitRate UINT32 data type range: MIN 10240, MAX 10240000, STEP 1 READ ONLY
+      de9b: VideoFourCCCodec UINT32 data type enumeINT32 data type range: MIN 8000, MAX 96000, STEP 1 READ ONLY
+      de9a: AudioBitRate UINT32 data type range: MIN 8000, MAX 3072000, STEP 1 READ ONLY
+      de99: AudioWAVECodec UINT32 data tount UINT32 data type ANY 32BIT VALUE form GET/SET
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  GET/SET
+      de93: SctionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+     1 GET/SET
+   3804: BMP
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc0 READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc87: Width UINT32 datta type ANY 8BIT VALUE form GET/SET
+      dc82: RepresentativeSampleSize UINT32 data type range: MIN 1, MAX -1, STEP 1 GET/SET
+      d901: BuyFlag UINT8 dD: 0x00010001
+      StorageType: 0x0003
+      FilesystemType: 0x0002
+      AccessCapability: 0x0000
+      MaxCapacity: 79818866688
+      FreeSpaceInBytes: 67965894656
+      FreeSpaceInObjects: 4294967MSDRM_SIGNATURE_VALUE>3VHCHxifwOjtdNIMFeNItuMZqHGgjnhQxy9PXKw7s5xybRzIjPkTGQ==</MSDRM_SIGNATURE_VALUE><SYMSIGN><MSDRM_SIGNATURE_VALUE>l5TRtNPfdxdretk8bTlY1XGiaFmaevtJuwErqrwpXL82hScj6cjlDg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
+
+Device description WMPInfo.xml file:
+<DeviceInfo>
+    <WMP DeviceID="{4287E9BD-3B39-4BFD-A5AD-FFDCB8B796C8}" RelationshipID="{6870ED09-423F-4172-94B4-FE3AF8069649}"/>
+</DeviceInfo>
+
+OK.
