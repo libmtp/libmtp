@@ -42,15 +42,22 @@
  */
 #define DEVICE_FLAG_NONE 0x00000000
 /**
- * This means the device supports both MTP and USB mass 
- * storage by dynamically reconfiguring itself if it is not
- * used with MTP before a certain timeout.
+ * This means nothing. It used to mean something but that
+ * something was the same as something else. Please recycle
+ * this flag if you feel to.
  */
-#define DEVICE_FLAG_DUALMODE 0x00000001
+#define DEVICE_FLAG_UNDEFINED 0x00000001
 /**
  * This means that under Linux, another kernel module may 
- * be using the MTP interface, so we need to detach it if
- * it is.
+ * be using this device's USB interface, so we need to detach 
+ * it if it is. Typically this is on dual-mode devices that
+ * will present both an MTP compliant interface and device
+ * descriptor *and* a USB mass storage interface. If the USB
+ * mass storage interface is in use, other apps (like our
+ * userspace libmtp through libusb access path) cannot get in
+ * and get cosy with it. So we can remove the offending 
+ * application. Typically this means you have to run the program
+ * as root as well.
  */
 #define DEVICE_FLAG_UNLOAD_DRIVER 0x00000002
 /**

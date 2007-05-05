@@ -112,7 +112,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // Reported by cstrickler@gmail.com
   { "Samsung YP-U2J (YP-U2JXB/XAA)", 0x04e8, 0x5054, DEVICE_FLAG_NONE },
   // Reported by Andrew Benson
-  { "Samsung YP-F2J", 0x04e8, 0x5057, DEVICE_FLAG_DUALMODE },
+  { "Samsung YP-F2J", 0x04e8, 0x5057, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Patrick <skibler@gmail.com>
   { "Samsung YP-K5", 0x04e8, 0x505a, DEVICE_FLAG_NO_ZERO_READS },
   // Reported by Matthew Wilcox <matthew@wil.cx>
