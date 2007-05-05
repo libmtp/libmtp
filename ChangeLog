@@ -1,3 +1,10 @@
+2007-05-05  Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: added Philips PSA610
+	* src/libmtp.c: code to recursively get object handles for each
+	  assoc.
+	* src/libptp.h: ditto
+
 2007-04-28  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: new device

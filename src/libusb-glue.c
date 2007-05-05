@@ -156,6 +156,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Philips PSA235", 0x0471, 0x7e01, DEVICE_FLAG_NONE },
   // from discussion forum
   { "Philips HDD085/00 & HDD082/17", 0x0471, 0x014d, DEVICE_FLAG_NONE },
+  // from npedrosa
+  { "Philips PSA610", 0x0471, 0x0181, DEVICE_FLAG_NONE },
 
   /*
    * SanDisk
@@ -315,6 +317,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * NTT DoCoMo
    */
   {"FOMA F903iX HIGH-SPEED", 0x04c5, 0x1140, DEVICE_FLAG_NONE }
+
 };
 static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
 

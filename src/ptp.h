@@ -459,6 +459,7 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_GOH_ALL_STORAGE 0xffffffff
 #define PTP_GOH_ALL_FORMATS 0x00000000
 #define PTP_GOH_ALL_ASSOCS  0x00000000
+#define PTP_GOH_ROOT_PARENT 0xffffffff
 
 /* PTP device info structure (returned by GetDevInfo) */
 

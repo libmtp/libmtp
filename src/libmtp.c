@@ -78,6 +78,7 @@ static void add_ptp_error_to_errorstack(LIBMTP_mtpdevice_t *device,
 					uint16_t ptp_error,
 					char const * const error_text);
 static void flush_handles(LIBMTP_mtpdevice_t *device);
+static void get_handles_recursively(LIBMTP_mtpdevice_t *device, PTPParams *params, PTPObjectHandles *handles, uint32_t parent);
 static void free_storage_list(LIBMTP_mtpdevice_t *device);
 static int sort_storage_by(LIBMTP_mtpdevice_t *device, int const sortby);
 static uint32_t get_first_storageid(LIBMTP_mtpdevice_t *device);
@@ -1085,23 +1086,60 @@ void LIBMTP_Dump_Errorstack(LIBMTP_mtpdevice_t *device)
 static void flush_handles(LIBMTP_mtpdevice_t *device)
 {
   PTPParams *params = (PTPParams *) device->params;
-  uint16_t ret;
 
   if (params->handles.Handler != NULL) {
     free(params->handles.Handler);
   }
+  
+  params->handles.Handler = NULL;
 
   // Get all the handles if we haven't already done that
-  ret = ptp_getobjecthandles(params,
-			     PTP_GOH_ALL_STORAGE,
-			     PTP_GOH_ALL_FORMATS,
-			     PTP_GOH_ALL_ASSOCS,
-			     &params->handles);
-  if (ret != PTP_RC_OK) {
-    add_ptp_error_to_errorstack(device, ret, "flush_handles(): could not get object handles.");
-  }
+  get_handles_recursively(device, params,
+                          &params->handles,
+                          PTP_GOH_ROOT_PARENT);
+}
 
-  return;
+static void get_handles_recursively(LIBMTP_mtpdevice_t *device, PTPParams *params, PTPObjectHandles *handles, uint32_t parent)
+{
+  PTPObjectHandles currentHandles;
+  int i = 0;
+  
+  uint16_t ret = ptp_getobjecthandles(params,
+                                      PTP_GOH_ALL_STORAGE,
+                                      PTP_GOH_ALL_FORMATS,
+                                      parent,
+                                      &currentHandles);
+  
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "get_handles_recursively(): could not get object handles.");
+    return;
+  }
+  
+  if (currentHandles.Handler == NULL || currentHandles.n == 0)
+    return;
+  
+  // realloc main space
+  handles->Handler = realloc(handles->Handler, (handles->n + currentHandles.n) * sizeof(uint32_t));
+  // copy new handles
+  memcpy(&(handles->Handler[handles->n]), currentHandles.Handler, currentHandles.n * sizeof(uint32_t));
+  handles->n += currentHandles.n;
+  
+  // now do recursion
+  
+  for (i = 0; i < currentHandles.n; i++) {
+    PTPObjectInfo oi;
+    
+    ret = ptp_getobjectinfo(params, currentHandles.Handler[i], &oi);
+    
+    if (ret == PTP_RC_OK) {
+      
+      if (oi.ObjectFormat == PTP_OFC_Association) {
+        get_handles_recursively(device, params, handles, currentHandles.Handler[i]);
+      }
+    }
+  }
+   
+  free(currentHandles.Handler);  
 }
 
 /**
@@ -2537,7 +2575,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
  * <pre>
  * LIBMTP_track_t *tracklist;
  *
- * tracklist = LIBMTP_Get_Tracklisting(device, callback, data);
+ * tracklist = LIBMTP_Get_Tracklisting_With_Callback(device, callback, data);
  * while (tracklist != NULL) {
  *   LIBMTP_track_t *tmp;
  *
