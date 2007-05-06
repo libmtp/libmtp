@@ -3,7 +3,7 @@
 	* src/libusb-glue.h: removed the DUALMODE flag, it's pointless and
 	  equal to the problem solved by the UNLOAD_DRIVER flag.
 	* src/libusb-glue.c: dito, move the only DUALMODE flag into an
-	  UNLOAD_DRIVER flag.
+	  UNLOAD_DRIVER flag. Added Archos Gmini.
 
 2007-05-05  Richard Low <richard@wentnet.com>
 
