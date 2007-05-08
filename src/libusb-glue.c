@@ -309,17 +309,22 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * RCA / Thomson
    */
   {"Thomson Opal / RCA Lyra MC4002", 0x069b, 0x0777, DEVICE_FLAG_NONE },
-
-  /*
-   * Other strange stuff.
-   */
-  {"Isabella's prototype", 0x0b20, 0xddee, DEVICE_FLAG_NONE },
   
   /*
    * NTT DoCoMo
    */
-  {"FOMA F903iX HIGH-SPEED", 0x04c5, 0x1140, DEVICE_FLAG_NONE }
+  {"FOMA F903iX HIGH-SPEED", 0x04c5, 0x1140, DEVICE_FLAG_NONE },
 
+  /*
+   * Palm device in MTP mode, probably doesn't quite work right now.
+   * Reported by Peter Gyongyosi <gyp@impulzus.com>
+   */
+  {"Palm / Handspring MTP Mode", 0x1703, 0x0001, DEVICE_FLAG_NONE },
+
+  /*
+   * Other strange stuff.
+   */
+  {"Isabella's prototype", 0x0b20, 0xddee, DEVICE_FLAG_NONE }
 };
 static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
 
