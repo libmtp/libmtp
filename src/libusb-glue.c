@@ -264,7 +264,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // This seems to be dual-mode and thus need to have the unload flag.
   { "Archos 504 (MTP mode)", 0x0e79, 0x1307, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Alexander Haertig <AlexanderHaertig@gmx.de>
-  { "Archos Gmini", 0x0e79, 0x1207, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Archos Gmini XS100", 0x0e79, 0x1207, DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
    * Dunlop (OEM of EGOMAN ltd?) reported by Nanomad
