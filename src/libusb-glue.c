@@ -177,6 +177,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "SanDisk Sansa c250", 0x0781, 0x7450, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by XNJB user, and Miguel de Icaza <miguel@gnome.org>
   // This has no dual-mode so no need to unload any driver.
+  // This is a Linux based device!
   { "SanDisk Sansa Connect", 0x0781, 0x7480, DEVICE_FLAG_NONE },
   
 
@@ -228,6 +229,10 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // Reported by Adam Torgerson
   { "iRiver Clix", 0x4102, 0x112a, 
     DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
+  // Reported by Douglas Roth <dougaus@gmail.com>
+  { "iRiver X20", 0x4102, 0x1132, 
+    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
+    DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
   // Reported by Scott Call
   { "iRiver H10 20GB", 0x4102, 0x2101, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
@@ -235,6 +240,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "iRiver H10", 0x4102, 0x2102, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
+
 
   /*
    * Dell
