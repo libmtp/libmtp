@@ -1,3 +1,7 @@
+2007-05-10  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: some new devices, some rewording etc.
+
 2007-05-05  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.h: removed the DUALMODE flag, it's pointless and
