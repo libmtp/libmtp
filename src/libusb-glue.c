@@ -316,10 +316,10 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   {"FOMA F903iX HIGH-SPEED", 0x04c5, 0x1140, DEVICE_FLAG_NONE },
 
   /*
-   * Palm device in MTP mode, probably doesn't quite work right now.
+   * Palm device userland program named Pocket Tunes
    * Reported by Peter Gyongyosi <gyp@impulzus.com>
    */
-  {"Palm / Handspring MTP Mode", 0x1703, 0x0001, DEVICE_FLAG_NONE },
+  {"Palm / Handspring Pocket Tunes", 0x1703, 0x0001, DEVICE_FLAG_NONE },
 
   /*
    * Other strange stuff.
