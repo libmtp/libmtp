@@ -329,6 +329,14 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   {"Palm / Handspring Pocket Tunes", 0x1703, 0x0001, DEVICE_FLAG_NONE },
 
   /*
+   * TrekStor devices
+   * Their datasheet claims their devices are dualmode so probably needs to
+   * unload the attached drivers here.
+   */
+  // Reported by Stefan Voss <svoss@web.de>
+  {"TrekStor Vibez 8/12GB", 0x066f, 0x842a, DEVICE_FLAG_UNLOAD_DRIVER },
+
+  /*
    * Other strange stuff.
    */
   {"Isabella's prototype", 0x0b20, 0xddee, DEVICE_FLAG_NONE }
