@@ -77,14 +77,40 @@ See the project page at http://libmtp.sourceforge.net/
 We always need your help. There is a mailinglist and a
 bug report system there.
 
+
+New Devices
+-----------
+
 If you happen upon a device which libmtp claims it cannot
 autodetect, please submit the vendor ID and device ID 
 as a bug, patch or feature request on the Sourceforge
 bug tracker at our homepage. If it gives a sensible 
 output from "mtp-detect" then please attach the result as
-well as it teach us some stuff about your device.
+well as it teach us some stuff about your device. If you've
+done some additional hacking, join our mailinglist and
+post your experiences there.
 
-If your device is problematic we are curious of how it
+If you want to be able to hack some more and you're not
+afraid of C hacking, add an entry for your device's 
+vendor/product ID and a descriptive string to the database 
+in the file src/libusb-glue.c. It is close to the top of the 
+file.
+
+If you want to poke around to see if your device has some
+special pecularities, you can test some special device
+flags (defined in src/libusb-glue.h) by inserting them
+together with your device entry in src/libusb-glue.c.
+Flags can be tested in isolation or catenated with "|"
+(binary OR). If relatives to your device use a certain
+flag, chances are high that a new device will need it
+too, typically from the same manufacturer.
+
+The most common flag that needs to be set is the 
+DEVICE_FLAG_UNLOAD_DRIVER that detach any Linux kernel
+drivers that may have attached to the device making
+MTP access impossible.
+
+If your device is very problematic we are curious of how it
 works under Windows, so we enjoy reading USB packet sniffs
 that reveal the low-level traffic carried out between
 Windows Media Player and your device. This can be done 
@@ -98,14 +124,14 @@ alternatives use hardware and even measure electronic
 characteristics of the traffic (which is far too much 
 detail for us).
 
-If you want to poke around to see if your device has some
-special pecularities, you can test some special device
-flags (defined in src/libusb-glue.h) by inserting them
-together with your device entry in src/libusb-glue.c.
-Flags can be tested in isolation or catenated with "|"
-(binary OR). If relatives to your device use a certain
-flag, chances are high that a new device will need it
-too, typically from the same manufacturer.
+If you are a device vendor, please consider assigning one 
+of your employees as a contact person for libmtp, have them
+sign up to the libmtp development list and answer questions
+and post new device ID:s as they are released to our
+mailing list. By the way: do you have spare devices you
+can give us? Send them to Richard (Mac support) or Linus
+(Linux support). (So far nobody did that except for Microsoft
+who sent us a Zune by proxy!)
 
 
 Calendar and contact support:
