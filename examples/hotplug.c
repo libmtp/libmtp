@@ -28,9 +28,10 @@
 
 static void usage(void)
 {
-  fprintf(stderr, "usage: hotplug [-h -u -a\"ACTION\"]\n");
+  fprintf(stderr, "usage: hotplug [-u -H -i -a\"ACTION\"]\n");
   fprintf(stderr, "       -u:  use udev syntax\n");
   fprintf(stderr, "       -H:  use hal syntax\n");
+  fprintf(stderr, "       -i:  use usb.ids simple list syntax\n");
   fprintf(stderr, "       -a\"ACTION\": perform udev action ACTION on attachment\n");
   exit(1);
 }
@@ -38,7 +39,8 @@ static void usage(void)
 enum style {
 	style_usbmap,
 	style_udev,
-	style_hal
+	style_hal,
+	style_usbids
 };
 
 int main (int argc, char **argv)
@@ -53,8 +55,9 @@ int main (int argc, char **argv)
   extern char *optarg;
   char *udev_action = NULL;
   char default_udev_action[] = "SYMLINK+=\"libmtp-%k\", MODE=\"666\"";
+  uint16_t last_vendor = 0x0000U;
 
-  while ( (opt = getopt(argc, argv, "uHa:")) != -1 ) {
+  while ( (opt = getopt(argc, argv, "uiHa:")) != -1 ) {
     switch (opt) {
     case 'a':
       udev_action = strdup(optarg);
@@ -63,6 +66,9 @@ int main (int argc, char **argv)
       break;
     case 'H':
       style = style_hal;
+      break;
+    case 'i':
+      style = style_usbids;
       break;
     default:
       usage();
@@ -88,6 +94,10 @@ int main (int argc, char **argv)
       printf("<deviceinfo version=\"0.2\">\n");
       printf(" <device>\n");
       printf("  <match key=\"info.bus\" string=\"usb\">\n");
+      break;
+    case style_usbids:
+      printf("# usb.ids style device list from libmtp\n");
+      printf("# Compare: http://www.linux-usb.org/usb.ids\n");
       break;
     }
 
@@ -124,7 +134,14 @@ int main (int argc, char **argv)
 	printf("    </match>\n");
 	printf("   </match>\n");
 	break;
+      case style_usbids:
+	if (last_vendor != entry->vendor_id) {
+	  printf("%04x\n", entry->vendor_id);
+	}
+	printf("\t%04x  %s\n", entry->product_id, entry->name);
+	break;
       }
+      last_vendor = entry->vendor_id;
     }
   } else {
     printf("Error.\n");
@@ -142,6 +159,8 @@ int main (int argc, char **argv)
     printf(" </device>\n");
     printf("</deviceinfo>\n");
     break;
+  case style_usbids:
+    printf("\n");
   }
 
   exit (0);

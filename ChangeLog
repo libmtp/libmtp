@@ -1,3 +1,11 @@
+2007-05-11  Linus Walleij <triad@df.lth.se>
+
+	* examples/hotplug.c: output a usb.ids map if need be.
+	* sync-usbids.sh: script to assist in comparing our device
+	  database to the linux-usb database so we can submit new
+	  entries to it more easily. Please extend this until it
+	  creates automated diff:s if you can!
+
 2007-05-10  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: some new devices, some rewording etc.
