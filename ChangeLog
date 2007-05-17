@@ -1,3 +1,7 @@
+2007-05-17  Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: added Samsung YH-920
+
 2007-05-11  Linus Walleij <triad@df.lth.se>
 
 	* examples/hotplug.c: output a usb.ids map if need be.
