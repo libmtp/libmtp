@@ -129,7 +129,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // From XNJB user
   { "Samsung YP-Z5 2GB", 0x04e8, 0x5041, DEVICE_FLAG_NONE },
   // From Soren O'Neill
-  { "Samsung YH-920", 0x04e8, 0x5022, DEVICE_FLAG_NONE },
+  { "Samsung YH-920", 0x04e8, 0x5022, DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
    * Intel
