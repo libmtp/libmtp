@@ -1,3 +1,8 @@
+2007-05-24  Jeff Mitchell <me@jefferai.com>
+
+    * examples/hotplug.c: Fix/update HAL output to conform
+	  to new specs. Fix whitespacing to be consistent.
+
 2007-05-17  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: added Samsung YH-920
