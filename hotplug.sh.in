@@ -6,6 +6,9 @@ SCRIPTNAME=libmtp.sh
 USERMAP=libmtp.usermap
 UDEVPATH=/etc/udev/rules.d
 UDEVRULES=libmtp.rules
+HALBASEPATH=/usr/share/hal/fdi/information
+HALPATH=/usr/share/hal/fdi/information/20thirdparty
+HALRULES=libmtp.fdi
 
 # See if the parameter script ($2), device ($3) and productid ($4)
 # are already defined in the usermap ($1)
@@ -74,6 +77,20 @@ if test -d ${UDEVPATH} ; then
     ${INSTALL} ${UDEVRULES} ${UDEVPATH}
     echo "You may need additional setup to get correct permissions on your device."
     echo "See the INSTALL file for information."
+    echo "Do you also want to install HAL support or the old hotplug support (y/n)?"
+    read IN
+    if [ "$IN" = "y" ] || [ "$IN" = "Y" ]; then
+	echo "Continuing..."
+    else
+	exit 0
+    fi
+fi
+
+# Check for HAL next
+if test -d ${HALBASEPATH} ; then
+    echo "You seem to have HAL on your system. Installing HAL rules..."
+    mkdir -p ${HALPATH}
+    ${INSTALL} ${HALRULES} ${HALPATH}
     echo "Do you also want to install the old hotplug support (y/n)?"
     read IN
     if [ "$IN" = "y" ] || [ "$IN" = "Y" ]; then
