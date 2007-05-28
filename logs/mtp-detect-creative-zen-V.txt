@@ -1,0 +1,317 @@
+Autodetected device with VID=041e and PID=4150 is UNKNOWN.
+Please report this VID/PID and the device model name etc to the
+libmtp development team!
+Connected to MTP device.
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 255
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   bMaxPacketSize0: 64
+   idVendor: 041e
+   idProduct: 4150
+Device info:
+   Manufacturer: Creative Technology Ltd
+   Model: Creative Zen V
+   Device version: 1.10.03_0.05.09
+   Serial number: C8F0CA150002FA9DC8F6751C0002FA9D
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0;microsoft.com/WMPPD: 10.0;microsoft.com/WMDRMPD: 10.1;audible.com: 1.0;
+Supported operations:
+   0x1001
+   0x1002
+   0x1003
+   0x1004
+   0x1005
+   0x1007
+   0x100c
+   0x100d
+   0x100f
+   0x1014
+   0x1015
+   0x1006
+   0x1008
+   0x1009
+   0x100b
+   0x1010
+   0x1016
+   0x1017
+   0x9801
+   0x9802
+   0x9803
+   0x9804
+   0x9805
+   0x9806
+   0x9808
+   0x9807
+   0x9810
+   0x9811
+   0x9201
+   0x9101
+   0x9102
+   0x9103
+   0x9104
+   0x9105
+   0x9106
+   0x9107
+   0x9108
+   0x9109
+Events supported:
+   None.
+Device Properties Supported:
+   0x5001: Battery Level
+   0xd401: Synchronization Partner
+   0xd402: Device Friendly Name
+   0xd101: Secure Time
+   0xd102: Device Certificate
+   0xd201: Unknown property
+Playable File (Object) Types and Object Properties Supported:
+   3009: MP3
+      de99: AudioWAVECodec
+      de9a: AudioBitRate
+      dc46: Artist
+      dc89: Duration
+      dc8b: Track
+      dc8c: Genre
+      dc99: OriginalReleaseDate
+      dc9a: AlbumName
+      de93: SampleRate
+      de94: NumberOfChannels
+      de95: AudioBitDepth
+      dc91: UseCount
+      d901: unknown(d901)
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   b901: WMA
+      de99: AudioWAVECodec
+      de9a: AudioBitRate
+      dc46: Artist
+      dc89: Duration
+      dc8b: Track
+      dc8c: Genre
+      dc99: OriginalReleaseDate
+      dc9a: AlbumName
+      de93: SampleRate
+      de94: NumberOfChannels
+      de95: AudioBitDepth
+      dc91: UseCount
+      d901: unknown(d901)
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   3008: MS Wave
+      dc46: Artist
+      dc89: Duration
+      dc8b: Track
+      dc8c: Genre
+      dc99: OriginalReleaseDate
+      dc9a: AlbumName
+      de93: SampleRate
+      de94: NumberOfChannels
+      de95: AudioBitDepth
+      dc91: UseCount
+      d901: unknown(d901)
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   300c: ASF
+      de99: AudioWAVECodec
+      de9a: AudioBitRate
+      dc46: Artist
+      dc89: Duration
+      dc8b: Track
+      dc8c: Genre
+      dc99: OriginalReleaseDate
+      dc9a: AlbumName
+      de93: SampleRate
+      de94: NumberOfChannels
+      de95: AudioBitDepth
+      dc91: UseCount
+      d901: unknown(d901)
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   b904: Audible.com Codec
+      da01: unknown(da01)
+      da02: unknown(da02)
+      da03: unknown(da03)
+      dc46: Artist
+      dc89: Duration
+      dc8b: Track
+      dc8c: Genre
+      dc99: OriginalReleaseDate
+      dc9a: AlbumName
+      de93: SampleRate
+      de94: NumberOfChannels
+      de95: AudioBitDepth
+      dc91: UseCount
+      d901: unknown(d901)
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   ba05: Abstract Audio Video Playlist
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   ba03: Abstract Audio Album
+      dc86: RepresentativeSampleData
+      dc81: RepresentativeSampleFormat
+      dc83: RepresentativeSampleHeight
+      dc82: RepresentativeSampleSize
+      dc84: RepresentativeSampleWidth
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   3801: JPEG
+      dc88: Height
+      dc86: RepresentativeSampleData
+      dc81: RepresentativeSampleFormat
+      dc83: RepresentativeSampleHeight
+      dc82: RepresentativeSampleSize
+      dc84: RepresentativeSampleWidth
+      dc87: Width
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   bb83: vCard3
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   be03: vCalendar2
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   3000: Undefined Type
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   3001: Association/Directory
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+   b802: Firmware
+      dc01: StorageID
+      dc0b: ParentObject
+      dc02: ObjectFormat
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+Special directories:
+   Default music folder: 0x00000051
+   Default playlist folder: 0x00000055
+   Default picture folder: 0x00000061
+   Default video folder: 0x00000000
+   Default organizer folder: 0x0000005d
+   Default zencast folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: My Zen
+   Synchronization partner: 
+   Total bytes on device: 971440128 (926 MB)
+   Free bytes on device: 936771584 (893 MB)
+   Storage description: "Storage Media"
+   Volume label: "C8F0CA150002FA9DC8F6751C0002FA9D"
+   Battery level 255 of 255 (100%)
+libmtp supported (playable) filetypes:
+   ISO MPEG Audio Layer 3
+   Microsoft Windows Media Audio
+   RIFF WAVE file
+   Microsoft Advanced Systems Format
+   Audible.com Audio Codec
+   JPEG file
+   VCard version 3
+   VCalendar version 2
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20050403 15:39:31Z#</VALUE><FLAG>DRM_CLK_NOT_SET</FLAG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">FcrwyJ36AgAcdfbInfoCAAAAAAA=</UNIQUEID><PUBLICKEY private="1">IMyjsSEUDWFZTQzjI0Zz5hdLE0dLFGYkXqBpJOGKtIUerw+QbgtvFA==</PUBLICKEY><KEYDATA>2mHbaCxFUmI+iWrsNvQz9IieH9w=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>BjVxd4okZ1Yqav43NW/Ffs5LDEyuA+lxcHhYmMgPg2u2ffwK3t8paQ==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>HiX3tAwfxY/yexXe6gQMLHLAAk4=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.104.139</SECURITYVERSION><CERTIFICATE private="1">IMyjsSEUDWFZTQzjI0Zz5hdLE0dLFGYkXqBpJOGKtIUerw+QbgtvFAIEaIt8JQF2IuBQudqJcdcn/plo8sPGc/Jix194wunu4/GA67FhZIQNGRln</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>Creative Zen V</NAME>
+  <MANUFACTURER>CL Direct Pte Ltd.</MANUFACTURER>
+  <MODEL>DAP-FL0036</MODEL>
+  <SECURITYLEVEL>2000</SECURITYLEVEL>
+  <HARDWARE_VER_MAJOR>1</HARDWARE_VER_MAJOR>
+  <HARDWARE_VER_MINOR>0</HARDWARE_VER_MINOR>
+  <FIRMWARE_VER_MAJOR>1</FIRMWARE_VER_MAJOR>
+  <FIRMWARE_VER_MINOR>0</FIRMWARE_VER_MINOR>
+  <FEATURES>
+    <CLOCK>2</CLOCK>
+    <SECURECLOCK>
+      <URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL>
+      <PUBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY>
+    </SECURECLOCK>
+    <METERING>1</METERING>
+    <LICENSE_ACQ>0</LICENSE_ACQ>
+    <LICENSE_SYNC>1</LICENSE_SYNC>
+    <ENCRYPTION>0</ENCRYPTION>
+    <SYMMETRIC_OPT>1</SYMMETRIC_OPT>
+  </FEATURES>
+  <LIMITS>
+    <MAXCHAINDEPTH>2</MAXCHAINDEPTH>
+    <MAXLICENSESIZE>10240</MAXLICENSESIZE>
+    <MAXHEADERSIZE>5120</MAXHEADERSIZE>
+  </LIMITS><PUBLICKEY>AwE2OSTIgFuzHvE8vC1w6E9MG1PCQ3HzTPJGtSMl8NvC2U7OikanZw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>ANlrFR1DlR4vZwcsaLD6roTpv3nImj/OnFG3yOSWUwsCVD4kb+uhfQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>1007</AUTH_ID><PUBLICKEY>fP5fVUkHCjq7OoLGkVhca1u5ehuKNerfFzwY8+38k6idDPn3KNhYGA==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>uvG3IvEcpr+y86jyvARIl/3r8US21GTPDEh176DnbwZ5aiTLgiWyPg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>TNP/C0hseezVflFmD5hyoSk8AUYsz6sn6q0hyDFaB6Fj6DEjaG2QQQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿￿
+OK.

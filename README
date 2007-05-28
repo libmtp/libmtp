@@ -134,6 +134,36 @@ can give us? Send them to Richard (Mac support) or Linus
 who sent us a Zune by proxy!)
 
 
+Devices does not work - last resort:
+------------------------------------
+
+Some devices that are dual-mode are simply impossible to get
+to work under Linux because the usb-storage(.ko) kernel
+module hook them first, and refuse to release them, even
+when we specify the DEVICE_FLAG_UNLOAD_DRIVER flag.
+
+Try this, if you have a recent 2.6.x Linux kernel:
+
+* Go into /etc/modprobe.d/blacklist
+
+* Add the line "blacklist usb-storage"
+
+* Reboot.
+
+Now none of you USB disks, flash memory sticks etc will be 
+working (you just disabled them all). However you *can* try
+your device, and it might have started working because there
+is no longer a USB mass storage driver that tries to hook onto
+the mass storage interface of your device.
+
+If you find the PerfectSolution(TM) to this dilemma, so you 
+can properly switch for individual devices whether to use it
+as USB mass storage or not, please tell us how you did it. We
+know we cannot use udev, because udev is called after-the-fact:
+the device is already configured for USB mass storage when
+udev is called.
+
+
 Calendar and contact support:
 -----------------------------
 
