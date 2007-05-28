@@ -5311,14 +5311,138 @@ int LIBMTP_Update_Album(LIBMTP_mtpdevice_t *device,
 {
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
-
-  // Update title
-  ret = set_object_string(device, metadata->album_id, PTP_OPC_Name, metadata->name);
-  if (ret != 0) {
-    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Update_Album(): could not set album name.");
+  uint16_t *props = NULL;
+  uint32_t propcnt = 0;
+  int i;
+  
+  // First see which properties can be set
+  // i.e only try to update this metadata for object tags that exist on the current player.
+  ret = ptp_mtp_getobjectpropssupported(params, PTP_OFC_MTP_AbstractAudioAlbum, &propcnt, &props);
+  if (ret != PTP_RC_OK) {
+    // Just bail out for now, nothing is ever set.
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Album(): "
+			    "could not retrieve supported object properties.");
     return -1;
   }
+  if (ptp_operation_issupported(params,PTP_OC_MTP_SetObjPropList)) {
+    MTPPropList *proplist = NULL;
+    MTPPropList *prop = NULL;
+    PTPObjectPropDesc opd;
+    
+    for (i=0;i<propcnt;i++) {
+      switch (props[i]) {
+      case PTP_OPC_Name:
+	ret = ptp_mtp_getobjectpropdesc(params, PTP_OPC_Name, PTP_OFC_MTP_AbstractAudioAlbum, &opd);
+	if (ret != PTP_RC_OK) {
+	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Album(): "
+				  "could not get property description for PTP_OPC_Name.");
+	  break;
+	}
+        
+	if (opd.GetSet) {
+	  prop = new_mtp_prop_entry();
+	  prop->ObjectHandle = metadata->album_id;      
+	  prop->property = PTP_OPC_Name;
+	  prop->datatype = PTP_DTC_STR;
+	  prop->propval.str = strdup(metadata->name);
+	  proplist = add_mtp_prop_to_proplist(proplist, prop);
+	}
+	ptp_free_objectpropdesc(&opd);
+        
+	break;
+      case PTP_OPC_Artist:
+	ret = ptp_mtp_getobjectpropdesc(params, PTP_OPC_Artist, PTP_OFC_MTP_AbstractAudioAlbum, &opd);
+	if (ret != PTP_RC_OK) {
+	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Album(): "
+				  "could not get property description for PTP_OPC_Artist.");
+	  break;
+	}
+        
+	if (opd.GetSet) {
+	  prop = new_mtp_prop_entry();
+	  prop->ObjectHandle = metadata->album_id;      
+	  prop->property = PTP_OPC_Artist;
+	  prop->datatype = PTP_DTC_STR;
+	  prop->propval.str = strdup(metadata->artist);
+	  proplist = add_mtp_prop_to_proplist(proplist, prop);
+	}
+	ptp_free_objectpropdesc(&opd);
+        
+	break;
+      case PTP_OPC_Genre:
+	ret = ptp_mtp_getobjectpropdesc(params, PTP_OPC_Genre, PTP_OFC_MTP_AbstractAudioAlbum, &opd);
+	if (ret != PTP_RC_OK) {
+	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Album(): "
+				  "could not get property description for PTP_OPC_Genre.");
+	  break;
+	}
+        
+	if (opd.GetSet) {
+	  prop = new_mtp_prop_entry();
+	  prop->ObjectHandle = metadata->album_id;
+	  prop->property = PTP_OPC_Genre;
+	  prop->datatype = PTP_DTC_STR;
+	  prop->propval.str = strdup(metadata->genre);
+	  proplist = add_mtp_prop_to_proplist(proplist, prop);
+	}
+	ptp_free_objectpropdesc(&opd);
+        
+	break;
+      default:
+	break;
+      }
+    }
+    
+    ret = ptp_mtp_setobjectproplist(params, proplist);
 
+    destroy_mtp_prop_list(proplist);
+          
+    if (ret != PTP_RC_OK) {
+      // TODO: return error of which property we couldn't set
+      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Album(): "
+			      "could not set object property list.");
+      return -1;
+    }
+      
+  } else if (ptp_operation_issupported(params,PTP_OC_MTP_SetObjectPropValue)) {
+    for (i=0;i<propcnt;i++) {
+      switch (props[i]) {
+      case PTP_OPC_Name:
+	// Update title
+	ret = set_object_string(device, metadata->album_id, PTP_OPC_Name, metadata->name);
+	if (ret != 0) {
+	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Album(): "
+				  "could not set album title.");
+	}
+	break;
+      case PTP_OPC_Artist:
+	// Update artist
+	ret = set_object_string(device, metadata->album_id, PTP_OPC_Artist, metadata->artist);
+	if (ret != 0) {
+	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Album(): "
+				  "could not set album artist name.");
+	}
+	break;
+      case PTP_OPC_Genre:
+	// Update genre
+	ret = set_object_string(device, metadata->album_id, PTP_OPC_Genre, metadata->genre);
+	if (ret != 0) {
+	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Album(): "
+				  "could not set album genre.");
+	}
+	break;
+      default:
+	break;
+      }
+    }
+    free(props);
+  } else {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Album(): "
+                            "Your device doesn't seem to support any known way of setting metadata.");
+    return -1;
+  }
+  
+  // Then the object references...
   if (metadata->no_tracks > 0) {
     // Add tracks to the new album as object references.
     ret = ptp_mtp_setobjectreferences (params, metadata->album_id, metadata->tracks, metadata->no_tracks);

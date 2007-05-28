@@ -1,11 +1,17 @@
+2007-05-29  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: use the set object prop list command to set album
+	  props if available. Follow metadata set design pattern used for
+	  tracks; check first if the object type can set name/artist/genre.
+
 2007-05-24  Jeff Mitchell <me@jefferai.com>
 
-    * hotplug.sh.in: Properly install the HAL FDI rules if
+	* hotplug.sh.in: Properly install the HAL FDI rules if
 	  the user so chooses to when prompted.
 
 2007-05-24  Jeff Mitchell <me@jefferai.com>
 
-    * examples/hotplug.c: Fix/update HAL output to conform
+	* examples/hotplug.c: Fix/update HAL output to conform
 	  to new specs. Fix whitespacing to be consistent.
 
 2007-05-17  Richard Low <richard@wentnet.com>
