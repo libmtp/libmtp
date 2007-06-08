@@ -173,7 +173,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // From libgphoto2 source
   // Reported by <gonkflea@users.sourceforge.net>
   // Reported by Mike Owen <mikeowen@computerbaseusa.com>
-  { "SanDisk Sansa e200/e250/e260/e280", 0x0781, 0x7420, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "SanDisk Sansa e200/e250/e260/e270/e280", 0x0781, 0x7420, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by XNJB user
   { "SanDisk Sansa e280", 0x0781, 0x7421, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by anonymous user at sourceforge.net

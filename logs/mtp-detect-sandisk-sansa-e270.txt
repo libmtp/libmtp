@@ -1,0 +1,246 @@
+Attempting to connect device(s)
+Detect: Successfully connected 1 devices
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 0781
+   idProduct: 7420
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Device flags: 0x00000002
+Device info:
+   Manufacturer: SanDisk
+   Model: Sansa e270
+   Device version: PP5022AF-05.51-S301-02.18-S301.02.18E-D, (Build 32.10)
+   Serial number: 00000000-00000000-3224b387-d925f515-00000000
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com/WMDRMPD: 10.1; portalplayer.com: 1.0; 
+Supported operations:
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   1017: Reset device property value
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   101b: Get partial object
+   100c: Send object info
+   100d: Send object
+   100b: Delete object
+   1012: Set object protection
+   100f: Format storage
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9806: Set object property list
+   9810: Get object references
+   9811: Set object references
+   9201: Report Added/Deleted Items
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Send WMDRM-PD Command
+   910b: Send WMDRM-PD Request
+Events supported:
+   None.
+Device Properties Supported:
+   0x5001: Battery Level
+   0xd101: Secure Time
+   0xd102: Device Certificate
+   0xd401: Synchronization Partner
+   0xd402: Device Friendly Name
+Playable File (Object) Types and Object Properties Supported:
+   3001: Association/Directory
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc44: Name STRING data type GET/SET
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc09: DateModified STRING data type GET/SET
+   3009: MP3
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc09: DateModified STRING data type GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc99: OriginalReleaseDate STRING data type GET/SET
+      dc0a: Keywords STRING data type GET/SET
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form GET/SET
+      de9a: AudioBitRate UINT32 data type range: MIN 8000, MAX 1500000, STEP 1 GET/SET
+      de93: SampleRate UINT32 data type range: MIN 8000, MAX 96000, STEP 50 GET/SET
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      d901: BuyFlag UINT8 data type ANY 8BIT VALUE form GET/SET
+   3008: MS Wave
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc09: DateModified STRING data type GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc99: OriginalReleaseDate STRING data type GET/SET
+      dc0a: Keywords STRING data type GET/SET
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form GET/SET
+      de9a: AudioBitRate UINT32 data type range: MIN 8000, MAX 1500000, STEP 1 GET/SET
+      de93: SampleRate UINT32 data type range: MIN 8000, MAX 96000, STEP 50 GET/SET
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      d901: BuyFlag UINT8 data type ANY 8BIT VALUE form GET/SET
+   ba05: Abstract Audio Video Playlist
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc44: Name STRING data type GET/SET
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc09: DateModified STRING data type GET/SET
+   ba03: Abstract Audio Album
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc09: DateModified STRING data type GET/SET
+      dc0a: Keywords STRING data type GET/SET
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc81: RepresentativeSampleFormat UINT16 data type enumeration: 14337,  READ ONLY
+      dc86: RepresentativeSampleData array of UINT8 data type ANY 8BIT VALUE form GET/SET
+      dc83: RepresentativeSampleHeight UINT32 data type range: MIN 0, MAX 220, STEP 1 READ ONLY
+      dc84: RepresentativeSampleWidth UINT32 data type range: MIN 0, MAX 176, STEP 1 READ ONLY
+   b901: WMA
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc09: DateModified STRING data type GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc99: OriginalReleaseDate STRING data type GET/SET
+      dc0a: Keywords STRING data type GET/SET
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form GET/SET
+      de9a: AudioBitRate UINT32 data type range: MIN 8000, MAX 1500000, STEP 1 GET/SET
+      de93: SampleRate UINT32 data type range: MIN 8000, MAX 96000, STEP 50 GET/SET
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  GET/SET
+      de99: AudioWAVECodec UINT32 data type enumeration: 353,  GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      d901: BuyFlag UINT8 data type ANY 8BIT VALUE form GET/SET
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0003
+      FilesystemType: 0x0002
+      AccessCapability: 0x0000
+      MaxCapacity: 5991725124
+      FreeSpaceInBytes: 345147460
+      FreeSpaceInObjects: 4090
+      StorageDescription: PPI NAND
+      VolumeIdentifier: VOL0_Sansa_e270_00000000-00000000-3224b387-d925f515-00000000
+Special directories:
+   Default music folder: 0x00020000
+   Default playlist folder: 0x00060000
+   Default picture folder: 0x00070000
+   Default video folder: 0x00040000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00000000
+   Default text folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: Sansa e270
+   Synchronization partner: 
+   Battery level 100 of 100 (100%)
+libmtp supported (playable) filetypes:
+   ISO MPEG-1 Audio Layer 3
+   RIFF WAVE file
+   Microsoft Windows Media Audio
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20070607 19:34:14Z#</VALUE><FLAG>DRM_CLK_SET</FLAG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">AAAAAAAAAACHsyQyFfUl2QAAAAA=</UNIQUEID><PUBLICKEY private="1">FCkWyEPukCI5BS31jSFZIjyxyGPKFZoslaf6ufe1wlu/a4V3RHHyJw==</PUBLICKEY><KEYDATA>mUERJ1Tli0xgqIHLOYg2PSiAAvI=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>hce/atRvbjgVknKf9H0OVMfg222M5fcG3JirdiF9S78jW10xPQf5Aw==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>8TaelROuKRPMuILqWmCbtRIe3Ow=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.104.93</SECURITYVERSION><CERTIFICATE private="1">FCkWyEPukCI5BS31jSFZIjyxyGPKFZoslaf6ufe1wlu/a4V3RHHyJwIEaF1/wXbrw+RKpSIfecQ1RV8hWwQSQz1fp6sF4VhcXwDA1X2jQ9287YB8</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>Sansa e200 Series</NAME>
+   <MANUFACTURER>SanDisk Corporation</MANUFACTURER>
+   <MAKE>MicroStar Internatioal</MAKE>
+   <SECURITYLEVEL>2000</SECURITYLEVEL>
+   <FEATURES>
+        <CLOCK>2</CLOCK>
+	  <SECURECLOCK>
+		<URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL>
+		<PUBLICKEY>
+!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==
+</PUBLICKEY>
+	  </SECURECLOCK>
+        <METERING>1</METERING>
+        <LICENSE_ACQ>1</LICENSE_ACQ>
+        <LICENSE_SYNC>1</LICENSE_SYNC>
+        <ENCRYPTION>1</ENCRYPTION>
+    <SYMMETRIC_OPT>1</SYMMETRIC_OPT>
+    </FEATURES>
+    <LIMITS>
+        <MAXCHAINDEPTH>2</MAXCHAINDEPTH>
+        <MAXLICENSESIZE>10240</MAXLICENSESIZE>
+        <MAXHEADERSIZE>5120</MAXHEADERSIZE>
+    </LIMITS><PUBLICKEY>n4ahYQBHQ72FRfkzvy7BruWYDSilgfObLpzG0M8SNcfDGWvJhvbrhA==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>lB5HvVHvcXLb0QiYfskM3Wu0eXtx9Tw0QIiCoKLhBIer0k3ablA4Zg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>961</AUTH_ID><PUBLICKEY>vjU5IwzlqSww/T8ihHxTDmbw1hVeXXG8oNVvgBBYFinhSvQ1e0gNEQ==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>3DU5omHe8sFqztXjYZ9vNr2/DkLabfYH5VIfWrf+XXA+RNASNDpnTg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>sw5Aa1lOYIBJ6TcDvUa1Dxd2HicA66aj6r/YW2pFvx9L8Oiy/zawbQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
+
+Device description WMPInfo.xml file:
+<DeviceInfo>
+    <WMP DeviceID="{7C48990D-8196-4700-B113-9135FB82E08A}" RelationshipID="{00000000-0000-0000-0000-000000000000}"/>
+</DeviceInfo>
+
+OK.
+
+ 	  	 
