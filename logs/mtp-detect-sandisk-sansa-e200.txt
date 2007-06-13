@@ -1,0 +1,251 @@
+This is not a Microsoft MTP descriptor...
+Device response to read device property 0xee:
+	fffffff0: 00ff ff00 001f 1e1d 1c1b 1a19 1817 1615	................
+	0000: 1413 1211 100f 0e0d 0c0b 0a09 0807 0605	................
+	0010: 0403 0201 9ece ffff ffff ffff ffff ffff	................
+	0020: ffff ffff ffff ffff ffff ffff ffff ffff	................
+	0030: ffff ffff ffff ffff ffff ffff ffff ffff	................
+	0040: ffff ffff ffff ffff ffff ffff ffff ffff	................
+	0050: ff90 0201 010b 0322 0601 0f0f 0005 0f00	......."........
+	0060: b40e 0310 0f00 081f 0001 1f00 370f 0022	............7.."
+	0070: 0f0c 0c0f 0236 0fde ee00 04b0 0002 0001	.....6..........
+	0080: 5502 d000 04b0 0258 c348 0000 0000 0000	U......X.H......
+	0090: 00                                     	.
+Autodetected device "SanDisk Sansa e200" (VID=0781,PID=7420) is known.
+Connected to MTP device.
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 0781
+   idProduct: 7420
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Device flags: 0x00000000
+Device info:
+   Manufacturer: SanDisk
+   Model: Sansa e280
+   Device version: PP5022AF-05.51-S301-02.18-S301.02.18A-D, (Build 32.10)
+   Serial number: 00000000-00000000-3978b387-d9fdf912-00000000
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com/WMDRMPD: 10.1; portalplayer.com: 1.0; 
+Supported operations:
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   1017: Reset device property value
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   101b: Get partial object
+   100c: Send object info
+   100d: Send object
+   100b: Delete object
+   1012: Set object protection
+   100f: Format storage
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9806: Set object property list
+   9810: Get object references
+   9811: Set object references
+   9201: Report Added/Deleted Items
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Send WMDRM-PD Command
+   910b: Send WMDRM-PD Request
+Events supported:
+   None.
+Device Properties Supported:
+   0x5001: Battery Level
+   0xd101: Secure Time
+   0xd102: Device Certificate
+   0xd401: Synchronization Partner
+   0xd402: Device Friendly Name
+Playable File (Object) Types and Object Properties Supported:
+   3001: Association/Directory
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+      dc03: ProtectionStatus
+      dc09: DateModified
+   3009: MP3
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc8b: Track
+      dc99: OriginalReleaseDate
+      dc0a: Keywords
+      dc44: Name
+      dc46: Artist
+      dc8c: Genre
+      dc9a: AlbumName
+      dc89: Duration
+      de9a: AudioBitRate
+      de93: SampleRate
+      de94: NumberOfChannels
+      dc8a: Rating
+      dc91: UseCount
+      d901: BuyFlag
+   3008: MS Wave
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc8b: Track
+      dc99: OriginalReleaseDate
+      dc0a: Keywords
+      dc44: Name
+      dc46: Artist
+      dc8c: Genre
+      dc9a: AlbumName
+      dc89: Duration
+      de9a: AudioBitRate
+      de93: SampleRate
+      de94: NumberOfChannels
+      dc8a: Rating
+      dc91: UseCount
+      d901: BuyFlag
+   ba05: Abstract Audio Video Playlist
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc44: Name
+      dc03: ProtectionStatus
+      dc09: DateModified
+   ba03: Abstract Audio Album
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc0a: Keywords
+      dc44: Name
+      dc46: Artist
+      dc8c: Genre
+      dc81: RepresentativeSampleFormat
+      dc86: RepresentativeSampleData
+      dc83: RepresentativeSampleHeight
+      dc84: RepresentativeSampleWidth
+   b901: WMA
+      dc01: StorageID
+      dc0b: ParentObject
+      dc07: ObjectFileName
+      dc04: ObjectSize
+      dc02: ObjectFormat
+      dc41: PersistantUniqueObjectIdentifier
+      dc4f: NonConsumable
+      dc03: ProtectionStatus
+      dc09: DateModified
+      dc8b: Track
+      dc99: OriginalReleaseDate
+      dc0a: Keywords
+      dc44: Name
+      dc46: Artist
+      dc8c: Genre
+      dc9a: AlbumName
+      dc89: Duration
+      de9a: AudioBitRate
+      de93: SampleRate
+      de94: NumberOfChannels
+      de99: AudioWAVECodec
+      dc8a: Rating
+      dc91: UseCount
+      d901: BuyFlag
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0003
+      FilesystemType: 0x0002
+      AccessCapability: 0x0000
+      MaxCapacity: 7998969924
+      FreeSpaceInBytes: 7332210756
+      FreeSpaceInObjects: 4852
+      StorageDescription: PPI NAND
+      VolumeIdentifier: VOL0_Sansa_e280_00000000-00000000-3978b387-d9fdf912-00000000
+Special directories:
+   Default music folder: 0x00000000
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x00000000
+   Default video folder: 0x00000000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00000000
+   Default text folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: sansa e280
+   Synchronization partner: (NULL)
+   Battery level 100 of 100 (100%)
+libmtp supported (playable) filetypes:
+   ISO MPEG-1 Audio Layer 3
+   RIFF WAVE file
+   Microsoft Windows Media Audio
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20070612 20:33:57Z#</VALUE><FLAG>DRM_CLK_SET</FLAG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">AAAAAAAAAACHs3g5Evn92QAAAAA=</UNIQUEID><PUBLICKEY private="1">XBfYUExu4RJLuwN77zcT2xTkvh7T7N0magJQRAYkpknJSDnq1Or2UQ==</PUBLICKEY><KEYDATA>OgqWjYuBrpsm8wc2n4glUWNh/JA=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>7rvLVlnF84HOsB5zCfI8AhtflCjrHZ+4BEw6kPCVnFMKuXdAbLI1Qg==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>mQM969YcrKLwCguMNsbDagLb66k=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.104.93</SECURITYVERSION><CERTIFICATE private="1">XBfYUExu4RJLuwN77zcT2xTkvh7T7N0magJQRAYkpknJSDnq1Or2UQIEaF15le90TVR36HoyIGeh6ETPgoy7DLyBMQ6KzvSi40OekNHTfq2eH/kJ</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>Sansa e200 Series</NAME>
+   <MANUFACTURER>SanDisk Corporation</MANUFACTURER>
+   <MAKE>MicroStar Internatioal</MAKE>
+   <SECURITYLEVEL>2000</SECURITYLEVEL>
+   <FEATURES>
+        <CLOCK>2</CLOCK>
+	  <SECURECLOCK>
+		<URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL>
+		<PUBLICKEY>
+!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==
+</PUBLICKEY>
+	  </SECURECLOCK>
+        <METERING>1</METERING>
+        <LICENSE_ACQ>1</LICENSE_ACQ>
+        <LICENSE_SYNC>1</LICENSE_SYNC>
+        <ENCRYPTION>1</ENCRYPTION>
+    <SYMMETRIC_OPT>1</SYMMETRIC_OPT>
+    </FEATURES>
+    <LIMITS>
+        <MAXCHAINDEPTH>2</MAXCHAINDEPTH>
+        <MAXLICENSESIZE>10240</MAXLICENSESIZE>
+        <MAXHEADERSIZE>5120</MAXHEADERSIZE>
+    </LIMITS><PUBLICKEY>n4ahYQBHQ72FRfkzvy7BruWYDSilgfObLpzG0M8SNcfDGWvJhvbrhA==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>lB5HvVHvcXLb0QiYfskM3Wu0eXtx9Tw0QIiCoKLhBIer0k3ablA4Zg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>961</AUTH_ID><PUBLICKEY>vjU5IwzlqSww/T8ihHxTDmbw1hVeXXG8oNVvgBBYFinhSvQ1e0gNEQ==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>3DU5omHe8sFqztXjYZ9vNr2/DkLabfYH5VIfWrf+XXA+RNASNDpnTg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>sw5Aa1lOYIBJ6TcDvUa1Dxd2HicA66aj6r/YW2pFvx9L8Oiy/zawbQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
+OK.
