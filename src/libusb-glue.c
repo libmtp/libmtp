@@ -306,7 +306,9 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   /*
    * Nokia
    */
-  {"Nokia Mobile Phones (MTP mode)", 0x0421, 0x04e1, DEVICE_FLAG_NONE },
+  {"Some Nokia Mobile Phone (MTP mode)", 0x0421, 0x04e1, DEVICE_FLAG_NONE },
+  // From: Pat Nicholls <pat@patandannie.co.uk>
+  {"Nokia N80 Internet Edition (Media Player)", 0x0421, 0x04f1, DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
    * LOGIK
