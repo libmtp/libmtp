@@ -108,6 +108,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // Contributed by aronvanammers on SourceForge
   { "Samsung YH-925GS", 0x04e8, 0x5024, DEVICE_FLAG_NONE },
   // Contributed by anonymous person on SourceForge
+  { "Samsung YH-J70J", 0x04e8, 0x5033, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Contributed by anonymous person on SourceForge
   { "Samsung YP-T7J", 0x04e8, 0x5047, DEVICE_FLAG_NONE },
   // Reported by cstrickler@gmail.com
   { "Samsung YP-U2J (YP-U2JXB/XAA)", 0x04e8, 0x5054, DEVICE_FLAG_UNLOAD_DRIVER },
@@ -196,6 +198,10 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
   { "iRiver Portable Media Center", 0x1006, 0x4003, 
+    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
+    DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
+  // From an anonymous person at SourceForge
+  { "iRiver iFP-880", 0x4102, 0x1008, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
   // From libgphoto2 source
