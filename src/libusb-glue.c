@@ -101,14 +101,20 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * Samsung
    * We suspect that more of these are dual mode.
    */
+  // From Soren O'Neill
+  { "Samsung YH-920", 0x04e8, 0x5022, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Contributed by aronvanammers on SourceForge
+  { "Samsung YH-925GS", 0x04e8, 0x5024, DEVICE_FLAG_NONE },
   // From libgphoto2
   { "Samsung YH-820", 0x04e8, 0x502e, DEVICE_FLAG_NONE },
   // Contributed by polux2001@users.sourceforge.net
   { "Samsung YH-925(-GS)", 0x04e8, 0x502f, DEVICE_FLAG_NONE },
-  // Contributed by aronvanammers on SourceForge
-  { "Samsung YH-925GS", 0x04e8, 0x5024, DEVICE_FLAG_NONE },
   // Contributed by anonymous person on SourceForge
   { "Samsung YH-J70J", 0x04e8, 0x5033, DEVICE_FLAG_UNLOAD_DRIVER },
+  // From XNJB user
+  { "Samsung YP-Z5", 0x04e8, 0x503c, DEVICE_FLAG_NONE },
+  // From XNJB user
+  { "Samsung YP-Z5 2GB", 0x04e8, 0x5041, DEVICE_FLAG_NONE },
   // Contributed by anonymous person on SourceForge
   { "Samsung YP-T7J", 0x04e8, 0x5047, DEVICE_FLAG_NONE },
   // Reported by cstrickler@gmail.com
@@ -126,12 +132,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Samsung YH-999 Portable Media Center / Samsung SGH-A707", 0x04e8, 0x5a0f, DEVICE_FLAG_NONE },
   // From Lionel Bouton
   { "Samsung X830 Mobile Phone", 0x04e8, 0x6702, DEVICE_FLAG_NONE },
-  // From XNJB user
-  { "Samsung YP-Z5", 0x04e8, 0x503c, DEVICE_FLAG_NONE },
-  // From XNJB user
-  { "Samsung YP-Z5 2GB", 0x04e8, 0x5041, DEVICE_FLAG_NONE },
-  // From Soren O'Neill
-  { "Samsung YH-920", 0x04e8, 0x5022, DEVICE_FLAG_UNLOAD_DRIVER },
+  // From James <jamestech@gmail.com>
+  { "Samsung U600 Mobile Phone", 0x04e8, 0x6709, DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
    * Intel
