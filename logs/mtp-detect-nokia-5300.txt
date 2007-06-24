@@ -1,0 +1,368 @@
+Connected to MTP device.
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 0421
+   idProduct: 04ba
+   IN endpoint maxpacket: 64 bytes
+   OUT endpoint maxpacket: 64 bytes
+   Device flags: 0x00000000
+Device info:
+   Manufacturer: Nokia
+   Model: Nokia 5300
+   Device version: (null)
+   Serial number: (null)
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com:1.0;microsoft.com/WMPPD: 11.0;microsoft.com/WMDRMPD: 10.1
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100a: Get thumbnail
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   101b: Get partial object
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9810: Get object references
+   9811: Set object references
+   9201: Report Added/Deleted Items
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Send WMDRM-PD Command
+   910b: Send WMDRM-PD Request
+Events supported:
+   0x4009: Request object transfer
+   0x4003: Object removed
+   0x4004: Store added
+   0x4005: Store removed
+Device Properties Supported:
+   0xd401: Synchronization Partner
+   0xd402: Device Friendly Name
+   0xd101: Secure Time
+   0xd102: Device Certificate
+Playable File (Object) Types and Object Properties Supported:
+   3801: JPEG
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   3002: Script
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   3000: Undefined Type
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   3001: Association/Directory
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   3004: Text
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   3005: HTML
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   3008: MS Wave
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   3009: MP3
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   3804: BMP
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   3807: GIF
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   3808: JFIF
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   380b: PNG
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   b004: Unknown(b004)
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   b901: WMA
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   b903: AAC
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   ba05: Abstract Audio Video Playlist
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   ba11: M3U Playlist
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   bb82: vCard2
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   bb83: vCard3
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+   be02: vCalendar1
+      dc01: StorageID
+      dc02: ObjectFormat
+      dc03: ProtectionStatus
+      dc04: ObjectSize
+      dc07: ObjectFileName
+      dc08: DateCreated
+      dc09: DateModified
+      dc0b: ParentObject
+      dc41: PersistantUniqueObjectIdentifier
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0003
+      FilesystemType: 0x0002
+      AccessCapability: 0x0000
+      MaxCapacity: 8630784
+      FreeSpaceInBytes: 4424192
+      FreeSpaceInObjects: 4294967295
+      StorageDescription: Phone memory (C:)
+      VolumeIdentifier: (null)
+   StorageID: 0x00020001
+      StorageType: 0x0004
+      FilesystemType: 0x0002
+      AccessCapability: 0x0000
+      MaxCapacity: 985399296
+      FreeSpaceInBytes: 970063872
+      FreeSpaceInObjects: 4294967295
+      StorageDescription:            
+      VolumeIdentifier: (null)
+Special directories:
+   Default music folder: 0x40000035
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x00000000
+   Default video folder: 0x00000000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00000000
+   Default text folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: NOKIA
+   Synchronization partner: MICROSOFT MEDIAPLAYER
+libmtp supported (playable) filetypes:
+   JPEG file
+   Text file
+   HTML file
+   RIFF WAVE file
+   ISO MPEG-1 Audio Layer 3
+   BMP bitmap file
+   GIF bitmap file
+   JFIF file
+   Portable Network Graphics
+   Microsoft Windows Media Audio
+   Advanced Audio Coding (AAC)/MPEG-2 Part 7/MPEG-4 Part 3
+   VCard version 2
+   VCard version 3
+   VCalendar version 1
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20070623 15:08:24Z#</VALUE><FLAG>DRM_CLK_NOT_SET</FLAG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">JZAAEbVGAFgx+MV+VC/czNMloKA=</UNIQUEID><PUBLICKEY private="1">gUGSG+640hANCmgA6RLrXE+m53F0aAMFk1iXOYk0Rm7M76/D2fi8NQ==</PUBLICKEY><KEYDATA></KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>TcOZj5ejJ/zHYGlCzKS444kT6Wg+rinH3yxNWJNX3R5jAWDwm2RKAw==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE></SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.105.95</SECURITYVERSION><CERTIFICATE private="1">gUGSG+640hANCmgA6RLrXE+m53F0aAMFk1iXOYk0Rm7M76/D2fi8NQIEaV8Z6cCn0YHtkvT7n7D6qmKMTH2gFCJO7mBWOUCJfpZ/fOnrKMAk23lE</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>5300</NAME> 
+    <MANUFACTURER>Nokia</MANUFACTURER> 
+    <MAKE>Nokia</MAKE> 
+    <DISTRIBUTOR>Nokia</DISTRIBUTOR> 
+    <MODEL>RM-147</MODEL> 
+    <SECURITYLEVEL>2000</SECURITYLEVEL> 
+    <HARDWARE_VER_MAJOR>1</HARDWARE_VER_MAJOR> 
+    <HARDWARE_VER_MINOR>0</HARDWARE_VER_MINOR> 
+    <FIRMWARE_VER_MAJOR>1</FIRMWARE_VER_MAJOR> 
+    <FIRMWARE_VER_MINOR>0</FIRMWARE_VER_MINOR> 
+    <FEATURES>
+        <CLOCK>2</CLOCK> 
+             <SECURECLOCK> 
+                <URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL> 
+                <PUBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY> 
+            </SECURECLOCK> 
+        <METERING>1</METERING> 
+        <LICENSE_ACQ>0</LICENSE_ACQ> 
+        <LICENSE_SYNC>1</LICENSE_SYNC> 
+        <ENCRYPTION>1</ENCRYPTION> 
+        <SYMMETRIC_OPT>0</SYMMETRIC_OPT> 
+    </FEATURES>
+    <LIMITS>
+        <MAXCHAINDEPTH>2</MAXCHAINDEPTH> 
+        <MAXLICENSESIZE>10240</MAXLICENSESIZE> 
+        <MAXHEADERSIZE>5120</MAXHEADERSIZE> 
+    </LIMITS><PUBLICKEY>9rINx4Chrx4JhS7Kda7EKnSbkkoRTWfda6jDxtkw72kR5+9yVucHKA==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>ENGLQZMiDlDKvjtsA1ChU2O8EC0okniesTjA8zEocHSvtKJWfhAsSA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>1219</AUTH_ID><PUBLICKEY>XCfO2C+e0jeoy+QZ/JUtVF7BkQxz5AWfeYOqFy+63SzL7OPIGc1QMw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>sFJ8k94G4bJPrLaP+n4jB5bw9GQtSph6puqb8GqVbbdxIShDQDngaA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>Uy3fwCMxAuj4NHxmC9IKM6kFOkmvG9Hvr5pUPeIMsTZmZa80VAz4TQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>大
+OK.
+
+mtp-folders result:
+PTP: Opening session
+Connected to MTP device.
+1073741824      Graphics
+1073741834        Screen savers
+1073741835        Wallpapers
+1073741825      Themes
+1073741826      Tones
+1073741838        Alert tones
+1073741839        Ringing tones
+1073741829      Images
+1073741830      Video clips
+1073741831      Music files
+1073741832      Recordings
+1073741833      Received files
+1073741877      My Music
+1073741878      Images
+1073741879      Video clips
+1073741880      untitled folder
+1073741881      .Trash-mhicks
+PTP: Closing session
+OK.
