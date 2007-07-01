@@ -4,27 +4,20 @@ TODO file:
 
 SPEEDUP fixes:
 
-1. SPEED: Cache the object info for all items on the device.
-  Right now, ptp_getobjectinfo() is called repeatedly on the same
-  objects during startup, track listing, file listing, playlist listing,
-  album listing and whatever we implement tomorrow. A lot of useless
-  communication can be saved by cacheing this info. Notice that this
-  needs to be updated whenever flush_handles() is called too.
-
-2. SPEED: Cache the supported object properties at first read/startup.
+1. SPEED: Cache the supported object properties at first read/startup.
   then use the cache to check for supported props instead of calling
   out to PTP with ptp_mtp_getobjectpropssupported() every time.
   The cache would be an array of size params->deviceinfo.ImageFormats_len
   with a list for each format of the properties it will support. Notice 
   that this needs to be updated whenever flush_handles() is called too.
 
-3. SPEED: Cache track metadata, file metadata etc, perhaps this is not 
+2. SPEED: Cache track metadata, file metadata etc, perhaps this is not 
   desirable since the application using libmtp will do this anyway.
   (libgphoto2 does it, see http://svn.sourceforge.net/viewvc/gphoto/trunk/libgphoto2/camlibs/ptp2/library.c?r1=9491&r2=9590)
 
-4. SPEED: Whenever we add an object (file, track, playlist...) we
+3. SPEED: Whenever we add an object (file, track, playlist...) we
   should only need to update the cache with relevant data. Atleast for
-  speed caches 1 and 2 above.
+  speedup caches.
 
 FEATURE fixes:
 
@@ -63,3 +56,11 @@ THOSE ARE ALREADY DONE:
 
 1. FEATURE: Make an API that can return several devices and let the user 
   choose which one to operate, not just connect to the first one...
+
+2. SPEED: Cache the object info for all items on the device.
+  Right now, ptp_getobjectinfo() is called repeatedly on the same
+  objects during startup, track listing, file listing, playlist listing,
+  album listing and whatever we implement tomorrow. A lot of useless
+  communication can be saved by cacheing this info. Notice that this
+  needs to be updated whenever flush_handles() is called too.
+  (This came from libgphoto2 implementing it!)

@@ -669,10 +669,10 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(mtpdevice_list_t *devices)
   
   while (tmplist != NULL) {
     LIBMTP_mtpdevice_t *mtp_device;
-    uint32_t j;
     
     /* Clear any handlers */
     tmplist->params->handles.Handler = NULL;
+    tmplist->params->objectinfo = NULL;
     
     /* Allocate dynamic space for our device */
     mtp_device = (LIBMTP_mtpdevice_t *) malloc(sizeof(LIBMTP_mtpdevice_t));
@@ -778,71 +778,6 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(mtpdevice_list_t *devices)
      * the device which speeds up later operations.
      */
     flush_handles(mtp_device);
-    
-    /*
-     * Remaining directories to get the handles to.
-     * We can stop when done this to save time
-     */
-    for(j = 0; j < current_params->handles.n; j++) {
-      PTPObjectInfo oi;
-      uint16_t ret;
-      
-      ret = ptp_getobjectinfo(current_params,
-			      current_params->handles.Handler[j],
-			      &oi);
-      
-      if (ret != PTP_RC_OK) {
-	add_error_to_errorstack(mtp_device,
-				LIBMTP_ERROR_CONNECTING,
-				"Found a bad handle, trying to ignore it.");
-	continue;
-      }
-      
-      /* Ignore handles that point to non-folders */
-      if(oi.ObjectFormat != PTP_OFC_Association)
-	continue;
-      if ( oi.Filename == NULL)
-	continue;
-      
-      /* Is this the Music Folder */
-      if (!strcasecmp(oi.Filename, "My Music") ||
-	  !strcasecmp(oi.Filename, "Music")) {
-	mtp_device->default_music_folder = 
-	  current_params->handles.Handler[j];
-      }
-      else if (!strcasecmp(oi.Filename, "My Playlists") ||
-	       !strcasecmp(oi.Filename, "Playlists")) {
-	mtp_device->default_playlist_folder =
-	  current_params->handles.Handler[j];
-      }
-      else if (!strcasecmp(oi.Filename, "My Pictures") ||
-	       !strcasecmp(oi.Filename, "Pictures")) {
-	mtp_device->default_picture_folder = 
-	  current_params->handles.Handler[j];
-      }
-      else if (!strcasecmp(oi.Filename, "My Video") ||
-	       !strcasecmp(oi.Filename, "Video")) {
-	mtp_device->default_video_folder = 
-	  current_params->handles.Handler[j];
-      }
-      else if (!strcasecmp(oi.Filename, "My Organizer")) {
-	mtp_device->default_organizer_folder =
-	  current_params->handles.Handler[j];
-      }
-      else if (!strcasecmp(oi.Filename, "ZENcast")) {
-	mtp_device->default_zencast_folder = 
-	  current_params->handles.Handler[j];
-      }
-      else if (!strcasecmp(oi.Filename, "My Albums") ||
-	       !strcasecmp(oi.Filename, "Albums")) {
-	mtp_device->default_album_folder = 
-	  current_params->handles.Handler[j];
-      }
-      else if (!strcasecmp(oi.Filename, "Text")) {
-	mtp_device->default_text_folder =
-	  current_params->handles.Handler[j];
-      }
-    }
     
     /* Set initial storage information */
     mtp_device->storage = NULL;
@@ -1086,23 +1021,95 @@ void LIBMTP_Dump_Errorstack(LIBMTP_mtpdevice_t *device)
 static void flush_handles(LIBMTP_mtpdevice_t *device)
 {
   PTPParams *params = (PTPParams *) device->params;
+  uint32_t i;
+
 
   if (params->handles.Handler != NULL) {
     free(params->handles.Handler);
   }
+  if (params->objectinfo != NULL) {
+    for (i=0;i<params->handles.n;i++)
+      ptp_free_objectinfo (&params->objectinfo[i]);
+    free(params->objectinfo);
+  }
   
+  params->handles.n = 0;
   params->handles.Handler = NULL;
+  params->objectinfo = NULL;
+
+  // FIXME: use the FAST MTP track info retrieveal here instead, if present!
 
   // Get all the handles if we haven't already done that
   get_handles_recursively(device, params,
                           &params->handles,
                           PTP_GOH_ROOT_PARENT);
+
+  // Create an object info cache.
+  // params->objectinfo = (PTPObjectInfo*) malloc(sizeof(PTPObjectInfo) * params->handles.n);
+  
+  for(i = 0; i < params->handles.n; i++) {
+    PTPObjectInfo *oi;
+    
+    oi = &params->objectinfo[i];
+    if (oi->Filename == NULL) {
+      oi->Filename = strdup("<null>");
+    }
+    if (oi->Keywords == NULL) {
+      oi->Keywords = strdup("<null>");
+    }
+    
+    /* Ignore handles that point to non-folders */
+    if(oi->ObjectFormat != PTP_OFC_Association)
+      continue;
+    if ( oi->Filename == NULL)
+      continue;
+    
+    /* Is this the Music Folder */
+    if (!strcasecmp(oi->Filename, "My Music") ||
+	!strcasecmp(oi->Filename, "Music")) {
+      device->default_music_folder = 
+	params->handles.Handler[i];
+    }
+    else if (!strcasecmp(oi->Filename, "My Playlists") ||
+	     !strcasecmp(oi->Filename, "Playlists")) {
+      device->default_playlist_folder =
+	params->handles.Handler[i];
+    }
+    else if (!strcasecmp(oi->Filename, "My Pictures") ||
+	     !strcasecmp(oi->Filename, "Pictures")) {
+      device->default_picture_folder = 
+	params->handles.Handler[i];
+    }
+    else if (!strcasecmp(oi->Filename, "My Video") ||
+	     !strcasecmp(oi->Filename, "Video")) {
+	device->default_video_folder = 
+	  params->handles.Handler[i];
+    }
+    else if (!strcasecmp(oi->Filename, "My Organizer")) {
+      device->default_organizer_folder =
+	params->handles.Handler[i];
+    }
+    else if (!strcasecmp(oi->Filename, "ZENcast")) {
+      device->default_zencast_folder = 
+	params->handles.Handler[i];
+    }
+    else if (!strcasecmp(oi->Filename, "My Albums") ||
+	     !strcasecmp(oi->Filename, "Albums")) {
+      device->default_album_folder = 
+	params->handles.Handler[i];
+    }
+    else if (!strcasecmp(oi->Filename, "Text")) {
+      device->default_text_folder =
+	params->handles.Handler[i];
+    }
+  }
 }
 
 static void get_handles_recursively(LIBMTP_mtpdevice_t *device, PTPParams *params, PTPObjectHandles *handles, uint32_t parent)
 {
   PTPObjectHandles currentHandles;
   int i = 0;
+  uint32_t old_handles;
   
   uint16_t ret = ptp_getobjecthandles(params,
                                       PTP_GOH_ALL_STORAGE,
@@ -1117,25 +1124,36 @@ static void get_handles_recursively(LIBMTP_mtpdevice_t *device, PTPParams *param
   
   if (currentHandles.Handler == NULL || currentHandles.n == 0)
     return;
+
+  old_handles = handles->n;
   
   // realloc main space
-  handles->Handler = realloc(handles->Handler, (handles->n + currentHandles.n) * sizeof(uint32_t));
+  handles->Handler = (uint32_t *) realloc(handles->Handler, 
+					  (old_handles + currentHandles.n) * sizeof(uint32_t));
+  // realloc object info cache
+  params->objectinfo = (PTPObjectInfo*) realloc(params->objectinfo, 
+					  (old_handles + currentHandles.n) * sizeof(PTPObjectInfo));
   // copy new handles
-  memcpy(&(handles->Handler[handles->n]), currentHandles.Handler, currentHandles.n * sizeof(uint32_t));
-  handles->n += currentHandles.n;
+  memcpy(&(handles->Handler[old_handles]), currentHandles.Handler, currentHandles.n * sizeof(uint32_t));
+  handles->n = old_handles + currentHandles.n;
   
   // now do recursion
-  
-  for (i = 0; i < currentHandles.n; i++) {
-    PTPObjectInfo oi;
-    
-    ret = ptp_getobjectinfo(params, currentHandles.Handler[i], &oi);
+  for (i = 0; i < currentHandles.n; i++) {    
+    ret = ptp_getobjectinfo(params,
+			    currentHandles.Handler[i],
+			    &params->objectinfo[old_handles + i]);
     
     if (ret == PTP_RC_OK) {
-      
-      if (oi.ObjectFormat == PTP_OFC_Association) {
+      PTPObjectInfo *oi;
+
+      oi = &params->objectinfo[old_handles + i];
+      if (oi->ObjectFormat == PTP_OFC_Association) {
         get_handles_recursively(device, params, handles, currentHandles.Handler[i]);
       }
+    } else {
+      add_error_to_errorstack(device,
+			      LIBMTP_ERROR_CONNECTING,
+			      "Found a bad handle, trying to ignore it.");      
     }
   }
    
@@ -2201,55 +2219,48 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
 
   for (i = 0; i < params->handles.n; i++) {
     LIBMTP_file_t *file;
-    PTPObjectInfo oi;
-    uint16_t ret;
+    PTPObjectInfo *oi;
 
     if (callback != NULL)
       callback(i, params->handles.n, data);
 
-    ret = ptp_getobjectinfo(params, params->handles.Handler[i], &oi);
+    oi = &params->objectinfo[i];
 
-    if (ret == PTP_RC_OK) {
-
-      if (oi.ObjectFormat == PTP_OFC_Association) {
-	// MTP use thesis object format for folders which means
-	// these "files" will turn up on a folder listing instead.
-	continue;
-      }
-
-      // Allocate a new file type
-      file = LIBMTP_new_file_t();
-
-      file->parent_id = oi.ParentObject;
-
-      // Set the filetype
-      file->filetype = map_ptp_type_to_libmtp_type(oi.ObjectFormat);
-
-      // Original file-specific properties
-      file->filesize = oi.ObjectCompressedSize;
-      if (oi.Filename != NULL) {
-	file->filename = strdup(oi.Filename);
-      }
-
-      // This is some sort of unique ID so we can keep track of the track.
-      file->item_id = params->handles.Handler[i];
-
-      // Add track to a list that will be returned afterwards.
-      if (retfiles == NULL) {
-	retfiles = file;
-	curfile = file;
-      } else {
-	curfile->next = file;
-	curfile = file;
-      }
-
-      // Call listing callback
-      // double progressPercent = (double)i*(double)100.0 / (double)params->handles.n;
-
-    } else {
-      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Filelisting_With_Callback(): Found a bad handle, trying to ignore it.");
+    if (oi->ObjectFormat == PTP_OFC_Association) {
+      // MTP use thesis object format for folders which means
+      // these "files" will turn up on a folder listing instead.
+      continue;
     }
 
+    // Allocate a new file type
+    file = LIBMTP_new_file_t();
+
+    file->parent_id = oi->ParentObject;
+
+    // Set the filetype
+    file->filetype = map_ptp_type_to_libmtp_type(oi->ObjectFormat);
+
+    // Original file-specific properties
+    file->filesize = oi->ObjectCompressedSize;
+    if (oi->Filename != NULL) {
+      file->filename = strdup(oi->Filename);
+    }
+
+    // This is some sort of unique ID so we can keep track of the track.
+    file->item_id = params->handles.Handler[i];
+
+    // Add track to a list that will be returned afterwards.
+    if (retfiles == NULL) {
+      retfiles = file;
+      curfile = file;
+    } else {
+      curfile->next = file;
+      curfile = file;
+    }
+
+    // Call listing callback
+    // double progressPercent = (double)i*(double)100.0 / (double)params->handles.n;
+    
   } // Handle counting loop
   return retfiles;
 }
@@ -2280,47 +2291,40 @@ LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *device, uint32_t cons
 
   for (i = 0; i < params->handles.n; i++) {
     LIBMTP_file_t *file;
-    PTPObjectInfo oi;
-    uint16_t ret;
+    PTPObjectInfo *oi;
 
     // Is this the file we're looking for?
     if (params->handles.Handler[i] != fileid) {
       continue;
     }
 
-    ret = ptp_getobjectinfo(params, params->handles.Handler[i], &oi);
+    oi = &params->objectinfo[i];
 
-    if (ret == PTP_RC_OK) {
-
-      if (oi.ObjectFormat == PTP_OFC_Association) {
-	// MTP use thesis object format for folders which means
-	// these "files" will turn up on a folder listing instead.
-	return NULL;
-      }
-
-      // Allocate a new file type
-      file = LIBMTP_new_file_t();
-
-      file->parent_id = oi.ParentObject;
-
-      // Set the filetype
-      file->filetype = map_ptp_type_to_libmtp_type(oi.ObjectFormat);
-
-      // Original file-specific properties
-      file->filesize = oi.ObjectCompressedSize;
-      if (oi.Filename != NULL) {
-	file->filename = strdup(oi.Filename);
-      }
-
-      // This is some sort of unique ID so we can keep track of the track.
-      file->item_id = params->handles.Handler[i];
-
-      return file;
-    } else {
-      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Filemetadata(): Could not get object info.");
+    if (oi->ObjectFormat == PTP_OFC_Association) {
+      // MTP use thesis object format for folders which means
+      // these "files" will turn up on a folder listing instead.
       return NULL;
     }
 
+    // Allocate a new file type
+    file = LIBMTP_new_file_t();
+    
+    file->parent_id = oi->ParentObject;
+
+    // Set the filetype
+    file->filetype = map_ptp_type_to_libmtp_type(oi->ObjectFormat);
+
+    // Original file-specific properties
+    file->filesize = oi->ObjectCompressedSize;
+    if (oi->Filename != NULL) {
+      file->filename = strdup(oi->Filename);
+    }
+    
+    // This is some sort of unique ID so we can keep track of the track.
+    file->item_id = params->handles.Handler[i];
+
+    return file;
+    
   }
   return NULL;
 }
@@ -2618,93 +2622,88 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
 
   for (i = 0; i < params->handles.n; i++) {
     LIBMTP_track_t *track;
-    PTPObjectInfo oi;
-    uint16_t ret;
+    PTPObjectInfo *oi;
 
     if (callback != NULL)
       callback(i, params->handles.n, data);
 
-    ret = ptp_getobjectinfo(params, params->handles.Handler[i], &oi);
-    if (ret == PTP_RC_OK) {
+    oi = &params->objectinfo[i];
 
-      // Ignore stuff we don't know how to handle...
-      // TODO: get this list as an intersection of the sets
-      // supported by the device and the from the device and
-      // all known audio track files?
-      if ( oi.ObjectFormat != PTP_OFC_WAV &&
-	   oi.ObjectFormat != PTP_OFC_MP3 &&
-	   oi.ObjectFormat != PTP_OFC_MTP_MP2 &&
-	   oi.ObjectFormat != PTP_OFC_MTP_WMA &&
-	   oi.ObjectFormat != PTP_OFC_MTP_OGG &&
-	   oi.ObjectFormat != PTP_OFC_MTP_FLAC &&
-	   oi.ObjectFormat != PTP_OFC_MTP_AAC &&
-	   oi.ObjectFormat != PTP_OFC_MTP_M4A &&
-	   oi.ObjectFormat != PTP_OFC_MTP_MP4 &&
-	   oi.ObjectFormat != PTP_OFC_MTP_UndefinedAudio &&
-	   // This row lets through undefined files for examination since they may be forgotten OGG files.
-	   (oi.ObjectFormat != PTP_OFC_Undefined || !(ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER))
-	   ) {
-	// printf("Not a music track (format: %d), skipping...\n",oi.ObjectFormat);
-	continue;
-      }
-
-      // Allocate a new track type
-      track = LIBMTP_new_track_t();
-
-      // This is some sort of unique ID so we can keep track of the track.
-      track->item_id = params->handles.Handler[i];
-      track->parent_id = oi.ParentObject;
-
-      track->filetype = map_ptp_type_to_libmtp_type(oi.ObjectFormat);
-
-      // Original file-specific properties
-      track->filesize = oi.ObjectCompressedSize;
-      if (oi.Filename != NULL) {
-	track->filename = strdup(oi.Filename);
-      }
-
-      get_track_metadata(device, oi.ObjectFormat, track);
-
-      /*
-       * A special quirk for iriver devices that doesn't quite
-       * remember that some files marked as "unknown" type are
-       * actually OGG files. We look at the filename extension
-       * and see if it happens that this was atleast named "ogg"
-       * and fall back on this heuristic approach in that case, 
-       * for these bugged devices only.
-       */
-      if (track->filetype == LIBMTP_FILETYPE_UNKNOWN &&
-	  ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER) {
-	// Repair forgotten OGG filetype
-	char *ptype;
-
-	ptype = rindex(track->filename,'.')+1;
-	if (ptype != NULL && !strcasecmp (ptype, "ogg")) {
-	  // Fix it.
-	  track->filetype = LIBMTP_FILETYPE_OGG;
-	} else {
-	  // This was not an OGG file so discard it and continue
-	  LIBMTP_destroy_track_t(track);
-	  continue;
-	}
-      }
-
-      // Add track to a list that will be returned afterwards.
-      if (retracks == NULL) {
-	retracks = track;
-	curtrack = track;
-      } else {
-	curtrack->next = track;
-	curtrack = track;
-      }
-
-      // Call listing callback
-      // double progressPercent = (double)i*(double)100.0 / (double)params->handles.n;
-
-    } else {
-      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Tracklisting_With_Callback(): failed to get object info.");
+    // Ignore stuff we don't know how to handle...
+    // TODO: get this list as an intersection of the sets
+    // supported by the device and the from the device and
+    // all known audio track files?
+    if ( oi->ObjectFormat != PTP_OFC_WAV &&
+	 oi->ObjectFormat != PTP_OFC_MP3 &&
+	 oi->ObjectFormat != PTP_OFC_MTP_MP2 &&
+	 oi->ObjectFormat != PTP_OFC_MTP_WMA &&
+	 oi->ObjectFormat != PTP_OFC_MTP_OGG &&
+	 oi->ObjectFormat != PTP_OFC_MTP_FLAC &&
+	 oi->ObjectFormat != PTP_OFC_MTP_AAC &&
+	 oi->ObjectFormat != PTP_OFC_MTP_M4A &&
+	 oi->ObjectFormat != PTP_OFC_MTP_MP4 &&
+	 oi->ObjectFormat != PTP_OFC_MTP_UndefinedAudio &&
+	 // This row lets through undefined files for examination since they may be forgotten OGG files.
+	 (oi->ObjectFormat != PTP_OFC_Undefined || !(ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER))
+	 ) {
+      // printf("Not a music track (format: %d), skipping...\n",oi.ObjectFormat);
+      continue;
     }
 
+    // Allocate a new track type
+    track = LIBMTP_new_track_t();
+      
+    // This is some sort of unique ID so we can keep track of the track.
+    track->item_id = params->handles.Handler[i];
+    track->parent_id = oi->ParentObject;
+
+    track->filetype = map_ptp_type_to_libmtp_type(oi->ObjectFormat);
+
+    // Original file-specific properties
+    track->filesize = oi->ObjectCompressedSize;
+    if (oi->Filename != NULL) {
+      track->filename = strdup(oi->Filename);
+    }
+
+    get_track_metadata(device, oi->ObjectFormat, track);
+
+    /*
+     * A special quirk for iriver devices that doesn't quite
+     * remember that some files marked as "unknown" type are
+     * actually OGG files. We look at the filename extension
+     * and see if it happens that this was atleast named "ogg"
+     * and fall back on this heuristic approach in that case, 
+     * for these bugged devices only.
+     */
+    if (track->filetype == LIBMTP_FILETYPE_UNKNOWN &&
+	ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER) {
+      // Repair forgotten OGG filetype
+      char *ptype;
+      
+      ptype = rindex(track->filename,'.')+1;
+      if (ptype != NULL && !strcasecmp (ptype, "ogg")) {
+	// Fix it.
+	track->filetype = LIBMTP_FILETYPE_OGG;
+      } else {
+	// This was not an OGG file so discard it and continue
+	LIBMTP_destroy_track_t(track);
+	continue;
+      }
+    }
+    
+    // Add track to a list that will be returned afterwards.
+    if (retracks == NULL) {
+      retracks = track;
+      curtrack = track;
+    } else {
+      curtrack->next = track;
+      curtrack = track;
+    }
+    
+    // Call listing callback
+    // double progressPercent = (double)i*(double)100.0 / (double)params->handles.n;
+    
+    
   } // Handle counting loop
   return retracks;
 }
@@ -2734,53 +2733,49 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
   }
 
   for (i = 0; i < params->handles.n; i++) {
-    PTPObjectInfo oi;
+    PTPObjectInfo *oi;
+    LIBMTP_track_t *track;
 
     // Skip if this is not the track we want.
     if (params->handles.Handler[i] != trackid) {
       continue;
     }
 
-    if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
-      LIBMTP_track_t *track;
+    oi = &params->objectinfo[i];
 
-      // Ignore stuff we don't know how to handle...
-      if ( oi.ObjectFormat != PTP_OFC_WAV &&
-	   oi.ObjectFormat != PTP_OFC_MP3 &&
-	   oi.ObjectFormat != PTP_OFC_MTP_MP2 &&
-	   oi.ObjectFormat != PTP_OFC_MTP_WMA &&
-	   oi.ObjectFormat != PTP_OFC_MTP_OGG &&
-	   oi.ObjectFormat != PTP_OFC_MTP_FLAC &&
-	   oi.ObjectFormat != PTP_OFC_MTP_AAC &&
-	   oi.ObjectFormat != PTP_OFC_MTP_M4A &&
-	   oi.ObjectFormat != PTP_OFC_MTP_MP4 &&
-	   oi.ObjectFormat != PTP_OFC_MTP_UndefinedAudio ) {
-	return NULL;
-      }
-
-      // Allocate a new track type
-      track = LIBMTP_new_track_t();
-
-      // This is some sort of unique ID so we can keep track of the track.
-      track->item_id = params->handles.Handler[i];
-      track->parent_id = oi.ParentObject;
-
-      track->filetype = map_ptp_type_to_libmtp_type(oi.ObjectFormat);
-
-      // Original file-specific properties
-      track->filesize = oi.ObjectCompressedSize;
-      if (oi.Filename != NULL) {
-	track->filename = strdup(oi.Filename);
-      }
-
-      get_track_metadata(device, oi.ObjectFormat, track);
-
-      return track;
-
-    } else {
+    // Ignore stuff we don't know how to handle...
+    if ( oi->ObjectFormat != PTP_OFC_WAV &&
+	 oi->ObjectFormat != PTP_OFC_MP3 &&
+	 oi->ObjectFormat != PTP_OFC_MTP_MP2 &&
+	 oi->ObjectFormat != PTP_OFC_MTP_WMA &&
+	 oi->ObjectFormat != PTP_OFC_MTP_OGG &&
+	 oi->ObjectFormat != PTP_OFC_MTP_FLAC &&
+	 oi->ObjectFormat != PTP_OFC_MTP_AAC &&
+	 oi->ObjectFormat != PTP_OFC_MTP_M4A &&
+	 oi->ObjectFormat != PTP_OFC_MTP_MP4 &&
+	 oi->ObjectFormat != PTP_OFC_MTP_UndefinedAudio ) {
       return NULL;
     }
 
+    // Allocate a new track type
+    track = LIBMTP_new_track_t();
+    
+    // This is some sort of unique ID so we can keep track of the track.
+    track->item_id = params->handles.Handler[i];
+    track->parent_id = oi->ParentObject;
+
+    track->filetype = map_ptp_type_to_libmtp_type(oi->ObjectFormat);
+
+    // Original file-specific properties
+    track->filesize = oi->ObjectCompressedSize;
+    if (oi->Filename != NULL) {
+      track->filename = strdup(oi->Filename);
+    }
+
+    get_track_metadata(device, oi->ObjectFormat, track);
+    
+    return track;
+    
   }
   return NULL;
 }
@@ -2862,24 +2857,31 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
 					LIBMTP_progressfunc_t const callback,
 					void const * const data)
 {
-  PTPObjectInfo oi;
+  PTPObjectInfo *oi;
+  uint32_t i;
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
 
-  ret = ptp_getobjectinfo(params, id, &oi);
-  if (ret != PTP_RC_OK) {
-    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_File_To_File_Descriptor(): Could not get object info.");
+  oi = NULL;
+  for (i = 0; i < params->handles.n; i++) {
+    if (params->handles.Handler[i] == id) {
+      oi = &params->objectinfo[i];
+      break;
+    }
+  }
+  if (oi == NULL) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Get_File_To_File_Descriptor(): Could not get object info.");
     return -1;
   }
-  if (oi.ObjectFormat == PTP_OFC_Association) {
+  if (oi->ObjectFormat == PTP_OFC_Association) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Get_File_To_File_Descriptor(): Bad object format.");
     return -1;
   }
 
   // Callbacks
   ptp_usb->callback_active = 1;
-  ptp_usb->current_transfer_total = oi.ObjectCompressedSize+
+  ptp_usb->current_transfer_total = oi->ObjectCompressedSize+
     PTP_USB_BULK_HDR_LEN+sizeof(uint32_t); // Request length, one parameter
   ptp_usb->current_transfer_complete = 0;
   ptp_usb->current_transfer_callback = callback;
@@ -3270,6 +3272,9 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       }
       return -1;
     }
+
+    // NOTE: The char* pointers inside the new_track object info are not copies
+    // so don't try to destroy this object info!
   }
 
   // Callbacks
@@ -3310,6 +3315,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   }
 
   // Added object so flush handles
+  // FIXME: just realloc and att the item and objectinfo (see how libgphoto2 does it!)
   flush_handles(device);
 
   return 0;
@@ -3599,6 +3605,8 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       }
       return -1;
     }
+    // NOTE: the char* pointers inside new_file are not copies so don't
+    // try to destroy this objectinfo!
   }
     
   if (filedata->filesize != (uint64_t) -1) {
@@ -3633,6 +3641,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   }
 
   // Added object so flush handles.
+  // FIXME: just realloc and att the item and objectinfo (see how libgphoto2 does it!)
   flush_handles(device);
   return 0;
 }
@@ -4130,6 +4139,7 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
     return -1;
   }
   // Removed object so flush handles.
+  // FIXME: just realloc and att the item and objectinfo (see how libgphoto2 does it!)
   flush_handles(device);
   return 0;
 }
@@ -4143,11 +4153,13 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
 int LIBMTP_Track_Exists(LIBMTP_mtpdevice_t *device,
            uint32_t const id)
 {
-  PTPObjectInfo oi;
   PTPParams *params = (PTPParams *) device->params;
+  uint32_t i;
 
-  if (ptp_getobjectinfo(params, id, &oi) == PTP_RC_OK) {
-    return -1;
+  for (i = 0; i < params->handles.n; i++) {
+    if (params->handles.Handler[i] == id) {
+      return -1;
+    }
   }
   return 0;
 }
@@ -4258,47 +4270,47 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
 
   for (i = 0; i < params->handles.n; i++) {
     LIBMTP_folder_t *folder;
-    PTPObjectInfo oi;
+    PTPObjectInfo *oi;
 
-    if (ptp_getobjectinfo(params, params->handles.Handler[i], &oi) == PTP_RC_OK) {
-      if (oi.ObjectFormat != PTP_OFC_Association) {
-        continue;
-      }
-      folder = LIBMTP_new_folder_t();
-      folder->folder_id = params->handles.Handler[i];
-      folder->parent_id = oi.ParentObject;
-      if (oi.Filename != NULL)
-        folder->name = (char *)strdup(oi.Filename);
-      else
-        folder->name = NULL;
+    oi = &params->objectinfo[i];
 
-      // Work out where to put this new item
-      if(retfolders == NULL) {
-	retfolders = folder;
-	continue;
+    if (oi->ObjectFormat != PTP_OFC_Association) {
+      continue;
+    }
+    folder = LIBMTP_new_folder_t();
+    folder->folder_id = params->handles.Handler[i];
+    folder->parent_id = oi->ParentObject;
+    if (oi->Filename != NULL)
+      folder->name = (char *)strdup(oi->Filename);
+    else
+      folder->name = NULL;
+
+    // Work out where to put this new item
+    if(retfolders == NULL) {
+      retfolders = folder;
+      continue;
+    } else {
+      LIBMTP_folder_t *parent_folder;
+      LIBMTP_folder_t *current_folder;
+      
+      parent_folder = LIBMTP_Find_Folder(retfolders, folder->parent_id);
+      
+      if(parent_folder == NULL) {
+	current_folder = retfolders;
       } else {
-	LIBMTP_folder_t *parent_folder;
-	LIBMTP_folder_t *current_folder;
-
-	parent_folder = LIBMTP_Find_Folder(retfolders, folder->parent_id);
-
-	if(parent_folder == NULL) {
-	  current_folder = retfolders;
+	if(parent_folder->child == NULL) {
+	  parent_folder->child = folder;
+	  continue;
 	} else {
-	  if(parent_folder->child == NULL) {
-	    parent_folder->child = folder;
-	    continue;
-	  } else {
-	    current_folder = parent_folder->child;
-	  }
+	  current_folder = parent_folder->child;
 	}
-
-	while(current_folder->sibling != NULL) {
-	  current_folder=current_folder->sibling;
-	}
-
-	current_folder->sibling = folder;
       }
+      
+      while(current_folder->sibling != NULL) {
+	current_folder=current_folder->sibling;
+      }
+      
+      current_folder->sibling = folder;
     }
   }
   return retfolders;
@@ -4334,6 +4346,7 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name, uint32_t p
 
   parenthandle = parent_id;
   // Create the object
+  // FIXME: use send list here if available.
   ret = ptp_sendobjectinfo(params, &store, &parenthandle, &new_id, &new_folder);
   if (ret != PTP_RC_OK) {
     add_ptp_error_to_errorstack(device, ret, "LIBMTP_Create_Folder: Could not send object info.");
@@ -4342,7 +4355,10 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name, uint32_t p
     }
     return 0;
   }
+  // NOTE: don't destroy the new_folder objectinfo, because it is statically referencing
+  // several strings.
   // Created new object so flush handles
+  // FIXME: just realloc and att the item and objectinfo (see how libgphoto2 does it!)
   flush_handles(device);
   return new_id;
 }
@@ -4424,48 +4440,43 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *device)
 
   for (i = 0; i < params->handles.n; i++) {
     LIBMTP_playlist_t *pl;
-    PTPObjectInfo oi;
+    PTPObjectInfo *oi;
     uint16_t ret;
 
-    ret = ptp_getobjectinfo(params, params->handles.Handler[i], &oi);
-    if ( ret == PTP_RC_OK) {
+    oi = &params->objectinfo[i];
 
-      // Ignore stuff that isn't playlists
-      if ( oi.ObjectFormat != PTP_OFC_MTP_AbstractAudioVideoPlaylist ) {
-	continue;
-      }
-
-      // Allocate a new playlist type
-      pl = LIBMTP_new_playlist_t();
-
-      // Ignoring the io.Filename field.
-      pl->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
-
-      // This is some sort of unique playlist ID so we can keep track of it
-      pl->playlist_id = params->handles.Handler[i];
-
-      // Then get the track listing for this playlist
-      ret = ptp_mtp_getobjectreferences(params, pl->playlist_id, &pl->tracks, &pl->no_tracks);
-      if (ret != PTP_RC_OK) {
-	add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Playlist: Could not get object references.");
-	pl->tracks = NULL;
-	pl->no_tracks = 0;
-      }
-
-      // Add playlist to a list that will be returned afterwards.
-      if (retlists == NULL) {
-	retlists = pl;
-	curlist = pl;
-      } else {
-	curlist->next = pl;
-	curlist = pl;
-      }
-
-      // Call callback here if we decide to add that possibility...
-
-    } else {
-      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Playlist_List(): Found a bad handle, trying to ignore it.");
+    // Ignore stuff that isn't playlists
+    if ( oi->ObjectFormat != PTP_OFC_MTP_AbstractAudioVideoPlaylist ) {
+      continue;
     }
+
+    // Allocate a new playlist type
+    pl = LIBMTP_new_playlist_t();
+
+    // Ignoring the oi->Filename field.
+    pl->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
+
+    // This is some sort of unique playlist ID so we can keep track of it
+    pl->playlist_id = params->handles.Handler[i];
+
+    // Then get the track listing for this playlist
+    ret = ptp_mtp_getobjectreferences(params, pl->playlist_id, &pl->tracks, &pl->no_tracks);
+    if (ret != PTP_RC_OK) {
+      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Playlist: Could not get object references.");
+      pl->tracks = NULL;
+      pl->no_tracks = 0;
+    }
+    
+    // Add playlist to a list that will be returned afterwards.
+    if (retlists == NULL) {
+      retlists = pl;
+      curlist = pl;
+    } else {
+      curlist->next = pl;
+      curlist = pl;
+    }
+    
+    // Call callback here if we decide to add that possibility...
   }
   return retlists;
 }
@@ -4490,42 +4501,38 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t cons
 
   for (i = 0; i < params->handles.n; i++) {
     LIBMTP_playlist_t *pl;
-    PTPObjectInfo oi;
+    PTPObjectInfo *oi;
     uint16_t ret;
-
+    
     if (params->handles.Handler[i] != plid) {
       continue;
     }
+    
+    oi = &params->objectinfo[i];
 
-    ret = ptp_getobjectinfo(params, params->handles.Handler[i], &oi);
-    if ( ret == PTP_RC_OK) {
-
-      // Ignore stuff that isn't playlists
-      if ( oi.ObjectFormat != PTP_OFC_MTP_AbstractAudioVideoPlaylist ) {
-	return NULL;
-      }
-
-      // Allocate a new playlist type
-      pl = LIBMTP_new_playlist_t();
-
-      // Ignoring the io.Filename field.
-      pl->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
-
-      // This is some sort of unique playlist ID so we can keep track of it
-      pl->playlist_id = params->handles.Handler[i];
-
-      // Then get the track listing for this playlist
-      ret = ptp_mtp_getobjectreferences(params, pl->playlist_id, &pl->tracks, &pl->no_tracks);
-      if (ret != PTP_RC_OK) {
-	add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Playlist(): Could not get object references.");
-	pl->tracks = NULL;
-	pl->no_tracks = 0;
-      }
-
-      return pl;
-    } else {
+    // Ignore stuff that isn't playlists
+    if ( oi->ObjectFormat != PTP_OFC_MTP_AbstractAudioVideoPlaylist ) {
       return NULL;
     }
+
+    // Allocate a new playlist type
+    pl = LIBMTP_new_playlist_t();
+
+    // Ignoring the io.Filename field.
+    pl->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
+
+    // This is some sort of unique playlist ID so we can keep track of it
+    pl->playlist_id = params->handles.Handler[i];
+    
+    // Then get the track listing for this playlist
+    ret = ptp_mtp_getobjectreferences(params, pl->playlist_id, &pl->tracks, &pl->no_tracks);
+    if (ret != PTP_RC_OK) {
+      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Playlist(): Could not get object references.");
+      pl->tracks = NULL;
+      pl->no_tracks = 0;
+    }
+
+    return pl;
   }
   return NULL;
 }
@@ -4707,6 +4714,8 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
       }
       return -1;
     }
+    // NOTE: don't destroy new_object objectinfo afterwards - the strings it contains are
+    // not copies.
 	
     /*
      * We have to send this one blank data byte.
@@ -4759,6 +4768,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
   }
 
   // Created new item, so flush handles
+  // FIXME: just realloc and att the item and objectinfo (see how libgphoto2 does it!)
   flush_handles(device);
 
   return 0;
@@ -4914,45 +4924,41 @@ LIBMTP_album_t *LIBMTP_Get_Album_List(LIBMTP_mtpdevice_t *device)
 
   for (i = 0; i < params->handles.n; i++) {
     LIBMTP_album_t *alb;
-    PTPObjectInfo oi;
+    PTPObjectInfo *oi;
     uint16_t ret;
 
-    ret = ptp_getobjectinfo(params, params->handles.Handler[i], &oi);
-    if ( ret == PTP_RC_OK) {
+    oi = &params->objectinfo[i];
 
-      // Ignore stuff that isn't an album
-      if ( oi.ObjectFormat != PTP_OFC_MTP_AbstractAudioAlbum ) {
-        continue;
-      }
-
-      // Allocate a new album type
-      alb = LIBMTP_new_album_t();
-      // Get metadata for it.
-      alb->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
-      alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Artist);
-      alb->genre = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Genre);
-      alb->album_id = params->handles.Handler[i];
-
-      // Then get the track listing for this album
-      ret = ptp_mtp_getobjectreferences(params, alb->album_id, &alb->tracks, &alb->no_tracks);
-      if (ret != PTP_RC_OK) {
-	add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Album_List(): Could not get object references.");
-        alb->tracks = NULL;
-        alb->no_tracks = 0;
-      }
-
-      // Add album to a list that will be returned afterwards.
-      if (retalbums == NULL) {
-        retalbums = alb;
-        curalbum = alb;
-      } else {
-        curalbum->next = alb;
-        curalbum = alb;
-      }
-
-    } else {
-      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Album_List(): Found a bad handle, trying to ignore it.");
+    // Ignore stuff that isn't an album
+    if ( oi->ObjectFormat != PTP_OFC_MTP_AbstractAudioAlbum ) {
+      continue;
     }
+
+    // Allocate a new album type
+    alb = LIBMTP_new_album_t();
+    // Get metadata for it.
+    alb->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
+    alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Artist);
+    alb->genre = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Genre);
+    alb->album_id = params->handles.Handler[i];
+    
+    // Then get the track listing for this album
+    ret = ptp_mtp_getobjectreferences(params, alb->album_id, &alb->tracks, &alb->no_tracks);
+    if (ret != PTP_RC_OK) {
+      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Album_List(): Could not get object references.");
+      alb->tracks = NULL;
+      alb->no_tracks = 0;
+    }
+    
+    // Add album to a list that will be returned afterwards.
+    if (retalbums == NULL) {
+      retalbums = alb;
+      curalbum = alb;
+    } else {
+      curalbum->next = alb;
+      curalbum = alb;
+    }
+    
   }
   return retalbums;
 }
@@ -4976,38 +4982,34 @@ LIBMTP_album_t *LIBMTP_Get_Album(LIBMTP_mtpdevice_t *device, uint32_t const albi
 
   for (i = 0; i < params->handles.n; i++) {
     LIBMTP_album_t *alb;
-    PTPObjectInfo oi;
+    PTPObjectInfo *oi;
     uint16_t ret;
 
     if (params->handles.Handler[i] != albid) {
       continue;
     }
 
-    ret = ptp_getobjectinfo(params, params->handles.Handler[i], &oi);
-    if ( ret == PTP_RC_OK) {
+    oi = &params->objectinfo[i];
 
-      // Ignore stuff that isn't an album
-      if ( oi.ObjectFormat != PTP_OFC_MTP_AbstractAudioAlbum ) {
-        return NULL;
-      }
-
-      // Allocate a new album type
-      alb = LIBMTP_new_album_t();
-      alb->album_id = params->handles.Handler[i];
-      alb->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
-      alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Artist);
-      alb->genre = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Genre);
-      ret = ptp_mtp_getobjectreferences(params, alb->album_id, &alb->tracks, &alb->no_tracks);
-      if (ret != PTP_RC_OK) {
-	add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Album: Could not get object references.");
-        alb->tracks = NULL;
-        alb->no_tracks = 0;
-      }
-
-      return alb;
-    } else {
+    // Ignore stuff that isn't an album
+    if ( oi->ObjectFormat != PTP_OFC_MTP_AbstractAudioAlbum ) {
       return NULL;
     }
+
+    // Allocate a new album type
+    alb = LIBMTP_new_album_t();
+    alb->album_id = params->handles.Handler[i];
+    alb->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
+    alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Artist);
+    alb->genre = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Genre);
+    ret = ptp_mtp_getobjectreferences(params, alb->album_id, &alb->tracks, &alb->no_tracks);
+    if (ret != PTP_RC_OK) {
+      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Album: Could not get object references.");
+      alb->tracks = NULL;
+      alb->no_tracks = 0;
+    }
+    
+    return alb;
   }
   return NULL;
 }
@@ -5212,22 +5214,28 @@ int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
   PTPPropertyValue propval;
-  PTPObjectInfo oi;
-  int i;
+  PTPObjectInfo *oi;
+  uint32_t i;
   uint16_t *props = NULL;
   uint32_t propcnt = 0;
   int supported = 0;
 
   // get the file format for the object we're going to send representative data for
-  ret = ptp_getobjectinfo(device->params, id, &oi);
+  oi = NULL;
+  for (i = 0; i < params->handles.n; i++) {
+    if (params->handles.Handler[i] == id) {
+      oi = &params->objectinfo[i];
+      break;
+    }
+  }
 
-  if (ret != PTP_RC_OK) {
-    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_Representative_Sample(): could not get object info.");
+  if (oi == NULL) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Send_Representative_Sample(): could not get object info.");
     return -1;
   }
 
   // check that we can send representative sample data for this object format
-  ret = ptp_mtp_getobjectpropssupported(params, oi.ObjectFormat, &propcnt, &props);
+  ret = ptp_mtp_getobjectpropssupported(params, oi->ObjectFormat, &propcnt, &props);
   if (ret != PTP_RC_OK) {
     add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_Representative_Sample(): could not get object properties.");
     return -1;

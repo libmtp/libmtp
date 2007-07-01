@@ -1,3 +1,14 @@
+2007-07-01  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.c: sync to upstream gPhoto source.
+	* src/ptp.h: dito.
+	* src/ptp-pack.c: dito.
+	* src/libmtp.c: use the params->objectinfo object info cache to
+	  speed things up considerably. This is exactly what libgphoto2
+	  does so now we move closer to upstream. I believe this also
+	  fixes quite a few memory leaks because we weren't freeing the
+	  strings inside the objectinfo previously.
+
 2007-05-29  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: use the set object prop list command to set album

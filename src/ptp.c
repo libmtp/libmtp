@@ -1,7 +1,7 @@
 /* ptp.c
  *
  * Copyright (C) 2001-2004 Mariusz Woloszyn <emsi@ipartners.pl>
- * Copyright (C) 2003-2006 Marcus Meissner <marcus@jet.franken.de>
+ * Copyright (C) 2003-2007 Marcus Meissner <marcus@jet.franken.de>
  * Copyright (C) 2006 Linus Walleij <triad@df.lth.se>
  *
  * This library is free software; you can redistribute it and/or
@@ -469,6 +469,8 @@ ptp_closesession (PTPParams* params)
  **/
 void
 ptp_free_params (PTPParams *params) {
+	int i;
+
 	while (params->proplist) {
 		MTPPropList		*xpl = params->proplist;
 
@@ -481,6 +483,8 @@ ptp_free_params (PTPParams *params) {
 	if (params->cameraname) free (params->cameraname);
 	if (params->wifi_profiles) free (params->wifi_profiles);
 	free (params->handles.Handler);
+	for (i=0;i<params->handles.n;i++)
+		ptp_free_objectinfo (&params->objectinfo[i]);
 	free (params->objectinfo);
 	ptp_free_DI (&params->deviceinfo);
 }
@@ -596,7 +600,21 @@ ptp_getobjecthandles (PTPParams* params, uint32_t storage,
 	ptp.Nparam=3;
 	len=0;
 	ret=ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &oh, &len);
-	if (ret == PTP_RC_OK) ptp_unpack_OH(params, oh, objecthandles, len);
+	if (ret == PTP_RC_OK) {
+		ptp_unpack_OH(params, oh, objecthandles, len);
+	} else {
+		if (	(storage == 0xffffffff) &&
+			(objectformatcode == 0) &&
+			(associationOH == 0)
+		) {
+			/* When we query all object handles on all stores and
+			 * get an error -> just handle it as "0 handles".
+			 */
+			objecthandles->Handler = NULL;
+			objecthandles->n = 0;
+			ret = PTP_RC_OK;
+		}
+	}
 	free(oh);
 	return ret;
 }
@@ -1376,13 +1394,13 @@ ptp_canon_startshootingmode (PTPParams* params)
 	PTPContainer ptp;
 	
 	PTP_CNT_INIT(ptp);
-	ptp.Code=PTP_OC_CANON_StartShootingMode;
+	ptp.Code=PTP_OC_CANON_InitiateReleaseControl;
 	ptp.Nparam=0;
 	return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
 }
 
 /**
- * ptp_canon_initiate_direct_transfer:
+ * ptp_canon_gettreeinfo:
  * params:	PTPParams*
  *              uint32_t *out
  * 
@@ -1394,13 +1412,13 @@ ptp_canon_startshootingmode (PTPParams* params)
  *
  **/
 uint16_t
-ptp_canon_initiate_direct_transfer (PTPParams* params, uint32_t *out)
+ptp_canon_gettreeinfo (PTPParams* params, uint32_t *out)
 {
 	PTPContainer ptp;
 	uint16_t ret;
 
 	PTP_CNT_INIT(ptp);
-	ptp.Code   = PTP_OC_CANON_InitiateDirectTransferEx2;
+	ptp.Code   = PTP_OC_CANON_GetTreeInfo;
 	ptp.Nparam = 1;
 	ptp.Param1 = 0xf;
 	ret = ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
@@ -1450,7 +1468,7 @@ ptp_canon_getpairinginfo (PTPParams* params, uint32_t nr, unsigned char **data, 
  *
  **/
 uint16_t
-ptp_canon_get_target_handles (PTPParams* params,
+ptp_canon_gettreesize (PTPParams* params,
 	PTPCanon_directtransfer_entry **entries, unsigned int *cnt)
 {
 	PTPContainer ptp;
@@ -1460,7 +1478,7 @@ ptp_canon_get_target_handles (PTPParams* params,
 	unsigned int size;
 	
 	PTP_CNT_INIT(ptp);
-	ptp.Code   = PTP_OC_CANON_GetTargetHandles;
+	ptp.Code   = PTP_OC_CANON_GetTreeSize;
 	ptp.Nparam = 0;
 	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &out, &size);
 	if (ret != PTP_RC_OK)
@@ -1496,7 +1514,7 @@ ptp_canon_endshootingmode (PTPParams* params)
 	PTPContainer ptp;
 	
 	PTP_CNT_INIT(ptp);
-	ptp.Code=PTP_OC_CANON_EndShootingMode;
+	ptp.Code=PTP_OC_CANON_TerminateReleaseControl;
 	ptp.Nparam=0;
 	return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
 }
@@ -1661,6 +1679,27 @@ ptp_canon_focusunlock (PTPParams* params)
 }
 
 /**
+ * ptp_canon_keepdeviceon:
+ *
+ * This operation sends a "ping" style message to the camera.
+ * 
+ * params:	PTPParams*
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+uint16_t
+ptp_canon_keepdeviceon (PTPParams* params)
+{
+	PTPContainer ptp;
+	
+	PTP_CNT_INIT(ptp);
+	ptp.Code=PTP_OC_CANON_KeepDeviceOn;
+	ptp.Nparam=0;
+	return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
+}
+
+/**
  * ptp_canon_initiatecaptureinmemory:
  * 
  * This operation starts the image capture according to the current camera
@@ -1687,6 +1726,223 @@ ptp_canon_initiatecaptureinmemory (PTPParams* params)
 	ptp.Nparam=0;
 	return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
 }
+
+/**
+ * ptp_canon_eos_capture:
+ * 
+ * This starts a EOS400D style capture. You have to use the
+ * 0x9116 command to poll for its completion.
+ * The image is saved on the CF Card currently.
+ *
+ * params:	PTPParams*
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+uint16_t
+ptp_canon_eos_capture (PTPParams* params)
+{
+	PTPContainer ptp;
+	
+	PTP_CNT_INIT(ptp);
+	ptp.Code=PTP_OC_CANON_EOS_RemoteRelease;
+	ptp.Nparam=0;
+	return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
+}
+
+/**
+ * ptp_canon_eos_getevent:
+ * 
+ * This retrieves configuration status/updates/changes
+ * on EOS cameras. It reads a datablock which has a list of variable
+ * sized structures.
+ *
+ * params:	PTPParams*
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+uint16_t
+ptp_canon_eos_getevent (PTPParams* params, PTPCanon_changes_entry **entries, int *nrofentries)
+{
+	PTPContainer ptp;
+	uint16_t	ret;
+	unsigned int 	size = 0;
+	unsigned char	*data = NULL;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code = PTP_OC_CANON_EOS_GetEvent;
+	ptp.Nparam = 0;
+	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, &size);
+	if (ret != PTP_RC_OK) return ret;
+        *nrofentries = ptp_unpack_CANON_changes(params,data,size,entries);
+	return PTP_RC_OK;
+}
+
+uint16_t
+ptp_canon_eos_getdevicepropdesc (PTPParams* params, uint16_t propcode,
+	PTPDevicePropDesc *dpd)
+{
+	int i;
+
+	for (i=0;i<params->nrofcanon_props;i++)
+		if (params->canon_props[i].proptype == propcode)
+			break;
+	if (params->nrofcanon_props == i)
+		return PTP_RC_Undefined;
+	memcpy (dpd, &params->canon_props[i].dpd, sizeof (*dpd));
+	if (dpd->FormFlag == PTP_DPFF_Enumeration) {
+		/* need to duplicate the Enumeration alloc */
+		dpd->FORM.Enum.SupportedValue = malloc (sizeof (PTPPropertyValue)*dpd->FORM.Enum.NumberOfValues);
+		memcpy (dpd->FORM.Enum.SupportedValue,
+			params->canon_props[i].dpd.FORM.Enum.SupportedValue,
+			sizeof (PTPPropertyValue)*dpd->FORM.Enum.NumberOfValues
+		);
+		/* FIXME: duplicate strings if type is STR. */
+	}
+	return PTP_RC_OK;
+}
+
+
+uint16_t
+ptp_canon_eos_getstorageids (PTPParams* params)
+{
+	PTPContainer ptp;
+	unsigned char	*data = NULL;
+	unsigned int	size = 0;
+	uint16_t	ret;
+	
+	PTP_CNT_INIT(ptp);
+	ptp.Code 	= PTP_OC_CANON_EOS_GetStorageIDs;
+	ptp.Nparam	= 0;
+	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, &size);
+	/* FIXME: do stuff with data */
+	return ret;
+}
+
+uint16_t
+ptp_canon_eos_getstorageinfo (PTPParams* params, uint32_t p1)
+{
+	PTPContainer ptp;
+	unsigned char	*data = NULL;
+	unsigned int	size = 0;
+	uint16_t	ret;
+	
+	PTP_CNT_INIT(ptp);
+	ptp.Code 	= PTP_OC_CANON_EOS_GetStorageInfo;
+	ptp.Nparam	= 1;
+	ptp.Param1	= p1;
+	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, &size);
+	/* FIXME: do stuff with data */
+	return ret;
+}
+
+/**
+ * ptp_canon_eos_getpartialobject:
+ * 
+ * This retrieves a part of an PTP object which you specify as object id.
+ * The id originates from 0x9116 call.
+ * After finishing it, we seem to need to call ptp_canon_eos_enddirecttransfer.
+ *
+ * params:	PTPParams*
+ * 		oid		Object ID
+ * 		offset		The offset where to start the data transfer 
+ *		xsize		Size in bytes of the transfer to do
+ *		data		Pointer that receives the malloc()ed memory of the transfer.
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ */
+uint16_t
+ptp_canon_eos_getpartialobject (PTPParams* params, uint32_t oid, uint32_t offset, uint32_t xsize, unsigned char**data)
+{
+	PTPContainer	ptp;
+	unsigned int	size = 0;
+
+	*data = NULL;
+	PTP_CNT_INIT(ptp);
+	ptp.Code 	= PTP_OC_CANON_EOS_GetPartialObject;
+	ptp.Nparam	= 3;
+	ptp.Param1	= oid;
+	ptp.Param2	= offset;
+	ptp.Param3	= xsize;
+	return ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, data, &size);
+}
+
+/**
+ * ptp_canon_eos_transfercomplete:
+ * 
+ * This ends a direct object transfer from an EOS camera.
+ *
+ * params:	PTPParams*
+ * 		oid		Object ID
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ */
+uint16_t
+ptp_canon_eos_transfercomplete (PTPParams* params, uint32_t oid)
+{
+	PTPContainer	ptp;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code 	= PTP_OC_CANON_EOS_TransferComplete;
+	ptp.Nparam	= 1;
+	ptp.Param1	= oid;
+	return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
+}
+
+uint16_t
+ptp_canon_eos_setdevicepropvalueex (PTPParams* params, unsigned char* data, unsigned int size)
+{
+	PTPContainer	ptp;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code 	= PTP_OC_CANON_EOS_SetDevicePropValueEx;
+	ptp.Nparam	= 0;
+	return ptp_transaction(params, &ptp, PTP_DP_SENDDATA, size, &data, NULL);
+}
+
+uint16_t
+ptp_canon_eos_pchddcapacity (PTPParams* params, uint32_t p1, uint32_t p2, uint32_t p3)
+{
+	PTPContainer	ptp;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code 	= PTP_OC_CANON_EOS_PCHDDCapacity;
+	ptp.Nparam	= 3;
+	ptp.Param1	= p1;
+	ptp.Param2	= p2;
+	ptp.Param3	= p3;
+	return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
+}
+
+
+uint16_t
+ptp_canon_eos_setremotemode (PTPParams* params, uint32_t p1)
+{
+	PTPContainer	ptp;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code 	= PTP_OC_CANON_EOS_SetRemoteMode;
+	ptp.Nparam	= 1;
+	ptp.Param1	= p1;
+	return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
+}
+
+
+uint16_t
+ptp_canon_eos_seteventmode (PTPParams* params, uint32_t p1)
+{
+	PTPContainer	ptp;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code 	= PTP_OC_CANON_EOS_SetEventMode;
+	ptp.Nparam	= 1;
+	ptp.Param1	= p1;
+	return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
+}
+
 
 uint16_t
 ptp_canon_9012 (PTPParams* params)
@@ -2148,11 +2404,13 @@ ptp_nikon_getwifiprofilelist (PTPParams* params)
 
 		buffer = ptp_unpack_string(params, data, pos, &len);
 		strncpy(params->wifi_profiles[profn].creation_date, buffer, sizeof(params->wifi_profiles[profn].creation_date));
+		free (buffer);
 		pos += (len*2+1);
 		if (pos+1 >= size) return PTP_RC_Undefined;
 		/* FIXME: check if it is really last usage date */
 		buffer = ptp_unpack_string(params, data, pos, &len);
 		strncpy(params->wifi_profiles[profn].lastusage_date, buffer, sizeof(params->wifi_profiles[profn].lastusage_date));
+		free (buffer);
 		pos += (len*2+1);
 		if (pos+5 >= size) return PTP_RC_Undefined;
 		
@@ -2580,9 +2838,9 @@ ptp_event_issupported(PTPParams* params, uint16_t event)
 int
 ptp_property_issupported(PTPParams* params, uint16_t property)
 {
-	int i=0;
+	int i;
 
-	for (;i<params->deviceinfo.DevicePropertiesSupported_len;i++)
+	for (i=0;i<params->deviceinfo.DevicePropertiesSupported_len;i++)
 		if (params->deviceinfo.DevicePropertiesSupported[i]==property)
 			return 1;
 	return 0;
@@ -2660,6 +2918,14 @@ ptp_free_objectpropdesc(PTPObjectPropDesc* opd)
 		fprintf (stderr, "Unknown OPFF type %d\n", opd->FormFlag);
 		break;
 	}
+}
+
+void
+ptp_free_objectinfo (PTPObjectInfo *oi)
+{
+	if (!oi) return;
+        free (oi->Filename);
+        free (oi->Keywords);
 }
 
 void 
@@ -2787,28 +3053,78 @@ ptp_get_property_description(PTPParams* params, uint16_t dpc)
 		const char *txt;
 	} ptp_device_properties_Canon[] = {
 		{PTP_DPC_CANON_BeepMode,	N_("Beep Mode")},
-		{PTP_DPC_CANON_ViewfinderMode,	N_("Viewfinder Mode")},
+		{PTP_DPC_CANON_BatteryKind,	N_("Battery Kind")},
+		{PTP_DPC_CANON_BatteryStatus,	N_("Battery Mode")},
+		{PTP_DPC_CANON_UILockType,	N_("UILockType")},
+		{PTP_DPC_CANON_CameraMode,	N_("Camera Mode")},
 		{PTP_DPC_CANON_ImageQuality,	N_("Image Quality")},
+		{PTP_DPC_CANON_FullViewFileFormat,	N_("Full View File Format")},
 		{PTP_DPC_CANON_ImageSize,	N_("Image Size")},
+		{PTP_DPC_CANON_SelfTime,	N_("Self Time")},
 		{PTP_DPC_CANON_FlashMode,	N_("Flash Mode")},
+		{PTP_DPC_CANON_Beep,		N_("Beep")},
 		{PTP_DPC_CANON_ShootingMode,	N_("Shooting Mode")},
+		{PTP_DPC_CANON_ImageMode,	N_("Image Mode")},
+		{PTP_DPC_CANON_DriveMode,	N_("Drive Mode")},
+		{PTP_DPC_CANON_EZoom,		N_("Zoom")},
 		{PTP_DPC_CANON_MeteringMode,	N_("Metering Mode")},
 		{PTP_DPC_CANON_AFDistance,	N_("AF Distance")},
 		{PTP_DPC_CANON_FocusingPoint,	N_("Focusing Point")},
 		{PTP_DPC_CANON_WhiteBalance,	N_("White Balance")},
+		{PTP_DPC_CANON_SlowShutterSetting,	N_("Slow Shutter Setting")},
+		{PTP_DPC_CANON_AFMode,		N_("AF Mode")},
+		{PTP_DPC_CANON_ImageStabilization,		N_("Image Stabilization")},
+		{PTP_DPC_CANON_Contrast,	N_("Contrast")},
+		{PTP_DPC_CANON_ColorGain,	N_("Color Gain")},
+		{PTP_DPC_CANON_Sharpness,	N_("Sharpness")},
+		{PTP_DPC_CANON_Sensitivity,	N_("Sensitivity")},
+		{PTP_DPC_CANON_ParameterSet,	N_("Parameter Set")},
 		{PTP_DPC_CANON_ISOSpeed,	N_("ISO Speed")},
 		{PTP_DPC_CANON_Aperture,	N_("Aperture")},
 		{PTP_DPC_CANON_ShutterSpeed,	N_("ShutterSpeed")},
 		{PTP_DPC_CANON_ExpCompensation,	N_("Exposure Compensation")},
+		{PTP_DPC_CANON_FlashCompensation,	N_("Flash Compensation")},
+		{PTP_DPC_CANON_AEBExposureCompensation,	N_("AEB Exposure Compensation")},
+		{PTP_DPC_CANON_AvOpen,		N_("Av Open")},
+		{PTP_DPC_CANON_AvMax,		N_("Av Max")},
+		{PTP_DPC_CANON_FocalLength,	N_("Focal Length")},
+		{PTP_DPC_CANON_FocalLengthTele,	N_("Focal Length Tele")},
+		{PTP_DPC_CANON_FocalLengthWide,	N_("Focal Length Wide")},
+		{PTP_DPC_CANON_FocalLengthDenominator,	N_("Focal Length Denominator")},
+		{PTP_DPC_CANON_CaptureTransferMode,	N_("Capture Transfer Mode")},
 		{PTP_DPC_CANON_Zoom,		N_("Zoom")},
+		{PTP_DPC_CANON_NamePrefix,	N_("Name Prefix")},
 		{PTP_DPC_CANON_SizeQualityMode,	N_("Size Quality Mode")},
+		{PTP_DPC_CANON_SupportedThumbSize,	N_("Supported Thumb Size")},
+		{PTP_DPC_CANON_SizeOfOutputDataFromCamera,	N_("Size of Output Data from Camera")},
+		{PTP_DPC_CANON_SizeOfInputDataToCamera,		N_("Size of Input Data to Camera")},
+		{PTP_DPC_CANON_RemoteAPIVersion,N_("Remote API Version")},
 		{PTP_DPC_CANON_FirmwareVersion,	N_("Firmware Version")},
 		{PTP_DPC_CANON_CameraModel,	N_("Camera Model")},
 		{PTP_DPC_CANON_CameraOwner,	N_("Camera Owner")},
 		{PTP_DPC_CANON_UnixTime,	N_("UNIX Time")},
+		{PTP_DPC_CANON_CameraBodyID,	N_("Camera Body ID")},
+		{PTP_DPC_CANON_CameraOutput,	N_("Camera Output")},
+		{PTP_DPC_CANON_DispAv,		N_("Disp Av")},
+		{PTP_DPC_CANON_AvOpenApex,	N_("Av Open Apex")},
 		{PTP_DPC_CANON_DZoomMagnification,	N_("Digital Zoom Magnification")},
+		{PTP_DPC_CANON_MlSpotPos,	N_("Ml Spot Position")},
+		{PTP_DPC_CANON_DispAvMax,	N_("Disp Av Max")},
+		{PTP_DPC_CANON_AvMaxApex,	N_("Av Max Apex")},
+		{PTP_DPC_CANON_EZoomStartPosition,	N_("EZoom Start Position")},
+		{PTP_DPC_CANON_FocalLengthOfTele,	N_("Focal Length of Tele")},
+		{PTP_DPC_CANON_EZoomSizeOfTele,	N_("EZoom Size of Tele")},
 		{PTP_DPC_CANON_PhotoEffect,	N_("Photo Effect")},
 		{PTP_DPC_CANON_AssistLight,	N_("Assist Light")},
+		{PTP_DPC_CANON_FlashQuantityCount,	N_("Flash Quanity Count")},
+		{PTP_DPC_CANON_FlashQuantityCount,	N_("Flash Quanity Count")},
+		{PTP_DPC_CANON_RotationAngle,	N_("Rotation Angle")},
+		{PTP_DPC_CANON_RotationScene,	N_("Rotation Scene")},
+		{PTP_DPC_CANON_EventEmulateMode,N_("Event Emulate Mode")},
+		{PTP_DPC_CANON_DPOFVersion,	N_("DPOF Version")},
+		{PTP_DPC_CANON_TypeOfSupportedSlideShow,	N_("Type of Slideshow")},
+		{PTP_DPC_CANON_AverageFilesizes,N_("Average Filesizes")},
+		{PTP_DPC_CANON_ModelID,		N_("Model ID")},
 		{0,NULL}
 	};
 
@@ -3452,7 +3768,15 @@ ptp_render_ofc(PTPParams* params, uint16_t ofc, int spaceleft, char *txt)
 		case PTP_VENDOR_EASTMAN_KODAK:
 			switch (ofc) {
 			case PTP_OFC_EK_M3U:
-				return snprintf (txt, spaceleft,_("M3U"));
+				return snprintf (txt, spaceleft,"M3U");
+			default:
+				break;
+			}
+			break;
+		case PTP_VENDOR_CANON:
+			switch (ofc) {
+			case PTP_OFC_CANON_CRW:
+				return snprintf (txt, spaceleft,"CRW");
 			default:
 				break;
 			}
