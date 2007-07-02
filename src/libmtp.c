@@ -1133,6 +1133,8 @@ static void get_handles_recursively(LIBMTP_mtpdevice_t *device, PTPParams *param
   // realloc object info cache
   params->objectinfo = (PTPObjectInfo*) realloc(params->objectinfo, 
 					  (old_handles + currentHandles.n) * sizeof(PTPObjectInfo));
+  memset(&params->objectinfo[old_handles], 0, currentHandles.n * sizeof(PTPObjectInfo));
+
   // copy new handles
   memcpy(&(handles->Handler[old_handles]), currentHandles.Handler, currentHandles.n * sizeof(uint32_t));
   handles->n = old_handles + currentHandles.n;
