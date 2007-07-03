@@ -11,11 +11,7 @@ SPEEDUP fixes:
   with a list for each format of the properties it will support. Notice 
   that this needs to be updated whenever flush_handles() is called too.
 
-2. SPEED: Cache track metadata, file metadata etc, perhaps this is not 
-  desirable since the application using libmtp will do this anyway.
-  (libgphoto2 does it, see http://svn.sourceforge.net/viewvc/gphoto/trunk/libgphoto2/camlibs/ptp2/library.c?r1=9491&r2=9590)
-
-3. SPEED: Whenever we add an object (file, track, playlist...) we
+2. SPEED: Whenever we add an object (file, track, playlist...) we
   should only need to update the cache with relevant data. Atleast for
   speedup caches.
 
@@ -64,3 +60,6 @@ THOSE ARE ALREADY DONE:
   communication can be saved by cacheing this info. Notice that this
   needs to be updated whenever flush_handles() is called too.
   (This came from libgphoto2 implementing it!)
+
+3. SPEED: Cache track metadata, file metadata etc in params->proplist.
+

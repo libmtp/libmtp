@@ -349,6 +349,19 @@ static char *get_string_from_object(LIBMTP_mtpdevice_t *device, uint32_t const o
   if ( device == NULL || object_id == 0) {
     return NULL;
   }
+  
+  // This O(n) search should not be used so often, since code
+  // using the cached properties don't usually call this function.
+  if (params->proplist) {
+    MTPPropList    *prop = params->proplist;
+
+    while (prop) {
+      if (object_id == prop->ObjectHandle && attribute_id == prop->property) {
+	return strdup(prop->propval.str);
+      }
+      prop = prop->next;
+    }
+  }
 
   ret = ptp_mtp_getobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_STR);
   if (ret == PTP_RC_OK) {
@@ -382,6 +395,19 @@ static uint32_t get_u32_from_object(LIBMTP_mtpdevice_t *device,uint32_t const ob
 
   if ( device == NULL ) {
     return value_default;
+  }
+
+  // This O(n) search should not be used so often, since code
+  // using the cached properties don't usually call this function.
+  if (params->proplist) {
+    MTPPropList    *prop = params->proplist;
+    
+    while (prop) {
+      if (object_id == prop->ObjectHandle && attribute_id == prop->property) {
+	return prop->propval.u32;
+      }
+      prop = prop->next;
+    }
   }
 
   ret = ptp_mtp_getobjectpropvalue(params, object_id,
@@ -418,6 +444,19 @@ static uint16_t get_u16_from_object(LIBMTP_mtpdevice_t *device, uint32_t const o
     return value_default;
   }
 
+  // This O(n) search should not be used so often, since code
+  // using the cached properties don't usually call this function.
+  if (params->proplist) {
+    MTPPropList    *prop = params->proplist;
+    
+    while (prop) {
+      if (object_id == prop->ObjectHandle && attribute_id == prop->property) {
+	return prop->propval.u16;
+      }
+      prop = prop->next;
+    }
+  }
+
   ret = ptp_mtp_getobjectpropvalue(params, object_id,
                                    attribute_id,
                                    &propval,
@@ -450,6 +489,19 @@ static uint8_t get_u8_from_object(LIBMTP_mtpdevice_t *device, uint32_t const obj
 
   if ( device == NULL ) {
     return value_default;
+  }
+
+  // This O(n) search should not be used so often, since code
+  // using the cached properties don't usually call this function.
+  if (params->proplist) {
+    MTPPropList    *prop = params->proplist;
+    
+    while (prop) {
+      if (object_id == prop->ObjectHandle && attribute_id == prop->property) {
+	return prop->propval.u8;
+      }
+      prop = prop->next;
+    }
   }
 
   ret = ptp_mtp_getobjectpropvalue(params, object_id,
@@ -673,6 +725,7 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(mtpdevice_list_t *devices)
     /* Clear any handlers */
     tmplist->params->handles.Handler = NULL;
     tmplist->params->objectinfo = NULL;
+    tmplist->params->proplist = NULL;
     
     /* Allocate dynamic space for our device */
     mtp_device = (LIBMTP_mtpdevice_t *) malloc(sizeof(LIBMTP_mtpdevice_t));
@@ -1012,6 +1065,158 @@ void LIBMTP_Dump_Errorstack(LIBMTP_mtpdevice_t *device)
 }
 
 /**
+ * This command gets all handles and stuff by FAST directory retrieveal 
+ * which is available by getting all metadata for object 
+ * <code>0xffffffff</code> which simply means "all metadata for all objects".
+ * This works on the vast majority of MTP devices (there ARE exceptions!)
+ * and is quite quick. Check the error stack to see if there were
+ * problems getting the metadata.
+ */
+static void get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
+{
+  PTPParams      *params = (PTPParams *) device->params;
+  int		 cnt = 0;
+  int            i;
+  uint32_t	 lasthandle = 0xffffffff;
+  MTPPropList    *proplist = NULL;
+  MTPPropList    *prop;
+  uint16_t       ret;
+  
+  ret = ptp_mtp_getobjectproplist (params, 0xffffffff, &proplist);
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "get_all_metadata_fast(): could not get all object proplist.");
+    return;
+  }
+  params->proplist = proplist; /* cache it */
+  
+  /* 
+   * We count the number of objects by counting the ObjectHandle
+   * references, whenever it changes we get a new objects, when it's
+   * the same, it is just different properties of the same object.
+   */
+  prop = proplist;
+  while (prop) {
+      if (lasthandle != prop->ObjectHandle) {
+	cnt++;
+	lasthandle = prop->ObjectHandle;
+      }
+      prop = prop->next;
+  }
+  printf("Fast directory retrieveal, found %d objects\n", cnt);
+  lasthandle = 0xffffffff;
+  params->objectinfo = malloc (sizeof (PTPObjectInfo) * cnt);
+  memset (params->objectinfo, 0, sizeof(PTPObjectInfo) * cnt);
+  params->handles.Handler = malloc (sizeof (uint32_t) * cnt);
+  params->handles.n = cnt;
+  
+  prop = proplist;
+  i = -1;
+  while (prop) {
+    if (lasthandle != prop->ObjectHandle) {
+      if (i >= 0) {
+	if (!params->objectinfo[i].Filename) {
+	  /* I have one such file on my Creative */
+	  params->objectinfo[i].Filename = strdup("<null>");
+	}
+      }
+      i++;
+      lasthandle = prop->ObjectHandle;
+      params->handles.Handler[i] = prop->ObjectHandle;
+    }
+    switch (prop->property) {
+    case PTP_OPC_ParentObject:
+      params->objectinfo[i].ParentObject = prop->propval.u32;
+      break;
+    case PTP_OPC_ObjectFormat:
+      params->objectinfo[i].ObjectFormat = prop->propval.u16;
+      break;
+    case PTP_OPC_ObjectSize:
+      params->objectinfo[i].ObjectCompressedSize = prop->propval.u32;
+      break;
+    case PTP_OPC_StorageID:
+      params->objectinfo[i].StorageID = prop->propval.u32;
+      break;
+    case PTP_OPC_ObjectFileName:
+      params->objectinfo[i].Filename = strdup(prop->propval.str);
+      break;
+    default:
+      /*
+       * This was in libgphoto2 no idea what it tests for...
+       * if ((prop->property & 0xfff0) == 0xdc00)
+       * gp_log (GP_LOG_DEBUG, "ptp2/mtpfast", "case %x type %x unhandled.\n", prop->property, prop->datatype);
+       */
+      break;
+      // FIXME: the rest of the metadata is readily available right here!
+    }
+    prop = prop->next;
+  }
+}
+
+/**
+ * This function will recurse through all the directories on the device,
+ * starting at the root directory, gathering metadata as it moves along.
+ * It works better on some devices that will only return data for a
+ * certain directory and does not respect the option to get all metadata
+ * for all objects.
+ */
+static void get_handles_recursively(LIBMTP_mtpdevice_t *device, PTPParams *params, PTPObjectHandles *handles, uint32_t parent)
+{
+  PTPObjectHandles currentHandles;
+  int i = 0;
+  uint32_t old_handles;
+  
+  uint16_t ret = ptp_getobjecthandles(params,
+                                      PTP_GOH_ALL_STORAGE,
+                                      PTP_GOH_ALL_FORMATS,
+                                      parent,
+                                      &currentHandles);
+  
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "get_handles_recursively(): could not get object handles.");
+    return;
+  }
+  
+  if (currentHandles.Handler == NULL || currentHandles.n == 0)
+    return;
+
+  old_handles = handles->n;
+  
+  // Realloc main space
+  handles->Handler = (uint32_t *) realloc(handles->Handler, 
+					  (old_handles + currentHandles.n) * sizeof(uint32_t));
+  // Realloc object info cache
+  params->objectinfo = (PTPObjectInfo*) realloc(params->objectinfo, 
+					  (old_handles + currentHandles.n) * sizeof(PTPObjectInfo));
+  memset(&params->objectinfo[old_handles], 0, currentHandles.n * sizeof(PTPObjectInfo));
+
+  // Copy new handles
+  memcpy(&(handles->Handler[old_handles]), currentHandles.Handler, currentHandles.n * sizeof(uint32_t));
+  handles->n = old_handles + currentHandles.n;
+  
+  // Now descend into any subdirectories found
+  for (i = 0; i < currentHandles.n; i++) {    
+    ret = ptp_getobjectinfo(params,
+			    currentHandles.Handler[i],
+			    &params->objectinfo[old_handles + i]);
+    
+    if (ret == PTP_RC_OK) {
+      PTPObjectInfo *oi;
+
+      oi = &params->objectinfo[old_handles + i];
+      if (oi->ObjectFormat == PTP_OFC_Association) {
+        get_handles_recursively(device, params, handles, currentHandles.Handler[i]);
+      }
+    } else {
+      add_error_to_errorstack(device,
+			      LIBMTP_ERROR_CONNECTING,
+			      "Found a bad handle, trying to ignore it.");
+    }
+  }
+   
+  free(currentHandles.Handler);
+}
+
+/**
  * This function refresh the internal handle list whenever
  * the items stored inside the device is altered. On operations
  * that do not add or remove objects, this is typically not
@@ -1021,8 +1226,8 @@ void LIBMTP_Dump_Errorstack(LIBMTP_mtpdevice_t *device)
 static void flush_handles(LIBMTP_mtpdevice_t *device)
 {
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   uint32_t i;
-
 
   if (params->handles.Handler != NULL) {
     free(params->handles.Handler);
@@ -1032,21 +1237,26 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
       ptp_free_objectinfo (&params->objectinfo[i]);
     free(params->objectinfo);
   }
+  if (params->proplist != NULL) {
+    destroy_mtp_prop_list(params->proplist);
+  }
   
   params->handles.n = 0;
   params->handles.Handler = NULL;
   params->objectinfo = NULL;
+  params->proplist = NULL;
 
-  // FIXME: use the FAST MTP track info retrieveal here instead, if present!
+  if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjPropList)
+      && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST)) {
+    // Use the fast method.
+    get_all_metadata_fast(device);
+  } else {
+    // Get all the handles using just standard commands.
+    get_handles_recursively(device, params,
+			    &params->handles,
+			    PTP_GOH_ROOT_PARENT);
+  }
 
-  // Get all the handles if we haven't already done that
-  get_handles_recursively(device, params,
-                          &params->handles,
-                          PTP_GOH_ROOT_PARENT);
-
-  // Create an object info cache.
-  // params->objectinfo = (PTPObjectInfo*) malloc(sizeof(PTPObjectInfo) * params->handles.n);
-  
   for(i = 0; i < params->handles.n; i++) {
     PTPObjectInfo *oi;
     
@@ -1061,7 +1271,7 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
     /* Ignore handles that point to non-folders */
     if(oi->ObjectFormat != PTP_OFC_Association)
       continue;
-    if ( oi->Filename == NULL)
+    if (oi->Filename == NULL)
       continue;
     
     /* Is this the Music Folder */
@@ -1103,63 +1313,6 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
 	params->handles.Handler[i];
     }
   }
-}
-
-static void get_handles_recursively(LIBMTP_mtpdevice_t *device, PTPParams *params, PTPObjectHandles *handles, uint32_t parent)
-{
-  PTPObjectHandles currentHandles;
-  int i = 0;
-  uint32_t old_handles;
-  
-  uint16_t ret = ptp_getobjecthandles(params,
-                                      PTP_GOH_ALL_STORAGE,
-                                      PTP_GOH_ALL_FORMATS,
-                                      parent,
-                                      &currentHandles);
-  
-  if (ret != PTP_RC_OK) {
-    add_ptp_error_to_errorstack(device, ret, "get_handles_recursively(): could not get object handles.");
-    return;
-  }
-  
-  if (currentHandles.Handler == NULL || currentHandles.n == 0)
-    return;
-
-  old_handles = handles->n;
-  
-  // realloc main space
-  handles->Handler = (uint32_t *) realloc(handles->Handler, 
-					  (old_handles + currentHandles.n) * sizeof(uint32_t));
-  // realloc object info cache
-  params->objectinfo = (PTPObjectInfo*) realloc(params->objectinfo, 
-					  (old_handles + currentHandles.n) * sizeof(PTPObjectInfo));
-  memset(&params->objectinfo[old_handles], 0, currentHandles.n * sizeof(PTPObjectInfo));
-
-  // copy new handles
-  memcpy(&(handles->Handler[old_handles]), currentHandles.Handler, currentHandles.n * sizeof(uint32_t));
-  handles->n = old_handles + currentHandles.n;
-  
-  // now do recursion
-  for (i = 0; i < currentHandles.n; i++) {    
-    ret = ptp_getobjectinfo(params,
-			    currentHandles.Handler[i],
-			    &params->objectinfo[old_handles + i]);
-    
-    if (ret == PTP_RC_OK) {
-      PTPObjectInfo *oi;
-
-      oi = &params->objectinfo[old_handles + i];
-      if (oi->ObjectFormat == PTP_OFC_Association) {
-        get_handles_recursively(device, params, handles, currentHandles.Handler[i]);
-      }
-    } else {
-      add_error_to_errorstack(device,
-			      LIBMTP_ERROR_CONNECTING,
-			      "Found a bad handle, trying to ignore it.");      
-    }
-  }
-   
-  free(currentHandles.Handler);  
 }
 
 /**
@@ -2404,6 +2557,73 @@ void LIBMTP_destroy_track_t(LIBMTP_track_t *track)
 }
 
 /**
+ * This function maps and copies a property onto the track metadata if applicable.
+ */
+static void pick_property_to_track_metadata(MTPPropList *prop, LIBMTP_track_t *track)
+{
+  switch (prop->property) {
+  case PTP_OPC_Name:
+    if (prop->propval.str != NULL)
+      track->title = strdup(prop->propval.str);
+    else
+      track->title = NULL;
+    break;
+  case PTP_OPC_Artist:
+    if (prop->propval.str != NULL)
+      track->artist = strdup(prop->propval.str);
+    else
+      track->artist = NULL;
+    break;
+  case PTP_OPC_Duration:
+    track->duration = prop->propval.u32;
+    break;
+  case PTP_OPC_Track:
+    track->tracknumber = prop->propval.u16;
+    break;
+  case PTP_OPC_Genre:
+    if (prop->propval.str != NULL)
+      track->genre = strdup(prop->propval.str);
+    else
+      track->genre = NULL;
+    break;
+  case PTP_OPC_AlbumName:
+    if (prop->propval.str != NULL)
+      track->album = strdup(prop->propval.str);
+    else
+      track->album = NULL;
+    break;
+  case PTP_OPC_OriginalReleaseDate:
+    if (prop->propval.str != NULL)
+      track->date = strdup(prop->propval.str);
+    else
+      track->date = NULL;
+    break;
+    // These are, well not so important.
+  case PTP_OPC_SampleRate:
+    track->samplerate = prop->propval.u32;
+    break;
+  case PTP_OPC_NumberOfChannels:
+    track->nochannels = prop->propval.u16;
+    break;
+  case PTP_OPC_AudioWAVECodec:
+    track->wavecodec = prop->propval.u32;
+    break;
+  case PTP_OPC_AudioBitRate:
+    track->bitrate = prop->propval.u32;
+    break;
+  case PTP_OPC_BitRateType:
+    track->bitratetype = prop->propval.u16;
+    break;
+  case PTP_OPC_Rating:
+    track->rating = prop->propval.u16;
+    break;
+  case PTP_OPC_UseCount:
+    track->usecount = prop->propval.u32;
+    break;
+  }
+}
+
+/**
  * This function retrieves the track metadata for a track
  * given by a unique ID.
  * @param device a pointer to the device to get the track metadata off.
@@ -2419,8 +2639,21 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   uint32_t i;
 
-  if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjPropList)
-      && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST)) {
+  /*
+   * If we have a cached, large set of metadata, then use it!
+   */
+  if (params->proplist) {
+    MTPPropList *prop = params->proplist;
+    
+    while (prop != NULL && prop->ObjectHandle != track->item_id) {
+      prop = prop->next;
+    }
+    while (prop != NULL && prop->ObjectHandle == track->item_id) {
+      pick_property_to_track_metadata(prop, track);
+      prop = prop->next;
+    }
+  } else if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjPropList)
+	     && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST)) {
     MTPPropList *proplist = NULL;
     MTPPropList *prop;
 
@@ -2435,67 +2668,8 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
       return;
     }
     prop = proplist;
-    while (prop != NULL) {
-      switch (prop->property) {
-      case PTP_OPC_Name:
-	if (prop->propval.str != NULL)
-	  track->title = strdup(prop->propval.str);
-	else
-	  track->title = NULL;
-	break;
-      case PTP_OPC_Artist:
-	if (prop->propval.str != NULL)
-	  track->artist = strdup(prop->propval.str);
-	else
-	  track->artist = NULL;
-	break;
-      case PTP_OPC_Duration:
-	track->duration = prop->propval.u32;
-	break;
-      case PTP_OPC_Track:
-	track->tracknumber = prop->propval.u16;
-	break;
-      case PTP_OPC_Genre:
-	if (prop->propval.str != NULL)
-	  track->genre = strdup(prop->propval.str);
-	else
-	  track->genre = NULL;
-	break;
-      case PTP_OPC_AlbumName:
-	if (prop->propval.str != NULL)
-	  track->album = strdup(prop->propval.str);
-	else
-	  track->album = NULL;
-	break;
-      case PTP_OPC_OriginalReleaseDate:
-	if (prop->propval.str != NULL)
-	  track->date = strdup(prop->propval.str);
-	else
-	  track->date = NULL;
-	break;
-	// These are, well not so important.
-      case PTP_OPC_SampleRate:
-	track->samplerate = prop->propval.u32;
-	break;
-      case PTP_OPC_NumberOfChannels:
-	track->nochannels = prop->propval.u16;
-	break;
-      case PTP_OPC_AudioWAVECodec:
-	track->wavecodec = prop->propval.u32;
-	break;
-      case PTP_OPC_AudioBitRate:
-	track->bitrate = prop->propval.u32;
-	break;
-      case PTP_OPC_BitRateType:
-	track->bitratetype = prop->propval.u16;
-	break;
-      case PTP_OPC_Rating:
-	track->rating = prop->propval.u16;
-	break;
-      case PTP_OPC_UseCount:
-	track->usecount = prop->propval.u32;
-	break;
-      }
+    while (prop != NULL && prop->ObjectHandle == track->item_id) {
+      pick_property_to_track_metadata(prop, track);
       prop = prop->next;
     }
     destroy_mtp_prop_list(proplist);
@@ -4118,6 +4292,12 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
     return -1;
   }
   
+  // FIXME: This is needed to keep the metadata cache intact.
+  // add code to update the cache in params->proplist instead!
+  if (params->proplist != NULL) {
+    flush_handles(device);
+  }
+
   return 0;
 }
 
@@ -5460,6 +5640,12 @@ int LIBMTP_Update_Album(LIBMTP_mtpdevice_t *device,
       add_ptp_error_to_errorstack(device, ret, "LIBMTP_Update_Album(): could not add tracks as object references.");
       return -1;
     }
+  }
+
+  // FIXME: This is needed to keep the metadata cache intact.
+  // add code to update the cache in params->proplist instead!
+  if (params->proplist != NULL) {
+    flush_handles(device);
   }
   return 0;
 }

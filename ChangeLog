@@ -1,3 +1,9 @@
+2007-07-03  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: use the params->proplist metadata cache. Help
+	  rid all flush_handles() you can in order to add even more to
+	  the efficiency of the cache.
+
 2007-07-01  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp.c: sync to upstream gPhoto source.
