@@ -1,3 +1,8 @@
+2007-07-05  Tero Saarni <tero.saarni@gmail.com>
+
+	* src/libmtp.c: update cache when manipulating objects instead of
+	  always flushing the whole cache.
+
 2007-07-03  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: use the params->proplist metadata cache. Help

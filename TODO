@@ -11,10 +11,6 @@ SPEEDUP fixes:
   with a list for each format of the properties it will support. Notice 
   that this needs to be updated whenever flush_handles() is called too.
 
-2. SPEED: Whenever we add an object (file, track, playlist...) we
-  should only need to update the cache with relevant data. Atleast for
-  speedup caches.
-
 FEATURE fixes:
 
 1. FEATURE: Make abstract playlists really become size -1 when created as 
@@ -63,3 +59,6 @@ THOSE ARE ALREADY DONE:
 
 3. SPEED: Cache track metadata, file metadata etc in params->proplist.
 
+4. SPEED: Whenever we add an object (file, track, playlist...) we
+  should only need to update the cache with relevant data. Atleast for
+  speedup caches.

@@ -119,6 +119,8 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 static MTPPropList *new_mtp_prop_entry();
 static MTPPropList *add_mtp_prop_to_proplist(MTPPropList *proplist, MTPPropList *prop);
 static void destroy_mtp_prop_list(MTPPropList *proplist);
+static void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t handle);
+static void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t handle);
 
 /**
  * Create a new file mapping entry
@@ -3490,9 +3492,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     }
   }
 
-  // Added object so flush handles
-  // FIXME: just realloc and att the item and objectinfo (see how libgphoto2 does it!)
-  flush_handles(device);
+  add_object_to_cache(device, metadata->item_id);
 
   return 0;
 }
@@ -3816,9 +3816,8 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
-  // Added object so flush handles.
-  // FIXME: just realloc and att the item and objectinfo (see how libgphoto2 does it!)
-  flush_handles(device);
+  add_object_to_cache(device, filedata->item_id);
+
   return 0;
 }
 
@@ -4292,10 +4291,9 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
     return -1;
   }
   
-  // FIXME: This is needed to keep the metadata cache intact.
-  // add code to update the cache in params->proplist instead!
+  // update cached object properties if metadata cache exists
   if (params->proplist != NULL) {
-    flush_handles(device);
+    update_metadata_cache(device, metadata->item_id);
   }
 
   return 0;
@@ -4314,15 +4312,60 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
 {
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
+  int i;
 
   ret = ptp_deleteobject(params, object_id, 0);
   if (ret != PTP_RC_OK) {
     add_ptp_error_to_errorstack(device, ret, "LIBMTP_Delete_Object(): could not delete object.");
     return -1;
   }
-  // Removed object so flush handles.
-  // FIXME: just realloc and att the item and objectinfo (see how libgphoto2 does it!)
-  flush_handles(device);
+
+  // remove object from object info cache
+  for (i = 0; i < params->handles.n; i++) {
+    if (params->handles.Handler[i] == object_id) {
+      ptp_free_objectinfo(&params->objectinfo[i]);
+      memmove(params->handles.Handler+i, params->handles.Handler+i+1,
+              (params->handles.n-i-1)*sizeof(uint32_t));
+      memmove(params->objectinfo+i, params->objectinfo+i+1,
+              (params->handles.n-i-1)*sizeof(PTPObjectInfo));
+      params->handles.n--;
+      realloc(params->handles.Handler, sizeof(uint32_t)*params->handles.n);
+      realloc(params->objectinfo, sizeof(PTPObjectInfo)*params->handles.n);
+    }
+  }
+
+  // delete cached object properties if metadata cache exists
+  if (params->proplist) {
+    MTPPropList *prop = params->proplist;
+    MTPPropList *prev = NULL;
+    MTPPropList *last_deleted = NULL;
+    MTPPropList *deleted_props = NULL;
+
+    // find the place where properties for this object begin
+    while (prop != NULL && prop->ObjectHandle != object_id) {
+      prev = prop;
+      prop = prop->next;
+    }
+
+    // safeguard in case object is not found
+    if (!prop) return 0;
+
+    // head of properties for the deleted object
+    deleted_props = prop;
+
+    // find the end of properties for this object
+    while (prop != NULL && prop->ObjectHandle == object_id) {
+      last_deleted = prop;
+      prop = prop->next;
+    }
+
+    // the properties to be deleted are split into separate list
+    prev->next = prop;
+    last_deleted->next = NULL;
+
+    destroy_mtp_prop_list(deleted_props);
+  }
+    
   return 0;
 }
 
@@ -4539,9 +4582,9 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name, uint32_t p
   }
   // NOTE: don't destroy the new_folder objectinfo, because it is statically referencing
   // several strings.
-  // Created new object so flush handles
-  // FIXME: just realloc and att the item and objectinfo (see how libgphoto2 does it!)
-  flush_handles(device);
+
+  add_object_to_cache(device, new_id);
+
   return new_id;
 }
 
@@ -4949,9 +4992,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
     }
   }
 
-  // Created new item, so flush handles
-  // FIXME: just realloc and att the item and objectinfo (see how libgphoto2 does it!)
-  flush_handles(device);
+  add_object_to_cache(device, *newid);
 
   return 0;
 }
@@ -5642,10 +5683,8 @@ int LIBMTP_Update_Album(LIBMTP_mtpdevice_t *device,
     }
   }
 
-  // FIXME: This is needed to keep the metadata cache intact.
-  // add code to update the cache in params->proplist instead!
   if (params->proplist != NULL) {
-    flush_handles(device);
+    update_metadata_cache(device, metadata->album_id);
   }
   return 0;
 }
@@ -5655,5 +5694,91 @@ int LIBMTP_Update_Album(LIBMTP_mtpdevice_t *device,
  * ptp.c/ptp.h files.
  */
 void ptp_nikon_getptpipguid (unsigned char* guid) {
+  return;
+}
+
+/**
+ * Update cache after new object is added to the device
+ */ 
+void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t handle)
+{
+  PTPParams *params = (PTPParams *)device->params;
+  MTPPropList *prop = NULL;
+  uint16_t ret;
+  int n;
+  
+  n = ++params->handles.n;
+
+  params->objectinfo = (PTPObjectInfo*)realloc(params->objectinfo,
+                                               sizeof(PTPObjectInfo)*n);
+  params->handles.Handler = (uint32_t*)realloc(params->handles.Handler,
+                                               sizeof(uint32_t)*n);
+
+  memset(&params->objectinfo[n-1], 0, sizeof(PTPObjectInfo));
+  params->handles.Handler[n-1] = handle;
+
+  ptp_getobjectinfo(params, handle, &params->objectinfo[n-1]);
+
+  if (params->proplist) {
+
+    ret = ptp_mtp_getobjectproplist(params, handle, &prop);
+    if (ret != PTP_RC_OK) {
+      add_ptp_error_to_errorstack(device, ret, "add_object_to_cache(): call to ptp_mtp_getobjectproplist() failed.");
+      return;
+    }
+    add_mtp_prop_to_proplist(params->proplist, prop);
+  }
+}
+
+
+/**
+ * Update cache after object has been modified
+ */
+void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t handle)
+{
+  PTPParams *params = (PTPParams *)device->params;
+  MTPPropList *prop = params->proplist;
+  MTPPropList *prev = NULL;
+  MTPPropList *deleted_props = NULL;
+  MTPPropList *updated_props;
+  uint16_t ret;
+    
+  // find the place where the properties for this object begin
+  while (prop != NULL && prop->ObjectHandle != handle) {
+    prev = prop;
+    prop = prop->next;
+  }
+
+  // safeguard in case object is not found
+  if (!prop) return;
+    
+  // fetch updated properties and add them to the metadata cache in the same
+  // place where outdated properties were found
+  ret = ptp_mtp_getobjectproplist(params, handle, &updated_props);
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "update_metadata_cache(): call to ptp_mtp_getobjectproplist() failed.");
+    return;
+  }
+  prev->next = updated_props;
+
+  // head of outdated object properties that will be deleted
+  deleted_props = prop;
+    
+  // find the end of properties for this object
+  while (prop != NULL && prop->ObjectHandle == handle) {
+    prev = prop;
+    prop = prop->next;
+  }
+
+  // find the end of the fetched properties and link rest of the list to it
+  while (updated_props->next != NULL) {
+    updated_props = updated_props->next;
+  }
+  updated_props->next = prop;
+    
+  // split outdated properties into separate list and delete it
+  prev->next = NULL;
+  destroy_mtp_prop_list(deleted_props);
+
   return;
 }
