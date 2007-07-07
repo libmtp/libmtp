@@ -42,11 +42,15 @@
  */
 #define DEVICE_FLAG_NONE 0x00000000
 /**
- * This means nothing. It used to mean something but that
- * something was the same as something else. Please recycle
- * this flag if you feel to.
+ * This means that the PTP_OC_MTP_GetObjPropList is broken
+ * in the sense that it won't return properly formatted metadata
+ * for ALL files on the device when you request an object 
+ * property list for object 0xFFFFFFFF with parameter 3 likewise
+ * set to 0xFFFFFFFF. Compare to 
+ * DEVICE_FLAG_BROKEN_MTPGETOBJECTPROPLIST which only signify
+ * that it's broken when getting metadata for a SINGLE object.
  */
-#define DEVICE_FLAG_UNDEFINED 0x00000001
+#define DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL 0x00000001
 /**
  * This means that under Linux, another kernel module may 
  * be using this device's USB interface, so we need to detach 

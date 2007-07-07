@@ -1,3 +1,11 @@
+2007-07-07  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.h: new flag for the case when getting the object
+	  property list of all metadata for all objects is broken.
+	* src/libusb-glue.c: tentatively tag a Philips device with this flag.
+	* src/libmtp.c: fixed usage of returned pointers from realloc(),
+	  introduce new flag.
+
 2007-07-05  Tero Saarni <tero.saarni@gmail.com>
 
 	* src/libmtp.c: update cache when manipulating objects instead of

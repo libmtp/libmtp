@@ -1249,7 +1249,8 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
   params->proplist = NULL;
 
   if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjPropList)
-      && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST)) {
+      && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST) 
+      && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL)) {
     // Use the fast method.
     get_all_metadata_fast(device);
   } else {
@@ -4329,8 +4330,8 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
       memmove(params->objectinfo+i, params->objectinfo+i+1,
               (params->handles.n-i-1)*sizeof(PTPObjectInfo));
       params->handles.n--;
-      realloc(params->handles.Handler, sizeof(uint32_t)*params->handles.n);
-      realloc(params->objectinfo, sizeof(PTPObjectInfo)*params->handles.n);
+      params->handles.Handler = realloc(params->handles.Handler, sizeof(uint32_t)*params->handles.n);
+      params->objectinfo = realloc(params->objectinfo, sizeof(PTPObjectInfo)*params->handles.n);
     }
   }
 

@@ -149,21 +149,22 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   /*
    * Philips
    */
-  // From libgphoto2 source
-  { "Philips HDD6320", 0x0471, 0x01eb, DEVICE_FLAG_NONE },
-  { "Philips HDD6320/00 and HDD6330/17", 0x0471, 0x014b, DEVICE_FLAG_NONE },
+  { "Philips HDD6320/00 and HDD6330/17", 0x0471, 0x014b, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Anonymous SourceForge user
   { "Philips HDD1630/17", 0x0471, 0x014c, DEVICE_FLAG_NONE },
-  // From Gerhard Mekenkamp
-  { "Philips GoGear Audio", 0x0471, 0x0165, DEVICE_FLAG_NONE },
-  // from XNJB forum
-  { "Philips GoGear SA9200", 0x0471, 0x014f, DEVICE_FLAG_NONE },
-  // from XNJB user
-  { "Philips PSA235", 0x0471, 0x7e01, DEVICE_FLAG_NONE },
   // from discussion forum
   { "Philips HDD085/00 and HDD082/17", 0x0471, 0x014d, DEVICE_FLAG_NONE },
+  // from XNJB forum
+  { "Philips GoGear SA9200", 0x0471, 0x014f, DEVICE_FLAG_NONE },
+  // From Gerhard Mekenkamp
+  { "Philips GoGear Audio", 0x0471, 0x0165, DEVICE_FLAG_NONE },
   // from npedrosa
   { "Philips PSA610", 0x0471, 0x0181, DEVICE_FLAG_NONE },
+  // From libgphoto2 source
+  { "Philips HDD6320", 0x0471, 0x01eb, DEVICE_FLAG_NONE },
+  // from XNJB user
+  { "Philips PSA235", 0x0471, 0x7e01, DEVICE_FLAG_NONE },
+
 
   /*
    * SanDisk
