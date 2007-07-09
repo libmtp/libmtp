@@ -239,9 +239,9 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
   // Reported by Philip Antoniades <philip@mysql.com>
-  { "iRiver Clix2", 0x4102, 0x1126,
-    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS |
-    DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
+  // Newer iriver devices seem to have shaped-up firmware without any
+  // of the annoying bugs.
+  { "iRiver Clix2", 0x4102, 0x1126, DEVICE_FLAG_NONE },
   // Reported by Adam Torgerson
   { "iRiver Clix", 0x4102, 0x112a, 
     DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
