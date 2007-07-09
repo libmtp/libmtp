@@ -1,3 +1,8 @@
+2007-07-10  Linus Walleij <triad@df.lth.se>
+
+	* examples/hotplug.c: force HAL OGG support on iriver devices. They all 
+	  have it! Also force for two other devices that does this.
+
 2007-07-07  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.h: new flag for the case when getting the object

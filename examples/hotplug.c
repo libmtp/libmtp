@@ -123,7 +123,7 @@ int main (int argc, char **argv)
         case style_hal:
           printf("      <match key=\"usb.vendor_id\" int=\"0x%04x\">\n", entry->vendor_id);
           printf("        <match key=\"usb.product_id\" int=\"0x%04x\">\n", entry->product_id);
-          /* FIXME: If hal >=0.5.10 can be depended upon, the matches below with contains_not can instead use addset*/
+          /* FIXME: If hal >=0.5.10 can be depended upon, the matches below with contains_not can instead use addset */
           printf("          <match key=\"info.capabilities\" contains_not=\"portable_audio_player\">\n");
           printf("            <append key=\"info.capabilities\" type=\"strlist\">portable_audio_player</append>\n");
           printf("          </match>\n");
@@ -133,13 +133,21 @@ int main (int argc, char **argv)
           printf("            <append key=\"portable_audio_player.access_method.protocols\" type=\"strlist\">mtp</append>\n");
           printf("          </match>\n");
           printf("          <append key=\"portable_audio_player.access_method.drivers\" type=\"strlist\">libmtp</append>\n");
-          /* FIXME: needs true list of formats ... But all of them can do MP3 */
+          /* FIXME: needs true list of formats ... But all of them can do MP3 and WMA */
           printf("          <match key=\"portable_audio_player.output_formats\" contains_not=\"audio/mpeg\">\n");
           printf("            <append key=\"portable_audio_player.output_formats\" type=\"strlist\">audio/mpeg</append>\n");
           printf("          </match>\n");
           printf("          <match key=\"portable_audio_player.output_formats\" contains_not=\"audio/x-ms-wma\">\n");
           printf("            <append key=\"portable_audio_player.output_formats\" type=\"strlist\">audio/x-ms-wma</append>\n");
           printf("          </match>\n");
+	  /* Special hack to support the OGG format - irivers, TrekStor and NormSoft (Palm) can always play these files! */
+	  if (entry->vendor_id == 0x4102 || // iriver
+	      entry->vendor_id == 0x066f || // TrekStor
+	      entry->vendor_id == 0x1703) { // NormSoft, Inc.
+	    printf("          <match key=\"portable_audio_player.output_formats\" contains_not=\"application/ogg\">\n");
+	    printf("            <append key=\"portable_audio_player.output_formats\" type=\"strlist\">application/ogg</append>\n");
+	    printf("          </match>\n");
+	  }
           printf("          <merge key=\"portable_audio_player.libmtp.protocol\" type=\"string\">mtp</merge>\n");
           printf("          <merge key=\"portable_audio_player.libmtp.name\" type=\"string\">%s</merge>\n", entry->name);
           printf("        </match>\n");
