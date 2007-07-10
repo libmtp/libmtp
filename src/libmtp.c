@@ -3,7 +3,8 @@
  *
  * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
- * Copyright (C) 2007 Ted Bullock
+ * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
+ * Copyright (C) 2007 Tero Saarni <tero.saarni@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1104,7 +1105,6 @@ static void get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
       }
       prop = prop->next;
   }
-  printf("Fast directory retrieveal, found %d objects\n", cnt);
   lasthandle = 0xffffffff;
   params->objectinfo = malloc (sizeof (PTPObjectInfo) * cnt);
   memset (params->objectinfo, 0, sizeof(PTPObjectInfo) * cnt);

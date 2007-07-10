@@ -1,3 +1,5 @@
+libmtp version: 0.1.5
+
 Attempting to connect device(s)
 Detect: Successfully connected 1 devices
 USB low-level info:
@@ -11,6 +13,17 @@ USB low-level info:
    IN endpoint maxpacket: 512 bytes
    OUT endpoint maxpacket: 512 bytes
    Device flags: 0x00000000
+Microsoft device descriptor 0xee:
+	0000: 1203 4d00 5300 4600 5400 3100 3000 3000	..M.S.F.T.1.0.0.
+	0010: fe00                                   	..
+Microsoft device response to control message 1, CMD 0xfe:
+	0000: 2800 0000 0001 0400 0100 0000 0000 0000	(...............
+	0010: 0001 4d54 5000 0000 0000 0000 0000 0000	..MTP...........
+	0020: 0000 0000 0000 0000                    	........
+Microsoft device response to control message 2, CMD 0xfe:
+	0000: 2800 0000 0001 0400 0100 0000 0000 0000	(...............
+	0010: 0001 4d54 5000 0000 0000 0000 0000 0000	..MTP...........
+	0020: 0000 0000 0000 0000                    	........
 Device info:
    Manufacturer: Creative Technology Ltd
    Model: Creative Zen Micro
@@ -221,7 +234,7 @@ Special directories:
 MTP-specific device properties:
    Friendly name: Dokktor Lajban
    Synchronization partner: (NULL)
-   Battery level 206 of 255 (80%)
+   Battery level 252 of 255 (98%)
 libmtp supported (playable) filetypes:
    ISO MPEG-1 Audio Layer 3
    Microsoft Windows Media Audio
@@ -232,7 +245,7 @@ libmtp supported (playable) filetypes:
    Firmware file
 
 Secure Time:
-<DRMCLOCK type="status"><VALUE>#20050509 17:21:30Z#</VALUE><FLAG>DRM_CLK_NOT_SET</FLAG></DRMCLOCK>
+<DRMCLOCK type="status"><VALUE>#20050705 14:19:02Z#</VALUE><FLAG>DRM_CLK_NOT_SET</FLAG></DRMCLOCK>
 
 Device Certificate:
 <DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">AQUlUcYDj4K8Fxk2xgOPggAAAAA=</UNIQUEID><PUBLICKEY private="1">k912GjDbPJaNV6m2b+Ao7I6gERKu9q/HknX/Xk6Eof7RGsti0t8vKg==</PUBLICKEY><KEYDATA>UUBc4Bwahh3pLnmKCYNybLhvvDo=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>C1S5c4HGU1qbAVsuYaL93PSPXS/c27En5jtyJb7CdQmS0lFgA08pBg==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>YghjWMJr8V1Uo4n+quT/C7TNMWk=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.101.71</SECURITYVERSION><CERTIFICATE private="1">k912GjDbPJaNV6m2b+Ao7I6gERKu9q/HknX/Xk6Eof7RGsti0t8vKgIEZUfAbNZ0RU3logPBMUDW1Nwms7RvhZXdHSetXBT5t7zEnMSty5/eDVJV</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>Creative Zen Micro</NAME>

@@ -465,11 +465,17 @@ void free_mtpdevice_list(mtpdevice_list_t *devlist)
 }
 
 /**
- * This checks if a device has an MTP descriptor.
+ * This checks if a device has an MTP descriptor. The descriptor was
+ * elaborated about in gPhoto bug 1482084, and some official documentation
+ * with no strings attached was published by Microsoft at
+ * http://www.microsoft.com/whdc/system/bus/USB/USBFAQ_intermed.mspx#E3HAC
+ *
  * @param dev a device struct from libusb.
+ * @param dumpfile set to non-NULL to make the descriptors dump out
+ *        to this file in human-readable hex so we can scruitinze them.
  * @return 1 if the device is MTP compliant, 0 if not.
  */
-static int device_has_descriptor(struct usb_device *dev)
+static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
 {
   usb_dev_handle *devh;
   unsigned char buf[1024], cmd;
@@ -489,6 +495,12 @@ static int device_has_descriptor(struct usb_device *dev)
   
   /* Read the special descriptor */
   ret = usb_get_descriptor(devh, 0x03, 0xee, buf, sizeof(buf));
+
+  // Dump it, if requested
+  if (dumpfile != NULL && ret > 0) {
+    fprintf(dumpfile, "Microsoft device descriptor 0xee:\n");
+    data_dump_ascii(dumpfile, buf, ret, 16);
+  }
   
   /* Check if descriptor length is at least 10 bytes */
   if (ret < 10) {
@@ -513,6 +525,12 @@ static int device_has_descriptor(struct usb_device *dev)
 			 (char *) buf,
 			 sizeof(buf),
 			 1000);
+
+  // Dump it, if requested
+  if (dumpfile != NULL && ret > 0) {
+    fprintf(dumpfile, "Microsoft device response to control message 1, CMD 0x%02x:\n", cmd);
+    data_dump_ascii(dumpfile, buf, ret, 16);
+  }
   
   /* If this is true, the device either isn't MTP or there was an error */
   if (ret <= 0x15) {
@@ -540,6 +558,12 @@ static int device_has_descriptor(struct usb_device *dev)
 			 (char *) buf,
 			 sizeof(buf),
 			 1000);
+
+  // Dump it, if requested
+  if (dumpfile != NULL && ret > 0) {
+    fprintf(dumpfile, "Microsoft device response to control message 2, CMD 0x%02x:\n", cmd);
+    data_dump_ascii(dumpfile, buf, ret, 16);
+  }
   
   /* If this is true, the device errored against control message 2 */
   if (ret == -1) {
@@ -593,7 +617,7 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
   for (; bus != NULL; bus = bus->next) {
     struct usb_device *dev = bus->devices;
     for (; dev != NULL; dev = dev->next) {
-      if (device_has_descriptor(dev)) {
+      if (probe_device_descriptor(dev, NULL)) {
 	/* Append this usb device to the MTP USB Device List */
 	*mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, dev);
       } else {
@@ -678,6 +702,7 @@ void dump_usbinfo(PTP_USB *ptp_usb)
   printf("   OUT endpoint maxpacket: %d bytes\n", ptp_usb->outep_maxpacket);
   printf("   Device flags: 0x%08x\n", ptp_usb->device_flags);
   // TODO: add in string dumps for iManufacturer, iProduct, iSerialnumber...
+  (void) probe_device_descriptor(dev, stdout);
 }
 
 static void
