@@ -354,6 +354,12 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    */
   // Reported by Stefan Voss <svoss@web.de>
   {"TrekStor Vibez 8/12GB", 0x066f, 0x842a, DEVICE_FLAG_UNLOAD_DRIVER },
+  
+  /*
+   * Disney (have had no reports of this actually working.)
+   */
+  // Reported by XNJB user
+  {"Disney MixMax", 0x0aa6, 0x6021, DEVICE_FLAG_NONE },
 
   /*
    * Other strange stuff.

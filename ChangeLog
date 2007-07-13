@@ -1,3 +1,7 @@
+2007-07-13  RIchard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: add Disney MixMax
+
 2007-07-11  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: put in Tero's name in the preamble.
