@@ -1,4 +1,8 @@
-2007-07-13  RIchard Low <richard@wentnet.com>
+2007-07-14  Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: Add a NULL check
+
+2007-07-13  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: add Disney MixMax
 

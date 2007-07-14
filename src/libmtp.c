@@ -1139,7 +1139,8 @@ static void get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
       params->objectinfo[i].StorageID = prop->propval.u32;
       break;
     case PTP_OPC_ObjectFileName:
-      params->objectinfo[i].Filename = strdup(prop->propval.str);
+      if (prop->propval.str != NULL)
+        params->objectinfo[i].Filename = strdup(prop->propval.str);
       break;
     default:
       /*
