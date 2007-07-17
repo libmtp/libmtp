@@ -1,3 +1,7 @@
+2007-07-17  Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: Added some more (paranoid) NULL checks
+
 2007-07-14  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: Add a NULL check
