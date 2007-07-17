@@ -1,3 +1,11 @@
+2007-07-17  Linus Walleij <triad@df.lth.se>
+
+	* examples/reset.c: Add a device reset program.
+	* src/libmtp.c: Add reset command.
+	* src/ptp.c: dito, and sync in upstream changes.
+	* src/ptp.h: dito, and sync in upstream changes.
+	* src/ptp-pack.c: sync in upstream changes.
+
 2007-07-17  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: Added some more (paranoid) NULL checks

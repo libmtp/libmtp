@@ -1576,6 +1576,7 @@ uint16_t ptp_getdeviceinfo	(PTPParams* params, PTPDeviceInfo* deviceinfo);
 uint16_t ptp_opensession	(PTPParams *params, uint32_t session);
 uint16_t ptp_closesession	(PTPParams *params);
 
+uint16_t ptp_resetdevice	(PTPParams* params);
 uint16_t ptp_getstorageids	(PTPParams* params, PTPStorageIDs* storageids);
 uint16_t ptp_getstorageinfo 	(PTPParams* params, uint32_t storageid,
 				PTPStorageInfo* storageinfo);
@@ -1706,6 +1707,9 @@ uint16_t ptp_canon_eos_transfercomplete (PTPParams* params, uint32_t oid);
 uint16_t ptp_canon_eos_pchddcapacity (PTPParams* params, uint32_t p1, uint32_t p2, uint32_t p3);
 uint16_t ptp_canon_eos_getdevicepropdesc (PTPParams* params, uint16_t propcode,
 				PTPDevicePropDesc *devicepropertydesc);
+uint16_t ptp_canon_eos_setdevicepropvalue (PTPParams* params, uint16_t propcode,
+                        	PTPPropertyValue* value, uint16_t datatype);
+
 uint16_t ptp_nikon_curve_download (PTPParams* params, 
 				unsigned char **data, unsigned int *size);
 uint16_t ptp_nikon_getptpipinfo (PTPParams* params, unsigned char **data, unsigned int *size);

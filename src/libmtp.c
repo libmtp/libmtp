@@ -1763,6 +1763,30 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 }
 
 /**
+ * This resets a device in case it supports the <code>PTP_OC_ResetDevice</code>
+ * operation code (0x1010).
+ * @param device a pointer to the device to reset.
+ * @return 0 on success, any other value means failure.
+ */
+int LIBMTP_Reset_Device(LIBMTP_mtpdevice_t *device)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  uint16_t ret;
+
+  if (!ptp_operation_issupported(params,PTP_OC_ResetDevice)) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, 
+			    "LIBMTP_Reset_Device(): device does not support resetting.");
+    return -1;
+  }
+  ret = ptp_resetdevice(params);
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "Error resetting.");
+    return -1;
+  }
+  return 0;
+}
+
+/**
  * This retrieves the model name (often equal to product name)
  * of an MTP device.
  * @param device a pointer to the device to get the model name for.
@@ -2038,7 +2062,8 @@ int LIBMTP_Format_Storage(LIBMTP_mtpdevice_t *device, LIBMTP_devicestorage_t *st
   PTPParams *params = (PTPParams *) device->params;
 
   if (!ptp_operation_issupported(params,PTP_OC_FormatStore)) {
-    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Format_Storage(): device cannot format storage.");
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, 
+			    "LIBMTP_Format_Storage(): device does not support formatting storage.");
     return -1;
   }
   ret = ptp_formatstore(params, storage->id);

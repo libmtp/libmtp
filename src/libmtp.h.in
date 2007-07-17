@@ -352,6 +352,7 @@ uint32_t LIBMTP_Number_Devices_In_List(LIBMTP_mtpdevice_t *);
 void LIBMTP_Release_Device_List(LIBMTP_mtpdevice_t*);
 void LIBMTP_Release_Device(LIBMTP_mtpdevice_t*);
 void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t*);
+int LIBMTP_Reset_Device(LIBMTP_mtpdevice_t*);
 char *LIBMTP_Get_Modelname(LIBMTP_mtpdevice_t*);
 char *LIBMTP_Get_Serialnumber(LIBMTP_mtpdevice_t*);
 char *LIBMTP_Get_Deviceversion(LIBMTP_mtpdevice_t*);
