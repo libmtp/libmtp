@@ -187,6 +187,9 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // This has no dual-mode so no need to unload any driver.
   // This is a Linux based device!
   { "SanDisk Sansa Connect", 0x0781, 0x7480, DEVICE_FLAG_NONE },
+  // Reported by Troy Curtis Jr.
+  { "SanDisk Sansa Express", 0x0781, 0x7460, DEVICE_FLAG_UNLOAD_DRIVER |
+                                             DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   
 
   /*
