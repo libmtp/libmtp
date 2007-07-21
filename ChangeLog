@@ -1,3 +1,7 @@
+2007-07-21  Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: Correctly bail out of LIBMTP_Get_Storage
+
 2007-07-17  Linus Walleij <triad@df.lth.se>
 
 	* examples/reset.c: Add a device reset program.

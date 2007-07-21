@@ -2226,7 +2226,7 @@ int LIBMTP_Get_Storage(LIBMTP_mtpdevice_t *device, int const sortby)
 
   // if (!ptp_operation_issupported(params,PTP_OC_GetStorageIDs)) 
   //   return -1;
-  if (!ptp_getstorageids (params, &storageIDs) == PTP_RC_OK) 
+  if (ptp_getstorageids (params, &storageIDs) != PTP_RC_OK) 
     return -1;
   if (storageIDs.n < 1) 
     return -1;
