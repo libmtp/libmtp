@@ -3895,6 +3895,8 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
     for (i=0;i<propcnt;i++) {
       switch (props[i]) {
       case PTP_OPC_Name:
+        if (metadata->title == NULL)
+          break;
 	ret = ptp_mtp_getobjectpropdesc(params, PTP_OPC_Name, map_libmtp_type_to_ptp_type(metadata->filetype), &opd);
 	if (ret != PTP_RC_OK) {
 	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
@@ -3907,14 +3909,15 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_Name;
 	  prop->datatype = PTP_DTC_STR;
-    if (metadata->title != NULL)
-      prop->propval.str = strdup(metadata->title);
+    prop->propval.str = strdup(metadata->title);
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	}
 	ptp_free_objectpropdesc(&opd);
         
 	break;
       case PTP_OPC_AlbumName:
+        if (metadata->album == NULL)
+          break;
 	ret = ptp_mtp_getobjectpropdesc(params, PTP_OPC_AlbumName, map_libmtp_type_to_ptp_type(metadata->filetype), &opd);
 	if (ret != PTP_RC_OK) {
 	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
@@ -3927,14 +3930,15 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = metadata->item_id;
 	  prop->property = PTP_OPC_AlbumName;
 	  prop->datatype = PTP_DTC_STR;
-    if (metadata->album != NULL)
-      prop->propval.str = strdup(metadata->album);
-	  proplist = add_mtp_prop_to_proplist(proplist, prop);
+    prop->propval.str = strdup(metadata->album);
+    proplist = add_mtp_prop_to_proplist(proplist, prop);
 	}
 	ptp_free_objectpropdesc(&opd);
         
 	break;
       case PTP_OPC_Artist:
+        if (metadata->artist == NULL)
+          break;
 	ret = ptp_mtp_getobjectpropdesc(params, PTP_OPC_Artist, map_libmtp_type_to_ptp_type(metadata->filetype), &opd);
 	if (ret != PTP_RC_OK) {
 	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
@@ -3947,14 +3951,15 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_Artist;
 	  prop->datatype = PTP_DTC_STR;
-    if (metadata->artist != NULL)
-      prop->propval.str = strdup(metadata->artist);
+    prop->propval.str = strdup(metadata->artist);
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	}
 	ptp_free_objectpropdesc(&opd);
         
 	break;
       case PTP_OPC_Genre:
+        if (metadata->genre == NULL)
+          break;
 	ret = ptp_mtp_getobjectpropdesc(params, PTP_OPC_Genre, map_libmtp_type_to_ptp_type(metadata->filetype), &opd);
 	if (ret != PTP_RC_OK) {
 	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
@@ -3967,8 +3972,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_Genre;
 	  prop->datatype = PTP_DTC_STR;
-    if (metadata->genre != NULL)
-      prop->propval.str = strdup(metadata->genre);
+    prop->propval.str = strdup(metadata->genre);
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	}
 	ptp_free_objectpropdesc(&opd);
@@ -4012,6 +4016,8 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	ptp_free_objectpropdesc(&opd);
 	break;
       case PTP_OPC_OriginalReleaseDate:
+        if (metadata->date == NULL)
+          break;
 	ret = ptp_mtp_getobjectpropdesc(params, PTP_OPC_OriginalReleaseDate, map_libmtp_type_to_ptp_type(metadata->filetype), &opd);
 	if (ret != PTP_RC_OK) {
 	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
@@ -4024,8 +4030,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_OriginalReleaseDate;
 	  prop->datatype = PTP_DTC_STR;
-    if (metadata->date != NULL)
-      prop->propval.str = strdup(metadata->date);
+    prop->propval.str = strdup(metadata->date);
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	}
 	ptp_free_objectpropdesc(&opd);

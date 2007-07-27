@@ -1,3 +1,7 @@
+2007-07-27  Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: Some better NULL checks
+
 2007-07-27  Linus Walleij <triad@df.lth.se>
 
 	* examples/hotplug.c: changed subsystem from "usb_device"
