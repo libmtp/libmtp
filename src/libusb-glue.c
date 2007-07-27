@@ -369,6 +369,12 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   {"Disney MixMax", 0x0aa6, 0x6021, DEVICE_FLAG_NONE },
 
   /*
+   * Cowon Systems, Inc.
+   * The iAudio audiophile devices don't encourage the use of MTP.
+   */
+  {"Cowon iAudio 7", 0x0e21, 0x0751, DEVICE_FLAG_NONE },
+
+  /*
    * Other strange stuff.
    */
   {"Isabella's prototype", 0x0b20, 0xddee, DEVICE_FLAG_NONE }
