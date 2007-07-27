@@ -1,3 +1,8 @@
+2007-07-27  Linus Walleij <triad@df.lth.se>
+
+	* examples/hotplug.c: changed subsystem from "usb_device"
+	  to "usb". Presumably a change in the kernel some time ago.
+
 2007-07-21  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: Correctly bail out of LIBMTP_Get_Storage
@@ -30,8 +35,9 @@
 
 2007-07-10  Linus Walleij <triad@df.lth.se>
 
-	* examples/hotplug.c: force HAL OGG support on iriver devices. They all 
-	  have it! Also force for two other devices that does this.
+	* examples/hotplug.c: force HAL OGG support on iriver devices. 
+	  They all have it! Also force for two other devices that does 
+	  this.
 
 2007-07-07  Linus Walleij <triad@df.lth.se>
 
