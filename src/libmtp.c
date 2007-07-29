@@ -91,6 +91,8 @@ static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
 				       char **unicstring, uint16_t property);
 static char *get_string_from_object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 				    uint16_t const attribute_id);
+static uint64_t get_u64_from_object(LIBMTP_mtpdevice_t *device,uint32_t const object_id,
+                                    uint16_t const attribute_id, uint64_t const value_default);
 static uint32_t get_u32_from_object(LIBMTP_mtpdevice_t *device,uint32_t const object_id,
 				    uint16_t const attribute_id, uint32_t const value_default);
 static uint16_t get_u16_from_object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
@@ -380,6 +382,53 @@ static char *get_string_from_object(LIBMTP_mtpdevice_t *device, uint32_t const o
   }
 
   return retstring;
+}
+
+/**
+* Retrieves an unsigned 64-bit integer from an object attribute
+ *
+ * @param device a pointer to an MTP device.
+ * @param object_id Object reference
+ * @param attribute_id PTP attribute ID
+ * @param value_default Default value to return on failure
+ * @return the value
+ */
+static uint64_t get_u64_from_object(LIBMTP_mtpdevice_t *device,uint32_t const object_id,
+                                    uint16_t const attribute_id, uint64_t const value_default)
+{
+  PTPPropertyValue propval;
+  uint64_t retval = value_default;
+  PTPParams *params = (PTPParams *) device->params;
+  uint16_t ret;
+  
+  if ( device == NULL ) {
+    return value_default;
+  }
+  
+  // This O(n) search should not be used so often, since code
+  // using the cached properties don't usually call this function.
+  if (params->proplist) {
+    MTPPropList    *prop = params->proplist;
+    
+    while (prop) {
+      if (object_id == prop->ObjectHandle && attribute_id == prop->property) {
+        return prop->propval.u64;
+      }
+      prop = prop->next;
+    }
+  }
+  
+  ret = ptp_mtp_getobjectpropvalue(params, object_id,
+                                   attribute_id,
+                                   &propval,
+                                   PTP_DTC_UINT64);
+  if (ret == PTP_RC_OK) {
+    retval = propval.u64;
+  } else {
+    add_ptp_error_to_errorstack(device, ret, "get_u64_from_object(): could not get unsigned 64bit integer from object.");
+  }
+  
+  return retval;
 }
 
 /**
@@ -1136,7 +1185,7 @@ static void get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
       params->objectinfo[i].ObjectFormat = prop->propval.u16;
       break;
     case PTP_OPC_ObjectSize:
-      params->objectinfo[i].ObjectCompressedSize = prop->propval.u32;
+      params->objectinfo[i].ObjectCompressedSize = (uint32_t)prop->propval.u64;
       break;
     case PTP_OPC_StorageID:
       params->objectinfo[i].StorageID = prop->propval.u32;
@@ -2428,6 +2477,8 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
     file->filetype = map_ptp_type_to_libmtp_type(oi->ObjectFormat);
 
     // Original file-specific properties
+    
+    // FIXME: we only have 32-bit file size here; use the PTP_OPC_ObjectSize property
     file->filesize = oi->ObjectCompressedSize;
     if (oi->Filename != NULL) {
       file->filename = strdup(oi->Filename);
@@ -2502,6 +2553,8 @@ LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *device, uint32_t cons
     file->filetype = map_ptp_type_to_libmtp_type(oi->ObjectFormat);
 
     // Original file-specific properties
+    
+    // FIXME: we only have 32-bit file size here; use the PTP_OPC_ObjectSize property
     file->filesize = oi->ObjectCompressedSize;
     if (oi->Filename != NULL) {
       file->filename = strdup(oi->Filename);
@@ -2761,6 +2814,9 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
 	case PTP_OPC_UseCount:
 	  track->usecount = get_u32_from_object(device, track->item_id, PTP_OPC_UseCount, 0);
 	  break;
+  case PTP_OPC_ObjectSize:
+    track->filesize = get_u64_from_object(device, track->item_id, PTP_OPC_ObjectSize, 0);
+    break;
 	}
       }
       free(props);
@@ -4957,7 +5013,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
       return -1;
     }
     
-    // now send the blank objet
+    // now send the blank object
     ret = ptp_sendobject(params, NULL, 0);
     if (ret != PTP_RC_OK) {
       add_ptp_error_to_errorstack(device, ret, "create_new_abstract_list(): Could not send blank object data.");

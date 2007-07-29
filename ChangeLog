@@ -1,3 +1,9 @@
+2007-07-29  Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: 64 bit filesize support for tracks
+	* src/ptp-pack.c: ditto
+	* src/ptp.h: ditto
+
 2007-07-27  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: Some better NULL checks

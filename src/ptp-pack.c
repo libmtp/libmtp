@@ -587,17 +587,14 @@ ptp_unpack_DPV (
 	case PTP_DTC_UINT32:
 		CTVAL(value->u32,dtoh32a);
 		break;
-
-
-
-	case PTP_DTC_UINT64:
-		*offset += 8;
-		/*fprintf(stderr,"unhandled unpack of uint64\n");*/
-		break;
-	case PTP_DTC_INT64:
-		*offset += 8;
-		/*fprintf(stderr,"unhandled unpack of int64\n");*/
-		break;
+  case PTP_DTC_INT64:
+    CTVAL(value->i64,dtoh64a);
+    break;
+  case PTP_DTC_UINT64:
+    CTVAL(value->u64,dtoh64a);
+    break;
+    
+    
 	case PTP_DTC_UINT128:
 		*offset += 16;
 		/*fprintf(stderr,"unhandled unpack of uint128n");*/
