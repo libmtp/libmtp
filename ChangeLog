@@ -1,3 +1,7 @@
+2007-07-30  Richard Low <richard@wentnet.com>
+
+	* src/ptp-pack.c: fix up array packing
+
 2007-07-30  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp-pack.c: try to get a uniform 64 bit

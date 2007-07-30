@@ -868,56 +868,56 @@ ptp_pack_DPV (PTPParams *params, PTPPropertyValue* value, unsigned char** dpvptr
 		dpv=malloc(size);
 		htod32a(dpv,value->a.count);
 		for (i=0;i<value->a.count;i++)
-			htod8a(&dpv[4+i],value->a.v[i].u8);
+			htod8a(&dpv[sizeof(uint32_t)+i*sizeof(uint8_t)],value->a.v[i].u8);
 		break;
 	case PTP_DTC_AINT8:
 		size=sizeof(uint32_t)+value->a.count*sizeof(int8_t);
 		dpv=malloc(size);
 		htod32a(dpv,value->a.count);
 		for (i=0;i<value->a.count;i++)
-			htod8a(&dpv[4+i],value->a.v[i].i8);
+			htod8a(&dpv[sizeof(uint32_t)+i*sizeof(int8_t)],value->a.v[i].i8);
 		break;
 	case PTP_DTC_AUINT16:
 		size=sizeof(uint32_t)+value->a.count*sizeof(uint16_t);
 		dpv=malloc(size);
 		htod32a(dpv,value->a.count);
 		for (i=0;i<value->a.count;i++)
-			htod16a(&dpv[4+i],value->a.v[i].u16);
+			htod16a(&dpv[sizeof(uint32_t)+i*sizeof(uint16_t)],value->a.v[i].u16);
 		break;
 	case PTP_DTC_AINT16:
 		size=sizeof(uint32_t)+value->a.count*sizeof(int16_t);
 		dpv=malloc(size);
 		htod32a(dpv,value->a.count);
 		for (i=0;i<value->a.count;i++)
-			htod16a(&dpv[4+i],value->a.v[i].i16);
+			htod16a(&dpv[sizeof(uint32_t)+i*sizeof(int16_t)],value->a.v[i].i16);
 		break;
 	case PTP_DTC_AUINT32:
 		size=sizeof(uint32_t)+value->a.count*sizeof(uint32_t);
 		dpv=malloc(size);
 		htod32a(dpv,value->a.count);
 		for (i=0;i<value->a.count;i++)
-			htod32a(&dpv[4+i],value->a.v[i].u32);
+			htod32a(&dpv[sizeof(uint32_t)+i*sizeof(uint32_t)],value->a.v[i].u32);
 		break;
 	case PTP_DTC_AINT32:
 		size=sizeof(uint32_t)+value->a.count*sizeof(int32_t);
 		dpv=malloc(size);
 		htod32a(dpv,value->a.count);
 		for (i=0;i<value->a.count;i++)
-			htod32a(&dpv[4+i],value->a.v[i].i32);
+			htod32a(&dpv[sizeof(uint32_t)+i*sizeof(int32_t)],value->a.v[i].i32);
 		break;
 	case PTP_DTC_AUINT64:
 		size=sizeof(uint32_t)+value->a.count*sizeof(uint64_t);
 		dpv=malloc(size);
 		htod32a(dpv,value->a.count);
 		for (i=0;i<value->a.count;i++)
-			htod64a(&dpv[4+i],value->a.v[i].u64);
+			htod64a(&dpv[sizeof(uint32_t)+i*sizeof(uint64_t)],value->a.v[i].u64);
 		break;
 	case PTP_DTC_AINT64:
 		size=sizeof(uint32_t)+value->a.count*sizeof(int64_t);
 		dpv=malloc(size);
 		htod32a(dpv,value->a.count);
 		for (i=0;i<value->a.count;i++)
-			htod64a(&dpv[4+i],value->a.v[i].i64);
+			htod64a(&dpv[sizeof(uint32_t)+i*sizeof(int64_t)],value->a.v[i].i64);
 		break;
 	/* XXX: other int types are unimplemented */
 	case PTP_DTC_STR: {
