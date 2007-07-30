@@ -82,10 +82,11 @@ int main (int argc, char **argv)
     case style_udev:
       printf("# UDEV-style hotplug map for libmtp\n");
       printf("# Put this file in /etc/udev/rules.d\n\n");
-      printf("# The following line cannot be used right now since subsystem was renamed\n");
-      printf("# from \"usb_device\" to just \"usb\". Find some better, compatible way...\n");
-      printf("# SUBSYSTEM!=\"usb_device\", GOTO=\"libmtp_rules_end\"\n");
-      printf("ACTION!=\"add\", GOTO=\"libmtp_rules_end\"\n\n");
+      printf("ACTION!=\"add\", GOTO=\"libmtp_rules_end\"\n"
+	     "SUBSYSTEM==\"usb\", GOTO=\"libmtp_rules\"\n"
+             "SUBSYSTEM==\"usb_device\", GOTO=\"libmtp_rules\"\n\n"
+	     "GOTO=\"libmtp_rules_end\"\n\n"
+	     "LABEL=\"libmtp_rules\"\n\n");
       break;
     case style_usbmap:
       printf("# This usermap will call the script \"libmtp.sh\" whenever a known MTP device is attached.\n\n");
@@ -116,6 +117,8 @@ int main (int argc, char **argv)
             action = default_udev_action;
           }
           printf("SYSFS{idVendor}==\"%04x\", SYSFS{idProduct}==\"%04x\", %s\n", entry->vendor_id, entry->product_id, action);
+	  // Newer style, shall we use this both or instead?
+	  // printf("ATTR{idVendor}==\"%04x\", ATTR{idProduct}==\"%04x\", %s\n", entry->vendor_id, entry->product_id, action);
         break;
         }
         case style_usbmap:
