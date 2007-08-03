@@ -75,19 +75,6 @@ static inline uint64_t
 dtoh64ap (PTPParams *params, unsigned char *a)
 {
 	return ((params->byteorder==PTP_DL_LE)?le64atoh(a):be64atoh(a));
-	/*
-	uint64_t tmp = 0;
-	int i;
-
-	if (params->byteorder==PTP_DL_LE) {
-		for (i=0;i<8;i++)
-			tmp |= (((uint64_t)a[i]) << (8*i));
-	} else {
-		for (i=0;i<8;i++)
-			tmp |= (((uint64_t)a[i]) << (8*(7-i)));
-	}
-	return tmp;
-	*/
 }
 
 #define htod8a(a,x)	*(uint8_t*)(a) = x
