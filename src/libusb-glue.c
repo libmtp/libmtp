@@ -359,6 +359,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * Their datasheet claims their devices are dualmode so probably needs to
    * unload the attached drivers here.
    */
+  // Reported by Cristi Magherusan <majeru@gentoo.ro>
+  {"TrekStor Vibez i.Beat sweez FM", 0x0402, 0x0611, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Stefan Voss <svoss@web.de>
   {"TrekStor Vibez 8/12GB", 0x066f, 0x842a, DEVICE_FLAG_UNLOAD_DRIVER },
   

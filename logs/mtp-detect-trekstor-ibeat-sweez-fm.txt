@@ -1,0 +1,210 @@
+Attempting to connect device(s)
+Detect: Successfully connected 1 devices
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 0402
+   idProduct: 0611
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Device flags: 0x00000002
+Device info:
+   Manufacturer: Trekstor
+   Model: i.Beat sweez FM
+   Device version: V2.04.06
+   Serial number: 00000000000000403060000000002453
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com:1.0; microsoft.com/WMDRMPD: 10.1
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   100f: Format storage
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   101b: Get partial object
+   9810: Get object references
+   9811: Set object references
+   9802: Get object property description
+   9801: Get object properties supported
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9806: Set object property list
+   9808: Send object property list
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9108: Clean data store
+   9109: Get license state
+   910a: Send WMDRM-PD Command
+   910b: Send WMDRM-PD Request
+Events supported:
+   None.
+Device Properties Supported:
+   0x5001: Battery Level
+   0xd401: Synchronization Partner
+   0xd402: Device Friendly Name
+   0xd101: Secure Time
+   0xd102: Device Certificate
+Playable File (Object) Types and Object Properties Supported:
+   3000: Undefined Type
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+      dc44: Name STRING data type GET/SET
+   3001: Association/Directory
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc09: DateModified STRING data type GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc89: Duration UINT32 data type range: MIN 0, MAX 65535000, STEP 1 GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      de93: SampleRate UINT32 data type enumeration: 48000, 44100, 32000, 24000, 22050, 16000, 12000, 11025,  READ ONLY
+      de94: NumberOfChannels UINT16 data type enumeration: 2,  GET/SET
+      de9a: AudioBitRate UINT32 data type range: MIN 8000, MAX 360000, STEP 1 READ ONLY
+      de99: AudioWAVECodec UINT32 data type enumeration: 352,  READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc9b: AlbumArtist STRING data type GET/SET
+   b901: WMA
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc09: DateModified STRING data type GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc89: Duration UINT32 data type range: MIN 0, MAX 65535000, STEP 1 GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      de93: SampleRate UINT32 data type enumeration: 48000, 44100, 32000, 24000, 22050, 16000, 12000, 11025,  READ ONLY
+      de94: NumberOfChannels UINT16 data type enumeration: 2,  GET/SET
+      de9a: AudioBitRate UINT32 data type range: MIN 8000, MAX 360000, STEP 1 READ ONLY
+      de99: AudioWAVECodec UINT32 data type enumeration: 353,  READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc9b: AlbumArtist STRING data type GET/SET
+   3009: MP3
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc09: DateModified STRING data type GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc89: Duration UINT32 data type range: MIN 0, MAX 65535000, STEP 1 GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      de93: SampleRate UINT32 data type enumeration: 48000, 44100, 32000, 24000, 22050, 16000, 12000, 11025,  READ ONLY
+      de94: NumberOfChannels UINT16 data type enumeration: 2,  GET/SET
+      de9a: AudioBitRate UINT32 data type range: MIN 8000, MAX 360000, STEP 1 READ ONLY
+      de99: AudioWAVECodec UINT32 data type enumeration: 85,  READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc9b: AlbumArtist STRING data type GET/SET
+   300c: ASF
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+      dc44: Name STRING data type GET/SET
+   ba05: Abstract Audio Video Playlist
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+      dc44: Name STRING data type GET/SET
+   ba03: Abstract Audio Album
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+      dc44: Name STRING data type GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9b: AlbumArtist STRING data type GET/SET
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0003
+      FilesystemType: 0x0002
+      AccessCapability: 0x0000
+      MaxCapacity: 2060180992
+      FreeSpaceInBytes: 109903872
+      FreeSpaceInObjects: 4294967295
+      StorageDescription: i.Beat sweez FM 
+      VolumeIdentifier: 10000000000000403060000000002453
+Special directories:
+   Default music folder: 0x00000000
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x00000000
+   Default video folder: 0x00000000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00000000
+   Default text folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: i.Beat sweez FM
+   Synchronization partner: Windows Media Player 10
+   Battery level 0 of 24 (0%)
+libmtp supported (playable) filetypes:
+   Microsoft Windows Media Audio
+   ISO MPEG-1 Audio Layer 3
+   Microsoft Advanced Systems Format
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20040113 20:36:55Z#</VALUE><FLAG>DRM_CLK_NOT_SET</FLAG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">MDA0MDMwNjAwMDAwMDAwMDI0NTM=</UNIQUEID><PUBLICKEY private="1">H6xGkVu18CH1v3lGLZhg3CweLg5J9xcylHtvIfl93gvb598H3/nlZw==</PUBLICKEY><KEYDATA>VA+dyX2u0b9IRnjqQ/runjdCdSM=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>hZlIjGetjQoATRec1FGjMR7UGAmIpvLu8KHU76uwdY76ACnEn377Zg==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>FPliQA8qBOXr2yodiMFZrkKUiH4=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.102.207</SECURITYVERSION><CERTIFICATE private="1">H6xGkVu18CH1v3lGLZhg3CweLg5J9xcylHtvIfl93gvb598H3/nlZwIEZs9t5iPaik/F07xZZei5SMOZfwC5bJA4oO40hI87xErcvjaiaFsQMvhj</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>MTP Player</NAME><MANUFACTURER>Corp.</MANUFACTURER><MAKE>Corp.</MAKE><DESTRIBUTOR>Corp.</DESTRIBUTOR><MODEL>M</MODEL><SECURITYLEVEL>2000</SECURITYLEVEL><HARDWARE_VER_MAJOR>1</HARDWARE_VER_MAJOR><HARDWARE_VER_MINOR>0</HARDWARE_VER_MINOR><FIRMWARE_VER_MAJOR>1</FIRMWARE_VER_MAJOR><FIRMWARE_VER_MINOR>0</FIRMWARE_VER_MINOR><FEATURES><TEMPLATE>0</TEMPLATE><CLOCK>2</CLOCK><SECURECLOCK><URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL><PUBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY></SECURECLOCK><METERING>1</METERING><LICENSE_ACQ>1</LICENSE_ACQ><LICENSE_SYNC>1</LICENSE_SYNC><ENCRYPTION>1</ENCRYPTION><SYMMETRIC_OPT>1</SYMMETRIC_OPT></FEATURES><LIMITS><MAXCHAINDEPTH>2</MAXCHAINDEPTH><MAXLICENSESIZE>10240</MAXLICENSESIZE><MAXHEADERSIZE>5120</MAXHEADERSIZE></LIMITS><PUBLICKEY>yUtoiSoR3tOOYBKTaBj5l85u5YWA6Rn5AhKcdpxBtx4upnq4IIwfKw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>qD4E29L/HI5ATLe7WEY9fBRmu09Wd1kK30ycYGdOt6rSrTE/nwHIYg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>563</AUTH_ID><PUBLICKEY>9JYeS4F89sMRFfIRMl0pjW2R91N6uMQaAU8+y+vgpk/jwYfefh8bJg==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>mamgYHOs28hXiXYisA90WGHDGxaWfdBOg2dQw9nQee/DXbrohTRgJw==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>0ELrUZz3fYJRSe90/GsV/BxIp0Yvjnu09L9b4FKoiaP72GKS1i4uTA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
+WMPInfo.xml Does not exist on this device
+OK.
