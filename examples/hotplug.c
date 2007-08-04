@@ -84,6 +84,7 @@ int main (int argc, char **argv)
       printf("# Put this file in /etc/udev/rules.d\n\n");
       printf("ACTION!=\"add\", GOTO=\"libmtp_rules_end\"\n"
 	     "SUBSYSTEM==\"usb\", GOTO=\"libmtp_rules\"\n"
+	     "# The following line will be deprecated when older kernels are phased out.\n"
              "SUBSYSTEM==\"usb_device\", GOTO=\"libmtp_rules\"\n\n"
 	     "GOTO=\"libmtp_rules_end\"\n\n"
 	     "LABEL=\"libmtp_rules\"\n\n");
@@ -116,9 +117,10 @@ int main (int argc, char **argv)
           } else {
             action = default_udev_action;
           }
-          printf("SYSFS{idVendor}==\"%04x\", SYSFS{idProduct}==\"%04x\", %s\n", entry->vendor_id, entry->product_id, action);
-	  // Newer style, shall we use this both or instead?
-	  // printf("ATTR{idVendor}==\"%04x\", ATTR{idProduct}==\"%04x\", %s\n", entry->vendor_id, entry->product_id, action);
+	  // Old style directly SYSFS named.
+          // printf("SYSFS{idVendor}==\"%04x\", SYSFS{idProduct}==\"%04x\", %s\n", entry->vendor_id, entry->product_id, action);
+	  // Newer style
+	  printf("ATTR{idVendor}==\"%04x\", ATTR{idProduct}==\"%04x\", %s\n", entry->vendor_id, entry->product_id, action);
         break;
         }
         case style_usbmap:

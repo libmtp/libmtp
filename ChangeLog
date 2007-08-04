@@ -5,6 +5,7 @@
 	* src/Makefile.am: tweak interface revision so that we produce
 	  libmtp.so.6 now.
 	* configure.ac: bump library revision to 0.2.0.
+	* examples/hotplug.c: switch to use ATTR{} instead of SYSFS{}
 
 2007-08-04  Richard Low <richard@wentnet.com>
 
