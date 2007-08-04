@@ -378,7 +378,10 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * Cowon Systems, Inc.
    * The iAudio audiophile devices don't encourage the use of MTP.
    */
-  {"Cowon iAudio 7", 0x0e21, 0x0751, DEVICE_FLAG_NONE },
+  // Reported by Roberth Karman
+  {"Cowon iAudio 7 (MTP mode)", 0x0e21, 0x0751, DEVICE_FLAG_NONE },
+  // Reported by TJ Something <tjbk_tjb@users.sourceforge.net>
+  {"Cowon D2 (MTP mode)", 0x0e21, 0x0801, DEVICE_FLAG_NONE },
 
   /*
    * Other strange stuff.
