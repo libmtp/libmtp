@@ -1,6 +1,22 @@
 TODO file:
 ----------
 
+COMPATIBILITY fixes:
+
+1. COMPATIBILITY: dual-mode devices, i.e. devices exposing both an MTP
+  and a USB Mass Storage Device Class (flashdrive) interface are and
+  have always been problematic. We must find a way to get this to work,
+  eventually. The problem is that the in-kernel mass storage driver hogs
+  the device before the MTP mode gets a chance of being used, whereas
+  the Windows kernel driver apparently does it the other way around, 
+  trying the MTP mode first and then not fall back on mass storage if
+  MTP is available. (For some more explanations se src/libusb-glue.h.)
+  This may involve kernel modifications.
+
+2. COMPATIBILITY: several devices tend to "hang" after disconnect, 
+  needing to be unplugged and replugged before they can be used again. 
+  We don't know why, it may be related to low-level USB behaviour that
+  is not exposed in the logs we read.
 
 SPEEDUP fixes:
 
@@ -10,6 +26,7 @@ SPEEDUP fixes:
   The cache would be an array of size params->deviceinfo.ImageFormats_len
   with a list for each format of the properties it will support. Notice 
   that this needs to be updated whenever flush_handles() is called too.
+  (THIS MAY BE DISCARDED, IT DOESN'T SEEM TO YIELD MUCH.)
 
 FEATURE fixes:
 
@@ -30,18 +47,18 @@ FEATURE fixes:
   into some /Music or /My Music folder if one exists.
 
 5. FEATURE: Integrate libmtp with HAL / D-Bus so applications can dynamically
-	know when a device has been plugged in or removed. Need a mechanism to 
-	connect a specific hal UDI.
-	
-6. FEATURE: Mechanism to retrieve the device icon device property, else if not
-	present, look for DevIcon.fil (Windows ICO format) and 
-	DevLogo.fil (PNG Format) images from the device (if available).
+  know when a device has been plugged in or removed. Need a mechanism to 
+  connect a specific hal UDI.
 
-9. FEATURE: Shared device access so that multiple client applications can have
-	an open connection to the device at the same time via a handle. For example,
-	it should be somehow possible to run mtp-detect at the same time as amarok or 
-	mtpfs is connected to a device. This would require some form of resource
-	sharing.
+6. FEATURE: Mechanism to retrieve the device icon device property, else if not
+  present, look for DevIcon.fil (Windows ICO format) and 
+  DevLogo.fil (PNG Format) images from the device (if available).
+
+7. FEATURE: Shared device access so that multiple client applications can have
+  an open connection to the device at the same time via a handle. For example,
+  it should be somehow possible to run mtp-detect at the same time as amarok or 
+  mtpfs is connected to a device. This would require some form of resource
+  sharing.
 
 
 THOSE ARE ALREADY DONE:
