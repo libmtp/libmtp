@@ -108,7 +108,11 @@ too, typically from the same manufacturer.
 The most common flag that needs to be set is the 
 DEVICE_FLAG_UNLOAD_DRIVER that detach any Linux kernel
 drivers that may have attached to the device making
-MTP access impossible.
+MTP access impossible. This is however not expected to
+really work: this is a problem being tracked as of
+now (2007-08-04). See the "last resort" solutions below
+if you really need to get your dual-mode device to work 
+with MTP.
 
 If your device is very problematic we are curious of how it
 works under Windows, so we enjoy reading USB packet sniffs
@@ -140,11 +144,14 @@ Devices does not work - last resort:
 Some devices that are dual-mode are simply impossible to get
 to work under Linux because the usb-storage(.ko) kernel
 module hook them first, and refuse to release them, even
-when we specify the DEVICE_FLAG_UNLOAD_DRIVER flag.
+when we specify the DEVICE_FLAG_UNLOAD_DRIVER flag. (Maybe
+it DOES release it but the device will immediately be probed
+at the USB mass storage interface AGAIN because it 
+enumerates.)
 
 Try this, if you have a recent 2.6.x Linux kernel:
 
-* Go into /etc/modprobe.d/blacklist
+* Edit /etc/modprobe.d/blacklist
 
 * Add the line "blacklist usb-storage"
 
@@ -155,6 +162,12 @@ working (you just disabled them all). However you *can* try
 your device, and it might have started working because there
 is no longer a USB mass storage driver that tries to hook onto
 the mass storage interface of your device.
+
+If not even blacklisting works (check with 
+"lsmod | grep usb-storage"), there is some problem with
+something else and you may need to remove or rename the file 
+/lib/modules/<VERSION>/kernel/drivers/usb/storage/usb-storage.ko
+manually.
 
 If you find the PerfectSolution(TM) to this dilemma, so you 
 can properly switch for individual devices whether to use it
