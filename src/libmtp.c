@@ -1185,7 +1185,10 @@ static void get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
       params->objectinfo[i].ObjectFormat = prop->propval.u16;
       break;
     case PTP_OPC_ObjectSize:
-      params->objectinfo[i].ObjectCompressedSize = (uint32_t)prop->propval.u64;
+      // We loose precision here, up to 32 bits! However the commands that
+      // retrieve metadata for files and tracks will make sure that the
+      // PTP_OPC_ObjectSize is read in and duplicated again.
+      params->objectinfo[i].ObjectCompressedSize = (uint32_t) prop->propval.u64;
       break;
     case PTP_OPC_StorageID:
       params->objectinfo[i].StorageID = prop->propval.u32;
@@ -2447,6 +2450,8 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
   LIBMTP_file_t *retfiles = NULL;
   LIBMTP_file_t *curfile = NULL;
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
+  int ret;
 
   // Get all the handles if we haven't already done that
   if (params->handles.Handler == NULL) {
@@ -2463,7 +2468,7 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
     oi = &params->objectinfo[i];
 
     if (oi->ObjectFormat == PTP_OFC_Association) {
-      // MTP use thesis object format for folders which means
+      // MTP use this object format for folders which means
       // these "files" will turn up on a folder listing instead.
       continue;
     }
@@ -2473,20 +2478,90 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
 
     file->parent_id = oi->ParentObject;
 
+    // This is some sort of unique ID so we can keep track of the track.
+    file->item_id = params->handles.Handler[i];
+
     // Set the filetype
     file->filetype = map_ptp_type_to_libmtp_type(oi->ObjectFormat);
 
     // Original file-specific properties
-    
-    // FIXME: we only have 32-bit file size here; use the PTP_OPC_ObjectSize property
+    // We only have 32-bit file size here; if we find it, we use the 
+    // PTP_OPC_ObjectSize property which has 64bit precision.
     file->filesize = oi->ObjectCompressedSize;
     if (oi->Filename != NULL) {
       file->filename = strdup(oi->Filename);
     }
 
-    // This is some sort of unique ID so we can keep track of the track.
-    file->item_id = params->handles.Handler[i];
-
+    /*
+     * If we have a cached, large set of metadata, then use it!
+     */
+    if (params->proplist) {
+      MTPPropList *prop = params->proplist;
+      
+      while (prop != NULL && prop->ObjectHandle != file->item_id) {
+	prop = prop->next;
+      }
+      while (prop != NULL && prop->ObjectHandle == file->item_id) {
+	// Pick ObjectSize here...
+	if (prop->property == PTP_OPC_ObjectSize) {
+	  // This may already be set, but this 64bit precision value 
+	  // is better than the PTP 32bit value, so let it override.
+	  file->filesize = prop->propval.u64;
+	  break;
+	}
+	prop = prop->next;
+      }
+    } else if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjPropList)
+	       && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST)) {
+      MTPPropList *proplist = NULL;
+      MTPPropList *prop;
+      
+      /*
+       * This should retrieve all properties for an object, but on devices
+       * which are inherently broken it will not, so these need the
+       * special flag DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST.
+       */
+      ret = ptp_mtp_getobjectproplist(params, file->item_id, &proplist);
+      if (ret != PTP_RC_OK) {
+	add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.");
+	// Silently fall through.
+      }
+      prop = proplist;
+      while (prop != NULL && prop->ObjectHandle == file->item_id) {
+	// Pick ObjectSize here...
+	if (prop->property == PTP_OPC_ObjectSize) {
+	  // This may already be set, but this 64bit precision value 
+	  // is better than the PTP 32bit value, so let it override.
+	  file->filesize = prop->propval.u64;
+	  break;
+	}
+	prop = prop->next;
+      }
+      destroy_mtp_prop_list(proplist);
+    } else {
+      uint16_t *props = NULL;
+      uint32_t propcnt = 0;
+      
+      // First see which properties can be retrieved for this object format
+      ret = ptp_mtp_getobjectpropssupported(params, map_libmtp_type_to_ptp_type(file->filetype), &propcnt, &props);
+      if (ret != PTP_RC_OK) {
+	add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectpropssupported() failed.");
+	// Silently fall through.
+      } else {
+	for (i=0;i<propcnt;i++) {
+	  switch (props[i]) {
+	  case PTP_OPC_ObjectSize:
+	    file->filesize = get_u64_from_object(device, file->item_id, PTP_OPC_ObjectSize, 0);
+	    break;
+	  default:
+	    break;
+	  }
+	}
+	free(props);
+      }
+    }
+      
+    
     // Add track to a list that will be returned afterwards.
     if (retfiles == NULL) {
       retfiles = file;
@@ -2705,6 +2780,13 @@ static void pick_property_to_track_metadata(MTPPropList *prop, LIBMTP_track_t *t
   case PTP_OPC_UseCount:
     track->usecount = prop->propval.u32;
     break;
+  case PTP_OPC_ObjectSize:
+    // This may already be set, but this 64bit precision value 
+    // is better than the PTP 32bit value, so let it override.
+    track->filesize = prop->propval.u64;
+    break;
+  default:
+    break;
   }
 }
 
@@ -2814,9 +2896,11 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
 	case PTP_OPC_UseCount:
 	  track->usecount = get_u32_from_object(device, track->item_id, PTP_OPC_UseCount, 0);
 	  break;
-  case PTP_OPC_ObjectSize:
-    track->filesize = get_u64_from_object(device, track->item_id, PTP_OPC_ObjectSize, 0);
-    break;
+	case PTP_OPC_ObjectSize:
+	  // This may already be set, but this 64bit precision value 
+	  // is better than the PTP 32bit value, so let it override.
+	  track->filesize = get_u64_from_object(device, track->item_id, PTP_OPC_ObjectSize, 0);
+	  break;
 	}
       }
       free(props);
