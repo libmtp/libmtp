@@ -169,6 +169,14 @@ something else and you may need to remove or rename the file
 /lib/modules/<VERSION>/kernel/drivers/usb/storage/usb-storage.ko
 manually.
 
+Another method is to run (as root) something like:
+
+> rmmod usb_storage ; mtp-detect
+
+You can run most any command or a client like gnomad2 or
+Amarok immediately after the rmmod command. This works 
+sometimes.
+
 If you find the PerfectSolution(TM) to this dilemma, so you 
 can properly switch for individual devices whether to use it
 as USB mass storage or not, please tell us how you did it. We
