@@ -1,4 +1,10 @@
-2006-08-03  Marcus Meissner <meissner@suse.de>
+2007-08-04  Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: add Sansa m240 (a different ID to before)
+	  Give the Toshiba Gigabeat S
+	  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL.
+
+2007-08-03  Marcus Meissner <meissner@suse.de>
 
 	* m4/byteorder.m4: byteorder fixes.
 
