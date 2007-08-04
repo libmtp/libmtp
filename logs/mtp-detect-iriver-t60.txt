@@ -1,0 +1,211 @@
+mtp-detect log:
+Autodetected device with VID=4102 and PID=1134 is UNKNOWN.
+Please report this VID/PID and the device model name etc to the
+libmtp development team!
+PTP: Opening session
+Connected to MTP device.
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+USB low-level info:
+Using kernel interface "usbfs"
+bcdUSB: 512
+bDeviceClass: 0
+bDeviceSubClass: 0
+bDeviceProtocol: 0
+idVendor: 4102
+idProduct: 1134
+IN endpoint maxpacket: 512 bytes
+OUT endpoint maxpacket: 512 bytes
+Device flags: 0x00000000
+Device info:
+Manufacturer: iriver
+Model: iriver MP3 T60
+Device version: MTP-1.03-N-ENG
+Serial number: 1557c6f40000003a3230303630313031
+Vendor extension ID: 0x00000006
+Vendor extension description: microsoft.com/WMDRMPD: 10.1; audible.com:
+1.0
+Supported operations:
+1001: get device info
+1002: Open session
+1003: Close session
+1004: Get storage IDs
+1005: Get storage info
+1006: Get number of objects
+1007: Get object handles
+1008: Get object info
+1009: Get object
+100b: Delete object
+100c: Send object info
+100d: Send object
+100f: Format storage
+1014: Get device property description
+1015: Get device property value
+1016: Set device property value
+9801: Get object properties supported
+9802: Get object property description
+9803: Get object property value
+9804: Set object property value
+9805: Get object property list
+9810: Get object references
+9811: Set object references
+9101: Get secure time challenge
+9102: Get secure time response
+9103: Set license response
+9104: Get sync list
+9105: Send meter challenge query
+9106: Get meter challenge
+9107: Get meter response
+9108: Clean data store
+9109: Get license state
+910a: Send WMDRM-PD Command
+910b: Send WMDRM-PD Request
+Events supported:
+None.
+Device Properties Supported:
+0x5001: Battery Level
+0xd401: Synchronization Partner
+0xd402: Device Friendly Name
+0xd101: Secure Time
+0xd102: Device Certificate
+0xd100: Unknown property
+Playable File (Object) Types and Object Properties Supported:
+3000: Undefined Type
+dc01: StorageID
+dc02: ObjectFormat
+dc04: ObjectSize
+dc07: ObjectFileName
+dc0b: ParentObject
+dc41: PersistantUniqueObjectIdentifier
+dc44: Name
+dc4f: NonConsumable
+3001: Association/Directory
+dc01: StorageID
+dc02: ObjectFormat
+dc04: ObjectSize
+dc07: ObjectFileName
+dc0b: ParentObject
+dc41: PersistantUniqueObjectIdentifier
+dc44: Name
+dc4f: NonConsumable
+3009: MP3
+dc01: StorageID
+dc02: ObjectFormat
+dc04: ObjectSize
+dc07: ObjectFileName
+dc0b: ParentObject
+dc41: PersistantUniqueObjectIdentifier
+dc44: Name
+dc4f: NonConsumable
+dc46: Artist
+dc95: MetaGenre
+de93: SampleRate
+de94: NumberOfChannels
+de99: AudioWAVECodec
+de9a: AudioBitRate
+b901: WMA
+dc01: StorageID
+dc02: ObjectFormat
+dc04: ObjectSize
+dc07: ObjectFileName
+dc0b: ParentObject
+dc41: PersistantUniqueObjectIdentifier
+dc44: Name
+dc4f: NonConsumable
+dc46: Artist
+dc95: MetaGenre
+de93: SampleRate
+de94: NumberOfChannels
+de99: AudioWAVECodec
+de9a: AudioBitRate
+b902: OGG
+dc01: StorageID
+dc02: ObjectFormat
+dc04: ObjectSize
+dc07: ObjectFileName
+dc0b: ParentObject
+dc41: PersistantUniqueObjectIdentifier
+dc44: Name
+dc4f: NonConsumable
+b904: Audible.com Codec
+dc01: StorageID
+dc02: ObjectFormat
+dc04: ObjectSize
+dc07: ObjectFileName
+dc0b: ParentObject
+dc41: PersistantUniqueObjectIdentifier
+dc44: Name
+dc4f: NonConsumable
+da00: unknown(da00)
+da01: unknown(da01)
+da02: unknown(da02)
+da03: unknown(da03)
+da04: unknown(da04)
+dc89: Duration
+ba05: Abstract Audio Video Playlist
+dc01: StorageID
+dc02: ObjectFormat
+dc04: ObjectSize
+dc07: ObjectFileName
+dc0b: ParentObject
+dc41: PersistantUniqueObjectIdentifier
+dc44: Name
+dc4f: NonConsumable
+Storage Devices:
+StorageID: 0x00010001
+StorageType: 0x0003
+FilesystemType: 0x0002
+AccessCapability: 0x0000
+MaxCapacity: 2009825280
+FreeSpaceInBytes: 209584128
+FreeSpaceInObjects: 4294967295
+StorageDescription: iriver MP3 T60 files
+VolumeIdentifier: fbhfgmepaaaaaakdcdadadgdadbdadbd
+Special directories:
+Default music folder: 0x00010000
+Default playlist folder: 0x00040000
+Default picture folder: 0x00000000
+Default video folder: 0x00000000
+Default organizer folder: 0x00000000
+Default zencast folder: 0x00000000
+Default album folder: 0x00000000
+Default text folder: 0x00000000
+MTP-specific device properties:
+Friendly name: iriver MP3 T60
+Synchronization partner: WMP 10; Napster;
+Battery level 3 of 4 (75%)
+libmtp supported (playable) filetypes:
+ISO MPEG-1 Audio Layer 3
+Microsoft Windows Media Audio
+Ogg container format
+Audible.com Audio Codec
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20070731
+19:24:07Z#</VALUE><FLAG>DRM_CLK_SET</FLAG></DRMCLOCK>
+LIBMTP panic: Found a bad handle, trying to ignore it.
+LIBMTP panic: Found a bad handle, trying to ignore it.
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+ptp2/ptp_usb_getdata: read 1 bytes too much, expect problems!
+PTP: Closing session
+OK.

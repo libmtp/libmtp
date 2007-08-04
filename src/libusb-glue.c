@@ -254,6 +254,10 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "iRiver X20", 0x4102, 0x1132, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
+  // Reported by Robert Ugo <robert_ugo@users.sourceforge.net>
+  { "iRiver T60", 0x4102, 0x1134, 
+    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
+    DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
   // Reported by Scott Call
   { "iRiver H10 20GB", 0x4102, 0x2101, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
