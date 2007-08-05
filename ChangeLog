@@ -1,3 +1,7 @@
+2007-08-05  Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: send 64 bit filesize
+
 2007-08-04  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: fix up the 64bit filesize and tracksize support.

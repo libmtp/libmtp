@@ -3784,6 +3784,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   uint16_t *props = NULL;
   uint32_t propcnt = 0;
   uint8_t nonconsumable = 0x01U; /* By default it is non-consumable */
+  uint64_t filesize; /* 64 bit filesize store */
 
   subcall_ret = check_if_file_fits(device, filedata->filesize);
   if (subcall_ret != 0) {
@@ -3796,13 +3797,16 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   if (filedata->filesize == (uint64_t) -1) {
     // This is a stream. Set a dummy length...
     new_file.ObjectCompressedSize = 1;
+    filesize = 1;
   } else {
     // Sanity check: no zerolength files
     if (filedata->filesize == 0) {
       add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Send_File_From_File_Descriptor(): File of zero size.");
       return -1;
     }
-    new_file.ObjectCompressedSize = filedata->filesize;
+    new_file.ObjectCompressedSize = (uint32_t)filedata->filesize;
+    // 64 bit store
+    filesize = filedata->filesize;
   }
   new_file.ObjectFormat = map_libmtp_type_to_ptp_type(filedata->filetype);
 
@@ -3930,7 +3934,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &filedata->item_id,
 				     new_file.ObjectFormat,
-				     new_file.ObjectCompressedSize, proplist);
+				     filesize, proplist);
 
     /* Free property list */
     destroy_mtp_prop_list(proplist);
