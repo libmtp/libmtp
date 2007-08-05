@@ -1,3 +1,9 @@
+2007-08-06  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.c: fixed a stray error print bug.
+	* src/libmtp.c: overhaul of all proplist setting to follow the same
+	  design pattern. Probably fixed a few opd memory leaks along the road.
+
 2007-08-05  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: send 64 bit filesize
@@ -10,6 +16,7 @@
 	  libmtp.so.6 now.
 	* configure.ac: bump library revision to 0.2.0.
 	* examples/hotplug.c: switch to use ATTR{} instead of SYSFS{}
+	* Release libmtp 0.2.0!
 
 2007-08-04  Richard Low <richard@wentnet.com>
 
