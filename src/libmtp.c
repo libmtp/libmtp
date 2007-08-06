@@ -3610,7 +3610,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     uint16_t *props = NULL;
     uint32_t propcnt = 0;
 
-    /* Send an object property list of that is supported */
+    /* Send an object property list if that is supported */
 
     // default handle
     if (localph == 0)
@@ -3685,16 +3685,17 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 
     /* Else use the fallback compatibility mode */
     new_track.Filename = metadata->filename;
-    new_track.ObjectCompressedSize = metadata->filesize;
+    new_track.ObjectCompressedSize = (uint32_t) metadata->filesize;
     new_track.ObjectFormat = map_libmtp_type_to_ptp_type(metadata->filetype);
-		new_track.StorageID = store;
-		new_track.ParentObject = parenthandle;
+    new_track.StorageID = store;
+    new_track.ParentObject = parenthandle;
     
     // Create the object
     ret = ptp_sendobjectinfo(params, &store, &localph, &metadata->item_id, &new_track);
     
     if (ret != PTP_RC_OK) {
-      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_Track_From_File_Descriptor: Could not send object info.");
+      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_Track_From_File_Descriptor():" 
+				  "Could not send object info.");
       if (ret == PTP_RC_AccessDenied) {
 	add_ptp_error_to_errorstack(device, ret, "ACCESS DENIED.");
       }
@@ -3855,46 +3856,32 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   uint16_t ret;
   uint32_t store = get_first_storageid(device);
   uint32_t localph = parenthandle;
-  PTPObjectInfo new_file;
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   int i;
   int subcall_ret;
-  uint16_t *props = NULL;
-  uint32_t propcnt = 0;
+  uint16_t of =  map_libmtp_type_to_ptp_type(filedata->filetype);
   uint8_t nonconsumable = 0x01U; /* By default it is non-consumable */
-  uint64_t filesize; /* 64 bit filesize store */
 
   subcall_ret = check_if_file_fits(device, filedata->filesize);
   if (subcall_ret != 0) {
     return -1;
   }
 
-  memset(&new_file, 0, sizeof(PTPObjectInfo));
-
-  new_file.Filename = filedata->filename;
-  if (filedata->filesize == (uint64_t) -1) {
-    // This is a stream. Set a dummy length...
-    new_file.ObjectCompressedSize = 1;
-    filesize = 1;
-  } else {
-    // Sanity check: no zerolength files
-    if (filedata->filesize == 0) {
-      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Send_File_From_File_Descriptor(): File of zero size.");
-      return -1;
-    }
-    new_file.ObjectCompressedSize = (uint32_t)filedata->filesize;
-    // 64 bit store
-    filesize = filedata->filesize;
+  // Sanity check: no zerolength files
+  if (filedata->filesize == 0) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Send_File_From_File_Descriptor(): "
+			    "File of zero size.");
+    return -1;
   }
-  new_file.ObjectFormat = map_libmtp_type_to_ptp_type(filedata->filetype);
+
 
   /*
    * If this file is among the supported filetypes for this device,
    * then it is indeed consumable.
    */
   for (i=0;i<params->deviceinfo.ImageFormats_len;i++) {
-    if (params->deviceinfo.ImageFormats[i] == new_file.ObjectFormat) {
+    if (params->deviceinfo.ImageFormats[i] ==  of) {
       nonconsumable = 0x00U;
       break;
     }
@@ -3911,7 +3898,6 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
    */
 
   if (localph == 0) {
-    uint16_t of = new_file.ObjectFormat;
     if (of == PTP_OFC_WAV ||
 	of == PTP_OFC_MP3 ||
 	of == PTP_OFC_MTP_MP2 ||
@@ -3960,21 +3946,26 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   }
 
   if (ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList)) {
-
     MTPPropList *proplist = NULL;
     MTPPropList *prop = NULL;
+    uint16_t *props = NULL;
+    uint32_t propcnt = 0;
     
+    // default handle
+    if (localph == 0)
+      localph = 0xFFFFFFFFU; // Set to -1
+
     // Must be 0x00000000U for new objects
     filedata->item_id = 0x00000000U;
 
-    ret = ptp_mtp_getobjectpropssupported(params, new_file.ObjectFormat, &propcnt, &props);
+    ret = ptp_mtp_getobjectpropssupported(params, of, &propcnt, &props);
 
     for (i=0;i<propcnt;i++) {
       PTPObjectPropDesc opd;
       
-      ret = ptp_mtp_getobjectpropdesc(params, props[i], new_file.ObjectFormat, &opd);
+      ret = ptp_mtp_getobjectpropdesc(params, props[i], of, &opd);
       if (ret != PTP_RC_OK) {
-	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Send_File_From_File_Descriptor(): "
+	add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor(): "
 				"could not get property description.");
       } else if (opd.GetSet) {
 	switch (props[i]) {
@@ -3983,7 +3974,8 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = filedata->item_id;
 	  prop->property = PTP_OPC_ObjectFileName;
 	  prop->datatype = PTP_DTC_STR;
-	  prop->propval.str = strdup(new_file.Filename);
+	  if (filedata->filename != NULL)
+	    prop->propval.str = strdup(filedata->filename);
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	  break;
 	case PTP_OPC_ProtectionStatus:
@@ -4007,7 +3999,8 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = filedata->item_id;
 	  prop->property = PTP_OPC_Name;
 	  prop->datatype = PTP_DTC_STR;
-	  prop->propval.str = strdup(filedata->filename);
+	  if (filedata->filename != NULL)
+	    prop->propval.str = strdup(filedata->filename);
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	  break;
 	}
@@ -4016,29 +4009,43 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     }
     free(props);
 
-    // default handle
-    if (localph == 0)
-      localph = 0xFFFFFFFFU; // Set to -1
-
     ret = ptp_mtp_sendobjectproplist(params, &store, &localph, &filedata->item_id,
-				     new_file.ObjectFormat,
-				     filesize, proplist);
+				     of, filedata->filesize, proplist);
 
     /* Free property list */
     destroy_mtp_prop_list(proplist);
 
     if (ret != PTP_RC_OK) {
-      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File(): Could not send object property list.");
+      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor():" 
+				  "Could not send object property list.");
       if (ret == PTP_RC_AccessDenied) {
 	add_ptp_error_to_errorstack(device, ret, "ACCESS DENIED.");
       }
       return -1;
     }
   } else if (ptp_operation_issupported(params,PTP_OC_SendObjectInfo)) {
+    PTPObjectInfo new_file;
+
+    memset(&new_file, 0, sizeof(PTPObjectInfo));
+  
+    new_file.Filename = filedata->filename;
+    if (filedata->filesize == (uint64_t) -1) {
+      // This is a stream. Set a dummy length...
+      new_file.ObjectCompressedSize = 1;
+    } else {
+      // We loose precision here.
+      new_file.ObjectCompressedSize = (uint32_t) filedata->filesize;
+    }
+    new_file.ObjectFormat = of;
+    new_file.StorageID = store;
+    new_file.ParentObject = localph;
+
     // Create the object
     ret = ptp_sendobjectinfo(params, &store, &localph, &filedata->item_id, &new_file);
+
     if (ret != PTP_RC_OK) {
-      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor: Could not send object info.");
+      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor(): "
+				  "Could not send object info.");
       if (ret == PTP_RC_AccessDenied) {
 	add_ptp_error_to_errorstack(device, ret, "ACCESS DENIED.");
       }
@@ -4070,13 +4077,24 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       // That's expected. The stream ends, simply...
       ret = PTP_RC_OK;
     } else {
-      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor: Error while sending stream.");
+      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor(): "
+				  "Error while sending stream.");
     }
   }
 
   if (ret != PTP_RC_OK) {
-    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor: Could not send object.");
+    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor():"
+				"Could not send object.");
     return -1;
+  }
+
+  if (nonconsumable != 0x00U) {
+    /* Flag it as non-consumable if it is */
+    subcall_ret = set_object_u8(device, filedata->item_id, PTP_OPC_NonConsumable, nonconsumable);
+    if (subcall_ret != 0) {
+      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): could not set non-consumable status.");
+      return -1;
+    }
   }
 
   add_object_to_cache(device, filedata->item_id);

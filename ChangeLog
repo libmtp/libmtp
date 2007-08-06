@@ -1,5 +1,10 @@
 2007-08-06  Linus Walleij <triad@df.lth.se>
 
+	* src/libmtp.c: smack up the data file transfer function so it
+	  works again and *finally* should support 64bit sizes!
+
+2007-08-06  Linus Walleij <triad@df.lth.se>
+
 	* src/ptp.c: fixed a stray error print bug.
 	* src/libmtp.c: overhaul of all proplist setting to follow the same
 	  design pattern. Probably fixed a few opd memory leaks along the road.
