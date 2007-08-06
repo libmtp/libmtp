@@ -221,6 +221,7 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pt
       
     printf("Sending track...\n");
     ret = LIBMTP_Send_Track_From_File(device, from_path, trackmeta, progress, NULL, parent_id);
+    printf("\n");
     if (ret != 0) {
       printf("Error sending track.\n");
       LIBMTP_Dump_Errorstack(device);

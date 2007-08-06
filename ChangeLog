@@ -2,6 +2,11 @@
 
 	* src/libmtp.c: smack up the data file transfer function so it
 	  works again and *finally* should support 64bit sizes!
+	  Then wrapped the track sending function around the file
+	  sending function so there is no more pointless code duplication
+	  giving rise to ever more bugs.
+	* examples/sendtr.c: shape up print-outs.
+	* examples/sendfile.c: dito.
 
 2007-08-06  Linus Walleij <triad@df.lth.se>
 

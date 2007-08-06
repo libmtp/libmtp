@@ -78,6 +78,8 @@ int sendfile_function(char * from_path, char *to_path)
     printf("Error sending file.\n");
     LIBMTP_Dump_Errorstack(device);
     LIBMTP_Clear_Errorstack(device);
+  } else {
+    printf("New file ID: %d\n", genfile->item_id);
   }
 
   LIBMTP_destroy_file_t(genfile);
