@@ -1,5 +1,6 @@
 2007-08-06  Linus Walleij <triad@df.lth.se>
 
+	* configure.ac: tag on the large file support compilation flag.
 	* src/libmtp.c: smack up the data file transfer function so it
 	  works again and *finally* should support 64bit sizes!
 	  Then wrapped the track sending function around the file
