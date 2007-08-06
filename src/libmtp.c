@@ -33,6 +33,8 @@
  * The files libusb-glue.c/.h are just what they say: an
  * interface to libusb for the actual, physical USB traffic.
  */
+#define _LARGEFILE_SOURCE
+#define _LARGEFILE64_SOURCE
 
 #include "libmtp.h"
 #include "unicode.h"
@@ -3236,7 +3238,11 @@ int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id,
   if ( (fd = open(path, O_RDWR|O_CREAT|O_TRUNC|O_BINARY,S_IRWXU|S_IRGRP)) == -1 ) {
 #endif
 #else
+#ifdef __USE_LARGEFILE64
+  if ( (fd = open64(path, O_RDWR|O_CREAT|O_TRUNC|O_LARGEFILE,S_IRWXU|S_IRGRP)) == -1) {
+#else
   if ( (fd = open(path, O_RDWR|O_CREAT|O_TRUNC,S_IRWXU|S_IRGRP)) == -1) {
+#endif
 #endif
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Get_File_To_File(): Could not create file.");
     return -1;
@@ -3416,7 +3422,11 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
   if ( (fd = open(path, O_RDONLY|O_BINARY) == -1 ) {
 #endif
 #else
+#ifdef __USE_LARGEFILE64
+  if ( (fd = open64(path, O_RDONLY|O_LARGEFILE)) == -1) {
+#else
   if ( (fd = open(path, O_RDONLY)) == -1) {
+#endif
 #endif
     printf("LIBMTP_Send_Track_From_File(): Could not open source file \"%s\"\n", path);
     return -1;
@@ -3610,7 +3620,11 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
   if ( (fd = open(path, O_RDONLY|O_BINARY) == -1 ) {
 #endif
 #else
+#ifdef __USE_LARGEFILE64
+  if ( (fd = open64(path, O_RDONLY|O_LARGEFILE)) == -1) {
+#else
   if ( (fd = open(path, O_RDONLY)) == -1) {
+#endif
 #endif
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Send_File_From_File(): Could not open source file.");
     return -1;

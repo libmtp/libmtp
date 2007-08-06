@@ -25,6 +25,9 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+#define _LARGEFILE_SOURCE
+#define _LARGEFILE64_SOURCE
+
 #include <string.h>
 #include <libgen.h>
 #include <sys/stat.h>
@@ -86,7 +89,11 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pt
   char num[80];
   uint64_t filesize;
   uint32_t parent_id = 0;
+#ifdef __USE_LARGEFILE64
+  struct stat64 sb;
+#else
   struct stat sb;
+#endif
   LIBMTP_track_t *trackmeta;
   trackmeta = LIBMTP_new_track_t();
 
@@ -98,12 +105,20 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pt
     return 1;
   }
 
+#ifdef __USE_LARGEFILE64
+  if ( stat64(from_path, &sb) == -1 ) {
+#else
   if ( stat(from_path, &sb) == -1 ) {
+#endif
     fprintf(stderr, "%s: ", from_path);
     perror("stat");
     return 1;
   } else if (S_ISREG (sb.st_mode)) {
+#ifdef __USE_LARGEFILE64
+    filesize = sb.st_size;
+#else
     filesize = (uint64_t) sb.st_size;
+#endif
     trackmeta->filetype = find_filetype (from_path);
     if ((trackmeta->filetype != LIBMTP_FILETYPE_MP3) 
 	&& (trackmeta->filetype != LIBMTP_FILETYPE_WAV) 
