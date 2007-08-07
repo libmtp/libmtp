@@ -31,7 +31,7 @@ EXTRA_DIST=libmtp.h.in libmtp.sym ptp-pack.c
 # ---------------------------------------------------------------------------
 CURRENT=6
 AGE=0
-REVISION=0
+REVISION=1
 SOVERSION=$(CURRENT):$(REVISION):$(AGE)
 
 if COMPILE_MINGW32

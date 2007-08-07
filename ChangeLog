@@ -1,3 +1,9 @@
+2007-08-07  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: bump to 0.2.1.
+	* src/Makefile.am: interface to libmtp.so.6.0.1.
+	* Release libmtp 0.2.1!
+
 2007-08-06  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: tag on the large file support compilation flag.
