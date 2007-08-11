@@ -76,8 +76,10 @@ To build the package:
 By default, libmtp will add the program-prefix "mtp-" to all the
 example programs prior to installation. The program-prefix option
 makes libmtp sample programs avoid collision with other programs like
-sox' "play" program. On Linux you should then typically type (see
-below for details):
+sox' "play" program. If the default prefix for some reason fail,
+try to tag on "--program-prefix=mtp-" to the "configure" command.
+
+On Linux you should then typically type (see below for details):
 
    % ./hotplug.sh
 
