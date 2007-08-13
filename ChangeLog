@@ -1,3 +1,7 @@
+2007-08-13  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.c: sync to upstream.
+
 2007-08-07  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bump to 0.2.1.
