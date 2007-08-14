@@ -187,7 +187,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // Reported by XNJB user
   { "SanDisk Sansa e280", 0x0781, 0x7421, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by anonymous user at sourceforge.net
-  { "SanDisk Sansa c250", 0x0781, 0x7450, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "SanDisk Sansa c240/c250", 0x0781, 0x7450, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by XNJB user, and Miguel de Icaza <miguel@gnome.org>
   // This has no dual-mode so no need to unload any driver.
   // This is a Linux based device!
