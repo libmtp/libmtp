@@ -169,6 +169,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Philips HDD6320", 0x0471, 0x01eb, DEVICE_FLAG_NONE },
   // from XNJB user
   { "Philips PSA235", 0x0471, 0x7e01, DEVICE_FLAG_NONE },
+  // from David Holm <wormie@alberg.dk>
+  { "Philips Shoqbox", 0x0471, 0x0172, DEVICE_FLAG_NONE },
 
 
   /*
