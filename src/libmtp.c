@@ -5413,6 +5413,11 @@ int LIBMTP_Get_Representative_Sample_Format(LIBMTP_mtpdevice_t *device,
   int support_width = 0;
   int support_duration = 0;
 
+  PTPObjectPropDesc opd_height;
+  PTPObjectPropDesc opd_width;
+  PTPObjectPropDesc opd_format;
+  PTPObjectPropDesc opd_duration;
+  
   // Default to no type supported.
   *sample = NULL;
   
@@ -5451,23 +5456,39 @@ int LIBMTP_Get_Representative_Sample_Format(LIBMTP_mtpdevice_t *device,
     }
   }
   free(props);
-
-  /*
-   * TODO: figure out what format, max height and width, or duration is actually
-   * supported on this device.
-   */
+  
   if (support_data && support_format && support_height && support_width && !support_duration) {
     // Something that supports height and width and not duration is likely to be JPEG
     LIBMTP_filesampledata_t *retsam = LIBMTP_new_filesampledata_t();
-    retsam->filetype = LIBMTP_FILETYPE_JPEG;
-    retsam->width = 100;
-    retsam->height = 100;
+    /* 
+     * Populate the sample format with the first supported format 
+     * 
+     * TODO: figure out how to pass back more than one format if more are
+     * supported by the device.
+     */
+    ptp_mtp_getobjectpropdesc (params, PTP_OPC_RepresentativeSampleFormat, map_libmtp_type_to_ptp_type(filetype), &opd_format);    
+    retsam->filetype = map_ptp_type_to_libmtp_type(opd_format.FORM.Enum.SupportedValue[0].u16);
+    /* Populate the maximum image height */
+    ptp_mtp_getobjectpropdesc (params, PTP_OPC_RepresentativeSampleWidth, map_libmtp_type_to_ptp_type(filetype), &opd_width);        
+    retsam->width = opd_width.FORM.Range.MaximumValue.u32;
+    /* Populate the maximum image width */
+    ptp_mtp_getobjectpropdesc (params, PTP_OPC_RepresentativeSampleHeight, map_libmtp_type_to_ptp_type(filetype), &opd_height);    						
+    retsam->height = opd_height.FORM.Range.MaximumValue.u32;
     *sample = retsam;
   } else if (support_data && support_format && !support_height && !support_width && support_duration) {
     // Another qualified guess
     LIBMTP_filesampledata_t *retsam = LIBMTP_new_filesampledata_t();
-    retsam->filetype = LIBMTP_FILETYPE_MP3;
-    retsam->duration = 2000; // 2 seconds
+    /* 
+     * Populate the sample format with the first supported format 
+     * 
+     * TODO: figure out how to pass back more than one format if more are
+     * supported by the device.
+     */
+    ptp_mtp_getobjectpropdesc (params, PTP_OPC_RepresentativeSampleFormat, map_libmtp_type_to_ptp_type(filetype), &opd_format);    
+    retsam->filetype = map_ptp_type_to_libmtp_type(opd_format.FORM.Enum.SupportedValue[0].u16);
+	/* Populate the maximum duration */
+    ptp_mtp_getobjectpropdesc (params, PTP_OPC_RepresentativeSampleDuration, map_libmtp_type_to_ptp_type(filetype), &opd_duration);    
+    retsam->duration = opd_duration.FORM.Range.MaximumValue.u32;
     *sample = retsam;
   }
   return 0;
