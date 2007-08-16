@@ -1,3 +1,7 @@
+2007-08-16  Richard Low <richard@wentnet.com>
+
+	* src/ptp-pack.c: allow packing of NULL strings
+
 2007-08-15  Robert Reardon <rreardon@monkshatch.vispa.com>
 
 	* src/libmtp.c: return device max values for representative
