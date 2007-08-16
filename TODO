@@ -18,6 +18,9 @@ COMPATIBILITY fixes:
   We don't know why, it may be related to low-level USB behaviour that
   is not exposed in the logs we read.
 
+3. COMPATIBILITY: account for different step sizes and intervals on some
+  numeric properties we set, make the functions round off when possible.
+
 SPEEDUP fixes:
 
 1. SPEED: Cache the supported object properties at first read/startup.
