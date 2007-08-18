@@ -175,6 +175,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * SanDisk
    * several devices (c150 for sure) are definately dual-mode and must 
    * have the USB mass storage driver that hooks them unloaded first.
+   * They all have problematic dual-mode making the device unload effect
+   * uncertain on these devices.
    */
   // Reported by Brian Robison
   { "SanDisk Sansa m230/m240", 0x0781, 0x7400, DEVICE_FLAG_UNLOAD_DRIVER },
@@ -293,16 +295,20 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   
   /*
    * Archos
+   * These devices have some dual-mode interfaces which will really
+   * respect the driver unloading, so DEVICE_FLAG_UNLOAD_DRIVER
+   * really work on these devices!
    */
-  // Reported by gudul1@users.sourceforge.net
-  { "Archos 104 (MTP mode)", 0x0e79, 0x120a, DEVICE_FLAG_NONE },
-  // Added by Jan Binder
-  { "Archos XS202 (MTP mode)", 0x0e79, 0x1208, DEVICE_FLAG_NONE },
-  // Reported by Etienne Chauchot <chauchot.etienne@free.fr>
-  // This seems to be dual-mode and thus need to have the unload flag.
-  { "Archos 504 (MTP mode)", 0x0e79, 0x1307, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Alexander Haertig <AlexanderHaertig@gmx.de>
   { "Archos Gmini XS100", 0x0e79, 0x1207, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Added by Jan Binder
+  { "Archos XS202 (MTP mode)", 0x0e79, 0x1208, DEVICE_FLAG_NONE },
+  // Reported by gudul1@users.sourceforge.net
+  { "Archos 104 (MTP mode)", 0x0e79, 0x120a, DEVICE_FLAG_NONE },
+  // Reported by Etienne Chauchot <chauchot.etienne@free.fr>
+  { "Archos 504 (MTP mode)", 0x0e79, 0x1307, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by Kay McCormick <kaym@modsystems.com>
+  { "Archos 704 mobile dvr", 0x0e79, 0x130d, DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
    * Dunlop (OEM of EGOMAN ltd?) reported by Nanomad
