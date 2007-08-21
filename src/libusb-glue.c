@@ -396,6 +396,11 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   {"Cowon D2 (MTP mode)", 0x0e21, 0x0801, DEVICE_FLAG_NONE },
 
   /*
+   * Insignia, dual-mode.
+   */
+  { "Insignia NS-DV45", 0x19ff, 0x0303, DEVICE_FLAG_UNLOAD_DRIVER },
+
+  /*
    * Other strange stuff.
    */
   {"Isabella's prototype", 0x0b20, 0xddee, DEVICE_FLAG_NONE }
