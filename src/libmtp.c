@@ -91,6 +91,8 @@ static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype);
 static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype);
 static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
 				       char **unicstring, uint16_t property);
+static uint16_t adjust_u16(uint16_t val, PTPObjectPropDesc *opd);
+static uint32_t adjust_u32(uint32_t val, PTPObjectPropDesc *opd);
 static char *get_string_from_object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 				    uint16_t const attribute_id);
 static uint64_t get_u64_from_object(LIBMTP_mtpdevice_t *device,uint32_t const object_id,
@@ -332,6 +334,86 @@ char const * LIBMTP_Get_Filetype_Description(LIBMTP_filetype_t intype)
   }
 
   return "Unknown filetype";
+}
+
+static uint16_t adjust_u16(uint16_t val, PTPObjectPropDesc *opd)
+{
+  switch (opd->FormFlag) {
+  case PTP_DPFF_Range:
+    if (val < opd->FORM.Range.MinimumValue.u16) {
+      return opd->FORM.Range.MinimumValue.u16;
+    }
+    if (val > opd->FORM.Range.MaximumValue.u16) {
+      return opd->FORM.Range.MaximumValue.u16;
+    }
+    // Round down to last step.
+    if (val % opd->FORM.Range.StepSize.u16 != 0) {
+      return val - (val % opd->FORM.Range.StepSize.u16);
+    }
+    return val;
+    break;
+  case PTP_DPFF_Enumeration:
+    {
+      int i;
+      uint16_t bestfit = opd->FORM.Enum.SupportedValue[0].u16;
+      
+      for (i=0; i<opd->FORM.Enum.NumberOfValues; i++) {
+	if (val == opd->FORM.Enum.SupportedValue[i].u16) {
+	  return val;
+	}
+	// Rough guess of best fit
+	if (opd->FORM.Enum.SupportedValue[i].u16 < val) {
+	  bestfit = opd->FORM.Enum.SupportedValue[i].u16;
+	}
+      }
+      // Just some default that'll work.
+      return bestfit;
+    }
+  default:
+    // Will accept any value
+    break;
+  }
+  return val;
+}
+
+static uint32_t adjust_u32(uint32_t val, PTPObjectPropDesc *opd)
+{
+  switch (opd->FormFlag) {
+  case PTP_DPFF_Range:
+    if (val < opd->FORM.Range.MinimumValue.u32) {
+      return opd->FORM.Range.MinimumValue.u32;
+    }
+    if (val > opd->FORM.Range.MaximumValue.u32) {
+      return opd->FORM.Range.MaximumValue.u32;
+    }
+    // Round down to last step.
+    if (val % opd->FORM.Range.StepSize.u32 != 0) {
+      return val - (val % opd->FORM.Range.StepSize.u32);
+    }
+    return val;
+    break;
+  case PTP_DPFF_Enumeration:
+    {
+      int i;
+      uint32_t bestfit = opd->FORM.Enum.SupportedValue[0].u32;
+
+      for (i=0; i<opd->FORM.Enum.NumberOfValues; i++) {
+	if (val == opd->FORM.Enum.SupportedValue[i].u32) {
+	  return val;
+	}
+	// Rough guess of best fit
+	if (opd->FORM.Enum.SupportedValue[i].u32 < val) {
+	  bestfit = opd->FORM.Enum.SupportedValue[i].u32;
+	}
+      }
+      // Just some default that'll work.
+      return bestfit;
+    }
+  default:
+    // Will accept any value
+    break;
+  }
+  return val;
 }
 
 
@@ -609,6 +691,7 @@ static int set_object_string(LIBMTP_mtpdevice_t *device, uint32_t const object_i
   return 0;
 }
 
+
 /**
  * Sets an object attribute from an unsigned 32-bit integer
  *
@@ -634,6 +717,7 @@ static int set_object_u32(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 				"PTP_OC_MTP_SetObjectPropValue not supported.");
     return -1;
   }
+  
   propval.u32 = value;
   ret = ptp_mtp_setobjectpropvalue(params, object_id, attribute_id, &propval, PTP_DTC_UINT32);
   if (ret != PTP_RC_OK) {
@@ -4087,7 +4171,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = metadata->item_id;
 	  prop->property = PTP_OPC_Duration;
 	  prop->datatype = PTP_DTC_UINT32;
-	  prop->propval.u32 = metadata->duration;
+	  prop->propval.u32 = adjust_u32(metadata->duration, &opd);
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	  break;
 	case PTP_OPC_Track:
@@ -4095,7 +4179,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = metadata->item_id;
 	  prop->property = PTP_OPC_Track;
 	  prop->datatype = PTP_DTC_UINT16;
-	  prop->propval.u16 = metadata->tracknumber;
+	  prop->propval.u16 = adjust_u16(metadata->tracknumber, &opd);
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	  break;
 	case PTP_OPC_OriginalReleaseDate:
@@ -4113,7 +4197,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_SampleRate;
 	  prop->datatype = PTP_DTC_UINT32;
-	  prop->propval.u32 = metadata->samplerate;
+	  prop->propval.u32 = adjust_u32(metadata->samplerate, &opd);
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	  break;
 	case PTP_OPC_NumberOfChannels:
@@ -4121,7 +4205,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_NumberOfChannels;
 	  prop->datatype = PTP_DTC_UINT16;
-	  prop->propval.u16 = metadata->nochannels;
+	  prop->propval.u16 = adjust_u16(metadata->nochannels, &opd);
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	  break;
 	case PTP_OPC_AudioWAVECodec:
@@ -4129,7 +4213,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_AudioWAVECodec;
 	  prop->datatype = PTP_DTC_UINT32;
-	  prop->propval.u32 = metadata->wavecodec;
+	  prop->propval.u32 = adjust_u32(metadata->wavecodec, &opd);
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	  break;
 	case PTP_OPC_AudioBitRate:
@@ -4137,7 +4221,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_AudioBitRate;
 	  prop->datatype = PTP_DTC_UINT32;
-	  prop->propval.u32 = metadata->bitrate;
+	  prop->propval.u32 = adjust_u32(metadata->bitrate, &opd);
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	  break;
 	case PTP_OPC_BitRateType:
@@ -4145,7 +4229,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_BitRateType;
 	  prop->datatype = PTP_DTC_UINT16;
-	  prop->propval.u16 = metadata->bitratetype;
+	  prop->propval.u16 = adjust_u16(metadata->bitratetype, &opd);
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	  break;
 	case PTP_OPC_Rating:
@@ -4156,7 +4240,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_Rating;
 	  prop->datatype = PTP_DTC_UINT16;
-	  prop->propval.u16 = metadata->rating;
+	  prop->propval.u16 = adjust_u16(metadata->rating, &opd);
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	  break;
 	case PTP_OPC_UseCount:
@@ -4164,7 +4248,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_UseCount;
 	  prop->datatype = PTP_DTC_UINT32;
-	  prop->propval.u32 = metadata->usecount;
+	  prop->propval.u32 = adjust_u32(metadata->usecount, &opd);
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	}
       }
@@ -4230,7 +4314,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	case PTP_OPC_Duration:
 	  // Update duration
 	  if (metadata->duration != 0) {
-	    ret = set_object_u32(device, metadata->item_id, PTP_OPC_Duration, metadata->duration);
+	    ret = set_object_u32(device, metadata->item_id, PTP_OPC_Duration, adjust_u32(metadata->duration, &opd));
 	    if (ret != 0) {
 	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
 				      "could not set track duration.");
@@ -4240,7 +4324,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	case PTP_OPC_Track:
 	  // Update track number.
 	  if (metadata->tracknumber != 0) {
-	    ret = set_object_u16(device, metadata->item_id, PTP_OPC_Track, metadata->tracknumber);
+	    ret = set_object_u16(device, metadata->item_id, PTP_OPC_Track, adjust_u16(metadata->tracknumber, &opd));
 	    if (ret != 0) {
 	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
 				      "could not set track tracknumber.");
@@ -4259,7 +4343,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	case PTP_OPC_SampleRate:
 	  // Update sample rate
 	  if (metadata->samplerate != 0) {
-	    ret = set_object_u32(device, metadata->item_id, PTP_OPC_SampleRate, metadata->samplerate);
+	    ret = set_object_u32(device, metadata->item_id, PTP_OPC_SampleRate, adjust_u32(metadata->samplerate, &opd));
 	    if (ret != 0) {
 	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
 				      "could not set samplerate.");
@@ -4269,7 +4353,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	case PTP_OPC_NumberOfChannels:
 	  // Update number of channels
 	  if (metadata->nochannels != 0) {
-	  ret = set_object_u16(device, metadata->item_id, PTP_OPC_NumberOfChannels, metadata->nochannels);
+	    ret = set_object_u16(device, metadata->item_id, PTP_OPC_NumberOfChannels, adjust_u16(metadata->nochannels, &opd));
 	  if (ret != 0) {
 	    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
 				    "could not set number of channels.");
@@ -4279,7 +4363,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	case PTP_OPC_AudioWAVECodec:
 	  // Update WAVE codec
 	  if (metadata->wavecodec != 0) {
-	    ret = set_object_u32(device, metadata->item_id, PTP_OPC_AudioWAVECodec, metadata->wavecodec);
+	    ret = set_object_u32(device, metadata->item_id, PTP_OPC_AudioWAVECodec, adjust_u32(metadata->wavecodec, &opd));
 	    if (ret != 0) {
 	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
 				      "could not set WAVE codec.");
@@ -4289,7 +4373,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	case PTP_OPC_AudioBitRate:
 	  // Update bitrate
 	  if (metadata->bitrate != 0) {
-	    ret = set_object_u32(device, metadata->item_id, PTP_OPC_AudioBitRate, metadata->bitrate);
+	    ret = set_object_u32(device, metadata->item_id, PTP_OPC_AudioBitRate, adjust_u32(metadata->bitrate, &opd));
 	    if (ret != 0) {
 	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
 				      "could not set bitrate.");
@@ -4299,7 +4383,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	case PTP_OPC_BitRateType:
 	  // Update bitrate type
 	  if (metadata->bitratetype != 0) {
-	    ret = set_object_u16(device, metadata->item_id, PTP_OPC_BitRateType, metadata->bitratetype);
+	    ret = set_object_u16(device, metadata->item_id, PTP_OPC_BitRateType, adjust_u16(metadata->bitratetype, &opd));
 	    if (ret != 0) {
 	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
 				      "could not set bitratetype.");
@@ -4310,7 +4394,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  // Update user rating
 	  // TODO: shall this be set for rating 0?
 	  if (metadata->rating != 0) {
-	    ret = set_object_u16(device, metadata->item_id, PTP_OPC_Rating, metadata->rating);
+	    ret = set_object_u16(device, metadata->item_id, PTP_OPC_Rating, adjust_u16(metadata->rating, &opd));
 	    if (ret != 0) {
 	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
 				      "could not set user rating.");
@@ -4319,7 +4403,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  break;
 	case PTP_OPC_UseCount:
 	  // Update use count, set even to zero if desired.
-	  ret = set_object_u32(device, metadata->item_id, PTP_OPC_UseCount, metadata->usecount);
+	  ret = set_object_u32(device, metadata->item_id, PTP_OPC_UseCount, adjust_u32(metadata->usecount, &opd));
 	  if (ret != 0) {
 	    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
 				  "could not set use count.");

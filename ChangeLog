@@ -1,3 +1,12 @@
+2007-08-22  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: deal with setting of metadata sets for u16/u32:s that
+	  are ranges or enums, rounding and twiddling if need be. This is
+	  needed because some new devices (like the TrekStor Sweez,
+	  has duration defined as a range: MIN 0, MAX 65535000, STEP 1
+	  and Sandisk Sansa c240 has duration as range: MIN 0, MAX 2147483000, 
+	  STEP 1000) whereas old devices would just accept any value.
+
 2007-08-16  Richard Low <richard@wentnet.com>
 
 	* src/ptp-pack.c: allow packing of NULL strings
