@@ -98,6 +98,15 @@
  * filename extension will be done for files of "unknown" type.
  */
 #define DEVICE_FLAG_IRIVER_OGG_ALZHEIMER 0x00000010
+/**
+ * This flag indicates a limitation in the filenames a device
+ * can accept - they must be 7 bit (all chars <= 127/0x7F).
+ * It was found first on the Philips Shoqbox, and is a deviation
+ * from the PTP standard which mandates that any unicode chars
+ * may be used for filenames. I guess this is caused by a 7bit-only
+ * filesystem being used intrinsically on the device.
+ */
+#define DEVICE_FLAG_ONLY_7BIT_FILENAMES 0x00000020
 
 /**
  * Internal USB struct.

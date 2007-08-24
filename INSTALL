@@ -168,3 +168,20 @@ has write access on  /proc/bus/usb/*
 
 You can find the Linux hotplug project at:
 http://linux-hotplug.sourceforge.net/
+
+
+Compilation for embedded devices
+--------------------------------
+
+Problems with Autoconf complaining about a missing malloc() function
+during cross-compilation can be solved with this hack if you're using
+glibc:
+
+  % export ac_cv_func_malloc_0_nonnull=yes
+  % ./configure
+
+If you're using uclibc you may have to smack in a custom rpl_malloc()
+function in your program, see the Autoconf texinfo documentation.
+
+See further:
+http://wiki.buici.com/wiki/Autoconf_and_RPL_MALLOC

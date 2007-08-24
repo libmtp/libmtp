@@ -1,3 +1,13 @@
+2007-08-24  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.h: new device flag to strip all non-7bit chars from
+	  filenames on some lame devices.
+	* src/libusb-glue.c: tag the Philips Shoqbox with this flag.
+	* src/libmtp.c: strip the non-7bit chars from filenames if that
+	  flag is set.
+	* src/unicode.h: introduce a 7bit-strip helper function.
+	* src/unicode.c: dito.
+
 2007-08-22  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: deal with setting of metadata sets for u16/u32:s that

@@ -162,7 +162,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // From Gerhard Mekenkamp
   { "Philips GoGear Audio", 0x0471, 0x0165, DEVICE_FLAG_NONE },
   // from David Holm <wormie@alberg.dk>
-  { "Philips Shoqbox", 0x0471, 0x0172, DEVICE_FLAG_NONE },
+  { "Philips Shoqbox", 0x0471, 0x0172, DEVICE_FLAG_ONLY_7BIT_FILENAMES },
   // from npedrosa
   { "Philips PSA610", 0x0471, 0x0181, DEVICE_FLAG_NONE },
   // From libgphoto2 source
@@ -390,10 +390,12 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * Cowon Systems, Inc.
    * The iAudio audiophile devices don't encourage the use of MTP.
    */
+  // Reported by Patrik Johansson <Patrik.Johansson@qivalue.com>
+  {"Cowon iAudio U3 (MTP mode)", 0x0e21, 0x0701, DEVICE_FLAG_NONE },
   // Reported by Roberth Karman
   {"Cowon iAudio 7 (MTP mode)", 0x0e21, 0x0751, DEVICE_FLAG_NONE },
   // Reported by TJ Something <tjbk_tjb@users.sourceforge.net>
-  {"Cowon D2 (MTP mode)", 0x0e21, 0x0801, DEVICE_FLAG_NONE },
+  {"Cowon iAudio D2 (MTP mode)", 0x0e21, 0x0801, DEVICE_FLAG_NONE },
 
   /*
    * Insignia, dual-mode.

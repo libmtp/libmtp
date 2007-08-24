@@ -3946,8 +3946,12 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	  prop->ObjectHandle = filedata->item_id;
 	  prop->property = PTP_OPC_ObjectFileName;
 	  prop->datatype = PTP_DTC_STR;
-	  if (filedata->filename != NULL)
+	  if (filedata->filename != NULL) {
 	    prop->propval.str = strdup(filedata->filename);
+	    if (ptp_usb->device_flags & DEVICE_FLAG_ONLY_7BIT_FILENAMES) {
+	      strip_7bit_from_utf8(prop->propval.str);
+	    }
+	  }
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	  break;
 	case PTP_OPC_ProtectionStatus:
@@ -4001,6 +4005,9 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     memset(&new_file, 0, sizeof(PTPObjectInfo));
   
     new_file.Filename = filedata->filename;
+    if (ptp_usb->device_flags & DEVICE_FLAG_ONLY_7BIT_FILENAMES) {
+      strip_7bit_from_utf8(new_file.Filename);
+    }
     if (filedata->filesize == (uint64_t) -1) {
       // This is a stream. Set a dummy length...
       new_file.ObjectCompressedSize = 1;
@@ -4691,6 +4698,7 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
 uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name, uint32_t parent_id)
 {
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   uint32_t parenthandle = 0;
   uint32_t store = get_first_storageid(device);
   PTPObjectInfo new_folder;
@@ -4699,6 +4707,9 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name, uint32_t p
 
   memset(&new_folder, 0, sizeof(new_folder));
   new_folder.Filename = name;
+  if (ptp_usb->device_flags & DEVICE_FLAG_ONLY_7BIT_FILENAMES) {
+    strip_7bit_from_utf8(new_folder.Filename);
+  }
   new_folder.ObjectCompressedSize = 1;
   new_folder.ObjectFormat = PTP_OFC_Association;
   new_folder.ParentObject = parent_id;
@@ -4935,6 +4946,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
   uint32_t localph = parenthandle;
   uint8_t nonconsumable = 0x00U; /* By default it is consumable */
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   char fname[256];
   uint8_t data[2];
 
@@ -4991,6 +5003,9 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	  prop->property = PTP_OPC_ObjectFileName;
 	  prop->datatype = PTP_DTC_STR;
 	  prop->propval.str = strdup(fname);
+	  if (ptp_usb->device_flags & DEVICE_FLAG_ONLY_7BIT_FILENAMES) {
+	    strip_7bit_from_utf8(prop->propval.str);
+	  }
 	  proplist = add_mtp_prop_to_proplist(proplist, prop);
 	  break;
 	case PTP_OPC_ProtectionStatus:
@@ -5070,6 +5085,9 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
     PTPObjectInfo new_object;
 
     new_object.Filename = fname;
+    if (ptp_usb->device_flags & DEVICE_FLAG_ONLY_7BIT_FILENAMES) {
+      strip_7bit_from_utf8(new_object.Filename);
+    }
     new_object.ObjectCompressedSize = 1;
     new_object.ObjectFormat = objectformat;
 
