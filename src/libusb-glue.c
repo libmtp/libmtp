@@ -82,7 +82,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Creative Portable Media Center", 0x041e, 0x4123, DEVICE_FLAG_NONE },
   { "Creative Zen Xtra (MTP mode)", 0x041e, 0x4128, DEVICE_FLAG_NONE },
   { "Second generation Dell DJ", 0x041e, 0x412f, DEVICE_FLAG_NONE },
-  { "Creative Zen Micro (MTP mode)", 0x041e, 0x4130, DEVICE_FLAG_ONLY_7BIT_FILENAMES },
+  { "Creative Zen Micro (MTP mode)", 0x041e, 0x4130, DEVICE_FLAG_NONE },
   { "Creative Zen Touch (MTP mode)", 0x041e, 0x4131, DEVICE_FLAG_NONE },
   { "Dell Pocket DJ (MTP mode)", 0x041e, 0x4132, DEVICE_FLAG_NONE },
   { "Creative Zen Sleek (MTP mode)", 0x041e, 0x4137, DEVICE_FLAG_NONE },
