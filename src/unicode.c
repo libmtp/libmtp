@@ -111,6 +111,7 @@ void strip_7bit_from_utf8(char *str)
   while (i < k) {
     if ((uint8_t) str[i] > 0x7FU) {
       str[j] = '_';
+      i++;
       // Skip over any consequtive > 0x7F chars.
       while((uint8_t) str[i] > 0x7FU) {
 	i++;
