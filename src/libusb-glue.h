@@ -50,8 +50,7 @@
  * DEVICE_FLAG_BROKEN_MTPGETOBJECTPROPLIST which only signify
  * that it's broken when getting metadata for a SINGLE object.
  * A typical way the implementation may be broken is that it 
- * may not return a proper count of the objects, instead 
- * returning a negative value.
+ * may not return a proper count of the objects.
  */
 #define DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL 0x00000001
 /**
