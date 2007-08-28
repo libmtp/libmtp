@@ -3,6 +3,8 @@
 	* src/libmtp.c: retire the horrid, broken, stream send facility that
 	  does not work on any device since they all want to know the file
 	  size in advance.
+	* src/libusb-glue.c: tag all Sansas as having broken GetObjectPropList
+	  when all tags for all objects are requested.
 
 2007-08-24  Linus Walleij <triad@df.lth.se>
 

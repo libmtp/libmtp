@@ -176,29 +176,36 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * several devices (c150 for sure) are definately dual-mode and must 
    * have the USB mass storage driver that hooks them unloaded first.
    * They all have problematic dual-mode making the device unload effect
-   * uncertain on these devices.
+   * uncertain on these devices. All except for the Linux based ones seem
+   * to need DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL.
    */
   // Reported by Brian Robison
-  { "SanDisk Sansa m230/m240", 0x0781, 0x7400, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "SanDisk Sansa m230/m240", 0x0781, 0x7400, 
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL},
   // Reported by tangent_@users.sourceforge.net
-  { "SanDisk Sansa c150", 0x0781, 0x7410, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "SanDisk Sansa c150", 0x0781, 0x7410, 
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // From libgphoto2 source
   // Reported by <gonkflea@users.sourceforge.net>
   // Reported by Mike Owen <mikeowen@computerbaseusa.com>
-  { "SanDisk Sansa e200/e250/e260/e270/e280", 0x0781, 0x7420, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "SanDisk Sansa e200/e250/e260/e270/e280", 0x0781, 0x7420, 
+    DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Reported by XNJB user
-  { "SanDisk Sansa e280", 0x0781, 0x7421, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "SanDisk Sansa e280", 0x0781, 0x7421, 
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Reported by anonymous user at sourceforge.net
-  { "SanDisk Sansa c240/c250", 0x0781, 0x7450, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "SanDisk Sansa c240/c250", 0x0781, 0x7450, 
+    DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Reported by XNJB user, and Miguel de Icaza <miguel@gnome.org>
   // This has no dual-mode so no need to unload any driver.
   // This is a Linux based device!
   { "SanDisk Sansa Connect", 0x0781, 0x7480, DEVICE_FLAG_NONE },
   // Reported by Troy Curtis Jr.
-  { "SanDisk Sansa Express", 0x0781, 0x7460, DEVICE_FLAG_UNLOAD_DRIVER |
-                                             DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SanDisk Sansa Express", 0x0781, 0x7460, 
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by XNJB user
-  { "SanDisk Sansa m240", 0x0781, 0x7430, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "SanDisk Sansa m240", 0x0781, 0x7430, 
+    DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   
 
   /*
