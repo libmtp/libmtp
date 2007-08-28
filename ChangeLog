@@ -1,3 +1,9 @@
+2007-08-28  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: retire the horrid, broken, stream send facility that
+	  does not work on any device since they all want to know the file
+	  size in advance.
+
 2007-08-24  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.h: new device flag to strip all non-7bit chars from

@@ -3396,7 +3396,6 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_callback = callback;
   ptp_usb->current_transfer_callback_data = data;
 
-  // This now exist in upstream
   ret = ptp_getobject_tofd(params, id, fd);
 
   ptp_usb->callback_active = 0;
@@ -3482,6 +3481,7 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
  * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Send_Track_From_File_Descriptor()
+ * @see LIBMTP_Send_File_From_File()
  * @see LIBMTP_Delete_Object()
  */
 int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
@@ -3732,13 +3732,8 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
  * given as input.
  *
  * This can potentially be used for sending in a stream of unknown
- * length. Set <code>filedata->filesize = (uint64_t) -1</code> to
- * make libmtp send some dummy length to the device and just
- * accept a stream up to some device-determined max length. There
- * is not guarantee this will work on all devices... Remember to
- * set correct metadata for the track with
- * <code>LIBMTP_Update_Track_Metadata()</code> afterwards if it's
- * a music file. (This doesn't seem to work very well right now.)
+ * length. Send music files with 
+ * <code>LIBMTP_Send_Track_From_File_Descriptor()</code>
  *
  * @param device a pointer to the device to send the file to.
  * @param fd the filedescriptor for a local file which will be sent.
@@ -3759,6 +3754,7 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
  * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Send_File_From_File()
+ * @see LIBMTP_Send_Track_From_File_Descriptor()
  * @see LIBMTP_Delete_Object()
  */
 int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
@@ -4008,13 +4004,8 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     if (ptp_usb->device_flags & DEVICE_FLAG_ONLY_7BIT_FILENAMES) {
       strip_7bit_from_utf8(new_file.Filename);
     }
-    if (filedata->filesize == (uint64_t) -1) {
-      // This is a stream. Set a dummy length...
-      new_file.ObjectCompressedSize = 1;
-    } else {
-      // We loose precision here.
-      new_file.ObjectCompressedSize = (uint32_t) filedata->filesize;
-    }
+    // We loose precision here.
+    new_file.ObjectCompressedSize = (uint32_t) filedata->filesize;
     new_file.ObjectFormat = of;
     new_file.StorageID = store;
     new_file.ParentObject = localph;
@@ -4037,33 +4028,21 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   // Now there IS an object with this parent handle.
   filedata->parent_id = localph;
     
-  if (filedata->filesize != (uint64_t) -1) {
-    // Callbacks
-    ptp_usb->callback_active = 1;
-    // The callback will deactivate itself after this amount of data has been sent
-    // One BULK header for the request, one for the data phase. No parameters to the request.
-    ptp_usb->current_transfer_total = filedata->filesize+PTP_USB_BULK_HDR_LEN*2;
-    ptp_usb->current_transfer_complete = 0;
-    ptp_usb->current_transfer_callback = callback;
-    ptp_usb->current_transfer_callback_data = data;
-
-    ret = ptp_sendobject_fromfd(params, fd, filedata->filesize);
-
-    ptp_usb->callback_active = 0;
-    ptp_usb->current_transfer_callback = NULL;
-    ptp_usb->current_transfer_callback_data = NULL;
-  } else {
-    // This is a stream..
-    ret = ptp_sendobject_fromfd(params, fd, 0xFFFFFFFFU-PTP_USB_BULK_HDR_LEN);
-    if (ret == PTP_ERROR_IO) {
-      // That's expected. The stream ends, simply...
-      ret = PTP_RC_OK;
-    } else {
-      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor(): "
-				  "Error while sending stream.");
-    }
-  }
-
+  // Callbacks
+  ptp_usb->callback_active = 1;
+  // The callback will deactivate itself after this amount of data has been sent
+  // One BULK header for the request, one for the data phase. No parameters to the request.
+  ptp_usb->current_transfer_total = filedata->filesize+PTP_USB_BULK_HDR_LEN*2;
+  ptp_usb->current_transfer_complete = 0;
+  ptp_usb->current_transfer_callback = callback;
+  ptp_usb->current_transfer_callback_data = data;
+  
+  ret = ptp_sendobject_fromfd(params, fd, filedata->filesize);
+  
+  ptp_usb->callback_active = 0;
+  ptp_usb->current_transfer_callback = NULL;
+  ptp_usb->current_transfer_callback_data = NULL;
+  
   if (ret != PTP_RC_OK) {
     add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor(): "
 				"Could not send object.");
