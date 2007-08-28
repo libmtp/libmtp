@@ -1263,6 +1263,9 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
   prop = proplist;
   i = -1;
   while (prop) {
+    // Actually, this assumes all properties for a certain object
+    // will come after each other, which is not strictly required.
+    // The list should be cached, then sorted, then stored.
     if (lasthandle != prop->ObjectHandle) {
       if (i >= 0) {
 	if (!params->objectinfo[i].Filename) {
@@ -1406,13 +1409,12 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
   if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjPropList)
       && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST) 
       && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL)) {
-    // Use the fast method.
+    // Use the fast method. Ignore return value for now.
     ret = get_all_metadata_fast(device);
-  } else {
-    // Force the second method.
-    ret = -1;
   }
-  if (ret != 0) {
+  // If the previous failed or returned no objects, use classic
+  // methods instead.
+  if (params->proplist == NULL) {
     // Get all the handles using just standard commands.
     get_handles_recursively(device, params,
 			    &params->handles,
