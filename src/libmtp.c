@@ -1212,8 +1212,9 @@ void LIBMTP_Dump_Errorstack(LIBMTP_mtpdevice_t *device)
  * This works on the vast majority of MTP devices (there ARE exceptions!)
  * and is quite quick. Check the error stack to see if there were
  * problems getting the metadata.
+ * @return 0 if all was OK, -1 on failure.
  */
-static void get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
+static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
 {
   PTPParams      *params = (PTPParams *) device->params;
   int		 cnt = 0;
@@ -1224,9 +1225,19 @@ static void get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
   uint16_t       ret;
   
   ret = ptp_mtp_getobjectproplist (params, 0xffffffff, &proplist);
+
+  if (ret == PTP_RC_MTP_Specification_By_Group_Unsupported) {
+    // What's the point in the device implementing this command if 
+    // you cannot use it to get all props for AT LEAST one object?
+    // Well, whatever...
+    add_ptp_error_to_errorstack(device, ret, "get_all_metadata_fast(): "
+    "cannot retrieve all metadata for an object on this device.");
+    return -1
+  }
   if (ret != PTP_RC_OK) {
-    add_ptp_error_to_errorstack(device, ret, "get_all_metadata_fast(): could not get all object proplist.");
-    return;
+    add_ptp_error_to_errorstack(device, ret, "get_all_metadata_fast(): "
+    "could not get proplist of all objects.");
+    return -1;
   }
   params->proplist = proplist; /* cache it */
   
@@ -1294,6 +1305,7 @@ static void get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
     }
     prop = prop->next;
   }
+  return 0;
 }
 
 /**
@@ -1371,6 +1383,7 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
 {
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
+  int ret;
   uint32_t i;
 
   if (params->handles.Handler != NULL) {
@@ -1394,8 +1407,12 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
       && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST) 
       && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL)) {
     // Use the fast method.
-    get_all_metadata_fast(device);
+    ret = get_all_metadata_fast(device);
   } else {
+    // Force the second method.
+    ret = -1;
+  }
+  if (ret != 0) {
     // Get all the handles using just standard commands.
     get_handles_recursively(device, params,
 			    &params->handles,
