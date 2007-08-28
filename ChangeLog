@@ -5,9 +5,8 @@
 	  size in advance. Add in some code to fall back on the recursive
 	  metadata retrieveal if getting the whole long list fails.
 	* src/libusb-glue.c: tag all Sansas as having broken GetObjectPropList
-	  when all tags for all objects are requested. Scan each INTERFACE
-	  of the device for descriptors, not magically interface 4 and 5!
-	  (Duh. Problem with code written from USB traces...)
+	  when all tags for all objects are requested. Scan each INTERFACE 
+	  of the device for device descriptors.
 
 2007-08-24  Linus Walleij <triad@df.lth.se>
 
