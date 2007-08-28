@@ -1852,31 +1852,49 @@ LIBMTP_error_number_t find_usb_devices(mtpdevice_list_t **devlist)
 
 static void find_endpoints(struct usb_device *dev, int* inep, int* inep_maxpacket, int* outep, int *outep_maxpacket, int* intep)
 {
-  int i,n;
-  struct usb_endpoint_descriptor *ep;
-  
-  ep = dev->config->interface->altsetting->endpoint;
-  n=dev->config->interface->altsetting->bNumEndpoints;
-  
-  for (i=0;i<n;i++) {
-    if (ep[i].bmAttributes==USB_ENDPOINT_TYPE_BULK)	{
-      if ((ep[i].bEndpointAddress&USB_ENDPOINT_DIR_MASK)==
-	  USB_ENDPOINT_DIR_MASK)
-	{
-	  *inep=ep[i].bEndpointAddress;
-	  *inep_maxpacket=ep[i].wMaxPacketSize;
+  int i;
+
+  // Loop over the device configurations
+  for (i = 0; i < dev->descriptor.bNumConfigurations; i++) {
+    int j;
+
+    for (j = 0; j < dev->config[i].bNumInterfaces; j++) {
+      // FIXME:
+      // This will just pick the first interface we can find.
+      // Is this our interface?
+      // Check device "OS descriptor"?
+      // Check num endpoints and IF class 0?
+      // Claim interface?
+      // Release modules attached to all interfaces...?
+      int k, m;
+      struct usb_endpoint_descriptor *ep;
+
+      ep = dev->config[i].interface[j].altsetting->endpoint;
+      m = dev->config[i].interface[j].altsetting->bNumEndpoints;
+      
+      for (k=0;k<m;k++) {
+	if (ep[k].bmAttributes==USB_ENDPOINT_TYPE_BULK)	{
+	  if ((ep[k].bEndpointAddress&USB_ENDPOINT_DIR_MASK)==
+	      USB_ENDPOINT_DIR_MASK)
+	    {
+	      *inep=ep[k].bEndpointAddress;
+	      *inep_maxpacket=ep[k].wMaxPacketSize;
+	    }
+	  if ((ep[k].bEndpointAddress&USB_ENDPOINT_DIR_MASK)==0)
+	    {
+	      *outep=ep[k].bEndpointAddress;
+	      *outep_maxpacket=ep[k].wMaxPacketSize;
+	    }
+	} else if (ep[k].bmAttributes==USB_ENDPOINT_TYPE_INTERRUPT){
+	  if ((ep[k].bEndpointAddress&USB_ENDPOINT_DIR_MASK)==
+	      USB_ENDPOINT_DIR_MASK)
+	    {
+	      *intep=ep[k].bEndpointAddress;
+	    }
 	}
-      if ((ep[i].bEndpointAddress&USB_ENDPOINT_DIR_MASK)==0)
-	{
-	  *outep=ep[i].bEndpointAddress;
-	  *outep_maxpacket=ep[i].wMaxPacketSize;
-	}
-    } else if (ep[i].bmAttributes==USB_ENDPOINT_TYPE_INTERRUPT){
-      if ((ep[i].bEndpointAddress&USB_ENDPOINT_DIR_MASK)==
-	  USB_ENDPOINT_DIR_MASK)
-	{
-	  *intep=ep[i].bEndpointAddress;
-	}
+      }
+      // We assigned the endpoints so return here.
+      return;
     }
   }
 }
