@@ -1232,7 +1232,7 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
     // Well, whatever...
     add_ptp_error_to_errorstack(device, ret, "get_all_metadata_fast(): "
     "cannot retrieve all metadata for an object on this device.");
-    return -1
+    return -1;
   }
   if (ret != PTP_RC_OK) {
     add_ptp_error_to_errorstack(device, ret, "get_all_metadata_fast(): "
