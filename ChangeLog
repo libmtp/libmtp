@@ -3,6 +3,7 @@
 	* examples/Makefile.am: move include define from AM_CFLAGS to
 	  AM_CPPFLAGS (as it should be) bug found by Petar Petrov 
 	  <pesho.petrov@gmail.com>.
+	* src/libusb-glue.c: strange misleading message corrected.
 
 2007-08-28  Linus Walleij <triad@df.lth.se>
 

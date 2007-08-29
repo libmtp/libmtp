@@ -1742,7 +1742,7 @@ static LIBMTP_error_number_t configure_usb_devices(mtpdevice_list_t *devicelist)
      * have not used LIBMTP_Release_Device on exit 
      */
     if ((ret = ptp_opensession(tmplist->params, 1)) == PTP_ERROR_IO) {
-      fprintf(stderr, "PTP_ERROR_IO: Trying again after resetting USB\n");
+      fprintf(stderr, "PTP_ERROR_IO: Trying again after re-initializing USB interface\n");
       close_usb(tmplist->ptp_usb, tmplist->libusb_device->config->interface->altsetting->bInterfaceNumber);
       
       if(init_ptp_usb(tmplist->params, tmplist->ptp_usb, tmplist->libusb_device) <0) {
