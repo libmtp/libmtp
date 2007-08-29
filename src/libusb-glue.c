@@ -420,8 +420,14 @@ int ptpcam_usb_timeout = USB_TIMEOUT;
 
 // Local functions
 static struct usb_bus* init_usb();
-static void close_usb(PTP_USB* ptp_usb, uint8_t interfaceNumber);
-static void find_endpoints(struct usb_device *dev, int* inep, int* inep_maxpacket, int* outep, int* outep_maxpacket, int* intep);
+static void close_usb(PTP_USB* ptp_usb);
+static void find_interface_and_endpoints(struct usb_device *dev,
+					 uint8_t *interface,
+					 int* inep, 
+					 int* inep_maxpacket, 
+					 int* outep, 
+					 int* outep_maxpacket, 
+					 int* intep);
 static void clear_stall(PTP_USB* ptp_usb);
 static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev);
 static short ptp_write_func (unsigned long,PTPDataHandler*,void *data,unsigned long*);
@@ -740,7 +746,7 @@ void dump_usbinfo(PTP_USB *ptp_usb)
   char devname[0x10];
   
   devname[0] = '\0';
-  res = usb_get_driver_np(ptp_usb->handle, ptp_usb->interface, devname, sizeof(devname));
+  res = usb_get_driver_np(ptp_usb->handle, (int) ptp_usb->interface, devname, sizeof(devname));
   if (devname[0] != '\0') {
     printf("   Using kernel interface \"%s\"\n", devname);
   }
@@ -1530,7 +1536,7 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
      * accessible from user space.
      */
     if (ptp_usb->device_flags & DEVICE_FLAG_UNLOAD_DRIVER) {
-      if (usb_detach_kernel_driver_np(device_handle, dev->config->interface->altsetting->bInterfaceNumber)) {
+      if (usb_detach_kernel_driver_np(device_handle, (int) ptp_usb->interface)) {
 	// Totally ignore this error!
 	// perror("usb_detach_kernel_driver_np()");
       }
@@ -1543,11 +1549,10 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
       return -1;
     }
 #endif
-    if (usb_claim_interface(device_handle, dev->config->interface->altsetting->bInterfaceNumber)) {
+    if (usb_claim_interface(device_handle, (int) ptp_usb->interface)) {
       perror("usb_claim_interface()");
       return -1;
     }
-    ptp_usb->interface = dev->config->interface->altsetting->bInterfaceNumber;
   }
   return 0;
 }
@@ -1604,7 +1609,7 @@ static void clear_halt(PTP_USB* ptp_usb)
   }
 }
 
-static void close_usb(PTP_USB* ptp_usb, uint8_t interfaceNumber)
+static void close_usb(PTP_USB* ptp_usb)
 {
   // Clear any stalled endpoints
   clear_stall(ptp_usb);
@@ -1613,7 +1618,7 @@ static void close_usb(PTP_USB* ptp_usb, uint8_t interfaceNumber)
   // Added to clear some stuff on the OUT endpoint
   // TODO: is this good on the Mac too?
   usb_resetep(ptp_usb->handle, ptp_usb->outep);
-  usb_release_interface(ptp_usb->handle, interfaceNumber);
+  usb_release_interface(ptp_usb->handle, (int) ptp_usb->interface);
   // Brutally reset device
   // TODO: is this good on the Mac too?
   usb_reset(ptp_usb->handle);
@@ -1723,7 +1728,8 @@ static LIBMTP_error_number_t configure_usb_devices(mtpdevice_list_t *devicelist)
     // no_of_ep = device->config->interface->altsetting->bNumEndpoints;
   
     /* Assign endpoints to usbinfo... */
-    find_endpoints(tmplist->libusb_device,
+    find_interface_and_endpoints(tmplist->libusb_device,
+		   &tmplist->ptp_usb->interface,
 		   &tmplist->ptp_usb->inep,
 		   &tmplist->ptp_usb->inep_maxpacket,
 		   &tmplist->ptp_usb->outep,
@@ -1743,7 +1749,7 @@ static LIBMTP_error_number_t configure_usb_devices(mtpdevice_list_t *devicelist)
      */
     if ((ret = ptp_opensession(tmplist->params, 1)) == PTP_ERROR_IO) {
       fprintf(stderr, "PTP_ERROR_IO: Trying again after re-initializing USB interface\n");
-      close_usb(tmplist->ptp_usb, tmplist->libusb_device->config->interface->altsetting->bInterfaceNumber);
+      close_usb(tmplist->ptp_usb);
       
       if(init_ptp_usb(tmplist->params, tmplist->ptp_usb, tmplist->libusb_device) <0) {
 	fprintf(stderr, "LIBMTP PANIC: Could not open session on device %d\n", current_device+1);
@@ -1766,7 +1772,7 @@ static LIBMTP_error_number_t configure_usb_devices(mtpdevice_list_t *devicelist)
 	      "(Return code %d)\n  Try to reset the device.\n",
 	      ret);
       usb_release_interface(tmplist->ptp_usb->handle,
-			    tmplist->libusb_device->config->interface->altsetting->bInterfaceNumber);
+			    (int) tmplist->ptp_usb->interface);
       return LIBMTP_ERROR_CONNECTING;
     }
   
@@ -1775,7 +1781,7 @@ static LIBMTP_error_number_t configure_usb_devices(mtpdevice_list_t *devicelist)
 			  &tmplist->params->deviceinfo) != PTP_RC_OK) {
       fprintf(stderr, "LIBMTP PANIC: Could not get device info!\n");
       usb_release_interface(tmplist->ptp_usb->handle,
-			    tmplist->libusb_device->config->interface->altsetting->bInterfaceNumber);
+			    (int) tmplist->ptp_usb->interface);
       return LIBMTP_ERROR_CONNECTING;
     }
 
@@ -1827,16 +1833,6 @@ LIBMTP_error_number_t find_usb_devices(mtpdevice_list_t **devlist)
     goto find_usb_devices_error_exit;
   }
   
-  /* Configure interface numbers */
-  {
-    mtpdevice_list_t *tmplist = mtp_device_list;
-
-    while (tmplist != NULL) {
-      tmplist->interface_number = tmplist->libusb_device->config->interface->altsetting->bInterfaceNumber;
-      tmplist = tmplist->next;
-    }
-  }
-  
   /* we're connected to all devices, return the list and OK */
   *devlist = mtp_device_list;
   return LIBMTP_ERROR_NONE;
@@ -1850,29 +1846,37 @@ LIBMTP_error_number_t find_usb_devices(mtpdevice_list_t **devlist)
   return ret;
 } 
 
-static void find_endpoints(struct usb_device *dev, int* inep, int* inep_maxpacket, int* outep, int *outep_maxpacket, int* intep)
+static void find_interface_and_endpoints(struct usb_device *dev, 
+					 uint8_t *interface,
+					 int* inep, 
+					 int* inep_maxpacket, 
+					 int* outep, 
+					 int *outep_maxpacket, 
+					 int* intep)
 {
   int i;
 
   // Loop over the device configurations
   for (i = 0; i < dev->descriptor.bNumConfigurations; i++) {
-    int j;
+    uint8_t j;
 
     for (j = 0; j < dev->config[i].bNumInterfaces; j++) {
-      // FIXME:
-      // This will just pick the first interface we can find.
-      // Is this our interface?
-      // Check device "OS descriptor"?
-      // Check num endpoints and IF class 0?
-      // Claim interface?
-      // Release modules attached to all interfaces...?
-      int k, m;
+      uint8_t k;
+      uint8_t no_ep;
       struct usb_endpoint_descriptor *ep;
-
-      ep = dev->config[i].interface[j].altsetting->endpoint;
-      m = dev->config[i].interface[j].altsetting->bNumEndpoints;
       
-      for (k=0;k<m;k++) {
+      if (dev->descriptor.bNumConfigurations > 1 || dev->config[i].bNumInterfaces > 1) {
+	// OK This device has more than one interface, so we have to find out
+	// which one to use! 
+	// FIXME: Probe the interface.
+	// FIXME: Release modules attached to all other interfaces in Linux...?
+      }
+
+      *interface = dev->config[i].interface[j].altsetting->bInterfaceNumber;
+      ep = dev->config[i].interface[j].altsetting->endpoint;
+      no_ep = dev->config[i].interface[j].altsetting->bNumEndpoints;
+      
+      for (k = 0; k < no_ep; k++) {
 	if (ep[k].bmAttributes==USB_ENDPOINT_TYPE_BULK)	{
 	  if ((ep[k].bEndpointAddress&USB_ENDPOINT_DIR_MASK)==
 	      USB_ENDPOINT_DIR_MASK)
@@ -1899,11 +1903,11 @@ static void find_endpoints(struct usb_device *dev, int* inep, int* inep_maxpacke
   }
 }
 
-void close_device (PTP_USB *ptp_usb, PTPParams *params, uint8_t interfaceNumber)
+void close_device (PTP_USB *ptp_usb, PTPParams *params)
 {
   if (ptp_closesession(params)!=PTP_RC_OK)
     fprintf(stderr,"ERROR: Could not close session!\n");
-  close_usb(ptp_usb, interfaceNumber);
+  close_usb(ptp_usb);
 }
 
 static int usb_clear_stall_feature(PTP_USB* ptp_usb, int ep)

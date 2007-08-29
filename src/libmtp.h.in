@@ -176,7 +176,9 @@ struct LIBMTP_error_struct {
  * Main MTP device object struct
  */
 struct LIBMTP_mtpdevice_struct {
-  /** Interface number of this device */
+  /** Interface number of this device 
+   * USED FOR NOTHING, RETIRE AT NEXT INTERFACE BUMP
+   */
   uint8_t interface_number;
   /**
    * Parameters for this device, must be cast into

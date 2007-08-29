@@ -845,12 +845,9 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 
 /**
  * Recursive function that adds MTP devices to a linked list
- * @param numdevices The number of detected USB devices
- * @param interface_number Dynamic array of interface numbers
- * @param params Dynamic array of PTP parameters
- * @param ptp_usb Dynamic array of USB PTP devices
+ * @param devices a list of devices to be created.
  * @return a device pointer to a newly created mtpdevice (used in linked
- * list creation
+ * list creation).
  */
 static LIBMTP_mtpdevice_t * create_usb_mtp_devices(mtpdevice_list_t *devices)
 {
@@ -893,7 +890,6 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(mtpdevice_list_t *devices)
     }
     
     /* Copy device information to mtp_device structure */
-    mtp_device->interface_number = tmplist->interface_number;
     mtp_device->params = tmplist->params;
     mtp_device->usbinfo = tmplist->ptp_usb;
     current_params = tmplist->params;
@@ -1066,7 +1062,7 @@ void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
 
-  close_device(ptp_usb, params, device->interface_number);
+  close_device(ptp_usb, params);
   // Clear error stack
   LIBMTP_Clear_Errorstack(device);
   // Free iconv() converters...
