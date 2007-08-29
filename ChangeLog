@@ -1,3 +1,9 @@
+2007-08-29  Linus Walleij <triad@df.lth.se>
+
+	* examples/Makefile.am: move include define from AM_CFLAGS to
+	  AM_CPPFLAGS (as it should be) bug found by Petar Petrov 
+	  <pesho.petrov@gmail.com>.
+
 2007-08-28  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: retire the horrid, broken, stream send facility that

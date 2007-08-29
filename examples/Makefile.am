@@ -21,7 +21,7 @@ emptyfolders_SOURCES=emptyfolders.c common.h
 thumb_SOURCES=thumb.c common.h
 reset_SOURCES=reset.c common.h
 
-AM_CFLAGS=-I$(top_builddir)/src
+AM_CPPFLAGS=-I$(top_builddir)/src
 LDADD=../src/libmtp.la
 EXTRA_DIST=evolution-sync.sh
 
