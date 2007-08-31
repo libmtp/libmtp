@@ -1,3 +1,8 @@
+2007-09-01  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp-pack.c: make the resulting MTP proplist sorted by
+	  object ID.
+	
 2007-08-29  Linus Walleij <triad@df.lth.se>
 
 	* examples/Makefile.am: move include define from AM_CFLAGS to
