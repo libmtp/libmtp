@@ -350,6 +350,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    */
   // From: Mitchell Hicks <mitchix@yahoo.com>
   {"Nokia 5300 Mobile Phone", 0x0421, 0x04ba, DEVICE_FLAG_NONE },
+  // From Christian Arnold <webmaster@arctic-media.de>
+  {"Nokia N73 Mobile Phone", 0x0421, 0x04d1, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Swapan <swapan@yahoo.com>
   {"Nokia N75 Mobile Phone", 0x0421, 0x04e1, DEVICE_FLAG_NONE },
   // From: Pat Nicholls <pat@patandannie.co.uk>
