@@ -114,6 +114,10 @@ then
     echo "Missing awk program. Fatal error."
     exit 1
 fi
+if [ "x${USER}" != "xroot" ];
+    echo "WARNING: this program should be run as root!"
+fi
+
 
 # This script locates the hotplug distribution on a certain host
 # and sets up userland hotplugging scripts according to rules. 
