@@ -2,6 +2,7 @@
 
 	* src/ptp-pack.c: make the resulting MTP proplist sorted by
 	  object ID.
+	* hotplug.sh: explicitly call BASH instead of just sh.
 	
 2007-08-29  Linus Walleij <triad@df.lth.se>
 
