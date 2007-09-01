@@ -2,7 +2,8 @@
 
 	* src/ptp-pack.c: make the resulting MTP proplist sorted by
 	  object ID.
-	* hotplug.sh.in: explicitly call BASH instead of just sh.
+	* hotplug.sh.in: explicitly call BASH instead of just sh. Warn
+	  if script is not run as root.
 	
 2007-08-29  Linus Walleij <triad@df.lth.se>
 
