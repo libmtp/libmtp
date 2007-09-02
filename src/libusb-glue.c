@@ -404,7 +404,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // Reported by Roberth Karman
   {"Cowon iAudio 7 (MTP mode)", 0x0e21, 0x0751, DEVICE_FLAG_NONE },
   // Reported by TJ Something <tjbk_tjb@users.sourceforge.net>
-  {"Cowon iAudio D2 (MTP mode)", 0x0e21, 0x0801, DEVICE_FLAG_NONE },
+  {"Cowon iAudio D2 (MTP mode)", 0x0e21, 0x0801, DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
    * Insignia, dual-mode.
