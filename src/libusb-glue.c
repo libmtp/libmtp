@@ -96,6 +96,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // Reported by Darel on the XNJB forums
   { "Creative Zen V Plus", 0x041e, 0x4152, DEVICE_FLAG_NONE },
   { "Creative Zen Vision W", 0x041e, 0x4153, DEVICE_FLAG_NONE },
+  // Reported by Ringofan <mcroman@users.sourceforge.net>
+  { "Creative Zen V 2GB", 0x041e, 0x4158, DEVICE_FLAG_NONE },
 
   /*
    * Samsung
@@ -378,6 +380,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * Reported by Peter Gyongyosi <gyp@impulzus.com>
    */
   {"Palm / Handspring Pocket Tunes", 0x1703, 0x0001, DEVICE_FLAG_NONE },
+  // Reported by anonymous submission
+  {"Palm / Handspring Pocket Tunes 4", 0x1703, 0x0002, DEVICE_FLAG_NONE },
 
   /*
    * TrekStor devices
@@ -412,6 +416,11 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    */
   { "Insignia NS-DV45", 0x19ff, 0x0303, DEVICE_FLAG_UNLOAD_DRIVER },
 
+  /*
+   * LG Electronics
+   */
+  // Not verified - anonymous submission
+  { "LG UP3", 0x043e, 0x70b1, DEVICE_FLAG_NONE },
   /*
    * Other strange stuff.
    */
