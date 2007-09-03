@@ -1,3 +1,10 @@
+2007-09-04  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: make sure we query recursively supplying each
+	  storage ID in turn, so we spin over storages. Also check
+	  what storage may be available to store a file, if the first
+	  one fails, try the next!
+
 2007-09-01  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp-pack.c: make the resulting MTP proplist sorted by

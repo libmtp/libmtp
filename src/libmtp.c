@@ -81,12 +81,20 @@ static void add_ptp_error_to_errorstack(LIBMTP_mtpdevice_t *device,
 					uint16_t ptp_error,
 					char const * const error_text);
 static void flush_handles(LIBMTP_mtpdevice_t *device);
-static void get_handles_recursively(LIBMTP_mtpdevice_t *device, PTPParams *params, PTPObjectHandles *handles, uint32_t parent);
+static void get_handles_recursively(LIBMTP_mtpdevice_t *device, 
+				    PTPParams *params, 
+				    PTPObjectHandles *handles, 
+				    uint32_t storageid,
+				    uint32_t parent);
 static void free_storage_list(LIBMTP_mtpdevice_t *device);
 static int sort_storage_by(LIBMTP_mtpdevice_t *device, int const sortby);
 static uint32_t get_first_storageid(LIBMTP_mtpdevice_t *device);
-static int get_first_storage_freespace(LIBMTP_mtpdevice_t *device,uint64_t *freespace);
-static int check_if_file_fits(LIBMTP_mtpdevice_t *device, uint64_t const filesize);
+static int get_storage_freespace(LIBMTP_mtpdevice_t *device,
+				 LIBMTP_devicestorage_t *storage,
+				 uint64_t *freespace);
+static int check_if_file_fits(LIBMTP_mtpdevice_t *device, 
+			      LIBMTP_devicestorage_t *storage,
+			      uint64_t const filesize);
 static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype);
 static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype);
 static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
@@ -962,20 +970,21 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(mtpdevice_list_t *devices)
     mtp_device->default_album_folder = 0;
     mtp_device->default_text_folder = 0;
     
-    /*
-     * Then get the handles and try to locate the default folders.
-     * This has the desired side effect of caching all handles from
-     * the device which speeds up later operations.
-     */
-    flush_handles(mtp_device);
-    
     /* Set initial storage information */
     mtp_device->storage = NULL;
     if (LIBMTP_Get_Storage(mtp_device, LIBMTP_STORAGE_SORTBY_NOTSORTED) == -1) {
       add_error_to_errorstack(mtp_device,
 			      LIBMTP_ERROR_GENERAL,
 			      "Get Storage information failed.");
+      mtp_device->storage = NULL;
     }
+
+    /*
+     * Then get the handles and try to locate the default folders.
+     * This has the desired side effect of caching all handles from
+     * the device which speeds up later operations.
+     */
+    flush_handles(mtp_device);
     
     /* Add the device to the list */
     mtp_device->next = NULL;
@@ -1210,7 +1219,8 @@ void LIBMTP_Dump_Errorstack(LIBMTP_mtpdevice_t *device)
  * problems getting the metadata.
  * @return 0 if all was OK, -1 on failure.
  */
-static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
+static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device,
+				 uint32_t storage)
 {
   PTPParams      *params = (PTPParams *) device->params;
   int		 cnt = 0;
@@ -1259,13 +1269,10 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
   prop = proplist;
   i = -1;
   while (prop) {
-    // Actually, this assumes all properties for a certain object
-    // will come after each other, which is not strictly required.
-    // The list should be cached, then sorted, then stored.
     if (lasthandle != prop->ObjectHandle) {
       if (i >= 0) {
 	if (!params->objectinfo[i].Filename) {
-	  /* I have one such file on my Creative */
+	  /* I have one such file on my Creative (Marcus) */
 	  params->objectinfo[i].Filename = strdup("<null>");
 	}
       }
@@ -1314,14 +1321,18 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
  * certain directory and does not respect the option to get all metadata
  * for all objects.
  */
-static void get_handles_recursively(LIBMTP_mtpdevice_t *device, PTPParams *params, PTPObjectHandles *handles, uint32_t parent)
+static void get_handles_recursively(LIBMTP_mtpdevice_t *device, 
+				    PTPParams *params, 
+				    PTPObjectHandles *handles, 
+				    uint32_t storageid,
+				    uint32_t parent)
 {
   PTPObjectHandles currentHandles;
   int i = 0;
   uint32_t old_handles;
   
   uint16_t ret = ptp_getobjecthandles(params,
-                                      PTP_GOH_ALL_STORAGE,
+                                      storageid,
                                       PTP_GOH_ALL_FORMATS,
                                       parent,
                                       &currentHandles);
@@ -1359,7 +1370,7 @@ static void get_handles_recursively(LIBMTP_mtpdevice_t *device, PTPParams *param
 
       oi = &params->objectinfo[old_handles + i];
       if (oi->ObjectFormat == PTP_OFC_Association) {
-        get_handles_recursively(device, params, handles, currentHandles.Handler[i]);
+        get_handles_recursively(device, params, handles, storageid, currentHandles.Handler[i]);
       }
     } else {
       add_error_to_errorstack(device,
@@ -1406,15 +1417,28 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
       && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST) 
       && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL)) {
     // Use the fast method. Ignore return value for now.
-    ret = get_all_metadata_fast(device);
+    ret = get_all_metadata_fast(device, PTP_GOH_ALL_STORAGE);
   }
   // If the previous failed or returned no objects, use classic
   // methods instead.
   if (params->proplist == NULL) {
     // Get all the handles using just standard commands.
-    get_handles_recursively(device, params,
-			    &params->handles,
-			    PTP_GOH_ROOT_PARENT);
+    if (device->storage == NULL) {
+      get_handles_recursively(device, params,
+			      &params->handles,
+			      PTP_GOH_ALL_STORAGE,
+			      PTP_GOH_ROOT_PARENT);
+    } else {
+      // Get handles for each storage in turn.
+      LIBMTP_devicestorage_t *storage = device->storage;
+      while(storage != NULL) {
+	get_handles_recursively(device, params,
+				&params->handles,
+				storage->id,
+				PTP_GOH_ROOT_PARENT);
+	storage = storage->next;
+      }
+    }
   }
 
   for(i = 0; i < params->handles.n; i++) {
@@ -1591,21 +1615,23 @@ static uint32_t get_first_storageid(LIBMTP_mtpdevice_t *device)
 }
 
 /**
- * This function grabs the freespace from the first storage in
+ * This function grabs the freespace from a certain storage in
  * device storage list.
  * @param device a pointer to the MTP device to free the storage
  * list for.
+ * @param storageid the storage ID for the storage to flush and
+ * get free space for.
+ * @param freespace the free space on this storage will be returned
+ * in this variable.
  */
-static int get_first_storage_freespace(LIBMTP_mtpdevice_t *device, uint64_t *freespace)
+static int get_storage_freespace(LIBMTP_mtpdevice_t *device, 
+				 LIBMTP_devicestorage_t *storage,
+				 uint64_t *freespace)
 {
-  LIBMTP_devicestorage_t *storage = device->storage;
   PTPParams *params = (PTPParams *) device->params;
 
-  if(storage == NULL) {
-    return -1;
-  }
   // Always query the device about this, since some models explicitly
-  // needs that.
+  // needs that. We flush all data on queries storage here.
   if (ptp_operation_issupported(params,PTP_OC_GetStorageInfo)) {
     PTPStorageInfo storageInfo;
     uint16_t ret;
@@ -2135,9 +2161,12 @@ int LIBMTP_Set_Syncpartner(LIBMTP_mtpdevice_t *device,
  * if it's too big.
  * @param device a pointer to the device.
  * @param filesize the size of the file to check whether it will fit.
+ * @param storageid the ID of the storage to try to fit the file on.
  * @return 0 if the file fits, any other value means failure.
  */
-static int check_if_file_fits(LIBMTP_mtpdevice_t *device, uint64_t const filesize) {
+static int check_if_file_fits(LIBMTP_mtpdevice_t *device,
+			      LIBMTP_devicestorage_t *storage,
+			      uint64_t const filesize) {
   PTPParams *params = (PTPParams *) device->params;
   uint64_t freebytes;
   int ret;
@@ -2147,13 +2176,13 @@ static int check_if_file_fits(LIBMTP_mtpdevice_t *device, uint64_t const filesiz
     return 0;
   }
   
-  ret = get_first_storage_freespace(device,&freebytes);
+  ret = get_storage_freespace(device, storage, &freebytes);
   if (ret != 0) {
-    add_ptp_error_to_errorstack(device, ret, "check_if_file_fits(): error checking free storage.");
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, 
+			    "check_if_file_fits(): error checking free storage.");
     return -1;
   } else {
     if (filesize > freebytes) {
-      add_error_to_errorstack(device, LIBMTP_ERROR_STORAGE_FULL, "check_if_file_fits(): device storage is full.");
       return -1;
     }
   }
@@ -3778,7 +3807,8 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 			 void const * const data, uint32_t const parenthandle)
 {
   uint16_t ret;
-  uint32_t store = get_first_storageid(device);
+  LIBMTP_devicestorage_t *storage;
+  uint32_t store;
   uint32_t localph = parenthandle;
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
@@ -3787,18 +3817,28 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   uint16_t of =  map_libmtp_type_to_ptp_type(filedata->filetype);
   uint8_t nonconsumable = 0x01U; /* By default it is non-consumable */
 
-  subcall_ret = check_if_file_fits(device, filedata->filesize);
-  if (subcall_ret != 0) {
-    return -1;
-  }
-
-  // Sanity check: no zerolength files
+  // Sanity check: no zerolength files.
   if (filedata->filesize == 0) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Send_File_From_File_Descriptor(): "
 			    "File of zero size.");
     return -1;
   }
 
+  // See if there is some storage we can fit this file on.
+  storage = device->storage;
+  while(storage != NULL) {
+    subcall_ret = check_if_file_fits(device, storage, filedata->filesize);
+    if (subcall_ret != 0) {
+      storage = storage->next;
+    }
+    break;
+  }
+  if (storage == NULL) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_STORAGE_FULL, "LIBMTP_Send_File_From_File_Descriptor(): " 
+			    "all device storage is full or corrupt.");
+    return -1;
+  }
+  store = storage->id;
 
   /*
    * If this file is among the supported filetypes for this device,
