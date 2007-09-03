@@ -114,6 +114,15 @@ now (2007-08-04). See the "last resort" solutions below
 if you really need to get your dual-mode device to work 
 with MTP.
 
+If you are a device vendor, please consider assigning one 
+of your employees as a contact person for libmtp, have them
+sign up to the libmtp development list and answer questions
+and post new device ID:s as they are released to our
+mailing list. By the way: do you have spare devices you
+can give us? Send them to Richard (Mac support) or Linus
+(Linux support). (So far nobody did that except for Microsoft
+who sent us a Zune by proxy!)
+
 If your device is very problematic we are curious of how it
 works under Windows, so we enjoy reading USB packet sniffs
 that reveal the low-level traffic carried out between
@@ -128,14 +137,76 @@ alternatives use hardware and even measure electronic
 characteristics of the traffic (which is far too much 
 detail for us).
 
-If you are a device vendor, please consider assigning one 
-of your employees as a contact person for libmtp, have them
-sign up to the libmtp development list and answer questions
-and post new device ID:s as they are released to our
-mailing list. By the way: do you have spare devices you
-can give us? Send them to Richard (Mac support) or Linus
-(Linux support). (So far nobody did that except for Microsoft
-who sent us a Zune by proxy!)
+Device sniffs are an easy read since the PTP/MTP protocol
+is nicely structured. All commands will have a structure such
+as this in the log, we examplify with a object list request:
+
+PTP REQEUST:
+000120: Bulk or Interrupt Transfer (UP), 03.09.2007 12:49:25.9843750 +0.0
+Pipe Handle: 0x863ce234 (Endpoint Address: 0x2)
+Send 0x20 bytes to the device:
+ 20 00 00 00 01 00 05 98 23 00 00 00 27 03 00 10    ......?#...'...
+ Length      TYPE  CMD   Trans#      Param1
+
+ 00 00 00 00 02 DC 00 00 00 00 00 00 00 00 00 00   .....Ü..........
+ Param2      Param3      Param4      Param5
+
+[OPTIONAL] DATA PHASE:
+000121: Bulk or Interrupt Transfer (UP), 03.09.2007 12:49:26.0 +0.0156250
+Pipe Handle: 0x863ce214 (Endpoint Address: 0x81)
+Get 0x1a bytes from the device:
+ 1A 00 00 00 02 00 05 98 23 00 00 00 01 00 00 00   .......?#.......
+ Length      TYPE  CMD   Trans#      DATA
+
+ 27 03 00 10 02 DC 04 00 00 30                     '....Ü...0
+
+RESPONSE:
+000122: Bulk or Interrupt Transfer (UP), 03.09.2007 12:49:26.0 +0.0
+Pipe Handle: 0x863ce214 (Endpoint Address: 0x81)
+Get 0xc bytes from the device:
+ 0C 00 00 00 03 00 01 20 23 00 00 00               ....... #...
+ Length      TYPE  CODE  Trans#
+
+* One send (OUT to the device), two reads (IN from the device).
+
+* All three byte chunks commands are 
+  sent/recieved/recieeved by the function  ptp_transaction() 
+  in the file ptp.c.
+
+* It boils down to ptp_usb_sendreq(), optionally ptp_usb_senddata() 
+  or ptp_usb_getdata() and finally ptp_usb_getresp() in the file 
+  libusb-glue.c. Notice ptp_usb_sendreq() and ptp_usb_getresp()
+  are ALWAYS called. The TYPE field correspond to this, so the
+  TYPES in this case are "COMMAND" (0x0001), "DATA" (0x0002), 
+  and "RESPONSE" (0x0003).
+
+* Notice that the byte order is little endian, so you need to read
+  each field from right to left.
+
+* This COMMAND has:
+  CMD 0x99805, we see in ptp.h that this is PTP_OC_MTP_GetObjPropList.
+  Transaction# 0x00000023.
+  REQUEST parameters 0x10000327, 0x00000000, 0x0000DC02, 0x00000000
+    0x00000000, in this case it means "get props for object 0x10000327",
+    "any format", "property 0xDC02" (PTP_OPC_ObjectFormat), then two
+    parameters that are always zero (no idea what they mean or their
+    use).
+
+* The DATA has:
+  CMD 0x99805, we see in ptp.h that this is PTP_OC_MTP_GetObjPropList.
+  Transaction# 0x00000023.
+  Then comes data 0x00000001, 0x10000327, 0xDC02, 0x0004, 0x3000
+  Which means in this case, (and this is the tricky part) "here
+  you have 1 property", "for object 0x10000327", "it is property
+  0xDC02" (PTP_OPC_ObjectFormat), "which is of type 0x0004"
+  (PTP_DTC_UINT16), "and set to 0x3000" (PTP_OFC_Undefined, it
+  is perfectly valid to have undefined object formats, since it
+  is a legal value defining this).
+
+* This RESPONSE has:
+  CMD 0x99805, we see in ptp.h that this is PTP_OC_MTP_GetObjPropList.
+  Return Code ("RC") = 0x2001, PTP_RC_OK, all went fine.
+  Transaction# 0x00000023.  
 
 
 Devices does not work - last resort:
