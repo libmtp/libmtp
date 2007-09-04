@@ -127,11 +127,17 @@ If your device is very problematic we are curious of how it
 works under Windows, so we enjoy reading USB packet sniffs
 that reveal the low-level traffic carried out between
 Windows Media Player and your device. This can be done 
-using the trial version of HHD Softwares software-only
-USB monitor. You need to get a copy of version 2.37 since
-the newer trial versions won't let you carry out the 
-needed packet sniffs. (As of 2007-03-10 a copy can be found
-at: http://www.cobbleware.com/files/usb-monitor-237.exe)
+using e.g.:
+
+* USBsnoop:
+  http://benoit.papillault.free.fr/usbsnoop/
+
+* The trial version of HHD Softwares software-only
+  USB monitor. You need to get a copy of version 2.37 since
+  the newer trial versions won't let you carry out the 
+  needed packet sniffs. (As of 2007-03-10 a copy can be found
+  at: http://www.cobbleware.com/files/usb-monitor-237.exe)
+
 There are other USB monitors as well, some more expensive
 alternatives use hardware and even measure electronic
 characteristics of the traffic (which is far too much 
