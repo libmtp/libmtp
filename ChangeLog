@@ -1,3 +1,7 @@
+2007-09-05  Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: album fixups
+
 2007-09-05  Linus Walleij <triad@df.lth.se>
 
 	* examples/hotplug.c: use old udev style by default, use new

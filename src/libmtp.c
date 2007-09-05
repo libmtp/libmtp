@@ -3580,6 +3580,7 @@ static MTPPropList *new_mtp_prop_entry()
   prop->property = PTP_OPC_StorageID; /* Should be "unknown" */
   prop->datatype = PTP_DTC_UNDEF;
   prop->ObjectHandle = 0x00000000U;
+  prop->propval.str = NULL;
   prop->next = NULL;
   return prop;
 }
@@ -5818,15 +5819,18 @@ int LIBMTP_Update_Album(LIBMTP_mtpdevice_t *device,
       ptp_free_objectpropdesc(&opd);
     }
     
-    ret = ptp_mtp_setobjectproplist(params, proplist);
+    // proplist could be NULL if we can't write any properties
+    if (proplist != NULL) {
+      ret = ptp_mtp_setobjectproplist(params, proplist);
 
-    destroy_mtp_prop_list(proplist);
-          
-    if (ret != PTP_RC_OK) {
-      // TODO: return error of which property we couldn't set
-      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Album(): "
-			      "could not set object property list.");
-      return -1;
+      destroy_mtp_prop_list(proplist);
+    
+      if (ret != PTP_RC_OK) {
+        // TODO: return error of which property we couldn't set
+        add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Album(): "
+                                "could not set object property list.");
+        return -1;
+      }
     }
       
   } else if (ptp_operation_issupported(params,PTP_OC_MTP_SetObjectPropValue)) {
