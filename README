@@ -226,7 +226,14 @@ it DOES release it but the device will immediately be probed
 at the USB mass storage interface AGAIN because it 
 enumerates.)
 
-Try this, if you have a recent 2.6.x Linux kernel:
+Try this, if you have a recent 2.6.x Linux kernel,
+run (as root) something like:
+
+> rmmod usb_storage ; mtp-detect
+
+You can run most any command or a client like gnomad2 or
+Amarok immediately after the rmmod command. This works 
+sometimes. Another way:
 
 * Edit /etc/modprobe.d/blacklist
 
@@ -245,14 +252,6 @@ If not even blacklisting works (check with
 something else and you may need to remove or rename the file 
 /lib/modules/<VERSION>/kernel/drivers/usb/storage/usb-storage.ko
 manually.
-
-Another method is to run (as root) something like:
-
-> rmmod usb_storage ; mtp-detect
-
-You can run most any command or a client like gnomad2 or
-Amarok immediately after the rmmod command. This works 
-sometimes.
 
 If you find the PerfectSolution(TM) to this dilemma, so you 
 can properly switch for individual devices whether to use it
