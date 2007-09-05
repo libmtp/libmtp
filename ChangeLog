@@ -1,3 +1,8 @@
+2007-09-05  Linus Walleij <triad@df.lth.se>
+
+	* examples/hotplug.c: use old udev style by default, use new
+	  if requested explicitly by a -U switch.
+
 2007-09-04  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: make sure we query recursively supplying each

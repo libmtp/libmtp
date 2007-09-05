@@ -30,6 +30,7 @@ static void usage(void)
 {
   fprintf(stderr, "usage: hotplug [-u -H -i -a\"ACTION\"]\n");
   fprintf(stderr, "       -u:  use udev syntax\n");
+  fprintf(stderr, "       -U:  use newer udev syntax (SYSFS -> ATTR)\n");
   fprintf(stderr, "       -H:  use hal syntax\n");
   fprintf(stderr, "       -i:  use usb.ids simple list syntax\n");
   fprintf(stderr, "       -a\"ACTION\": perform udev action ACTION on attachment\n");
@@ -39,6 +40,7 @@ static void usage(void)
 enum style {
   style_usbmap,
   style_udev,
+  style_udev_new,
   style_hal,
   style_usbids
 };
@@ -57,12 +59,15 @@ int main (int argc, char **argv)
   char default_udev_action[] = "SYMLINK+=\"libmtp-%k\", MODE=\"666\"";
   uint16_t last_vendor = 0x0000U;
 
-  while ( (opt = getopt(argc, argv, "uiHa:")) != -1 ) {
+  while ( (opt = getopt(argc, argv, "uUiHa:")) != -1 ) {
     switch (opt) {
     case 'a':
       udev_action = strdup(optarg);
     case 'u':
       style = style_udev;
+      break;
+    case 'U':
+      style = style_udev_new;
       break;
     case 'H':
       style = style_hal;
@@ -80,10 +85,14 @@ int main (int argc, char **argv)
   if (ret == 0) {
     switch (style) {
     case style_udev:
+    case style_udev_new:
       printf("# UDEV-style hotplug map for libmtp\n");
       printf("# Put this file in /etc/udev/rules.d\n\n");
-      printf("ACTION!=\"add\", GOTO=\"libmtp_rules_end\"\n"
-	     "SUBSYSTEM==\"usb\", GOTO=\"libmtp_rules\"\n"
+      printf("ACTION!=\"add\", GOTO=\"libmtp_rules_end\"\n");
+      if (style == style_udev_new) {
+	printf("ATTR{dev}!=\"?*\", GOTO=\"libmtp_rules_end\"\n");
+      }
+      printf("SUBSYSTEM==\"usb\", GOTO=\"libmtp_rules\"\n"
 	     "# The following line will be deprecated when older kernels are phased out.\n"
              "SUBSYSTEM==\"usb_device\", GOTO=\"libmtp_rules\"\n\n"
 	     "GOTO=\"libmtp_rules_end\"\n\n"
@@ -109,7 +118,9 @@ int main (int argc, char **argv)
       LIBMTP_device_entry_t * entry = &entries[i];
 
       switch (style) {
-        case style_udev: {
+      case style_udev: 
+      case style_udev_new:
+	{
           char *action;
           printf("# %s\n", entry->name);
           if (udev_action != NULL) {
@@ -117,13 +128,16 @@ int main (int argc, char **argv)
           } else {
             action = default_udev_action;
           }
-	  // Old style directly SYSFS named.
-          // printf("SYSFS{idVendor}==\"%04x\", SYSFS{idProduct}==\"%04x\", %s\n", entry->vendor_id, entry->product_id, action);
-	  // Newer style
-	  printf("ATTR{idVendor}==\"%04x\", ATTR{idProduct}==\"%04x\", %s\n", entry->vendor_id, entry->product_id, action);
-        break;
+	  if (style == style_udev) {
+	    // Old style directly SYSFS named.
+	    printf("SYSFS{idVendor}==\"%04x\", SYSFS{idProduct}==\"%04x\", %s\n", entry->vendor_id, entry->product_id, action);
+	  } else {
+	    // Newer style
+	    printf("ATTR{idVendor}==\"%04x\", ATTR{idProduct}==\"%04x\", %s\n", entry->vendor_id, entry->product_id, action);
+	  }
+	  break;
         }
-        case style_usbmap:
+      case style_usbmap:
           printf("# %s\n", entry->name);
           printf("libmtp.sh    0x0003  0x%04x  0x%04x  0x0000  0x0000  0x00    0x00    0x00    0x00    0x00    0x00    0x00000000\n", entry->vendor_id, entry->product_id);
           break;
