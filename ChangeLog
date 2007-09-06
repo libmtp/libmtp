@@ -1,3 +1,10 @@
+2007-09-06  Linus Walleij <triad@df.lth.se>
+
+	* examples/hotplug.c: edit up into a udev ruleset that is
+	  inexorably complicated but probably compatible with most
+	  udev versions out there. Now please DON'T update udev
+	  styles again!
+
 2007-09-05  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: album fixups
