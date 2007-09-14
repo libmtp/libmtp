@@ -1,6 +1,8 @@
 2007-09-14  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp.h: sync in upstream to get cancellation prototypes.
+	* src/libusb-glue.c: first try to implement cancellation.
+	* src/libmtp.c: dito.
 
 2007-09-12  Marcus Meissner <meissner@suse.de>
 

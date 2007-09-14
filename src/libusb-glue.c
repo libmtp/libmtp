@@ -920,9 +920,13 @@ ptp_read_func (
 	ptp_usb->callback_active = 0;
       }
       if (ptp_usb->current_transfer_callback != NULL) {
-	(void) ptp_usb->current_transfer_callback(ptp_usb->current_transfer_complete,
-						  ptp_usb->current_transfer_total,
-						  ptp_usb->current_transfer_callback_data);
+	int ret;
+	ret = ptp_usb->current_transfer_callback(ptp_usb->current_transfer_complete,
+						 ptp_usb->current_transfer_total,
+						 ptp_usb->current_transfer_callback_data);
+	if (ret != 0) {
+	  return PTP_ERROR_CANCEL;
+	}
       }
     }  
 
@@ -1004,9 +1008,13 @@ ptp_write_func (
 	ptp_usb->callback_active = 0;
       }
       if (ptp_usb->current_transfer_callback != NULL) {
-	(void) ptp_usb->current_transfer_callback(ptp_usb->current_transfer_complete,
-						  ptp_usb->current_transfer_total,
-						  ptp_usb->current_transfer_callback_data);
+	int ret;
+	ret = ptp_usb->current_transfer_callback(ptp_usb->current_transfer_complete,
+						 ptp_usb->current_transfer_total,
+						 ptp_usb->current_transfer_callback_data);
+	if (ret != 0) {
+	  return PTP_ERROR_CANCEL;
+	}
       }
     }
     if (result < towrite) /* short writes happen */
@@ -1516,6 +1524,21 @@ ptp_usb_event_wait (PTPParams* params, PTPContainer* event) {
 	return ptp_usb_event (params, event, PTP_EVENT_CHECK);
 }
 
+uint16_t
+ptp_usb_control_cancel_request (PTPParams *params, uint32_t transactionid) {
+	PTP_USB *ptp_usb = (PTP_USB *)(params->data);
+	int ret;
+	unsigned char buffer[6];
+
+	htod16a(&buffer[0],PTP_EC_CancelTransaction);
+	htod32a(&buffer[2],transactionid);
+	ret = usb_control_msg(ptp_usb->handle, 
+			      USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+			      0x64, 0x0000, 0x0000, (char *) buffer, sizeof(buffer), 3000);
+	if (ret < sizeof(buffer))
+		return PTP_ERROR_IO;
+	return PTP_RC_OK;
+}
 
 static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev)
 {

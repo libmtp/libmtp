@@ -3442,6 +3442,14 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_callback = NULL;
   ptp_usb->current_transfer_callback_data = NULL;
 
+  if (ret == PTP_ERROR_CANCEL) {
+    ret = ptp_usb_control_cancel_request(params, params->transaction_id);
+    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_File_To_File_Descriptor(): Cancelled transfer.");
+    if (ret != PTP_RC_OK) {
+      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_File_To_File_Descriptor(): Failed to fulfill cancellation.");
+    }
+    return -1;
+  }
   if (ret != PTP_RC_OK) {
     add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_File_To_File_Descriptor(): Could not get file from device.");
     return -1;
@@ -4081,7 +4089,15 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   ptp_usb->callback_active = 0;
   ptp_usb->current_transfer_callback = NULL;
   ptp_usb->current_transfer_callback_data = NULL;
-  
+
+  if (ret == PTP_ERROR_CANCEL) {
+    ret = ptp_usb_control_cancel_request(params, params->transaction_id);
+    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor(): Cancelled transfer.");
+    if (ret != PTP_RC_OK) {
+      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor(): Failed to fulfill cancellation.");
+    }
+    return -1;
+  }  
   if (ret != PTP_RC_OK) {
     add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor(): "
 				"Could not send object.");
