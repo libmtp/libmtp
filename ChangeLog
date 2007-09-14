@@ -1,3 +1,7 @@
+2007-09-14  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.h: sync in upstream to get cancellation prototypes.
+
 2007-09-12  Marcus Meissner <meissner@suse.de>
 
 	* src/ptp-pack.c: sync to upstream, rewrote packing to use
