@@ -3581,8 +3581,12 @@ get_new_mtp_prop_entry(MTPProperties **props, int *nrofprops) {
   MTPProperties *newprops;
   MTPProperties *prop;
 
-  newprops = realloc(props,sizeof(MTPProperties)*(*nrofprops+1));
-  if (!newprops)
+  if (*props == NULL) {
+    newprops = malloc(sizeof(MTPProperties)*(*nrofprops+1));
+  } else {
+    newprops = realloc(*props,sizeof(MTPProperties)*(*nrofprops+1));
+  }
+  if (newprops == NULL)
     return NULL;
   prop = &newprops[*nrofprops];
   prop->property = PTP_OPC_StorageID; /* Should be "unknown" */

@@ -2,7 +2,7 @@
 
 	* src/ptp.h: sync in upstream to get cancellation prototypes.
 	* src/libusb-glue.c: first try to implement cancellation.
-	* src/libmtp.c: dito.
+	* src/libmtp.c: dito. Bugfix to one of Marcus' realloc():s.
 
 2007-09-12  Marcus Meissner <meissner@suse.de>
 
