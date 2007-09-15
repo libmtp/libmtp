@@ -1,3 +1,10 @@
+2007-09-15  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.c: get cancellation of xfers working.
+	* src/libusb-glue.c: dito.
+	* src/libusb-glue.h: dito.
+	* src/libmtp.c: dito.
+
 2007-09-14  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp.h: sync in upstream to get cancellation prototypes.

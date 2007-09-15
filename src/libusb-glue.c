@@ -925,6 +925,10 @@ ptp_read_func (
 						 ptp_usb->current_transfer_total,
 						 ptp_usb->current_transfer_callback_data);
 	if (ret != 0) {
+	  uint16_t sub_ret = ptp_usb_control_cancel_request (ptp_usb->params, ptp_usb->params->transaction_id);
+	  if (sub_ret != PTP_RC_OK) {
+	    return sub_ret;
+	  }
 	  return PTP_ERROR_CANCEL;
 	}
       }
@@ -1013,6 +1017,10 @@ ptp_write_func (
 						 ptp_usb->current_transfer_total,
 						 ptp_usb->current_transfer_callback_data);
 	if (ret != 0) {
+	  uint16_t sub_ret = ptp_usb_control_cancel_request (ptp_usb->params, ptp_usb->params->transaction_id);
+	  if (sub_ret != PTP_RC_OK) {
+	    return sub_ret;
+	  }
 	  return PTP_ERROR_CANCEL;
 	}
       }
@@ -1747,6 +1755,9 @@ static LIBMTP_error_number_t configure_usb_devices(mtpdevice_list_t *devicelist)
       return LIBMTP_ERROR_MEMORY_ALLOCATION;
     }
     
+    /* Pointer back to params */
+    tmplist->ptp_usb->params = tmplist->params;
+
     /* TODO: Will this always be little endian? */
     tmplist->params->byteorder = PTP_DL_LE;
     tmplist->params->cd_locale_to_ucs2 = iconv_open("UCS-2LE", "UTF-8");

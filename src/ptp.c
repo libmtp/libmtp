@@ -49,7 +49,7 @@
 #  define N_(String) (String)
 #endif
 
-#define CHECK_PTP_RC(result)	{uint16_t r=(result); if (r!=PTP_RC_OK) return r;}
+#define CHECK_PTP_RC(result)	{uint16_t r=(result); if (r!=PTP_RC_OK && r!=PTP_ERROR_CANCEL) return r;}
 
 #define PTP_CNT_INIT(cnt) {memset(&cnt,0,sizeof(cnt));}
 

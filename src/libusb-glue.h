@@ -115,6 +115,7 @@
  */
 typedef struct _PTP_USB PTP_USB;
 struct _PTP_USB {
+  PTPParams *params;
   usb_dev_handle* handle;
   uint8_t interface;
   int inep;

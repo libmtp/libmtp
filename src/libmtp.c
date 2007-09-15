@@ -425,7 +425,7 @@ static uint32_t adjust_u32(uint32_t val, PTPObjectPropDesc *opd)
 
 
 static MTPProperties *
-_find_propvalue (PTPParams *params, uint32_t const oid, uint32_t const attrid) {
+find_propvalue (PTPParams *params, uint32_t const oid, uint32_t const attrid) {
   int i;
   MTPProperties    *prop = params->props;
 
@@ -465,7 +465,7 @@ static char *get_string_from_object(LIBMTP_mtpdevice_t *device, uint32_t const o
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
   if (params->props) {
-    MTPProperties    *prop = _find_propvalue (params, object_id, attribute_id);
+    MTPProperties    *prop = find_propvalue (params, object_id, attribute_id);
     if (prop) {
         if (prop->propval.str != NULL)
           return strdup(prop->propval.str);
@@ -511,7 +511,7 @@ static uint64_t get_u64_from_object(LIBMTP_mtpdevice_t *device,uint32_t const ob
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
   if (params->props) {
-    MTPProperties    *prop = _find_propvalue (params, object_id, attribute_id);
+    MTPProperties    *prop = find_propvalue (params, object_id, attribute_id);
     if (prop)
       return prop->propval.u64;
   }
@@ -553,7 +553,7 @@ static uint32_t get_u32_from_object(LIBMTP_mtpdevice_t *device,uint32_t const ob
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
   if (params->props) {
-    MTPProperties    *prop = _find_propvalue (params, object_id, attribute_id);
+    MTPProperties    *prop = find_propvalue (params, object_id, attribute_id);
     if (prop)
       return prop->propval.u32;
   }
@@ -595,7 +595,7 @@ static uint16_t get_u16_from_object(LIBMTP_mtpdevice_t *device, uint32_t const o
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
   if (params->props) {
-    MTPProperties    *prop = _find_propvalue (params, object_id, attribute_id);
+    MTPProperties    *prop = find_propvalue (params, object_id, attribute_id);
     if (prop)
       return prop->propval.u16;
   }
@@ -637,7 +637,7 @@ static uint8_t get_u8_from_object(LIBMTP_mtpdevice_t *device, uint32_t const obj
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
   if (params->props) {
-    MTPProperties    *prop = _find_propvalue (params, object_id, attribute_id);
+    MTPProperties    *prop = find_propvalue (params, object_id, attribute_id);
     if (prop)
       return prop->propval.u8;
   }
@@ -3443,11 +3443,7 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_callback_data = NULL;
 
   if (ret == PTP_ERROR_CANCEL) {
-    ret = ptp_usb_control_cancel_request(params, params->transaction_id);
     add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_File_To_File_Descriptor(): Cancelled transfer.");
-    if (ret != PTP_RC_OK) {
-      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_File_To_File_Descriptor(): Failed to fulfill cancellation.");
-    }
     return -1;
   }
   if (ret != PTP_RC_OK) {
@@ -4095,11 +4091,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_callback_data = NULL;
 
   if (ret == PTP_ERROR_CANCEL) {
-    ret = ptp_usb_control_cancel_request(params, params->transaction_id);
     add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor(): Cancelled transfer.");
-    if (ret != PTP_RC_OK) {
-      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor(): Failed to fulfill cancellation.");
-    }
     return -1;
   }  
   if (ret != PTP_RC_OK) {
