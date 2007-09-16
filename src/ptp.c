@@ -49,7 +49,7 @@
 #  define N_(String) (String)
 #endif
 
-#define CHECK_PTP_RC(result)	{uint16_t r=(result); if (r!=PTP_RC_OK && r!=PTP_ERROR_CANCEL) return r;}
+#define CHECK_PTP_RC(result)	{uint16_t r=(result); if (r!=PTP_RC_OK) return r;}
 
 #define PTP_CNT_INIT(cnt) {memset(&cnt,0,sizeof(cnt));}
 
@@ -147,11 +147,29 @@ ptp_transaction_new (PTPParams* params, PTPContainer* ptp,
 	/* is there a dataphase? */
 	switch (flags&PTP_DP_DATA_MASK) {
 	case PTP_DP_SENDDATA:
-		CHECK_PTP_RC(params->senddata_func(params, ptp,
-			sendlen, handler));
+		{
+			uint16_t ret;
+			ret = params->senddata_func(params, ptp,
+						    sendlen, handler);
+			if (ret == PTP_ERROR_CANCEL) {
+				ret = params->cancelreq_func(params, 
+							     params->transaction_id-1);
+			}
+			if (ret != PTP_RC_OK)
+				return ret;
+		}
 		break;
 	case PTP_DP_GETDATA:
-		CHECK_PTP_RC(params->getdata_func(params, ptp, handler));
+		{
+			uint16_t ret;
+			ret = params->getdata_func(params, ptp, handler);
+			if (ret == PTP_ERROR_CANCEL) {
+				ret = params->cancelreq_func(params, 
+							     params->transaction_id-1);
+			}
+			if (ret != PTP_RC_OK)
+				return ret;
+		}
 		break;
 	case PTP_DP_NODATA:
 		break;

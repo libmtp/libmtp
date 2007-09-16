@@ -930,10 +930,6 @@ ptp_read_func (
 						 ptp_usb->current_transfer_total,
 						 ptp_usb->current_transfer_callback_data);
 	if (ret != 0) {
-	  uint16_t sub_ret = ptp_usb_control_cancel_request (ptp_usb->params, ptp_usb->params->transaction_id);
-	  if (sub_ret != PTP_RC_OK) {
-	    return sub_ret;
-	  }
 	  return PTP_ERROR_CANCEL;
 	}
       }
@@ -1022,10 +1018,6 @@ ptp_write_func (
 						 ptp_usb->current_transfer_total,
 						 ptp_usb->current_transfer_callback_data);
 	if (ret != 0) {
-	  uint16_t sub_ret = ptp_usb_control_cancel_request (ptp_usb->params, ptp_usb->params->transaction_id);
-	  if (sub_ret != PTP_RC_OK) {
-	    return sub_ret;
-	  }
 	  return PTP_ERROR_CANCEL;
 	}
       }
@@ -1180,13 +1172,10 @@ ptp_usb_sendreq (PTPParams* params, PTPContainer* req)
 		&written
 	);
 	ptp_exit_send_memory_handler (&memhandler);
-	if (ret!=PTP_RC_OK) {
+	if (ret!=PTP_RC_OK && ret!=PTP_ERROR_CANCEL) {
 		ret = PTP_ERROR_IO;
-/*		ptp_error (params,
-			"PTP: request code 0x%04x sending req error 0x%04x",
-			req->Code,ret); */
 	}
-	if (written != towrite) {
+	if (written != towrite && ret != PTP_ERROR_CANCEL) {
 		ptp_error (params, 
 			"PTP: request code 0x%04x sending req wrote only %ld bytes instead of %d",
 			req->Code, written, towrite
@@ -1235,10 +1224,6 @@ ptp_usb_senddata (PTPParams* params, PTPContainer* ptp,
 	ret = ptp_write_func(wlen, &memhandler, params->data, &written);
 	ptp_exit_send_memory_handler (&memhandler);
 	if (ret!=PTP_RC_OK) {
-		ret = PTP_ERROR_IO;
-/*		ptp_error (params,
-		"PTP: request code 0x%04x sending data error 0x%04x",
-			ptp->Code,ret);*/
 		return ret;
 	}
 	if (size <= datawlen) return ret;
@@ -1255,7 +1240,7 @@ ptp_usb_senddata (PTPParams* params, PTPContainer* ptp,
 		}
 		bytes_left_to_transfer -= written;
 	}
-	if (ret!=PTP_RC_OK)
+	if (ret!=PTP_RC_OK && ret!=PTP_ERROR_CANCEL)
 		ret = PTP_ERROR_IO;
 	return ret;
 }
@@ -1325,8 +1310,8 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 					&readdata,
 					0
 				);
-				if (xret == -1)
-					return PTP_ERROR_IO;
+				if (xret != PTP_RC_OK)
+					return ret;
 				if (readdata < PTP_USB_BULK_HS_MAX_PACKET_LEN_READ)
 					break;
 			}
@@ -1415,16 +1400,9 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 				  params->data, &rlen, 1);
 		
 		if (ret!=PTP_RC_OK) {
-		  ret = PTP_ERROR_IO;
 		  break;
 		}
 	} while (0);
-	/*
-	if (ret!=PTP_RC_OK) {
-		ptp_error (params,
-		"PTP: request code 0x%04x getting data error 0x%04x",
-			ptp->Code, ret);
-	}*/
 	return ret;
 }
 
@@ -1543,6 +1521,7 @@ ptp_usb_control_cancel_request (PTPParams *params, uint32_t transactionid) {
 	int ret;
 	unsigned char buffer[6];
 
+	printf("Request cancel of transaction %d\n", transactionid);
 	htod16a(&buffer[0],PTP_EC_CancelTransaction);
 	htod32a(&buffer[2],transactionid);
 	ret = usb_control_msg(ptp_usb->handle, 
@@ -1563,6 +1542,7 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
   params->senddata_func=ptp_usb_senddata;
   params->getresp_func=ptp_usb_getresp;
   params->getdata_func=ptp_usb_getdata;
+  params->cancelreq_func=ptp_usb_control_cancel_request;
   params->data=ptp_usb;
   params->transaction_id=0;
   /*
