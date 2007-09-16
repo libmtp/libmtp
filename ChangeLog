@@ -1,3 +1,12 @@
+2007-09-16  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.c: cancellation working *as it should*
+	* src/ptp.h: dito.
+	* src/libusb-glue.c: dito.
+	* src/libusb-glue.h: dito.
+	* src/libmtp.c: dito.
+	* src/libmtp.h.in: new error code for cancellation.
+
 2007-09-16  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: only read descriptors for devices we
