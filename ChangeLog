@@ -2,6 +2,7 @@
 
 	* src/libusb-glue.c: only read descriptors for devices we
 	  don't know since it breaks on some devices
+	* src/libmtp.c: a couple of bugs fixed in metadata retreival
 
 2007-09-15  Linus Walleij <triad@df.lth.se>
 
