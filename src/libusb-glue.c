@@ -421,6 +421,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    */
   // Not verified - anonymous submission
   { "LG UP3", 0x043e, 0x70b1, DEVICE_FLAG_NONE },
+  
   /*
    * Other strange stuff.
    */
@@ -685,27 +686,31 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
 static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_device_list)
 {
   struct usb_bus *bus = init_usb();
+  int found = 0;
+  int i;
 
   for (; bus != NULL; bus = bus->next) {
     struct usb_device *dev = bus->devices;
     for (; dev != NULL; dev = dev->next) {
-      if (probe_device_descriptor(dev, NULL)) {
-	/* Append this usb device to the MTP USB Device List */
-	*mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, dev);
-      } else {
-	/* Check if it's in the known devices list then */
-	int i;
-	
-	for(i = 0; i < mtp_device_table_size; i++) {
-	  if(dev->descriptor.bDeviceClass != USB_CLASS_HUB && 
-	     dev->descriptor.idVendor == mtp_device_table[i].vendor_id &&
-	     dev->descriptor.idProduct == mtp_device_table[i].product_id) {
-	    /* Append this usb device to the MTP device list */
-	    *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, dev);
-	    break;
-	  }
-	}
-      }
+      if (dev->descriptor.bDeviceClass != USB_CLASS_HUB) {
+        found = 0;
+        for(i = 0; i < mtp_device_table_size; i++) {
+          if(dev->descriptor.idVendor == mtp_device_table[i].vendor_id &&
+            dev->descriptor.idProduct == mtp_device_table[i].product_id) {
+            /* Append this usb device to the MTP device list */
+            *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, dev);
+            found = 1;
+            break;
+          }
+        }
+        if (!found) {
+          printf("probing device descriptor\n");
+          if (probe_device_descriptor(dev, NULL)) {
+            /* Append this usb device to the MTP USB Device List */
+            *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, dev);
+          }
+        }
+	    }
     }
   }
   
