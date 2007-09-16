@@ -3381,6 +3381,11 @@ int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t *device, uint32_t const id,
   // Close file
   close(fd);
 
+  // Delete partial file.
+  if (ret == -1) {
+    unlink(path);
+  }
+
   return ret;
 }
 
@@ -3447,7 +3452,7 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_callback_data = NULL;
 
   if (ret == PTP_ERROR_CANCEL) {
-    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_File_To_File_Descriptor(): Cancelled transfer.");
+    add_error_to_errorstack(device, LIBMTP_ERROR_CANCELLED, "LIBMTP_Send_File_From_File_Descriptor(): Cancelled transfer.");
     return -1;
   }
   if (ret != PTP_RC_OK) {
@@ -4095,9 +4100,9 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_callback_data = NULL;
 
   if (ret == PTP_ERROR_CANCEL) {
-    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor(): Cancelled transfer.");
+    add_error_to_errorstack(device, LIBMTP_ERROR_CANCELLED, "LIBMTP_Send_File_From_File_Descriptor(): Cancelled transfer.");
     return -1;
-  }  
+  }
   if (ret != PTP_RC_OK) {
     add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor(): "
 				"Could not send object.");

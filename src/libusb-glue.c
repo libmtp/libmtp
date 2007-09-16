@@ -1521,7 +1521,6 @@ ptp_usb_control_cancel_request (PTPParams *params, uint32_t transactionid) {
 	int ret;
 	unsigned char buffer[6];
 
-	printf("Request cancel of transaction %d\n", transactionid);
 	htod16a(&buffer[0],PTP_EC_CancelTransaction);
 	htod32a(&buffer[2],transactionid);
 	ret = usb_control_msg(ptp_usb->handle, 

@@ -120,7 +120,8 @@ typedef enum {
   LIBMTP_ERROR_MEMORY_ALLOCATION,
   LIBMTP_ERROR_NO_DEVICE_ATTACHED,
   LIBMTP_ERROR_STORAGE_FULL,
-  LIBMTP_ERROR_CONNECTING
+  LIBMTP_ERROR_CONNECTING,
+  LIBMTP_ERROR_CANCELLED
 } LIBMTP_error_number_t;
 typedef struct LIBMTP_device_entry_struct LIBMTP_device_entry_t; /**< @see LIBMTP_device_entry_struct */
 typedef struct LIBMTP_error_struct LIBMTP_error_t; /**< @see LIBMTP_error_struct */

@@ -2,7 +2,7 @@
  *
  * Copyright (C) 2001-2004 Mariusz Woloszyn <emsi@ipartners.pl>
  * Copyright (C) 2003-2007 Marcus Meissner <marcus@jet.franken.de>
- * Copyright (C) 2006 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2006-2007 Linus Walleij <triad@df.lth.se>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -154,6 +154,8 @@ ptp_transaction_new (PTPParams* params, PTPContainer* ptp,
 			if (ret == PTP_ERROR_CANCEL) {
 				ret = params->cancelreq_func(params, 
 							     params->transaction_id-1);
+				if (ret == PTP_RC_OK)
+					ret = PTP_ERROR_CANCEL;
 			}
 			if (ret != PTP_RC_OK)
 				return ret;
@@ -166,6 +168,8 @@ ptp_transaction_new (PTPParams* params, PTPContainer* ptp,
 			if (ret == PTP_ERROR_CANCEL) {
 				ret = params->cancelreq_func(params, 
 							     params->transaction_id-1);
+				if (ret == PTP_RC_OK)
+					ret = PTP_ERROR_CANCEL;
 			}
 			if (ret != PTP_RC_OK)
 				return ret;
