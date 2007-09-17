@@ -1175,7 +1175,7 @@ ptp_usb_sendreq (PTPParams* params, PTPContainer* req)
 	if (ret!=PTP_RC_OK && ret!=PTP_ERROR_CANCEL) {
 		ret = PTP_ERROR_IO;
 	}
-	if (written != towrite && ret != PTP_ERROR_CANCEL) {
+	if (written != towrite && ret != PTP_ERROR_CANCEL && ret != PTP_ERROR_IO) {
 		ptp_error (params, 
 			"PTP: request code 0x%04x sending req wrote only %ld bytes instead of %d",
 			req->Code, written, towrite

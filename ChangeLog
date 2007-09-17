@@ -1,3 +1,7 @@
+2007-09-17  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: silenced weirdo error message.
+
 2007-09-16  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp.c: cancellation working *as it should*
