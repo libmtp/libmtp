@@ -1638,10 +1638,14 @@ static void clear_halt(PTP_USB* ptp_usb)
 
 static void close_usb(PTP_USB* ptp_usb)
 {
+  // Commented out since it was confusing some
+  // devices to do these things.
+#if 0
   // Clear any stalled endpoints
   clear_stall(ptp_usb);
   // Clear halts on any endpoints
   clear_halt(ptp_usb);
+#endif
   // Added to clear some stuff on the OUT endpoint
   // TODO: is this good on the Mac too?
   usb_resetep(ptp_usb->handle, ptp_usb->outep);

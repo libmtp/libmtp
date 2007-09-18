@@ -1,3 +1,9 @@
+2007-09-18  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: stop the endpoint unhalting/unstalling when
+	  closing the USB device. It was AYBABTU the Samsungs 
+	  (and others).
+
 2007-09-17  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: silenced weirdo error message.
