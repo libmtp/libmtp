@@ -680,20 +680,22 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
  *        properties (if this list is not empty, new entries will be appended
  *        to the list).
  * @return LIBMTP_ERROR_NONE implies that devices have been found, scan the list
- *        appropriately. LIBMTP_ERROR_NO_DEVICE_ATTACHED implies that no devices have
- *        been found.
+ *        appropriately. LIBMTP_ERROR_NO_DEVICE_ATTACHED implies that no 
+ *        devices have been found.
  */
 static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_device_list)
 {
   struct usb_bus *bus = init_usb();
-  int found = 0;
-  int i;
-
   for (; bus != NULL; bus = bus->next) {
     struct usb_device *dev = bus->devices;
     for (; dev != NULL; dev = dev->next) {
       if (dev->descriptor.bDeviceClass != USB_CLASS_HUB) {
-        found = 0;
+	int i;
+        int found = 0;
+
+	// First check if we know about the device already.
+	// Devices well known to us will not have their descriptors
+	// probed, it caused problems with some devices.
         for(i = 0; i < mtp_device_table_size; i++) {
           if(dev->descriptor.idVendor == mtp_device_table[i].vendor_id &&
             dev->descriptor.idProduct == mtp_device_table[i].product_id) {
@@ -703,14 +705,14 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
             break;
           }
         }
+	// If we didn't know it, try probing the "OS Descriptor".
         if (!found) {
-          printf("probing device descriptor\n");
           if (probe_device_descriptor(dev, NULL)) {
             /* Append this usb device to the MTP USB Device List */
             *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, dev);
           }
         }
-	    }
+      }
     }
   }
   
