@@ -1,3 +1,9 @@
+2007-09-21  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: flag the Samsung YH-820 with
+	  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL after tests by Stephan
+	  Fabel.
+	
 2007-09-18  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: stop the endpoint unhalting/unstalling when
