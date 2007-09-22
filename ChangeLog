@@ -1,3 +1,10 @@
+2007-09-23  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: wrapped updating of playlists and albums into an
+	  abstract function so we do it consistently. Added support for
+	  tagging on modification date to files, tracks, playlists and
+	  albums.
+
 2007-09-21  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: flag the Samsung YH-820 with
