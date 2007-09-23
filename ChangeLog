@@ -1,3 +1,9 @@
+2007-09-23  Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: updated some device flags, removed second
+	  call to ptp_getdeviceinfo
+	* src/libmtp.c: property cache fixes
+
 2007-09-23  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: wrapped updating of playlists and albums into an

@@ -957,15 +957,6 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(mtpdevice_list_t *devices)
     /* No Errors yet for this device */
     mtp_device->errorstack = NULL;
     
-    /* Cache the device information */
-    if (ptp_getdeviceinfo(current_params,
-			  &current_params->deviceinfo) != PTP_RC_OK) {
-      add_error_to_errorstack(mtp_device,
-			      LIBMTP_ERROR_CONNECTING,
-			      "Unable to read device information. Recommend "
-			      "disconnecting this device\n");
-    }
-    
     /* Default Max Battery Level, we will adjust this if possible */
     mtp_device->maximum_battery_level = 100;
     
@@ -3653,8 +3644,11 @@ static void destroy_mtp_prop_list(MTPProperties *props, int nrofprops)
   MTPProperties *prop = props;
 
   for (i=0;i<nrofprops;i++,prop++) {
-    if (prop->datatype == PTP_DTC_STR)
+    if (prop->datatype == PTP_DTC_STR && prop->propval.str != NULL)
+    {
       free(prop->propval.str);
+      prop->propval.str = NULL;
+    }
   }
   free(props);
 }
@@ -3743,7 +3737,8 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
-  add_object_to_cache(device, metadata->item_id);
+  // note we don't need to update the cache here because LIBMTP_Send_File_From_File_Descriptor
+  // has added the object handle and LIBMTP_Update_Track_Metadata has added the metadata.
 
   return 0;
 }
@@ -4553,14 +4548,22 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
 
   // delete cached object properties if metadata cache exists
   if (params->props) {
-    int i;
+    int i, nrofoldprops = 0;
 
     // not the most efficient way, if we assume objecthandle grouping
     for (i=0;i<params->nrofprops;i++) {
       MTPProperties *prop = &params->props[i];
       if (prop->ObjectHandle == object_id)
-	memcpy (prop,prop+1,(params->nrofprops-i-1)*sizeof(*prop));
+      {
+        if (prop->datatype == PTP_DTC_STR && prop->propval.str != NULL)
+          free(prop->propval.str);
+        memcpy (prop,prop+1,(params->nrofprops-i-1)*sizeof(*prop));
+        nrofoldprops++;
+      }
     }
+    
+    params->props = realloc(params->props, params->nrofprops - nrofoldprops);
+    params->nrofprops -= nrofoldprops;
   }
     
   return 0;
@@ -6019,14 +6022,20 @@ void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t handle)
   PTPParams *params = (PTPParams *)device->params;
   MTPProperties *xprops;
   MTPProperties *props;
-  int i, nrofprops;
+  int i, nrofprops, nrofoldprops = 0;
   uint16_t ret;
     
+  // remove the current properties for this object
   // not the most efficient way, if we assume objecthandle grouping
   for (i=0;i<params->nrofprops;i++) {
     MTPProperties *prop = &params->props[i];
     if (prop->ObjectHandle == handle)
+    {
+      if (prop->datatype == PTP_DTC_STR && prop->propval.str != NULL)
+        free(prop->propval.str);
       memcpy (prop,prop+1,(params->nrofprops-i-1)*sizeof(*prop));
+      nrofoldprops++;
+    }
   }
 
   // fetch updated properties and add them to the metadata cache in the same
@@ -6037,14 +6046,14 @@ void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t handle)
     return;
   }
 
-  xprops = realloc(params->props, (params->nrofprops+nrofprops)*sizeof(*props));
+  xprops = realloc(params->props, (params->nrofprops+nrofprops-nrofoldprops)*sizeof(*props));
   if (!xprops) {
     add_ptp_error_to_errorstack(device, ret, "update_metadata_cache(): call to realloc() failed.");
     return;
   }
   params->props = xprops;
-  memcpy(xprops+params->nrofprops,props,nrofprops*sizeof(*props));
+  memcpy(xprops+params->nrofprops-nrofoldprops,props,nrofprops*sizeof(*props));
   free (props); /* do not free sub strings, we copied them above */
-  params->nrofprops += nrofprops;
+  params->nrofprops += nrofprops-nrofoldprops;
   return;
 }

@@ -80,7 +80,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    */
   { "Creative Zen Vision", 0x041e, 0x411f, DEVICE_FLAG_NONE },
   { "Creative Portable Media Center", 0x041e, 0x4123, DEVICE_FLAG_NONE },
-  { "Creative Zen Xtra (MTP mode)", 0x041e, 0x4128, DEVICE_FLAG_NONE },
+  { "Creative Zen Xtra (MTP mode)", 0x041e, 0x4128, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   { "Second generation Dell DJ", 0x041e, 0x412f, DEVICE_FLAG_NONE },
   { "Creative Zen Micro (MTP mode)", 0x041e, 0x4130, DEVICE_FLAG_NONE },
   { "Creative Zen Touch (MTP mode)", 0x041e, 0x4131, DEVICE_FLAG_NONE },
@@ -111,11 +111,11 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // get all objects with the getobjectproplist command..
   { "Samsung YH-820", 0x04e8, 0x502e, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Contributed by polux2001@users.sourceforge.net
-  { "Samsung YH-925(-GS)", 0x04e8, 0x502f, DEVICE_FLAG_NONE },
+  { "Samsung YH-925(-GS)", 0x04e8, 0x502f, DEVICE_FLAG_UNLOAD_DRIVER },
   // Contributed by anonymous person on SourceForge
   { "Samsung YH-J70J", 0x04e8, 0x5033, DEVICE_FLAG_UNLOAD_DRIVER },
   // From XNJB user
-  { "Samsung YP-Z5", 0x04e8, 0x503c, DEVICE_FLAG_NONE },
+  { "Samsung YP-Z5", 0x04e8, 0x503c, DEVICE_FLAG_UNLOAD_DRIVER },
   // From XNJB user
   { "Samsung YP-Z5 2GB", 0x04e8, 0x5041, DEVICE_FLAG_NONE },
   // Contributed by anonymous person on SourceForge
@@ -532,7 +532,7 @@ void free_mtpdevice_list(mtpdevice_list_t *devlist)
   while (tmplist != NULL) {
     mtpdevice_list_t *tmp = tmplist;
     tmplist = tmplist->next;
-    // Do not free() the fields (ptp_usb, parms)! These are used elsewhere.
+    // Do not free() the fields (ptp_usb, params)! These are used elsewhere.
     free(tmp);
   }
   return;
@@ -1808,15 +1808,6 @@ static LIBMTP_error_number_t configure_usb_devices(mtpdevice_list_t *devicelist)
       fprintf(stderr, "LIBMTP PANIC: Could not open session! "
 	      "(Return code %d)\n  Try to reset the device.\n",
 	      ret);
-      usb_release_interface(tmplist->ptp_usb->handle,
-			    (int) tmplist->ptp_usb->interface);
-      return LIBMTP_ERROR_CONNECTING;
-    }
-  
-    /* It is permissible to call this before opening the session */
-    if (ptp_getdeviceinfo(tmplist->params,
-			  &tmplist->params->deviceinfo) != PTP_RC_OK) {
-      fprintf(stderr, "LIBMTP PANIC: Could not get device info!\n");
       usb_release_interface(tmplist->ptp_usb->handle,
 			    (int) tmplist->ptp_usb->interface);
       return LIBMTP_ERROR_CONNECTING;
