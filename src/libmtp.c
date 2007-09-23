@@ -145,6 +145,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 				uint32_t const no_tracks);
 static MTPProperties *get_new_mtp_prop_entry(MTPProperties**, int*);
 static void destroy_mtp_prop_list(MTPProperties *proplist, int nrofprops);
+static void destroy_mtp_prop(MTPProperties *prop);
 static void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t handle);
 static void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t handle);
 
@@ -3643,14 +3644,24 @@ static void destroy_mtp_prop_list(MTPProperties *props, int nrofprops)
   int i;
   MTPProperties *prop = props;
 
-  for (i=0;i<nrofprops;i++,prop++) {
-    if (prop->datatype == PTP_DTC_STR && prop->propval.str != NULL)
-    {
-      free(prop->propval.str);
-      prop->propval.str = NULL;
-    }
-  }
+  for (i=0;i<nrofprops;i++,prop++)
+    destroy_mtp_prop(prop);
   free(props);
+}
+
+static void destroy_mtp_prop(MTPProperties *prop)
+{
+  if (!prop)
+    return;
+  
+  if (prop->datatype == PTP_DTC_STR && prop->propval.str != NULL)
+    free(prop->propval.str);
+  else if ((prop->datatype == PTP_DTC_AINT8 || prop->datatype == PTP_DTC_AINT16 ||
+            prop->datatype == PTP_DTC_AINT32 || prop->datatype == PTP_DTC_AINT64 || prop->datatype == PTP_DTC_AINT128 ||
+            prop->datatype == PTP_DTC_AUINT8 || prop->datatype == PTP_DTC_AUINT16 ||
+            prop->datatype == PTP_DTC_AUINT32 || prop->datatype == PTP_DTC_AUINT64 || prop->datatype ==  PTP_DTC_AUINT128)
+            && prop->propval.a.v != NULL)
+    free(prop->propval.a.v);
 }
 
 /**
@@ -4332,6 +4343,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
       // TODO: return error of which property we couldn't set
       add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
 			      "could not set object property list.");
+      free(properties);
       return -1;
     }
     
@@ -4496,10 +4508,10 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
       }
       ptp_free_objectpropdesc(&opd);
     }
-    free(properties);
   } else {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
                             "Your device doesn't seem to support any known way of setting metadata.");
+    free(properties);
     return -1;
   }
   
@@ -4508,6 +4520,8 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
     update_metadata_cache(device, metadata->item_id);
   }
 
+  free(properties);
+  
   return 0;
 }
 
@@ -4555,8 +4569,7 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
       MTPProperties *prop = &params->props[i];
       if (prop->ObjectHandle == object_id)
       {
-        if (prop->datatype == PTP_DTC_STR && prop->propval.str != NULL)
-          free(prop->propval.str);
+        destroy_mtp_prop(prop);
         memcpy (prop,prop+1,(params->nrofprops-i-1)*sizeof(*prop));
         nrofoldprops++;
       }
@@ -5330,6 +5343,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
         // TODO: return error of which property we couldn't set
         add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "update_abstract_list(): "
                                 "could not set object property list.");
+        free(properties);
         return -1;
       }
     }
@@ -5376,10 +5390,10 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 	break;
       }
     }
-    free(properties);
   } else {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "update_abstract_list(): "
                             "Your device doesn't seem to support any known way of setting metadata.");
+    free(properties);
     return -1;
   }
   
@@ -5389,6 +5403,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
     ret = ptp_mtp_setobjectreferences (params, objecthandle, (uint32_t *) tracks, no_tracks);
     if (ret != PTP_RC_OK) {
       add_ptp_error_to_errorstack(device, ret, "update_abstract_list(): could not add tracks as object references.");
+      free(properties);
       return -1;
     }
   }
@@ -5396,6 +5411,9 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
   if (params->props != NULL) {
     update_metadata_cache(device, objecthandle);
   }
+  
+  free(properties);
+  
   return 0;
 }
 
@@ -6031,8 +6049,7 @@ void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t handle)
     MTPProperties *prop = &params->props[i];
     if (prop->ObjectHandle == handle)
     {
-      if (prop->datatype == PTP_DTC_STR && prop->propval.str != NULL)
-        free(prop->propval.str);
+      destroy_mtp_prop(prop);
       memcpy (prop,prop+1,(params->nrofprops-i-1)*sizeof(*prop));
       nrofoldprops++;
     }
