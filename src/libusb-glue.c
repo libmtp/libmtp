@@ -370,6 +370,9 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * RCA / Thomson
    */
   {"Thomson Opal / RCA Lyra MC4002", 0x069b, 0x0777, DEVICE_FLAG_NONE },
+  // From Svenna <svenna@svenna.de>
+  // Not confirmed to be MTP.
+  {"Thomson scenium E308", 0x069b, 0x3028, DEVICE_FLAG_NONE },
   
   /*
    * NTT DoCoMo
@@ -1651,6 +1654,7 @@ static void close_usb(PTP_USB* ptp_usb)
 #endif
   // Added to clear some stuff on the OUT endpoint
   // TODO: is this good on the Mac too?
+  // HINT: some devices may need that you comment these two out too.
   usb_resetep(ptp_usb->handle, ptp_usb->outep);
   usb_release_interface(ptp_usb->handle, (int) ptp_usb->interface);
   // Brutally reset device
