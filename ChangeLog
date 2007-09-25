@@ -1,3 +1,10 @@
+2007-09-25  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.h: add a new device flag for devices that don't
+	  like it if you release the interface (or try to clear endpoints).
+	* src/libusb-glue.c: dito, implement this flag, tag all SanDisk
+	  Sansa devices with it except for the Linux-based Sansa Connect.
+
 2007-09-23  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: updated some device flags, removed second

@@ -186,31 +186,38 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    */
   // Reported by Brian Robison
   { "SanDisk Sansa m230/m240", 0x0781, 0x7400, 
-    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL},
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by tangent_@users.sourceforge.net
   { "SanDisk Sansa c150", 0x0781, 0x7410, 
-    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // From libgphoto2 source
   // Reported by <gonkflea@users.sourceforge.net>
   // Reported by Mike Owen <mikeowen@computerbaseusa.com>
   { "SanDisk Sansa e200/e250/e260/e270/e280", 0x0781, 0x7420, 
-    DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+    DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by XNJB user
   { "SanDisk Sansa e280", 0x0781, 0x7421, 
-    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by anonymous user at sourceforge.net
   { "SanDisk Sansa c240/c250", 0x0781, 0x7450, 
-    DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+    DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by XNJB user, and Miguel de Icaza <miguel@gnome.org>
   // This has no dual-mode so no need to unload any driver.
   // This is a Linux based device!
   { "SanDisk Sansa Connect", 0x0781, 0x7480, DEVICE_FLAG_NONE },
   // Reported by Troy Curtis Jr.
   { "SanDisk Sansa Express", 0x0781, 0x7460, 
-    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | 
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by XNJB user
   { "SanDisk Sansa m240", 0x0781, 0x7430, 
-    DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+    DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   
 
   /*
@@ -1648,17 +1655,17 @@ static void close_usb(PTP_USB* ptp_usb)
 {
   // Commented out since it was confusing some
   // devices to do these things.
-#if 0
-  // Clear any stalled endpoints
-  clear_stall(ptp_usb);
-  // Clear halts on any endpoints
-  clear_halt(ptp_usb);
-#endif
-  // Added to clear some stuff on the OUT endpoint
-  // TODO: is this good on the Mac too?
-  // HINT: some devices may need that you comment these two out too.
-  usb_resetep(ptp_usb->handle, ptp_usb->outep);
-  usb_release_interface(ptp_usb->handle, (int) ptp_usb->interface);
+  if (!(ptp_usb->device_flags & DEVICE_FLAG_NO_RELEASE_INTERFACE)) {
+    // Clear any stalled endpoints
+    clear_stall(ptp_usb);
+    // Clear halts on any endpoints
+    clear_halt(ptp_usb);
+    // Added to clear some stuff on the OUT endpoint
+    // TODO: is this good on the Mac too?
+    // HINT: some devices may need that you comment these two out too.
+    usb_resetep(ptp_usb->handle, ptp_usb->outep);
+    usb_release_interface(ptp_usb->handle, (int) ptp_usb->interface);
+  }
   // Brutally reset device
   // TODO: is this good on the Mac too?
   usb_reset(ptp_usb->handle);

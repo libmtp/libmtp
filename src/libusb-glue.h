@@ -109,6 +109,14 @@
  * filesystem being used intrinsically on the device.
  */
 #define DEVICE_FLAG_ONLY_7BIT_FILENAMES 0x00000020
+/**
+ * This flag indicates that the device will lock up if you
+ * try to get status of endpoints and/or release the interface
+ * when closing the device. This fixes problems with SanDisk
+ * Sansa devices especially. It may be a side-effect of a
+ * Windows behaviour of never releasing interfaces.
+ */
+#define DEVICE_FLAG_NO_RELEASE_INTERFACE 0x00000040
 
 /**
  * Internal USB struct.
