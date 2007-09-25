@@ -78,26 +78,28 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * Initially the Creative devices was all we supported so these are
    * the most thoroughly tested devices.
    */
-  { "Creative Zen Vision", 0x041e, 0x411f, DEVICE_FLAG_NONE },
+  { "Creative ZEN Vision", 0x041e, 0x411f, DEVICE_FLAG_NONE },
   { "Creative Portable Media Center", 0x041e, 0x4123, DEVICE_FLAG_NONE },
-  { "Creative Zen Xtra (MTP mode)", 0x041e, 0x4128, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  { "Creative ZEN Xtra (MTP mode)", 0x041e, 0x4128, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   { "Second generation Dell DJ", 0x041e, 0x412f, DEVICE_FLAG_NONE },
-  { "Creative Zen Micro (MTP mode)", 0x041e, 0x4130, DEVICE_FLAG_NONE },
-  { "Creative Zen Touch (MTP mode)", 0x041e, 0x4131, DEVICE_FLAG_NONE },
+  { "Creative ZEN Micro (MTP mode)", 0x041e, 0x4130, DEVICE_FLAG_NONE },
+  { "Creative ZEN Touch (MTP mode)", 0x041e, 0x4131, DEVICE_FLAG_NONE },
   { "Dell Pocket DJ (MTP mode)", 0x041e, 0x4132, DEVICE_FLAG_NONE },
-  { "Creative Zen Sleek (MTP mode)", 0x041e, 0x4137, DEVICE_FLAG_NONE },
-  { "Creative Zen MicroPhoto", 0x041e, 0x413c, DEVICE_FLAG_NONE },
-  { "Creative Zen Sleek Photo", 0x041e, 0x413d, DEVICE_FLAG_NONE },
-  { "Creative Zen Vision:M", 0x041e, 0x413e, DEVICE_FLAG_NONE },
+  { "Creative ZEN Sleek (MTP mode)", 0x041e, 0x4137, DEVICE_FLAG_NONE },
+  { "Creative ZEN MicroPhoto", 0x041e, 0x413c, DEVICE_FLAG_NONE },
+  { "Creative ZEN Sleek Photo", 0x041e, 0x413d, DEVICE_FLAG_NONE },
+  { "Creative ZEN Vision:M", 0x041e, 0x413e, DEVICE_FLAG_NONE },
   // Reported by marazm@o2.pl
-  { "Creative Zen V", 0x041e, 0x4150, DEVICE_FLAG_NONE },
+  { "Creative ZEN V", 0x041e, 0x4150, DEVICE_FLAG_NONE },
   // Reported by danielw@iinet.net.au
-  { "Creative Zen Vision:M (DVP-HD0004)", 0x041e, 0x4151, DEVICE_FLAG_NONE },
+  { "Creative ZEN Vision:M (DVP-HD0004)", 0x041e, 0x4151, DEVICE_FLAG_NONE },
   // Reported by Darel on the XNJB forums
-  { "Creative Zen V Plus", 0x041e, 0x4152, DEVICE_FLAG_NONE },
-  { "Creative Zen Vision W", 0x041e, 0x4153, DEVICE_FLAG_NONE },
+  { "Creative ZEN V Plus", 0x041e, 0x4152, DEVICE_FLAG_NONE },
+  { "Creative ZEN Vision W", 0x041e, 0x4153, DEVICE_FLAG_NONE },
+  // Reported by Paul Kurczaba <paul@kurczaba.com>
+  { "Creative ZEN 8GB", 0x041e, 0x4157, DEVICE_FLAG_NONE },
   // Reported by Ringofan <mcroman@users.sourceforge.net>
-  { "Creative Zen V 2GB", 0x041e, 0x4158, DEVICE_FLAG_NONE },
+  { "Creative ZEN V 2GB", 0x041e, 0x4158, DEVICE_FLAG_NONE },
 
   /*
    * Samsung
