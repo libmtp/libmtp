@@ -97,7 +97,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Creative ZEN V Plus", 0x041e, 0x4152, DEVICE_FLAG_NONE },
   { "Creative ZEN Vision W", 0x041e, 0x4153, DEVICE_FLAG_NONE },
   // Reported by Paul Kurczaba <paul@kurczaba.com>
-  { "Creative ZEN 8GB", 0x041e, 0x4157, DEVICE_FLAG_NONE },
+  { "Creative ZEN 8GB", 0x041e, 0x4157, DEVICE_FLAG_IGNORE_HEADER_ERRORS },
   // Reported by Ringofan <mcroman@users.sourceforge.net>
   { "Creative ZEN V 2GB", 0x041e, 0x4158, DEVICE_FLAG_NONE },
 
@@ -1294,6 +1294,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 	uint16_t ret;
 	PTPUSBBulkContainer usbdata;
 	unsigned long	written;
+	PTP_USB *ptp_usb = (PTP_USB *) params->data;
 
 	memset(&usbdata,0,sizeof(usbdata));
 	do {
@@ -1303,14 +1304,19 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		if (ret!=PTP_RC_OK) {
 			ret = PTP_ERROR_IO;
 			break;
-		} else
+		}
 		if (dtoh16(usbdata.type)!=PTP_USB_CONTAINER_DATA) {
 			ret = PTP_ERROR_DATA_EXPECTED;
 			break;
-		} else
+		}
 		if (dtoh16(usbdata.code)!=ptp->Code) {
-			ret = dtoh16(usbdata.code);
-			break;
+			if (ptp_usb->device_flags & DEVICE_FLAG_IGNORE_HEADER_ERRORS) {
+				ptp_debug (params, "ptp2/ptp_usb_getdata: detected a broken "
+					   "PTP header, expect problems! (But continuing)");
+			} else {
+				ret = dtoh16(usbdata.code);
+				break;
+			}
 		}
 		if (usbdata.length == 0xffffffffU) {
 			/* stuff data directly to passed data handler */
@@ -1354,12 +1360,11 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 				       (uint8_t *) &usbdata + packlen, surplen);
 				params->response_packet_size = surplen;
 			/* Ignore reading one extra byte if device flags have been set */
-			} else if( !(((PTP_USB *)params->data)->device_flags &
-																						DEVICE_FLAG_NO_ZERO_READS &&
-									rlen - dtoh32(usbdata.length) == 1)) {
-				ptp_debug (params, "ptp2/ptp_usb_getdata: read %d bytes "
-					   "too much, expect problems!", 
-					   rlen - dtoh32(usbdata.length));
+			} else if(( !(ptp_usb->device_flags & DEVICE_FLAG_NO_ZERO_READS) &&
+				    rlen - dtoh32(usbdata.length) == 1)) {
+			  ptp_debug (params, "ptp2/ptp_usb_getdata: read %d bytes "
+				     "too much, expect problems!", 
+				     rlen - dtoh32(usbdata.length));
 			}
 			rlen = packlen;
 		}
@@ -1381,7 +1386,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 			&written
 		);
     
-		if (((PTP_USB *)params->data)->device_flags & DEVICE_FLAG_NO_ZERO_READS && 
+		if (ptp_usb->device_flags & DEVICE_FLAG_NO_ZERO_READS && 
 		    len+PTP_USB_BULK_HDR_LEN == PTP_USB_BULK_HS_MAX_PACKET_LEN_READ) {
 #ifdef ENABLE_USB_BULK_DEBUG
 		  printf("Reading in extra terminating byte\n");
@@ -1389,7 +1394,6 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		  // need to read in extra byte and discard it
 		  int result = 0;
 		  char byte = 0;
-		  PTP_USB *ptp_usb = (PTP_USB *)params->data;
 		  result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, &byte, 1, ptpcam_usb_timeout);
 		  
 		  if (result != 1)
@@ -1400,7 +1404,6 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 #endif
       int zeroresult = 0;
       char zerobyte = 0;
-      PTP_USB *ptp_usb = (PTP_USB *)params->data;
       zeroresult = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, &zerobyte, 0, ptpcam_usb_timeout);
       
       if (zeroresult != 0)

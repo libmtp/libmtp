@@ -117,6 +117,18 @@
  * Windows behaviour of never releasing interfaces.
  */
 #define DEVICE_FLAG_NO_RELEASE_INTERFACE 0x00000040
+/**
+ * This falg was introduced with the advent of Creative ZEN
+ * 8GB. The device sometimes return a broken PTP header
+ * like this: < 1502 0000 0200 01d1 02d1 01d2 >
+ * the latter 6 bytes (representing "code" and "transaction ID")
+ * contain junk. This is breaking the PTP/MTP spec but works
+ * on Windows anyway, probably because the Windows implementation
+ * does not check that these bytes are valid. To interoperate
+ * with devices like this, we need this flag to emulate the 
+ * Windows bug.
+ */
+#define DEVICE_FLAG_IGNORE_HEADER_ERRORS 0x00000080
 
 /**
  * Internal USB struct.

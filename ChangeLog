@@ -1,3 +1,11 @@
+2007-09-28  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.h: introduce a new device flag for devices that
+	  have broken PTP headers, first encountered on the Creative
+	  ZEN 8GB.
+	* src/libusb-glue.c: attempt to begin to work around the broken
+	  PTP headers.
+
 2007-09-25  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.h: add a new device flag for devices that don't
