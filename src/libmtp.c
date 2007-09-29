@@ -929,6 +929,8 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(mtpdevice_list_t *devices)
       tmplist->params = NULL;
       
       /* We have freed a bit of memory so try again with the next device */
+      tmplist = tmplist->next;
+      i++;
       continue;
     }
     
@@ -952,6 +954,8 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(mtpdevice_list_t *devices)
       free(mtp_device);
       
       /* try again with the next device */
+      tmplist = tmplist->next;
+      i++;
       continue;
     }
     
@@ -1067,6 +1071,10 @@ LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **device_l
 
   /* TODO: Add wifi device access here */
   free_mtpdevice_list(devices);
+  
+  /* We have found some devices but create failed */
+  if (*device_list == NULL)
+    return LIBMTP_ERROR_CONNECTING;
 
   return LIBMTP_ERROR_NONE;
 }

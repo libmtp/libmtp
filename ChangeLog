@@ -1,3 +1,7 @@
+2007-09-29  Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: avoid crash on failed connect
+
 2007-09-28  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.h: introduce a new device flag for devices that
