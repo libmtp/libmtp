@@ -164,6 +164,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Philips HDD085/00 and HDD082/17", 0x0471, 0x014d, DEVICE_FLAG_NONE },
   // from XNJB forum
   { "Philips GoGear SA9200", 0x0471, 0x014f, DEVICE_FLAG_NONE },
+  // From John Coppens <jcoppens@users.sourceforge.net>
+  { "Philips SA1115/55", 0x0471, 0x0164, DEVICE_FLAG_NONE },
   // From Gerhard Mekenkamp
   { "Philips GoGear Audio", 0x0471, 0x0165, DEVICE_FLAG_NONE },
   // from David Holm <wormie@alberg.dk>
@@ -378,6 +380,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   /*
    * RCA / Thomson
    */
+  // From kiki <omkiki@users.sourceforge.net>
+  {"Thomson EM28 Series", 0x069b, 0x0774, DEVICE_FLAG_NONE },
   {"Thomson Opal / RCA Lyra MC4002", 0x069b, 0x0777, DEVICE_FLAG_NONE },
   // From Svenna <svenna@svenna.de>
   // Not confirmed to be MTP.
@@ -427,7 +431,9 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   /*
    * Insignia, dual-mode.
    */
-  { "Insignia NS-DV45", 0x19ff, 0x0303, DEVICE_FLAG_UNLOAD_DRIVER },
+  {"Insignia NS-DV45", 0x19ff, 0x0303, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by "brad" (anonymous, sourceforge)
+  {"Insignia Pilot 4GB", 0x19ff, 0x0309, DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
    * LG Electronics
