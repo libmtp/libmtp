@@ -214,6 +214,18 @@ Get 0xc bytes from the device:
   Return Code ("RC") = 0x2001, PTP_RC_OK, all went fine.
   Transaction# 0x00000023.  
 
+If you want to compare the Windows behaviour with a similar
+operation using libmtp you can go into the libusb-glue.c file
+and uncomment the row that reads:
+
+//#define ENABLE_USB_BULK_DEBUG
+
+(I.e. remove the two //.)
+
+This will make libmtp print out a hex dump of every bulk USB
+transaction. The bulk transactions contain all the PTP/MTP layer
+data, which is usually where the problems appear.
+
 
 Devices does not work - last resort:
 ------------------------------------
