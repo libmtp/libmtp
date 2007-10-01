@@ -357,10 +357,21 @@ cannot test your solution.
   problematic. Please upgrade to as new firmware as you can get.
   (Yes this requires some kind of Windows Installation I think.)
 
-* Very few devices that implement GetObjectPropList (0x9805) will
-  return the entire object list if you request a list for object
-  0xffffffffu. (But they should.) So we're currently not using 
-  that feature.
+* Some devices that implement GetObjectPropList (0x9805) will
+  not return the entire object list if you request a list for object
+  0xffffffffu. (But they should.) So they may need the special
+  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL.
+
+* Some (smaller) subset of devices cannot even get all the 
+  properties for a single object in one go, these need the
+  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST. Currently only the
+  iriver devices seem to have this bug.
+
+* The Toshiba Gigabeat S (and probably its sibling the 
+  Microsoft Zune and other Toshiba devices) will only display
+  album information tags for a song in case there is also
+  an abstract album (created with the album interface) with
+  the exact same name.
 
 
 Lost symbols
