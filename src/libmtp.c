@@ -902,6 +902,7 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(mtpdevice_list_t *devices)
   
   while (tmplist != NULL) {
     LIBMTP_mtpdevice_t *mtp_device;
+    uint8_t bs = 0;
     
     /* Clear any handlers */
     tmplist->params->handles.Handler = NULL;
@@ -958,6 +959,50 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(mtpdevice_list_t *devices)
       i++;
       continue;
     }
+
+    /* Determine if the object size supported is 32 or 64 bit wide */
+    for (i=0;i<current_params->deviceinfo.ImageFormats_len;i++) {
+      PTPObjectPropDesc opd;
+      
+      if (ptp_mtp_getobjectpropdesc(current_params, 
+				    PTP_OPC_ObjectSize, 
+				    current_params->deviceinfo.ImageFormats[i], 
+				    &opd) != PTP_RC_OK) {
+	printf("LIBMTP PANIC: create_usb_mtp_devices(): "
+	       "could not inspect object property descriptions!\n");
+      } else {
+	if (opd.DataType == PTP_DTC_UINT32) {
+	  if (bs == 0) {
+	    bs = 32;
+	  } else if (bs != 32) {
+	    printf("LIBMTP PANIC: create_usb_mtp_devices(): "
+		   "different objects support different object sizes!\n");
+	    bs = 0;
+	    break;
+	  }
+	} else if (opd.DataType == PTP_DTC_UINT64) {
+	  if (bs == 0) {
+	    bs = 64;
+	  } else if (bs != 64) {
+	    printf("LIBMTP PANIC: create_usb_mtp_devices(): "
+		   "different objects support different object sizes!\n");
+	    bs = 0;
+	    break;
+	  }
+	} else {
+	  // Ignore if other size.
+	  printf("LIBMTP PANIC: create_usb_mtp_devices(): "
+		 "awkward object size data type: %04x\n", opd.DataType);
+	  bs = 0;
+	  break;
+	}
+      }
+    }
+    if (bs == 0) {
+      // Could not detect object bitsize, assume 32 bits
+      bs = 32;
+    }
+    mtp_device->object_bitsize = bs;
     
     /* No Errors yet for this device */
     mtp_device->errorstack = NULL;
@@ -1326,7 +1371,11 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device,
       // We loose precision here, up to 32 bits! However the commands that
       // retrieve metadata for files and tracks will make sure that the
       // PTP_OPC_ObjectSize is read in and duplicated again.
-      params->objectinfo[i].ObjectCompressedSize = (uint32_t) prop->propval.u64;
+      if (device->object_bitsize == 64) {
+	params->objectinfo[i].ObjectCompressedSize = (uint32_t) prop->propval.u64;
+      } else {
+	params->objectinfo[i].ObjectCompressedSize = prop->propval.u32;
+      }
       break;
     case PTP_OPC_StorageID:
       params->objectinfo[i].StorageID = prop->propval.u32;
@@ -1721,6 +1770,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
   printf("   Serial number: %s\n", params->deviceinfo.SerialNumber);
   printf("   Vendor extension ID: 0x%08x\n", params->deviceinfo.VendorExtensionID);
   printf("   Vendor extension description: %s\n", params->deviceinfo.VendorExtensionDesc);
+  printf("   Detected object size: %d bits\n", device->object_bitsize);
   printf("Supported operations:\n");
   for (i=0;i<params->deviceinfo.OperationsSupported_len;i++) {
     char txt[256];
@@ -2674,27 +2724,10 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
 
 	// Pick ObjectSize here...
 	if (prop->property == PTP_OPC_ObjectSize) {
-	  PTPObjectPropDesc opd;
-	    
-	  // This may already be set, however if we can get it from
-	  // the individual object, then we do that. However some devices
-	  // will give a 32bit size and some will give a 64bit size!
-	  ret = ptp_mtp_getobjectpropdesc(params, 
-					  PTP_OPC_ObjectSize, 
-					  oi->ObjectFormat, 
-					  &opd);
-	  if (ret != PTP_RC_OK) {
-	    // Silently ignore, this may be an unsupported file type for example.
-	    break;
-	  }
-	  if (opd.DataType == PTP_DTC_UINT32) {
-	    file->filesize = prop->propval.u32;
-	  } else if (opd.DataType == PTP_DTC_UINT64) {
+	  if (device->object_bitsize == 64) {
 	    file->filesize = prop->propval.u64;
 	  } else {
-	    // Ignore if other size.
-	    printf("LIBMTP PANIC: LIBMTP_Get_Filelisting_With_Callback(): "
-		   "awkward object size data type: %04x\n", opd.DataType);
+	    file->filesize = prop->propval.u32;
 	  }
 	  break;
 	}
@@ -2725,27 +2758,10 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
             break;
           // Pick ObjectSize here...
           if (prop->property == PTP_OPC_ObjectSize) {
-	    PTPObjectPropDesc opd;
-	    
-	    // This may already be set, however if we can get it from
-	    // the individual object, then we do that. However some devices
-	    // will give a 32bit size and some will give a 64bit size!
-	    ret = ptp_mtp_getobjectpropdesc(params, 
-					    PTP_OPC_ObjectSize, 
-					    oi->ObjectFormat, 
-					    &opd);
-	    if (ret != PTP_RC_OK) {
-	      // Silently ignore, this may be an unsupported file type for example.
-	      break;
-	    }
-	    if (opd.DataType == PTP_DTC_UINT32) {
-	      file->filesize = prop->propval.u32;
-	    } else if (opd.DataType == PTP_DTC_UINT64) {
+	    if (device->object_bitsize == 64) {
 	      file->filesize = prop->propval.u64;
 	    } else {
-	      // Ignore if other size.
-	      printf("LIBMTP PANIC: LIBMTP_Get_Filelisting_With_Callback(): "
-		     "awkward object size data type: %04x\n", opd.DataType);
+	      file->filesize = prop->propval.u32;
 	    }
             break;
           }
@@ -2767,29 +2783,10 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
 	for (i=0;i<propcnt;i++) {
 	  switch (props[i]) {
 	  case PTP_OPC_ObjectSize:
-	    {
-	      PTPObjectPropDesc opd;
-	      
-	      // This may already be set, however if we can get it from
-	      // the individual object, then we do that. However some devices
-	      // will give a 32bit size and some will give a 64bit size!
-	      ret = ptp_mtp_getobjectpropdesc(params, 
-					      PTP_OPC_ObjectSize, 
-					      oi->ObjectFormat, 
-					      &opd);
-	      if (ret != PTP_RC_OK) {
-		// Silently ignore, this may be an unsupported file type for example.
-		break;
-	      }
-	      if (opd.DataType == PTP_DTC_UINT32) {
-		file->filesize = get_u32_from_object(device, file->item_id, PTP_OPC_ObjectSize, 0);
-	      } else if (opd.DataType == PTP_DTC_UINT64) {
-		file->filesize = get_u64_from_object(device, file->item_id, PTP_OPC_ObjectSize, 0);
-	      } else {
-		// Ignore if other size.
-		printf("LIBMTP PANIC: LIBMTP_Get_Filelisting_With_Callback(): "
-		       "awkward object size data type: %04x\n", opd.DataType);
-	      }
+	    if (device->object_bitsize == 64) {
+	      file->filesize = get_u64_from_object(device, file->item_id, PTP_OPC_ObjectSize, 0);
+	    } else {
+	      file->filesize = get_u32_from_object(device, file->item_id, PTP_OPC_ObjectSize, 0);
 	    }
 	    break;
 	  default:
@@ -2891,7 +2888,11 @@ LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *device, uint32_t cons
 	if (prop->property == PTP_OPC_ObjectSize) {
 	  // This may already be set, but this 64bit precision value 
 	  // is better than the PTP 32bit value, so let it override.
-	  file->filesize = prop->propval.u64;
+	  if (device->object_bitsize == 64) {
+	    file->filesize = prop->propval.u64;
+	  } else {
+	    file->filesize = prop->propval.u32;
+	  }
 	  break;
 	}
       }
@@ -2916,7 +2917,11 @@ LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *device, uint32_t cons
 	if ((prop->ObjectHandle == file->item_id) && (prop->property == PTP_OPC_ObjectSize)) {
 	  // This may already be set, but this 64bit precision value 
 	  // is better than the PTP 32bit value, so let it override.
-	  file->filesize = prop->propval.u64;
+	  if (device->object_bitsize == 64) {
+	    file->filesize = prop->propval.u64;
+	  } else {
+	    file->filesize = prop->propval.u32;
+	  }
 	  break;
 	}
 	prop ++;
@@ -2935,7 +2940,11 @@ LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *device, uint32_t cons
 	for (i=0;i<propcnt;i++) {
 	  switch (props[i]) {
 	  case PTP_OPC_ObjectSize:
-	    file->filesize = get_u64_from_object(device, file->item_id, PTP_OPC_ObjectSize, 0);
+	    if (device->object_bitsize == 64) {
+	      file->filesize = get_u64_from_object(device, file->item_id, PTP_OPC_ObjectSize, 0);
+	    } else {
+	      file->filesize = get_u32_from_object(device, file->item_id, PTP_OPC_ObjectSize, 0);
+	    }
 	    break;
 	  default:
 	    break;
@@ -3026,7 +3035,7 @@ void LIBMTP_destroy_track_t(LIBMTP_track_t *track)
 /**
  * This function maps and copies a property onto the track metadata if applicable.
  */
-static void pick_property_to_track_metadata(PTPParams *params, MTPProperties *prop, LIBMTP_track_t *track)
+static void pick_property_to_track_metadata(LIBMTP_mtpdevice_t *device, MTPProperties *prop, LIBMTP_track_t *track)
 {
   switch (prop->property) {
   case PTP_OPC_Name:
@@ -3088,31 +3097,10 @@ static void pick_property_to_track_metadata(PTPParams *params, MTPProperties *pr
     track->usecount = prop->propval.u32;
     break;
   case PTP_OPC_ObjectSize:
-    {
-      PTPObjectPropDesc opd;
-      uint16_t ret;
-      
-      // This may already be set, however if we can get it from
-      // the individual object, then we do that. However some devices
-      // will give a 32bit size and some will give a 64bit size!
-      ret = ptp_mtp_getobjectpropdesc(params, 
-				      PTP_OPC_ObjectSize, 
-				      map_libmtp_type_to_ptp_type(track->filetype), 
-				      &opd);
-      if (ret != PTP_RC_OK) {
-	printf("LIBMTP PANIC: pick_property_to_track_metadata(): "
-	       "could not get object prop desc.\n");
-	break;
-      }
-      if (opd.DataType == PTP_DTC_UINT32) {
-	track->filesize = prop->propval.u32;
-      } else if (opd.DataType == PTP_DTC_UINT64) {
-	track->filesize = prop->propval.u64;
-      } else {
-	// Ignore if other size.
-	printf("LIBMTP PANIC: pick_property_to_track_metadata(): "
-	       "awkward object size data type: %04x\n", opd.DataType);
-      }
+    if (device->object_bitsize == 64) {
+      track->filesize = prop->propval.u64;
+    } else {
+      track->filesize = prop->propval.u32;
     }
     break;
   default:
@@ -3145,7 +3133,7 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
     for (i=0;(i<params->nrofprops) && (prop->ObjectHandle != track->item_id);i++,prop++)
       /*empty*/;
     for (i=0;(i<params->nrofprops) && (prop->ObjectHandle == track->item_id);i++,prop++) {
-      pick_property_to_track_metadata(params, prop, track);
+      pick_property_to_track_metadata(device, prop, track);
     }
   } else if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjPropList)
 	     && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST)) {
@@ -3166,7 +3154,7 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
     prop = props;
     for (i=0;i<nrofprops;i++,prop++) {
       if (prop->ObjectHandle == track->item_id)
-        pick_property_to_track_metadata(params, prop, track);
+        pick_property_to_track_metadata(device, prop, track);
     }
     destroy_mtp_prop_list(props, nrofprops);
   } else {
@@ -3226,25 +3214,10 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
 	  track->usecount = get_u32_from_object(device, track->item_id, PTP_OPC_UseCount, 0);
 	  break;
 	case PTP_OPC_ObjectSize:
-	  {
-	    PTPObjectPropDesc opd;
-
-	    // This may already be set, but if the 64bit precision value 
-	    // is available it is better than the PTP 32bit value, so let it override.
-	    ret = ptp_mtp_getobjectpropdesc(params, PTP_OPC_ObjectSize, objectformat, &opd);
-	    if (ret != PTP_RC_OK) {
-	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "get_track_metadata(): "
-				      "could not get property description.");
-	      break;
-	    }
-	    if (opd.DataType == PTP_DTC_UINT32) {
-	      track->filesize = get_u32_from_object(device, track->item_id, PTP_OPC_ObjectSize, 0);
-	    } else if (opd.DataType == PTP_DTC_UINT64) {
-	      track->filesize = get_u64_from_object(device, track->item_id, PTP_OPC_ObjectSize, 0);
-	    } else {
-	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "get_track_metadata(): "
-				      "file size is of odd type, not UINT32, not UINT64.");
-	    }
+	  if (device->object_bitsize == 64) {
+	    track->filesize = get_u64_from_object(device, track->item_id, PTP_OPC_ObjectSize, 0);
+	  } else {
+	    track->filesize = (uint64_t) get_u32_from_object(device, track->item_id, PTP_OPC_ObjectSize, 0);
 	  }
 	  break;
 	}

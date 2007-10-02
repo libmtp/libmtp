@@ -177,10 +177,10 @@ struct LIBMTP_error_struct {
  * Main MTP device object struct
  */
 struct LIBMTP_mtpdevice_struct {
-  /** Interface number of this device 
-   * USED FOR NOTHING, RETIRE AT NEXT INTERFACE BUMP
+  /**
+   * Object bitsize, typically 32 or 64.
    */
-  uint8_t interface_number;
+  uint8_t object_bitsize;
   /**
    * Parameters for this device, must be cast into
    * \c (PTPParams*) before internal use.
