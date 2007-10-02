@@ -2,7 +2,8 @@
 
 	* src/libmtp.c: devices which represented file size with a
 	  32bit value (some Creative devices) would return a bananas
-	  file size. Fixed it up by recycling the uint8_t "interface" 
+	  file size. Fixed it up by...
+	* src/libmtp.h.in: recycling the uint8_t "interface" 
 	  field in the device struct as a holder of the object size 
 	  for the device. This will make the new library binary 
 	  compatible with version 0.2.1 since no-one should *ever* 
