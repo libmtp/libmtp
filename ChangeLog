@@ -1,3 +1,11 @@
+2007-10-02  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: devices which represented file size with a
+	  32bit value (some Creative devices) would return a bananas
+	  file size. Fixed it up at the cost of many, many OPD 
+	  retrieveals.
+	* examples/files.c: display 64bit file sizes in hex correctly.
+
 2007-09-29  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: avoid crash on failed connect

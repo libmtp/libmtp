@@ -33,9 +33,9 @@ static void dump_fileinfo(LIBMTP_file_t *file)
     printf("   None. (abstract file, size = -1)\n");
   } else {
 #ifdef __WIN32__
-    printf("   File size %llu (0x%08I64X) bytes\n", file->filesize, file->filesize);
+    printf("   File size %llu (0x%016I64X) bytes\n", file->filesize, file->filesize);
 #else
-    printf("   File size %llu (0x%08llX) bytes\n", file->filesize, file->filesize);
+    printf("   File size %llu (0x%016llX) bytes\n", file->filesize, file->filesize);
 #endif
   }
   printf("   Parent ID: %u\n", file->parent_id);
