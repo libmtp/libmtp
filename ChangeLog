@@ -1,3 +1,11 @@
+2007-10-03  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: tag the OLD Creative devices with
+	  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL, after clear
+	  indications that it was broken when retrieveing folders
+	  on all those devices. The newer devices (those supporting
+	  32bit object size) presumably does not have this limitation.
+
 2007-10-02  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: devices which represented file size with a

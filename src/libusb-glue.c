@@ -76,16 +76,18 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   /*
    * Creative Technology
    * Initially the Creative devices was all we supported so these are
-   * the most thoroughly tested devices.
+   * the most thoroughly tested devices. Presumably only the devices
+   * with older firmware (the ones that have 32bit object size) will
+   * need the DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL flag.
    */
-  { "Creative ZEN Vision", 0x041e, 0x411f, DEVICE_FLAG_NONE },
-  { "Creative Portable Media Center", 0x041e, 0x4123, DEVICE_FLAG_NONE },
+  { "Creative ZEN Vision", 0x041e, 0x411f, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  { "Creative Portable Media Center", 0x041e, 0x4123, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   { "Creative ZEN Xtra (MTP mode)", 0x041e, 0x4128, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
-  { "Second generation Dell DJ", 0x041e, 0x412f, DEVICE_FLAG_NONE },
-  { "Creative ZEN Micro (MTP mode)", 0x041e, 0x4130, DEVICE_FLAG_NONE },
+  { "Second generation Dell DJ", 0x041e, 0x412f, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  { "Creative ZEN Micro (MTP mode)", 0x041e, 0x4130, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   { "Creative ZEN Touch (MTP mode)", 0x041e, 0x4131, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
-  { "Dell Pocket DJ (MTP mode)", 0x041e, 0x4132, DEVICE_FLAG_NONE },
-  { "Creative ZEN Sleek (MTP mode)", 0x041e, 0x4137, DEVICE_FLAG_NONE },
+  { "Dell Pocket DJ (MTP mode)", 0x041e, 0x4132, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  { "Creative ZEN Sleek (MTP mode)", 0x041e, 0x4137, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   { "Creative ZEN MicroPhoto", 0x041e, 0x413c, DEVICE_FLAG_NONE },
   { "Creative ZEN Sleek Photo", 0x041e, 0x413d, DEVICE_FLAG_NONE },
   { "Creative ZEN Vision:M", 0x041e, 0x413e, DEVICE_FLAG_NONE },
