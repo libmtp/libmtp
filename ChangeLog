@@ -2,6 +2,10 @@
 
 	* src/libusb-glue.c: rm some pointless confusing defines
 	  inherited from libgphoto2.
+	* configure.ac: bump to 0.2.2
+	* src/Makefile.am: interface to libmtp.so.6.0.2 (compatible)
+	* Release as 0.2.2. Now is as good time as ever. Release
+	  early and release often.
 	
 2007-10-03  Linus Walleij <triad@df.lth.se>
 
