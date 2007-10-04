@@ -44,15 +44,11 @@
 /* To enable debug prints, switch on this */
 //#define ENABLE_USB_BULK_DEBUG
 
-/* OUR APPLICATION USB URB (2MB) ;) */
-#define PTPCAM_USB_URB		2097152
-
 /* this must not be too short - the original 4000 was not long
    enough for big file transfers. I imagine the player spends a 
    bit of time gearing up to receiving lots of data. This also makes
    connecting/disconnecting more reliable */
 #define USB_TIMEOUT		10000
-#define USB_CAPTURE_TIMEOUT	20000
 
 /* USB control message data phase direction */
 #ifndef USB_DP_HTD
