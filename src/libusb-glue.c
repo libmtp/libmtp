@@ -90,11 +90,13 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Creative ZEN Sleek (MTP mode)", 0x041e, 0x4137, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   { "Creative ZEN MicroPhoto", 0x041e, 0x413c, DEVICE_FLAG_NONE },
   { "Creative ZEN Sleek Photo", 0x041e, 0x413d, DEVICE_FLAG_NONE },
-  { "Creative ZEN Vision:M", 0x041e, 0x413e, DEVICE_FLAG_NONE },
+  { "Creative ZEN Vision:M", 0x041e, 0x413e, DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by marazm@o2.pl
   { "Creative ZEN V", 0x041e, 0x4150, DEVICE_FLAG_NONE },
   // Reported by danielw@iinet.net.au
-  { "Creative ZEN Vision:M (DVP-HD0004)", 0x041e, 0x4151, DEVICE_FLAG_NONE },
+  // This version of the Vision:M needs the no release interface flag,
+  // unclear whether the other version above need it too or not.
+  { "Creative ZEN Vision:M (DVP-HD0004)", 0x041e, 0x4151, DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by Darel on the XNJB forums
   { "Creative ZEN V Plus", 0x041e, 0x4152, DEVICE_FLAG_NONE },
   { "Creative ZEN Vision W", 0x041e, 0x4153, DEVICE_FLAG_NONE },
