@@ -1,4 +1,3 @@
->>> ./detect 
 libmtp version: 0.2.1
 
 Attempting to connect device(s)
@@ -153,7 +152,6 @@ Playable File (Object) Types and Object Properties Supported:
    b904: Audible.com Codec
       da01: unknown(da01) UINT32 data type enumeration: 2, 4,  GET/SET
       da02: unknown(da02) array of UINT16 data type ANY 16BIT VALUE form GET/SET
-Unknown OPFF type 4
       da03: unknown(da03) UINT32 data type ANY 32BIT VALUE form READ ONLY
       dc46: Artist STRING data type GET/SET
       dc89: Duration UINT32 data type ANY 32BIT VALUE form GET/SET
@@ -195,7 +193,6 @@ Unknown OPFF type 4
       dc44: Name STRING data type GET/SET
    ba03: Abstract Audio Album
       dc86: RepresentativeSampleData array of UINT8 data type ANY 8BIT VALUE form GET/SET
-Unknown OPFF type 6
       dc81: RepresentativeSampleFormat UINT16 data type enumeration: 14337,  READ ONLY
       dc83: RepresentativeSampleHeight UINT32 data type range: MIN 0, MAX 80, STEP 1 READ ONLY
       dc82: RepresentativeSampleSize UINT32 data type range: MIN 0, MAX 24576, STEP 1 READ ONLY
@@ -211,7 +208,6 @@ Unknown OPFF type 6
    3801: JPEG
       dc88: Height UINT32 data type range: MIN 0, MAX 3328, STEP 1 GET/SET
       dc86: RepresentativeSampleData array of UINT8 data type ANY 8BIT VALUE form GET/SET
-Unknown OPFF type 6
       dc81: RepresentativeSampleFormat UINT16 data type enumeration: 14337,  READ ONLY
       dc83: RepresentativeSampleHeight UINT32 data type range: MIN 0, MAX 96, STEP 1 READ ONLY
       dc82: RepresentativeSampleSize UINT32 data type range: MIN 0, MAX 8192, STEP 1 READ ONLY
@@ -235,7 +231,6 @@ Unknown OPFF type 6
       de9c: VideoBitRate UINT32 data type range: MIN 0, MAX 9500000, STEP 1 READ ONLY
       dc87: Width UINT32 data type range: MIN 0, MAX 720, STEP 1 GET/SET
       dc86: RepresentativeSampleData array of UINT8 data type ANY 8BIT VALUE form GET/SET
-Unknown OPFF type 6
       dc81: RepresentativeSampleFormat UINT16 data type enumeration: 14337,  READ ONLY
       dc83: RepresentativeSampleHeight UINT32 data type range: MIN 0, MAX 96, STEP 1 READ ONLY
       dc82: RepresentativeSampleSize UINT32 data type range: MIN 0, MAX 8192, STEP 1 READ ONLY
@@ -262,7 +257,6 @@ Unknown OPFF type 6
       de9c: VideoBitRate UINT32 data type range: MIN 0, MAX 9500000, STEP 1 READ ONLY
       dc87: Width UINT32 data type range: MIN 0, MAX 720, STEP 1 GET/SET
       dc86: RepresentativeSampleData array of UINT8 data type ANY 8BIT VALUE form GET/SET
-Unknown OPFF type 6
       dc81: RepresentativeSampleFormat UINT16 data type enumeration: 14337,  READ ONLY
       dc83: RepresentativeSampleHeight UINT32 data type range: MIN 0, MAX 96, STEP 1 READ ONLY
       dc82: RepresentativeSampleSize UINT32 data type range: MIN 0, MAX 8192, STEP 1 READ ONLY
@@ -289,7 +283,6 @@ Unknown OPFF type 6
       de9c: VideoBitRate UINT32 data type range: MIN 0, MAX 9500000, STEP 1 READ ONLY
       dc87: Width UINT32 data type range: MIN 0, MAX 720, STEP 1 GET/SET
       dc86: RepresentativeSampleData array of UINT8 data type ANY 8BIT VALUE form GET/SET
-Unknown OPFF type 6
       dc81: RepresentativeSampleFormat UINT16 data type enumeration: 14337,  READ ONLY
       dc83: RepresentativeSampleHeight UINT32 data type range: MIN 0, MAX 96, STEP 1 READ ONLY
       dc82: RepresentativeSampleSize UINT32 data type range: MIN 0, MAX 8192, STEP 1 READ ONLY
@@ -316,7 +309,6 @@ Unknown OPFF type 6
       de9c: VideoBitRate UINT32 data type range: MIN 0, MAX 2500000, STEP 1 READ ONLY
       dc87: Width UINT32 data type range: MIN 0, MAX 720, STEP 1 GET/SET
       dc86: RepresentativeSampleData array of UINT8 data type ANY 8BIT VALUE form GET/SET
-Unknown OPFF type 6
       dc81: RepresentativeSampleFormat UINT16 data type enumeration: 14337,  READ ONLY
       dc83: RepresentativeSampleHeight UINT32 data type range: MIN 0, MAX 96, STEP 1 READ ONLY
       dc82: RepresentativeSampleSize UINT32 data type range: MIN 0, MAX 8192, STEP 1 READ ONLY
@@ -343,7 +335,6 @@ Unknown OPFF type 6
       de9c: VideoBitRate UINT32 data type range: MIN 0, MAX 802000, STEP 1 READ ONLY
       dc87: Width UINT32 data type range: MIN 0, MAX 320, STEP 1 GET/SET
       dc86: RepresentativeSampleData array of UINT8 data type ANY 8BIT VALUE form GET/SET
-Unknown OPFF type 6
       dc81: RepresentativeSampleFormat UINT16 data type enumeration: 14337,  READ ONLY
       dc83: RepresentativeSampleHeight UINT32 data type range: MIN 0, MAX 96, STEP 1 READ ONLY
       dc82: RepresentativeSampleSize UINT32 data type range: MIN 0, MAX 8192, STEP 1 READ ONLY
