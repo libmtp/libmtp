@@ -113,7 +113,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // get all objects with the getobjectproplist command..
   { "Samsung YH-820", 0x04e8, 0x502e, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Contributed by polux2001@users.sourceforge.net
-  { "Samsung YH-925(-GS)", 0x04e8, 0x502f, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Samsung YH-925(-GS)", 0x04e8, 0x502f, DEVICE_FLAG_UNLOAD_DRIVER, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Contributed by anonymous person on SourceForge
   { "Samsung YH-J70J", 0x04e8, 0x5033, DEVICE_FLAG_UNLOAD_DRIVER },
   // From XNJB user
