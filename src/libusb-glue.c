@@ -440,6 +440,13 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    */
   // Not verified - anonymous submission
   { "LG UP3", 0x043e, 0x70b1, DEVICE_FLAG_NONE },
+
+  /*
+   * Sony
+   */
+  // Reported by Endre Oma <endre.88.oma@gmail.com>
+  // (possibly this is for the A-series too)
+  { "Sony walkman S-series", 0x054c, 0x0327, DEVICE_FLAG_UNLOAD_DRIVER },
   
   /*
    * Other strange stuff.
