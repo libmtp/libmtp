@@ -137,6 +137,8 @@ int main (int argc, char **argv)
           printf("          <match key=\"info.capabilities\" contains_not=\"portable_audio_player\">\n");
           printf("            <append key=\"info.capabilities\" type=\"strlist\">portable_audio_player</append>\n");
           printf("          </match>\n");
+          printf("          <merge key=\"info.vendor\" type=\"string\">%s</merge>\n", entry->vendor);
+          printf("          <merge key=\"info.product\" type=\"string\">%s</merge>\n", entry->product);
           printf("          <merge key=\"info.category\" type=\"string\">portable_audio_player</merge>\n");
           printf("          <merge key=\"portable_audio_player.access_method\" type=\"string\">user</merge>\n");
           printf("          <match key=\"portable_audio_player.access_method.protocols\" contains_not=\"mtp\">\n");
