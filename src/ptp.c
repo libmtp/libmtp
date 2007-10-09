@@ -187,7 +187,7 @@ ptp_transaction_new (PTPParams* params, PTPContainer* ptp,
 			"PTP: Sequence number mismatch %d vs expected %d.",
 			ptp->Transaction_ID, params->transaction_id-1
 		);
-		return PTP_ERROR_BADPARAM;
+//      return PTP_ERROR_BADPARAM;
 	}
 	return ptp->Code;
 }
