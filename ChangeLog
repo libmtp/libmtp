@@ -1,3 +1,7 @@
+2007-10-15  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: repair headers, don't just ignore them.
+	
 2007-10-04  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: rm some pointless confusing defines

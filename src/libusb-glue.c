@@ -1324,6 +1324,10 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 			if (ptp_usb->device_flags & DEVICE_FLAG_IGNORE_HEADER_ERRORS) {
 				ptp_debug (params, "ptp2/ptp_usb_getdata: detected a broken "
 					   "PTP header, code field insane, expect problems! (But continuing)");
+				// Repair the header, so it won't wreak more havoc, don't just ignore it.
+				// Typically these two fields will be broken.
+				usbdata.code	 = htod16(ptp->Code);
+				usbdata.trans_id = htod32(ptp->Transaction_ID);
 				ret = PTP_RC_OK;
 			} else {
 				ret = dtoh16(usbdata.code);
