@@ -447,6 +447,14 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   // Reported by Endre Oma <endre.88.oma@gmail.com>
   // (possibly this is for the A-series too)
   { "Sony walkman S-series", "Sony", 0x054c, "Walkman S-series", 0x0327, DEVICE_FLAG_UNLOAD_DRIVER },
+
+
+  /*
+   * Motorola
+   */
+  // Reported by anonymous user
+  { "Motorola RAZR2 V8", "Motorola", 0x22b8, "RAZR2 V8", 0x6415, DEVICE_FLAG_NONE },
+
   
   /*
    * Other strange stuff.
