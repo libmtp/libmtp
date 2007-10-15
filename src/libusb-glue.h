@@ -118,7 +118,7 @@
  */
 #define DEVICE_FLAG_NO_RELEASE_INTERFACE 0x00000040
 /**
- * This falg was introduced with the advent of Creative ZEN
+ * This flag was introduced with the advent of Creative ZEN
  * 8GB. The device sometimes return a broken PTP header
  * like this: < 1502 0000 0200 01d1 02d1 01d2 >
  * the latter 6 bytes (representing "code" and "transaction ID")
@@ -129,6 +129,14 @@
  * Windows bug.
  */
 #define DEVICE_FLAG_IGNORE_HEADER_ERRORS 0x00000080
+/**
+ * The Motorola RAZR2 V8 (others?) has broken set object
+ * proplist causing the metadata setting to fail. (The
+ * set object prop to set individual properties work on
+ * this device, but the metadata is plain ignored on
+ * tracks, though e.g. playlist names can be set.)
+ */
+#define DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST 0x000000100
 
 /**
  * Internal USB struct.

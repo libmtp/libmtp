@@ -1,6 +1,10 @@
 2007-10-15  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: repair headers, don't just ignore them.
+	  Add support for broken set object proplist devices. Motorola
+	  RAZR2 V8 has this problem.
+	* src/libusb-glue.h: flag for broken set object proplist.
+	* libmtp.c: avoid broken set object proplist.
 	
 2007-10-04  Linus Walleij <triad@df.lth.se>
 

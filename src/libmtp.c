@@ -4264,6 +4264,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 {
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   uint32_t i;
   uint16_t *properties = NULL;
   uint32_t propcnt = 0;
@@ -4277,7 +4278,8 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 			    "could not retrieve supported object properties.");
     return -1;
   }
-  if (ptp_operation_issupported(params, PTP_OC_MTP_SetObjPropList)) {
+  if (ptp_operation_issupported(params, PTP_OC_MTP_SetObjPropList) &&
+      !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST)) {
     MTPProperties *props = NULL;
     MTPProperties *prop = NULL;
     int nrofprops = 0;
@@ -4409,6 +4411,8 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->property = PTP_OPC_DateModified;
 	  prop->datatype = PTP_DTC_STR;
 	  prop->propval.str = get_iso8601_stamp();
+	  break;
+	default:
 	  break;
 	}
       }
@@ -5348,6 +5352,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 {
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   uint16_t *properties = NULL;
   uint32_t propcnt = 0;
   int i;
@@ -5361,7 +5366,8 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 			    "could not retrieve supported object properties.");
     return -1;
   }
-  if (ptp_operation_issupported(params,PTP_OC_MTP_SetObjPropList)) {
+  if (ptp_operation_issupported(params,PTP_OC_MTP_SetObjPropList) &&
+      !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST)) {
     MTPProperties *props = NULL;
     MTPProperties *prop = NULL;
     int nrofprops = 0;

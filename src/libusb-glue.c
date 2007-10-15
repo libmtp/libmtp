@@ -453,7 +453,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * Motorola
    */
   // Reported by anonymous user
-  { "Motorola RAZR2 V8", "Motorola", 0x22b8, "RAZR2 V8", 0x6415, DEVICE_FLAG_NONE },
+  { "Motorola RAZR2 V8", "Motorola", 0x22b8, "RAZR2 V8", 0x6415, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
 
   
   /*
