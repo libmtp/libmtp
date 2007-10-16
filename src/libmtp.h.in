@@ -158,10 +158,9 @@ typedef int (* LIBMTP_progressfunc_t) (uint64_t const sent, uint64_t const total
  * A data structure to hold MTP device entries.
  */
 struct LIBMTP_device_entry_struct {
-  char *name; /**< The descriptive name of this device */
-  char *vendor; /**< The device vendor's name */
+  char *vendor; /**< The vendor of this device */
   uint16_t vendor_id; /**< Vendor ID for this device */
-  char *product; /**< The device's product name */
+  char *product; /**< The product name of this device */
   uint16_t product_id; /**< Product ID for this device */
   uint32_t device_flags; /**< Bugs, device specifics etc */
 };

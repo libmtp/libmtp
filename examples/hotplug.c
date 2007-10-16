@@ -119,7 +119,7 @@ int main (int argc, char **argv)
       switch (style) {
       case style_udev: 
 	{
-          printf("# %s\n", entry->name);
+          printf("# %s %s\n", entry->vendor, entry->product);
 	  // Old style directly SYSFS named.
 	  // printf("SYSFS{idVendor}==\"%04x\", SYSFS{idProduct}==\"%04x\", %s\n", entry->vendor_id, entry->product_id, action);
 	  // Newer style
@@ -127,10 +127,11 @@ int main (int argc, char **argv)
 	  break;
         }
       case style_usbmap:
-          printf("# %s\n", entry->name);
+          printf("# %s %s\n", entry->vendor, entry->product);
           printf("libmtp.sh    0x0003  0x%04x  0x%04x  0x0000  0x0000  0x00    0x00    0x00    0x00    0x00    0x00    0x00000000\n", entry->vendor_id, entry->product_id);
           break;
         case style_hal:
+          printf("      <!-- %s %s -->\n", entry->vendor, entry->product);
           printf("      <match key=\"usb.vendor_id\" int=\"0x%04x\">\n", entry->vendor_id);
           printf("        <match key=\"usb.product_id\" int=\"0x%04x\">\n", entry->product_id);
           /* FIXME: If hal >=0.5.10 can be depended upon, the matches below with contains_not can instead use addset */
@@ -161,7 +162,6 @@ int main (int argc, char **argv)
 	    printf("          </match>\n");
 	  }
           printf("          <merge key=\"portable_audio_player.libmtp.protocol\" type=\"string\">mtp</merge>\n");
-          printf("          <merge key=\"portable_audio_player.libmtp.name\" type=\"string\">%s</merge>\n", entry->name);
           printf("        </match>\n");
           printf("      </match>\n");
         break;
@@ -169,7 +169,7 @@ int main (int argc, char **argv)
           if (last_vendor != entry->vendor_id) {
             printf("%04x\n", entry->vendor_id);
           }
-          printf("\t%04x  %s\n", entry->product_id, entry->name);
+          printf("\t%04x  %s %s\n", entry->product_id, entry->vendor, entry->product);
         break;
       }
       last_vendor = entry->vendor_id;
@@ -187,7 +187,7 @@ int main (int argc, char **argv)
     for (i = 0; i < numentries; i++) {
       LIBMTP_device_entry_t * entry = &entries[i];
 
-      printf("# %s\n", entry->name);
+      printf("# %s %s\n", entry->vendor, entry->product);
       printf("ATTRS{idVendor}==\"%04x\", ATTRS{idProduct}==\"%04x\", %s\n", entry->vendor_id, entry->product_id, action); 
     }
     printf("GOTO=\"libmtp_rules_end\"\n\n");

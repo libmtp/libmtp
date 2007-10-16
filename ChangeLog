@@ -1,3 +1,13 @@
+<<<<<<< ChangeLog
+2007-10-16  Jeff Mitchell <kde-dev@emailgoeshere.com>
+
+    * src/libusb-glue.c: remove the previously-concatenated vendor
+      and product string "name" field as it's now redundant
+    * src/Makefile.am: interface to libmtp.so.7.0.0 (incompatible, 
+      device_entry_struct members changed)
+    * examples/hotplug.c: port to use vendor and product instead of
+      name, also some useful commenting in the fdi file
+
 2007-10-15  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: repair headers, don't just ignore them.
@@ -6,6 +16,12 @@
 	* src/libusb-glue.h: flag for broken set object proplist.
 	* libmtp.c: avoid broken set object proplist.
 	
+2007-10-09  Jeff Mitchell <kde-dev@emailgoeshere.com>
+
+    * src/libusb-glue.c: add separate vendor and product strings
+      in device entry structs
+	* src/libmtp.h.in: update device entry structs to reflect this
+
 2007-10-04  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: rm some pointless confusing defines
@@ -351,12 +367,12 @@
 	  props if available. Follow metadata set design pattern used for
 	  tracks; check first if the object type can set name/artist/genre.
 
-2007-05-24  Jeff Mitchell <me@jefferai.com>
+2007-05-24  Jeff Mitchell <kde-dev@emailgoeshere.com>
 
 	* hotplug.sh.in: Properly install the HAL FDI rules if
 	  the user so chooses to when prompted.
 
-2007-05-24  Jeff Mitchell <me@jefferai.com>
+2007-05-24  Jeff Mitchell <kde-dev@emailgoeshere.com>
 
 	* examples/hotplug.c: Fix/update HAL output to conform
 	  to new specs. Fix whitespacing to be consistent.
