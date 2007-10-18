@@ -1,3 +1,8 @@
+2007-10-18  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: fix the deletion of cached properties when
+	  removing objects. This code was seriously broken.
+
 2007-10-16  Jeff Mitchell <kde-dev@emailgoeshere.com>
 
 	* src/libusb-glue.c: remove the previously-concatenated vendor

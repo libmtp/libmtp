@@ -4649,23 +4649,31 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
 
   // delete cached object properties if metadata cache exists
   if (params->props) {
-    int i, nrofoldprops = 0;
+    int i;
+    int nrofoldprops = 0;
+    int firstoldprop = 0;
 
-    // not the most efficient way, if we assume objecthandle grouping
-    for (i=0;i<params->nrofprops;i++) {
+    for (i=0; i<params->nrofprops; i++) {
       MTPProperties *prop = &params->props[i];
       if (prop->ObjectHandle == object_id)
       {
-        destroy_mtp_prop(prop);
-        memcpy (prop,prop+1,(params->nrofprops-i-1)*sizeof(*prop));
         nrofoldprops++;
+	if (nrofoldprops == 1) {
+	  firstoldprop = i;
+	}
       }
     }
-    
-    params->props = realloc(params->props, params->nrofprops - nrofoldprops);
+    for (i=firstoldprop;i<(firstoldprop+nrofoldprops);i++) {
+      destroy_mtp_prop(&params->props[i]);
+    }
+    memcpy(&params->props[firstoldprop], 
+	   &params->props[firstoldprop+nrofoldprops], 
+	   (params->nrofprops-firstoldprop-nrofoldprops)*sizeof(MTPProperties));
+    params->props = realloc(params->props, 
+			    (params->nrofprops - nrofoldprops)*sizeof(MTPProperties));
     params->nrofprops -= nrofoldprops;
   }
-    
+
   return 0;
 }
 
