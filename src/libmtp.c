@@ -1440,7 +1440,7 @@ static void get_handles_recursively(LIBMTP_mtpdevice_t *device,
   memset(&params->objectinfo[old_handles], 0, currentHandles.n * sizeof(PTPObjectInfo));
 
   // Copy new handles
-  memcpy(&(handles->Handler[old_handles]), currentHandles.Handler, currentHandles.n * sizeof(uint32_t));
+  memmove(&(handles->Handler[old_handles]), currentHandles.Handler, currentHandles.n * sizeof(uint32_t));
   handles->n = old_handles + currentHandles.n;
   
   // Now descend into any subdirectories found
@@ -4666,9 +4666,9 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
     for (i=firstoldprop;i<(firstoldprop+nrofoldprops);i++) {
       destroy_mtp_prop(&params->props[i]);
     }
-    memcpy(&params->props[firstoldprop], 
-	   &params->props[firstoldprop+nrofoldprops], 
-	   (params->nrofprops-firstoldprop-nrofoldprops)*sizeof(MTPProperties));
+    memmove(&params->props[firstoldprop], 
+	    &params->props[firstoldprop+nrofoldprops], 
+	    (params->nrofprops-firstoldprop-nrofoldprops)*sizeof(MTPProperties));
     params->props = realloc(params->props, 
 			    (params->nrofprops - nrofoldprops)*sizeof(MTPProperties));
     params->nrofprops -= nrofoldprops;
@@ -6116,13 +6116,13 @@ void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t handle)
       add_ptp_error_to_errorstack(device, ret, "add_object_to_cache(): call to ptp_mtp_getobjectproplist() failed.");
       return;
     }
-    xprops = realloc(params->props, (params->nrofprops+nrofprops)*sizeof(*props));
+    xprops = realloc(params->props, (params->nrofprops+nrofprops)*sizeof(MTPProperties));
     if (!xprops) {
       add_ptp_error_to_errorstack(device, ret, "add_object_to_cache(): call to realloc() failed.");
       return;
     }
     params->props = xprops;
-    memcpy(xprops+params->nrofprops,props,nrofprops*sizeof(*props));
+    memmove(xprops+params->nrofprops,props,nrofprops*sizeof(*props));
     free (props); /* do not free sub strings, we copied them above */
     params->nrofprops += nrofprops;
   }
@@ -6147,7 +6147,7 @@ void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t handle)
     if (prop->ObjectHandle == handle)
     {
       destroy_mtp_prop(prop);
-      memcpy (prop,prop+1,(params->nrofprops-i-1)*sizeof(*prop));
+      memmove(prop,prop+1,(params->nrofprops-i-1)*sizeof(*prop));
       nrofoldprops++;
     }
   }
@@ -6166,7 +6166,7 @@ void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t handle)
     return;
   }
   params->props = xprops;
-  memcpy(xprops+params->nrofprops-nrofoldprops,props,nrofprops*sizeof(*props));
+  memmove(xprops+params->nrofprops-nrofoldprops,props,nrofprops*sizeof(*props));
   free (props); /* do not free sub strings, we copied them above */
   params->nrofprops += nrofprops-nrofoldprops;
   return;
