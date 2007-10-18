@@ -1759,11 +1759,11 @@ static void assign_known_device_flags(mtpdevice_list_t *devlist)
 	  device_known = 1;
 #ifdef ENABLE_USB_BULK_DEBUG
 	  /* This device is known to the developers */
-	  fprintf(stderr, "Device %d (VID=%04x and PID=%04x) is a %s.\n", 
+	  fprintf(stderr, "Device %d (VID=%04x and PID=%04x) is a %s %s.\n", 
 		  current_device + 1,
 		  tmplist->libusb_device->descriptor.idVendor,
 		  tmplist->libusb_device->descriptor.idProduct,
-		  mtp_device_table[i].name);
+		  mtp_device_table[i].vendor, mtp_device_table[i].product);
 #endif
 	}
 	break;
