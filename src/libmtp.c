@@ -125,6 +125,7 @@ static int set_object_u8(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 			 uint16_t const attribute_id, uint8_t const value);
 static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat,
 			       LIBMTP_track_t *track);
+static LIBMTP_folder_t *get_subfolders_for_folder(PTPParams *params, uint32_t parent);
 static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 				    char const * const name,
 				    char const * const artist,
@@ -4744,33 +4745,28 @@ LIBMTP_folder_t *LIBMTP_Find_Folder(LIBMTP_folder_t *folderlist, uint32_t id)
 }
 
 /**
- * This returns a list of all folders available
- * on the current MTP device.
- *
- * @param device a pointer to the device to get the track listing for.
- * @return a list of folders
+ * Function used to recursively get subfolders from params.
  */
-LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
+static LIBMTP_folder_t *get_subfolders_for_folder(PTPParams *params, uint32_t parent)
 {
-  uint32_t i = 0;
+  uint32_t i;
   LIBMTP_folder_t *retfolders = NULL;
-  PTPParams *params = (PTPParams *) device->params;
-
-  // Get all the handles if we haven't already done that
-  if (params->handles.Handler == NULL) {
-    flush_handles(device);
-  }
 
   for (i = 0; i < params->handles.n; i++) {
     LIBMTP_folder_t *folder;
     PTPObjectInfo *oi;
-
+    
     oi = &params->objectinfo[i];
-
-    if (oi->ObjectFormat != PTP_OFC_Association) {
+    if (oi->ObjectFormat != PTP_OFC_Association || oi->ParentObject != parent) {
       continue;
     }
+
+    // Create a folder struct...
     folder = LIBMTP_new_folder_t();
+    if (folder == NULL) {
+      // malloc failure or so.
+      return NULL;
+    }
     folder->folder_id = params->handles.Handler[i];
     folder->parent_id = oi->ParentObject;
     if (oi->Filename != NULL) {
@@ -4779,36 +4775,49 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
       folder->name = NULL;
     }
 
-    // Work out where to put this new item
-    if(retfolders == NULL) {
+    // Add as first returned or a sibling to current
+    if (retfolders == NULL) {
       retfolders = folder;
-      continue;
     } else {
-      LIBMTP_folder_t *parent_folder;
-      LIBMTP_folder_t *current_folder;
-      
-      // FIXME: This relies on children always coming after parents!
-      parent_folder = LIBMTP_Find_Folder(retfolders, folder->parent_id);
-      
-      if(parent_folder == NULL) {
-	current_folder = retfolders;
-      } else {
-	if(parent_folder->child == NULL) {
-	  parent_folder->child = folder;
-	  continue;
-	} else {
-	  current_folder = parent_folder->child;
-	}
+      LIBMTP_folder_t *tmp = retfolders;
+      while (tmp->sibling != NULL) {
+	tmp = tmp->sibling;
       }
-      
-      while(current_folder->sibling != NULL) {
-	current_folder = current_folder->sibling;
-      }
-      
-      current_folder->sibling = folder;
+      tmp->sibling = folder;
     }
+    
+    // Recursively get children for this child. Perhaps NULL.
+    folder->child = get_subfolders_for_folder(params, folder->folder_id);
   }
+
   return retfolders;
+}
+
+/**
+ * This returns a list of all folders available
+ * on the current MTP device.
+ *
+ * @param device a pointer to the device to get the track listing for.
+ * @return a list of folders
+ */
+LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  uint32_t folders = 0;
+
+  // Get all the handles if we haven't already done that
+  if (params->handles.Handler == NULL) {
+    flush_handles(device);
+  }
+
+  // TODO: make a temporary list of folders only to
+  //       speed up searching? Else we get O(n^2) complexity
+  //       where n is the number of handles on the device,
+  //       in the following recursive call. Making a temp
+  //       list will reduce n to the number of folders.
+
+  // We begin at the root folder and get them all recursively
+  return get_subfolders_for_folder(params, 0x00000000);
 }
 
 /**

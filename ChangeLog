@@ -2,7 +2,9 @@
 
 	* src/libmtp.c: bring the cache handling code together at the
 	  end of the file, refactor so as to avoid code duplication,
-	  do things in one place only and looking good.
+	  do things in one place only and looking good. Get folder
+	  list recursively instead, this works better with fast dir
+	  retrieveal I think.
 
 2007-10-18  Linus Walleij <triad@df.lth.se>
 
