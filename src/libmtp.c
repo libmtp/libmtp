@@ -146,8 +146,9 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 static MTPProperties *get_new_mtp_prop_entry(MTPProperties**, int*);
 static void destroy_mtp_prop_list(MTPProperties *proplist, int nrofprops);
 static void destroy_mtp_prop(MTPProperties *prop);
-static void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t handle);
-static void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t handle);
+static void remove_object_from_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id, int just_metadata);
+static void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id, int just_metadata);
+static void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id);
 
 /**
  * Create a new file mapping entry
@@ -454,7 +455,7 @@ static MTPProperties *
 find_propvalue (PTPParams *params, uint32_t const oid, uint32_t const attribute_id)
 {
   int i;
-  MTPProperties    *prop = params->props;
+  MTPProperties *prop = params->props;
 
   if (!prop)
     return NULL;
@@ -509,7 +510,7 @@ static char *get_string_from_object(LIBMTP_mtpdevice_t *device, uint32_t const o
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
   if (params->props) {
-    MTPProperties    *prop = find_propvalue (params, object_id, attribute_id);
+    MTPProperties *prop = find_propvalue (params, object_id, attribute_id);
     if (prop) {
         if (prop->propval.str != NULL)
           return strdup(prop->propval.str);
@@ -555,7 +556,7 @@ static uint64_t get_u64_from_object(LIBMTP_mtpdevice_t *device,uint32_t const ob
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
   if (params->props) {
-    MTPProperties    *prop = find_propvalue (params, object_id, attribute_id);
+    MTPProperties *prop = find_propvalue (params, object_id, attribute_id);
     if (prop)
       return prop->propval.u64;
   }
@@ -597,7 +598,7 @@ static uint32_t get_u32_from_object(LIBMTP_mtpdevice_t *device,uint32_t const ob
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
   if (params->props) {
-    MTPProperties    *prop = find_propvalue (params, object_id, attribute_id);
+    MTPProperties *prop = find_propvalue (params, object_id, attribute_id);
     if (prop)
       return prop->propval.u32;
   }
@@ -639,7 +640,7 @@ static uint16_t get_u16_from_object(LIBMTP_mtpdevice_t *device, uint32_t const o
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
   if (params->props) {
-    MTPProperties    *prop = find_propvalue (params, object_id, attribute_id);
+    MTPProperties *prop = find_propvalue (params, object_id, attribute_id);
     if (prop)
       return prop->propval.u16;
   }
@@ -681,7 +682,7 @@ static uint8_t get_u8_from_object(LIBMTP_mtpdevice_t *device, uint32_t const obj
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
   if (params->props) {
-    MTPProperties    *prop = find_propvalue (params, object_id, attribute_id);
+    MTPProperties *prop = find_propvalue (params, object_id, attribute_id);
     if (prop)
       return prop->propval.u8;
   }
@@ -4237,7 +4238,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
-  add_object_to_cache(device, filedata->item_id);
+  add_object_to_cache(device, filedata->item_id, 0);
 
   return 0;
 }
@@ -4603,9 +4604,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
   }
   
   // update cached object properties if metadata cache exists
-  if (params->props != NULL) {
-    update_metadata_cache(device, metadata->item_id);
-  }
+  update_metadata_cache(device, metadata->item_id);
 
   free(properties);
   
@@ -4625,7 +4624,6 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
 {
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
-  int i;
 
   ret = ptp_deleteobject(params, object_id, 0);
   if (ret != PTP_RC_OK) {
@@ -4633,46 +4631,8 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
-  // remove object from object info cache
-  for (i = 0; i < params->handles.n; i++) {
-    if (params->handles.Handler[i] == object_id) {
-      ptp_free_objectinfo(&params->objectinfo[i]);
-      memmove(params->handles.Handler+i, params->handles.Handler+i+1,
-              (params->handles.n-i-1)*sizeof(uint32_t));
-      memmove(params->objectinfo+i, params->objectinfo+i+1,
-              (params->handles.n-i-1)*sizeof(PTPObjectInfo));
-      params->handles.n--;
-      params->handles.Handler = realloc(params->handles.Handler, sizeof(uint32_t)*params->handles.n);
-      params->objectinfo = realloc(params->objectinfo, sizeof(PTPObjectInfo)*params->handles.n);
-    }
-  }
-
-  // delete cached object properties if metadata cache exists
-  if (params->props) {
-    int i;
-    int nrofoldprops = 0;
-    int firstoldprop = 0;
-
-    for (i=0; i<params->nrofprops; i++) {
-      MTPProperties *prop = &params->props[i];
-      if (prop->ObjectHandle == object_id)
-      {
-        nrofoldprops++;
-	if (nrofoldprops == 1) {
-	  firstoldprop = i;
-	}
-      }
-    }
-    for (i=firstoldprop;i<(firstoldprop+nrofoldprops);i++) {
-      destroy_mtp_prop(&params->props[i]);
-    }
-    memmove(&params->props[firstoldprop], 
-	    &params->props[firstoldprop+nrofoldprops], 
-	    (params->nrofprops-firstoldprop-nrofoldprops)*sizeof(MTPProperties));
-    params->props = realloc(params->props, 
-			    (params->nrofprops - nrofoldprops)*sizeof(MTPProperties));
-    params->nrofprops -= nrofoldprops;
-  }
+  // If the object is cached, cleanse cache.
+  remove_object_from_cache(device, object_id, 0);
 
   return 0;
 }
@@ -4895,7 +4855,7 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name, uint32_t p
   // NOTE: don't destroy the new_folder objectinfo, because it is statically referencing
   // several strings.
 
-  add_object_to_cache(device, new_id);
+  add_object_to_cache(device, new_id, 0);
 
   return new_id;
 }
@@ -5330,7 +5290,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
     }
   }
 
-  add_object_to_cache(device, *newid);
+  add_object_to_cache(device, *newid, 0);
 
   return 0;
 }
@@ -5505,11 +5465,9 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
     }
   }
 
-  if (params->props != NULL) {
-    update_metadata_cache(device, objecthandle);
-  }
-  
   free(properties);
+
+  update_metadata_cache(device, objecthandle);
   
   return 0;
 }
@@ -6086,45 +6044,114 @@ void ptp_nikon_getptpipguid (unsigned char* guid) {
 }
 
 /**
- * Update cache after new object is added to the device
+ * Remove object from cache.
+ * @param device the device which may have a cache from which to remove the object.
+ * @param object_id the object to remove from the cache.
+ * @param just_metadata if you only want to remove metadata (properties) from the cache,
+ *        in cases where this speed things up internally (i.e. when you immediately add
+ *        it again), then set this to non-zero, else set this to zero.
+ */
+static void remove_object_from_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id, int just_metadata)
+{
+  PTPParams *params = (PTPParams *)device->params;
+  int i;
+
+  // remove object from object info cache
+  if (!just_metadata) {
+    for (i = 0; i < params->handles.n; i++) {
+      if (params->handles.Handler[i] == object_id) {
+	ptp_free_objectinfo(&params->objectinfo[i]);
+	memmove(params->handles.Handler+i, params->handles.Handler+i+1,
+		(params->handles.n-i-1)*sizeof(uint32_t));
+	memmove(params->objectinfo+i, params->objectinfo+i+1,
+		(params->handles.n-i-1)*sizeof(PTPObjectInfo));
+	params->handles.n--;
+	params->handles.Handler = realloc(params->handles.Handler, sizeof(uint32_t)*params->handles.n);
+	params->objectinfo = realloc(params->objectinfo, sizeof(PTPObjectInfo)*params->handles.n);
+      }
+    }
+  }
+
+  // delete cached object properties if metadata cache exists
+  if (params->props) {
+    int nrofoldprops = 0;
+    int firstoldprop = 0;
+
+    for (i=0; i<params->nrofprops; i++) {
+      MTPProperties *prop = &params->props[i];
+      if (prop->ObjectHandle == object_id)
+      {
+        nrofoldprops++;
+	if (nrofoldprops == 1) {
+	  firstoldprop = i;
+	}
+      }
+    }
+    for (i=firstoldprop;i<(firstoldprop+nrofoldprops);i++) {
+      destroy_mtp_prop(&params->props[i]);
+    }
+    memmove(&params->props[firstoldprop], 
+	    &params->props[firstoldprop+nrofoldprops], 
+	    (params->nrofprops-firstoldprop-nrofoldprops)*sizeof(MTPProperties));
+    params->props = realloc(params->props, 
+			    (params->nrofprops - nrofoldprops)*sizeof(MTPProperties));
+    params->nrofprops -= nrofoldprops;
+  }
+}
+
+/**
+ * Add an object to cache.
+ * @param device the device which may have a cache to which the object should be added.
+ * @param object_id the object to add to the cache.
+ * @param just_metadata if you only want to add metadata (properties) to the cache,
+ *        in cases where this speed things up internally (i.e. when you immediately remove
+ *        it before then add again), then set this to non-zero, else set this to zero.
  */ 
-void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t handle)
+static void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id, int just_metadata)
 {
   PTPParams *params = (PTPParams *)device->params;
   uint16_t ret;
-  int n;
-  
-  n = ++params->handles.n;
 
-  params->objectinfo = (PTPObjectInfo*)realloc(params->objectinfo,
-                                               sizeof(PTPObjectInfo)*n);
-  params->handles.Handler = (uint32_t*)realloc(params->handles.Handler,
-                                               sizeof(uint32_t)*n);
+  if (!just_metadata) {
+    uint32_t n;
 
-  memset(&params->objectinfo[n-1], 0, sizeof(PTPObjectInfo));
-  params->handles.Handler[n-1] = handle;
+    // We have a new handle
+    params->handles.n++;
+    n = params->handles.n;
 
-  ptp_getobjectinfo(params, handle, &params->objectinfo[n-1]);
+    // Insert the new handle
+    params->handles.Handler = (uint32_t*)realloc(params->handles.Handler,
+						 sizeof(uint32_t)*n);
+    params->handles.Handler[n-1] = object_id;
+    
+    // Insert a new object info struct and populate it
+    params->objectinfo = (PTPObjectInfo*)realloc(params->objectinfo,
+						 sizeof(PTPObjectInfo)*n);
+    memset(&params->objectinfo[n-1], 0, sizeof(PTPObjectInfo));
+    ptp_getobjectinfo(params, object_id, &params->objectinfo[n-1]);
+  }
 
+  // Update proplist if we use cached props
   if (params->props) {
     MTPProperties *props = NULL;
     MTPProperties *xprops;
-    int nrofprops = 0;
+    int no_new_props = 0;
 
-    ret = ptp_mtp_getobjectproplist(params, handle, &props, &nrofprops);
+    ret = ptp_mtp_getobjectproplist(params, object_id, &props, &no_new_props);
     if (ret != PTP_RC_OK) {
       add_ptp_error_to_errorstack(device, ret, "add_object_to_cache(): call to ptp_mtp_getobjectproplist() failed.");
       return;
     }
-    xprops = realloc(params->props, (params->nrofprops+nrofprops)*sizeof(MTPProperties));
+    xprops = realloc(params->props, (params->nrofprops+no_new_props)*sizeof(MTPProperties));
     if (!xprops) {
       add_ptp_error_to_errorstack(device, ret, "add_object_to_cache(): call to realloc() failed.");
       return;
     }
     params->props = xprops;
-    memmove(xprops+params->nrofprops,props,nrofprops*sizeof(*props));
-    free (props); /* do not free sub strings, we copied them above */
-    params->nrofprops += nrofprops;
+    memcpy(&params->props[params->nrofprops],&props[0],no_new_props*sizeof(MTPProperties));
+    // do not free the sub strings, we copied them above! Only free the array.
+    free (props);
+    params->nrofprops += no_new_props;
   }
 }
 
@@ -6132,42 +6159,8 @@ void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t handle)
 /**
  * Update cache after object has been modified
  */
-void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t handle)
+static void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id)
 {
-  PTPParams *params = (PTPParams *)device->params;
-  MTPProperties *xprops;
-  MTPProperties *props;
-  int i, nrofprops, nrofoldprops = 0;
-  uint16_t ret;
-    
-  // remove the current properties for this object
-  // not the most efficient way, if we assume objecthandle grouping
-  for (i=0;i<params->nrofprops;i++) {
-    MTPProperties *prop = &params->props[i];
-    if (prop->ObjectHandle == handle)
-    {
-      destroy_mtp_prop(prop);
-      memmove(prop,prop+1,(params->nrofprops-i-1)*sizeof(*prop));
-      nrofoldprops++;
-    }
-  }
-
-  // fetch updated properties and add them to the metadata cache in the same
-  // place where outdated properties were found
-  ret = ptp_mtp_getobjectproplist(params, handle, &props, &nrofprops);
-  if (ret != PTP_RC_OK) {
-    add_ptp_error_to_errorstack(device, ret, "update_metadata_cache(): call to ptp_mtp_getobjectproplist() failed.");
-    return;
-  }
-
-  xprops = realloc(params->props, (params->nrofprops+nrofprops-nrofoldprops)*sizeof(*props));
-  if (!xprops) {
-    add_ptp_error_to_errorstack(device, ret, "update_metadata_cache(): call to realloc() failed.");
-    return;
-  }
-  params->props = xprops;
-  memmove(xprops+params->nrofprops-nrofoldprops,props,nrofprops*sizeof(*props));
-  free (props); /* do not free sub strings, we copied them above */
-  params->nrofprops += nrofprops-nrofoldprops;
-  return;
+  remove_object_from_cache(device, object_id, 1);
+  add_object_to_cache(device, object_id, 1);
 }

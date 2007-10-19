@@ -1,3 +1,9 @@
+2007-10-19  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: bring the cache handling code together at the
+	  end of the file, refactor so as to avoid code duplication,
+	  do things in one place only and looking good.
+
 2007-10-18  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: fix the deletion of cached properties when
