@@ -4773,10 +4773,11 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
     folder = LIBMTP_new_folder_t();
     folder->folder_id = params->handles.Handler[i];
     folder->parent_id = oi->ParentObject;
-    if (oi->Filename != NULL)
+    if (oi->Filename != NULL) {
       folder->name = (char *)strdup(oi->Filename);
-    else
+    } else {
       folder->name = NULL;
+    }
 
     // Work out where to put this new item
     if(retfolders == NULL) {
@@ -4786,6 +4787,7 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
       LIBMTP_folder_t *parent_folder;
       LIBMTP_folder_t *current_folder;
       
+      // FIXME: This relies on children always coming after parents!
       parent_folder = LIBMTP_Find_Folder(retfolders, folder->parent_id);
       
       if(parent_folder == NULL) {
@@ -4800,7 +4802,7 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
       }
       
       while(current_folder->sibling != NULL) {
-	current_folder=current_folder->sibling;
+	current_folder = current_folder->sibling;
       }
       
       current_folder->sibling = folder;
@@ -6073,7 +6075,7 @@ static void remove_object_from_cache(LIBMTP_mtpdevice_t *device, uint32_t object
   }
 
   // delete cached object properties if metadata cache exists
-  if (params->props) {
+  if (params->props != NULL) {
     int nrofoldprops = 0;
     int firstoldprop = 0;
 
@@ -6132,7 +6134,7 @@ static void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id, 
   }
 
   // Update proplist if we use cached props
-  if (params->props) {
+  if (params->props != NULL) {
     MTPProperties *props = NULL;
     MTPProperties *xprops;
     int no_new_props = 0;
