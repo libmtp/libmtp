@@ -366,7 +366,7 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   /*
    * Nokia
    */
-  // From anonymous SourceForge user
+  // From: DoomHammer <gaczek@users.sourceforge.net>
   { "Nokia", 0x0421, "3110c Mobile Phone", 0x005f, DEVICE_FLAG_NONE },
   // From: Mitchell Hicks <mitchix@yahoo.com>
   { "Nokia", 0x0421, "5300 Mobile Phone", 0x04ba, DEVICE_FLAG_NONE },
