@@ -16,48 +16,51 @@ COMPATIBILITY fixes:
 2. COMPATIBILITY: several devices tend to "hang" after disconnect, 
   needing to be unplugged and replugged before they can be used again. 
   We don't know why, it may be related to low-level USB behaviour that
-  is not exposed in the logs we read.
+  is not exposed in the logs we read. On some devices it appear that
+  avoiding to release the USB interface after closing the PTP/MTP 
+  session solves this, and might be a hint at how the Windows MTP stack
+  works: perhaps the Windows MTP daemon grabs the interface once the
+  device is plugged in and NEVER release it. (Though it opens new 
+  sessions PTP/MTP sessions.) This behaviour can be emulated by 
+  DEVICE_FLAG_NO_RELEASE_INTERFACE but is it really desireable to have
+  as default? Not unless we run an MTP daemon as well, probably, and
+  the behaviour is questionable from an USB interoperability point
+  of view.
 
-3. COMPATIBILITY: account for different step sizes and intervals on some
-  numeric properties we set, make the functions round off when possible.
+3. COMPATIBILITY: get rid of the remaning "unknown OPFF type" warnings,
+  we have seen OPFF 0x04 (PTP_OPFF_FixedLengthArray) and 0x06 
+  (PTP_OPFF_ByteArray) in the wild but we haven implemented anything
+  but 0x01 (PTP_OPFF_Range) and 0x02 (PTP_OPFF_Enumeration). 0x01
+  and 0x02 are the only types used by PTP for device property field
+  formats.
+
 
 SPEEDUP fixes:
 
-1. SPEED: Cache the supported object properties at first read/startup.
-  then use the cache to check for supported props instead of calling
-  out to PTP with ptp_mtp_getobjectpropssupported() every time.
-  The cache would be an array of size params->deviceinfo.ImageFormats_len
-  with a list for each format of the properties it will support. Notice 
-  that this needs to be updated whenever flush_handles() is called too.
-  (THIS MAY BE DISCARDED, IT DOESN'T SEEM TO YIELD MUCH.)
+1. SPEEDUP: The recursive function that builds the folder tree is
+  O(n^2)! Atleast remove all non-folders (PTP associations) from the
+  list before we start sorting and building that tree. We walk the
+  entire list for each group of siblings right now!
+
 
 FEATURE fixes:
 
-1. FEATURE: Make abstract playlists really become size -1 when created as 
-  the ones created on the device instead of the current 1 byte size.
-  (Is this possible using enhanced commands? See TODO remarks in
-  the create_abstract_entity() function)
-
-2. FEATURE: Support playback and volume setting on devices that have it.
+1. FEATURE: Support playback and volume setting on devices that have it.
   (I don't have one that does - Linus.)
 
-3. FEATURE: Support relevant events. MTP devices seen in existance provide
+2. FEATURE: Support relevant events. MTP devices seen in existance provide
   events for "object added" and "object deleted". These should result in
   atleast a call to the flus_handles() function.
 
-4. FEATURE: Have libmtp optionally create a folder hierarchy such as
-  /Album/Artist/Song.mp3 on the device. Currently it'll only put songs
-  into some /Music or /My Music folder if one exists.
+3. FEATURE: Have libmtp "sendtr" sample optionally create a folder 
+  hierarchy such as /Album/Artist/Song.mp3 on the device. Currently 
+  it'll only put songs into some /Music or /My Music folder if one exists.
 
-5. FEATURE: Integrate libmtp with HAL / D-Bus so applications can dynamically
-  know when a device has been plugged in or removed. Need a mechanism to 
-  connect a specific hal UDI.
-
-6. FEATURE: Mechanism to retrieve the device icon device property, else if not
+4. FEATURE: Mechanism to retrieve the device icon device property, else if not
   present, look for DevIcon.fil (Windows ICO format) and 
   DevLogo.fil (PNG Format) images from the device (if available).
 
-7. FEATURE: Shared device access so that multiple client applications can have
+5. FEATURE: Shared device access so that multiple client applications can have
   an open connection to the device at the same time via a handle. For example,
   it should be somehow possible to run mtp-detect at the same time as amarok or 
   mtpfs is connected to a device. This would require some form of resource
@@ -82,3 +85,24 @@ THOSE ARE ALREADY DONE:
 4. SPEED: Whenever we add an object (file, track, playlist...) we
   should only need to update the cache with relevant data. Atleast for
   speedup caches.
+
+5. COMPATIBILITY: account for different step sizes and intervals on some
+  numeric properties we set, make the functions round off when possible.
+
+6. SPEED: Cache the supported object properties at first read/startup.
+  then use the cache to check for supported props instead of calling
+  out to PTP with ptp_mtp_getobjectpropssupported() every time.
+  The cache would be an array of size params->deviceinfo.ImageFormats_len
+  with a list for each format of the properties it will support. Notice 
+  that this needs to be updated whenever flush_handles() is called too.
+  THIS HAS BEEN DISCARDED, TERO IMPLEMENTED IT BUT IT DOESN'T SEEM TO 
+  YIELD MUCH.
+
+7. FEATURE: Make abstract playlists really become size -1 when created as 
+  the ones created on the device instead of the current 1 byte size.
+  (Is this possible using enhanced commands? See TODO remarks in
+  the create_abstract_entity() function)
+
+8. FEATURE: Integrate libmtp with HAL / D-Bus so applications can dynamically
+  know when a device has been plugged in or removed. Need a mechanism to 
+  connect a specific hal UDI.

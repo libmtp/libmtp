@@ -220,6 +220,10 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "SanDisk", 0x0781, "Sansa m240", 0x7430, 
     DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
     DEVICE_FLAG_NO_RELEASE_INTERFACE },
+  // Reported by anonymous SourceForge user
+  { "SanDisk", 0x0781, "Sansa View", 0x74b0, 
+    DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   
 
   /*
@@ -362,6 +366,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   /*
    * Nokia
    */
+  // From anonymous SourceForge user
+  { "Nokia", 0x0421, "3110c Mobile Phone", 0x005f, DEVICE_FLAG_NONE },
   // From: Mitchell Hicks <mitchix@yahoo.com>
   { "Nokia", 0x0421, "5300 Mobile Phone", 0x04ba, DEVICE_FLAG_NONE },
   // From Christian Arnold <webmaster@arctic-media.de>
