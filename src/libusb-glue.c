@@ -174,6 +174,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "Philips", 0x0471, "PSA610", 0x0181, DEVICE_FLAG_NONE },
   // From libgphoto2 source
   { "Philips", 0x0471, "HDD6320", 0x01eb, DEVICE_FLAG_NONE },
+  // From Detlef Meier <dm@emlix.com>
+  { "Philips", 0x0471, "SA6045", 0x084e, DEVICE_FLAG_UNLOAD_DRIVER },
   // from XNJB user
   { "Philips", 0x0471, "PSA235", 0x7e01, DEVICE_FLAG_NONE },
 
