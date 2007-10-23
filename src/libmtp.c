@@ -1693,7 +1693,7 @@ static int sort_storage_by(LIBMTP_mtpdevice_t *device,int const sortby)
 static uint32_t get_first_storageid(LIBMTP_mtpdevice_t *device)
 {
   LIBMTP_devicestorage_t *storage = device->storage;
-  uint32_t store = 0;
+  uint32_t store = 0x00000000; //Should this be 0xffffffffu instead?
 
   if(storage != NULL)
     store = storage->id;
@@ -2270,6 +2270,12 @@ static int check_if_file_fits(LIBMTP_mtpdevice_t *device,
 			    "check_if_file_fits(): error checking free storage.");
     return -1;
   } else {
+    // Storage IDs with the lower 16 bits 0x0000 are not supposed
+    // to be writeable.
+    if ((storage->id & 0x0000FFFFU) == 0x00000000U) {
+      return -1;
+    }
+    // See if it fits.
     if (filesize > freebytes) {
       return -1;
     }
@@ -3572,7 +3578,7 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_callback_data = NULL;
 
   if (ret == PTP_ERROR_CANCEL) {
-    add_error_to_errorstack(device, LIBMTP_ERROR_CANCELLED, "LIBMTP_Send_File_From_File_Descriptor(): Cancelled transfer.");
+    add_error_to_errorstack(device, LIBMTP_ERROR_CANCELLED, "LIBMTP_Get_File_From_File_Descriptor(): Cancelled transfer.");
     return -1;
   }
   if (ret != PTP_RC_OK) {
@@ -3963,19 +3969,24 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 
   // See if there is some storage we can fit this file on.
   storage = device->storage;
-  while(storage != NULL) {
-    subcall_ret = check_if_file_fits(device, storage, filedata->filesize);
-    if (subcall_ret != 0) {
-      storage = storage->next;
-    }
-    break;
-  }
   if (storage == NULL) {
-    add_error_to_errorstack(device, LIBMTP_ERROR_STORAGE_FULL, "LIBMTP_Send_File_From_File_Descriptor(): " 
-			    "all device storage is full or corrupt.");
-    return -1;
+    // Sometimes the storage just cannot be detected.
+    store = 0x00000000U;
+  } else {
+    while(storage != NULL) {
+      subcall_ret = check_if_file_fits(device, storage, filedata->filesize);
+      if (subcall_ret != 0) {
+	storage = storage->next;
+      }
+      break;
+    }
+    if (storage == NULL) {
+      add_error_to_errorstack(device, LIBMTP_ERROR_STORAGE_FULL, "LIBMTP_Send_File_From_File_Descriptor(): " 
+			      "all device storage is full or corrupt.");
+      return -1;
+    }
+    store = storage->id;
   }
-  store = storage->id;
 
   /*
    * If no destination folder was given, look up a default
@@ -4803,7 +4814,6 @@ static LIBMTP_folder_t *get_subfolders_for_folder(PTPParams *params, uint32_t pa
 LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
 {
   PTPParams *params = (PTPParams *) device->params;
-  uint32_t folders = 0;
 
   // Get all the handles if we haven't already done that
   if (params->handles.Handler == NULL) {

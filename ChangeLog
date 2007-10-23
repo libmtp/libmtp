@@ -1,3 +1,9 @@
+2007-10-23  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: make LIBMTP_Send_File_From_File_Descriptor()
+	  survive the case where device->storage is NULL. This happens
+	  on the Nokia 3110c.
+
 2007-10-19  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: bring the cache handling code together at the
