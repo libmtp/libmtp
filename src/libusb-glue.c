@@ -206,22 +206,22 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
   { "SanDisk", 0x0781, "Sansa e280", 0x7421, 
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
     DEVICE_FLAG_NO_RELEASE_INTERFACE },
+  // Reported by XNJB user
+  { "SanDisk", 0x0781, "Sansa m240", 0x7430, 
+    DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by anonymous user at sourceforge.net
   { "SanDisk", 0x0781, "Sansa c240/c250", 0x7450, 
     DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
+  // Reported by Troy Curtis Jr.
+  { "SanDisk", 0x0781, "Sansa Express", 0x7460, 
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | 
     DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by XNJB user, and Miguel de Icaza <miguel@gnome.org>
   // This has no dual-mode so no need to unload any driver.
   // This is a Linux based device!
   { "SanDisk", 0x0781, "Sansa Connect", 0x7480, DEVICE_FLAG_NONE },
-  // Reported by Troy Curtis Jr.
-  { "SanDisk", 0x0781, "Sansa Express", 0x7460, 
-    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | 
-    DEVICE_FLAG_NO_RELEASE_INTERFACE },
-  // Reported by XNJB user
-  { "SanDisk", 0x0781, "Sansa m240", 0x7430, 
-    DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by anonymous SourceForge user
   { "SanDisk", 0x0781, "Sansa View", 0x74b0, 
     DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
@@ -413,10 +413,10 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
    * Their datasheet claims their devices are dualmode so probably needs to
    * unload the attached drivers here.
    */
-  // Reported by Cristi Magherusan <majeru@gentoo.ro>
-  { "TrekStor", 0x0402, "Vibez i.Beat sweez FM", 0x0611, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Stefan Voss <svoss@web.de>
   { "TrekStor", 0x066f, "Vibez 8/12GB", 0x842a, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by Cristi Magherusan <majeru@gentoo.ro>
+  { "TrekStor", 0x0402, "Vibez i.Beat sweez FM", 0x0611, DEVICE_FLAG_UNLOAD_DRIVER },
   
   /*
    * Disney (have had no reports of this actually working.)
@@ -458,7 +458,12 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
 
   /*
    * Motorola
+   * Assume DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST on all of these.
    */
+  // Reported by Marcus Meissner to libptp2
+  { "Motorola", 0x22b8, "K1", 0x4811, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
+  // Reported by Hans-Joachim Baader <hjb@pro-linux.de> to libptp2
+  { "Motorola", 0x22b8, "A1200", 0x60ca, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
   // Reported by anonymous user
   { "Motorola", 0x22b8, "RAZR2 V8", 0x6415, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
 
