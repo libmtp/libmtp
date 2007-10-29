@@ -14,6 +14,8 @@ if [ "x$WGET" != "x" ]; then
     mv tmpfile ptp-pack.c.gphoto2
     wget -O tmpfile http://gphoto.svn.sourceforge.net/viewvc/*checkout*/gphoto/trunk/libgphoto2/camlibs/ptp2/library.c
     mv tmpfile library.c.gphoto2
+    wget -O tmpfile http://gphoto.svn.sourceforge.net/viewvc/*checkout*/gphoto/trunk/libgphoto2/camlibs/ptp2/music-players.h
+    mv tmpfile music-players.h.gphoto2
 else
     echo "Could not sync to gphoto2. No WGET."
 fi

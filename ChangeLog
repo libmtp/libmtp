@@ -1,3 +1,10 @@
+2007-10-30  Linus Walleij <triad@df.lth.se>
+
+	* src/music-players.h: split this off as a shared file
+	  between us and libgphoto2 so we get out of the syncing
+	  nightmare.
+	* src/libusb-glue.c: consequental movement.
+
 2007-10-25  Linus Walleij <triad@df.lth.se>
 
 	* Release 0.2.3. Nice bunch of cleaned-up code, sad we had
