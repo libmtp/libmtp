@@ -419,6 +419,12 @@
   { "Sony", 0x054c, "Walkman S-series", 0x0327, DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
+   * SonyEricsson
+   */
+  // Reported by Michael Eriksson
+  { "SonyEricsson", 0x0fce, "W910", 0x0076, DEVICE_FLAG_NONE },
+
+  /*
    * Motorola
    * Assume DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST on all of these.
    */

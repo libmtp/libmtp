@@ -1,0 +1,650 @@
+hal# mtp-detect 
+libmtp version: 0.2.1
+
+Attempting to connect device(s)
+Potential MTP Device with VendorID:0fce and ProductID:0076 responded to control message 2 with a response that was too short. Problems may arrise but continuing
+Device 1 (VID=0fce and PID=0076) is UNKNOWN.
+Please report this VID/PID and the device model to the libmtp development team
+PTP: Opening session
+Detect: Successfully connected 1 devices
+USB low-level info:
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 0fce
+   idProduct: 0076
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Device flags: 0x00000000
+Microsoft device descriptor 0xee:
+        0000: 1203 4d00 5300 4600 5400 3100 3000 3000   ..M.S.F.T.1.0.0.
+        0010: 0800 0000 0000 0000 0000 0000 0000 0000   ................
+        0020: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0030: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0040: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0050: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0060: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0070: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0080: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0090: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        00a0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        00b0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        00c0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        00d0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        00e0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        00f0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0100: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0110: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0120: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0130: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0140: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0150: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0160: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0170: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0180: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0190: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        01a0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        01b0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        01c0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        01d0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        01e0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        01f0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0200: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0210: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0220: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0230: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0240: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0250: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0260: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0270: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0280: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0290: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        02a0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        02b0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        02c0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        02d0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        02e0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        02f0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0300: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0310: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0320: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0330: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0340: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0350: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0360: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0370: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0380: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0390: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        03a0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        03b0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        03c0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        03d0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        03e0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        03f0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+Microsoft device response to control message 1, CMD 0x08:
+        0000: 2800 0000 0001 0400 0100 0000 0000 0000   (...............
+        0010: 0001 4d54 5000 0000 0000 0000 0000 0000   ..MTP...........
+        0020: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0030: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0040: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0050: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0060: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0070: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0080: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0090: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        00a0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        00b0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        00c0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        00d0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        00e0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        00f0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0100: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0110: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0120: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0130: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0140: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0150: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0160: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0170: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0180: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0190: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        01a0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        01b0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        01c0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        01d0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        01e0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        01f0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0200: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0210: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0220: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0230: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0240: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0250: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0260: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0270: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0280: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0290: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        02a0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        02b0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        02c0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        02d0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        02e0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        02f0: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0300: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0310: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0320: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0330: 0000 0000 0000 0000 0000 0000 0000 0000   ................
+        0340: 0f0f 0f0f 0f0f 0010 1010 1010 1010 1010   ................
+        0350: 1010 1010 1010 1000 6d63 6f75 6e74 3a20   ........mcount: 
+        0360: 5072 6f66 696c 696e 6720 6f66 2073 6574   Profiling of set
+        0370: 7b75 2c67 7d69 6420 6269 6e61 7269 6573   {u,g}id binaries
+        0380: 2069 7320 6e6f 7420 616c 6c6f 7765 6400    is not allowed.
+        0390: 5f6d 636c 6561 6e75 703a 2069 6e74 6572   _mcleanup: inter
+        03a0: 6e61 6c20 6275 6666 6572 206f 7665 7266   nal buffer overf
+        03b0: 6c6f 772c 2050 524f 4644 4952 2074 6f6f   low, PROFDIR too
+        03c0: 206c 6f6e 6700 5f6d 636c 6561 6e75 703a    long._mcleanup:
+        03d0: 2074 6f73 206f 7665 7266 6c6f 770a 0050    tos overflow..P
+        03e0: 524f 4644 4952 0067 6d2f 7573 722f 706b   ROFDIR.gm/usr/pk
+        03f0: 6773 7263 2f77 6970 2f6c 6962 6d74 7000   gsrc/wip/libmtp.
+Potential MTP Device with VendorID:0fce and ProductID:0076 responded to control message 2 with a response that was too short. Problems may arrise but continuing
+Device info:
+   Manufacturer: Sony Ericsson
+   Model: Sony Ericsson Phone
+   Device version: 1.00
+   Serial number: 00000000000000000358875011380618
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0; microsoft.com/WMDRMPD: 10.1; microsoft.com/WMPPD: 11.0; microsoft.com/WMPPD: 10.0; vodafone.com/omadrmv2: 1.0;
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Send WMDRM-PD Command
+   910b: Send WMDRM-PD Request
+   9201: Report Added/Deleted Items
+   9202: Report Acquired Items
+Events supported:
+   0x4004
+   0x4005
+   0x400a
+Device Properties Supported:
+   0x5002: Functional Mode
+   0xd401: Synchronization Partner
+   0xd402: Device Friendly Name
+   0xd404: Unknown property
+   0xd405: Device Icon
+   0xd102: Device Certificate
+Playable File (Object) Types and Object Properties Supported:
+   b984: 3GP
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc47: DateAuthored STRING data type GET/SET
+Unknown OPFF type 3
+      dc99: OriginalReleaseDate STRING data type GET/SET
+Unknown OPFF type 3
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   3000: Undefined Type
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   3001: Association/Directory
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc05: AssociationType UINT16 data type enumeration: 0, 1,  GET/SET
+      dc06: AssociationDesc UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   3004: Text
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   3005: HTML
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   3008: MS Wave
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc47: DateAuthored STRING data type GET/SET
+Unknown OPFF type 3
+      dc99: OriginalReleaseDate STRING data type GET/SET
+Unknown OPFF type 3
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   3009: MP3
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      de99: AudioWAVECodec UINT32 data type enumeration: 85,  READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc47: DateAuthored STRING data type GET/SET
+Unknown OPFF type 3
+      dc99: OriginalReleaseDate STRING data type GET/SET
+Unknown OPFF type 3
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   300c: ASF
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc47: DateAuthored STRING data type GET/SET
+Unknown OPFF type 3
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   3801: JPEG
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   3804: BMP
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   3807: GIF
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   380b: PNG
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   380f: JP2
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   3810: JPX
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   b901: WMA
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      de99: AudioWAVECodec UINT32 data type enumeration: 353,  READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc47: DateAuthored STRING data type GET/SET
+Unknown OPFF type 3
+      dc99: OriginalReleaseDate STRING data type GET/SET
+Unknown OPFF type 3
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   b981: WMV
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc47: DateAuthored STRING data type GET/SET
+Unknown OPFF type 3
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      de9b: VideoFourCCCodec UINT32 data type enumeration: 861293911,  READ ONLY
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   b982: MP4
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc47: DateAuthored STRING data type GET/SET
+Unknown OPFF type 3
+      dc99: OriginalReleaseDate STRING data type GET/SET
+Unknown OPFF type 3
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+   ba11: M3U Playlist
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+Unknown OPFF type 3
+      dc09: DateModified STRING data type READ ONLY
+Unknown OPFF type 3
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc9d: DRMStatus UINT16 data type ANY 16BIT VALUE form GET/SET
+      db01: unknown(db01) UINT8 data type enumeration: 0, 1,  GET/SET
+      db02: unknown(db02) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+Unknown OPFF type 6
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc0d: Hidden UINT16 data type enumeration: 0, 1,  GET/SET
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0003
+      FilesystemType: 0x0002
+      AccessCapability: 0x0000
+      MaxCapacity: 66351104
+      FreeSpaceInBytes: 24440832
+      FreeSpaceInObjects: 0
+      StorageDescription: Phone Memory
+      VolumeIdentifier: 
+   StorageID: 0x00020001
+      StorageType: 0x0004
+      FilesystemType: 0x0002
+      AccessCapability: 0x0000
+      MaxCapacity: 957020160
+      FreeSpaceInBytes: 683114496
+      FreeSpaceInObjects: 0
+      StorageDescription: Memory Stick (TM)
+      VolumeIdentifier: 
+Special directories:
+   Default music folder: 0x00000056
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x00000000
+   Default video folder: 0x0000002e
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00000000
+   Default text folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: W910i
+   Synchronization partner: Computer
+libmtp supported (playable) filetypes:
+   Text file
+   HTML file
+   RIFF WAVE file
+   ISO MPEG-1 Audio Layer 3
+   Microsoft Advanced Systems Format
+   JPEG file
+   BMP bitmap file
+   GIF bitmap file
+   Portable Network Graphics
+   JP2 file
+   JPX file
+   Microsoft Windows Media Audio
+   Microsoft Windows Media Video
+   MPEG-4 Part 14 Container Format (Audio+Video Empahsis)
+Unable to acquire device certificate, perhaps this device does not support this
+Error 2: PTP Layer error 02fe: get_device_unicode_property(): failed to get unicode property.
+Error 2: (Look this up in ptp.h for an explanation.)
+^C
