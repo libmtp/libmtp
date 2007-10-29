@@ -3,7 +3,10 @@
 	* src/music-players.h: split this off as a shared file
 	  between us and libgphoto2 so we get out of the syncing
 	  nightmare.
+	* src/device-flags.h: split out this as well, Marcus
+	  might want it.
 	* src/libusb-glue.c: consequental movement.
+	* src/libmtp.c: reference new flag file.
 
 2007-10-25  Linus Walleij <triad@df.lth.se>
 

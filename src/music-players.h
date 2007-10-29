@@ -1,4 +1,4 @@
-/*
+/**
  * \file music-players.h
  * List of music players as USB ids.
  *
@@ -21,11 +21,6 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
- *
- * Created by Richard Low on 24/12/2005. (as mtp-utils.c)
- * Modified by Linus Walleij 2006-03-06
- *  (Notice that Anglo-Saxons use little-endian dates and Swedes 
- *   use big-endian dates.)
  *
  * This file is supposed to be included within a struct from both libmtp
  * and libgphoto2.

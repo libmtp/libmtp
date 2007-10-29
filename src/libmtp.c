@@ -40,6 +40,7 @@
 #include "unicode.h"
 #include "ptp.h"
 #include "libusb-glue.h"
+#include "device-flags.h"
 
 #include <string.h>
 #include <sys/types.h>

@@ -30,6 +30,7 @@
  */
 #include "libmtp.h"
 #include "libusb-glue.h"
+#include "device-flags.h"
 #include "util.h"
 #include "ptp.h"
 
