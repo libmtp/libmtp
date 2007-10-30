@@ -187,7 +187,7 @@ ptp_transaction_new (PTPParams* params, PTPContainer* ptp,
 			"PTP: Sequence number mismatch %d vs expected %d.",
 			ptp->Transaction_ID, params->transaction_id-1
 		);
-//      return PTP_ERROR_BADPARAM;
+		return PTP_ERROR_BADPARAM;
 	}
 	return ptp->Code;
 }
@@ -4075,7 +4075,7 @@ struct {
 	{PTP_OPC_DisplayName,"DisplayName"},
 	{PTP_OPC_BodyText,"BodyText"},
 	{PTP_OPC_Subject,"Subject"},
-	{PTP_OPC_Prority,"Prority"},
+	{PTP_OPC_Priority,"Priority"},
 	{PTP_OPC_GivenName,"GivenName"},
 	{PTP_OPC_MiddleNames,"MiddleNames"},
 	{PTP_OPC_FamilyName,"FamilyName"},
