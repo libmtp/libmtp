@@ -97,6 +97,8 @@
   { "Samsung", 0x04e8, "YP-T9", 0x507f, DEVICE_FLAG_NONE },
   // From Paul Clinch
   { "Samsung", 0x04e8, "YP-K3", 0x5081, DEVICE_FLAG_NONE },
+  // From Paul Clinch
+  { "Samsung", 0x04e8, "YP-T10", 0x508a, DEVICE_FLAG_NONE },
   // From a rouge .INF file,
   // this device ID seems to have been recycled for the Samsung SGH-A707 Cingular cellphone
   { "Samsung", 0x04e8, "YH-999 Portable Media Center / SGH-A707", 0x5a0f, DEVICE_FLAG_NONE },
@@ -137,7 +139,7 @@
   // From libgphoto2 source
   { "Philips", 0x0471, "HDD6320", 0x01eb, DEVICE_FLAG_NONE },
   // From Detlef Meier <dm@emlix.com>
-  { "Philips", 0x0471, "SA6045", 0x084e, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Philips", 0x0471, "SA6014/SA6015/SA6024/SA6025/SA6044/SA6045", 0x084e, DEVICE_FLAG_UNLOAD_DRIVER },
   // from XNJB user
   { "Philips", 0x0471, "PSA235", 0x7e01, DEVICE_FLAG_NONE },
 
