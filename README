@@ -83,12 +83,13 @@ New Devices
 
 If you happen upon a device which libmtp claims it cannot
 autodetect, please submit the vendor ID and device ID 
-as a bug, patch or feature request on the Sourceforge
-bug tracker at our homepage. If it gives a sensible 
-output from "mtp-detect" then please attach the result as
-well as it teach us some stuff about your device. If you've
-done some additional hacking, join our mailinglist and
-post your experiences there.
+(these can be obtained from the "lsusb" and "lsusb -n"
+commands run as root) as a bug, patch or feature request 
+on the Sourceforge bug tracker at our homepage. If it 
+gives a sensible  output from "mtp-detect" then please attach 
+the result as well as it teach us some stuff about your 
+device. If you've done some additional hacking, join our 
+mailinglist and post your experiences there.
 
 If you want to be able to hack some more and you're not
 afraid of C hacking, add an entry for your device's 
