@@ -103,8 +103,6 @@ static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
 				       char **unicstring, uint16_t property);
 static uint16_t adjust_u16(uint16_t val, PTPObjectPropDesc *opd);
 static uint32_t adjust_u32(uint32_t val, PTPObjectPropDesc *opd);
-static MTPProperties *find_propvalue (PTPParams *params, 
-				      uint32_t const oid, uint32_t const attribute_id);
 static char *get_iso8601_stamp(void);
 static char *get_string_from_object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 				    uint16_t const attribute_id);
@@ -145,11 +143,8 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 				uint16_t const objectformat,
 				uint32_t const * const tracks,
 				uint32_t const no_tracks);
-static MTPProperties *get_new_mtp_prop_entry(MTPProperties**, int*);
-static void destroy_mtp_prop_list(MTPProperties *proplist, int nrofprops);
-static void destroy_mtp_prop(MTPProperties *prop);
-static void remove_object_from_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id, int just_metadata);
-static void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id, int just_metadata);
+static void remove_object_from_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id);
+static void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id);
 static void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id);
 
 /**
@@ -450,27 +445,6 @@ static uint32_t adjust_u32(uint32_t val, PTPObjectPropDesc *opd)
 }
 
 /**
- * This function tries its bewst to locate an attribute for a
- * certain object ID in the cached properties stored in params.
- */
-static MTPProperties *
-find_propvalue (PTPParams *params, uint32_t const oid, uint32_t const attribute_id)
-{
-  int i;
-  MTPProperties *prop = params->props;
-
-  if (!prop)
-    return NULL;
-
-  for (i=0;i<params->nrofprops;i++) {
-    if (oid == prop->ObjectHandle && attribute_id == prop->property)
-	return prop;
-    prop ++;
-  }
-  return NULL;
-}
-
-/**
  * This function returns a newly created ISO 8601 timestamp with the
  * current time in as high precision as possible. It even adds
  * the time zone if it can.
@@ -512,7 +486,7 @@ static char *get_string_from_object(LIBMTP_mtpdevice_t *device, uint32_t const o
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
   if (params->props) {
-    MTPProperties *prop = find_propvalue (params, object_id, attribute_id);
+    MTPProperties *prop = ptp_find_object_prop_in_cache(params, object_id, attribute_id);
     if (prop) {
         if (prop->propval.str != NULL)
           return strdup(prop->propval.str);
@@ -558,7 +532,7 @@ static uint64_t get_u64_from_object(LIBMTP_mtpdevice_t *device,uint32_t const ob
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
   if (params->props) {
-    MTPProperties *prop = find_propvalue (params, object_id, attribute_id);
+    MTPProperties *prop = ptp_find_object_prop_in_cache(params, object_id, attribute_id);
     if (prop)
       return prop->propval.u64;
   }
@@ -600,7 +574,7 @@ static uint32_t get_u32_from_object(LIBMTP_mtpdevice_t *device,uint32_t const ob
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
   if (params->props) {
-    MTPProperties *prop = find_propvalue (params, object_id, attribute_id);
+    MTPProperties *prop = ptp_find_object_prop_in_cache(params, object_id, attribute_id);
     if (prop)
       return prop->propval.u32;
   }
@@ -642,7 +616,7 @@ static uint16_t get_u16_from_object(LIBMTP_mtpdevice_t *device, uint32_t const o
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
   if (params->props) {
-    MTPProperties *prop = find_propvalue (params, object_id, attribute_id);
+    MTPProperties *prop = ptp_find_object_prop_in_cache(params, object_id, attribute_id);
     if (prop)
       return prop->propval.u16;
   }
@@ -684,7 +658,7 @@ static uint8_t get_u8_from_object(LIBMTP_mtpdevice_t *device, uint32_t const obj
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
   if (params->props) {
-    MTPProperties *prop = find_propvalue (params, object_id, attribute_id);
+    MTPProperties *prop = ptp_find_object_prop_in_cache(params, object_id, attribute_id);
     if (prop)
       return prop->propval.u8;
   }
@@ -1492,7 +1466,7 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
     free(params->objectinfo);
   }
   if (params->props != NULL) {
-    destroy_mtp_prop_list(params->props, params->nrofprops);
+    ptp_destroy_object_prop_list(params->props, params->nrofprops);
   }
   
   params->handles.n = 0;
@@ -2776,7 +2750,7 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
           }
           prop ++;
         }
-        destroy_mtp_prop_list(props, nrofprops);
+        ptp_destroy_object_prop_list(props, nrofprops);
       }
     } else {
       uint16_t *props = NULL;
@@ -2935,7 +2909,7 @@ LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *device, uint32_t cons
 	}
 	prop ++;
       }
-      destroy_mtp_prop_list(props, nrofprops);
+      ptp_destroy_object_prop_list(props, nrofprops);
     } else {
       uint16_t *props = NULL;
       uint32_t propcnt = 0;
@@ -3165,7 +3139,7 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
       if (prop->ObjectHandle == track->item_id)
         pick_property_to_track_metadata(device, prop, track);
     }
-    destroy_mtp_prop_list(props, nrofprops);
+    ptp_destroy_object_prop_list(props, nrofprops);
   } else {
     uint16_t *props = NULL;
     uint32_t propcnt = 0;
@@ -3708,53 +3682,7 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
   return ret;
 }
 
-static MTPProperties*
-get_new_mtp_prop_entry(MTPProperties **props, int *nrofprops) {
-  MTPProperties *newprops;
-  MTPProperties *prop;
 
-  if (*props == NULL) {
-    newprops = malloc(sizeof(MTPProperties)*(*nrofprops+1));
-  } else {
-    newprops = realloc(*props,sizeof(MTPProperties)*(*nrofprops+1));
-  }
-  if (newprops == NULL)
-    return NULL;
-  prop = &newprops[*nrofprops];
-  prop->property = PTP_OPC_StorageID; /* Should be "unknown" */
-  prop->datatype = PTP_DTC_UNDEF;
-  prop->ObjectHandle = 0x00000000U;
-  prop->propval.str = NULL;
-
-  (*props) = newprops;
-  (*nrofprops)++;
-  return prop;
-}
-
-static void destroy_mtp_prop_list(MTPProperties *props, int nrofprops)
-{
-  int i;
-  MTPProperties *prop = props;
-
-  for (i=0;i<nrofprops;i++,prop++)
-    destroy_mtp_prop(prop);
-  free(props);
-}
-
-static void destroy_mtp_prop(MTPProperties *prop)
-{
-  if (!prop)
-    return;
-  
-  if (prop->datatype == PTP_DTC_STR && prop->propval.str != NULL)
-    free(prop->propval.str);
-  else if ((prop->datatype == PTP_DTC_AINT8 || prop->datatype == PTP_DTC_AINT16 ||
-            prop->datatype == PTP_DTC_AINT32 || prop->datatype == PTP_DTC_AINT64 || prop->datatype == PTP_DTC_AINT128 ||
-            prop->datatype == PTP_DTC_AUINT8 || prop->datatype == PTP_DTC_AUINT16 ||
-            prop->datatype == PTP_DTC_AUINT32 || prop->datatype == PTP_DTC_AUINT64 || prop->datatype ==  PTP_DTC_AUINT128)
-            && prop->propval.a.v != NULL)
-    free(prop->propval.a.v);
-}
 
 /**
  * This function sends a track from a file descriptor to an
@@ -4132,7 +4060,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       } else if (opd.GetSet) {
 	switch (properties[i]) {
 	case PTP_OPC_ObjectFileName:
-	  prop = get_new_mtp_prop_entry(&props,&nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
 	  prop->ObjectHandle = filedata->item_id;
 	  prop->property = PTP_OPC_ObjectFileName;
 	  prop->datatype = PTP_DTC_STR;
@@ -4144,21 +4072,21 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	  }
 	  break;
 	case PTP_OPC_ProtectionStatus:
-	  prop = get_new_mtp_prop_entry(&props,&nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
 	  prop->ObjectHandle = filedata->item_id;
 	  prop->property = PTP_OPC_ProtectionStatus;
 	  prop->datatype = PTP_DTC_UINT16;
 	  prop->propval.u16 = 0x0000U; /* Not protected */
 	  break;
 	case PTP_OPC_NonConsumable:
-	  prop = get_new_mtp_prop_entry(&props,&nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
 	  prop->ObjectHandle = filedata->item_id;
 	  prop->property = PTP_OPC_NonConsumable;
 	  prop->datatype = PTP_DTC_UINT8;
 	  prop->propval.u8 = 0x00; /* It is supported, then it is consumable */
 	  break;
 	case PTP_OPC_Name:
-	  prop = get_new_mtp_prop_entry(&props,&nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
 	  prop->ObjectHandle = filedata->item_id;
 	  prop->property = PTP_OPC_Name;
 	  prop->datatype = PTP_DTC_STR;
@@ -4167,7 +4095,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	  break;
 	case PTP_OPC_DateModified:
 	  // Tag with current time if that is supported
-	  prop = get_new_mtp_prop_entry(&props,&nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
 	  prop->ObjectHandle = filedata->item_id;
 	  prop->property = PTP_OPC_DateModified;
 	  prop->datatype = PTP_DTC_STR;
@@ -4183,7 +4111,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 				     of, filedata->filesize, props, nrofprops);
 
     /* Free property list */
-    destroy_mtp_prop_list(props, nrofprops);
+    ptp_destroy_object_prop_list(props, nrofprops);
 
     if (ret != PTP_RC_OK) {
       add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor():" 
@@ -4251,7 +4179,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
-  add_object_to_cache(device, filedata->item_id, 0);
+  add_object_to_cache(device, filedata->item_id);
 
   return 0;
 }
@@ -4310,7 +4238,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	case PTP_OPC_Name:
 	  if (metadata->title == NULL)
 	    break;
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_Name;
 	  prop->datatype = PTP_DTC_STR;
@@ -4319,7 +4247,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	case PTP_OPC_AlbumName:
 	  if (metadata->album == NULL)
 	    break;
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = metadata->item_id;
 	  prop->property = PTP_OPC_AlbumName;
 	  prop->datatype = PTP_DTC_STR;
@@ -4328,7 +4256,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	case PTP_OPC_Artist:
 	  if (metadata->artist == NULL)
 	    break;
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_Artist;
 	  prop->datatype = PTP_DTC_STR;
@@ -4337,21 +4265,21 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	case PTP_OPC_Genre:
 	  if (metadata->genre == NULL)
 	    break;
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_Genre;
 	  prop->datatype = PTP_DTC_STR;
 	  prop->propval.str = strdup(metadata->genre);
 	  break;
 	case PTP_OPC_Duration:
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = metadata->item_id;
 	  prop->property = PTP_OPC_Duration;
 	  prop->datatype = PTP_DTC_UINT32;
 	  prop->propval.u32 = adjust_u32(metadata->duration, &opd);
 	  break;
 	case PTP_OPC_Track:
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = metadata->item_id;
 	  prop->property = PTP_OPC_Track;
 	  prop->datatype = PTP_DTC_UINT16;
@@ -4360,42 +4288,42 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	case PTP_OPC_OriginalReleaseDate:
 	  if (metadata->date == NULL)
 	    break;
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_OriginalReleaseDate;
 	  prop->datatype = PTP_DTC_STR;
 	  prop->propval.str = strdup(metadata->date);
 	  break;
 	case PTP_OPC_SampleRate:
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_SampleRate;
 	  prop->datatype = PTP_DTC_UINT32;
 	  prop->propval.u32 = adjust_u32(metadata->samplerate, &opd);
 	  break;
 	case PTP_OPC_NumberOfChannels:
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_NumberOfChannels;
 	  prop->datatype = PTP_DTC_UINT16;
 	  prop->propval.u16 = adjust_u16(metadata->nochannels, &opd);
 	  break;
 	case PTP_OPC_AudioWAVECodec:
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_AudioWAVECodec;
 	  prop->datatype = PTP_DTC_UINT32;
 	  prop->propval.u32 = adjust_u32(metadata->wavecodec, &opd);
 	  break;
 	case PTP_OPC_AudioBitRate:
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_AudioBitRate;
 	  prop->datatype = PTP_DTC_UINT32;
 	  prop->propval.u32 = adjust_u32(metadata->bitrate, &opd);
 	  break;
 	case PTP_OPC_BitRateType:
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_BitRateType;
 	  prop->datatype = PTP_DTC_UINT16;
@@ -4405,14 +4333,14 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  // TODO: shall this be set for rating 0?
 	  if (metadata->rating == 0)
 	    break;
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_Rating;
 	  prop->datatype = PTP_DTC_UINT16;
 	  prop->propval.u16 = adjust_u16(metadata->rating, &opd);
 	  break;
 	case PTP_OPC_UseCount:
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = metadata->item_id;      
 	  prop->property = PTP_OPC_UseCount;
 	  prop->datatype = PTP_DTC_UINT32;
@@ -4420,7 +4348,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  break;
 	case PTP_OPC_DateModified:
 	  // Tag with current time if that is supported
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = metadata->item_id;
 	  prop->property = PTP_OPC_DateModified;
 	  prop->datatype = PTP_DTC_STR;
@@ -4438,7 +4366,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
     
     ret = ptp_mtp_setobjectproplist(params, props, nrofprops);
     
-    destroy_mtp_prop_list(props, nrofprops);
+    ptp_destroy_object_prop_list(props, nrofprops);
     
     if (ret != PTP_RC_OK) {
       // TODO: return error of which property we couldn't set
@@ -4643,9 +4571,6 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
     add_ptp_error_to_errorstack(device, ret, "LIBMTP_Delete_Object(): could not delete object.");
     return -1;
   }
-
-  // If the object is cached, cleanse cache.
-  remove_object_from_cache(device, object_id, 0);
 
   return 0;
 }
@@ -4877,7 +4802,7 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name, uint32_t p
   // NOTE: don't destroy the new_folder objectinfo, because it is statically referencing
   // several strings.
 
-  add_object_to_cache(device, new_id, 0);
+  add_object_to_cache(device, new_id);
 
   return new_id;
 }
@@ -5150,7 +5075,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
       } else if (opd.GetSet) {
 	switch (properties[i]) {
 	case PTP_OPC_ObjectFileName:
-	  prop = get_new_mtp_prop_entry(&props,&nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
 	  prop->ObjectHandle = *newid;      
 	  prop->property = PTP_OPC_ObjectFileName;
 	  prop->datatype = PTP_DTC_STR;
@@ -5160,14 +5085,14 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	  }
 	  break;
 	case PTP_OPC_ProtectionStatus:
-	  prop = get_new_mtp_prop_entry(&props,&nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
 	  prop->ObjectHandle = *newid;
 	  prop->property = PTP_OPC_ProtectionStatus;
 	  prop->datatype = PTP_DTC_UINT16;
 	  prop->propval.u16 = 0x0000U; /* Not protected */
 	  break;
 	case PTP_OPC_NonConsumable:
-	  prop = get_new_mtp_prop_entry(&props,&nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
 	  prop->ObjectHandle = *newid;
 	  prop->property = PTP_OPC_NonConsumable;
 	  prop->datatype = PTP_DTC_UINT8;
@@ -5175,7 +5100,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	  break;
 	case PTP_OPC_Name:
 	  if (name != NULL) {
-	    prop = get_new_mtp_prop_entry(&props,&nrofprops);
+	    prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
 	    prop->ObjectHandle = *newid;
 	    prop->property = PTP_OPC_Name;
 	    prop->datatype = PTP_DTC_STR;
@@ -5184,7 +5109,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	  break;
 	case PTP_OPC_Artist:
 	  if (artist != NULL) {
-	    prop = get_new_mtp_prop_entry(&props,&nrofprops);
+	    prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
 	    prop->ObjectHandle = *newid;
 	    prop->property = PTP_OPC_Artist;
 	    prop->datatype = PTP_DTC_STR;
@@ -5193,7 +5118,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	  break;
 	case PTP_OPC_Genre:
 	  if (genre != NULL) {
-	    prop = get_new_mtp_prop_entry(&props,&nrofprops);
+	    prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
 	    prop->ObjectHandle = *newid;
 	    prop->property = PTP_OPC_Genre;
 	    prop->datatype = PTP_DTC_STR;
@@ -5202,7 +5127,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	  break;
  	case PTP_OPC_DateModified:
 	  // Tag with current time if that is supported
-	  prop = get_new_mtp_prop_entry(&props,&nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
 	  prop->ObjectHandle = *newid;
 	  prop->property = PTP_OPC_DateModified;
 	  prop->datatype = PTP_DTC_STR;
@@ -5218,7 +5143,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 				     objectformat, 0, props, nrofprops);
 
     /* Free property list */
-    destroy_mtp_prop_list(props, nrofprops);
+    ptp_destroy_object_prop_list(props, nrofprops);
 
     if (ret != PTP_RC_OK) {
       add_ptp_error_to_errorstack(device, ret, "create_new_abstract_list(): Could not send object property list.");
@@ -5312,7 +5237,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
     }
   }
 
-  add_object_to_cache(device, *newid, 0);
+  add_object_to_cache(device, *newid);
 
   return 0;
 }
@@ -5372,7 +5297,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
       } else if (opd.GetSet) {
 	switch (properties[i]) {
 	case PTP_OPC_Name:
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = objecthandle;      
 	  prop->property = PTP_OPC_Name;
 	  prop->datatype = PTP_DTC_STR;
@@ -5381,7 +5306,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 	  break;
 	case PTP_OPC_Artist:
 	  if (artist != NULL) {
-	    prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	    prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	    prop->ObjectHandle = objecthandle;      
 	    prop->property = PTP_OPC_Artist;
 	    prop->datatype = PTP_DTC_STR;
@@ -5390,7 +5315,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 	  break;
 	case PTP_OPC_Genre:
 	  if (genre != NULL) {
-	    prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	    prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	    prop->ObjectHandle = objecthandle;
 	    prop->property = PTP_OPC_Genre;
 	    prop->datatype = PTP_DTC_STR;
@@ -5399,7 +5324,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 	  break;
  	case PTP_OPC_DateModified:
 	  // Tag with current time if that is supported
-	  prop = get_new_mtp_prop_entry(&props, &nrofprops);
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	  prop->ObjectHandle = objecthandle;
 	  prop->property = PTP_OPC_DateModified;
 	  prop->datatype = PTP_DTC_STR;
@@ -5416,7 +5341,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
     if (props != NULL) {
       ret = ptp_mtp_setobjectproplist(params, props, nrofprops);
 
-      destroy_mtp_prop_list(props, nrofprops);
+      ptp_destroy_object_prop_list(props, nrofprops);
     
       if (ret != PTP_RC_OK) {
         // TODO: return error of which property we couldn't set
@@ -6069,120 +5994,37 @@ void ptp_nikon_getptpipguid (unsigned char* guid) {
  * Remove object from cache.
  * @param device the device which may have a cache from which to remove the object.
  * @param object_id the object to remove from the cache.
- * @param just_metadata if you only want to remove metadata (properties) from the cache,
- *        in cases where this speed things up internally (i.e. when you immediately add
- *        it again), then set this to non-zero, else set this to zero.
  */
-static void remove_object_from_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id, int just_metadata)
+static void remove_object_from_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id)
 {
   PTPParams *params = (PTPParams *)device->params;
-  int i;
-
-  // remove object from object info cache
-  if (!just_metadata) {
-    for (i = 0; i < params->handles.n; i++) {
-      if (params->handles.Handler[i] == object_id) {
-	ptp_free_objectinfo(&params->objectinfo[i]);
-	memmove(params->handles.Handler+i, params->handles.Handler+i+1,
-		(params->handles.n-i-1)*sizeof(uint32_t));
-	memmove(params->objectinfo+i, params->objectinfo+i+1,
-		(params->handles.n-i-1)*sizeof(PTPObjectInfo));
-	params->handles.n--;
-	params->handles.Handler = realloc(params->handles.Handler, sizeof(uint32_t)*params->handles.n);
-	params->objectinfo = realloc(params->objectinfo, sizeof(PTPObjectInfo)*params->handles.n);
-      }
-    }
-  }
-
-  // delete cached object properties if metadata cache exists
-  if (params->props != NULL) {
-    int nrofoldprops = 0;
-    int firstoldprop = 0;
-
-    for (i=0; i<params->nrofprops; i++) {
-      MTPProperties *prop = &params->props[i];
-      if (prop->ObjectHandle == object_id)
-      {
-        nrofoldprops++;
-	if (nrofoldprops == 1) {
-	  firstoldprop = i;
-	}
-      }
-    }
-    for (i=firstoldprop;i<(firstoldprop+nrofoldprops);i++) {
-      destroy_mtp_prop(&params->props[i]);
-    }
-    memmove(&params->props[firstoldprop], 
-	    &params->props[firstoldprop+nrofoldprops], 
-	    (params->nrofprops-firstoldprop-nrofoldprops)*sizeof(MTPProperties));
-    params->props = realloc(params->props, 
-			    (params->nrofprops - nrofoldprops)*sizeof(MTPProperties));
-    params->nrofprops -= nrofoldprops;
-  }
+  ptp_remove_object_from_cache(params, object_id);
 }
 
 /**
  * Add an object to cache.
  * @param device the device which may have a cache to which the object should be added.
  * @param object_id the object to add to the cache.
- * @param just_metadata if you only want to add metadata (properties) to the cache,
- *        in cases where this speed things up internally (i.e. when you immediately remove
- *        it before then add again), then set this to non-zero, else set this to zero.
  */ 
-static void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id, int just_metadata)
+static void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id)
 {
   PTPParams *params = (PTPParams *)device->params;
   uint16_t ret;
 
-  if (!just_metadata) {
-    uint32_t n;
-
-    // We have a new handle
-    params->handles.n++;
-    n = params->handles.n;
-
-    // Insert the new handle
-    params->handles.Handler = (uint32_t*)realloc(params->handles.Handler,
-						 sizeof(uint32_t)*n);
-    params->handles.Handler[n-1] = object_id;
-    
-    // Insert a new object info struct and populate it
-    params->objectinfo = (PTPObjectInfo*)realloc(params->objectinfo,
-						 sizeof(PTPObjectInfo)*n);
-    memset(&params->objectinfo[n-1], 0, sizeof(PTPObjectInfo));
-    ptp_getobjectinfo(params, object_id, &params->objectinfo[n-1]);
-  }
-
-  // Update proplist if we use cached props
-  if (params->props != NULL) {
-    MTPProperties *props = NULL;
-    MTPProperties *xprops;
-    int no_new_props = 0;
-
-    ret = ptp_mtp_getobjectproplist(params, object_id, &props, &no_new_props);
-    if (ret != PTP_RC_OK) {
-      add_ptp_error_to_errorstack(device, ret, "add_object_to_cache(): call to ptp_mtp_getobjectproplist() failed.");
-      return;
-    }
-    xprops = realloc(params->props, (params->nrofprops+no_new_props)*sizeof(MTPProperties));
-    if (!xprops) {
-      add_ptp_error_to_errorstack(device, ret, "add_object_to_cache(): call to realloc() failed.");
-      return;
-    }
-    params->props = xprops;
-    memcpy(&params->props[params->nrofprops],&props[0],no_new_props*sizeof(MTPProperties));
-    // do not free the sub strings, we copied them above! Only free the array.
-    free (props);
-    params->nrofprops += no_new_props;
+  ret = ptp_add_object_to_cache(params, object_id);
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "add_object_to_cache(): couldn't add object to cache");
   }
 }
 
 
 /**
  * Update cache after object has been modified
+ * @param device the device which may have a cache to which the object should be updated.
+ * @param object_id the object to update.
  */
 static void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id)
 {
-  remove_object_from_cache(device, object_id, 1);
-  add_object_to_cache(device, object_id, 1);
+  remove_object_from_cache(device, object_id);
+  add_object_to_cache(device, object_id);
 }
