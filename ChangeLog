@@ -1,3 +1,9 @@
+2007-10-31  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.c: bring cache handling into this file.
+	* src/ptp.h: dito.
+	* src/libmtp.c: consequential changes.
+
 2007-10-30  Linus Walleij <triad@df.lth.se>
 
 	* src/music-players.h: split this off as a shared file
@@ -5,7 +11,7 @@
 	  nightmare.
 	* src/device-flags.h: split out this as well, Marcus
 	  might want it.
-	* src/libusb-glue.c: consequental movement.
+	* src/libusb-glue.c: consequential movement.
 	* src/libmtp.c: reference new flag file.
 	* src/ptp.c: sync in upstream.
 	* src/ptp.h: dito.
