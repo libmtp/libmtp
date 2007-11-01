@@ -1,3 +1,8 @@
+2007-11-02  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: try to repair header here instead of
+	  ignoring error in ptp.c.
+
 2007-10-31  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp.c: bring cache handling into this file.

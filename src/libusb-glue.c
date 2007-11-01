@@ -1073,6 +1073,7 @@ ptp_usb_getresp (PTPParams* params, PTPContainer* resp)
 	uint16_t ret;
 	unsigned long rlen;
 	PTPUSBBulkContainer usbresp;
+	PTP_USB *ptp_usb = (PTP_USB *)(params->data);
 
 	memset(&usbresp,0,sizeof(usbresp));
 	/* read response, it should never be longer than sizeof(usbresp) */
@@ -1097,6 +1098,14 @@ ptp_usb_getresp (PTPParams* params, PTPContainer* resp)
 	resp->Code=dtoh16(usbresp.code);
 	resp->SessionID=params->session_id;
 	resp->Transaction_ID=dtoh32(usbresp.trans_id);
+	if (ptp_usb->device_flags & DEVICE_FLAG_IGNORE_HEADER_ERRORS) {
+		if (resp->Transaction_ID != params->transaction_id-1) {
+			ptp_debug (params, "ptp_usb_getresp: detected a broken "
+				   "PTP header, transaction ID insane, expect problems! (But continuing)");
+			// Repair the header, so it won't wreak more havoc.
+			resp->Transaction_ID = params->transaction_id-1;
+		}
+	}
 	resp->Param1=dtoh32(usbresp.payload.params.param1);
 	resp->Param2=dtoh32(usbresp.payload.params.param2);
 	resp->Param3=dtoh32(usbresp.payload.params.param3);
