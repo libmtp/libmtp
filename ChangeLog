@@ -2,6 +2,9 @@
 
 	* src/libusb-glue.c: try to repair header here instead of
 	  ignoring error in ptp.c.
+	* src/music-players.h: flag some more Creative devices as
+	  broken getting all files.
+	* src/Makefile.am: reference the 2 new .h files.
 
 2007-10-31  Linus Walleij <triad@df.lth.se>
 
