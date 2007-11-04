@@ -98,6 +98,8 @@
   { "Samsung", 0x04e8, "YP-T9", 0x507f, DEVICE_FLAG_NONE },
   // From Paul Clinch
   { "Samsung", 0x04e8, "YP-K3", 0x5081, DEVICE_FLAG_NONE },
+  // From XNJB user
+  { "Samsung", 0x04e8, "YP-P2", 0x5083, DEVICE_FLAG_NONE },
   // From Paul Clinch
   { "Samsung", 0x04e8, "YP-T10", 0x508a, DEVICE_FLAG_NONE },
   // From a rouge .INF file,
