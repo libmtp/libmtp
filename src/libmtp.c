@@ -1807,6 +1807,19 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 
 	  if (opd.DataType == PTP_DTC_STR) {
 	    printf(" STRING data type");
+	    switch (opd.FormFlag) {
+	    case PTP_OPFF_DateTime:
+	      printf(" DATETIME FORM");
+	      break;
+	    case PTP_OPFF_RegularExpression:
+	      printf(" REGULAR EXPRESSION FORM");
+	      break;
+	    case PTP_OPFF_LongString:
+	      printf(" LONG STRING FORM");
+	      break;
+	    default:
+	      break;
+	    }
 	  } else {
 	    if (opd.DataType & PTP_DTC_ARRAY_MASK) {
 	      printf(" array of");
@@ -1821,17 +1834,20 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 	    case PTP_DTC_INT8:
 	      printf(" INT8 data type");
 	      switch (opd.FormFlag) {
-	      case PTP_DPFF_Range:
+	      case PTP_OPFF_Range:
 		printf(" range: MIN %d, MAX %d, STEP %d",
 		       opd.FORM.Range.MinimumValue.i8,
 		       opd.FORM.Range.MaximumValue.i8,
 		       opd.FORM.Range.StepSize.i8);
 		break;
-	      case PTP_DPFF_Enumeration:
+	      case PTP_OPFF_Enumeration:
 		printf(" enumeration: ");
 		for(k=0;k<opd.FORM.Enum.NumberOfValues;k++) {
 		  printf("%d, ", opd.FORM.Enum.SupportedValue[k].i8);
 		}
+		break;
+	      case PTP_OPFF_ByteArray:
+		printf(" byte array: ");
 		break;
 	      default:
 		printf(" ANY 8BIT VALUE form");
@@ -1842,17 +1858,20 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 	    case PTP_DTC_UINT8:
 	      printf(" UINT8 data type");
 	      switch (opd.FormFlag) {
-	      case PTP_DPFF_Range:
+	      case PTP_OPFF_Range:
 		printf(" range: MIN %d, MAX %d, STEP %d",
 		       opd.FORM.Range.MinimumValue.u8,
 		       opd.FORM.Range.MaximumValue.u8,
 		       opd.FORM.Range.StepSize.u8);
 		break;
-	      case PTP_DPFF_Enumeration:
+	      case PTP_OPFF_Enumeration:
 		printf(" enumeration: ");
 		for(k=0;k<opd.FORM.Enum.NumberOfValues;k++) {
 		  printf("%d, ", opd.FORM.Enum.SupportedValue[k].u8);
 		}
+		break;
+	      case PTP_OPFF_ByteArray:
+		printf(" byte array: ");
 		break;
 	      default:
 		printf(" ANY 8BIT VALUE form");
@@ -1863,13 +1882,13 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 	    case PTP_DTC_INT16:
 	      printf(" INT16 data type");
 	      switch (opd.FormFlag) {
-	      case PTP_DPFF_Range:
+	      case PTP_OPFF_Range:
 	      printf(" range: MIN %d, MAX %d, STEP %d",
 		     opd.FORM.Range.MinimumValue.i16,
 		     opd.FORM.Range.MaximumValue.i16,
 		     opd.FORM.Range.StepSize.i16);
 	      break;
-	      case PTP_DPFF_Enumeration:
+	      case PTP_OPFF_Enumeration:
 		printf(" enumeration: ");
 		for(k=0;k<opd.FORM.Enum.NumberOfValues;k++) {
 		  printf("%d, ", opd.FORM.Enum.SupportedValue[k].i16);
@@ -1884,13 +1903,13 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 	    case PTP_DTC_UINT16:
 	      printf(" UINT16 data type");
 	      switch (opd.FormFlag) {
-	      case PTP_DPFF_Range:
+	      case PTP_OPFF_Range:
 		printf(" range: MIN %d, MAX %d, STEP %d",
 		       opd.FORM.Range.MinimumValue.u16,
 		       opd.FORM.Range.MaximumValue.u16,
 		       opd.FORM.Range.StepSize.u16);
 		break;
-	      case PTP_DPFF_Enumeration:
+	      case PTP_OPFF_Enumeration:
 		printf(" enumeration: ");
 		for(k=0;k<opd.FORM.Enum.NumberOfValues;k++) {
 		  printf("%d, ", opd.FORM.Enum.SupportedValue[k].u16);
@@ -1905,13 +1924,13 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 	    case PTP_DTC_INT32:
 	      printf(" INT32 data type");
 	      switch (opd.FormFlag) {
-	      case PTP_DPFF_Range:
+	      case PTP_OPFF_Range:
 		printf(" range: MIN %d, MAX %d, STEP %d",
 		       opd.FORM.Range.MinimumValue.i32,
 		       opd.FORM.Range.MaximumValue.i32,
 		       opd.FORM.Range.StepSize.i32);
 		break;
-	      case PTP_DPFF_Enumeration:
+	      case PTP_OPFF_Enumeration:
 		printf(" enumeration: ");
 		for(k=0;k<opd.FORM.Enum.NumberOfValues;k++) {
 		  printf("%d, ", opd.FORM.Enum.SupportedValue[k].i32);
@@ -1926,13 +1945,13 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 	    case PTP_DTC_UINT32:
 	      printf(" UINT32 data type");
 	      switch (opd.FormFlag) {
-	      case PTP_DPFF_Range:
+	      case PTP_OPFF_Range:
 		printf(" range: MIN %d, MAX %d, STEP %d",
 		       opd.FORM.Range.MinimumValue.u32,
 		       opd.FORM.Range.MaximumValue.u32,
 		       opd.FORM.Range.StepSize.u32);
 		break;
-	      case PTP_DPFF_Enumeration:
+	      case PTP_OPFF_Enumeration:
 		printf(" enumeration: ");
 		for(k=0;k<opd.FORM.Enum.NumberOfValues;k++) {
 		  printf("%d, ", opd.FORM.Enum.SupportedValue[k].u32);
