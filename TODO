@@ -66,6 +66,9 @@ FEATURE fixes:
   mtpfs is connected to a device. This would require some form of resource
   sharing.
 
+6. FEATURE: Implement an OpenSync backend for devices which have
+  calendaring, contact etc support. http://opensync.org/
+
 
 THOSE ARE ALREADY DONE:
 
