@@ -388,11 +388,12 @@
    * unload the attached drivers here.
    */
   // Reported by Stefan Voss <svoss@web.de>
+  // This is a Sigmatel SoC with a hard disk.
   { "TrekStor", 0x066f, "Vibez 8/12GB", 0x842a, 
       DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Cristi Magherusan <majeru@gentoo.ro>
-  { "TrekStor", 0x0402, "Vibez i.Beat sweez FM", 0x0611, 
-      DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "TrekStor", 0x0402, "i.Beat Sweez FM", 0x0611, 
+      DEVICE_FLAG_UNLOAD_DRIVER },
   
   /*
    * Disney (have had no reports of this actually working.)
