@@ -1,3 +1,9 @@
+2007-11-05  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: use OPFF codes instead of DPFF codes,
+	  we're dealing with objects, not device props.
+	* src/ptp.c: silence some OPFF freeing warnings.
+
 2007-11-02  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: try to repair header here instead of
