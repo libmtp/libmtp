@@ -436,7 +436,7 @@
   /*
    * SonyEricsson
    */
-  // Reported by 
+  // Reported by Øyvind Stegard <stegaro@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "K850i", 0x0075, DEVICE_FLAG_NONE },
   // Reported by Michael Eriksson
   { "SonyEricsson", 0x0fce, "W910", 0x0076, DEVICE_FLAG_NONE },
