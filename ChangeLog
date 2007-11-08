@@ -1,3 +1,9 @@
+2007-11-09  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: avoid probing deeper into interfaces
+	  that have a string describing them as "MTP" after a
+	  suggested patch from Alexander Kanavin <ak@sensi.org>.
+
 2007-11-05  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: use OPFF codes instead of DPFF codes,
