@@ -41,6 +41,7 @@ int main (int argc, char **argv) {
   uint64_t filesize;
   uint8_t *imagedata = NULL;
   char *path = NULL;
+  char *rest;
   struct stat statbuff;
   int ret;
 
@@ -51,7 +52,7 @@ int main (int argc, char **argv) {
     case 'h':
       usage();
     case 'i':
-      id = atoi(strdup(optarg));
+      id = strtoul(optarg, &rest, 0);
       break;
     default:
       usage();

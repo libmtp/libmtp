@@ -3,6 +3,14 @@
 	* src/libusb-glue.c: avoid probing deeper into interfaces
 	  that have a string describing them as "MTP" after a
 	  suggested patch from Alexander Kanavin <ak@sensi.org>.
+	* examples/albumart.c: patch from Chris Waters <xtifr@debian.org>
+	  replacing calls to atoi() with calls to strtoul(). Since
+	  object ID:s are unsigned long, atoi() would reject too
+	  high object IDs. The patch also fix a few memory leaks.
+	  THANKS DEBIAN! We love our downstream!
+	* examples/newplaylist.c: dito.
+	* examples/pathutils.c: dito.
+	* examples/thumb.c: dito.
 
 2007-11-05  Linus Walleij <triad@df.lth.se>
 

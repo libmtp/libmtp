@@ -56,9 +56,11 @@ lookup_folder_id (LIBMTP_folder_t * folder, char * path, char * parent)
 int
 parse_path (char * path, LIBMTP_file_t * files, LIBMTP_folder_t * folders)
 {
+  char *rest;
   // Check if path is an item_id
   if (*path != '/') {
-    int item_id = atoi(path);
+    int item_id = strtoul(path, &rest, 0);
+    // really should check contents of "rest" here...
     return item_id;
   }
   // Check if path is a folder
@@ -83,11 +85,13 @@ parse_path (char * path, LIBMTP_file_t * files, LIBMTP_folder_t * folders)
       if (file->parent_id == parent_id) {
         if (strcasecmp (file->filename, filename) == 0) {
           int item_id = file->item_id;
+	  free(dirc); free(basec);
           return item_id;
         }
       }
       file = file->next;
     }
+    free(dirc); free(basec);
   } else {
     return item_id;
   }

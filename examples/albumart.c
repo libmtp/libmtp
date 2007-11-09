@@ -43,6 +43,7 @@ int main (int argc, char **argv) {
   char *imagedata = NULL;
   char *albumname = NULL;
   char *path = NULL;
+  char *rest;
   struct stat statbuff;
 
   fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
@@ -58,7 +59,7 @@ int main (int argc, char **argv) {
         return 1;
       }
       ids = tmp;
-      ids[(idcount-1)] = atoi(strdup(optarg));
+      ids[(idcount-1)] = strtoul(optarg, &rest, 0);
       break;
     case 'n':
       albumname = strdup(optarg);
