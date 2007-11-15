@@ -179,6 +179,9 @@
   { "SanDisk", 0x0781, "Sansa m240", 0x7430, 
     DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
     DEVICE_FLAG_NO_RELEASE_INTERFACE },
+  // Reported by Eugene Brevdo <ebrevdo@princeton.edu>
+  { "SanDisk", 0x0781, "Sansa Clip", 0x7432, DEVICE_FLAG_UNLOAD_DRIVER |
+    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by anonymous user at sourceforge.net
   { "SanDisk", 0x0781, "Sansa c240/c250", 0x7450, 
     DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
@@ -194,8 +197,7 @@
   // Reported by anonymous SourceForge user
   { "SanDisk", 0x0781, "Sansa View", 0x74b0, 
     DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-    DEVICE_FLAG_NO_RELEASE_INTERFACE },
-  
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },  
 
   /*
    * iRiver
