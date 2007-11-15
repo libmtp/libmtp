@@ -94,13 +94,12 @@ mailinglist and post your experiences there.
 If you want to be able to hack some more and you're not
 afraid of C hacking, add an entry for your device's 
 vendor/product ID and a descriptive string to the database 
-in the file src/libusb-glue.c. It is close to the top of the 
-file.
+in the file src/music-players.h.
 
 If you want to poke around to see if your device has some
 special pecularities, you can test some special device
-flags (defined in src/libusb-glue.h) by inserting them
-together with your device entry in src/libusb-glue.c.
+flags (defined in src/device-flags.h) by inserting them
+together with your device entry in src/music-players.h.
 Flags can be tested in isolation or catenated with "|"
 (binary OR). If relatives to your device use a certain
 flag, chances are high that a new device will need it
@@ -216,8 +215,8 @@ Get 0xc bytes from the device:
   Transaction# 0x00000023.  
 
 If you want to compare the Windows behaviour with a similar
-operation using libmtp you can go into the libusb-glue.c file
-and uncomment the row that reads:
+operation using libmtp you can go into the src/libusb-glue.c 
+file and uncomment the row that reads:
 
 //#define ENABLE_USB_BULK_DEBUG
 
