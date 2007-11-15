@@ -68,6 +68,8 @@
    * Samsung
    * We suspect that more of these are dual mode.
    */
+  // From anonymous SourceForge user, not verified
+  { "Samsung", 0x04e8, "YP-900", 0x0409, DEVICE_FLAG_NONE },
   // From Soren O'Neill
   { "Samsung", 0x04e8, "YH-920", 0x5022, DEVICE_FLAG_UNLOAD_DRIVER },
   // Contributed by aronvanammers on SourceForge
