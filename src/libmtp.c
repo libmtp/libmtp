@@ -143,7 +143,6 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 				uint16_t const objectformat,
 				uint32_t const * const tracks,
 				uint32_t const no_tracks);
-static void remove_object_from_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id);
 static void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id);
 static void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id);
 
@@ -6010,17 +6009,6 @@ void ptp_nikon_getptpipguid (unsigned char* guid) {
 }
 
 /**
- * Remove object from cache.
- * @param device the device which may have a cache from which to remove the object.
- * @param object_id the object to remove from the cache.
- */
-static void remove_object_from_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id)
-{
-  PTPParams *params = (PTPParams *)device->params;
-  ptp_remove_object_from_cache(params, object_id);
-}
-
-/**
  * Add an object to cache.
  * @param device the device which may have a cache to which the object should be added.
  * @param object_id the object to add to the cache.
@@ -6044,6 +6032,8 @@ static void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id)
  */
 static void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id)
 {
-  remove_object_from_cache(device, object_id);
+  PTPParams *params = (PTPParams *)device->params;
+
+  ptp_remove_object_from_cache(params, object_id);
   add_object_to_cache(device, object_id);
 }
