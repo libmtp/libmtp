@@ -67,6 +67,7 @@
   /*
    * Samsung
    * We suspect that more of these are dual mode.
+   * We suspect more of these might need DEVICE_FLAG_NO_ZERO_READS
    */
   // From anonymous SourceForge user, not verified
   { "Samsung", 0x04e8, "YP-900", 0x0409, DEVICE_FLAG_NONE },
@@ -101,7 +102,7 @@
   // From Paul Clinch
   { "Samsung", 0x04e8, "YP-K3", 0x5081, DEVICE_FLAG_NONE },
   // From XNJB user
-  { "Samsung", 0x04e8, "YP-P2", 0x5083, DEVICE_FLAG_NONE },
+  { "Samsung", 0x04e8, "YP-P2", 0x5083, DEVICE_FLAG_NO_ZERO_READS },
   // From Paul Clinch
   { "Samsung", 0x04e8, "YP-T10", 0x508a, DEVICE_FLAG_NONE },
   // From a rouge .INF file,
