@@ -114,6 +114,11 @@ now (2007-08-04). See the "last resort" solutions below
 if you really need to get your dual-mode device to work 
 with MTP.
 
+Another flag which is easy to identify is the
+DEVICE_FLAG_NO_ZERO_READS, which remedies connection
+timeouts when getting files, and some timeouts on e.g. 
+successive "mtp-connect" calls.
+
 If you are a device vendor, please consider assigning one 
 of your employees as a contact person for libmtp, have them
 sign up to the libmtp development list and answer questions

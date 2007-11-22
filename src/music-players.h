@@ -36,7 +36,10 @@
    * Initially the Creative devices was all we supported so these are
    * the most thoroughly tested devices. Presumably only the devices
    * with older firmware (the ones that have 32bit object size) will
-   * need the DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL flag.
+   * need the DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL flag. This bug
+   * manifest itself when you have a lot of folders on the device,
+   * some of the folders will start to disappear when getting all objects
+   * and properties.
    */
   { "Creative", 0x041e, "ZEN Vision", 0x411f, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   { "Creative", 0x041e, "Portable Media Center", 0x4123, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
@@ -68,6 +71,8 @@
    * Samsung
    * We suspect that more of these are dual mode.
    * We suspect more of these might need DEVICE_FLAG_NO_ZERO_READS
+   * YP-NEU, YP-NDU, YP-20, YP-800, YP-MF Series, YP-100, YP-30
+   * YP-700 and YP-90 are NOT MTP, but use a Samsung custom protocol.
    */
   // From anonymous SourceForge user, not verified
   { "Samsung", 0x04e8, "YP-900", 0x0409, DEVICE_FLAG_NONE },

@@ -1,3 +1,9 @@
+2007-11-22  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: bump to 0.2.4.
+	* src/Makefile.am: bump age of soversion (compatible).
+	* RELEASE 0.2.4 mainly to get some new device support out there.
+
 2007-11-09  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: avoid probing deeper into interfaces
