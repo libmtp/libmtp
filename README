@@ -378,6 +378,13 @@ cannot test your solution.
   an abstract album (created with the album interface) with
   the exact same name.
 
+* The Zen Vision:M has an older firmware which is very corrupt,
+  it is incompatible with the Linux USB stack altogether. The
+  kernel dmesg will look something like this, and you have to
+  upgrade the firmware using Windows:
+  usb 4-5: new high speed USB device using ehci_hcd and address 5
+  usb 4-5: configuration #1 chosen from 1 choice
+  usb 4-5: can't set config #1, error -110
 
 Lost symbols
 ------------
