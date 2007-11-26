@@ -427,6 +427,8 @@
    * Insignia, dual-mode.
    */
   { "Insignia", 0x19ff, "NS-DV45", 0x0303, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by Rajan Bella <rajanbella@yahoo.com>
+  { "Insignia", 0x19ff, "Sport Player", 0x0307, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by "brad" (anonymous, sourceforge)
   { "Insignia", 0x19ff, "Pilot 4GB", 0x0309, DEVICE_FLAG_UNLOAD_DRIVER },
 
@@ -461,6 +463,12 @@
   { "Motorola", 0x22b8, "A1200", 0x60ca, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
   // Reported by anonymous user
   { "Motorola", 0x22b8, "RAZR2 V8", 0x6415, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
+
+  /*
+   * Media Keg
+   */
+  // Reported by Rajan Bella <rajanbella@yahoo.com>
+  { "Kenwood", 0x0b28, "Media Keg HD10GB7 Sport Player", 0x100c, DEVICE_FLAG_UNLOAD_DRIVER},
 
   /*
    * Other strange stuff.
