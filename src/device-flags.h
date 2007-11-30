@@ -128,3 +128,14 @@
  * tracks, though e.g. playlist names can be set.)
  */
 #define DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST 0x000000100
+/**
+ * The Samsung YP-T10 think Ogg files shall be sent with
+ * the "unknown" (PTP_OFC_Undefined) file type, this gives a 
+ * side effect that is a combination of the iRiver Ogg Alzheimer 
+ * problem (have to recognized Ogg files on file extension)
+ * and a need to report the Ogg support (the device itself does
+ * not properly claim to support it) and need to set filetype 
+ * to unknown when storing Ogg files, even though they're not
+ * actually unknown.
+ */
+#define DEVICE_FLAG_OGG_IS_UNKNOWN 0x000000200

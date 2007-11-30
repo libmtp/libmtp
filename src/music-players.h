@@ -109,7 +109,7 @@
   // From XNJB user
   { "Samsung", 0x04e8, "YP-P2", 0x5083, DEVICE_FLAG_NO_ZERO_READS },
   // From Paul Clinch
-  { "Samsung", 0x04e8, "YP-T10", 0x508a, DEVICE_FLAG_NONE },
+  { "Samsung", 0x04e8, "YP-T10", 0x508a, DEVICE_FLAG_OGG_IS_UNKNOWN },
   // From a rouge .INF file,
   // this device ID seems to have been recycled for the Samsung SGH-A707 Cingular cellphone
   { "Samsung", 0x04e8, "YH-999 Portable Media Center / SGH-A707", 0x5a0f, DEVICE_FLAG_NONE },

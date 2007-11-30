@@ -2443,6 +2443,7 @@ int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *device, uint16_t ** const
 				  uint16_t * const length)
 {
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   uint16_t *localtypes;
   uint16_t localtypelen;
   uint32_t i;
@@ -2457,6 +2458,12 @@ int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *device, uint16_t ** const
       localtypes[localtypelen] = localtype;
       localtypelen++;
     }
+  }
+  // The forgotten Ogg support on YP-10 and others...
+  if (ptp_usb->device_flags & DEVICE_FLAG_OGG_IS_UNKNOWN) {
+    localtypes = (uint16_t *) realloc(localtypes, (params->deviceinfo.ImageFormats_len+1) * sizeof(uint16_t));
+    localtypes[localtypelen] = LIBMTP_FILETYPE_OGG;
+    localtypelen++;
   }
 
   *filetypes = localtypes;
@@ -3312,7 +3319,9 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
 	 oi->ObjectFormat != PTP_OFC_MTP_MP4 &&
 	 oi->ObjectFormat != PTP_OFC_MTP_UndefinedAudio &&
 	 // This row lets through undefined files for examination since they may be forgotten OGG files.
-	 (oi->ObjectFormat != PTP_OFC_Undefined || !(ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER))
+	 (oi->ObjectFormat != PTP_OFC_Undefined || 
+	  !(ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER) ||
+	  !(ptp_usb->device_flags & DEVICE_FLAG_OGG_IS_UNKNOWN))
 	 ) {
       // printf("Not a music track (format: %d), skipping...\n",oi.ObjectFormat);
       continue;
@@ -3344,7 +3353,8 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
      * for these bugged devices only.
      */
     if (track->filetype == LIBMTP_FILETYPE_UNKNOWN &&
-	ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER) {
+	ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER ||
+	ptp_usb->device_flags & DEVICE_FLAG_OGG_IS_UNKNOWN) {
       // Repair forgotten OGG filetype
       char *ptype;
       
@@ -3991,6 +4001,13 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 		) {
       localph = device->default_text_folder;
     }
+  }
+
+  // Here we wire the type to unknown on bugged, but
+  // Ogg-supportive devices.
+  if (ptp_usb->device_flags & DEVICE_FLAG_OGG_IS_UNKNOWN &&
+      of == PTP_OFC_MTP_OGG) {
+    of = PTP_OFC_Undefined;
   }
 
   if (ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList)) {

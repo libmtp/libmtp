@@ -1,3 +1,11 @@
+2007-11-30  Linus Walleij <triad@df.lth.se>
+
+	* src/music-players.h: new flag for the YP-T10.
+	* src/device-flags.h: define the new flag, that is needed
+	  to support Ogg files on these devices.
+	* src/libmtp.c: recognize and report Ogg support, set type
+	  to unknown when transferring.
+
 2007-11-22  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bump to 0.2.4.
