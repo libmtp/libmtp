@@ -243,7 +243,7 @@ it DOES release it but the device will immediately be probed
 at the USB mass storage interface AGAIN because it 
 enumerates.)
 
-Try this, if you have a recent 2.6.x Linux kernel,
+Linux: Try this, if you have a recent 2.6.x Linux kernel,
 run (as root) something like:
 
 > rmmod usb_storage ; mtp-detect
@@ -276,6 +276,25 @@ as USB mass storage or not, please tell us how you did it. We
 know we cannot use udev, because udev is called after-the-fact:
 the device is already configured for USB mass storage when
 udev is called.
+
+On Mac OS there is another ugly hack:
+
+1. Open up a terminal window
+2. Type:
+sudo mv /System/Library/Extensions/IOUSBMassStorageClass.kext
+/System/Library/Extensions/IOUSBMassStorageClass.kext.disabled
+
+and when prompted enter your password.
+
+3. Restart.
+
+To reverse this change, just reverse the filenames:
+
+sudo mv /System/Library/Extensions/
+IOUSBMassStorageClass.kext.disabled /System/Library/Extensions/
+IOUSBMassStorageClass.kext
+
+and restart.
 
 
 Calendar and contact support:
