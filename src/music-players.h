@@ -449,6 +449,8 @@
   /*
    * Sony
    */
+  // Reported by anonymous Sourceforge user.
+  { "Sony", 0x054c, "Walkman NWZ-S516", 0x0326, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Endre Oma <endre.88.oma@gmail.com>
   // (possibly this is for the A-series too)
   { "Sony", 0x054c, "Walkman S-series", 0x0327, DEVICE_FLAG_UNLOAD_DRIVER },
