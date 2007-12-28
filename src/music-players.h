@@ -99,7 +99,9 @@
   { "Samsung", 0x04e8, "YP-F2J", 0x5057, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Patrick <skibler@gmail.com>
   { "Samsung", 0x04e8, "YP-K5", 0x505a, DEVICE_FLAG_NO_ZERO_READS },
-  // From dev.local@gmail.com - 0x4e8/0x507c is the UMS mode, don't add this.
+  // From dev.local@gmail.com - 0x4e8/0x507c is the UMS mode, apparently
+  // also an MTP mode according to some accounts, need this verified.
+  { "Samsung", 0x04e8, "YP-U3Q", 0x507c, DEVICE_FLAG_NONE },
   // From m.eik michalke
   { "Samsung", 0x04e8, "YP-U3", 0x507d, DEVICE_FLAG_NONE },
   // Reported by Matthew Wilcox <matthew@wil.cx>
