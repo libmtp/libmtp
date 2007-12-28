@@ -2473,12 +2473,21 @@ int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *device, uint16_t ** const
 }
 
 /**
- * This function retrieves all the storage id's of a device and there
- * properties. Then creates a linked list and puts the list head into 
+ * This function updates all the storage id's of a device and their
+ * properties, then creates a linked list and puts the list head into 
  * the device struct. It also optionally sorts this list. If you want
  * to display storage information in your application you should call
- * this function, then dereference the device struct 
- * (<code>device->storage</code>) to get out information on the storage.
+ * this function, then dereference the device struct  
+ * (<code>device-&gt;storage</code>) to get out information on the storage.
+ *
+ * You need to call this everytime you want to update the
+ * <code>device-&gt;storage</code> list, for example anytime you need
+ * to check available storage somewhere.
+ *
+ * <b>WARNING:</b> since this list is dynamically updated, do not
+ * reference its fields in external applications by pointer! E.g
+ * do not put a reference to any <code>char *</code> field. instead
+ * <code>strncpy()</code> it!
  *
  * @param device a pointer to the device to get the filetype capabilities for.
  * @param sortby an integer that determines the sorting of the storage list. 
