@@ -62,6 +62,8 @@
   // Reported by Darel on the XNJB forums
   { "Creative", 0x041e, "ZEN V Plus", 0x4152, DEVICE_FLAG_NONE },
   { "Creative", 0x041e, "ZEN Vision W", 0x4153, DEVICE_FLAG_NONE },
+  // Reported by Mat Hunt <mat@hyperkahler.co.uk>
+  { "Creative", 0x041e, "ZEN 8GB", 0x4155, DEVICE_FLAG_NONE },
   // Reported by Paul Kurczaba <paul@kurczaba.com>
   { "Creative", 0x041e, "ZEN 8GB", 0x4157, DEVICE_FLAG_IGNORE_HEADER_ERRORS },
   // Reported by Ringofan <mcroman@users.sourceforge.net>
