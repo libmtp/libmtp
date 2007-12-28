@@ -3353,8 +3353,8 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
      * for these bugged devices only.
      */
     if (track->filetype == LIBMTP_FILETYPE_UNKNOWN &&
-	ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER ||
-	ptp_usb->device_flags & DEVICE_FLAG_OGG_IS_UNKNOWN) {
+	(ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER ||
+	 ptp_usb->device_flags & DEVICE_FLAG_OGG_IS_UNKNOWN)) {
       // Repair forgotten OGG filetype
       char *ptype;
       
@@ -5142,6 +5142,15 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	    prop->propval.str = strdup(name);
 	  }
 	  break;
+	case PTP_OPC_AlbumArtist:
+	  if (artist != NULL) {
+	    prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
+	    prop->ObjectHandle = *newid;
+	    prop->property = PTP_OPC_AlbumArtist;
+	    prop->datatype = PTP_DTC_STR;
+	    prop->propval.str = strdup(artist);
+	  }
+	  break;
 	case PTP_OPC_Artist:
 	  if (artist != NULL) {
 	    prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
@@ -5242,6 +5251,15 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
     // Update artist
     // FIXME: check if supported
     if (artist != NULL) {
+      ret = set_object_string(device, *newid, PTP_OPC_AlbumArtist, artist);
+      if (ret != 0) {
+	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity album artist.");
+	return -1;
+      }
+    }
+    // Update artist
+    // FIXME: check if supported
+    if (artist != NULL) {
       ret = set_object_string(device, *newid, PTP_OPC_Artist, artist);
       if (ret != 0) {
 	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity artist.");
@@ -5339,10 +5357,19 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 	  if (name != NULL)
 	    prop->propval.str = strdup(name);
 	  break;
+	case PTP_OPC_AlbumArtist:
+	  if (artist != NULL) {
+	    prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
+	    prop->ObjectHandle = objecthandle;
+	    prop->property = PTP_OPC_AlbumArtist;
+	    prop->datatype = PTP_DTC_STR;
+	    prop->propval.str = strdup(artist);
+	  }
+	  break;
 	case PTP_OPC_Artist:
 	  if (artist != NULL) {
 	    prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
-	    prop->ObjectHandle = objecthandle;      
+	    prop->ObjectHandle = objecthandle;
 	    prop->property = PTP_OPC_Artist;
 	    prop->datatype = PTP_DTC_STR;
 	    prop->propval.str = strdup(artist);
@@ -5396,6 +5423,14 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 	if (ret != 0) {
 	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "update_abstract_list(): "
 				  "could not set title.");
+	}
+	break;
+      case PTP_OPC_AlbumArtist:
+	// Update album artist
+	ret = set_object_string(device, objecthandle, PTP_OPC_AlbumArtist, artist);
+	if (ret != 0) {
+	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "update_abstract_list(): "
+				  "could not set album artist name.");
 	}
 	break;
       case PTP_OPC_Artist:
@@ -5607,7 +5642,10 @@ LIBMTP_album_t *LIBMTP_Get_Album_List(LIBMTP_mtpdevice_t *device)
     alb = LIBMTP_new_album_t();
     // Get metadata for it.
     alb->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
-    alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Artist);
+    alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_AlbumArtist);
+    if (alb->artist == NULL) {
+      alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Artist);
+    }
     alb->genre = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Genre);
     alb->album_id = params->handles.Handler[i];
     
@@ -5669,7 +5707,10 @@ LIBMTP_album_t *LIBMTP_Get_Album(LIBMTP_mtpdevice_t *device, uint32_t const albi
     alb = LIBMTP_new_album_t();
     alb->album_id = params->handles.Handler[i];
     alb->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
-    alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Artist);
+    alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_AlbumArtist);
+    if (alb->artist == NULL) {
+      alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Artist);
+    }
     alb->genre = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Genre);
     ret = ptp_mtp_getobjectreferences(params, alb->album_id, &alb->tracks, &alb->no_tracks);
     if (ret != PTP_RC_OK) {

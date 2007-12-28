@@ -1,3 +1,11 @@
+2007-12-28  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: make libmtp use PTP_OPC_AlbumArtist on albums,
+	  instead of the (seldom present) PTP_OPC_Artist tag. Use both
+	  if both are supported. We're not setting AlbumArtist on regular
+	  tracks though, what's the point, and what does it mean if this
+	  differs from Artist??
+
 2007-11-30  Linus Walleij <triad@df.lth.se>
 
 	* src/music-players.h: new flag for the YP-T10.
