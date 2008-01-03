@@ -65,7 +65,7 @@
   // Reported by Mat Hunt <mat@hyperkahler.co.uk>
   { "Creative", 0x041e, "ZEN 8GB", 0x4155, DEVICE_FLAG_NONE },
   // Reported by Paul Kurczaba <paul@kurczaba.com>
-  { "Creative", 0x041e, "ZEN 8GB", 0x4157, DEVICE_FLAG_IGNORE_HEADER_ERRORS },
+  { "Creative", 0x041e, "ZEN 8GB 2nd id", 0x4157, DEVICE_FLAG_IGNORE_HEADER_ERRORS },
   // Reported by Ringofan <mcroman@users.sourceforge.net>
   { "Creative", 0x041e, "ZEN V 2GB", 0x4158, DEVICE_FLAG_NONE },
 
@@ -452,12 +452,16 @@
 
   /*
    * Sony
+   * It could be that these PIDs are one-per hundred series, so
+   * NWZ-A8xx is 0325, NWZ-S5xx is 0x326 etc. We need more devices
+   * reported to see a pattern here.
    */
+  // Reported by Alessandro Radaelli >alessandro.radaelli@aruba.it>
+  { "Sony", 0x054c, "Walkman NWZ-A815", 0x0325, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by anonymous Sourceforge user.
   { "Sony", 0x054c, "Walkman NWZ-S516", 0x0326, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Endre Oma <endre.88.oma@gmail.com>
-  // (possibly this is for the A-series too)
-  { "Sony", 0x054c, "Walkman S-series", 0x0327, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Sony", 0x054c, "Walkman NWZ-S615F/NWZ-S618F", 0x0327, DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
    * SonyEricsson
