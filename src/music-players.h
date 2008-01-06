@@ -102,8 +102,7 @@
   // Reported by Patrick <skibler@gmail.com>
   { "Samsung", 0x04e8, "YP-K5", 0x505a, DEVICE_FLAG_NO_ZERO_READS },
   // From dev.local@gmail.com - 0x4e8/0x507c is the UMS mode, apparently
-  // also an MTP mode according to some accounts, need this verified.
-  { "Samsung", 0x04e8, "YP-U3Q", 0x507c, DEVICE_FLAG_NONE },
+  // do not add that device.
   // From m.eik michalke
   { "Samsung", 0x04e8, "YP-U3", 0x507d, DEVICE_FLAG_NONE },
   // Reported by Matthew Wilcox <matthew@wil.cx>
@@ -115,8 +114,10 @@
   // From Paul Clinch
   { "Samsung", 0x04e8, "YP-T10", 0x508a, DEVICE_FLAG_OGG_IS_UNKNOWN },
   // From a rouge .INF file,
-  // this device ID seems to have been recycled for the Samsung SGH-A707 Cingular cellphone
-  { "Samsung", 0x04e8, "YH-999 Portable Media Center / SGH-A707", 0x5a0f, DEVICE_FLAG_NONE },
+  // this device ID seems to have been recycled for:
+  // the Samsung SGH-A707 Cingular cellphone
+  // the Samsung L760-V cellphone
+  { "Samsung", 0x04e8, "YH-999 Portable Media Center/SGH-A707/SGH-L760V", 0x5a0f, DEVICE_FLAG_NONE },
   // From Lionel Bouton
   { "Samsung", 0x04e8, "X830 Mobile Phone", 0x6702, DEVICE_FLAG_NONE },
   // From James <jamestech@gmail.com>
@@ -157,6 +158,8 @@
   { "Philips", 0x0471, "HDD6320", 0x01eb, DEVICE_FLAG_NONE },
   // From Detlef Meier <dm@emlix.com>
   { "Philips", 0x0471, "SA6014/SA6015/SA6024/SA6025/SA6044/SA6045", 0x084e, DEVICE_FLAG_UNLOAD_DRIVER },
+  // From anonymous Sourceforge user SA5145/02
+  { "Philips", 0x0471, "SA5145", 0x0857, DEVICE_FLAG_UNLOAD_DRIVER },
   // from XNJB user
   { "Philips", 0x0471, "PSA235", 0x7e01, DEVICE_FLAG_NONE },
 
