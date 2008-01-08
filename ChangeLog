@@ -1,3 +1,10 @@
+2007-01-08  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: bump to 0.2.5.
+	* src/Makefile.am: interface to libmtp.so.7.0.2
+	  (compatible).
+	* Release as libmtp 0.2.5. Why not?
+
 2007-12-28  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: make libmtp use PTP_OPC_AlbumArtist on albums,
