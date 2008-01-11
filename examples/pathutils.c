@@ -1,7 +1,7 @@
 /** 
  * \file pathutils.c
  *
- * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2008 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006 Chris A. Debenham <chris@adebenham.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -185,6 +185,8 @@ find_filetype (const char * filename)
     filetype = LIBMTP_FILETYPE_JP2;
   } else if (!strcasecmp (ptype, "jpx")) {
     filetype = LIBMTP_FILETYPE_JPX;
+  } else if (!strcasecmp (ptype, "bin")) {
+    filetype = LIBMTP_FILETYPE_FIRMWARE;
   } else {
     /* Tagging as unknown file type */
     filetype = LIBMTP_FILETYPE_UNKNOWN;

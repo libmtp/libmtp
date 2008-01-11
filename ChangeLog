@@ -1,3 +1,9 @@
+2007-01-11  Linus Walleij <triad@df.lth.se>
+
+	* examples/pathutils.c: recognize .bin files as firmware,
+	  used by e.g. RockBox developers. Doesn't cost anything to
+	  add.
+	
 2007-01-08  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bump to 0.2.5.
