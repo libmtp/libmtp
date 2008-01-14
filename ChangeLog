@@ -1,3 +1,12 @@
+2007-01-14  Linus Walleij <triad@df.lth.se>
+	
+	* src/libmtp.c: add LIBMTP_Get_Manufacturername(). Remember
+	  to bump soname (compatible) in 0.2.6 (or whatever we name it).
+	  0.3.0 perhaps?
+	* src/libmtp.h.in: dito.
+	* src/libmtp.c: detect default folders named "Datacasts" and
+	  "Texts".
+
 2007-01-11  Linus Walleij <triad@df.lth.se>
 
 	* examples/pathutils.c: recognize .bin files as firmware,

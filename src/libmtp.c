@@ -1544,7 +1544,8 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
       device->default_organizer_folder =
 	params->handles.Handler[i];
     }
-    else if (!strcasecmp(oi->Filename, "ZENcast")) {
+    else if (!strcasecmp(oi->Filename, "ZENcast") ||
+	     !strcasecmp(oi->Filename, "Datacasts")) {
       device->default_zencast_folder = 
 	params->handles.Handler[i];
     }
@@ -1553,7 +1554,8 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
       device->default_album_folder = 
 	params->handles.Handler[i];
     }
-    else if (!strcasecmp(oi->Filename, "Text")) {
+    else if (!strcasecmp(oi->Filename, "Text") ||
+	     !strcasecmp(oi->Filename, "Texts")) {
       device->default_text_folder =
 	params->handles.Handler[i];
     }
@@ -2045,6 +2047,24 @@ int LIBMTP_Reset_Device(LIBMTP_mtpdevice_t *device)
     return -1;
   }
   return 0;
+}
+
+/**
+ * This retrieves the manufacturer name of an MTP device.
+ * @param device a pointer to the device to get the manufacturer name for.
+ * @return a newly allocated UTF-8 string representing the manufacturer name.
+ *         The string must be freed by the caller after use. If the call
+ *         was unsuccessful this will contain NULL.
+ */
+char *LIBMTP_Get_Manufacturername(LIBMTP_mtpdevice_t *device)
+{
+  char *retmanuf = NULL;
+  PTPParams *params = (PTPParams *) device->params;
+
+  if (params->deviceinfo.Manufacturer != NULL) {
+    retmanuf = strdup(params->deviceinfo.Manufacturer);
+  }
+  return retmanuf;
 }
 
 /**
