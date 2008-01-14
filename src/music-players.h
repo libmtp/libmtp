@@ -495,6 +495,7 @@
   // Reported by Rajan Bella <rajanbella@yahoo.com>
   { "Kenwood", 0x0b28, "Media Keg HD10GB7 Sport Player", 0x100c, DEVICE_FLAG_UNLOAD_DRIVER},
 
+
   /*
    * Other strange stuff.
    */
