@@ -1,0 +1,303 @@
+libmtp version: 0.2.4
+
+Attempting to connect device(s)
+Detect: Successfully connected 1 devices
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 069b
+   idProduct: 301a
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Device flags: 0x0000000a
+Microsoft device descriptor 0xee:
+	0000: 1203 4d00 5300 4600 5400 3100 3000 3000	..M.S.F.T.1.0.0.
+	0010: 0100                                   	..
+Device info:
+   Manufacturer: THOMSON
+   Model: RCA H106
+   Device version: V1.71
+   Serial number: 30B80000000000000000000000000000
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com/WMDRMPD: 10.1;microsoft.com/AAVT: 1.0;microsoft.com/WMDRMND: 1.0;audible.com: 1.0;
+   Detected object size: 64 bits
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   100f: Format storage
+   1010: Reset device
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   1017: Reset device property value
+   9810: Get object references
+   9811: Set object references
+   9802: Get object property description
+   9801: Get object properties supported
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9806: Set object property list
+   101b: Get partial object
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Send WMDRM-PD Command
+   910b: Send WMDRM-PD Request
+   9170: Open Media Session
+   9171: Close Media Session
+   9172: Get Next Data Block
+   9173: Set Current Time Position
+   9180: Send Registration Request
+   9181: Get Registration Response
+   9182: Get Proximity Challenge
+   9183: Send Proximity Response
+   9184: Send WMDRM-ND License Request
+   9185: Get WMDRM-ND License Response
+Events supported:
+   None.
+Device Properties Supported:
+   0xd100: Unknown property
+   0x5001: Battery Level
+   0xd401: Synchronization Partner
+   0xd402: Friendly Device Name
+   0xd101: Secure Time
+   0xd102: Device Certificate
+Playable File (Object) Types and Object Properties Supported:
+   3009: MP3
+      dc97: EffectiveRating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc44: Name STRING data type GET/SET
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc09: DateModified STRING data type GET/SET
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      de9a: AudioBitRate UINT32 data type range: MIN 8000, MAX 320000, STEP 1 READ ONLY
+      dc46: Artist STRING data type GET/SET
+      dc8c: Genre STRING data type GET/SET
+      de93: SampleRate UINT32 data type range: MIN 8000, MAX 48000, STEP 50 READ ONLY
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  READ ONLY
+      dc9a: AlbumName STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form GET/SET
+      de99: AudioWAVECodec UINT32 data type enumeration: 0, 1, 2, 3, 8, 9, 11, 49, 50, 80, 85, 352, 353, 354, 355, 356, 41222,  GET/SET
+      dc99: OriginalReleaseDate STRING data type GET/SET
+   b901: WMA
+      dc97: EffectiveRating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc44: Name STRING data type GET/SET
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc09: DateModified STRING data type GET/SET
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      de9a: AudioBitRate UINT32 data type range: MIN 5000, MAX 320000, STEP 1 READ ONLY
+      dc46: Artist STRING data type GET/SET
+      dc8c: Genre STRING data type GET/SET
+      de93: SampleRate UINT32 data type range: MIN 8000, MAX 48000, STEP 50 READ ONLY
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  READ ONLY
+      dc9a: AlbumName STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form GET/SET
+      de99: AudioWAVECodec UINT32 data type enumeration: 0, 1, 2, 3, 8, 9, 11, 49, 50, 80, 85, 352, 353, 354, 355, 356, 41222,  GET/SET
+      dc99: OriginalReleaseDate STRING data type GET/SET
+   3008: MS Wave
+      dc97: EffectiveRating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc44: Name STRING data type GET/SET
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc09: DateModified STRING data type GET/SET
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      de9a: AudioBitRate UINT32 data type range: MIN 1, MAX 320000, STEP 1 READ ONLY
+      dc46: Artist STRING data type GET/SET
+      dc8c: Genre STRING data type GET/SET
+      de93: SampleRate UINT32 data type range: MIN 8000, MAX 48000, STEP 50 READ ONLY
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  READ ONLY
+      dc9a: AlbumName STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form GET/SET
+      de99: AudioWAVECodec UINT32 data type enumeration: 0, 1, 2, 3, 8, 9, 11, 49, 50, 80, 85, 352, 353, 354, 355, 356, 41222,  GET/SET
+      dc99: OriginalReleaseDate STRING data type GET/SET
+   b904: Audible.com Codec
+      dc97: EffectiveRating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc44: Name STRING data type GET/SET
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc09: DateModified STRING data type GET/SET
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc46: Artist STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form GET/SET
+      da00: unknown(da00) UINT32 data type enumeration: 0, 1, 2, 3, 4, 5, 6, 7, 8,  GET/SET
+      da02: unknown(da02) UINT32 data type ANY 32BIT VALUE form READ ONLY
+      da03: unknown(da03) UINT16 data type enumeration: 0, 1,  READ ONLY
+      da01: unknown(da01) STRING data type GET/SET
+      da04: unknown(da04) array of UINT8 data type ANY 8BIT VALUE form GET/SET
+   3001: Association/Directory
+      dc97: EffectiveRating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc44: Name STRING data type GET/SET
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc09: DateModified STRING data type GET/SET
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+   ba05: Abstract Audio Video Playlist
+      dc97: EffectiveRating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc44: Name STRING data type GET/SET
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc09: DateModified STRING data type GET/SET
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+   3000: Undefined Type
+      dc97: EffectiveRating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc44: Name STRING data type GET/SET
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc09: DateModified STRING data type GET/SET
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+   b802: Firmware
+      dc97: EffectiveRating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc44: Name STRING data type GET/SET
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc09: DateModified STRING data type GET/SET
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+   ba03: Abstract Audio Album
+      dc97: EffectiveRating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc44: Name STRING data type GET/SET
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc09: DateModified STRING data type GET/SET
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc46: Artist STRING data type GET/SET
+      dc8c: Genre STRING data type GET/SET
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0003
+      FilesystemType: 0x0002
+      AccessCapability: 0x0000
+      MaxCapacity: 6129004544
+      FreeSpaceInBytes: 2242122630
+      FreeSpaceInObjects: 6192
+      StorageDescription: TCNAND0
+      VolumeIdentifier: 30B80000000000000000000000000000
+Special directories:
+   Default music folder: 0x20000224
+   Default playlist folder: 0x20000009
+   Default picture folder: 0x00000000
+   Default video folder: 0x00000000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00000000
+   Default text folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: RCA H106
+   Synchronization partner: Longhorn Sync Engine
+   Battery level 100 of 100 (100%)
+libmtp supported (playable) filetypes:
+   ISO MPEG-1 Audio Layer 3
+   Microsoft Windows Media Audio
+   RIFF WAVE file
+   Audible.com Audio Codec
+   Firmware file
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#19770910 02:12:11Z#</VALUE><FLAG>DRM_CLK_NOT_SET</FLAG></DRMCLOCK>AG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">MLgAAAAAAAAAAAAAAAAAAAAAAAA=</UNIQUEID><PUBLICKEY private="1">/xk1FRLtUFQtLumioB3hnjjmCCStWRtCZ+OUINvN4wRjglPz1DTagw==</PUBLICKEY><KEYDATA>KkFgl/xxIQnFTSasJdjDCCv/P24=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>LD33X8FUDo00JUcw8aIxaslZOU1gwe23tnsDKRZCKxdEiLkZ6MqtRA==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>lcs/XXhRSo4LmZvRM9Ng82/uNEA=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.103.93</SECURITYVERSION><CERTIFICATE private="1">/xk1FRLtUFQtLumioB3hnjjmCCStWRtCZ+OUINvN4wRjglPz1DTagwIEZ12zLMYIU+hJu3l1M4RYq3Wm7dvKElLPBtkNiU7D3DEFkb5rubXCF6sQ</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>H106</NAME>
+    <MANUFACTURER>Thomson</MANUFACTURER>
+    <MAKE>Portable Media Player</MAKE>
+    <DISTRIBUTOR>Thomson</DISTRIBUTOR>
+    <MODEL>H106</MODEL>
+    <SECURITYLEVEL>2000</SECURITYLEVEL>
+    <HARDWARE_VER_MAJOR>A</HARDWARE_VER_MAJOR>
+    <FIRMWARE_VER_MAJOR>1</FIRMWARE_VER_MAJOR>
+    <FIRMWARE_VER_MINOR>0</FIRMWARE_VER_MINOR>
+    <FEATURES>
+        <CLOCK>2</CLOCK>
+	  <SECURECLOCK>
+		<URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL>
+		<PUBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY>
+	  </SECURECLOCK>
+        <METERING>1</METERING>
+        <LICENSE_ACQ>0</LICENSE_ACQ>
+        <LICENSE_SYNC>1</LICENSE_SYNC>
+        <ENCRYPTION>0</ENCRYPTION>
+  <SYMMETRIC_OPT>1</SYMMETRIC_OPT>
+    </FEATURES>
+    <LIMITS>
+        <MAXCHAINDEPTH>2</MAXCHAINDEPTH>
+        <MAXLICENSESIZE>10240</MAXLICENSESIZE>
+        <MAXHEADERSIZE>5120</MAXHEADERSIZE>
+    </LIMITS><PUBLICKEY>eWGqaKD/rEgPNu6GrH4E4KOVmDLU3uH7S0yZJ6AhJCUwYZKiVI3JdQ==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>bNMpmF0aj44IYQDYnnbcURRgzU1rIlAlL9jNNOzJ0FtEHXngXg2fDw==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>705</AUTH_ID><PUBLICKEY>0xGAyvWRMSN9LFmWL0S9WztdgXzTo5nwPQENDz2q6lJ4SPILToOvGQ==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>YjzR0s45M5rz4YiE8fZjo/rhVHGlVtsW5re00vPgGJS3dc1e3bpHcA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>RCnBbt41GoYgQEzB4T9r432WenXcYM6rdlEo0hCbDwb7H1LhcmNFJg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
+WMPInfo.xml Does not exist on this device
+OK.
