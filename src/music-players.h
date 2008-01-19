@@ -3,7 +3,7 @@
  * List of music players as USB ids.
  *
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
- * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2008 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2007 Marcus Meissner
  * Copyright (C) 2007 Ted Bullock
  *
@@ -394,6 +394,7 @@
   // From kiki <omkiki@users.sourceforge.net>
   { "Thomson", 0x069b, "EM28 Series", 0x0774, DEVICE_FLAG_NONE },
   { "Thomson / RCA", 0x069b, "Opal / Lyrca MC4002", 0x0777, DEVICE_FLAG_NONE },
+  { "Thomson", 0x069b, "RCA H106", 0x301a, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Svenna <svenna@svenna.de>
   // Not confirmed to be MTP.
   { "Thomson", 0x069b, "scenium E308", 0x3028, DEVICE_FLAG_NONE },
