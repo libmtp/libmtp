@@ -1,7 +1,7 @@
 /**
  * \file libmtp.c
  *
- * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2008 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
  * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  * Copyright (C) 2007 Tero Saarni <tero.saarni@gmail.com>
@@ -5838,7 +5838,7 @@ void LIBMTP_destroy_filesampledata_t(LIBMTP_filesampledata_t * sample)
  * playlists, but in theory any filetype could support representative
  * samples.
  * @param device a pointer to the device which is to be examined.
- * @param the filetype to examine, and return the representative sample
+ * @param filetype the fileype to examine, and return the representative sample
  *        properties for.
  * @param sample this will contain a new sample type with the fields
  *        filled in with suitable default values. For example, the
