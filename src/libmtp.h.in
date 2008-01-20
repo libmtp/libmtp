@@ -3,7 +3,7 @@
  * Interface to the Media Transfer Protocol library.
  *
  * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
- * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
+ * Copyright (C) 2005-2008 Richard A. Low <richard@wentnet.com>
  * Copyright (C) 2007 Ted Bullock
  *
  * This library is free software; you can redistribute it and/or
@@ -411,6 +411,8 @@ int LIBMTP_Get_Representative_Sample_Format(LIBMTP_mtpdevice_t *,
                         LIBMTP_filetype_t const,
                         LIBMTP_filesampledata_t **);
 int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *, uint32_t const,
+                          LIBMTP_filesampledata_t *);
+int LIBMTP_Get_Representative_Sample(LIBMTP_mtpdevice_t *, uint32_t const,
                           LIBMTP_filesampledata_t *);
 
 /**

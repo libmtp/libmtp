@@ -2,7 +2,7 @@
  * \file libmtp.c
  *
  * Copyright (C) 2005-2008 Linus Walleij <triad@df.lth.se>
- * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
+ * Copyright (C) 2005-2008 Richard A. Low <richard@wentnet.com>
  * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  * Copyright (C) 2007 Tero Saarni <tero.saarni@gmail.com>
  *
@@ -5960,10 +5960,9 @@ int LIBMTP_Get_Representative_Sample_Format(LIBMTP_mtpdevice_t *device,
  * TODO: there must be a way to find the max size for an ObjectPropertyValue.
  * @param device a pointer to the device which the object is on.
  * @param id unique id of the object to set artwork for.
- * @param data pointer to an array of uint8_t containing the representative 
- *        sample data.
- * @param size number of bytes in the sample.
+ * @param pointer to LIBMTP_filesampledata_t struct containing data
  * @return 0 on success, any other value means failure.
+ * @see LIBMTP_Get_Representative_Sample()
  * @see LIBMTP_Get_Representative_Sample_Format()
  * @see LIBMTP_Create_New_Album()
  */
@@ -6056,6 +6055,91 @@ int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
     set_object_u32(device, id, PTP_OPC_RepresentativeSampleSize, sampledata->size);
     break;  		
   }
+    
+  return 0;
+}
+
+/**
+ * This routine gets representative sample data for an object.
+ * This uses the RepresentativeSampleData property of the album,
+ * if the device supports it.
+ * @param device a pointer to the device which the object is on.
+ * @param id unique id of the object to get data for.
+ * @param pointer to LIBMTP_filesampledata_t struct to receive data
+ * @return 0 on success, any other value means failure.
+ * @see LIBMTP_Send_Representative_Sample()
+ * @see LIBMTP_Get_Representative_Sample_Format()
+ * @see LIBMTP_Create_New_Album()
+ */
+int LIBMTP_Get_Representative_Sample(LIBMTP_mtpdevice_t *device,
+                          uint32_t const id,
+                          LIBMTP_filesampledata_t *sampledata)
+{
+  uint16_t ret;
+  PTPParams *params = (PTPParams *) device->params;
+  PTPPropertyValue propval;
+  PTPObjectInfo *oi;
+  uint32_t i;
+  uint16_t *props = NULL;
+  uint32_t propcnt = 0;
+  int supported = 0;
+
+  // get the file format for the object we're going to send representative data for
+  oi = NULL;
+  for (i = 0; i < params->handles.n; i++) {
+    if (params->handles.Handler[i] == id) {
+      oi = &params->objectinfo[i];
+      break;
+    }
+  }
+
+  if (oi == NULL) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Get_Representative_Sample(): could not get object info.");
+    return -1;
+  }
+
+  // check that we can store representative sample data for this object format
+  ret = ptp_mtp_getobjectpropssupported(params, oi->ObjectFormat, &propcnt, &props);
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Representative_Sample(): could not get object properties.");
+    return -1;
+  }
+
+  for (i = 0; i < propcnt; i++) {
+    if (props[i] == PTP_OPC_RepresentativeSampleData) {
+      supported = 1;
+      break;
+    }
+  }
+  if (!supported) {
+    free(props);
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Get_Representative_Sample(): object type doesn't support RepresentativeSampleData.");
+    return -1;
+  }
+  free(props);
+  
+  // Get the data
+  ret = ptp_mtp_getobjectpropvalue(params,id,PTP_OPC_RepresentativeSampleData,
+				   &propval,PTP_DTC_AUINT8);
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Representative_Sample(): could not get sample data.");
+    return -1;
+  }
+  
+  // Store it
+  sampledata->size = propval.a.count;
+  sampledata->data = malloc(sizeof(PTPPropertyValue) * propval.a.count);
+  for (i = 0; i < propval.a.count; i++) {
+    sampledata->data[i] = propval.a.v[i].u8;
+  }
+  free(propval.a.v);
+
+  // Get the other properties  
+  sampledata->width = get_u32_from_object(device, id, PTP_OPC_RepresentativeSampleWidth, 0);
+  sampledata->height = get_u32_from_object(device, id, PTP_OPC_RepresentativeSampleHeight, 0);
+  sampledata->duration = get_u32_from_object(device, id, PTP_OPC_RepresentativeSampleDuration, 0);
+  sampledata->filetype = map_ptp_type_to_libmtp_type(
+        get_u16_from_object(device, id, PTP_OPC_RepresentativeSampleFormat, LIBMTP_FILETYPE_UNKNOWN));
     
   return 0;
 }

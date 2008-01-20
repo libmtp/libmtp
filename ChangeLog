@@ -1,4 +1,9 @@
-2007-01-14  Linus Walleij <triad@df.lth.se>
+2008-01-20  Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: add LIBMTP_Get_Representative_Sample()
+	* src/libmtp.h.in: ditto
+
+2008-01-14  Linus Walleij <triad@df.lth.se>
 	
 	* src/libmtp.c: add LIBMTP_Get_Manufacturername(). Remember
 	  to bump soname (compatible) in 0.2.6 (or whatever we name it).
@@ -7,13 +12,13 @@
 	* src/libmtp.c: detect default folders named "Datacasts" and
 	  "Texts".
 
-2007-01-11  Linus Walleij <triad@df.lth.se>
+2008-01-11  Linus Walleij <triad@df.lth.se>
 
 	* examples/pathutils.c: recognize .bin files as firmware,
 	  used by e.g. RockBox developers. Doesn't cost anything to
 	  add.
 	
-2007-01-08  Linus Walleij <triad@df.lth.se>
+2008-01-08  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bump to 0.2.5.
 	* src/Makefile.am: interface to libmtp.so.7.0.2
