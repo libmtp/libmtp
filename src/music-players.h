@@ -392,13 +392,13 @@
    */
   // From kiki <omkiki@users.sourceforge.net>
   { "Thomson", 0x069b, "EM28 Series", 0x0774, DEVICE_FLAG_NONE },
-  { "Thomson / RCA", 0x069b, "Opal / Lyrca MC4002", 0x0777, DEVICE_FLAG_NONE },
+  { "Thomson / RCA", 0x069b, "Opal / Lyra MC4002", 0x0777, DEVICE_FLAG_NONE },
   { "Thomson", 0x069b, "RCA H106", 0x301a, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Svenna <svenna@svenna.de>
   // Not confirmed to be MTP.
   { "Thomson", 0x069b, "scenium E308", 0x3028, DEVICE_FLAG_NONE },
   // From XNJB user
-  { "Thomson / RCA", 0x069b, "Lyrca HC308A", 0x3035, DEVICE_FLAG_NONE },
+  { "Thomson / RCA", 0x069b, "Lyra HC308A", 0x3035, DEVICE_FLAG_NONE },
   
   /*
    * NTT DoCoMo
