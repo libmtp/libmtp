@@ -62,10 +62,9 @@
   // Reported by Darel on the XNJB forums
   { "Creative", 0x041e, "ZEN V Plus", 0x4152, DEVICE_FLAG_NONE },
   { "Creative", 0x041e, "ZEN Vision W", 0x4153, DEVICE_FLAG_NONE },
-  // Reported by Mat Hunt <mat@hyperkahler.co.uk>
-  { "Creative", 0x041e, "ZEN 8GB", 0x4155, DEVICE_FLAG_NONE },
+  // Don't add 0x4155: this is a Zen Stone device which is not MTP
   // Reported by Paul Kurczaba <paul@kurczaba.com>
-  { "Creative", 0x041e, "ZEN 8GB 2nd id", 0x4157, DEVICE_FLAG_IGNORE_HEADER_ERRORS },
+  { "Creative", 0x041e, "ZEN 8GB", 0x4157, DEVICE_FLAG_IGNORE_HEADER_ERRORS },
   // Reported by Ringofan <mcroman@users.sourceforge.net>
   { "Creative", 0x041e, "ZEN V 2GB", 0x4158, DEVICE_FLAG_NONE },
 
@@ -398,6 +397,8 @@
   // From Svenna <svenna@svenna.de>
   // Not confirmed to be MTP.
   { "Thomson", 0x069b, "scenium E308", 0x3028, DEVICE_FLAG_NONE },
+  // From XNJB user
+  { "Thomson / RCA", 0x069b, "Lyrca HC308A", 0x3035, DEVICE_FLAG_NONE },
   
   /*
    * NTT DoCoMo
