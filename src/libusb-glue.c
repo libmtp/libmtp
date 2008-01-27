@@ -3,7 +3,7 @@
  * Low-level USB interface glue towards libusb.
  *
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
- * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2008 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2007 Marcus Meissner
  * Copyright (C) 2007 Ted Bullock
  *
@@ -1112,6 +1112,13 @@ ptp_usb_getresp (PTPParams* params, PTPContainer* resp)
 	/* read response, it should never be longer than sizeof(usbresp) */
 	ret = ptp_usb_getpacket(params, &usbresp, &rlen);
 
+	while (ret==PTP_RC_OK && rlen<=2) {
+	  ptp_debug (params, "ptp_usb_getresp: detected a response less or "
+		     "equal to two bytes, expect problems! (re-reading "
+		     "response)");
+	  ret = ptp_usb_getpacket(params, &usbresp, &rlen);
+	}
+
 	if (ret!=PTP_RC_OK) {
 		ret = PTP_ERROR_IO;
 	} else
@@ -1134,7 +1141,8 @@ ptp_usb_getresp (PTPParams* params, PTPContainer* resp)
 	if (ptp_usb->device_flags & DEVICE_FLAG_IGNORE_HEADER_ERRORS) {
 		if (resp->Transaction_ID != params->transaction_id-1) {
 			ptp_debug (params, "ptp_usb_getresp: detected a broken "
-				   "PTP header, transaction ID insane, expect problems! (But continuing)");
+				   "PTP header, transaction ID insane, expect "
+				   "problems! (But continuing)");
 			// Repair the header, so it won't wreak more havoc.
 			resp->Transaction_ID = params->transaction_id-1;
 		}

@@ -1,3 +1,9 @@
+2008-01-27  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: re-read response from device until
+	  it atleast exceeds two bytes. This fixes a problem with
+	  the Samsung YP-U3 when populated with many, many songs.
+
 2008-01-21  Richard Low <richard@wentnet.com>
 
 	* src/music-players.h: add Thomson Lyrca HC308A, remove
