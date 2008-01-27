@@ -4618,11 +4618,18 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 }
 
 /**
- * This function deletes a single file, track, playlist or
- * any other object off the MTP device,
- * identified by an object ID.
- * @param device a pointer to the device to delete the file or track from.
- * @param item_id the item to delete.
+ * This function deletes a single file, track, playlist, folder or
+ * any other object off the MTP device, identified by the object ID.
+ *
+ * If you delete a folder, there is no guarantee that the device will
+ * really delete all the files that were in that folder, rather it is
+ * expected that they will not be deleted, and will turn up in object
+ * listings with parent set to a non-existant object ID. The safe way
+ * to do this is to recursively delete all files (and folders) contained 
+ * in the folder, then the folder itself.
+ *
+ * @param device a pointer to the device to delete the object from.
+ * @param object_id the object to delete.
  * @return 0 on success, any other value means failure.
  */
 int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
@@ -4641,11 +4648,14 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
 }
 
 /**
- * This function rename a single file, track, playlist or
- * any other object off the MTP device,
- * identified by an object ID.
- * @param device a pointer to the device to delete the file or track from.
- * @param item_id the item to rename.
+ * This function renames a single file, track, playlist, folder or
+ * any other object on the MTP device, identified by an object ID.
+ * This simply means that the PTP_OPC_ObjectFileName property
+ * is updated, if this is supported by the device.
+ *
+ * @param device a pointer to the device that contains the the file, 
+ *        track, foler, playlist or other object to set the filename for.
+ * @param object_id the ID of the object to rename.
  * @return 0 on success, any other value means failure.
  */
 int LIBMTP_Set_Object_Filename(LIBMTP_mtpdevice_t *device,
@@ -4657,17 +4667,20 @@ int LIBMTP_Set_Object_Filename(LIBMTP_mtpdevice_t *device,
   uint16_t              ret;
 
   // The object could be anything, so just use PTP_OFC_Undefined as object format code
+  // FIXME: get the description of object_id, see what it is, see what it can set/get.
   ret = ptp_mtp_getobjectpropdesc(params, PTP_OPC_ObjectFileName, PTP_OFC_Undefined, &opd);
   if (ret != PTP_RC_OK) {
-    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Object_Filename(): "
                 "could not get property description.");
     return -1;
   }
 
   if (!opd.GetSet) {
     ptp_free_objectpropdesc(&opd);
-    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Object_Parent(): "
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Object_Filename(): "
                 "property is not settable.");
+    // TODO: we COULD actually upload/download the object here, if we feel
+    //       like wasting time for the user.
     return -1;
   }
 
@@ -4719,15 +4732,23 @@ int LIBMTP_Set_Object_Filename(LIBMTP_mtpdevice_t *device,
   
   return 0;
 }
+
 /**
  * This function move a single file, track, playlist or
- * any other object off the MTP device,
- * identified by an object ID to folder.
- * You should not assume that this function will works on all devices.
- * It is known to not be supported on some.
- * @param device a pointer to the device to delete the file or track from.
- * @param item_id the item to move.
- * @param folder destination of the move.
+ * any other object off the MTP device, identified by an object ID to a
+ * certain folder. (i.e. the specified folder is set to this objects
+ * parent).
+ * 
+ * You should not assume that this function will works on all 
+ * devices. It is known to not be supported on some. On devices that do 
+ * not support setting the parent, the only way to move a file to another
+ * folder is to upload it to the host, delete it from the device, and
+ * download it again, specifying the desired parent folder.
+ *
+ * @param device a pointer to the device containing the file, track or folder
+ *        that you want to assign a new parent to (i.e. move).
+ * @param object_id the object to move.
+ * @param folder destination of the move, i.e. the new parent.
  * @return 0 on success, any other value means failure.
  */
 int LIBMTP_Set_Object_Parent(LIBMTP_mtpdevice_t *device,
