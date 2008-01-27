@@ -1,3 +1,11 @@
+2008-01-27  Florent Mertens <flomertens@gmail.com>
+
+	* src/libmtp.h.in: new functions to rename object filenames
+	  and change object parents. Good when modifying the device
+	  as a file system, LIBMTP_Set_Object_Filename(),
+	  LIBMTP_Set_Object_Parent().
+	* src/libmtp.c: implementation.
+
 2008-01-27  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: re-read response from device until

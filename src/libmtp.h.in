@@ -4,7 +4,8 @@
  *
  * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2005-2008 Richard A. Low <richard@wentnet.com>
- * Copyright (C) 2007 Ted Bullock
+ * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
+ * Copyright (C) 2008 Florent Mertens <flomertens@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -486,6 +487,8 @@ int LIBMTP_Update_Album(LIBMTP_mtpdevice_t *, LIBMTP_album_t const * const);
  * @{
  */
 int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *, uint32_t);
+int LIBMTP_Set_Object_Filename(LIBMTP_mtpdevice_t *, uint32_t , char *);
+int LIBMTP_Set_Object_Parent(LIBMTP_mtpdevice_t *,uint32_t, LIBMTP_folder_t *);
 
 /** @} */
 

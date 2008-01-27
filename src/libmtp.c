@@ -5,6 +5,7 @@
  * Copyright (C) 2005-2008 Richard A. Low <richard@wentnet.com>
  * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  * Copyright (C) 2007 Tero Saarni <tero.saarni@gmail.com>
+ * Copyright (C) 2008 Florent Mertens <flomertens@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -4636,6 +4637,164 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
+  return 0;
+}
+
+/**
+ * This function rename a single file, track, playlist or
+ * any other object off the MTP device,
+ * identified by an object ID.
+ * @param device a pointer to the device to delete the file or track from.
+ * @param item_id the item to rename.
+ * @return 0 on success, any other value means failure.
+ */
+int LIBMTP_Set_Object_Filename(LIBMTP_mtpdevice_t *device,
+             uint32_t object_id, char *newname)
+{
+  PTPParams             *params = (PTPParams *) device->params;
+  PTP_USB               *ptp_usb = (PTP_USB*) device->usbinfo;
+  PTPObjectPropDesc     opd;
+  uint16_t              ret;
+
+  // The object could be anything, so just use PTP_OFC_Undefined as object format code
+  ret = ptp_mtp_getobjectpropdesc(params, PTP_OPC_ObjectFileName, PTP_OFC_Undefined, &opd);
+  if (ret != PTP_RC_OK) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
+                "could not get property description.");
+    return -1;
+  }
+
+  if (!opd.GetSet) {
+    ptp_free_objectpropdesc(&opd);
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Object_Parent(): "
+                "property is not settable.");
+    return -1;
+  }
+
+  if (ptp_usb->device_flags & DEVICE_FLAG_ONLY_7BIT_FILENAMES) {
+    strip_7bit_from_utf8(newname);
+  }
+
+  if (ptp_operation_issupported(params, PTP_OC_MTP_SetObjPropList) &&
+      !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST)) {
+    MTPProperties *props = NULL;
+    MTPProperties *prop = NULL;
+    int nrofprops = 0;
+    
+    prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
+    prop->ObjectHandle = object_id;      
+    prop->property = PTP_OPC_ObjectFileName;
+    prop->datatype = PTP_DTC_STR;
+    prop->propval.str = strdup(newname);
+    
+    ret = ptp_mtp_setobjectproplist(params, props, nrofprops);
+    
+    ptp_destroy_object_prop_list(props, nrofprops);
+    
+    if (ret != PTP_RC_OK) {
+      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Oject_Filename(): "
+              "could not set object property list.");
+      ptp_free_objectpropdesc(&opd);
+      return -1;
+    }
+  } else if (ptp_operation_issupported(params, PTP_OC_MTP_SetObjectPropValue)) {
+    ret = set_object_string(device, object_id, PTP_OPC_ObjectFileName, newname);
+    if (ret != 0) {
+      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Oject_Filename(): "
+              "could not set object filename.");
+      ptp_free_objectpropdesc(&opd);
+      return -1;
+    }
+  } else {
+     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Oject_Filename(): "
+              "Your device doesn't seem to support any known way of setting metadata.");
+    ptp_free_objectpropdesc(&opd);
+    return -1;
+  }
+  
+  ptp_free_objectpropdesc(&opd);
+  
+  // update cached object properties if metadata cache exists
+  update_metadata_cache(device, object_id);
+  
+  return 0;
+}
+/**
+ * This function move a single file, track, playlist or
+ * any other object off the MTP device,
+ * identified by an object ID to folder.
+ * You should not assume that this function will works on all devices.
+ * It is known to not be supported on some.
+ * @param device a pointer to the device to delete the file or track from.
+ * @param item_id the item to move.
+ * @param folder destination of the move.
+ * @return 0 on success, any other value means failure.
+ */
+int LIBMTP_Set_Object_Parent(LIBMTP_mtpdevice_t *device,
+             uint32_t object_id, LIBMTP_folder_t *folder)
+{
+  PTPParams         *params = (PTPParams *) device->params;
+  PTP_USB           *ptp_usb = (PTP_USB*) device->usbinfo;
+  PTPObjectPropDesc opd;
+  uint16_t      ret;
+
+  // The object could be anything, so just use PTP_OFC_Undefined as object format code
+  ret = ptp_mtp_getobjectpropdesc(params, PTP_OPC_ParentObject, PTP_OFC_Undefined, &opd);
+  if (ret != PTP_RC_OK) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Object_Parent(): "
+                "could not get property description.");
+    return -1;
+  } 
+
+  if (!opd.GetSet) {
+    ptp_free_objectpropdesc(&opd);
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Object_Parent(): "
+                "property is not settable.");
+    return -1;
+  }
+  
+  if (ptp_operation_issupported(params, PTP_OC_MTP_SetObjPropList) &&
+      !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST)) {
+    MTPProperties *props = NULL;
+    MTPProperties *prop = NULL;
+    int nrofprops = 0;
+    
+    prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
+    prop->ObjectHandle = object_id;      
+    prop->property = PTP_OPC_ParentObject;
+    prop->datatype = PTP_DTC_UINT32;
+    prop->propval.u32 = adjust_u32(folder->folder_id, &opd);;
+    
+    ret = ptp_mtp_setobjectproplist(params, props, nrofprops);
+    
+    ptp_destroy_object_prop_list(props, nrofprops);
+    
+    if (ret != PTP_RC_OK) {
+      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Object_Parent(): "
+              "could not set object property list.");
+      ptp_free_objectpropdesc(&opd);
+      return -1;
+    }
+  } else if (ptp_operation_issupported(params, PTP_OC_MTP_SetObjectPropValue)) {
+    ret = set_object_u32(device, object_id, PTP_OPC_ParentObject, folder->folder_id);
+    if (ret != 0) {
+      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Object_Parent(): "
+              "could not set object parent.");
+      ptp_free_objectpropdesc(&opd);
+      return -1;
+    }
+  } else {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Object_Parent(): "
+              "Your device doesn't seem to support any known way of setting metadata.");
+    ptp_free_objectpropdesc(&opd);
+    return -1;
+  }
+  
+  ptp_free_objectpropdesc(&opd);
+  
+  // update cached object properties if metadata cache exists
+  update_metadata_cache(device, object_id);
+  
   return 0;
 }
 
