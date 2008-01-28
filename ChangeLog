@@ -1,3 +1,9 @@
+2008-01-28  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: withdraw LIBMTP_Set_Object_Parent() function,
+	  no known devices will support this.
+	* src/libmtp.c: dito.
+
 2008-01-27  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: fix up some minor things and documentation on

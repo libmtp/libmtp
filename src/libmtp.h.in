@@ -488,7 +488,6 @@ int LIBMTP_Update_Album(LIBMTP_mtpdevice_t *, LIBMTP_album_t const * const);
  */
 int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *, uint32_t);
 int LIBMTP_Set_Object_Filename(LIBMTP_mtpdevice_t *, uint32_t , char *);
-int LIBMTP_Set_Object_Parent(LIBMTP_mtpdevice_t *,uint32_t, LIBMTP_folder_t *);
 
 /** @} */
 
