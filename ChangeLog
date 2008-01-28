@@ -2,7 +2,8 @@
 
 	* src/libmtp.h.in: withdraw LIBMTP_Set_Object_Parent() function,
 	  no known devices will support this.
-	* src/libmtp.c: dito.
+	* src/libmtp.c: dito. Fix up some problems with the 
+	  LIBMTP_Set_Object_Filename() function.
 
 2008-01-27  Linus Walleij <triad@df.lth.se>
 

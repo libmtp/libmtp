@@ -3679,6 +3679,11 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
  * @param device a pointer to the device to send the track to.
  * @param path the filename of a local file which will be sent.
  * @param metadata a track metadata set to be written along with the file.
+ *                 After this call the field <code>item_id</code>
+ *                 will contain the new track ID. Other fields such
+ *                 as the filename may also change during this operation
+ *                 due to device restrictions, so do not rely on the
+ *                 contents of this struct to be preserved in any way.
  * @param callback a progress indicator function or NULL to ignore.
  * @param data a user-defined pointer that is passed along to
  *             the <code>progress</code> function in order to
@@ -3750,7 +3755,10 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
  * @param fd the filedescriptor for a local file which will be sent.
  * @param metadata a track metadata set to be written along with the file.
  *                 After this call the field <code>item_id</code>
- *                 will contain the new track ID.
+ *                 will contain the new track ID. Other fields such
+ *                 as the filename may also change during this operation
+ *                 due to device restrictions, so do not rely on the
+ *                 contents of this struct to be preserved in any way.
  * @param callback a progress indicator function or NULL to ignore.
  * @param data a user-defined pointer that is passed along to
  *             the <code>progress</code> function in order to
@@ -3840,7 +3848,10 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
  * @param path the filename of a local file which will be sent.
  * @param filedata a file strtuct to pass in info about the file.
  *                 After this call the field <code>item_id</code>
- *                 will contain the new file ID.
+ *                 will contain the new file ID. Other fields such
+ *                 as the filename may also change during this operation
+ *                 due to device restrictions, so do not rely on the
+ *                 contents of this struct to be preserved in any way.
  * @param callback a progress indicator function or NULL to ignore.
  * @param data a user-defined pointer that is passed along to
  *             the <code>progress</code> function in order to
@@ -3914,7 +3925,10 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
  * @param fd the filedescriptor for a local file which will be sent.
  * @param filedata a file strtuct to pass in info about the file.
  *                 After this call the field <code>item_id</code>
- *                 will contain the new track ID.
+ *                 will contain the new track ID. Other fields such
+ *                 as the filename may also change during this operation
+ *                 due to device restrictions, so do not rely on the
+ *                 contents of this struct to be preserved in any way.
  * @param callback a progress indicator function or NULL to ignore.
  * @param data a user-defined pointer that is passed along to
  *             the <code>progress</code> function in order to
@@ -4656,29 +4670,44 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
  * @param device a pointer to the device that contains the the file, 
  *        track, foler, playlist or other object to set the filename for.
  * @param object_id the ID of the object to rename.
+ * @param newname the new filename for this object. You MUST assume that
+ *        this string can be modified by the call to this function, since
+ *        some devices have restrictions as to which filenames may be
+ *        used on them.
  * @return 0 on success, any other value means failure.
  */
 int LIBMTP_Set_Object_Filename(LIBMTP_mtpdevice_t *device,
-             uint32_t object_id, char *newname)
+			       uint32_t object_id, char *newname)
 {
   PTPParams             *params = (PTPParams *) device->params;
   PTP_USB               *ptp_usb = (PTP_USB*) device->usbinfo;
+  LIBMTP_file_t         *file;
+  uint16_t              ptp_type;
   PTPObjectPropDesc     opd;
   uint16_t              ret;
 
-  // The object could be anything, so just use PTP_OFC_Undefined as object format code
-  // FIXME: get the description of object_id, see what it is, see what it can set/get.
-  ret = ptp_mtp_getobjectpropdesc(params, PTP_OPC_ObjectFileName, PTP_OFC_Undefined, &opd);
+  // Get metadata for this object.
+  file = LIBMTP_Get_Filemetadata(device, object_id);
+  if (file == NULL) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Object_Filename(): "
+			    "could not get file metadata for target object.");
+    return -1;
+  }
+  ptp_type = map_libmtp_type_to_ptp_type(file->filetype);
+  LIBMTP_destroy_file_t(file);
+
+  // See if we can modify the filename on this kind of files.
+  ret = ptp_mtp_getobjectpropdesc(params, PTP_OPC_ObjectFileName, ptp_type, &opd);
   if (ret != PTP_RC_OK) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Object_Filename(): "
-                "could not get property description.");
+			    "could not get property description.");
     return -1;
   }
 
   if (!opd.GetSet) {
     ptp_free_objectpropdesc(&opd);
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Object_Filename(): "
-                "property is not settable.");
+			    "property is not settable.");
     // TODO: we COULD actually upload/download the object here, if we feel
     //       like wasting time for the user.
     return -1;
