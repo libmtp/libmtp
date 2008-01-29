@@ -2666,7 +2666,7 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
 
 /**
  * This returns a long list of all files available
- * on the current MTP device. Typical usage:
+ * on the current MTP device. Folders will not be returned. Typical usage:
  *
  * <pre>
  * LIBMTP_file_t *filelist;
@@ -2860,6 +2860,10 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
  * <code>LIBMTP_Get_Filelisting()</code> and cache the file, preferably
  * as an efficient data structure such as a hash list.
  *
+ * Incidentally this function will return metadata for
+ * a folder (association) as well, but this is not a proper use
+ * of it, it is intended for file manipulation, not folder manipulation.
+ *
  * @param device a pointer to the device to get the file metadata from.
  * @param fileid the object ID of the file that you want the metadata for.
  * @return a metadata entry on success or NULL on failure.
@@ -2887,12 +2891,6 @@ LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *device, uint32_t cons
     }
 
     oi = &params->objectinfo[i];
-
-    if (oi->ObjectFormat == PTP_OFC_Association) {
-      // MTP use thesis object format for folders which means
-      // these "files" will turn up on a folder listing instead.
-      return NULL;
-    }
 
     // Allocate a new file type
     file = LIBMTP_new_file_t();

@@ -1,5 +1,14 @@
 2008-01-28  Linus Walleij <triad@df.lth.se>
 
+	* src/libmtp.c: LIBMTP_Get_Filemetadata() return metadata for
+	  folders (associations) too. There is really no reason why it
+	  shouldn't and it's good for use internally. 
+	  LIBMTP_Get_Filelisting_With_Callback() will still not return
+	  any associations however. We want to use the folder functions
+	  for that.
+
+2008-01-28  Linus Walleij <triad@df.lth.se>
+
 	* src/libmtp.h.in: withdraw LIBMTP_Set_Object_Parent() function,
 	  no known devices will support this.
 	* src/libmtp.c: dito. Fix up some problems with the 
