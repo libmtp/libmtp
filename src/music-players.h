@@ -471,7 +471,7 @@
    * reported to see a pattern here.
    */
   // Reported by Alessandro Radaelli >alessandro.radaelli@aruba.it>
-  { "Sony", 0x054c, "Walkman NWZ-A815", 0x0325, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Sony", 0x054c, "Walkman NWZ-A815/NWZ-A818", 0x0325, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by anonymous Sourceforge user.
   { "Sony", 0x054c, "Walkman NWZ-S516", 0x0326, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Endre Oma <endre.88.oma@gmail.com>
