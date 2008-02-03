@@ -1,0 +1,249 @@
+Attempting to connect device(s)
+PTP: Opening session
+PTP_ERROR_IO: Trying again after re-initializing USB interface
+PTP: Opening session
+Detect: Successfully connected 1 devices
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 0471
+   idProduct: 0857
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Device flags: 0x00000002
+Microsoft device descriptor 0xee:
+        0000: 1203 4d00 5300 4600 5400 3100 3000 3000   ..M.S.F.T.1.0.0.
+        0010: 0100                                      ..
+Device info:
+   Manufacturer: Philips
+   Model: SA5125/37
+   Device version: V46.1
+   Serial number: 4002FF44EAE165674002FF44EAE34695
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0; microsoft.com/WMDRMPD: 10.1; microsoft.com/WMPPD: 10.0; microsoft.com/WMPPD: 11.0
+   Detected object size: 64 bits
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   101b: Get partial object
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   9802: Get object property description
+   9801: Get object properties supported
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9806: Set object property list
+   9808: Send object property list
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Send WMDRM-PD Command
+   910b: Send WMDRM-PD Request
+   100f: Format storage
+   9810: Get object references
+   9811: Set object references
+   9201: Report Added/Deleted Items
+   9202: Report Acquired Items
+   9203: Get transferable playlist types
+   97f1: Unknown (97f1)
+   97f2: Unknown (97f2)
+   97f3: Unknown (97f3)
+   97f4: Unknown (97f4)
+   1010: Reset device
+Events supported:
+   0x4004
+   0x4005
+Device Properties Supported:
+   0xd101: Secure Time
+   0xd102: Device Certificate
+   0xd402: Friendly Device Name
+   0xd401: Synchronization Partner
+   0x5001: Battery Level
+   0xd405: Device Icon
+Playable File (Object) Types and Object Properties Supported:
+   3009: MP3
+PTP: request code 0x9801 sending req wrote only 0 bytes instead of 16
+   3008: MS Wave
+PTP: request code 0x9801 sending req wrote only 0 bytes instead of 16
+   b901: WMA
+PTP: request code 0x9801 sending req wrote only 0 bytes instead of 16
+   300c: ASF
+PTP: request code 0x9801 sending req wrote only 0 bytes instead of 16
+   3001: Association/Directory
+PTP: request code 0x9801 sending req wrote only 0 bytes instead of 16
+   ba05: Abstract Audio Video Playlist
+PTP: request code 0x9801 sending req wrote only 0 bytes instead of 16
+   3801: JPEG
+PTP: request code 0x9801 sending req wrote only 0 bytes instead of 16
+   3807: GIF
+PTP: request code 0x9801 sending req wrote only 0 bytes instead of 16
+   3804: BMP
+PTP: request code 0x9801 sending req wrote only 0 bytes instead of 16
+   ba03: Abstract Audio Album
+PTP: request code 0x9801 sending req wrote only 0 bytes instead of 16
+   300a: MS AVI
+PTP: request code 0x9801 sending req wrote only 0 bytes instead of 16
+   b981: WMV
+PTP: request code 0x9801 sending req wrote only 0 bytes instead of 16
+   3000: Undefined Type
+PTP: request code 0x9801 sending req wrote only 0 bytes instead of 16
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0003
+      FilesystemType: 0x0002
+      AccessCapability: 0x0000
+      MaxCapacity: 3907256320
+      FreeSpaceInBytes: 3735476224
+      FreeSpaceInObjects: 4294967295
+      StorageDescription: Internal Storage
+      VolumeIdentifier: 4002FF44EAE165674002FF44EAE34695
+Special directories:
+   Default music folder: 0x00000077
+   Default playlist folder: 0x00000066
+   Default picture folder: 0x00000069
+   Default video folder: 0x00010108
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00000086
+   Default text folder: 0x00000000
+MTP-specific device properties:
+PTP: request code 0x1015 sending req wrote only 0 bytes instead of 16
+   Friendly name: (NULL)
+PTP: request code 0x1015 sending req wrote only 0 bytes instead of 16
+   Synchronization partner: (NULL)
+PTP: request code 0x1015 sending req wrote only 0 bytes instead of 16
+libmtp supported (playable) filetypes:
+   ISO MPEG-1 Audio Layer 3
+   RIFF WAVE file
+   Microsoft Windows Media Audio
+   Microsoft Advanced Systems Format
+   JPEG file
+   GIF bitmap file
+   BMP bitmap file
+   Audio Video Interleave
+   Microsoft Windows Media Video
+PTP: request code 0x1015 sending req wrote only 0 bytes instead of 16
+PTP: request code 0x1015 sending req wrote only 0 bytes instead of 16
+Unable to acquire device certificate, perhaps this device does not support this
+Error 2: PTP Layer error 02ff: get_device_unicode_property(): failed to get unicode property.
+Error 2: (Look this up in ptp.h for an explanation.)
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x9805 sending req wrote only 0 bytes instead of 32
+PTP: request code 0x1009 sending req wrote only 0 bytes instead of 16
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: LIBMTP_Get_File_To_File_Descriptor(): Could not get file from device.
+Error 2: (Look this up in ptp.h for an explanation.)
+PTP: Closing session
+PTP: request code 0x1003 sending req wrote only 0 bytes instead of 12
+ERROR: Could not close session!
+inep: usb_get_endpoint_status(): Protocol error
+outep: usb_get_endpoint_status(): Protocol error
+usb_clear_halt() on IN endpoint: Protocol error
+usb_clear_halt() on OUT endpoint: Protocol error
+usb_clear_halt() on INTERRUPT endpoint: Protocol error
+OK.
