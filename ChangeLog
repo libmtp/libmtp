@@ -1,3 +1,7 @@
+2008-02-06  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: wait for response > 0 instead of > 2.
+
 2008-01-28  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: LIBMTP_Get_Filemetadata() return metadata for
