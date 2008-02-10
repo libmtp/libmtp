@@ -1112,10 +1112,10 @@ ptp_usb_getresp (PTPParams* params, PTPContainer* resp)
 	/* read response, it should never be longer than sizeof(usbresp) */
 	ret = ptp_usb_getpacket(params, &usbresp, &rlen);
 
-	while (ret==PTP_RC_OK && rlen==0) {
-	  ptp_debug (params, "ptp_usb_getresp: detected a response of "
-		     "zero bytes, expect problems! (re-reading "
-		     "response)");
+	while (ret==PTP_RC_OK && rlen<PTP_USB_BULK_HDR_LEN && usbresp.length==0) {
+	  ptp_debug (params, "ptp_usb_getresp: detected short response "
+		     "of %d bytes, expect problems! (re-reading "
+		     "response), rlen");
 	  ret = ptp_usb_getpacket(params, &usbresp, &rlen);
 	}
 

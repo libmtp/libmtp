@@ -1,3 +1,10 @@
+2008-02-10  Scott Snyder <snyder@fnal.gov>
+
+	* src/libusb-glue.c: finally fix up the short header detection
+	  to skip over zero packets when encountered.
+	* examples/pathutils.c: fix a problem where all files sent has
+	  to include a "." (period).
+
 2008-02-06  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: wait for response > 0 instead of > 2.

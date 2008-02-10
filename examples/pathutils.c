@@ -116,7 +116,13 @@ LIBMTP_filetype_t
 find_filetype (const char * filename)
 {
   char *ptype;
-  ptype = rindex(filename,'.')+1;
+  ptype = rindex(filename,'.');
+  // This accounts for the case with a filename without any "." (period).
+  if (!ptype) {
+    ptype = "";
+  } else {
+    ++ptype;
+  }
   LIBMTP_filetype_t filetype;
   /* This need to be kept constantly updated as new file types arrive. */
   if (!strcasecmp (ptype, "wav")) {
