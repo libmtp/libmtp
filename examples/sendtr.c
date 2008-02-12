@@ -84,45 +84,56 @@ static char *prompt (const char *prompt, char *buffer, size_t bufsz, int require
 
 static int add_track_to_album(LIBMTP_album_t *albuminfo, LIBMTP_track_t *trackmeta)
 {
-  uint32_t *trackid = (uint32_t *)malloc(sizeof(uint32_t));
-  int albumexists = 0;
-  LIBMTP_album_t *album_list, *album, *tmp;
+  LIBMTP_album_t *album;
+  LIBMTP_album_t *found_album = NULL;
   int ret;
 
-  *trackid = trackmeta->item_id;
-  albuminfo->tracks = trackid;
-  albuminfo->no_tracks = 1;
-
   /* Look for the album */
-  album_list = LIBMTP_Get_Album_List(device);
-  album = album_list;
+  album = LIBMTP_Get_Album_List(device);
   while(album != NULL) {
-    if (strcmp(album->name, albuminfo->name) == 0 &&
-	strcmp(album->artist, albuminfo->artist) == 0) {
-      albumexists = 1;
-      break;
+    if (!strcmp(album->name, albuminfo->name) &&
+	!strcmp(album->artist, albuminfo->artist)) {
+      /* Disconnect this album for later use */
+      found_album = album;
+      album = album->next;
+      found_album->next = NULL;
+    } else {
+      LIBMTP_album_t *tmp;
+
+      tmp = album;
+      album = album->next;
+      LIBMTP_destroy_album_t(tmp);
     }
-    tmp = album;
-    album = album->next;
-    LIBMTP_destroy_album_t(tmp);
   }
   
-  if (albumexists) {
-    uint32_t *tracks = (uint32_t *)malloc((album->no_tracks+1) * sizeof(uint32_t));
-    printf("Album \"%s\" found: updating...\n", album->name);
+  if (found_album != NULL) {
+    uint32_t *tracks;
+
+    tracks = (uint32_t *)malloc((found_album->no_tracks+1) * sizeof(uint32_t));
+    printf("Album \"%s\" found: updating...\n", found_album->name);
     if (!tracks) {
-      printf("failed malloc\n");
+      printf("failed malloc in add_track_to_album()\n");
       return 1;
     }
-    memcpy(tracks, album->tracks, album->no_tracks * sizeof(uint32_t));
-    album->no_tracks++;
-    album->tracks = tracks;
-    tracks[album->no_tracks-1] = trackmeta->item_id;
-    ret = LIBMTP_Update_Album(device, album);
-    free(tracks);
+    found_album->no_tracks++;
+    if (found_album->tracks != NULL) {
+      memcpy(tracks, found_album->tracks, found_album->no_tracks * sizeof(uint32_t));
+      free(found_album->tracks);
+    }
+    found_album->tracks = tracks;
+    tracks[found_album->no_tracks-1] = trackmeta->item_id;
+    ret = LIBMTP_Update_Album(device, found_album);
+    LIBMTP_destroy_album_t(found_album);
   } else {
+    uint32_t *trackid;
+    
+    trackid = (uint32_t *)malloc(sizeof(uint32_t));
+    *trackid = trackmeta->item_id;
+    albuminfo->tracks = trackid;
+    albuminfo->no_tracks = 1;
     printf("Album doesn't exist: creating...\n");
     ret = LIBMTP_Create_New_Album(device, albuminfo, 0);
+    /* albuminfo will be destroyed later by caller */
   }
   
   if (ret != 0) {
@@ -130,7 +141,7 @@ static int add_track_to_album(LIBMTP_album_t *albuminfo, LIBMTP_track_t *trackme
     LIBMTP_Dump_Errorstack(device);
     LIBMTP_Clear_Errorstack(device);
   } else {
-    printf("success !\n");
+    printf("success!\n");
   }
 }
 
