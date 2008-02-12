@@ -91,7 +91,9 @@ static int add_track_to_album(LIBMTP_album_t *albuminfo, LIBMTP_track_t *trackme
   /* Look for the album */
   album = LIBMTP_Get_Album_List(device);
   while(album != NULL) {
-    if (!strcmp(album->name, albuminfo->name) &&
+    if (album->name != NULL &&
+	album->artist != NULL &&
+	!strcmp(album->name, albuminfo->name) &&
 	!strcmp(album->artist, albuminfo->artist)) {
       /* Disconnect this album for later use */
       found_album = album;
@@ -120,8 +122,8 @@ static int add_track_to_album(LIBMTP_album_t *albuminfo, LIBMTP_track_t *trackme
       memcpy(tracks, found_album->tracks, found_album->no_tracks * sizeof(uint32_t));
       free(found_album->tracks);
     }
-    found_album->tracks = tracks;
     tracks[found_album->no_tracks-1] = trackmeta->item_id;
+    found_album->tracks = tracks;
     ret = LIBMTP_Update_Album(device, found_album);
     LIBMTP_destroy_album_t(found_album);
   } else {
