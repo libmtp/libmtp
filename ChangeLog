@@ -1,3 +1,7 @@
+2008-02-12  Nicolas Pennequin <nicolas.pennequin@free.fr>
+
+	* examples/sendtr.c: add transferred tracks to albums if possible.
+
 2008-02-10  Scott Snyder <snyder@fnal.gov>
 
 	* src/libusb-glue.c: finally fix up the short header detection
