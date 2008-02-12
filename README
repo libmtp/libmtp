@@ -342,6 +342,12 @@ Some MTP devices have strange pecularities. We try to work around
 these whenever we can, sometimes we cannot work around it or we 
 cannot test your solution.
 
+* Generic USB misbehaviour: some devices behave badly under MTP
+  and USB mass storage alike, even down to the lowest layers
+  of USB. You can always discuss such issues at the linux-usb
+  mailing list if you're using Linux: 
+  http://www.linux-usb.org/mailing.html
+
 * The Zen Vision:M (possibly more Creative Zens) has a firmware bug
   that makes it drop the last two characters off a playlist name.
   It is fixed in later firmware.
@@ -404,6 +410,7 @@ cannot test your solution.
   usb 4-5: new high speed USB device using ehci_hcd and address 5
   usb 4-5: configuration #1 chosen from 1 choice
   usb 4-5: can't set config #1, error -110
+
 
 Lost symbols
 ------------
