@@ -348,6 +348,11 @@ cannot test your solution.
   mailing list if you're using Linux: 
   http://www.linux-usb.org/mailing.html
 
+  If you have a problem specific to USB mass storage mode, there
+  is a list of strange behaving devices in the Linux kernel:
+  http://lxr.linux.no/linux/drivers/usb/storage/unusual_devs.h
+  You can discuss this too on the mentioned list.  
+
 * The Zen Vision:M (possibly more Creative Zens) has a firmware bug
   that makes it drop the last two characters off a playlist name.
   It is fixed in later firmware.
