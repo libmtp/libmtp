@@ -1352,7 +1352,16 @@ static void close_usb(PTP_USB* ptp_usb)
   // Commented out since it was confusing some
   // devices to do these things.
   if (!(ptp_usb->device_flags & DEVICE_FLAG_NO_RELEASE_INTERFACE)) {
-    // Clear any stalled endpoints
+    /*
+     * Clear any stalled endpoints
+     * On misbehaving devices designed for Windows/Mac, quote from:
+     * http://www2.one-eyed-alien.net/~mdharm/linux-usb/target_offenses.txt
+     * Device does Bad Things(tm) when it gets a GET_STATUS after CLEAR_HALT
+     * (...) Windows, when clearing a stall, only sends the CLEAR_HALT command, 
+     * and presumes that the stall has cleared.  Some devices actually choke 
+     * if the CLEAR_HALT is followed by a GET_STATUS (used to determine if the 
+     * STALL is persistant or not).
+     */
     clear_stall(ptp_usb);
     // Clear halts on any endpoints
     clear_halt(ptp_usb);
