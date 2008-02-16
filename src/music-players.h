@@ -502,6 +502,12 @@
   // Reported by Rajan Bella <rajanbella@yahoo.com>
   { "Kenwood", 0x0b28, "Media Keg HD10GB7 Sport Player", 0x100c, DEVICE_FLAG_UNLOAD_DRIVER},
 
+  /*
+   * Micro-Star International (MSI)
+   */
+  // Reported by anonymous sourceforge user.
+  { "Micro-Star International", 0x0db0, "P610/Model MS-5557", 0x5572, DEVICE_FLAG_NONE },
+
 
   /*
    * Other strange stuff.
