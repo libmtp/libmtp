@@ -2,7 +2,7 @@
  * \file delfile.c
  * Example program to delete a file off the device.
  *
- * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2008 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006 Chris A. Debenham <chris@adebenham.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -40,7 +40,8 @@ void delfile_usage(void)
 void
 delfile_function(char * path)
 {
-  int id = parse_path (path,files,folders);
+  uint32_t id = parse_path (path,files,folders);
+
   if (id > 0) {
     printf("Deleting %s which has item_id:%d\n",path,id);
     int ret = 1;
@@ -58,6 +59,8 @@ void delfile_command(int argc, char **argv)
   int FILENAME = 1;
   int ITEMID = 2;
   int field_type = 0;
+  int i;
+
   if ( argc > 2 ) {
     if (strncmp(argv[1],"-f",2) == 0) {
       field_type = FILENAME;
@@ -73,10 +76,12 @@ void delfile_command(int argc, char **argv)
     delfile_usage();
     return;
   }
-  int i;
+
   for (i=1;i<argc;i++) {
-    int id;
+    uint32_t id;
     char *endptr;
+    int ret = 0;
+
     if (field_type == ITEMID) {
       // Sanity check song ID
       id = strtoul(argv[i], &endptr, 10);
@@ -91,7 +96,6 @@ void delfile_command(int argc, char **argv)
         id = 0;
       }
     }
-    int ret = 0;
     if (id > 0 ) {
       printf("Deleting %s\n",argv[i]);
       ret = LIBMTP_Delete_Object(device, id);

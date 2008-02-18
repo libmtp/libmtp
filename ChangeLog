@@ -1,3 +1,10 @@
+2008-02-18  Linus Walleij <triad@df.lth.se>
+
+	* examples/pathutils.c: fix up item ID typing to uint32_t,
+	  handle file names passed in as arguments at suggestion from
+	  anonymous mail list user.
+	* examples/pathutils.h: move a function static.
+
 2008-02-12  Nicolas Pennequin <nicolas.pennequin@free.fr>
 
 	* examples/sendtr.c: add transferred tracks to albums if possible.
