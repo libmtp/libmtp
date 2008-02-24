@@ -148,7 +148,7 @@
   // from discussion forum
   { "Philips", 0x0471, "HDD085/00 or HDD082/17", 0x014d, DEVICE_FLAG_NONE },
   // from XNJB forum
-  { "Philips", 0x0471, "GoGear SA9200", 0x014f, DEVICE_FLAG_NONE },
+  { "Philips", 0x0471, "GoGear SA9200", 0x014f, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // From John Coppens <jcoppens@users.sourceforge.net>
   { "Philips", 0x0471, "SA1115/55", 0x0164, DEVICE_FLAG_NONE },
   // From Gerhard Mekenkamp
