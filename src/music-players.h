@@ -371,9 +371,14 @@
 
   /*
    * Nokia
+   * Please verify the low device IDs here, I suspect these might be for
+   * things like USB storage or modem mode actually, whereas the higher
+   * range (0x04nn) could be for MTP.
    */
   // From: DoomHammer <gaczek@users.sourceforge.net>
   { "Nokia", 0x0421, "3110c Mobile Phone", 0x005f, DEVICE_FLAG_NONE },
+  // From: robin (AT) headbank D0Tco DOTuk
+  { "Nokia", 0x0421, "N95 Mobile Phone 8GB", 0x006e, DEVICE_FLAG_NONE },
   // From: Mitchell Hicks <mitchix@yahoo.com>
   { "Nokia", 0x0421, "5300 Mobile Phone", 0x04ba, DEVICE_FLAG_NONE },
   // From Christian Arnold <webmaster@arctic-media.de>
@@ -432,10 +437,12 @@
       DEVICE_FLAG_UNLOAD_DRIVER },
   
   /*
-   * Disney (have had no reports of this actually working.)
+   * Disney/Tevion (have had no reports of these actually working.)
    */
   // Reported by XNJB user
   { "Disney", 0x0aa6, "MixMax", 0x6021, DEVICE_FLAG_NONE },
+  // Reported by anonymous Sourceforge user 
+  { "Tevion", 0x0aa6, "MD 81488", 0x3011, DEVICE_FLAG_NONE },
 
   /*
    * Cowon Systems, Inc.
