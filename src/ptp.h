@@ -62,7 +62,7 @@ typedef struct _PTPContainer PTPContainer;
  * and fixed the bugs that made this necessary and it can be 512 again.
  */
 #define PTP_USB_BULK_HS_MAX_PACKET_LEN_WRITE	512
-#define PTP_USB_BULK_HS_MAX_PACKET_LEN_READ   512
+#define PTP_USB_BULK_HS_MAX_PACKET_LEN_READ	512
 #define PTP_USB_BULK_HDR_LEN		(2*sizeof(uint32_t)+2*sizeof(uint16_t))
 #define PTP_USB_BULK_PAYLOAD_LEN_WRITE	(PTP_USB_BULK_HS_MAX_PACKET_LEN_WRITE-PTP_USB_BULK_HDR_LEN)
 #define PTP_USB_BULK_PAYLOAD_LEN_READ	(PTP_USB_BULK_HS_MAX_PACKET_LEN_READ-PTP_USB_BULK_HDR_LEN)
@@ -1065,6 +1065,8 @@ typedef struct _PTPCanon_Property {
 #define PTP_DPC_CANON_FocalLengthWide	0xD027
 #define PTP_DPC_CANON_FocalLengthDenominator	0xD028
 #define PTP_DPC_CANON_CaptureTransferMode		0xD029
+#define CANON_TRANSFER_MEMORY	3
+#define CANON_TRANSFER_CARD	9
 #define PTP_DPC_CANON_Zoom		0xD02A
 #define PTP_DPC_CANON_NamePrefix	0xD02B
 #define PTP_DPC_CANON_SizeQualityMode	0xD02C

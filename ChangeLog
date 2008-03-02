@@ -1,3 +1,12 @@
+2008-03-02  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: prepare 0.2.6 release.
+	* src/Makefile.am: bump to compatible interface, 
+	* src/ptp.c: sync in upstream, a Sansa fix!
+	* src/ptp.h: sync in upstream.
+	* doc/Doxyfile.in: retire obsoleted parameters.
+	* Release this as 0.2.6!
+	
 2008-02-24  Richard Low <richard@wentnet.com>
 
 	* src/music-players.h: add DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL

@@ -43,7 +43,7 @@
 #include "ptp-pack.c"
 
 /* To enable debug prints, switch on this */
-//#define ENABLE_USB_BULK_DEBUG
+#define ENABLE_USB_BULK_DEBUG
 
 /* this must not be too short - the original 4000 was not long
    enough for big file transfers. I imagine the player spends a 
@@ -534,7 +534,7 @@ ptp_read_func (
   while (curread < size) {
     
 #ifdef ENABLE_USB_BULK_DEBUG
-    printf("Remaining size to read: 0x%04x bytes\n", size - curread);
+    printf("Remaining size to read: 0x%04lx bytes\n", size - curread);
 #endif
     // check equal to condition here
     if (size - curread < CONTEXT_BLOCK_SIZE)
@@ -559,7 +559,7 @@ ptp_read_func (
 	     (unsigned int) toread, (unsigned int) (size-curread));
 
 #ifdef ENABLE_USB_BULK_DEBUG
-    printf("Reading in 0x%04x bytes\n", toread);
+    printf("Reading in 0x%04lx bytes\n", toread);
 #endif
     result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, (char*)bytes, toread, USB_TIMEOUT);
 #ifdef ENABLE_USB_BULK_DEBUG
@@ -824,7 +824,12 @@ ptp_usb_sendreq (PTPParams* params, PTPContainer* req)
 	PTPUSBBulkContainer usbreq;
 	PTPDataHandler	memhandler;
 	unsigned long written, towrite;
+#ifdef ENABLE_USB_BULK_DEBUG
+	char txt[256];
 
+	(void) ptp_render_opcode (params, req->Code, sizeof(txt), txt);
+	printf("REQUEST: 0x%04x, %s\n", req->Code, txt);
+#endif
 	/* build appropriate USB container */
 	usbreq.length=htod32(PTP_USB_BULK_REQ_LEN-
 		(sizeof(uint32_t)*(5-req->Nparam)));
@@ -870,6 +875,9 @@ ptp_usb_senddata (PTPParams* params, PTPContainer* ptp,
 	uint32_t bytes_left_to_transfer;
 	PTPDataHandler memhandler;
 
+#ifdef ENABLE_USB_BULK_DEBUG
+	printf("SEND DATA PHASE\n");
+#endif
 	/* build appropriate USB container */
 	usbdata.length	= htod32(PTP_USB_BULK_HDR_LEN+size);
 	usbdata.type	= htod16(PTP_USB_CONTAINER_DATA);
@@ -955,6 +963,9 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 	unsigned long	written;
 	PTP_USB *ptp_usb = (PTP_USB *) params->data;
 
+#ifdef ENABLE_USB_BULK_DEBUG
+	printf("GET DATA PHASE\n");
+#endif
 	memset(&usbdata,0,sizeof(usbdata));
 	do {
 		unsigned long len, rlen;
@@ -1108,14 +1119,17 @@ ptp_usb_getresp (PTPParams* params, PTPContainer* resp)
 	PTPUSBBulkContainer usbresp;
 	PTP_USB *ptp_usb = (PTP_USB *)(params->data);
 
+#ifdef ENABLE_USB_BULK_DEBUG
+	printf("RESPONSE: ");
+#endif
 	memset(&usbresp,0,sizeof(usbresp));
 	/* read response, it should never be longer than sizeof(usbresp) */
 	ret = ptp_usb_getpacket(params, &usbresp, &rlen);
 
-  // Fix for bevahiour reported by Scott Snyder on Samsung YP-U3. The player
-  // sends a packet containing just zeroes of length 2 (up to 4 has been seen too)
-  // after a NULL packet when it should send the response. This code ignores
-  // such illegal packets.
+	// Fix for bevahiour reported by Scott Snyder on Samsung YP-U3. The player
+	// sends a packet containing just zeroes of length 2 (up to 4 has been seen too)
+	// after a NULL packet when it should send the response. This code ignores
+	// such illegal packets.
 	while (ret==PTP_RC_OK && rlen<PTP_USB_BULK_HDR_LEN && usbresp.length==0) {
 	  ptp_debug (params, "ptp_usb_getresp: detected short response "
 		     "of %d bytes, expect problems! (re-reading "
@@ -1132,6 +1146,9 @@ ptp_usb_getresp (PTPParams* params, PTPContainer* resp)
 	if (dtoh16(usbresp.code)!=resp->Code) {
 		ret = dtoh16(usbresp.code);
 	}
+#ifdef ENABLE_USB_BULK_DEBUG
+	printf("%04x\n", ret);
+#endif
 	if (ret!=PTP_RC_OK) {
 /*		ptp_error (params,
 		"PTP: request code 0x%04x getting resp error 0x%04x",
