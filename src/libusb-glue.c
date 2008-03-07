@@ -43,7 +43,7 @@
 #include "ptp-pack.c"
 
 /* To enable debug prints, switch on this */
-#define ENABLE_USB_BULK_DEBUG
+//#define ENABLE_USB_BULK_DEBUG
 
 /* this must not be too short - the original 4000 was not long
    enough for big file transfers. I imagine the player spends a 

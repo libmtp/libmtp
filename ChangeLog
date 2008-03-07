@@ -1,3 +1,8 @@
+2008-03-08  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: left debug prints on :-(
+	* Release as 0.2.6.1
+
 2008-03-02  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: prepare 0.2.6 release.
