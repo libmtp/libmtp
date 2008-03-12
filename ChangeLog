@@ -1,3 +1,13 @@
+2008-03-12  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: add parent_id to albums and playlists,
+	  based on a patch by Ali Shah.
+	* src/libmtp.h.in: dito.
+	* examples/playlists.c: consequental changes.
+	* examples/albums.c: consequental changes.
+	* This will be a new major revision of the API/ABI no
+	  matter what.
+
 2008-03-08  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: left debug prints on :-(

@@ -272,6 +272,7 @@ struct LIBMTP_track_struct {
  */
 struct LIBMTP_playlist_struct {
   uint32_t playlist_id; /**< Unique playlist ID */
+  uint32_t parent_id; /**< ID of parent folder */
   char *name; /**< Name of playlist */
   uint32_t *tracks; /**< The tracks in this playlist */
   uint32_t no_tracks; /**< The number of tracks in this playlist */
@@ -283,6 +284,7 @@ struct LIBMTP_playlist_struct {
  */
 struct LIBMTP_album_struct {
   uint32_t album_id; /**< Unique playlist ID */
+  uint32_t parent_id; /**< ID of parent folder */
   char *name; /**< Name of album */
   char *artist; /**< Name of album artist */
   char *genre; /**< Genre of album */

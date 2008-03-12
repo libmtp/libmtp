@@ -5016,6 +5016,7 @@ LIBMTP_playlist_t *LIBMTP_new_playlist_t(void)
     return NULL;
   }
   new->playlist_id = 0;
+  new->parent_id = 0;
   new->name = NULL;
   new->tracks = NULL;
   new->no_tracks = 0;
@@ -5084,9 +5085,8 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *device)
 
     // Ignoring the oi->Filename field.
     pl->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
-
-    // This is some sort of unique playlist ID so we can keep track of it
     pl->playlist_id = params->handles.Handler[i];
+    pl->parent_id = oi->ParentObject;
 
     // Then get the track listing for this playlist
     ret = ptp_mtp_getobjectreferences(params, pl->playlist_id, &pl->tracks, &pl->no_tracks);
@@ -5149,9 +5149,8 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t cons
 
     // Ignoring the io.Filename field.
     pl->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
-
-    // This is some sort of unique playlist ID so we can keep track of it
     pl->playlist_id = params->handles.Handler[i];
+    pl->parent_id = oi->ParentObject;
     
     // Then get the track listing for this playlist
     ret = ptp_mtp_getobjectreferences(params, pl->playlist_id, &pl->tracks, &pl->no_tracks);
@@ -5649,6 +5648,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
  * @param metadata the metadata for the new playlist. If the function
  *        exits with success, the <code>playlist_id</code> field of this
  *        struct will contain the new playlist ID of the playlist.
+ *        <code>parent_id</code> will also be valid.
  * @param parenthandle the parent (e.g. folder) to store this playlist
  *        in. Pass in 0 to put the playlist in the root directory.
  * @return 0 on success, any other value means failure.
@@ -5665,6 +5665,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   if (localph == 0) {
     localph = device->default_playlist_folder;
   }
+  metadata->parent_id = localph;
 
   // Just create a new abstract audio/video playlist...
   return create_new_abstract_list(device,
@@ -5723,6 +5724,7 @@ LIBMTP_album_t *LIBMTP_new_album_t(void)
     return NULL;
   }
   new->album_id = 0;
+  new->parent_id = 0;
   new->name = NULL;
   new->artist = NULL;
   new->genre = NULL;
@@ -5790,6 +5792,9 @@ LIBMTP_album_t *LIBMTP_Get_Album_List(LIBMTP_mtpdevice_t *device)
 
     // Allocate a new album type
     alb = LIBMTP_new_album_t();
+    alb->album_id = params->handles.Handler[i];
+    alb->parent_id = oi->ParentObject;
+
     // Get metadata for it.
     alb->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
     alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_AlbumArtist);
@@ -5797,7 +5802,6 @@ LIBMTP_album_t *LIBMTP_Get_Album_List(LIBMTP_mtpdevice_t *device)
       alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Artist);
     }
     alb->genre = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Genre);
-    alb->album_id = params->handles.Handler[i];
     
     // Then get the track listing for this album
     ret = ptp_mtp_getobjectreferences(params, alb->album_id, &alb->tracks, &alb->no_tracks);
@@ -5856,6 +5860,9 @@ LIBMTP_album_t *LIBMTP_Get_Album(LIBMTP_mtpdevice_t *device, uint32_t const albi
     // Allocate a new album type
     alb = LIBMTP_new_album_t();
     alb->album_id = params->handles.Handler[i];
+    alb->parent_id = oi->ParentObject;
+
+    // Get metadata for it.
     alb->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
     alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_AlbumArtist);
     if (alb->artist == NULL) {
@@ -5883,6 +5890,7 @@ LIBMTP_album_t *LIBMTP_Get_Album(LIBMTP_mtpdevice_t *device, uint32_t const albi
  * @param metadata the metadata for the new album. If the function
  *        exits with success, the <code>album_id</code> field of this
  *        struct will contain the new ID of the album.
+ *        <code>parent_id</code> will also be valid.
  * @param parenthandle the parent (e.g. folder) to store this album
  *        in. Pass in 0 to put the album in the default music directory.
  * @return 0 on success, any other value means failure.
@@ -5890,8 +5898,8 @@ LIBMTP_album_t *LIBMTP_Get_Album(LIBMTP_mtpdevice_t *device, uint32_t const albi
  * @see LIBMTP_Delete_Object()
  */
 int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
-			       LIBMTP_album_t * const metadata,
-			       uint32_t const parenthandle)
+			    LIBMTP_album_t * const metadata,
+			    uint32_t const parenthandle)
 {
   uint32_t localph = parenthandle;
 
@@ -5899,6 +5907,7 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
   if (localph == 0) {
     localph = device->default_album_folder;
   }
+  metadata->parent_id = localph;
 
   // Just create a new abstract album...
   return create_new_abstract_list(device,

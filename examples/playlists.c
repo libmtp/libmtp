@@ -28,6 +28,7 @@ static void dump_plinfo(LIBMTP_mtpdevice_t *device, LIBMTP_playlist_t *pl)
   printf("Playlist ID: %d\n", pl->playlist_id);
   if (pl->name != NULL)
     printf("   Name: %s\n", pl->name);
+  printf("   Parent ID: %d\n", pl->parent_id);
   printf("   Tracks:\n");
 
   for (i = 0; i < pl->no_tracks; i++) {
