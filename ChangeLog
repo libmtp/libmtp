@@ -1,5 +1,9 @@
 2008-03-12  Linus Walleij <triad@df.lth.se>
 
+	* configure.ac: bad mailing list address. (Marcus) Bump to
+	  version 0.3.0.
+	* examples/hotplug.c: switch from using "info.bus" to
+	  using "info.subsystem" to identify USB events. (Marcus).
 	* src/libmtp.c: add parent_id to albums and playlists,
 	  based on a patch by Ali Shah.
 	* src/libmtp.h.in: dito.
