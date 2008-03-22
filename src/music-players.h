@@ -227,7 +227,6 @@
    * broken on all iRiver devices, meaning it simply won't return
    * all properties for a file when asking for metadata 0xffffffff. 
    * Please test on your device if you believe it isn't broken!
-   * Some devices from http://www.mtp-ums.net/viewdeviceinfo.php
    */
   { "iRiver", 0x1006, "Portable Media Center", 0x4002, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
@@ -482,7 +481,7 @@
   // Reported by anonymous Sourceforge user.
   { "Sony", 0x054c, "Walkman NWZ-S516", 0x0326, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Endre Oma <endre.88.oma@gmail.com>
-  { "Sony", 0x054c, "Walkman NWZ-S615F/NWZ-S618F", 0x0327, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Sony", 0x054c, "Walkman NWZ-S615F/NWZ-S616F/NWZ-S618F", 0x0327, DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
    * SonyEricsson
@@ -501,7 +500,7 @@
   // Reported by Hans-Joachim Baader <hjb@pro-linux.de> to libptp2
   { "Motorola", 0x22b8, "A1200", 0x60ca, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
   // Reported by anonymous user
-  { "Motorola", 0x22b8, "RAZR2 V8", 0x6415, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
+  { "Motorola", 0x22b8, "RAZR2 V8/U9", 0x6415, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
 
   /*
    * Media Keg
@@ -515,6 +514,10 @@
   // Reported by anonymous sourceforge user.
   { "Micro-Star International", 0x0db0, "P610/Model MS-5557", 0x5572, DEVICE_FLAG_NONE },
 
+  /*
+   * FOMA
+   */
+  { "FOMA", 0x06d3, "D905i", 0x21ba, DEVICE_FLAG_NONE },
 
   /*
    * Other strange stuff.
