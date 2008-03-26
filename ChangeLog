@@ -1,3 +1,8 @@
+2008-03-26  Linus Walleij <triad@df.lth.se>
+
+	* examples/pathutils.c: fix a folder identification bug,
+	  courtesy of Dr Nicholas Jacobs.
+
 2008-03-12  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bad mailing list address. (Marcus) Bump to

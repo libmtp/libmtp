@@ -49,7 +49,7 @@ lookup_folder_id (LIBMTP_folder_t * folder, char * path, char * parent)
     ret = lookup_folder_id (folder->child, path, current);
   }
   free (current);
-  if (ret >= 0) {
+  if (ret != (uint32_t) (-1)) {
     return ret;
   }
   ret = lookup_folder_id (folder->sibling, path, parent);
