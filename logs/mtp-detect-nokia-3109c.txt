@@ -1,0 +1,470 @@
+From noreply@sourceforge.net Sat Mar 29 00:55:50 2008
+Date: Fri, 28 Mar 2008 16:55:38 -0700
+From: SourceForge.net <noreply@sourceforge.net>
+To: noreply@sourceforge.net
+Subject: [ libmtp-Bugs-1927490 ] New device: Nokia 3109 classic
+
+        [ The following text is in the "UTF-8" character set. ]
+        [ Your display is set for the "ISO-8859-1" character set.  ]
+        [ Some characters may be displayed incorrectly. ]
+
+Bugs item #1927490, was opened at 2008-03-27 22:03
+Message generated for change (Comment added) made by snirkel
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=809061&aid=1927490&group_id=158745
+
+Please note that this message will contain a full copy of the comment thread,
+including the initial issue submission, for this request,
+not just the latest update.
+Category: None
+Group: None
+>Status: Closed
+>Resolution: Fixed
+Priority: 5
+Private: No
+Submitted By: Vasily (spc-)
+>Assigned to: Linus Walleij (snirkel)
+Summary: New device: Nokia 3109 classic
+
+Initial Comment:
+Must be very similar to 3110c
+
+$ mtp-detect
+libmtp version: 0.2.6.1
+
+Attempting to connect device(s)
+Potential MTP Device with VendorID:0421 and ProductID:0065 responded to control message 2 with a response that was too short. Problems may arrise but continuing
+Device 1 (VID=0421 and PID=0065) is UNKNOWN.
+Please report this VID/PID and the device model to the libmtp development team
+PTP: Opening session
+Detect: Successfully connected 1 devices
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 0421
+   idProduct: 0065
+   IN endpoint maxpacket: 64 bytes
+   OUT endpoint maxpacket: 64 bytes
+   Device flags: 0x00000000
+Microsoft device descriptor 0xee:
+        0000: 1203 4d00 5300 4600 5400 3100 3000 3000   ..M.S.F.T.1.0.0.
+        0010: fe00                                      ..
+Microsoft device response to control message 1, CMD 0xfe:
+        0000: 2800 0000 0001 0400 0100 0000 0000 0000   (...............
+        0010: 0001 4d54 5000 0000 0000 0000 0000 0000   ..MTP...........
+        0020: 0000 0000 0000 0000 1203 4d00 5300 4600   ..........M.S.F.
+        0030: 5400 3100 3000 3000 fe00 0000 0000 0000   T.1.0.0.........
+        0040: 0000 0000 0000 0000 0100 0000 0000 0000   ................
+        0050: 0200 0000 0000 0000 0300 0000 0000 0000   ................
+        0060: 0400 0000 0000 0000 0002 0402 0216 0000   ................
+        0070: 0000 0000 53fd 8cf0 9ffc 8cf0 75fb 8cf0   ....S.......u...
+        0080: a9fe 8cf0 2fff 8cf0 b7ff 8cf0 2500 8df0   ..../.......%...
+        0090: c700 8df0 e900 8df0 3701 8df0 9101 8df0   ........7.......
+        00a0: 0000 0000 9d08 8df0 510a 8df0 c509 8df0   ........Q.......
+        00b0: 2b0b 8df0 e30e 8df0 650f 8df0 df04 8df0   +.......e.......
+        00c0: 0000 0000 0000 0000 0000 0000 0900 0000   ................
+        00d0: 0000 0000 0000 0000 0000 0000 0b00 0000   ................
+        00e0: 2828 2830 7830 3030 3021 3d6c 6369 6429   (((0x0000!=lcid)
+        00f0: 2026 2620 2830 7830 3030 303d 3d72 6369    && (0x0000==rci
+        0100: 6429 2920 7c7c 2028 2830 7830 3030 303d   d)) || ((0x0000=
+        0110: 3d6c 6369 6429 2026 2620 2830 7830 3030   =lcid) && (0x000
+        0120: 3021 3d72 6369 6429 2929 0000 a002 0000   0!=rcid)))......
+        0130: 2100 0000 1700 0000 0000 0000 0100 0000   !...............
+        0140: cbcd a2f0 edcd a2f0 0100 0000 f5cd a2f0   ................
+        0150: 27ce a2f0 0100 0000 3dce a2f0 51ce a2f0   '.......=...Q...
+        0160: 0100 0000 59ce a2f0 7fce a2f0 2828 3020   ....Y.......((0 
+        0170: 213d 2067 5f6d 6365 5f73 6563 5f61 6374   != g_mce_sec_act
+        0180: 6976 655f 7365 635f 7072 6f63 2920 2626   ive_sec_proc) &&
+        0190: 2028 6964 203d 3d20 675f 6d63 655f 7365    (id == g_mce_se
+        01a0: 635f 6163 7469 7665 5f73 6563 5f70 726f   c_active_sec_pro
+        01b0: 632d 3e74 696d 6572 5f69 6429 2900 0000   c->timer_id))...
+        01c0: 2828 4d43 455f 5345 435f 5354 5f43 414e   ((MCE_SEC_ST_CAN
+        01d0: 4345 4c4c 4544 203d 3d20 675f 6d63 655f   CELLED == g_mce_
+        01e0: 7365 635f 6163 7469 7665 5f73 6563 5f70   sec_active_sec_p
+        01f0: 726f 632d 3e73 7461 7465 2920 7c7c 2028   roc->state) || (
+        0200: 4d43 455f 5345 435f 5354 5f41 5554 4845   MCE_SEC_ST_AUTHE
+        0210: 4e54 203d 3d20 675f 6d63 655f 7365 635f   NT == g_mce_sec_
+        0220: 6163 7469 7665 5f73 6563 5f70 726f 632d   active_sec_proc-
+        0230: 3e73 7461 7465 2920 7c7c 2028 4d43 455f   >state) || (MCE_
+        0240: 5345 435f 5354 5f4c 494e 4b5f 4b45 595f   SEC_ST_LINK_KEY_
+        0250: 5245 5144 203d 3d20 675f 6d63 655f 7365   REQD == g_mce_se
+        0260: 635f 6163 7469 7665 5f73 6563 5f70 726f   c_active_sec_pro
+        0270: 632d 3e73 7461 7465 2920 7c7c 2028 4d43   c->state) || (MC
+        0280: 455f 5345 435f 5354 5f50 494e 5f43 4f44   E_SEC_ST_PIN_COD
+        0290: 455f 5245 5144 203d 3d20 675f 6d63 655f   E_REQD == g_mce_
+        02a0: 7365 635f 6163 7469 7665 5f73 6563 5f70   sec_active_sec_p
+        02b0: 726f 632d 3e73 7461 7465 2929 0000 0000   roc->state))....
+        02c0: 2828 4d43 455f 5345 435f 5354 5f4c 494e   ((MCE_SEC_ST_LIN
+        02d0: 4b5f 4b45 595f 5245 5144 2021 3d20 675f   K_KEY_REQD != g_
+        02e0: 6d63 655f 7365 635f 6163 7469 7665 5f73   mce_sec_active_s
+        02f0: 6563 5f70 726f 632d 3e73 7461 7465 2920   ec_proc->state) 
+        0300: 2626 2028 4d43 455f 5345 435f 5354 5f50   && (MCE_SEC_ST_P
+        0310: 494e 5f43 4f44 455f 5245 5144 2021 3d20   IN_CODE_REQD != 
+        0320: 675f 6d63 655f 7365 635f 6163 7469 7665   g_mce_sec_active
+        0330: 5f73 6563 5f70 726f 632d 3e73 7461 7465   _sec_proc->state
+        0340: 2929 0000 2828 282a 7365 7276 6963 655f   ))..(((*service_
+        0350: 6964 293d 3d30 7843 3129 207c 7c20 2828   id)==0xC1) || ((
+        0360: 2a73 6572 7669 6365 5f69 6429 3d3d 3078   *service_id)==0x
+        0370: 4333 2920 7c7c 2028 282a 7365 7276 6963   C3) || ((*servic
+        0380: 655f 6964 293d 3d30 7843 3229 2900 0000   e_id)==0xC2))...
+        0390: 0201 0201 0001 3506 1911 0319 1201 0004   ......5.........
+        03a0: 350c 3503 1901 0035 0519 0003 0800 0005   5.5....5........
+        03b0: 3503 1910 0200 0635 0909 656e 0900 6a09   5......5..en..j.
+        03c0: 0100 0009 3508 3506 1911 0309 0100 0100   ....5.5.........
+        03d0: 2512 4469 616c 2d75 7020 6e65 7477 6f72   %.Dial-up networ
+        03e0: 6b69 6e67 0001 3503 1911 0500 0435 1135   king..5......5.5
+        03f0: 0319 0100 3505 1900 0308 0035 0319 0008   ....5......5....
+Potential MTP Device with VendorID:0421 and ProductID:0065 responded to control message 2 with a response that was too short. Problems may arrise but continuing
+Device info:
+   Manufacturer: Nokia
+   Model: Nokia 3109c
+   Device version: (null)
+   Serial number: 00000000000000000000000PHL617685
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com:1.0;microsoft.com/WMPPD: 11.0;microsoft.com/WMDRMPD: 10.1
+   Detected object size: 64 bits
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100a: Get thumbnail
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   101b: Get partial object
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9810: Get object references
+   9811: Set object references
+   9201: Report Added/Deleted Items
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Send WMDRM-PD Command
+   910b: Send WMDRM-PD Request
+Events supported:
+   0x4009
+   0x4003
+   0x4002
+   0x400c
+Device Properties Supported:
+   0xd401: Synchronization Partner
+   0xd402: Friendly Device Name
+   0xd101: Secure Time
+   0xd102: Device Certificate
+Playable File (Object) Types and Object Properties Supported:
+   3801: JPEG
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   3002: Script
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   3000: Undefined Type
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   3001: Association/Directory
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   3004: Text
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   3005: HTML
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   3008: MS Wave
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   3009: MP3
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   3804: BMP
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   3807: GIF
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   3808: JFIF
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   380b: PNG
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   b004: Unknown(b004)
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   b901: WMA
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   b903: AAC
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   ba05: Abstract Audio Video Playlist
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   ba11: M3U Playlist
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   bb82: vCard2
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   bb83: vCard3
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+   be02: vCalendar1
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc08: DateCreated STRING data type READ ONLY
+      dc09: DateModified STRING data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0003
+      FilesystemType: 0x0002
+      AccessCapability: 0x0000
+      MaxCapacity: 2012971008
+      FreeSpaceInBytes: 462979072
+      FreeSpaceInObjects: 4294967295
+      StorageDescription: Memory card
+      VolumeIdentifier: (null)
+Special directories:
+   Default music folder: 0x40000061
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x00000000
+   Default video folder: 0x400001ba
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00000000
+   Default text folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: NOKIA
+   Synchronization partner: {00000000-0000-0000-0000-000000000000}
+libmtp supported (playable) filetypes:
+   JPEG file
+   Text file
+   HTML file
+   RIFF WAVE file
+   ISO MPEG-1 Audio Layer 3
+   BMP bitmap file
+   GIF bitmap file
+   JFIF file
+   Portable Network Graphics
+   Microsoft Windows Media Audio
+   Advanced Audio Coding (AAC)/MPEG-2 Part 7/MPEG-4 Part 3
+   VCard version 2
+   VCard version 3
+   VCalendar version 1
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20080327 20:57:31Z#</VALUE><FLAG>DRM_CLK_NEEDS_REFRESH</FLAG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">DDABE0o0bVY7g+AXlhyDrR/7CMs=</UNIQUEID><PUBLICKEY private="1">opuWk1S4wYOou6/0TYUPqh/+/k+vXD1eqHOcKBfRzTA5bPIbLuVXIw==</PUBLICKEY><KEYDATA></KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>BD+l4Evo9dMB9FR2FY3hl8oJQHjhjs8gjG2MY2RbitKTq1AKbFcceA==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE></SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.107.81</SECURITYVERSION><CERTIFICATE private="1">opuWk1S4wYOou6/0TYUPqh/+/k+vXD1eqHOcKBfRzTA5bPIbLuVXIwIEa1GNXh5oZUqveqxpXg7BmlDJ1siJE6howsyQWaWaybhP7L6rRgrONjJ3</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>3109c</NAME> 
+    <MANUFACTURER>Nokia</MANUFACTURER> 
+    <MAKE>Nokia</MAKE> 
+    <DISTRIBUTOR>Nokia</DISTRIBUTOR> 
+    <MODEL>RM-274</MODEL> 
+    <SECURITYLEVEL>2000</SECURITYLEVEL> 
+    <HARDWARE_VER_MAJOR>1</HARDWARE_VER_MAJOR> 
+    <HARDWARE_VER_MINOR>0</HARDWARE_VER_MINOR> 
+    <FIRMWARE_VER_MAJOR>1</FIRMWARE_VER_MAJOR> 
+    <FIRMWARE_VER_MINOR>0</FIRMWARE_VER_MINOR> 
+    <FEATURES>
+        <CLOCK>2</CLOCK> 
+             <SECURECLOCK> 
+                <URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL> 
+                <PUBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY> 
+            </SECURECLOCK> 
+        <METERING>1</METERING> 
+        <LICENSE_ACQ>0</LICENSE_ACQ> 
+        <LICENSE_SYNC>1</LICENSE_SYNC> 
+        <ENCRYPTION>0</ENCRYPTION> 
+        <SYMMETRIC_OPT>1</SYMMETRIC_OPT> 
+    </FEATURES>
+    <LIMITS>
+        <MAXCHAINDEPTH>2</MAXCHAINDEPTH> 
+        <MAXLICENSESIZE>10240</MAXLICENSESIZE> 
+        <MAXHEADERSIZE>5120</MAXHEADERSIZE> 
+    </LIMITS><PUBLICKEY>XV2v3rfMc+LuVWo8AEpynYg6gyMXJoegbuQ4QMBR/XkIdFwCaYCTfQ==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>c1l+mmjL78RqzI9ugPsYszQfE3pZp95GeXhwdQjNUoSm9npH7zm+Aw==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>1717</AUTH_ID><PUBLICKEY>l2NdhCljnoYlzpNgTS6QlW0BxAkp1rY0C/R/K2ZN2b49WwEUK7EyBw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>LvQ+xSas5RHHD7YQ28Ss8l7M6S5ng6WPypSo2CkHVh2+c58FdEx1CA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>EmeKPa0xvW62hAz2hYka7xieAwV6UX+LPDFdbdYlb2T68YJSJ6aVbA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
+
+Device description WMPInfo.xml file:
+<DeviceInfo>
+    <WMP DeviceID="{27B81EB6-7893-41F3-A86A-DEFA129D5900}" RelationshipID="{00000000-0000-0000-0000-000000000000}"/>
+</DeviceInfo>
+
+PTP: Closing session
+OK.
+
+
+----------------------------------------------------------------------
+
+>Comment By: Linus Walleij (snirkel)
+Date: 2008-03-29 00:55
+
+Message:
+Logged In: YES 
+user_id=473872
+Originator: NO
+
+Thanks, device added to CVS...
+
+----------------------------------------------------------------------
+
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=809061&aid=1927490&group_id=158745

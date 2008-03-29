@@ -160,9 +160,13 @@
   // From libgphoto2 source
   { "Philips", 0x0471, "HDD6320", 0x01eb, DEVICE_FLAG_NONE },
   // From Detlef Meier <dm@emlix.com>
-  { "Philips", 0x0471, "SA6014/SA6015/SA6024/SA6025/SA6044/SA6045", 0x084e, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Philips", 0x0471, "GoGear SA6014/SA6015/SA6024/SA6025/SA6044/SA6045", 0x084e, DEVICE_FLAG_UNLOAD_DRIVER },
   // From anonymous Sourceforge user SA5145/02
-  { "Philips", 0x0471, "SA5145", 0x0857, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Philips", 0x0471, "GoGear SA5145", 0x0857, DEVICE_FLAG_UNLOAD_DRIVER },
+  // From a
+  { "Philips", 0x0471, "GoGear SA6125/SA6145/SA6185", 0x2002, DEVICE_FLAG_UNLOAD_DRIVER },
+  // From anonymous Sourceforge user, not verified to be MTP!
+  { "Philips", 0x0471, "GoGear SA3345", 0x2004, DEVICE_FLAG_UNLOAD_DRIVER },
   // from XNJB user
   { "Philips", 0x0471, "PSA235", 0x7e01, DEVICE_FLAG_NONE },
 
@@ -376,6 +380,8 @@
    */
   // From: DoomHammer <gaczek@users.sourceforge.net>
   { "Nokia", 0x0421, "3110c Mobile Phone", 0x005f, DEVICE_FLAG_NONE },
+  // From: Vasily <spc-@users.sourceforge.net>
+  { "Nokia", 0x0421, "3109c Mobile Phone", 0x0065, DEVICE_FLAG_NONE },
   // From: robin (AT) headbank D0Tco DOTuk
   { "Nokia", 0x0421, "N95 Mobile Phone 8GB", 0x006e, DEVICE_FLAG_NONE },
   // From: Mitchell Hicks <mitchix@yahoo.com>
@@ -476,12 +482,14 @@
    * NWZ-A8xx is 0325, NWZ-S5xx is 0x326 etc. We need more devices
    * reported to see a pattern here.
    */
-  // Reported by Alessandro Radaelli >alessandro.radaelli@aruba.it>
+  // Reported by Alessandro Radaelli <alessandro.radaelli@aruba.it>
   { "Sony", 0x054c, "Walkman NWZ-A815/NWZ-A818", 0x0325, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by anonymous Sourceforge user.
   { "Sony", 0x054c, "Walkman NWZ-S516", 0x0326, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Endre Oma <endre.88.oma@gmail.com>
   { "Sony", 0x054c, "Walkman NWZ-S615F/NWZ-S616F/NWZ-S618F", 0x0327, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by Niek Klaverstijn <niekez@users.sourceforge.net>
+  { "Sony", 0x054c, "Walkman NWZ-A728B", 0x035c, DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
    * SonyEricsson
