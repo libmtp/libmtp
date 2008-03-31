@@ -223,7 +223,12 @@
   // Reported by anonymous SourceForge user
   { "SanDisk", 0x0781, "Sansa View", 0x74b0, 
     DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-    DEVICE_FLAG_NO_RELEASE_INTERFACE },  
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
+  // Reported by Patrick <skibler@gmail.com>
+  // There are apparently problems with this device.
+  { "SanDisk", 0x0781, "Sansa Fuze", 0x74c0, 
+    DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
 
   /*
    * iRiver
