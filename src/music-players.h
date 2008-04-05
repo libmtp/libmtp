@@ -389,6 +389,8 @@
   { "Nokia", 0x0421, "3109c Mobile Phone", 0x0065, DEVICE_FLAG_NONE },
   // From: robin (AT) headbank D0Tco DOTuk
   { "Nokia", 0x0421, "N95 Mobile Phone 8GB", 0x006e, DEVICE_FLAG_NONE },
+  // From: Christian Rusa <kristous@users.sourceforge.net>
+  { "Nokia", 0x0421, "5700 XpressMusic Mobile Phone", 0x04b4, DEVICE_FLAG_NONE },
   // From: Mitchell Hicks <mitchix@yahoo.com>
   { "Nokia", 0x0421, "5300 Mobile Phone", 0x04ba, DEVICE_FLAG_NONE },
   // From Christian Arnold <webmaster@arctic-media.de>
