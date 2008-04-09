@@ -372,6 +372,8 @@
    * Sirius
    */
   { "Sirius", 0x18f6, "Stiletto", 0x0102, DEVICE_FLAG_NONE },
+  // Reported by Chris Bagwell <chris@cnpbagwell.com>
+  { "Sirius", 0x18f6, "Stiletto 2", 0x0110, DEVICE_FLAG_NONE },
 
   /*
    * Canon
