@@ -1,0 +1,147 @@
+./mtp-detect
+libmtp version: 0.2.6.1
+
+Attempting to connect device(s)
+PTP: Opening session
+PTP_ERROR_IO: Trying again after re-initializing USB interface
+PTP: Opening session
+LIBMTP PANIC: Could not open session! (Return code 8195)
+ Try to reset the device.
+LIBMTP PANIC: configure_usb_devices() error code: 7 on line 1599
+Detect: There has been an error connecting. Exiting
+[root@brew4me bin]# ./mtp-detect
+libmtp version: 0.2.6.1
+
+Attempting to connect device(s)
+PTP: Opening session
+PTP_ERROR_IO: Trying again after re-initializing USB interface
+PTP: Opening session
+LIBMTP PANIC: create_usb_mtp_devices(): could not inspect object
+property descriptions!
+PTP: Sequence number mismatch 2 vs expected 4.
+LIBMTP PANIC: create_usb_mtp_devices(): could not inspect object
+property descriptions!
+PTP: Sequence number mismatch 4 vs expected 6.
+LIBMTP PANIC: create_usb_mtp_devices(): could not inspect object
+property descriptions!
+PTP: Sequence number mismatch 6 vs expected 8.
+LIBMTP PANIC: create_usb_mtp_devices(): could not inspect object
+property descriptions!
+ptp2/ptp_usb_getdata: detected a broken PTP header, code field insane.
+ptp2/ptp_usb_getdata: detected a broken PTP header, code field insane.
+Detect: Successfully connected 1 devices
+Error 7: Unable to read Maximum Battery Level for this device even
+though the device supposedly supports this functionality
+Error 1: Get Storage information failed.
+Error 2: PTP Layer error 02ff: get_all_metadata_fast(): could not get
+proplist of all objects.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02fe: get_handles_recursively(): could not get
+object handles.
+Error 2: (Look this up in ptp.h for an explanation.)
+USB low-level info:
+  Using kernel interface "usbfs"
+  bcdUSB: 512
+  bDeviceClass: 0
+  bDeviceSubClass: 0
+  bDeviceProtocol: 0
+  idVendor: 18f6
+  idProduct: 0110
+  IN endpoint maxpacket: 512 bytes
+  OUT endpoint maxpacket: 512 bytes
+  Device flags: 0x00000000
+Configuration 0, interface 0, altsetting 0:
+  Interface description contains the string "MTP"
+  Device recognized as MTP, no further probing.
+Device info:
+  Manufacturer: Sirius
+  Model: Stiletto 2
+  Device version: 1.0
+  Serial number: [removed]
+  Vendor extension ID: 0x00000006
+  Vendor extension description:  microsoft.com/WMDRMPD: 10.1;
+  Detected object size: 64 bits
+Supported operations:
+  1001: get device info
+  1002: Open session
+  1003: Close session
+  1010: Reset device
+  1014: Get device property description
+  1015: Get device property value
+  1016: Set device property value
+  1017: Reset device property value
+  1004: Get storage IDs
+  1005: Get storage info
+  1006: Get number of objects
+  1007: Get object handles
+  1008: Get object info
+  1009: Get object
+  100b: Delete object
+  100c: Send object info
+  100d: Send object
+  9801: Get object properties supported
+  9802: Get object property description
+  9803: Get object property value
+  9805: Get object property list
+  9804: Set object property value
+  9807: Get interdependent property description
+  4001: Unknown (4001)
+  9810: Get object references
+  9811: Set object references
+  9101: Get secure time challenge
+  9102: Get secure time response
+  9103: Set license response
+  9104: Get sync list
+  9105: Send meter challenge query
+  9106: Get meter challenge
+  9107: Get meter response
+  9108: Clean data store
+  9109: Get license state
+  910a: Send WMDRM-PD Command
+  910b: Send WMDRM-PD Request
+  100f: Format storage
+  9806: Set object property list
+Events supported:
+  None.
+Device Properties Supported:
+  0x5001: Battery Level
+  0xd402: Friendly Device Name
+  0xd101: Secure Time
+  0xd102: Device Certificate
+Playable File (Object) Types and Object Properties Supported:
+  b104: Unknown(b104)
+ptp2/ptp_usb_getdata: detected a broken PTP header, code field insane.
+  b901: WMA
+  ba05: Abstract Audio Video Playlist
+ptp2/ptp_usb_getdata: detected a broken PTP header, code field insane.
+  3000: Undefined Type
+  3001: Association/Directory
+  3008: MS Wave
+  3009: MP3
+  3801: JPEG
+Special directories:
+  Default music folder: 0x00000000
+  Default playlist folder: 0x00000000
+  Default picture folder: 0x00000000
+  Default video folder: 0x00000000
+  Default organizer folder: 0x00000000
+  Default zencast folder: 0x00000000
+  Default album folder: 0x00000000
+  Default text folder: 0x00000000
+MTP-specific device properties:
+  Friendly name: (NULL)
+  Synchronization partner: (NULL)
+libmtp supported (playable) filetypes:
+  Microsoft Windows Media Audio
+  RIFF WAVE file
+  ISO MPEG-1 Audio Layer 3
+  JPEG file
+Unable to acquire device certificate, perhaps this device does not
+support this
+Error 2: PTP Layer error 02ff: get_device_unicode_property(): failed to
+get unicode property.
+Error 2: (Look this up in ptp.h for an explanation.)
+WMPInfo.xml Does not exist on this device
+PTP: Closing session
+ERROR: Could not close session!
+OK.
