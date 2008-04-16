@@ -342,6 +342,33 @@ Some MTP devices have strange pecularities. We try to work around
 these whenever we can, sometimes we cannot work around it or we 
 cannot test your solution.
 
+* Generic MTP/PTP disconnect misbehaviour: we have noticed that 
+  Windows Media Player apparently never close the session to an MTP
+  device. There is a daemon in Windows that "hooks" the device
+  by opening a PTP session to any MTP device, whenever it is 
+  plugged in. This daemon proxies any subsequent transactions 
+  to/from the device and will never close the session, thus
+  Windows simply does not close sessions at all.
+
+  This means that device manufacturers doesn't notice any problems
+  with devices that do not correctly handle closing PTP/MTP
+  sessions, since Windows never do it. The proper way of closing
+  a session in Windows is to unplug the device, simply put.
+
+  Since libmtp actually tries to close sessions, some devices
+  may fail since the close session functionality has never been
+  properly tested, and "it works with Windows" is sort of the
+  testing criteria at some companies.
+
+  You can get Windows-like behaviour on Linux by running a HAL-aware
+  libmtp GUI client like Rhythmbox or Gnomad2, which will "hook"
+  the device when you plug it in, and "release" it if you unplug
+  it.
+
+  If this bug in your device annoys you, contact your device 
+  manufacturer and ask them to test their product with some libmtp 
+  program.
+
 * Generic USB misbehaviour: some devices behave badly under MTP
   and USB mass storage alike, even down to the lowest layers
   of USB. You can always discuss such issues at the linux-usb

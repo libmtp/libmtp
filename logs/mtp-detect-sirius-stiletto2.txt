@@ -1,44 +1,7 @@
-./mtp-detect
-libmtp version: 0.2.6.1
+libmtp version: 0.3.0
 
 Attempting to connect device(s)
-PTP: Opening session
-PTP_ERROR_IO: Trying again after re-initializing USB interface
-PTP: Opening session
-LIBMTP PANIC: Could not open session! (Return code 8195)
- Try to reset the device.
-LIBMTP PANIC: configure_usb_devices() error code: 7 on line 1599
-Detect: There has been an error connecting. Exiting
-[root@brew4me bin]# ./mtp-detect
-libmtp version: 0.2.6.1
-
-Attempting to connect device(s)
-PTP: Opening session
-PTP_ERROR_IO: Trying again after re-initializing USB interface
-PTP: Opening session
-LIBMTP PANIC: create_usb_mtp_devices(): could not inspect object
-property descriptions!
-PTP: Sequence number mismatch 2 vs expected 4.
-LIBMTP PANIC: create_usb_mtp_devices(): could not inspect object
-property descriptions!
-PTP: Sequence number mismatch 4 vs expected 6.
-LIBMTP PANIC: create_usb_mtp_devices(): could not inspect object
-property descriptions!
-PTP: Sequence number mismatch 6 vs expected 8.
-LIBMTP PANIC: create_usb_mtp_devices(): could not inspect object
-property descriptions!
-ptp2/ptp_usb_getdata: detected a broken PTP header, code field insane.
-ptp2/ptp_usb_getdata: detected a broken PTP header, code field insane.
 Detect: Successfully connected 1 devices
-Error 7: Unable to read Maximum Battery Level for this device even
-though the device supposedly supports this functionality
-Error 1: Get Storage information failed.
-Error 2: PTP Layer error 02ff: get_all_metadata_fast(): could not get
-proplist of all objects.
-Error 2: (Look this up in ptp.h for an explanation.)
-Error 2: PTP Layer error 02fe: get_handles_recursively(): could not get
-object handles.
-Error 2: (Look this up in ptp.h for an explanation.)
 USB low-level info:
   Using kernel interface "usbfs"
   bcdUSB: 512
@@ -49,7 +12,7 @@ USB low-level info:
   idProduct: 0110
   IN endpoint maxpacket: 512 bytes
   OUT endpoint maxpacket: 512 bytes
-  Device flags: 0x00000000
+  Device flags: 0x00000001
 Configuration 0, interface 0, altsetting 0:
   Interface description contains the string "MTP"
   Device recognized as MTP, no further probing.
@@ -57,7 +20,7 @@ Device info:
   Manufacturer: Sirius
   Model: Stiletto 2
   Device version: 1.0
-  Serial number: [removed]
+  Serial number: 0082000b1054058355580184020072ec
   Vendor extension ID: 0x00000006
   Vendor extension description:  microsoft.com/WMDRMPD: 10.1;
   Detected object size: 64 bits
@@ -110,18 +73,126 @@ Device Properties Supported:
   0xd102: Device Certificate
 Playable File (Object) Types and Object Properties Supported:
   b104: Unknown(b104)
-ptp2/ptp_usb_getdata: detected a broken PTP header, code field insane.
+     dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+     dc44: Name STRING data type GET/SET
+     dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+     dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+     dc04: ObjectSize UINT64 data type READ ONLY
+     dc07: ObjectFileName STRING data type REGULAR EXPRESSION FORM GET/SET
+     dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
   b901: WMA
+     dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+     dc44: Name STRING data type GET/SET
+     dc46: Artist STRING data type GET/SET
+     dc48: Description array of UINT16 data type ANY 16BIT VALUE form GET/SET
+     dc49: URLReference STRING data type REGULAR EXPRESSION FORM GET/SET
+     dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+     de93: SampleRate UINT32 data type enumeration: 8000, 11025, 12000, 15918, 22050, 24000, 32000, 44100, 48000,  READ ONLY
+     de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  GET/SET
+     de99: AudioWAVECodec UINT32 data type enumeration: 0, 1, 9, 50, 80, 85, 352, 353, 354,  READ ONLY
+     de9a: AudioBitRate UINT32 data type range: MIN 5000, MAX 384000, STEP 1 GET/SET
+     dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+     dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+     dc04: ObjectSize UINT64 data type READ ONLY
+     dc07: ObjectFileName STRING data type REGULAR EXPRESSION FORM GET/SET
+     dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc89: Duration UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc8a: Rating UINT16 data type range: MIN 1, MAX 100, STEP 1 GET/SET
+     dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+     dc8c: Genre STRING data type GET/SET
+     dc8f: SubscriptionContentID STRING data type REGULAR EXPRESSION FORM GET/SET
+     dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+     dc96: Composer STRING data type GET/SET
+     dc9a: AlbumName STRING data type GET/SET
   ba05: Abstract Audio Video Playlist
-ptp2/ptp_usb_getdata: detected a broken PTP header, code field insane.
+     dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+     dc44: Name STRING data type GET/SET
+     dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+     dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+     dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+     dc04: ObjectSize UINT64 data type READ ONLY
+     dc07: ObjectFileName STRING data type REGULAR EXPRESSION FORM GET/SET
+     dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
   3000: Undefined Type
+     dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+     dc44: Name STRING data type READ ONLY
+     dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  READ ONLY
+     dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+     dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+     dc04: ObjectSize UINT64 data type READ ONLY
+     dc07: ObjectFileName STRING data type REGULAR EXPRESSION FORM READ ONLY
+     dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
   3001: Association/Directory
+     dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+     dc44: Name STRING data type GET/SET
+     dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+     dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+     dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+     dc04: ObjectSize UINT64 data type READ ONLY
+     dc07: ObjectFileName STRING data type REGULAR EXPRESSION FORM GET/SET
+     dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
   3008: MS Wave
+     dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+     dc44: Name STRING data type GET/SET
+     dc46: Artist STRING data type READ ONLY
+     dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+     dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+     dc04: ObjectSize UINT64 data type READ ONLY
+     dc07: ObjectFileName STRING data type REGULAR EXPRESSION FORM READ ONLY
+     dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc8c: Genre STRING data type GET/SET
+     dc96: Composer STRING data type READ ONLY
   3009: MP3
+     dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+     dc44: Name STRING data type GET/SET
+     dc46: Artist STRING data type GET/SET
+     dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+     de99: AudioWAVECodec UINT32 data type enumeration: 0, 1, 9, 50, 80, 85, 352, 353, 354,  READ ONLY
+     de9a: AudioBitRate UINT32 data type range: MIN 32000, MAX 320000, STEP 1 GET/SET
+     dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+     dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+     dc04: ObjectSize UINT64 data type READ ONLY
+     dc07: ObjectFileName STRING data type REGULAR EXPRESSION FORM GET/SET
+     dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc89: Duration UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc8a: Rating UINT16 data type range: MIN 1, MAX 100, STEP 1 GET/SET
+     dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+     dc8c: Genre STRING data type GET/SET
+     dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+     dc96: Composer STRING data type GET/SET
+     dc9a: AlbumName STRING data type GET/SET
   3801: JPEG
+     dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+     dc44: Name STRING data type GET/SET
+     dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+     dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+     dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+     dc04: ObjectSize UINT64 data type READ ONLY
+     dc07: ObjectFileName STRING data type REGULAR EXPRESSION FORM GET/SET
+     dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc87: Width UINT32 data type ANY 32BIT VALUE form GET/SET
+     dc88: Height UINT32 data type ANY 32BIT VALUE form GET/SET
+Storage Devices:
+  StorageID: 0x00010001
+     StorageType: 0x0003
+     FilesystemType: 0x0002
+     AccessCapability: 0x0000
+     MaxCapacity: 786490736
+     FreeSpaceInBytes: 1942896
+     FreeSpaceInObjects: 4294967295
+     StorageDescription: Internal Memory
+     VolumeIdentifier:
 Special directories:
-  Default music folder: 0x00000000
-  Default playlist folder: 0x00000000
+  Default music folder: 0x01000000
+  Default playlist folder: 0x01000003
   Default picture folder: 0x00000000
   Default video folder: 0x00000000
   Default organizer folder: 0x00000000
@@ -129,19 +200,55 @@ Special directories:
   Default album folder: 0x00000000
   Default text folder: 0x00000000
 MTP-specific device properties:
-  Friendly name: (NULL)
+  Friendly name: Stiletto 2
   Synchronization partner: (NULL)
+  Battery level 100 of 100 (100%)
 libmtp supported (playable) filetypes:
   Microsoft Windows Media Audio
   RIFF WAVE file
   ISO MPEG-1 Audio Layer 3
   JPEG file
-Unable to acquire device certificate, perhaps this device does not
-support this
-Error 2: PTP Layer error 02ff: get_device_unicode_property(): failed to
-get unicode property.
-Error 2: (Look this up in ptp.h for an explanation.)
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20080412
+01:41:54Z#</VALUE><FLAG>DRM_CLK_NEEDS_REFRESH</FLAG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID
+private="1">MDA4MjAwMGIxMDU0MDU4MzU1NTgwMTg0MDIwMDcyZWM=</UNIQUEID><PUBLICKEY
+private="1">Ef9gt/+M0PMXJhpYgK6HoJ/20DyJ/HHAG3d64+pxiMmNCwf9Oj2EOA==</PUBLICKEY><KEYDATA>WuK3oQPAqaefrnCMi/6xIfsrcuo=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>c8IXWmqRilDx0XHV8xKXHFaUdW6BNbmppKK7xL+dftzGBt6g8WgFfQ==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>jnjYEjB5UV2Ry6EI+HoPIE0uBAo=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.108.89</SECURITYVERSION><CERTIFICATE
+private="1">Ef9gt/+M0PMXJhpYgK6HoJ/20DyJ/HHAG3d64+pxiMmNCwf9Oj2EOAIEbFl5weGVKFKBvp4iKwg8QrkeOjg9RojVO5aRxVDDAKMONn+VDb/svCcF</CERTIFICATE></FALLBACK><CERTIFICATE
+type="GROUP"><DATA><NAME>Stiletto 2</NAME>
+   <MANUFACTURER>Zing Systems, Inc.</MANUFACTURER>
+   <MAKE>Sirius</MAKE>
+   <DISTRIBUTOR>Sirius Satellite Radio, Inc.</DISTRIBUTOR>
+   <MODEL>SL2</MODEL>
+   <SECURITYLEVEL>2000</SECURITYLEVEL>
+   <HARDWARE_VER_MAJOR>1</HARDWARE_VER_MAJOR>
+   <HARDWARE_VER_MINOR>0</HARDWARE_VER_MINOR>
+   <FIRMWARE_VER_MAJOR>2</FIRMWARE_VER_MAJOR>
+   <FIRMWARE_VER_MINOR>0</FIRMWARE_VER_MINOR>
+   <FEATURES>
+       <CLOCK>2</CLOCK>
+       <SECURECLOCK>
+           <URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL>
+
+<PUBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY>
+
+       </SECURECLOCK>
+       <METERING>1</METERING>
+       <LICENSE_ACQ>1</LICENSE_ACQ>
+       <LICENSE_SYNC>1</LICENSE_SYNC>
+       <ENCRYPTION>1</ENCRYPTION>
+       <SYMMETRIC_OPT>1</SYMMETRIC_OPT>
+   </FEATURES>
+   <LIMITS>
+       <MAXCHAINDEPTH>2</MAXCHAINDEPTH>
+       <MAXLICENSESIZE>10240</MAXLICENSESIZE>
+       <MAXHEADERSIZE>5120</MAXHEADERSIZE>
+
+</LIMITS><PUBLICKEY>lC3XoSJVphgaNIcvbTOf56btAIm1RNkvSUutdWiXXvx1FStZEj/MKw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>CfZATKRGLAZ4NTqQWYwCmiYMmBKrdwldaOcLfl0Zg+Vq8esSdYQkFQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE
+type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>1981</AUTH_ID><PUBLICKEY>btGasWaE7LqohJ2zfck00MzmG0/uy+56ploHWJnDmuFrZzn9oOswbw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>pNebugeKuigfNG74TRE5Zcs+bz9NvDCn5O8LxS3S24xaC4U4E86nBA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE
+type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>TkTu6iE2JI69l3qD8z3BDroLrgd70NZzCVxnSrq5FHGkny0kKxK0Jg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
 WMPInfo.xml Does not exist on this device
-PTP: Closing session
-ERROR: Could not close session!
 OK.
