@@ -125,12 +125,14 @@ static struct usb_bus* init_usb()
  * Small recursive function to append a new usb_device to the linked list of
  * USB MTP devices
  * @param devlist dynamic linked list of pointers to usb devices with MTP 
- * properties.
- * @param next New USB MTP device to be added to list
- * @return nothing
+ *        properties, to be extended with new device.
+ * @param newdevice the new device to add.
+ * @param bus_location bus for this device.
+ * @return an extended array or NULL on failure.
  */
 static mtpdevice_list_t *append_to_mtpdevice_list(mtpdevice_list_t *devlist,
-				     struct usb_device *newdevice)
+						  struct usb_device *newdevice,
+						  uint32_t bus_location)
 {
   mtpdevice_list_t *new_list_entry;
   
@@ -140,6 +142,7 @@ static mtpdevice_list_t *append_to_mtpdevice_list(mtpdevice_list_t *devlist,
   }
   // Fill in USB device, if we *HAVE* to make a copy of the device do it here.
   new_list_entry->libusb_device = newdevice;
+  new_list_entry->bus_location = bus_location;
   new_list_entry->next = NULL;
   
   if (devlist == NULL) {
@@ -346,8 +349,8 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
  * This function scans through the connected usb devices on a machine and
  * if they match known Vendor and Product identifiers appends them to the
  * dynamic array mtp_device_list. Be sure to call 
- * <code>free(mtp_device_list)</code> when you are done with it, assuming it
- * is not NULL.
+ * <code>free_mtpdevice_list(mtp_device_list)</code> when you are done 
+ * with it, assuming it is not NULL.
  * @param mtp_device_list dynamic array of pointers to usb devices with MTP 
  *        properties (if this list is not empty, new entries will be appended
  *        to the list).
@@ -372,7 +375,9 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
           if(dev->descriptor.idVendor == mtp_device_table[i].vendor_id &&
             dev->descriptor.idProduct == mtp_device_table[i].product_id) {
             /* Append this usb device to the MTP device list */
-            *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, dev);
+            *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, 
+							dev, 
+							bus->location);
             found = 1;
             break;
           }
@@ -381,7 +386,9 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
         if (!found) {
           if (probe_device_descriptor(dev, NULL)) {
             /* Append this usb device to the MTP USB Device List */
-            *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, dev);
+            *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, 
+							dev,
+							bus->location);
           }
         }
       }
@@ -396,31 +403,74 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
 }
 
 /**
- * Detect the MTP device descriptor and return the VID and PID
- * of the first device found. This is a very low-level function
- * which is intended for use with <b>udev</b> or other hotplug
- * mechanisms. The idea is that a script may want to know if the
- * just plugged-in device was an MTP device or not.
+ * Detect the raw MTP device descriptors and return a list of
+ * of the devices found.
  * 
- * @param vid the Vendor ID (VID) of the first device found.
- * @param pid the Product ID (PID) of the first device found.
- * @return the number of detected devices or -1 if the call
- *         was unsuccessful.
+ * @param devices a pointer to a variable that will hold
+ *        the list of raw devices found. This may be NULL
+ *        on return if the number of detected devices is zero.
+ *        The user shall simply <code>free()</code> this
+ *        variable when finished with the raw devices,
+ *        in order to release memory.
+ * @param numdevs a pointer to an integer that will hold 
+ *        the number of devices in the list. This may
+ *        be 0.
+ * @return 0 if successful, any other value means failure.
  */
-int LIBMTP_Detect_Descriptor(uint16_t *vid, uint16_t *pid)
+int LIBMTP_Detect_Raw_Devices(LIBMTP_raw_device_t ** devices, 
+			      int * numdevs)
 {
-  mtpdevice_list_t *devlist;
-  LIBMTP_error_number_t ret;  
+  mtpdevice_list_t *devlist = NULL;
+  mtpdevice_list_t *dev;
+  LIBMTP_error_number_t ret;
+
+  LIBMTP_raw_device_t *retdevs;
+  int devs = 0;
+  int i;
 
   ret = get_mtp_usb_device_list(&devlist);
   if (ret != LIBMTP_ERROR_NONE) {
-    *vid = *pid = 0;
     return -1;
   }
-  *vid = devlist->libusb_device->descriptor.idVendor;
-  *pid = devlist->libusb_device->descriptor.idProduct;
+  // Get list size
+  dev = devlist;
+  while (dev != NULL) {
+    devs++;
+    dev = dev->next;
+  }
+  if (devs == 0) {
+    *devices = NULL;
+    *numdevs = 0;
+    return 0;
+  }
+  // Conjure a device list
+  retdevs = (LIBMTP_raw_device_t *) malloc(sizeof(LIBMTP_raw_device_t) * devs);
+  if (retdevs == NULL) {
+    // Out of memory
+    *devices = NULL;
+    *numdevs = 0;
+    return 1;
+  }
+  dev = devlist;
+  i = 0;
+  while (dev != NULL) {
+    // Assign default device info
+    retdevs[i].device_entry.vendor = NULL;
+    retdevs[i].device_entry.vendor_id = dev->libusb_device->descriptor.idVendor;
+    retdevs[i].device_entry.product = NULL;
+    retdevs[i].device_entry.product_id = dev->libusb_device->descriptor.idProduct;
+    retdevs[i].device_entry.device_flags = 0x00000000U;
+    // TODO: See if we can look up further device information...
+    // Location on the bus
+    retdevs[i].bus_location = dev->bus_location;
+    retdevs[i].devnum = dev->libusb_device->devnum;
+    i++;
+    dev = dev->next;
+  }  
+  *devices = retdevs;
+  *numdevs = i;
   free_mtpdevice_list(devlist);
-  return 1;
+  return 0;
 }
 
 /**

@@ -2,7 +2,7 @@
  * \file libmtp.h
  * Interface to the Media Transfer Protocol library.
  *
- * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2008 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2005-2008 Richard A. Low <richard@wentnet.com>
  * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  * Copyright (C) 2008 Florent Mertens <flomertens@gmail.com>
@@ -125,6 +125,7 @@ typedef enum {
   LIBMTP_ERROR_CANCELLED
 } LIBMTP_error_number_t;
 typedef struct LIBMTP_device_entry_struct LIBMTP_device_entry_t; /**< @see LIBMTP_device_entry_struct */
+typedef struct LIBMTP_raw_device_struct LIBMTP_raw_device_t; /**< @see LIBMTP_raw_device_struct */
 typedef struct LIBMTP_error_struct LIBMTP_error_t; /**< @see LIBMTP_error_struct */
 typedef struct LIBMTP_mtpdevice_struct LIBMTP_mtpdevice_t; /**< @see LIBMTP_mtpdevice_struct */
 typedef struct LIBMTP_file_struct LIBMTP_file_t; /**< @see LIBMTP_file_struct */
@@ -164,6 +165,16 @@ struct LIBMTP_device_entry_struct {
   char *product; /**< The product name of this device */
   uint16_t product_id; /**< Product ID for this device */
   uint32_t device_flags; /**< Bugs, device specifics etc */
+};
+
+/**
+ * A data structure to hold a raw MTP device connected
+ * to the bus.
+ */
+struct LIBMTP_raw_device_struct {
+  LIBMTP_device_entry_t device_entry; /**< The device entry for this raw device */
+  uint32_t bus_location; /**< Location of the bus, if device available */
+  uint8_t devnum; /**< Device number on the bus, if device available */
 };
 
 /**
@@ -352,7 +363,7 @@ int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t ** const, int * cons
  * @defgroup basic The basic device management API.
  * @{
  */
-int LIBMTP_Detect_Descriptor(uint16_t*,uint16_t*);
+int LIBMTP_Detect_Raw_Devices(LIBMTP_raw_device_t **, int *);
 LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void);
 LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **);
 uint32_t LIBMTP_Number_Devices_In_List(LIBMTP_mtpdevice_t *);

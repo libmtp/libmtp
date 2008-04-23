@@ -2,7 +2,7 @@
  * \file detect.c
  * Example program to detect a device and list capabilities.
  *
- * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2008 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -58,6 +58,7 @@ static void dump_xml_fragment(uint8_t *buf, uint32_t len)
 
 int main (int argc, char **argv)
 {
+  LIBMTP_raw_device_t * rawdevices;
   LIBMTP_mtpdevice_t *device, *iter;
   LIBMTP_file_t *files;
   uint32_t xmlfileid = 0;
@@ -69,6 +70,7 @@ int main (int argc, char **argv)
   uint16_t filetypes_len;
   uint8_t maxbattlevel;
   uint8_t currbattlevel;
+  int numrawdevices;
   uint32_t numdevices;
   int ret;
   int probeonly = 0;
@@ -76,6 +78,36 @@ int main (int argc, char **argv)
   LIBMTP_Init();
 
   fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
+
+  fprintf(stdout, "Listing raw device(s)\n");
+  ret = LIBMTP_Detect_Raw_Devices(&rawdevices, &numrawdevices);
+  if (ret == 0 && numrawdevices > 0 && rawdevices != NULL) {
+    int i;
+
+    fprintf(stdout, "Found %d device(s):\n", numrawdevices);
+    for (i = 0; i < numrawdevices; i++) {
+      if (rawdevices[i].device_entry.vendor != NULL ||
+	  rawdevices[i].device_entry.product != NULL) {
+	fprintf(stdout, "  %s: %s (%04x:%04x) @ bus %d, dev %d\n", 
+		rawdevices[i].device_entry.vendor,
+		rawdevices[i].device_entry.product,
+		rawdevices[i].device_entry.vendor_id,
+		rawdevices[i].device_entry.product_id,
+		rawdevices[i].bus_location,
+		rawdevices[i].devnum);
+      } else {
+	fprintf(stdout, "  %04x:%04x @ bus %d, dev %d\n", 
+		rawdevices[i].device_entry.vendor_id,
+		rawdevices[i].device_entry.product_id,
+		rawdevices[i].bus_location,
+		rawdevices[i].devnum);
+      }
+    }
+    free(rawdevices);
+  } else {
+    fprintf(stderr, "Detect: Error retrieveing raw devices.\n");
+  }
+
   fprintf(stdout, "Attempting to connect device(s)\n");
 
   switch(LIBMTP_Get_Connected_Devices(&device))

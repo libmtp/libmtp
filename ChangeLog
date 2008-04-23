@@ -1,3 +1,12 @@
+2008-04-24  Linus Walleij <triad@df.lth.se>
+	
+	* src/libmtp.h.in: added preliminary interface for getting
+	  raw devices.
+	* src/libusb-glue.c: the implementation is all here!
+	* src/libusb-glue.h: add some bus and device fields to the
+	  internal device list.
+	* examples/detect.c: exercise the raw device detection code.
+	
 2008-03-26  Linus Walleij <triad@df.lth.se>
 
 	* examples/pathutils.c: fix a folder identification bug,

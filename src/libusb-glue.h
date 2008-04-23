@@ -61,6 +61,7 @@ struct mtpdevice_list_struct {
   struct usb_device *libusb_device;
   PTPParams *params;
   PTP_USB *ptp_usb;
+  uint32_t bus_location;
   struct mtpdevice_list_struct *next;
 };
 typedef struct mtpdevice_list_struct mtpdevice_list_t;
