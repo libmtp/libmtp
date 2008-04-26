@@ -53,6 +53,24 @@
 #include <io.h>
 #endif
 
+// First clear audio formats
+#define FILETYPE_IS_AUDIO(a)\
+(a == LIBMTP_FILETYPE_WAV || a == LIBMTP_FILETYPE_MP3 ||\
+ a == LIBMTP_FILETYPE_MP2 || a == LIBMTP_FILETYPE_WMA ||\
+ a == LIBMTP_FILETYPE_OGG || a == LIBMTP_FILETYPE_FLAC ||\
+ a == LIBMTP_FILETYPE_AAC || a == LIBMTP_FILETYPE_M4A ||\
+ a == LIBMTP_FILETYPE_UNDEF_AUDIO)
+// Clear video formats
+#define FILETYPE_IS_VIDEO(a)\
+(a == LIBMTP_FILETYPE_WMV || a == LIBMTP_FILETYPE_AVI ||\
+ a == LIBMTP_FILETYPE_MPEG || a == LIBMTP_FILETYPE_UNDEF_VIDEO)
+// Both audio and video
+#define FILETYPE_IS_AUDIOVIDEO(a)\
+(a == LIBMTP_FILETYPE_MP4 || a == LIBMTP_FILETYPE_ASF ||\
+ a == LIBMTP_FILETYPE_QT)
+#define FILETYPE_IS_TRACK(a)\
+(FILETYPE_IS_AUDIO(a) || FILETYPE_IS_VIDEO(a) || FILETYPE_IS_AUDIOVIDEO(a))
+
 /*
  * This is a mapping between libmtp internal MTP filetypes and
  * the libgphoto2/PTP equivalent defines. We need this because
@@ -3326,31 +3344,26 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
   for (i = 0; i < params->handles.n; i++) {
     LIBMTP_track_t *track;
     PTPObjectInfo *oi;
+    LIBMTP_filetype_t mtptype;
 
     if (callback != NULL)
       callback(i, params->handles.n, data);
 
     oi = &params->objectinfo[i];
+    mtptype = map_ptp_type_to_libmtp_type(oi->ObjectFormat);
 
     // Ignore stuff we don't know how to handle...
     // TODO: get this list as an intersection of the sets
     // supported by the device and the from the device and
     // all known audio track files?
-    if ( oi->ObjectFormat != PTP_OFC_WAV &&
-	 oi->ObjectFormat != PTP_OFC_MP3 &&
-	 oi->ObjectFormat != PTP_OFC_MTP_MP2 &&
-	 oi->ObjectFormat != PTP_OFC_MTP_WMA &&
-	 oi->ObjectFormat != PTP_OFC_MTP_OGG &&
-	 oi->ObjectFormat != PTP_OFC_MTP_FLAC &&
-	 oi->ObjectFormat != PTP_OFC_MTP_AAC &&
-	 oi->ObjectFormat != PTP_OFC_MTP_M4A &&
-	 oi->ObjectFormat != PTP_OFC_MTP_MP4 &&
-	 oi->ObjectFormat != PTP_OFC_MTP_UndefinedAudio &&
-	 // This row lets through undefined files for examination since they may be forgotten OGG files.
-	 (oi->ObjectFormat != PTP_OFC_Undefined || 
-	  !(ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER) ||
-	  !(ptp_usb->device_flags & DEVICE_FLAG_OGG_IS_UNKNOWN))
-	 ) {
+    if (!FILETYPE_IS_AUDIO(mtptype) &&
+	!FILETYPE_IS_VIDEO(mtptype) &&
+	!FILETYPE_IS_AUDIOVIDEO(mtptype) &&
+	// This row lets through undefined files for examination since they may be forgotten OGG files.
+	(oi->ObjectFormat != PTP_OFC_Undefined || 
+	 !(ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER) ||
+	 !(ptp_usb->device_flags & DEVICE_FLAG_OGG_IS_UNKNOWN))
+	) {
       // printf("Not a music track (format: %d), skipping...\n",oi.ObjectFormat);
       continue;
     }
@@ -3362,7 +3375,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
     track->item_id = params->handles.Handler[i];
     track->parent_id = oi->ParentObject;
 
-    track->filetype = map_ptp_type_to_libmtp_type(oi->ObjectFormat);
+    track->filetype = mtptype;
 
     // Original file-specific properties
     track->filesize = oi->ObjectCompressedSize;
@@ -3441,6 +3454,7 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
   for (i = 0; i < params->handles.n; i++) {
     PTPObjectInfo *oi;
     LIBMTP_track_t *track;
+    LIBMTP_filetype_t mtptype;
 
     // Skip if this is not the track we want.
     if (params->handles.Handler[i] != trackid) {
@@ -3448,18 +3462,12 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
     }
 
     oi = &params->objectinfo[i];
+    mtptype = map_ptp_type_to_libmtp_type(oi->ObjectFormat);
 
     // Ignore stuff we don't know how to handle...
-    if ( oi->ObjectFormat != PTP_OFC_WAV &&
-	 oi->ObjectFormat != PTP_OFC_MP3 &&
-	 oi->ObjectFormat != PTP_OFC_MTP_MP2 &&
-	 oi->ObjectFormat != PTP_OFC_MTP_WMA &&
-	 oi->ObjectFormat != PTP_OFC_MTP_OGG &&
-	 oi->ObjectFormat != PTP_OFC_MTP_FLAC &&
-	 oi->ObjectFormat != PTP_OFC_MTP_AAC &&
-	 oi->ObjectFormat != PTP_OFC_MTP_M4A &&
-	 oi->ObjectFormat != PTP_OFC_MTP_MP4 &&
-	 oi->ObjectFormat != PTP_OFC_MTP_UndefinedAudio ) {
+    if (!FILETYPE_IS_AUDIO(mtptype) &&
+	!FILETYPE_IS_VIDEO(mtptype) &&
+	!FILETYPE_IS_AUDIOVIDEO(mtptype)) {
       return NULL;
     }
 
@@ -3470,7 +3478,7 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
     track->item_id = params->handles.Handler[i];
     track->parent_id = oi->ParentObject;
 
-    track->filetype = map_ptp_type_to_libmtp_type(oi->ObjectFormat);
+    track->filetype = mtptype;
 
     // Original file-specific properties
     track->filesize = oi->ObjectCompressedSize;
@@ -3782,18 +3790,10 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   LIBMTP_file_t filedata;
 
   // Sanity check, is this really a track?
-  if (metadata->filetype != LIBMTP_FILETYPE_WAV &&
-      metadata->filetype != LIBMTP_FILETYPE_MP3 &&
-      metadata->filetype != LIBMTP_FILETYPE_MP2 &&
-      metadata->filetype != LIBMTP_FILETYPE_WMA &&
-      metadata->filetype != LIBMTP_FILETYPE_OGG &&
-      metadata->filetype != LIBMTP_FILETYPE_FLAC &&
-      metadata->filetype != LIBMTP_FILETYPE_AAC &&
-      metadata->filetype != LIBMTP_FILETYPE_M4A &&
-      metadata->filetype != LIBMTP_FILETYPE_MP4 &&
-      metadata->filetype != LIBMTP_FILETYPE_UNDEF_AUDIO) {
-    printf("LIBMTP_Send_Track_From_File_Descriptor(): "
-	   "I don't think this is actually a track, strange filetype...\n");
+  if (!FILETYPE_IS_TRACK(metadata->filetype)) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, 
+			    "LIBMTP_Send_Track_From_File_Descriptor(): "
+			    "I don't think this is actually a track, strange filetype...");
   }
 
   // Wrap around the file transfer function
@@ -3812,7 +3812,8 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 						      parenthandle);
 
   if (subcall_ret != 0) {
-    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Send_Track_From_File_Descriptor(): "
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, 
+			    "LIBMTP_Send_Track_From_File_Descriptor(): "
 			    "subcall to LIBMTP_Send_File_From_File_Descriptor failed.");
     // We used to delete the file here, but don't... It might be OK after all.
     // (void) LIBMTP_Delete_Object(device, metadata->item_id);
@@ -3998,27 +3999,9 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
    */
 
   if (localph == 0) {
-    if (of == PTP_OFC_WAV ||
-	of == PTP_OFC_MP3 ||
-	of == PTP_OFC_MTP_MP2 ||
-	of == PTP_OFC_MTP_WMA ||
-	of == PTP_OFC_MTP_OGG ||
-	of == PTP_OFC_MTP_FLAC ||
-	of == PTP_OFC_MTP_AAC ||
-	of == PTP_OFC_MTP_M4A ||
-	of == PTP_OFC_AIFF ||
-	//of == PTP_OFC_MTP_MP4 || 	/* ambiguous mp4 can contain video */
-	of == PTP_OFC_MTP_AudibleCodec ||
-	of == PTP_OFC_MTP_UndefinedAudio) {
+    if (FILETYPE_IS_AUDIO(filedata->filetype)) {
       localph = device->default_music_folder;
-    } else if (of == PTP_OFC_MTP_WMV ||
-	       of == PTP_OFC_AVI ||
-	       of == PTP_OFC_MPEG ||
-	       of == PTP_OFC_ASF ||
-	       of == PTP_OFC_QT ||
-	       of == PTP_OFC_MTP_3GP ||
-	       of == PTP_OFC_MTP_MP4 || /* ambiguous mp4 can also contain only audio */
-	       of == PTP_OFC_MTP_UndefinedVideo) {
+    } else if (FILETYPE_IS_VIDEO(filedata->filetype)) {
       localph = device->default_video_folder;
     } else if (of == PTP_OFC_EXIF_JPEG ||
 	       of == PTP_OFC_JP2 ||
@@ -4039,8 +4022,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	       of == PTP_OFC_MTP_vCard3 ||
 	       of == PTP_OFC_MTP_UndefinedCalendarItem) {
       localph = device->default_organizer_folder;
-    } else if (of == PTP_OFC_Text
-		) {
+    } else if (of == PTP_OFC_Text) {
       localph = device->default_text_folder;
     }
   }

@@ -1,3 +1,10 @@
+2008-04-27  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: recognize audio files as tracks, since this
+	  is what WMP does. (e.g. it sets playlength on movies
+	  to enable skip bar) also define macros for audio/video/both
+	  types and tidy up a bit.
+
 2008-04-24  Linus Walleij <triad@df.lth.se>
 	
 	* src/libmtp.h.in: added preliminary interface for getting
