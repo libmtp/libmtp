@@ -31,6 +31,8 @@ static void dump_trackinfo(LIBMTP_track_t *track)
     printf("   Artist: %s\n", track->artist);
   if (track->genre != NULL)
     printf("   Genre: %s\n", track->genre);
+  if (track->composer != NULL)
+    printf("   Composer: %s\n", track->composer);
   if (track->album != NULL)
     printf("   Album: %s\n", track->album);
   if (track->date != NULL)

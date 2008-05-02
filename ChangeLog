@@ -1,3 +1,14 @@
+2008-05-03  Johannes Huber <johub1180@gmx.at>
+
+	* src/libmtp.h.in: add interface for setting album composer,
+	  needed for classical albums, on abstract albums.
+	* src/libmtp.c: implement it.
+	* examples/albums.c: consequental changes.
+	* examples/connect.c: dito.
+	* examples/sendtr.c: dito.
+	* examples/tracks.c: dito.
+	* AUTHORS: new contributor.
+
 2008-04-27  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: recognize audio files as tracks, since this

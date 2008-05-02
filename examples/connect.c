@@ -34,7 +34,7 @@ void split_arg(char *,char **, char **);
 void delfile_function(char *);
 void delfile_command(int, char **);
 void delfile_usage(void);
-int sendtrack_function(char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t);
+int sendtrack_function(char *, char *, char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t);
 void sendtrack_command (int, char **);
 void sendtrack_usage(void);
 void sendfile_function(char *,char *);
@@ -160,7 +160,7 @@ int main (int argc, char **argv)
       case 't':
         printf("Send track %s\n",optarg);
         split_arg(optarg,&arg1,&arg2);
-        sendtrack_function(arg1,arg2,NULL,NULL,NULL,NULL,0,0,0);
+        sendtrack_function(arg1,arg2,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0);
         break;
       }
     }

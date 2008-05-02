@@ -147,6 +147,7 @@ static LIBMTP_folder_t *get_subfolders_for_folder(PTPParams *params, uint32_t pa
 static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 				    char const * const name,
 				    char const * const artist,
+				    char const * const composer,
 				    char const * const genre,
 				    uint32_t const parenthandle,
 				    uint16_t const objectformat,
@@ -157,6 +158,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 				char const * const name,
 				char const * const artist,
+				char const * const composer,
 				char const * const genre,
 				uint32_t const objecthandle,
 				uint16_t const objectformat,
@@ -312,8 +314,8 @@ static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype)
 
 
 /**
- * Returns the PTP internal filetype that maps to a certain libmtp
- * interface file type.
+ * Returns the MTP internal interface type that maps to a certain ptp
+ * interface type.
  * @param intype the PTP (libgphoto2) interface type
  * @return the MTP library interface type
  */
@@ -1324,7 +1326,7 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device,
   
   /* 
    * We count the number of objects by counting the ObjectHandle
-   * references, whenever it changes we get a new objects, when it's
+   * references, whenever it changes we get a new object, when it's
    * the same, it is just different properties of the same object.
    */
   prop = props;
@@ -3039,6 +3041,7 @@ LIBMTP_track_t *LIBMTP_new_track_t(void)
   }
   new->title = NULL;
   new->artist = NULL;
+  new->composer = NULL;
   new->album = NULL;
   new->genre = NULL;
   new->date = NULL;
@@ -3074,6 +3077,8 @@ void LIBMTP_destroy_track_t(LIBMTP_track_t *track)
     free(track->title);
   if (track->artist != NULL)
     free(track->artist);
+  if (track->composer != NULL)
+    free(track->composer);
   if (track->album != NULL)
     free(track->album);
   if (track->genre != NULL)
@@ -3103,6 +3108,12 @@ static void pick_property_to_track_metadata(LIBMTP_mtpdevice_t *device, MTPPrope
       track->artist = strdup(prop->propval.str);
     else
       track->artist = NULL;
+    break;
+  case PTP_OPC_Composer:
+    if (prop->propval.str != NULL)
+      track->composer = strdup(prop->propval.str);
+    else
+      track->composer = NULL;
     break;
   case PTP_OPC_Duration:
     track->duration = prop->propval.u32;
@@ -3229,6 +3240,9 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
 	  break;
 	case PTP_OPC_Artist:
 	  track->artist = get_string_from_object(device, track->item_id, PTP_OPC_Artist);
+	  break;
+	case PTP_OPC_Composer:
+	  track->composer = get_string_from_object(device, track->item_id, PTP_OPC_Composer);
 	  break;
 	case PTP_OPC_Duration:
 	  track->duration = get_u32_from_object(device, track->item_id, PTP_OPC_Duration, 0);
@@ -4321,6 +4335,15 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->datatype = PTP_DTC_STR;
 	  prop->propval.str = strdup(metadata->artist);
 	  break;
+	case PTP_OPC_Composer:
+	  if (metadata->composer == NULL)
+	    break;
+	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
+	  prop->ObjectHandle = metadata->item_id;
+	  prop->property = PTP_OPC_Composer;
+	  prop->datatype = PTP_DTC_STR;
+	  prop->propval.str = strdup(metadata->composer);
+	  break;
 	case PTP_OPC_Genre:
 	  if (metadata->genre == NULL)
 	    break;
@@ -4467,6 +4490,14 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  if (ret != 0) {
 	    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
 				    "could not set track artist name.");
+	  }
+	  break;
+	case PTP_OPC_Composer:
+	  // Update composer
+	  ret = set_object_string(device, metadata->item_id, PTP_OPC_Composer, metadata->composer);
+	  if (ret != 0) {
+	    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
+				    "could not set track composer name.");
 	  }
 	  break;
 	case PTP_OPC_Genre:
@@ -5147,7 +5178,7 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t cons
   return NULL;
 }
 
-/*
+/**
  * This function creates a new abstract list such as a playlist
  * or an album.
  * 
@@ -5170,6 +5201,7 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t cons
 static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 				    char const * const name,
 				    char const * const artist,
+				    char const * const composer,
 				    char const * const genre,
 				    uint32_t const parenthandle,
 				    uint16_t const objectformat,
@@ -5291,6 +5323,15 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	    prop->propval.str = strdup(artist);
 	  }
 	  break;
+	case PTP_OPC_Composer:
+	  if (composer != NULL) {
+	    prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
+	    prop->ObjectHandle = *newid;
+	    prop->property = PTP_OPC_Composer;
+	    prop->datatype = PTP_DTC_STR;
+	    prop->propval.str = strdup(composer);
+	  }
+	  break;
 	case PTP_OPC_Genre:
 	  if (genre != NULL) {
 	    prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
@@ -5398,6 +5439,16 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
       }
     }
 
+    // Update composer
+    // FIXME: check if supported
+    if (composer != NULL) {
+      ret = set_object_string(device, *newid, PTP_OPC_Composer, composer);
+      if (ret != 0) {
+	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity composer.");
+	return -1;
+      }
+    }
+
     // Update genre
     // FIXME: check if supported
     if (genre != NULL) {
@@ -5443,6 +5494,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 				char const * const name,
 				char const * const artist,
+				char const * const composer,
 				char const * const genre,
 				uint32_t const objecthandle,
 				uint16_t const objectformat,
@@ -5504,6 +5556,15 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 	    prop->property = PTP_OPC_Artist;
 	    prop->datatype = PTP_DTC_STR;
 	    prop->propval.str = strdup(artist);
+	  }
+	  break;
+	case PTP_OPC_Composer:
+	  if (composer != NULL) {
+	    prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
+	    prop->ObjectHandle = objecthandle;
+	    prop->property = PTP_OPC_Composer;
+	    prop->datatype = PTP_DTC_STR;
+	    prop->propval.str = strdup(composer);
 	  }
 	  break;
 	case PTP_OPC_Genre:
@@ -5570,6 +5631,13 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 	if (ret != 0) {
 	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "update_abstract_list(): "
 				  "could not set artist name.");
+	}
+      case PTP_OPC_Composer:
+	// Update composer
+	ret = set_object_string(device, objecthandle, PTP_OPC_Composer, composer);
+	if (ret != 0) {
+	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "update_abstract_list(): "
+				  "could not set composer name.");
 	}
 	break;
       case PTP_OPC_Genre:
@@ -5654,6 +5722,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 				  metadata->name,
 				  NULL,
 				  NULL,
+				  NULL,
 				  localph,
 				  PTP_OFC_MTP_AbstractAudioVideoPlaylist,
 				  ".zpl",
@@ -5683,6 +5752,7 @@ int LIBMTP_Update_Playlist(LIBMTP_mtpdevice_t *device,
 			      metadata->name,
 			      NULL,
 			      NULL,
+			      NULL,
 			      metadata->playlist_id,
 			      PTP_OFC_MTP_AbstractAudioVideoPlaylist,
 			      metadata->tracks,
@@ -5709,6 +5779,7 @@ LIBMTP_album_t *LIBMTP_new_album_t(void)
   new->parent_id = 0;
   new->name = NULL;
   new->artist = NULL;
+  new->composer = NULL;
   new->genre = NULL;
   new->tracks = NULL;
   new->no_tracks = 0;
@@ -5731,6 +5802,8 @@ void LIBMTP_destroy_album_t(LIBMTP_album_t *album)
     free(album->name);
   if (album->artist != NULL)
     free(album->artist);
+  if (album->composer != NULL)
+    free(album->composer);
   if (album->genre != NULL)
     free(album->genre);
   if (album->tracks != NULL)
@@ -5783,6 +5856,7 @@ LIBMTP_album_t *LIBMTP_Get_Album_List(LIBMTP_mtpdevice_t *device)
     if (alb->artist == NULL) {
       alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Artist);
     }
+    alb->composer = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Composer);
     alb->genre = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Genre);
     
     // Then get the track listing for this album
@@ -5850,6 +5924,7 @@ LIBMTP_album_t *LIBMTP_Get_Album(LIBMTP_mtpdevice_t *device, uint32_t const albi
     if (alb->artist == NULL) {
       alb->artist = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Artist);
     }
+    alb->composer = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Composer);
     alb->genre = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Genre);
     ret = ptp_mtp_getobjectreferences(params, alb->album_id, &alb->tracks, &alb->no_tracks);
     if (ret != PTP_RC_OK) {
@@ -5895,6 +5970,7 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
   return create_new_abstract_list(device,
 				  metadata->name,
 				  metadata->artist,
+				  metadata->composer,
 				  metadata->genre,
 				  localph,
 				  PTP_OFC_MTP_AbstractAudioAlbum,
@@ -6276,6 +6352,7 @@ int LIBMTP_Update_Album(LIBMTP_mtpdevice_t *device,
   return update_abstract_list(device,
 			      metadata->name,
 			      metadata->artist,
+			      metadata->composer,
 			      metadata->genre,
 			      metadata->album_id,
 			      PTP_OFC_MTP_AbstractAudioAlbum,

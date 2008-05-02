@@ -42,14 +42,15 @@ extern LIBMTP_folder_t *folders;
 extern LIBMTP_file_t *files;
 extern LIBMTP_mtpdevice_t *device;
 
-int sendtrack_function (char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t);
+int sendtrack_function (char *, char *, char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t);
 void sendtrack_command (int, char **);
 void sendtrack_usage (void);
 
 void sendtrack_usage (void)
 {
-  fprintf(stderr, "usage: sendtr [ -D debuglvl ] [ -q ] -t <title> -a <artist> -l <album>\n");
-  fprintf(stderr, "       -c <codec> -g <genre> -n <track number> -y <year> \n");
+  fprintf(stderr, "usage: sendtr [ -D debuglvl ] [ -q ]\n");
+  fprintf(stderr, "-t <title> -a <artist> -A <Album artist> -w <writer or composer>\n");
+  fprintf(stderr, "    -l <album> -c <codec> -g <genre> -n <track number> -y <year>\n");
   fprintf(stderr, "       -d <duration in seconds> <local path> <remote path>\n");
   fprintf(stderr, "(-q means the program will not ask for missing information.)\n");
 }
@@ -91,10 +92,14 @@ static int add_track_to_album(LIBMTP_album_t *albuminfo, LIBMTP_track_t *trackme
   /* Look for the album */
   album = LIBMTP_Get_Album_List(device);
   while(album != NULL) {
-    if (album->name != NULL &&
+    if ((album->name != NULL &&
 	album->artist != NULL &&
 	!strcmp(album->name, albuminfo->name) &&
-	!strcmp(album->artist, albuminfo->artist)) {
+	!strcmp(album->artist, albuminfo->artist)) ||
+	  (album->name != NULL &&
+	album->composer != NULL &&
+	!strcmp(album->name, albuminfo->name) &&
+	!strcmp(album->composer, albuminfo->composer))) {
       /* Disconnect this album for later use */
       found_album = album;
       album = album->next;
@@ -145,12 +150,13 @@ static int add_track_to_album(LIBMTP_album_t *albuminfo, LIBMTP_track_t *trackme
   } else {
     printf("success!\n");
   }
+  return ret;
 }
 
-int sendtrack_function(char * from_path, char * to_path, char *partist, char *ptitle, char *pgenre, char *palbum, uint16_t tracknum, uint16_t length, uint16_t year)
+int sendtrack_function(char * from_path, char * to_path, char *partist, char *palbumartist, char *ptitle, char *pgenre, char *palbum, char *pcomposer, uint16_t tracknum, uint16_t length, uint16_t year)
 {
   char *filename, *parent;
-  char artist[80], title[80], genre[80], album[80];
+  char artist[80], albumartist[80], title[80], genre[80], album[80], composer[80];
   char num[80];
   uint64_t filesize;
   uint32_t parent_id = 0;
@@ -216,11 +222,20 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pt
     if (!strlen(palbum))
       palbum = NULL;
 
+    if (palbumartist == NULL) {
+      palbumartist = prompt("Album artist", albumartist, 80, 0);
+    }
     if (partist == NULL) {
       partist = prompt("Artist", artist, 80, 0);
     }
     if (!strlen(partist))
       partist = NULL;
+
+    if (pcomposer == NULL) {
+      pcomposer = prompt("Writer or Composer", composer, 80, 0);
+    }
+    if (!strlen(pcomposer))
+      pcomposer = NULL;
 
     if (pgenre == NULL) {
       pgenre = prompt("Genre", genre, 80, 0);
@@ -272,10 +287,21 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pt
       trackmeta->album = strdup(palbum);
       albuminfo->name = strdup(palbum);
     }
+    if (palbumartist) {
+      printf("Album artist:    %s\n", palbumartist);
+      albuminfo->artist = strdup(palbumartist);
+    }
     if (partist) {
       printf("Artist:    %s\n", partist);
       trackmeta->artist = strdup(partist);
+      if (palbumartist == NULL)
       albuminfo->artist = strdup(partist);
+    }
+
+    if (pcomposer) {
+      printf("Writer or Composer:    %s\n", pcomposer);
+      trackmeta->composer = strdup(pcomposer);
+      albuminfo->composer = strdup(pcomposer);
     }
     if (pgenre) {
       printf("Genre:     %s\n", pgenre);
@@ -315,6 +341,9 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pt
       printf("New track ID: %d\n", trackmeta->item_id);
     }
 
+/* Add here add to album call */
+		ret = add_track_to_album(albuminfo, trackmeta);
+
     LIBMTP_destroy_album_t(albuminfo);
     LIBMTP_destroy_track_t(trackmeta);
 
@@ -328,6 +357,8 @@ void sendtrack_command (int argc, char **argv) {
   extern int optind;
   extern char *optarg;
   char *partist = NULL;
+  char *palbumartist = NULL;
+  char *pcomposer = NULL;
   char *ptitle = NULL;
   char *pgenre = NULL;
   char *pcodec = NULL;
@@ -337,13 +368,19 @@ void sendtrack_command (int argc, char **argv) {
   uint16_t year = 0;
   uint16_t quiet = 0;
   char *lang;
-  while ( (opt = getopt(argc, argv, "qD:t:a:l:c:g:n:d:y:")) != -1 ) {
+  while ( (opt = getopt(argc, argv, "qD:t:a:A:w:l:c:g:n:d:y:")) != -1 ) {
     switch (opt) {
     case 't':
       ptitle = strdup(optarg);
       break;
     case 'a':
       partist = strdup(optarg);
+      break;
+    case 'A':
+      palbumartist = strdup(optarg);
+      break;
+    case 'w':
+      pcomposer = strdup(optarg);
       break;
     case 'l':
       palbum = strdup(optarg);
@@ -393,6 +430,6 @@ void sendtrack_command (int argc, char **argv) {
     }
   }
   
-  printf("%s,%s,%s,%s,%s,%s,%d%d,%d\n",argv[0],argv[1],partist,ptitle,pgenre,palbum,tracknum, length, year);
-  sendtrack_function(argv[0],argv[1],partist,ptitle,pgenre,palbum, tracknum, length, year);
+  printf("%s,%s,%s,%s,%s,%s,%s,%s,%d%d,%d\n",argv[0],argv[1],partist,palbumartist,ptitle,pgenre,palbum,pcomposer,tracknum, length, year);
+  sendtrack_function(argv[0],argv[1],partist,palbumartist,ptitle,pgenre,palbum,pcomposer, tracknum, length, year);
 }
