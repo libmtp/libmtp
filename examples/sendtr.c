@@ -197,16 +197,8 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pa
     filesize = (uint64_t) sb.st_size;
 #endif
     trackmeta->filetype = find_filetype (from_path);
-    if ((trackmeta->filetype != LIBMTP_FILETYPE_MP3) 
-	&& (trackmeta->filetype != LIBMTP_FILETYPE_WAV) 
-	&& (trackmeta->filetype != LIBMTP_FILETYPE_OGG)
-	&& (trackmeta->filetype != LIBMTP_FILETYPE_MP4) 
-	&& (trackmeta->filetype != LIBMTP_FILETYPE_AAC) 
-	&& (trackmeta->filetype != LIBMTP_FILETYPE_M4A) 
-	&& (trackmeta->filetype != LIBMTP_FILETYPE_FLAC) 
-	&& (trackmeta->filetype != LIBMTP_FILETYPE_WMA)) {
-      printf("Not a valid codec: \"%s\"\n", LIBMTP_Get_Filetype_Description(trackmeta->filetype));
-      printf("Supported formats: MP3, WAV, OGG, MP4, AAC, M4A, FLAC, WMA\n");
+    if (LIBMTP_FILETYPE_IS_TRACK(trackmeta->filetype)) {
+      printf("Not a valid track codec: \"%s\"\n", LIBMTP_Get_Filetype_Description(trackmeta->filetype));
       return 1;
     }
 

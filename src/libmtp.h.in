@@ -109,6 +109,34 @@ typedef enum {
   LIBMTP_FILETYPE_JPX,
   LIBMTP_FILETYPE_UNKNOWN
 } LIBMTP_filetype_t;
+
+/**
+ * Helpful macros to determine filetype properties
+ */
+#define LIBMTP_FILETYPE_IS_AUDIO(a)\
+(a == LIBMTP_FILETYPE_WAV ||\
+ a == LIBMTP_FILETYPE_MP3 ||\
+ a == LIBMTP_FILETYPE_MP2 ||\
+ a == LIBMTP_FILETYPE_WMA ||\
+ a == LIBMTP_FILETYPE_OGG ||\
+ a == LIBMTP_FILETYPE_FLAC ||\
+ a == LIBMTP_FILETYPE_AAC ||\
+ a == LIBMTP_FILETYPE_M4A ||\
+ a == LIBMTP_FILETYPE_UNDEF_AUDIO)
+#define LIBMTP_FILETYPE_IS_VIDEO(a)\
+(a == LIBMTP_FILETYPE_WMV ||\
+ a == LIBMTP_FILETYPE_AVI ||\
+ a == LIBMTP_FILETYPE_MPEG ||\
+ a == LIBMTP_FILETYPE_UNDEF_VIDEO)
+#define LIBMTP_FILETYPE_IS_AUDIOVIDEO(a)\
+(a == LIBMTP_FILETYPE_MP4 ||\
+ a == LIBMTP_FILETYPE_ASF ||\
+ a == LIBMTP_FILETYPE_QT)
+#define LIBMTP_FILETYPE_IS_TRACK(a)\
+(LIBMTP_FILETYPE_IS_AUDIO(a) ||\
+ LIBMTP_FILETYPE_IS_VIDEO(a) ||\
+ LIBMTP_FILETYPE_IS_AUDIOVIDEO(a))
+
 /**
  * These are the numbered error codes. You can also
  * get string representations for errors.

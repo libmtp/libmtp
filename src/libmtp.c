@@ -53,24 +53,6 @@
 #include <io.h>
 #endif
 
-// First clear audio formats
-#define FILETYPE_IS_AUDIO(a)\
-(a == LIBMTP_FILETYPE_WAV || a == LIBMTP_FILETYPE_MP3 ||\
- a == LIBMTP_FILETYPE_MP2 || a == LIBMTP_FILETYPE_WMA ||\
- a == LIBMTP_FILETYPE_OGG || a == LIBMTP_FILETYPE_FLAC ||\
- a == LIBMTP_FILETYPE_AAC || a == LIBMTP_FILETYPE_M4A ||\
- a == LIBMTP_FILETYPE_UNDEF_AUDIO)
-// Clear video formats
-#define FILETYPE_IS_VIDEO(a)\
-(a == LIBMTP_FILETYPE_WMV || a == LIBMTP_FILETYPE_AVI ||\
- a == LIBMTP_FILETYPE_MPEG || a == LIBMTP_FILETYPE_UNDEF_VIDEO)
-// Both audio and video
-#define FILETYPE_IS_AUDIOVIDEO(a)\
-(a == LIBMTP_FILETYPE_MP4 || a == LIBMTP_FILETYPE_ASF ||\
- a == LIBMTP_FILETYPE_QT)
-#define FILETYPE_IS_TRACK(a)\
-(FILETYPE_IS_AUDIO(a) || FILETYPE_IS_VIDEO(a) || FILETYPE_IS_AUDIOVIDEO(a))
-
 /*
  * This is a mapping between libmtp internal MTP filetypes and
  * the libgphoto2/PTP equivalent defines. We need this because
@@ -3370,9 +3352,9 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
     // TODO: get this list as an intersection of the sets
     // supported by the device and the from the device and
     // all known audio track files?
-    if (!FILETYPE_IS_AUDIO(mtptype) &&
-	!FILETYPE_IS_VIDEO(mtptype) &&
-	!FILETYPE_IS_AUDIOVIDEO(mtptype) &&
+    if (!LIBMTP_FILETYPE_IS_AUDIO(mtptype) &&
+	!LIBMTP_FILETYPE_IS_VIDEO(mtptype) &&
+	!LIBMTP_FILETYPE_IS_AUDIOVIDEO(mtptype) &&
 	// This row lets through undefined files for examination since they may be forgotten OGG files.
 	(oi->ObjectFormat != PTP_OFC_Undefined || 
 	 !(ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER) ||
@@ -3479,9 +3461,9 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
     mtptype = map_ptp_type_to_libmtp_type(oi->ObjectFormat);
 
     // Ignore stuff we don't know how to handle...
-    if (!FILETYPE_IS_AUDIO(mtptype) &&
-	!FILETYPE_IS_VIDEO(mtptype) &&
-	!FILETYPE_IS_AUDIOVIDEO(mtptype)) {
+    if (!LIBMTP_FILETYPE_IS_AUDIO(mtptype) &&
+	!LIBMTP_FILETYPE_IS_VIDEO(mtptype) &&
+	!LIBMTP_FILETYPE_IS_AUDIOVIDEO(mtptype)) {
       return NULL;
     }
 
@@ -3804,7 +3786,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   LIBMTP_file_t filedata;
 
   // Sanity check, is this really a track?
-  if (!FILETYPE_IS_TRACK(metadata->filetype)) {
+  if (!LIBMTP_FILETYPE_IS_TRACK(metadata->filetype)) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, 
 			    "LIBMTP_Send_Track_From_File_Descriptor(): "
 			    "I don't think this is actually a track, strange filetype...");
@@ -4013,9 +3995,9 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
    */
 
   if (localph == 0) {
-    if (FILETYPE_IS_AUDIO(filedata->filetype)) {
+    if (LIBMTP_FILETYPE_IS_AUDIO(filedata->filetype)) {
       localph = device->default_music_folder;
-    } else if (FILETYPE_IS_VIDEO(filedata->filetype)) {
+    } else if (LIBMTP_FILETYPE_IS_VIDEO(filedata->filetype)) {
       localph = device->default_video_folder;
     } else if (of == PTP_OFC_EXIF_JPEG ||
 	       of == PTP_OFC_JP2 ||

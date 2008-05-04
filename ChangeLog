@@ -1,3 +1,11 @@
+2008-05-04  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: move useful filetype macros here so
+	  external programs can use them.
+	* src/libmtp.c: consequental changes.
+	* examples/sendtr.c: use the new macro to detect track
+	  content.
+
 2008-05-03  Johannes Huber <johub1180@gmx.at>
 
 	* src/libmtp.h.in: add interface for setting album composer,
