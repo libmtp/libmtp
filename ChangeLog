@@ -1,3 +1,9 @@
+2008-05-05  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: assign device name and flags to
+	  detected raw devices, slowly preparing to move to 
+	  using the raw device detection internally as well.
+
 2008-05-04  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: move useful filetype macros here so

@@ -423,15 +423,17 @@ int LIBMTP_Detect_Raw_Devices(LIBMTP_raw_device_t ** devices,
   mtpdevice_list_t *devlist = NULL;
   mtpdevice_list_t *dev;
   LIBMTP_error_number_t ret;
-
   LIBMTP_raw_device_t *retdevs;
   int devs = 0;
-  int i;
+  int i, j;
 
   ret = get_mtp_usb_device_list(&devlist);
   if (ret != LIBMTP_ERROR_NONE) {
+    fprintf(stderr, "LIBMTP PANIC: get_mtp_usb_device_list() "
+	    "error code: %d on line %d\n", ret, __LINE__);
     return -1;
   }
+
   // Get list size
   dev = devlist;
   while (dev != NULL) {
@@ -454,14 +456,44 @@ int LIBMTP_Detect_Raw_Devices(LIBMTP_raw_device_t ** devices,
   dev = devlist;
   i = 0;
   while (dev != NULL) {
+    int device_known = 0;
+
     // Assign default device info
     retdevs[i].device_entry.vendor = NULL;
     retdevs[i].device_entry.vendor_id = dev->libusb_device->descriptor.idVendor;
     retdevs[i].device_entry.product = NULL;
     retdevs[i].device_entry.product_id = dev->libusb_device->descriptor.idProduct;
     retdevs[i].device_entry.device_flags = 0x00000000U;
-    // TODO: See if we can look up further device information...
-    // Location on the bus
+    // See if we can locate some additional device flags
+    for(j = 0; j < mtp_device_table_size; j++) {
+      if(dev->libusb_device->descriptor.idVendor == mtp_device_table[j].vendor_id &&
+	 dev->libusb_device->descriptor.idProduct == mtp_device_table[j].product_id) {
+	device_known = 1;
+	retdevs[i].device_entry.vendor = mtp_device_table[j].vendor;
+	retdevs[i].device_entry.product = mtp_device_table[j].product;
+	retdevs[i].device_entry.device_flags = mtp_device_table[j].device_flags;
+#ifdef ENABLE_USB_BULK_DEBUG
+	// This device is known to the developers
+	fprintf(stderr, "Device %d (VID=%04x and PID=%04x) is a %s %s.\n", 
+		i,
+		dev->libusb_device->descriptor.idVendor,
+		dev->libusb_device->descriptor.idProduct,
+		mtp_device_table[j].vendor,
+		mtp_device_table[j].product);
+#endif
+	break;
+      }
+    }
+    if (!device_known) {
+      // This device is unknown to the developers
+      fprintf(stderr, "Device %d (VID=%04x and PID=%04x) is UNKNOWN.\n", 
+	      i,
+	      dev->libusb_device->descriptor.idVendor,
+	      dev->libusb_device->descriptor.idProduct);
+      fprintf(stderr, "Please report this VID/PID and the device model to the "
+	      "libmtp development team\n");
+    }
+    // Save the location on the bus
     retdevs[i].bus_location = dev->bus_location;
     retdevs[i].devnum = dev->libusb_device->devnum;
     i++;
