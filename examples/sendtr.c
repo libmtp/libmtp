@@ -197,7 +197,7 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pa
     filesize = (uint64_t) sb.st_size;
 #endif
     trackmeta->filetype = find_filetype (from_path);
-    if (LIBMTP_FILETYPE_IS_TRACK(trackmeta->filetype)) {
+    if (!LIBMTP_FILETYPE_IS_TRACK(trackmeta->filetype)) {
       printf("Not a valid track codec: \"%s\"\n", LIBMTP_Get_Filetype_Description(trackmeta->filetype));
       return 1;
     }
