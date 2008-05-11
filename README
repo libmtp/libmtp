@@ -421,6 +421,13 @@ cannot test your solution.
   problematic. Please upgrade to as new firmware as you can get.
   (Yes this requires some kind of Windows Installation I think.)
 
+* Philips HDD 1630/16 or 1630/17 etc may lock themselves up,
+  turning inresponsive due to internal corruption. This typically
+  gives an error in opening the PTP session. Apparently you can
+  do a "repair" with the firmware utility (Windows only) which
+  will often fix this problem and make the device responsive
+  again.
+
 * Some devices that implement GetObjectPropList (0x9805) will
   not return the entire object list if you request a list for object
   0xffffffffu. (But they should.) So they may need the special

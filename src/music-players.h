@@ -389,6 +389,8 @@
    * range (0x04nn) could be for MTP.
    */
   // From: DoomHammer <gaczek@users.sourceforge.net>
+  { "Nokia", 0x0421, "N81 Mobile Phone", 0x000a, DEVICE_FLAG_NONE },
+  // From: DoomHammer <gaczek@users.sourceforge.net>
   { "Nokia", 0x0421, "3110c Mobile Phone", 0x005f, DEVICE_FLAG_NONE },
   // From: Vasily <spc-@users.sourceforge.net>
   { "Nokia", 0x0421, "3109c Mobile Phone", 0x0065, DEVICE_FLAG_NONE },
@@ -500,6 +502,8 @@
   { "Sony", 0x054c, "Walkman NWZ-S516", 0x0326, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Endre Oma <endre.88.oma@gmail.com>
   { "Sony", 0x054c, "Walkman NWZ-S615F/NWZ-S616F/NWZ-S618F", 0x0327, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by 
+  { "Sony", 0x054c, "Walkman NWZ-A828", 0x035b, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Niek Klaverstijn <niekez@users.sourceforge.net>
   { "Sony", 0x054c, "Walkman NWZ-A728B", 0x035c, DEVICE_FLAG_UNLOAD_DRIVER },
 
@@ -510,6 +514,8 @@
   { "SonyEricsson", 0x0fce, "K850i", 0x0075, DEVICE_FLAG_NONE },
   // Reported by Michael Eriksson
   { "SonyEricsson", 0x0fce, "W910", 0x0076, DEVICE_FLAG_NONE },
+  // Reported by Zack <zackdvd@users.sourceforge.net>
+  { "SonyEricsson", 0x0fce, "W890i", 0x00b3, DEVICE_FLAG_NONE },
 
   /*
    * Motorola
@@ -538,6 +544,15 @@
    * FOMA
    */
   { "FOMA", 0x06d3, "D905i", 0x21ba, DEVICE_FLAG_NONE },
+
+  /*
+   * Haier
+   */
+  // Both reported by an anonymous SourceForge user
+  // This is the 30 GiB model
+  { "Haier", 0x1302, "Ibiza Rhapsody", 0x1016, DEVICE_FLAG_NONE },
+  // This is the 4/8 GiB model
+  { "Haier", 0x1302, "Ibiza Rhapsody", 0x1017, DEVICE_FLAG_NONE },
 
   /*
    * Other strange stuff.
