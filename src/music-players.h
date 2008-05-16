@@ -523,12 +523,16 @@
    * Motorola
    * Assume DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST on all of these.
    */
+  // Reported by David Boyd <tiggrdave@users.sourceforge.net>
+  { "Motorola", 0x22b8, "V3m verizon", 0x2a65, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
+    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Reported by Marcus Meissner to libptp2
   { "Motorola", 0x22b8, "K1", 0x4811, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
   // Reported by Hans-Joachim Baader <hjb@pro-linux.de> to libptp2
   { "Motorola", 0x22b8, "A1200", 0x60ca, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
   // Reported by anonymous user
   { "Motorola", 0x22b8, "RAZR2 V8/U9", 0x6415, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
+  
 
   /*
    * Media Keg
