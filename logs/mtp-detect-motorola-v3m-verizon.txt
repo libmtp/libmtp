@@ -1,0 +1,150 @@
+libmtp version: 0.2.6.1
+
+Attempting to connect device(s)
+PTP: Opening session
+Detect: Successfully connected 1 devices
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 272
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 22b8
+   idProduct: 2a65
+   IN endpoint maxpacket: 64 bytes
+   OUT endpoint maxpacket: 64 bytes
+   Device flags: 0x00000101
+Microsoft device descriptor 0xee:
+        0000: 1203 4d00 5300 4600 5400 3100 3000 3000   ..M.S.F.T.1.0.0.
+        0010: fe00                                      ..
+Microsoft device response to control message 1, CMD 0xfe:
+        0000: 2800 0000 0001 0400 0100 0000 0000 0000   (...............
+        0010: 0001 4d54 5000 0000 0000 0000 0000 0000   ..MTP...........
+        0020: 0000 0000 0000 0000                       ........
+Microsoft device response to control message 2, CMD 0xfe:
+        0000: 2800 0000 0001 0400 0100 0000 0000 0000   (...............
+        0010: 0001 4d54 5000 0000 0000 0000 0000 0000   ..MTP...........
+        0020: 0000 0000 0000 0000                       ........
+Device info:
+   Manufacturer: Verizon
+   Model: Verizon Music Phone
+   Device version: 01.01.008(8084)
+   Serial number: 14B00F17
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com/WMDRMPD: 10.1; 
+   Detected object size: 64 bits
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1007: Get object handles
+   1008: Get object info
+   100d: Send object
+   9808: Send object property list
+   9802: Get object property description
+   1014: Get device property description
+   1015: Get device property value
+   9801: Get object properties supported
+   9803: Get object property value
+   9805: Get object property list
+   9810: Get object references
+   1009: Get object
+   100b: Delete object
+   9806: Set object property list
+   9103: Set license response
+   9104: Get sync list
+   9109: Get license state
+Events supported:
+   None.
+Device Properties Supported:
+   0xd402: Friendly Device Name
+   0xd101: Secure Time
+   0xd102: Device Certificate
+Playable File (Object) Types and Object Properties Supported:
+   b901: WMA
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type GET/SET
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc44: Name STRING data type GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc9b: AlbumArtist STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      de93: SampleRate UINT32 data type enumeration: 32000, 44100,  READ ONLY
+      de9a: AudioBitRate UINT32 data type range: MIN 8000, MAX 192000, STEP 1000 READ ONLY
+      de94: NumberOfChannels UINT16 data type enumeration: 0, 1, 2,  READ ONLY
+      de99: AudioWAVECodec UINT32 data type ANY 32BIT VALUE form READ ONLY
+   3001: Association/Directory
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type GET/SET
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+Storage Devices:
+   StorageID: 0x00000001
+      StorageType: 0x0001
+      FilesystemType: 0x0000
+      AccessCapability: 0x0000
+      MaxCapacity: 23298863
+      FreeSpaceInBytes: 7446959
+      FreeSpaceInObjects: 4294967295
+      StorageDescription: Phone Internal Memory
+      VolumeIdentifier: 14B00F17
+   StorageID: 0x00000002
+      StorageType: 0x0002
+      FilesystemType: 0x0000
+      AccessCapability: 0x0000
+      MaxCapacity: 1015808000
+      FreeSpaceInBytes: 1179648
+      FreeSpaceInObjects: 4294967295
+      StorageDescription: Removable Storage Card
+      VolumeIdentifier: SU01G€15204864
+Special directories:
+   Default music folder: 0x00000000
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x00000000
+   Default video folder: 0x00000000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00000000
+   Default text folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: V CAST Mobile Phone
+   Synchronization partner: (NULL)
+libmtp supported (playable) filetypes:
+   Microsoft Windows Media Audio
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">Fw+wFC4eYClcPMBSuHiApXDxAEs=</UNIQUEID><PUBLICKEY private="1">1hp1UWLVxX31SJBARq+jAOvmE2i1n7d5Tw0B/K6I3TTzawZ4AspYhg==</PUBLICKEY><KEYDATA>XWSKRW03C02IZBazt7616CIlh2Y=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>1ByoWiOq6aFG2tEa/8Zm7p/0wH08rAJHkQF7lzKFn3nzY+4tafu4Fw==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>MVLZEMS3kGCK6aSAWJC0/xq4Vwo=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.104.17</SECURITYVERSION><CERTIFICATE private="1">1hp1UWLVxX31SJBARq+jAOvmE2i1n7d5Tw0B/K6I3TTzawZ4AspYhgIEaBGdBaa43tDT4ly9ha+OssesmhgHZxsVZR61+HdUoZ9oFTgRTV6FpFE5</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>V3m</NAME>
+    <MANUFACTURER>Motorola</MANUFACTURER>
+    <MAKE>V3m</MAKE>
+    <DISTRIBUTOR>Verizon Wireless</DISTRIBUTOR>
+    <MODEL>MOD 1.0.0</MODEL>
+    <SECURITYLEVEL>2000</SECURITYLEVEL>
+    <HARDWARE_VER_MAJOR>1</HARDWARE_VER_MAJOR>
+    <HARDWARE_VER_MINOR>0</HARDWARE_VER_MINOR>
+    <FIRMWARE_VER_MAJOR>1</FIRMWARE_VER_MAJOR>
+    <FIRMWARE_VER_MINOR>0</FIRMWARE_VER_MINOR>
+    <FEATURES>
+        <CLOCK>1</CLOCK>
+        <METERING>0</METERING>
+        <LICENSE_ACQ>1</LICENSE_ACQ>
+        <LICENSE_SYNC>1</LICENSE_SYNC>
+        <ENCRYPTION>1</ENCRYPTION>
+        <SYMMETRIC_OPT>1</SYMMETRIC_OPT>
+    </FEATURES>
+    <LIMITS>
+        <MAXCHAINDEPTH>2</MAXCHAINDEPTH>
+        <MAXLICENSESIZE>10240</MAXLICENSESIZE>
+        <MAXHEADERSIZE>5120</MAXHEADERSIZE>
+    </LIMITS><PUBLICKEY>w9sptKYU2s6pTa+PNmYtZ8dlSGb0aJEPpMIsst819+vGsllK+IViMg==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>JIH185LxQeN5XXsdEZtUAag7MycUvSWgRd5vViP4VDt4E6XbEfj/Bw==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>885</AUTH_ID><PUBLICKEY>MMAVZgWISRBBMxtNJXyxjpVymz8oNEBWJdEb6gjJCEniO/F8JGo3Sg==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>aXt99Bc+fjwpul3XroBZCPToxWSHwbwSXVnXZeAuCQA3aifv0G8sdA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>6UxCYjXbq9X5f58EqQ49Nf51uQ9JyXIcjZ7HDXL8f9cpc39oj5fOPA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
+WMPInfo.xml Does not exist on this device
+PTP: Closing session
+OK.
