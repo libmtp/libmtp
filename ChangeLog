@@ -1,3 +1,13 @@
+2008-05-18  Richard Low <richard@wentnet.com>
+
+	* src/device-flags.h: added
+	  DEVICE_FLAG_BROKEN_SET_SAMPLE_DIMENSIONS device flag
+	* src/music-players.h: ditto. Also set Samsung YH-999 to
+ 	  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL based on users
+	  experience.
+	* src/libmtp.c: added
+          DEVICE_FLAG_BROKEN_SET_SAMPLE_DIMENSIONS device flag
+
 2008-05-05  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: assign device name and flags to

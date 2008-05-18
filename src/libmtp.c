@@ -6142,6 +6142,7 @@ int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
 {
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   PTPPropertyValue propval;
   PTPObjectInfo *oi;
   uint32_t i;
@@ -6198,12 +6199,6 @@ int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
     return -1;
   }
   free(propval.a.v);
-
-  /*
-   * TODO: Send Representative Sample Height, Width and Size here if it is an
-   * image (typically JPEG) thumbnail, send Duration and Size if it is an audio
-   * sample (MP3, WAV etc).
-   */
   
   /* Set the height and width if the sample is an image, otherwise just
    * set the duration and size */
@@ -6215,9 +6210,11 @@ int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
   case LIBMTP_FILETYPE_GIF:
   case LIBMTP_FILETYPE_PICT:
   case LIBMTP_FILETYPE_PNG:
-    // For images, set the height and width
-    set_object_u32(device, id, PTP_OPC_RepresentativeSampleHeight, sampledata->height);
-    set_object_u32(device, id, PTP_OPC_RepresentativeSampleWidth, sampledata->width);		
+    if (!(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_SET_SAMPLE_DIMENSIONS)) {
+      // For images, set the height and width
+      set_object_u32(device, id, PTP_OPC_RepresentativeSampleHeight, sampledata->height);
+      set_object_u32(device, id, PTP_OPC_RepresentativeSampleWidth, sampledata->width);		
+    }
     break;
   default:
     // For anything not an image, set the duration and size
