@@ -141,7 +141,7 @@ else
 fi
 
 echo "Installing script."
-${INSTALL} nomadjukebox ${HOTPLUGPATH}/usb
+${INSTALL} libmtp.sh ${HOTPLUGPATH}/usb
 echo "Installing usermap."
 ${INSTALL} -m 644 ${USERMAP} ${HOTPLUGPATH}/usb
 # If we find a usb.usermap file, and we see that this distribution
