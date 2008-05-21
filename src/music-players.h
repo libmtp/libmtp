@@ -105,7 +105,8 @@
   // From m.eik michalke
   { "Samsung", 0x04e8, "YP-U3", 0x507d, DEVICE_FLAG_NONE },
   // Reported by Matthew Wilcox <matthew@wil.cx>
-  { "Samsung", 0x04e8, "YP-T9", 0x507f, DEVICE_FLAG_NONE },
+  // Sergio <sfrdll@tiscali.it> reports this device need the BROKEN ALL flag.
+  { "Samsung", 0x04e8, "YP-T9", 0x507f, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // From Paul Clinch
   { "Samsung", 0x04e8, "YP-K3", 0x5081, DEVICE_FLAG_NONE },
   // From XNJB user
