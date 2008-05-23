@@ -1288,7 +1288,7 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device,
   MTPProperties  *prop;
   uint16_t       ret;
   
-  ret = ptp_mtp_getobjectproplist (params, 0xffffffff, &props, &nrofprops);
+  ret = ptp_mtp_getobjectproplist(params, 0xffffffff, &props, &nrofprops);
 
   if (ret == PTP_RC_MTP_Specification_By_Group_Unsupported) {
     // What's the point in the device implementing this command if 
@@ -1301,6 +1301,13 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device,
   if (ret != PTP_RC_OK) {
     add_ptp_error_to_errorstack(device, ret, "get_all_metadata_fast(): "
     "could not get proplist of all objects.");
+    return -1;
+  }
+  if (props == NULL && nrofprops != 0) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL,
+			    "get_all_metadata_fast(): "
+			    "call to ptp_mtp_getobjectproplist() returned "
+			    "inconsistent results.");
     return -1;
   }
   params->props = props; /* cache it */
@@ -2789,6 +2796,13 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
 	add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.");
 	// Silently fall through.
       }
+      if (props == NULL && nrofprops != 0) {
+	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL,
+				"LIBMTP_Get_Filelisting_With_Callback: "
+				"call to ptp_mtp_getobjectproplist() returned "
+				"inconsistent results.");
+	nrofprops = 0;
+      }
       if (props != NULL) {
         int i;
         prop = props;
@@ -2946,8 +2960,16 @@ LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *device, uint32_t cons
        */
       ret = ptp_mtp_getobjectproplist(params, file->item_id, &props, &nrofprops);
       if (ret != PTP_RC_OK) {
-	add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Filelisting_With_Callback(): call to ptp_mtp_getobjectproplist() failed.");
+	add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Filelisting_With_Callback(): "
+				    "call to ptp_mtp_getobjectproplist() failed.");
 	// Silently fall through.
+      }
+      if (props == NULL && nrofprops != 0) {
+	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, 
+				"LIBMTP_Get_Filelisting_With_Callback(): "
+				"call to ptp_mtp_getobjectproplist() returned "
+				"inconsistent results.");
+	return NULL;
       }
       prop = props;
       for (i=0;i<nrofprops;i++) {
@@ -3195,6 +3217,13 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
     ret = ptp_mtp_getobjectproplist(params, track->item_id, &props, &nrofprops);
     if (ret != PTP_RC_OK) {
       add_ptp_error_to_errorstack(device, ret, "get_track_metadata(): call to ptp_mtp_getobjectproplist() failed.");
+      return;
+    }
+    if (props == NULL && nrofprops != 0) {
+      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL,
+			      "get_track_metadata(): "
+			      "call to ptp_mtp_getobjectproplist() returned "
+			      "inconsistent results.");
       return;
     }
     prop = props;
