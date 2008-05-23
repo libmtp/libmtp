@@ -905,7 +905,8 @@ ptp_usb_sendreq (PTPParams* params, PTPContainer* req)
 	uint16_t ret;
 	PTPUSBBulkContainer usbreq;
 	PTPDataHandler	memhandler;
-	unsigned long written, towrite;
+	unsigned long written = 0;
+	unsigned long towrite;
 #ifdef ENABLE_USB_BULK_DEBUG
 	char txt[256];
 
