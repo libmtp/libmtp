@@ -5757,7 +5757,9 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 			       LIBMTP_playlist_t * const metadata,
 			       uint32_t const parenthandle)
 {
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   uint32_t localph = parenthandle;
+  char *extension;
 
   // Use a default folder if none given
   if (localph == 0) {
@@ -5773,7 +5775,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 				  NULL,
 				  localph,
 				  PTP_OFC_MTP_AbstractAudioVideoPlaylist,
-				  ".zpl",
+				  get_playlist_extension(ptp_usb),
 				  &metadata->playlist_id,
 				  metadata->tracks,
 				  metadata->no_tracks);

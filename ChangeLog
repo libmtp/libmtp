@@ -9,9 +9,12 @@
 	  Also fix an issue with ptp_mtp_getobjectproplist()
 	  sometimes returning a NULL pointer while still
 	  claiming there are props in the list.
+	* src/libusb-glue.h: add a function to get the preferred
+	  playlist extension.
 	* src/libusb-glue.c: "written" variable in
 	  ptp_usb_sendreq() may end up uninitialized if
 	  ptp_write_func() fails. Initialize it to 0.
+	  Get the prefered playlist extension.
 
 2008-05-18  Richard Low <richard@wentnet.com>
 

@@ -538,6 +538,27 @@ void dump_usbinfo(PTP_USB *ptp_usb)
   (void) probe_device_descriptor(dev, stdout);
 }
 
+/**
+ * Retrieve the apropriate playlist extension for this
+ * device. Rather hacky at the moment. This is probably
+ * desired by the managing software, but when creating
+ * lists on the device itself you notice certain preferences.
+ * @param ptp_usb the USB device to get suggestion for.
+ * @return the suggested playlist extension.
+ */
+char const * const get_playlist_extension(PTP_USB *ptp_usb)
+{
+  struct usb_device *dev;
+  static char creative_pl_extension[] = ".zpl";
+  static char default_pl_extension[] = ".pla";
+
+  dev = usb_device(ptp_usb->handle);
+  if (dev->descriptor.idVendor == 0x041e) {
+    return creative_pl_extension;
+  }
+  return default_pl_extension;
+}
+
 static void
 ptp_debug (PTPParams *params, const char *format, ...)
 {  
