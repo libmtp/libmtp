@@ -3975,6 +3975,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   int i;
   int subcall_ret;
   uint16_t of =  map_libmtp_type_to_ptp_type(filedata->filetype);
+  LIBMTP_file_t *newfilemeta;
 
   // Sanity check: no zerolength files.
   if (filedata->filesize == 0) {
@@ -4228,7 +4229,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 
   // Now there IS an object with this parent handle.
   filedata->parent_id = localph;
-    
+
   // Callbacks
   ptp_usb->callback_active = 1;
   // The callback will deactivate itself after this amount of data has been sent
@@ -4255,6 +4256,23 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   }
 
   add_object_to_cache(device, filedata->item_id);
+  
+  /*
+   * Get the device-assined parent_id from the cache.
+   * The operation that adds it to the cache will
+   * look it up from the device, so we get the new
+   * parent_id from the cache.
+   */
+  newfilemeta = LIBMTP_Get_Filemetadata(device, filedata->item_id);
+  if (newfilemeta != NULL) {
+    filedata->parent_id = newfilemeta->parent_id;
+    LIBMTP_destroy_file_t(newfilemeta);
+  } else {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL,
+			    "LIBMTP_Send_File_From_File_Descriptor(): "
+			    "Could not retrieve updated metadata.");
+    return -1;
+  }
 
   return 0;
 }

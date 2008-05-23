@@ -1,3 +1,12 @@
+2008-05-23  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: after sending a file, look up the
+	  resulting file metadata from the cache to make sure
+	  that parent_id is identical to that the file actually
+	  gets on the device. If root folder (0) is selected, we
+	  hardcode thing to 0xffffffffu to be used as parent,
+	  but it will probably end up being 0 for example.
+
 2008-05-18  Richard Low <richard@wentnet.com>
 
 	* src/device-flags.h: added
