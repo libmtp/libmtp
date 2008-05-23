@@ -2519,7 +2519,6 @@ int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *device, uint16_t ** const
  *        sort.
  * @return 0 on success, 1 success but only with storage id's, storage 
  *        properities could not be retrieved and -1 means failure.
- * @see LIBMTP_Get_Filetype_Description()
  */
 int LIBMTP_Get_Storage(LIBMTP_mtpdevice_t *device, int const sortby)
 {

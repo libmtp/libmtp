@@ -236,6 +236,7 @@ struct LIBMTP_mtpdevice_struct {
    * The storage for this device, do not use strings in here without 
    * copying them first, and beware that this list may be rebuilt at
    * any time.
+   * @see LIBMTP_Get_Storage()
    */
   LIBMTP_devicestorage_t *storage;
   /**
