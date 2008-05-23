@@ -3683,7 +3683,8 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
  * @param metadata a track metadata set to be written along with the file.
  *                 After this call the field <code>item_id</code>
  *                 will contain the new track ID. Other fields such
- *                 as the filename may also change during this operation
+ *                 as the <code>filename</code> or <code>parent_id</code>
+ *                 may also change during this operation
  *                 due to device restrictions, so do not rely on the
  *                 contents of this struct to be preserved in any way.
  * @param callback a progress indicator function or NULL to ignore.
@@ -3691,12 +3692,16 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
  *             the <code>progress</code> function in order to
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
- * @param parenthandle the parent (e.g. folder) to store this file
- *             in. Since some devices are a bit picky about where files
- *             are placed, a default folder will be chosen if libmtp
- *             has detected one for the current filetype and this
- *             parameter is set to 0. If this is 0 and no default folder
- *             can be found, the file will be stored in the root folder.
+ * @param parenthandle the parent (e.g. folder) to store this track
+ *        in. Since some devices are a bit picky about where files
+ *        are placed, a default folder will be chosen if libmtp
+ *        has detected one for the current filetype and this
+ *        parameter is set to 0. If this is 0 and no default folder
+ *        can be found, the file will be stored in the root folder.
+ *        The <code>parent_id</code> field of the <code>filedata</code>
+ *        struct may have changed to something completely else after 
+ *        the operation though: eventually the device will select the
+ *        parent it finds suitable.
  * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Send_Track_From_File_Descriptor()
@@ -3758,7 +3763,8 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
  * @param metadata a track metadata set to be written along with the file.
  *                 After this call the field <code>item_id</code>
  *                 will contain the new track ID. Other fields such
- *                 as the filename may also change during this operation
+ *                 as the <code>filename</code> or <code>parent_id</code>
+ *                 may also change during this operation
  *                 due to device restrictions, so do not rely on the
  *                 contents of this struct to be preserved in any way.
  * @param callback a progress indicator function or NULL to ignore.
@@ -3766,12 +3772,16 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
  *             the <code>progress</code> function in order to
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
- * @param parenthandle the parent (e.g. folder) to store this file
- *             in. Since some devices are a bit picky about where files
- *             are placed, a default folder will be chosen if libmtp
- *             has detected one for the current filetype and this
- *             parameter is set to 0. If this is 0 and no default folder
- *             can be found, the file will be stored in the root folder.
+ * @param parenthandle the parent (e.g. folder) to store this track
+ *        in. Since some devices are a bit picky about where files
+ *        are placed, a default folder will be chosen if libmtp
+ *        has detected one for the current filetype and this
+ *        parameter is set to 0. If this is 0 and no default folder
+ *        can be found, the file will be stored in the root folder.
+ *        The <code>parent_id</code> field of the <code>filedata</code>
+ *        struct may have changed to something completely else after 
+ *        the operation though: eventually the device will select the
+ *        parent it finds suitable.
  * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Send_Track_From_File()
@@ -3841,10 +3851,11 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
  * given as input.
  * @param device a pointer to the device to send the track to.
  * @param path the filename of a local file which will be sent.
- * @param filedata a file strtuct to pass in info about the file.
+ * @param filedata a file struct to pass in info about the file.
  *                 After this call the field <code>item_id</code>
- *                 will contain the new file ID. Other fields such
- *                 as the filename may also change during this operation
+ *                 will contain the new track ID. Other fields such
+ *                 as the <code>parent_id</code> or <code>filename</code>
+ *                 may also change during this operation
  *                 due to device restrictions, so do not rely on the
  *                 contents of this struct to be preserved in any way.
  * @param callback a progress indicator function or NULL to ignore.
@@ -3858,6 +3869,10 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
  *        has detected one for the current filetype and this
  *        parameter is set to 0. If this is 0 and no default folder
  *        can be found, the file will be stored in the root folder.
+ *        The <code>parent_id</code> field of the <code>filedata</code>
+ *        struct may have changed to something completely else after 
+ *        the operation though: eventually the device will select the
+ *        parent it finds suitable.
  * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Send_File_From_File_Descriptor()
@@ -3918,10 +3933,11 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
  *
  * @param device a pointer to the device to send the file to.
  * @param fd the filedescriptor for a local file which will be sent.
- * @param filedata a file strtuct to pass in info about the file.
+ * @param filedata a file struct to pass in info about the file.
  *                 After this call the field <code>item_id</code>
  *                 will contain the new track ID. Other fields such
- *                 as the filename may also change during this operation
+ *                 as the <code>parent_id</code> or <code>filename</code>
+ *                 may also change during this operation
  *                 due to device restrictions, so do not rely on the
  *                 contents of this struct to be preserved in any way.
  * @param callback a progress indicator function or NULL to ignore.
@@ -3935,6 +3951,10 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
  *        has detected one for the current filetype and this
  *        parameter is set to 0. If this is 0 and no default folder
  *        can be found, the file will be stored in the root folder.
+ *        The <code>parent_id</code> field of the <code>filedata</code>
+ *        struct may have changed to something completely else after 
+ *        the operation though: eventually the device will select the
+ *        parent it finds suitable.
  * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Send_File_From_File()
@@ -4096,7 +4116,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     uint16_t *properties = NULL;
     uint32_t propcnt = 0;
     
-    // default handle
+    // default parent handle
     if (localph == 0)
       localph = 0xFFFFFFFFU; // Set to -1
 
@@ -4240,8 +4260,8 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 }
 
 /**
- * This function updates the MTP object metadata on a single file
- * identified by an object ID.
+ * This function updates the MTP track object metadata on a
+ * single file identified by an object ID.
  * @param device a pointer to the device to update the track
  *        metadata on.
  * @param metadata a track metadata set to be written to the file.
