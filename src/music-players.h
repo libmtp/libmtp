@@ -507,7 +507,7 @@
   { "Sony", 0x054c, "Walkman NWZ-S615F/NWZ-S616F/NWZ-S618F", 0x0327, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Jean-Marc Bourguet <jm@bourguet.org>
   { "Sony", 0x054c, "Walkman NWZ-S716F", 0x035a, DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by anonymous SourceForge user
+  // Reported by Anon SF User / Anthon van der Neut <avanderneut@avid.com>
   { "Sony", 0x054c, "Walkman NWZ-A828/NWZ-A829", 0x035b, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Niek Klaverstijn <niekez@users.sourceforge.net>
   { "Sony", 0x054c, "Walkman NWZ-A728B", 0x035c, DEVICE_FLAG_UNLOAD_DRIVER },
