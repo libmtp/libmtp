@@ -72,6 +72,7 @@ int main (int argc, char **argv)
   uint8_t currbattlevel;
   int numrawdevices;
   uint32_t numdevices;
+  LIBMTP_error_number_t err;
   int ret;
   int probeonly = 0;
 
@@ -80,34 +81,47 @@ int main (int argc, char **argv)
   fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
 
   fprintf(stdout, "Listing raw device(s)\n");
-  ret = LIBMTP_Detect_Raw_Devices(&rawdevices, &numrawdevices);
-  if (ret != 0) {
-    fprintf(stderr, "Detect: Error retrieveing raw devices.\n");
-  } else if (numrawdevices == 0) {
+  err = LIBMTP_Detect_Raw_Devices(&rawdevices, &numrawdevices);
+  switch(err) {
+  case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
     fprintf(stdout, "   No raw devices found.\n");
-  } else {
-    int i;
-
-    fprintf(stdout, "   Found %d device(s):\n", numrawdevices);
-    for (i = 0; i < numrawdevices; i++) {
-      if (rawdevices[i].device_entry.vendor != NULL ||
-	  rawdevices[i].device_entry.product != NULL) {
-	fprintf(stdout, "   %s: %s (%04x:%04x) @ bus %d, dev %d\n", 
-		rawdevices[i].device_entry.vendor,
-		rawdevices[i].device_entry.product,
-		rawdevices[i].device_entry.vendor_id,
-		rawdevices[i].device_entry.product_id,
-		rawdevices[i].bus_location,
-		rawdevices[i].devnum);
-      } else {
-	fprintf(stdout, "   %04x:%04x @ bus %d, dev %d\n", 
-		rawdevices[i].device_entry.vendor_id,
-		rawdevices[i].device_entry.product_id,
-		rawdevices[i].bus_location,
-		rawdevices[i].devnum);
+    break;
+  case LIBMTP_ERROR_CONNECTING:
+    fprintf(stderr, "Detect: There has been an error connecting. Exiting\n");
+    return 1;
+  case LIBMTP_ERROR_MEMORY_ALLOCATION:
+    fprintf(stderr, "Detect: Encountered a Memory Allocation Error. Exiting\n");
+    return 1;
+  case LIBMTP_ERROR_NONE:
+    {
+      int i;
+      
+      fprintf(stdout, "   Found %d device(s):\n", numrawdevices);
+      for (i = 0; i < numrawdevices; i++) {
+	if (rawdevices[i].device_entry.vendor != NULL ||
+	    rawdevices[i].device_entry.product != NULL) {
+	  fprintf(stdout, "   %s: %s (%04x:%04x) @ bus %d, dev %d\n", 
+		  rawdevices[i].device_entry.vendor,
+		  rawdevices[i].device_entry.product,
+		  rawdevices[i].device_entry.vendor_id,
+		  rawdevices[i].device_entry.product_id,
+		  rawdevices[i].bus_location,
+		  rawdevices[i].devnum);
+	} else {
+	  fprintf(stdout, "   %04x:%04x @ bus %d, dev %d\n", 
+		  rawdevices[i].device_entry.vendor_id,
+		  rawdevices[i].device_entry.product_id,
+		  rawdevices[i].bus_location,
+		  rawdevices[i].devnum);
+	}
       }
+      free(rawdevices);
     }
-    free(rawdevices);
+    break;
+  case LIBMTP_ERROR_GENERAL:
+  default:
+    fprintf(stderr, "Unknown connection error.\n");
+    break;
   }
 
   fprintf(stdout, "Attempting to connect device(s)\n");

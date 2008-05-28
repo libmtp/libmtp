@@ -57,21 +57,13 @@ struct _PTP_USB {
   uint32_t device_flags;
 };
 
-struct mtpdevice_list_struct {
-  struct usb_device *libusb_device;
-  PTPParams *params;
-  PTP_USB *ptp_usb;
-  uint32_t bus_location;
-  struct mtpdevice_list_struct *next;
-};
-typedef struct mtpdevice_list_struct mtpdevice_list_t;
-
 int open_device (int busn, int devn, short force, PTP_USB *ptp_usb, PTPParams *params, struct usb_device **dev);
 void dump_usbinfo(PTP_USB *ptp_usb);
 char const * const get_playlist_extension(PTP_USB *ptp_usb);
 void close_device (PTP_USB *ptp_usb, PTPParams *params);
-LIBMTP_error_number_t find_usb_devices(mtpdevice_list_t **devlist);
-void free_mtpdevice_list(mtpdevice_list_t *devlist);
+LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
+					   PTPParams **params,
+					   void **usbinfo);
 
 /* connect_first_device return codes */
 #define PTP_CD_RC_CONNECTED	0

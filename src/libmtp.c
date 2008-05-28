@@ -867,30 +867,25 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 
 /**
  * Recursive function that adds MTP devices to a linked list
- * @param devices a list of devices to be created.
+ * @param devices a list of raw devices to have real devices created for.
  * @return a device pointer to a newly created mtpdevice (used in linked
  * list creation).
  */
-static LIBMTP_mtpdevice_t * create_usb_mtp_devices(mtpdevice_list_t *devices)
+static LIBMTP_mtpdevice_t * create_usb_mtp_devices(LIBMTP_raw_device_t *devices, int numdevs)
 {
-  uint8_t i = 1;
+  uint8_t i;
   LIBMTP_mtpdevice_t *mtp_device_list = NULL;
   LIBMTP_mtpdevice_t *current_device = NULL;
   PTPParams *current_params;
-  mtpdevice_list_t *tmplist = devices;
-  
-  while (tmplist != NULL) {
+  LIBMTP_error_number_t err;
+
+  for (i=0; i < numdevs; i++) {
     LIBMTP_mtpdevice_t *mtp_device;
     uint8_t bs = 0;
-    
-    /* Clear any handlers */
-    tmplist->params->handles.Handler = NULL;
-    tmplist->params->objectinfo = NULL;
-    tmplist->params->props = NULL;
-    
+
     /* Allocate dynamic space for our device */
     mtp_device = (LIBMTP_mtpdevice_t *) malloc(sizeof(LIBMTP_mtpdevice_t));
-    
+
     /* Check if there was a memory allocation error */
     if(mtp_device == NULL) {
       /* There has been an memory allocation error. We are going to ignore this
@@ -899,43 +894,38 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(mtpdevice_list_t *devices)
       /* TODO: This error statement could probably be a bit more robust */
       fprintf(stderr, "LIBMTP PANIC: connect_usb_devices encountered a memory "
 	      "allocation error with device %u, trying to continue",
-	      i);
-      
-      /* Prevent memory leaks for this device */
-      free(tmplist->ptp_usb);
-      tmplist->ptp_usb = NULL;
-      
-      free(tmplist->params);
-      tmplist->params = NULL;
-      
-      /* We have freed a bit of memory so try again with the next device */
-      tmplist = tmplist->next;
-      i++;
-      continue;
+	      i+1);
+
+      return NULL;
     }
+
+    /* Create params and usbinfo */
+    err = configure_usb_device(&devices[i],
+			       (PTPParams **) &mtp_device->params,
+			       &mtp_device->usbinfo);
+    if (err != LIBMTP_ERROR_NONE)
+      return NULL;
+
+    current_params = mtp_device->params;
     
-    /* Copy device information to mtp_device structure */
-    mtp_device->params = tmplist->params;
-    mtp_device->usbinfo = tmplist->ptp_usb;
-    current_params = tmplist->params;
-    
+    /* Clear any handlers */
+    current_params->handles.Handler = NULL;
+    current_params->objectinfo = NULL;
+    current_params->props = NULL;
+        
     /* Cache the device information for later use */
     if (ptp_getdeviceinfo(current_params,
 			  &current_params->deviceinfo) != PTP_RC_OK) {
       fprintf(stderr, "LIBMTP PANIC: Unable to read device information on device "
-	      "number %u, trying to continue", i);
+	      "number %u, trying to continue", i+1);
       
       /* Prevent memory leaks for this device */
-      free(tmplist->ptp_usb);
-      tmplist->ptp_usb = NULL;
-      
-      free(current_params);
+      free(mtp_device->usbinfo);
+      free(mtp_device->params);
       current_params = NULL;
       free(mtp_device);
-      
+
       /* try again with the next device */
-      tmplist = tmplist->next;
-      i++;
       continue;
     }
 
@@ -1048,9 +1038,6 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(mtpdevice_list_t *devices)
       current_device->next = mtp_device;
       current_device = mtp_device;
     }
-
-    tmplist = tmplist->next;
-    i++;
   }
   return mtp_device_list;
 }
@@ -1081,20 +1068,26 @@ uint32_t LIBMTP_Number_Devices_In_List(LIBMTP_mtpdevice_t *device_list)
  */
 LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **device_list)
 {
-  mtpdevice_list_t *devices;
+  LIBMTP_raw_device_t *devices;
+  int numdevs;
   LIBMTP_error_number_t ret;
-
-  ret = find_usb_devices(&devices);
+  
+  ret = LIBMTP_Detect_Raw_Devices(&devices, &numdevs);
   if (ret != LIBMTP_ERROR_NONE) {
     *device_list = NULL;
     return ret;
   }
 
   /* Assign linked list of devices */
-  *device_list = create_usb_mtp_devices(devices);
+  if (devices == NULL || numdevs == 0) {
+    *device_list = NULL;
+    return LIBMTP_ERROR_NO_DEVICE_ATTACHED;
+  }
+
+  *device_list = create_usb_mtp_devices(devices, numdevs);
+  free(devices);
 
   /* TODO: Add wifi device access here */
-  free_mtpdevice_list(devices);
   
   /* We have found some devices but create failed */
   if (*device_list == NULL)
@@ -5759,7 +5752,6 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 {
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   uint32_t localph = parenthandle;
-  char *extension;
 
   // Use a default folder if none given
   if (localph == 0) {

@@ -1,10 +1,18 @@
 2008-05-28  Linus Walleij <triad@df.lth.se>
 
+	* src/libmtp.c: internally using the raw devices to
+	  get a list of devices.
 	* src/ptp.c: sync to upstream.
 	* src/ptp.h: dito.
 	* src/ptp-pack.c: dito.
-	* src/libusb-glue.c: fix up error messages.
-	* examples/detect.c: fix up error messages.
+	* src/libmtp.h.in: move raw device detection to use
+	  error codes.
+	* src/libusb-glue.h: make the old device list internal,
+	  use raw device in interface for configuring USB.
+	* src/libusb-glue.c: fix up error messages. Move the
+	  raw device detection interface to use error codes.
+	* examples/detect.c: fix up error messages. Use error
+	  codes for raw devices.
 
 2008-05-23  Linus Walleij <triad@df.lth.se>
 
