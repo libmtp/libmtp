@@ -714,7 +714,8 @@ typedef struct _PTPObjectInfo PTPObjectInfo;
 #define PTP_OFC_MTP_vCalendar1			0xbe02
 #define PTP_OFC_MTP_vCalendar2			0xbe03
 #define PTP_OFC_MTP_UndefinedWindowsExecutable	0xbe80
-
+#define PTP_OFC_MTP_MediaCast			0xbe81
+#define PTP_OFC_MTP_Section			0xbe82
 
 /* PTP Association Types */
 #define PTP_AT_Undefined			0x0000
@@ -1064,9 +1065,9 @@ typedef struct _PTPCanon_Property {
 #define PTP_DPC_CANON_FocalLengthTele	0xD026
 #define PTP_DPC_CANON_FocalLengthWide	0xD027
 #define PTP_DPC_CANON_FocalLengthDenominator	0xD028
-#define PTP_DPC_CANON_CaptureTransferMode		0xD029
+#define PTP_DPC_CANON_CaptureTransferMode	0xD029
 #define CANON_TRANSFER_MEMORY	3
-#define CANON_TRANSFER_CARD	9
+#define CANON_TRANSFER_CARD	15
 #define PTP_DPC_CANON_Zoom		0xD02A
 #define PTP_DPC_CANON_NamePrefix	0xD02B
 #define PTP_DPC_CANON_SizeQualityMode	0xD02C
@@ -1706,7 +1707,7 @@ uint16_t ptp_canon_get_customize_data (PTPParams* params, uint32_t themenr,
 				unsigned char **data, unsigned int *size);
 uint16_t ptp_canon_getpairinginfo (PTPParams* params, uint32_t nr, unsigned char**, unsigned int*);
 
-uint16_t ptp_canon_eos_getstorageids (PTPParams* params);
+uint16_t ptp_canon_eos_getstorageids (PTPParams* params, PTPStorageIDs* storageids);
 uint16_t ptp_canon_eos_getstorageinfo (PTPParams* params, uint32_t p1);
 uint16_t ptp_canon_eos_getpartialobject (PTPParams* params, uint32_t oid, uint32_t off, uint32_t xsize, unsigned char**data);
 uint16_t ptp_canon_eos_setdevicepropvalueex (PTPParams* params, unsigned char* data, unsigned int size);

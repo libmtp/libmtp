@@ -1,3 +1,9 @@
+2008-05-28  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.c: sync to upstream.
+	* src/ptp.h: dito.
+	* src/ptp-pack.c: dito.
+
 2008-05-23  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: after sending a file, look up the

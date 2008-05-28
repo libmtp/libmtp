@@ -1819,6 +1819,8 @@ ptp_canon_eos_getevent (PTPParams* params, PTPCanon_changes_entry **entries, int
 	unsigned int 	size = 0;
 	unsigned char	*data = NULL;
 
+	*nrofentries = 0;
+	*entries = NULL;
 	PTP_CNT_INIT(ptp);
 	ptp.Code = PTP_OC_CANON_EOS_GetEvent;
 	ptp.Nparam = 0;
@@ -1854,18 +1856,19 @@ ptp_canon_eos_getdevicepropdesc (PTPParams* params, uint16_t propcode,
 
 
 uint16_t
-ptp_canon_eos_getstorageids (PTPParams* params)
+ptp_canon_eos_getstorageids (PTPParams* params, PTPStorageIDs* storageids)
 {
-	PTPContainer ptp;
-	unsigned char	*data = NULL;
-	unsigned int	size = 0;
+	PTPContainer	ptp;
+	unsigned int	len = 0;
 	uint16_t	ret;
+	unsigned char*	sids=NULL;
 	
 	PTP_CNT_INIT(ptp);
 	ptp.Code 	= PTP_OC_CANON_EOS_GetStorageIDs;
 	ptp.Nparam	= 0;
-	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, &size);
-	/* FIXME: do stuff with data */
+	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &sids, &len);
+	if (ret == PTP_RC_OK) ptp_unpack_SIDs(params, sids, storageids, len);
+	free(sids);
 	return ret;
 }
 
@@ -3868,6 +3871,8 @@ struct {
 	{PTP_OFC_MTP_vCalendar1,N_("vCalendar1")},
 	{PTP_OFC_MTP_vCalendar2,N_("vCalendar2")},
 	{PTP_OFC_MTP_UndefinedWindowsExecutable,N_("Undefined Windows Executable")},
+	{PTP_OFC_MTP_MediaCast,N_("Media Cast")},
+	{PTP_OFC_MTP_Section,N_("Section")},
 };
 
 int
