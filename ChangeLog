@@ -6,7 +6,7 @@
 	* src/ptp.h: dito.
 	* src/ptp-pack.c: dito.
 	* src/libmtp.h.in: move raw device detection to use
-	  error codes.
+	  error codes. Add interface to open a raw device!
 	* src/libusb-glue.h: make the old device list internal,
 	  use raw device in interface for configuring USB.
 	* src/libusb-glue.c: fix up error messages. Move the

@@ -866,6 +866,171 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 }
 
 /**
+ * This function opens a device from a raw device. It is the
+ * preferred way to access devices in the new interface where
+ * several devices can come and go as the library is working
+ * on a certain device.
+ * @param rawdevice the raw device to open a "real" device for.
+ * @return an open device.
+ */
+LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
+{
+  LIBMTP_mtpdevice_t *mtp_device;
+  uint8_t bs = 0;
+  PTPParams *current_params;
+  LIBMTP_error_number_t err;
+  int i;
+
+  /* Allocate dynamic space for our device */
+  mtp_device = (LIBMTP_mtpdevice_t *) malloc(sizeof(LIBMTP_mtpdevice_t));
+  /* Check if there was a memory allocation error */
+  if(mtp_device == NULL) {
+    /* There has been an memory allocation error. We are going to ignore this
+       device and attempt to continue */
+    
+    /* TODO: This error statement could probably be a bit more robust */
+    fprintf(stderr, "LIBMTP PANIC: connect_usb_devices encountered a memory "
+	    "allocation error with device %d on bus %d, trying to continue",
+	    rawdevice->devnum, rawdevice->bus_location);
+    
+    return NULL;
+  }
+  
+  /* Create params and usbinfo */
+  err = configure_usb_device(rawdevice,
+			     (PTPParams **) &mtp_device->params,
+			     &mtp_device->usbinfo);
+  if (err != LIBMTP_ERROR_NONE)
+    return NULL;
+  
+  current_params = mtp_device->params;
+  
+  /* Clear any handlers */
+  current_params->handles.Handler = NULL;
+  current_params->objectinfo = NULL;
+  current_params->props = NULL;
+  
+  /* Cache the device information for later use */
+  if (ptp_getdeviceinfo(current_params,
+			&current_params->deviceinfo) != PTP_RC_OK) {
+    fprintf(stderr, "LIBMTP PANIC: Unable to read device information on device "
+	    "%d on bus %d, trying to continue",
+	    rawdevice->devnum, rawdevice->bus_location);
+    
+    /* Prevent memory leaks for this device */
+    free(mtp_device->usbinfo);
+    free(mtp_device->params);
+    current_params = NULL;
+    free(mtp_device);
+    
+    return NULL;
+  }
+  
+  /* Determine if the object size supported is 32 or 64 bit wide */
+  for (i=0;i<current_params->deviceinfo.ImageFormats_len;i++) {
+    PTPObjectPropDesc opd;
+    
+    if (ptp_mtp_getobjectpropdesc(current_params, 
+				  PTP_OPC_ObjectSize, 
+				  current_params->deviceinfo.ImageFormats[i], 
+				  &opd) != PTP_RC_OK) {
+      printf("LIBMTP PANIC: create_usb_mtp_devices(): "
+	     "could not inspect object property descriptions!\n");
+    } else {
+      if (opd.DataType == PTP_DTC_UINT32) {
+	if (bs == 0) {
+	  bs = 32;
+	} else if (bs != 32) {
+	  printf("LIBMTP PANIC: create_usb_mtp_devices(): "
+		 "different objects support different object sizes!\n");
+	  bs = 0;
+	  break;
+	}
+      } else if (opd.DataType == PTP_DTC_UINT64) {
+	if (bs == 0) {
+	  bs = 64;
+	} else if (bs != 64) {
+	  printf("LIBMTP PANIC: create_usb_mtp_devices(): "
+		 "different objects support different object sizes!\n");
+	  bs = 0;
+	  break;
+	}
+      } else {
+	// Ignore if other size.
+	printf("LIBMTP PANIC: create_usb_mtp_devices(): "
+	       "awkward object size data type: %04x\n", opd.DataType);
+	bs = 0;
+	break;
+      }
+    }
+  }
+  if (bs == 0) {
+    // Could not detect object bitsize, assume 32 bits
+    bs = 32;
+  }
+  mtp_device->object_bitsize = bs;
+  
+  /* No Errors yet for this device */
+  mtp_device->errorstack = NULL;
+  
+  /* Default Max Battery Level, we will adjust this if possible */
+  mtp_device->maximum_battery_level = 100;
+  
+  /* Check if device supports reading maximum battery level */
+  if(ptp_property_issupported( current_params,
+			       PTP_DPC_BatteryLevel)) {
+    PTPDevicePropDesc dpd;
+    
+    /* Try to read maximum battery level */
+    if(ptp_getdevicepropdesc(current_params,
+			     PTP_DPC_BatteryLevel,
+			     &dpd) != PTP_RC_OK) {
+      add_error_to_errorstack(mtp_device,
+			      LIBMTP_ERROR_CONNECTING,
+			      "Unable to read Maximum Battery Level for this "
+			      "device even though the device supposedly "
+			      "supports this functionality");
+    }
+    
+    /* TODO: is this appropriate? */
+    /* If max battery level is 0 then leave the default, otherwise assign */
+    if (dpd.FORM.Range.MaximumValue.u8 != 0) {
+      mtp_device->maximum_battery_level = dpd.FORM.Range.MaximumValue.u8;
+    }
+    
+    ptp_free_devicepropdesc(&dpd);
+  }
+  
+  /* Set all default folders to 0 (root directory) */
+  mtp_device->default_music_folder = 0;
+  mtp_device->default_playlist_folder = 0;
+  mtp_device->default_picture_folder = 0;
+  mtp_device->default_video_folder = 0;
+  mtp_device->default_organizer_folder = 0;
+  mtp_device->default_zencast_folder = 0;
+  mtp_device->default_album_folder = 0;
+  mtp_device->default_text_folder = 0;
+  
+  /* Set initial storage information */
+  mtp_device->storage = NULL;
+  if (LIBMTP_Get_Storage(mtp_device, LIBMTP_STORAGE_SORTBY_NOTSORTED) == -1) {
+    add_error_to_errorstack(mtp_device,
+			    LIBMTP_ERROR_GENERAL,
+			    "Get Storage information failed.");
+    mtp_device->storage = NULL;
+  }
+  
+  /*
+   * Then get the handles and try to locate the default folders.
+   * This has the desired side effect of caching all handles from
+   * the device which speeds up later operations.
+   */
+  flush_handles(mtp_device);
+
+  return mtp_device;
+}
+
+/**
  * Recursive function that adds MTP devices to a linked list
  * @param devices a list of raw devices to have real devices created for.
  * @return a device pointer to a newly created mtpdevice (used in linked
@@ -876,160 +1041,15 @@ static LIBMTP_mtpdevice_t * create_usb_mtp_devices(LIBMTP_raw_device_t *devices,
   uint8_t i;
   LIBMTP_mtpdevice_t *mtp_device_list = NULL;
   LIBMTP_mtpdevice_t *current_device = NULL;
-  PTPParams *current_params;
-  LIBMTP_error_number_t err;
 
   for (i=0; i < numdevs; i++) {
     LIBMTP_mtpdevice_t *mtp_device;
-    uint8_t bs = 0;
+    mtp_device = LIBMTP_Open_Raw_Device(&devices[i]);
 
-    /* Allocate dynamic space for our device */
-    mtp_device = (LIBMTP_mtpdevice_t *) malloc(sizeof(LIBMTP_mtpdevice_t));
-
-    /* Check if there was a memory allocation error */
-    if(mtp_device == NULL) {
-      /* There has been an memory allocation error. We are going to ignore this
-	 device and attempt to continue */
-      
-      /* TODO: This error statement could probably be a bit more robust */
-      fprintf(stderr, "LIBMTP PANIC: connect_usb_devices encountered a memory "
-	      "allocation error with device %u, trying to continue",
-	      i+1);
-
-      return NULL;
-    }
-
-    /* Create params and usbinfo */
-    err = configure_usb_device(&devices[i],
-			       (PTPParams **) &mtp_device->params,
-			       &mtp_device->usbinfo);
-    if (err != LIBMTP_ERROR_NONE)
-      return NULL;
-
-    current_params = mtp_device->params;
-    
-    /* Clear any handlers */
-    current_params->handles.Handler = NULL;
-    current_params->objectinfo = NULL;
-    current_params->props = NULL;
-        
-    /* Cache the device information for later use */
-    if (ptp_getdeviceinfo(current_params,
-			  &current_params->deviceinfo) != PTP_RC_OK) {
-      fprintf(stderr, "LIBMTP PANIC: Unable to read device information on device "
-	      "number %u, trying to continue", i+1);
-      
-      /* Prevent memory leaks for this device */
-      free(mtp_device->usbinfo);
-      free(mtp_device->params);
-      current_params = NULL;
-      free(mtp_device);
-
-      /* try again with the next device */
+    /* On error, try next device */
+    if (mtp_device == NULL)
       continue;
-    }
 
-    /* Determine if the object size supported is 32 or 64 bit wide */
-    for (i=0;i<current_params->deviceinfo.ImageFormats_len;i++) {
-      PTPObjectPropDesc opd;
-      
-      if (ptp_mtp_getobjectpropdesc(current_params, 
-				    PTP_OPC_ObjectSize, 
-				    current_params->deviceinfo.ImageFormats[i], 
-				    &opd) != PTP_RC_OK) {
-	printf("LIBMTP PANIC: create_usb_mtp_devices(): "
-	       "could not inspect object property descriptions!\n");
-      } else {
-	if (opd.DataType == PTP_DTC_UINT32) {
-	  if (bs == 0) {
-	    bs = 32;
-	  } else if (bs != 32) {
-	    printf("LIBMTP PANIC: create_usb_mtp_devices(): "
-		   "different objects support different object sizes!\n");
-	    bs = 0;
-	    break;
-	  }
-	} else if (opd.DataType == PTP_DTC_UINT64) {
-	  if (bs == 0) {
-	    bs = 64;
-	  } else if (bs != 64) {
-	    printf("LIBMTP PANIC: create_usb_mtp_devices(): "
-		   "different objects support different object sizes!\n");
-	    bs = 0;
-	    break;
-	  }
-	} else {
-	  // Ignore if other size.
-	  printf("LIBMTP PANIC: create_usb_mtp_devices(): "
-		 "awkward object size data type: %04x\n", opd.DataType);
-	  bs = 0;
-	  break;
-	}
-      }
-    }
-    if (bs == 0) {
-      // Could not detect object bitsize, assume 32 bits
-      bs = 32;
-    }
-    mtp_device->object_bitsize = bs;
-    
-    /* No Errors yet for this device */
-    mtp_device->errorstack = NULL;
-    
-    /* Default Max Battery Level, we will adjust this if possible */
-    mtp_device->maximum_battery_level = 100;
-    
-    /* Check if device supports reading maximum battery level */
-    if(ptp_property_issupported( current_params,
-				 PTP_DPC_BatteryLevel)) {
-      PTPDevicePropDesc dpd;
-      
-      /* Try to read maximum battery level */
-      if(ptp_getdevicepropdesc(current_params,
-			       PTP_DPC_BatteryLevel,
-			       &dpd) != PTP_RC_OK) {
-	add_error_to_errorstack(mtp_device,
-				LIBMTP_ERROR_CONNECTING,
-				"Unable to read Maximum Battery Level for this "
-				"device even though the device supposedly "
-				"supports this functionality");
-      }
-      
-      /* TODO: is this appropriate? */
-      /* If max battery level is 0 then leave the default, otherwise assign */
-      if (dpd.FORM.Range.MaximumValue.u8 != 0) {
-	mtp_device->maximum_battery_level = dpd.FORM.Range.MaximumValue.u8;
-      }
-      
-      ptp_free_devicepropdesc(&dpd);
-    }
-    
-    /* Set all default folders to 0 (root directory) */
-    mtp_device->default_music_folder = 0;
-    mtp_device->default_playlist_folder = 0;
-    mtp_device->default_picture_folder = 0;
-    mtp_device->default_video_folder = 0;
-    mtp_device->default_organizer_folder = 0;
-    mtp_device->default_zencast_folder = 0;
-    mtp_device->default_album_folder = 0;
-    mtp_device->default_text_folder = 0;
-    
-    /* Set initial storage information */
-    mtp_device->storage = NULL;
-    if (LIBMTP_Get_Storage(mtp_device, LIBMTP_STORAGE_SORTBY_NOTSORTED) == -1) {
-      add_error_to_errorstack(mtp_device,
-			      LIBMTP_ERROR_GENERAL,
-			      "Get Storage information failed.");
-      mtp_device->storage = NULL;
-    }
-
-    /*
-     * Then get the handles and try to locate the default folders.
-     * This has the desired side effect of caching all handles from
-     * the device which speeds up later operations.
-     */
-    flush_handles(mtp_device);
-    
     /* Add the device to the list */
     mtp_device->next = NULL;
     if (mtp_device_list == NULL) {
