@@ -428,7 +428,11 @@ int LIBMTP_Detect_Raw_Devices(LIBMTP_raw_device_t ** devices,
   int i, j;
 
   ret = get_mtp_usb_device_list(&devlist);
-  if (ret != LIBMTP_ERROR_NONE) {
+  if (ret == LIBMTP_ERROR_NO_DEVICE_ATTACHED) {
+    *devices = NULL;
+    *numdevs = 0;
+    return 0;
+  } else if (ret != LIBMTP_ERROR_NONE) {
     fprintf(stderr, "LIBMTP PANIC: get_mtp_usb_device_list() "
 	    "error code: %d on line %d\n", ret, __LINE__);
     return -1;

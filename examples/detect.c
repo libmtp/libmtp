@@ -81,14 +81,18 @@ int main (int argc, char **argv)
 
   fprintf(stdout, "Listing raw device(s)\n");
   ret = LIBMTP_Detect_Raw_Devices(&rawdevices, &numrawdevices);
-  if (ret == 0 && numrawdevices > 0 && rawdevices != NULL) {
+  if (ret != 0) {
+    fprintf(stderr, "Detect: Error retrieveing raw devices.\n");
+  } else if (numrawdevices == 0) {
+    fprintf(stdout, "   No raw devices found.\n");
+  } else {
     int i;
 
-    fprintf(stdout, "Found %d device(s):\n", numrawdevices);
+    fprintf(stdout, "   Found %d device(s):\n", numrawdevices);
     for (i = 0; i < numrawdevices; i++) {
       if (rawdevices[i].device_entry.vendor != NULL ||
 	  rawdevices[i].device_entry.product != NULL) {
-	fprintf(stdout, "  %s: %s (%04x:%04x) @ bus %d, dev %d\n", 
+	fprintf(stdout, "   %s: %s (%04x:%04x) @ bus %d, dev %d\n", 
 		rawdevices[i].device_entry.vendor,
 		rawdevices[i].device_entry.product,
 		rawdevices[i].device_entry.vendor_id,
@@ -96,7 +100,7 @@ int main (int argc, char **argv)
 		rawdevices[i].bus_location,
 		rawdevices[i].devnum);
       } else {
-	fprintf(stdout, "  %04x:%04x @ bus %d, dev %d\n", 
+	fprintf(stdout, "   %04x:%04x @ bus %d, dev %d\n", 
 		rawdevices[i].device_entry.vendor_id,
 		rawdevices[i].device_entry.product_id,
 		rawdevices[i].bus_location,
@@ -104,8 +108,6 @@ int main (int argc, char **argv)
       }
     }
     free(rawdevices);
-  } else {
-    fprintf(stderr, "Detect: Error retrieveing raw devices.\n");
   }
 
   fprintf(stdout, "Attempting to connect device(s)\n");
@@ -113,7 +115,7 @@ int main (int argc, char **argv)
   switch(LIBMTP_Get_Connected_Devices(&device))
   {
   case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
-    fprintf(stdout, "Detect: No Devices have been found\n");
+    fprintf(stdout, "   Detect: No Devices have been found\n");
     return 0;
   case LIBMTP_ERROR_CONNECTING:
     fprintf(stderr, "Detect: There has been an error connecting. Exiting\n");

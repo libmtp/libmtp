@@ -3,6 +3,8 @@
 	* src/ptp.c: sync to upstream.
 	* src/ptp.h: dito.
 	* src/ptp-pack.c: dito.
+	* src/libusb-glue.c: fix up error messages.
+	* examples/detect.c: fix up error messages.
 
 2008-05-23  Linus Walleij <triad@df.lth.se>
 
