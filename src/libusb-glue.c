@@ -1592,7 +1592,6 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
   PTP_USB *ptp_usb;
   struct usb_device *libusb_device;
   uint16_t ret = 0;
-  LIBMTP_error_number_t err;
   struct usb_bus *bus;
   int found = 0;
 

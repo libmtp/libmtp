@@ -1,3 +1,9 @@
+2008-05-30  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: unused variable.
+	* examples/detect.c: switch to using raw device
+	  interface for opening devices.
+
 2008-05-28  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: internally using the raw devices to
