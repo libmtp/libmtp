@@ -828,40 +828,21 @@ static int set_object_u8(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 {
   LIBMTP_mtpdevice_t *first_device = NULL;
+  LIBMTP_raw_device_t *devices;
+  int numdevs;
+  LIBMTP_error_number_t ret;
   
-  switch(LIBMTP_Get_Connected_Devices(&first_device))
-  {
-    /* Specific Errors or Messages that connect_mtp_devices should return */
-  case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
-    fprintf(stderr, "LIBMTP_Get_First_Device: No Devices Attached\n");
+  ret = LIBMTP_Detect_Raw_Devices(&devices, &numdevs);
+  if (ret != LIBMTP_ERROR_NONE) {
     return NULL;
-
-  case LIBMTP_ERROR_CONNECTING:
-    fprintf(stderr, "LIBMTP_Get_First_Device: Error Connecting\n");
-    return NULL;
-
-  case LIBMTP_ERROR_MEMORY_ALLOCATION:
-    fprintf(stderr, "LIBMTP_Get_First_Device: Memory Alloc Error\n");
-    return NULL;
-  
-  /* Unknown general errors - This should never execute */
-  case LIBMTP_ERROR_GENERAL:
-  default:
-    fprintf(stderr, "LIBMTP_Get_First_Device: Unknown Connection Error\n");
-    return NULL;
-  
-  /* Successfully connect at least one device, so continue */
-  case LIBMTP_ERROR_NONE:
-    break;
   }
 
-  /* Only return the first device, release the rest */
-  if(first_device->next != NULL)
-  {
-    LIBMTP_Release_Device_List(first_device->next);
-    first_device->next = NULL;
+  if (devices == NULL || numdevs == 0) {
+    return NULL;
   }
-  
+
+  first_device = LIBMTP_Open_Raw_Device(&devices[0]);
+  free(devices);
   return first_device;
 }
 

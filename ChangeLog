@@ -1,3 +1,9 @@
+2008-06-01  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: use LIBMTP_Detect_Raw_Devices() and
+	  LIBMTP_Open_Raw_Device() inside 
+	  LIBMTP_Get_First_Device() refactoring.
+
 2008-05-30  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: unused variable.
