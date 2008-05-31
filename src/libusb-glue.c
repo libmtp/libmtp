@@ -1580,15 +1580,13 @@ static void find_interface_and_endpoints(struct usb_device *dev,
  * This function assigns params and usbinfo given a raw device
  * as input.
  * @param device the device to be assigned.
- * @param params a pointer to the new params.
  * @param usbinfo a pointer to the new usbinfo.
  * @return an error code.
  */
 LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device, 
-					   PTPParams **params,
+					   PTPParams *params,
 					   void **usbinfo)
 {
-  PTPParams *locparams;
   PTP_USB *ptp_usb;
   struct usb_device *libusb_device;
   uint16_t ret = 0;
@@ -1620,33 +1618,16 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
   }
 
   /* Allocate structs */
-  locparams = (PTPParams *) malloc(sizeof(PTPParams));
   ptp_usb = (PTP_USB *) malloc(sizeof(PTP_USB));
-  if (locparams == NULL || ptp_usb == NULL) {
+  if (ptp_usb == NULL) {
     return LIBMTP_ERROR_MEMORY_ALLOCATION;
   }
   /* Start with a blank slate (includes setting device_flags to 0) */
-  memset(locparams, 0, sizeof(PTPParams));
   memset(ptp_usb, 0, sizeof(PTP_USB));
-
-  /* Pointer back to params */
-  ptp_usb->params = locparams;
 
   /* Copy flags, TODO: move the entire device_entry into PTP_USB instead? */
   ptp_usb->device_flags = device->device_entry.device_flags;
   
-  /* TODO: Will this always be little endian? */
-  locparams->byteorder = PTP_DL_LE;
-  locparams->cd_locale_to_ucs2 = iconv_open("UCS-2LE", "UTF-8");
-  locparams->cd_ucs2_to_locale = iconv_open("UTF-8", "UCS-2LE");
-    
-  if(locparams->cd_locale_to_ucs2 == (iconv_t) -1 ||
-     locparams->cd_ucs2_to_locale == (iconv_t) -1) {
-    fprintf(stderr, "LIBMTP PANIC: Cannot open iconv() converters to/from UCS-2!\n"
-	    "Too old stdlibc, glibc and libiconv?\n");
-    return LIBMTP_ERROR_CONNECTING;
-  }
-    
   /* Assign endpoints to usbinfo... */
   find_interface_and_endpoints(libusb_device,
 		   &ptp_usb->interface,
@@ -1657,7 +1638,7 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
 		   &ptp_usb->intep);
     
   /* Attempt to initialize this device */
-  if (init_ptp_usb(locparams, ptp_usb, libusb_device) < 0) {
+  if (init_ptp_usb(params, ptp_usb, libusb_device) < 0) {
     fprintf(stderr, "LIBMTP PANIC: Unable to initialize device\n");
     return LIBMTP_ERROR_CONNECTING;
   }
@@ -1666,24 +1647,24 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
    * This works in situations where previous bad applications
    * have not used LIBMTP_Release_Device on exit 
    */
-  if ((ret = ptp_opensession(locparams, 1)) == PTP_ERROR_IO) {
+  if ((ret = ptp_opensession(params, 1)) == PTP_ERROR_IO) {
     fprintf(stderr, "PTP_ERROR_IO: Trying again after re-initializing USB interface\n");
     close_usb(ptp_usb);
       
-    if(init_ptp_usb(locparams, ptp_usb, libusb_device) <0) {
+    if(init_ptp_usb(params, ptp_usb, libusb_device) <0) {
       fprintf(stderr, "LIBMTP PANIC: Could not open session on device\n");
       return LIBMTP_ERROR_CONNECTING;
     }
     
     /* Device has been reset, try again */
-    ret = ptp_opensession(locparams, 1);
+    ret = ptp_opensession(params, 1);
   }
   
   /* Was the transaction id invalid? Try again */
   if (ret == PTP_RC_InvalidTransactionID) {
     fprintf(stderr, "LIBMTP WARNING: Transaction ID was invalid, increment and try again\n");
-    locparams->transaction_id += 10;
-    ret = ptp_opensession(locparams, 1);
+    params->transaction_id += 10;
+    ret = ptp_opensession(params, 1);
   }
 
   if (ret != PTP_RC_SessionAlreadyOpened && ret != PTP_RC_OK) {
@@ -1696,7 +1677,6 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
   }
 
   /* OK configured properly */
-  *params = locparams;
   *usbinfo = (void *) ptp_usb;
   return LIBMTP_ERROR_NONE;
 }

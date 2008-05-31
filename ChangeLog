@@ -2,7 +2,10 @@
 
 	* src/libmtp.c: use LIBMTP_Detect_Raw_Devices() and
 	  LIBMTP_Open_Raw_Device() inside 
-	  LIBMTP_Get_First_Device() refactoring.
+	  LIBMTP_Get_First_Device() refactoring. Move
+	  params creation into this file.
+	* src/libusb-glue.c: move params creation away
+	  from here.
 
 2008-05-30  Linus Walleij <triad@df.lth.se>
 

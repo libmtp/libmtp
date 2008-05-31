@@ -859,6 +859,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
   LIBMTP_mtpdevice_t *mtp_device;
   uint8_t bs = 0;
   PTPParams *current_params;
+  PTP_USB *ptp_usb;
   LIBMTP_error_number_t err;
   int i;
 
@@ -876,20 +877,47 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
     
     return NULL;
   }
-  
-  /* Create params and usbinfo */
-  err = configure_usb_device(rawdevice,
-			     (PTPParams **) &mtp_device->params,
-			     &mtp_device->usbinfo);
-  if (err != LIBMTP_ERROR_NONE)
+
+  /* Create PTP params */
+  current_params = (PTPParams *) malloc(sizeof(PTPParams));
+  if (current_params == NULL) {
+    free(mtp_device);
     return NULL;
-  
-  current_params = mtp_device->params;
-  
-  /* Clear any handlers */
+  }
+  memset(current_params, 0, sizeof(PTPParams));
+  /* Clear all handlers */
   current_params->handles.Handler = NULL;
   current_params->objectinfo = NULL;
   current_params->props = NULL;
+  /* TODO: Will this always be little endian? */
+  current_params->byteorder = PTP_DL_LE;
+  current_params->cd_locale_to_ucs2 = iconv_open("UCS-2LE", "UTF-8");
+  current_params->cd_ucs2_to_locale = iconv_open("UTF-8", "UCS-2LE");
+    
+  if(current_params->cd_locale_to_ucs2 == (iconv_t) -1 ||
+     current_params->cd_ucs2_to_locale == (iconv_t) -1) {
+    fprintf(stderr, "LIBMTP PANIC: Cannot open iconv() converters to/from UCS-2!\n"
+	    "Too old stdlibc, glibc and libiconv?\n");
+    free(current_params);
+    free(mtp_device);
+    return NULL;
+  }
+  mtp_device->params = current_params;
+
+  
+  /* Create usbinfo, this also opens the session */
+  err = configure_usb_device(rawdevice,
+			     current_params,
+			     &mtp_device->usbinfo);
+  if (err != LIBMTP_ERROR_NONE) {
+    free(current_params);
+    free(mtp_device);
+    return NULL;
+  }
+  ptp_usb = (PTP_USB*) mtp_device->usbinfo;
+  /* Set pointer back to params */
+  ptp_usb->params = current_params;
+
   
   /* Cache the device information for later use */
   if (ptp_getdeviceinfo(current_params,
@@ -902,8 +930,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
     free(mtp_device->usbinfo);
     free(mtp_device->params);
     current_params = NULL;
-    free(mtp_device);
-    
+    free(mtp_device);    
     return NULL;
   }
   
