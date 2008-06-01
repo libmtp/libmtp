@@ -1506,8 +1506,8 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
   params->nrofprops = 0;
 
   if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjPropList)
-      && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST) 
-      && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL)) {
+      && !FLAG_BROKEN_MTPGETOBJPROPLIST(ptp_usb)
+      && !FLAG_BROKEN_MTPGETOBJPROPLIST_ALL(ptp_usb)) {
     // Use the fast method. Ignore return value for now.
     ret = get_all_metadata_fast(device, PTP_GOH_ALL_STORAGE);
   }
@@ -2036,9 +2036,9 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
       printf("      StorageType: 0x%04x\n",storage->StorageType);
       printf("      FilesystemType: 0x%04x\n",storage->FilesystemType);
       printf("      AccessCapability: 0x%04x\n",storage->AccessCapability);
-      printf("      MaxCapacity: %lld\n",storage->MaxCapacity);
-      printf("      FreeSpaceInBytes: %lld\n",storage->FreeSpaceInBytes);
-      printf("      FreeSpaceInObjects: %lld\n",storage->FreeSpaceInObjects);
+      printf("      MaxCapacity: %llu\n", (long long unsigned int) storage->MaxCapacity);
+      printf("      FreeSpaceInBytes: %llu\n", (long long unsigned int) storage->FreeSpaceInBytes);
+      printf("      FreeSpaceInObjects: %llu\n", (long long unsigned int) storage->FreeSpaceInObjects);
       printf("      StorageDescription: %s\n",storage->StorageDescription);
       printf("      VolumeIdentifier: %s\n",storage->VolumeIdentifier);
       storage = storage->next;
@@ -2511,7 +2511,7 @@ int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *device, uint16_t ** const
     }
   }
   // The forgotten Ogg support on YP-10 and others...
-  if (ptp_usb->device_flags & DEVICE_FLAG_OGG_IS_UNKNOWN) {
+  if (FLAG_OGG_IS_UNKNOWN(ptp_usb)) {
     localtypes = (uint16_t *) realloc(localtypes, (params->deviceinfo.ImageFormats_len+1) * sizeof(uint16_t));
     localtypes[localtypelen] = LIBMTP_FILETYPE_OGG;
     localtypelen++;
@@ -2801,7 +2801,7 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
 	prop ++;
       }
     } else if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjPropList)
-	       && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST)) {
+	       && !FLAG_BROKEN_MTPGETOBJPROPLIST(ptp_usb)) {
       MTPProperties *props = NULL;
       MTPProperties *prop;
       
@@ -2969,7 +2969,7 @@ LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *device, uint32_t cons
 	}
       }
     } else if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjPropList)
-	       && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST)) {
+	       && !FLAG_BROKEN_MTPGETOBJPROPLIST(ptp_usb)) {
       MTPProperties *props = NULL;
       MTPProperties *prop;
       int nrofprops;
@@ -3225,7 +3225,7 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
       pick_property_to_track_metadata(device, prop, track);
     }
   } else if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjPropList)
-	     && !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST)) {
+	     && !FLAG_BROKEN_MTPGETOBJPROPLIST(ptp_usb)) {
     MTPProperties *props = NULL;
     MTPProperties *prop;
     int nrofprops;
@@ -3406,8 +3406,8 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
 	!LIBMTP_FILETYPE_IS_AUDIOVIDEO(mtptype) &&
 	// This row lets through undefined files for examination since they may be forgotten OGG files.
 	(oi->ObjectFormat != PTP_OFC_Undefined || 
-	 !(ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER) ||
-	 !(ptp_usb->device_flags & DEVICE_FLAG_OGG_IS_UNKNOWN))
+	 !FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
+	 !FLAG_OGG_IS_UNKNOWN(ptp_usb))
 	) {
       // printf("Not a music track (format: %d), skipping...\n",oi.ObjectFormat);
       continue;
@@ -3439,8 +3439,8 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
      * for these bugged devices only.
      */
     if (track->filetype == LIBMTP_FILETYPE_UNKNOWN &&
-	(ptp_usb->device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER ||
-	 ptp_usb->device_flags & DEVICE_FLAG_OGG_IS_UNKNOWN)) {
+	(FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
+	 FLAG_OGG_IS_UNKNOWN(ptp_usb))) {
       // Repair forgotten OGG filetype
       char *ptype;
       
@@ -4095,8 +4095,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 
   // Here we wire the type to unknown on bugged, but
   // Ogg-supportive devices.
-  if (ptp_usb->device_flags & DEVICE_FLAG_OGG_IS_UNKNOWN &&
-      of == PTP_OFC_MTP_OGG) {
+  if (FLAG_OGG_IS_UNKNOWN(ptp_usb) && of == PTP_OFC_MTP_OGG) {
     of = PTP_OFC_Undefined;
   }
 
@@ -4191,7 +4190,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	  prop->datatype = PTP_DTC_STR;
 	  if (filedata->filename != NULL) {
 	    prop->propval.str = strdup(filedata->filename);
-	    if (ptp_usb->device_flags & DEVICE_FLAG_ONLY_7BIT_FILENAMES) {
+	    if (FLAG_ONLY_7BIT_FILENAMES(ptp_usb)) {
 	      strip_7bit_from_utf8(prop->propval.str);
 	    }
 	  }
@@ -4252,7 +4251,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     memset(&new_file, 0, sizeof(PTPObjectInfo));
   
     new_file.Filename = filedata->filename;
-    if (ptp_usb->device_flags & DEVICE_FLAG_ONLY_7BIT_FILENAMES) {
+    if (FLAG_ONLY_7BIT_FILENAMES(ptp_usb)) {
       strip_7bit_from_utf8(new_file.Filename);
     }
     // We loose precision here.
@@ -4363,7 +4362,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
     return -1;
   }
   if (ptp_operation_issupported(params, PTP_OC_MTP_SetObjPropList) &&
-      !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST)) {
+      !FLAG_BROKEN_SET_OBJECT_PROPLIST(ptp_usb)) {
     MTPProperties *props = NULL;
     MTPProperties *prop = NULL;
     int nrofprops = 0;
@@ -4793,12 +4792,12 @@ int LIBMTP_Set_Object_Filename(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
-  if (ptp_usb->device_flags & DEVICE_FLAG_ONLY_7BIT_FILENAMES) {
+  if (FLAG_ONLY_7BIT_FILENAMES(ptp_usb)) {
     strip_7bit_from_utf8(newname);
   }
 
   if (ptp_operation_issupported(params, PTP_OC_MTP_SetObjPropList) &&
-      !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST)) {
+      !FLAG_BROKEN_SET_OBJECT_PROPLIST(ptp_usb)) {
     MTPProperties *props = NULL;
     MTPProperties *prop = NULL;
     int nrofprops = 0;
@@ -5048,7 +5047,7 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name, uint32_t p
 
   memset(&new_folder, 0, sizeof(new_folder));
   new_folder.Filename = name;
-  if (ptp_usb->device_flags & DEVICE_FLAG_ONLY_7BIT_FILENAMES) {
+  if (FLAG_ONLY_7BIT_FILENAMES(ptp_usb)) {
     strip_7bit_from_utf8(new_folder.Filename);
   }
   new_folder.ObjectCompressedSize = 1;
@@ -5347,7 +5346,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	  prop->property = PTP_OPC_ObjectFileName;
 	  prop->datatype = PTP_DTC_STR;
 	  prop->propval.str = strdup(fname);
-	  if (ptp_usb->device_flags & DEVICE_FLAG_ONLY_7BIT_FILENAMES) {
+	  if (FLAG_ONLY_7BIT_FILENAMES(ptp_usb)) {
 	    strip_7bit_from_utf8(prop->propval.str);
 	  }
 	  break;
@@ -5449,7 +5448,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
     PTPObjectInfo new_object;
 
     new_object.Filename = fname;
-    if (ptp_usb->device_flags & DEVICE_FLAG_ONLY_7BIT_FILENAMES) {
+    if (FLAG_ONLY_7BIT_FILENAMES(ptp_usb)) {
       strip_7bit_from_utf8(new_object.Filename);
     }
     new_object.ObjectCompressedSize = 1;
@@ -5587,7 +5586,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
     return -1;
   }
   if (ptp_operation_issupported(params,PTP_OC_MTP_SetObjPropList) &&
-      !(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST)) {
+      !FLAG_BROKEN_SET_OBJECT_PROPLIST(ptp_usb)) {
     MTPProperties *props = NULL;
     MTPProperties *prop = NULL;
     int nrofprops = 0;
@@ -6298,7 +6297,7 @@ int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
   case LIBMTP_FILETYPE_GIF:
   case LIBMTP_FILETYPE_PICT:
   case LIBMTP_FILETYPE_PNG:
-    if (!(ptp_usb->device_flags & DEVICE_FLAG_BROKEN_SET_SAMPLE_DIMENSIONS)) {
+    if (!FLAG_BROKEN_SET_SAMPLE_DIMENSIONS(ptp_usb)) {
       // For images, set the height and width
       set_object_u32(device, id, PTP_OPC_RepresentativeSampleHeight, sampledata->height);
       set_object_u32(device, id, PTP_OPC_RepresentativeSampleWidth, sampledata->width);		

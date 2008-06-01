@@ -1,3 +1,14 @@
+2008-06-02  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: refactor PTP_USB to use the raw
+	  device and its contained deviceinfo to store and
+	  retrieve the device flags. (This is starting to look
+	  object oriented...)
+	* src/libusb-glue.h: accessor functions to simplify
+	  switching on the device flags and increase the code
+	  readability.
+	* src/libmtp.c: use the new accessor functions.
+	
 2008-06-01  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: use LIBMTP_Detect_Raw_Devices() and

@@ -30,6 +30,7 @@
 #include "ptp.h"
 #include <usb.h>
 #include "libmtp.h"
+#include "device-flags.h"
 
 #define USB_BULK_READ usb_bulk_read
 #define USB_BULK_WRITE usb_bulk_write
@@ -54,7 +55,7 @@ struct _PTP_USB {
   LIBMTP_progressfunc_t current_transfer_callback;
   void const * current_transfer_callback_data;
   /** Any special device flags, only used internally */
-  uint32_t device_flags;
+  LIBMTP_raw_device_t rawdevice;
 };
 
 int open_device (int busn, int devn, short force, PTP_USB *ptp_usb, PTPParams *params, struct usb_device **dev);
@@ -64,6 +65,30 @@ void close_device(PTP_USB *ptp_usb, PTPParams *params);
 LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device, 
 					   PTPParams *params,
 					   void **usbinfo);
+
+/* Flag check macros */
+#define FLAG_BROKEN_MTPGETOBJPROPLIST_ALL(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL)
+#define FLAG_UNLOAD_DRIVER(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_UNLOAD_DRIVER)
+#define FLAG_BROKEN_MTPGETOBJPROPLIST(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST)
+#define FLAG_NO_ZERO_READS(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_NO_ZERO_READS)
+#define FLAG_IRIVER_OGG_ALZHEIMER(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_IRIVER_OGG_ALZHEIMER)
+#define FLAG_ONLY_7BIT_FILENAMES(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_ONLY_7BIT_FILENAMES)
+#define FLAG_NO_RELEASE_INTERFACE(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_NO_RELEASE_INTERFACE)
+#define FLAG_IGNORE_HEADER_ERRORS(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_IGNORE_HEADER_ERRORS)
+#define FLAG_BROKEN_SET_OBJECT_PROPLIST(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST)
+#define FLAG_OGG_IS_UNKNOWN(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_OGG_IS_UNKNOWN)
+#define FLAG_BROKEN_SET_SAMPLE_DIMENSIONS(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_BROKEN_SET_SAMPLE_DIMENSIONS)
 
 /* connect_first_device return codes */
 #define PTP_CD_RC_CONNECTED	0

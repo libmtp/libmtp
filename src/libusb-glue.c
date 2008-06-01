@@ -478,7 +478,7 @@ LIBMTP_error_number_t LIBMTP_Detect_Raw_Devices(LIBMTP_raw_device_t ** devices,
     retdevs[i].device_entry.product = NULL;
     retdevs[i].device_entry.product_id = dev->libusb_device->descriptor.idProduct;
     retdevs[i].device_entry.device_flags = 0x00000000U;
-    // See if we can locate some additional device flags
+    // See if we can locate some additional vendor info and device flags
     for(j = 0; j < mtp_device_table_size; j++) {
       if(dev->libusb_device->descriptor.idVendor == mtp_device_table[j].vendor_id &&
 	 dev->libusb_device->descriptor.idProduct == mtp_device_table[j].product_id) {
@@ -506,6 +506,11 @@ LIBMTP_error_number_t LIBMTP_Detect_Raw_Devices(LIBMTP_raw_device_t ** devices,
 	      dev->libusb_device->descriptor.idProduct);
       fprintf(stderr, "Please report this VID/PID and the device model to the "
 	      "libmtp development team\n");
+      /*
+       * Trying to get iManufacturer or iProduct from the device at this
+       * point would require opening a device handle, that we don't want
+       * to do right now. (Takes time for no good enough reason.)
+       */
     }
     // Save the location on the bus
     retdevs[i].bus_location = dev->bus_location;
@@ -547,8 +552,15 @@ void dump_usbinfo(PTP_USB *ptp_usb)
   printf("   idProduct: %04x\n", dev->descriptor.idProduct);
   printf("   IN endpoint maxpacket: %d bytes\n", ptp_usb->inep_maxpacket);
   printf("   OUT endpoint maxpacket: %d bytes\n", ptp_usb->outep_maxpacket);
-  printf("   Device flags: 0x%08x\n", ptp_usb->device_flags);
-  // TODO: add in string dumps for iManufacturer, iProduct, iSerialnumber...
+  printf("   Raw device info:\n");
+  printf("      Bus location: %d\n", ptp_usb->rawdevice.bus_location);
+  printf("      Device number: %d\n", ptp_usb->rawdevice.devnum);
+  printf("      Device entry info:\n");
+  printf("         Vendor: %s\n", ptp_usb->rawdevice.device_entry.vendor);
+  printf("         Vendor id: 0x%04x\n", ptp_usb->rawdevice.device_entry.vendor_id);
+  printf("         Product: %s\n", ptp_usb->rawdevice.device_entry.product);
+  printf("         Vendor id: 0x%04x\n", ptp_usb->rawdevice.device_entry.product_id);
+  printf("         Device flags: 0x%08x\n", ptp_usb->rawdevice.device_entry.device_flags);
   (void) probe_device_descriptor(dev, stdout);
 }
 
@@ -659,7 +671,7 @@ ptp_read_func (
       // this is the last packet
       toread = size - curread;
       // this is equivalent to zero read for these devices
-      if (readzero && ptp_usb->device_flags & DEVICE_FLAG_NO_ZERO_READS && toread % 64 == 0) {
+      if (readzero && FLAG_NO_ZERO_READS(ptp_usb) && toread % 64 == 0) {
         toread += 1;
         expect_terminator_byte = 1;
       }
@@ -734,7 +746,7 @@ ptp_read_func (
   
   // there might be a zero packet waiting for us...
   if (readzero && 
-      !(ptp_usb->device_flags & DEVICE_FLAG_NO_ZERO_READS) && 
+      !FLAG_NO_ZERO_READS(ptp_usb) && 
       curread % ptp_usb->outep_maxpacket == 0) {
     char temp;
     int zeroresult = 0;
@@ -1098,7 +1110,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 			break;
 		}
 		if (dtoh16(usbdata.code)!=ptp->Code) {
-			if (ptp_usb->device_flags & DEVICE_FLAG_IGNORE_HEADER_ERRORS) {
+			if (FLAG_IGNORE_HEADER_ERRORS(ptp_usb)) {
 				ptp_debug (params, "ptp2/ptp_usb_getdata: detected a broken "
 					   "PTP header, code field insane, expect problems! (But continuing)");
 				// Repair the header, so it won't wreak more havoc, don't just ignore it.
@@ -1162,8 +1174,8 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 				       (uint8_t *) &usbdata + packlen, surplen);
 				params->response_packet_size = surplen;
 			/* Ignore reading one extra byte if device flags have been set */
-			} else if(( !(ptp_usb->device_flags & DEVICE_FLAG_NO_ZERO_READS) &&
-				    rlen - dtoh32(usbdata.length) == 1)) {
+			} else if(!FLAG_NO_ZERO_READS(ptp_usb) &&
+				  (rlen - dtoh32(usbdata.length) == 1)) {
 			  ptp_debug (params, "ptp2/ptp_usb_getdata: read %d bytes "
 				     "too much, expect problems!", 
 				     rlen - dtoh32(usbdata.length));
@@ -1188,7 +1200,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 			&written
 		);
     
-		if (ptp_usb->device_flags & DEVICE_FLAG_NO_ZERO_READS && 
+		if (FLAG_NO_ZERO_READS(ptp_usb) && 
 		    len+PTP_USB_BULK_HDR_LEN == PTP_USB_BULK_HS_MAX_PACKET_LEN_READ) {
 #ifdef ENABLE_USB_BULK_DEBUG
 		  printf("Reading in extra terminating byte\n");
@@ -1277,7 +1289,7 @@ ptp_usb_getresp (PTPParams* params, PTPContainer* resp)
 	resp->Code=dtoh16(usbresp.code);
 	resp->SessionID=params->session_id;
 	resp->Transaction_ID=dtoh32(usbresp.trans_id);
-	if (ptp_usb->device_flags & DEVICE_FLAG_IGNORE_HEADER_ERRORS) {
+	if (FLAG_IGNORE_HEADER_ERRORS(ptp_usb)) {
 		if (resp->Transaction_ID != params->transaction_id-1) {
 			ptp_debug (params, "ptp_usb_getresp: detected a broken "
 				   "PTP header, transaction ID insane, expect "
@@ -1412,7 +1424,7 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
      * drivers (such as mass storage), then try to unload it to make it
      * accessible from user space.
      */
-    if (ptp_usb->device_flags & DEVICE_FLAG_UNLOAD_DRIVER) {
+    if (FLAG_UNLOAD_DRIVER(ptp_usb)) {
       if (usb_detach_kernel_driver_np(device_handle, (int) ptp_usb->interface)) {
 	// Totally ignore this error!
 	// perror("usb_detach_kernel_driver_np()");
@@ -1490,7 +1502,7 @@ static void close_usb(PTP_USB* ptp_usb)
 {
   // Commented out since it was confusing some
   // devices to do these things.
-  if (!(ptp_usb->device_flags & DEVICE_FLAG_NO_RELEASE_INTERFACE)) {
+  if (!FLAG_NO_RELEASE_INTERFACE(ptp_usb)) {
     /*
      * Clear any stalled endpoints
      * On misbehaving devices designed for Windows/Mac, quote from:
@@ -1625,8 +1637,8 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
   /* Start with a blank slate (includes setting device_flags to 0) */
   memset(ptp_usb, 0, sizeof(PTP_USB));
 
-  /* Copy flags, TODO: move the entire device_entry into PTP_USB instead? */
-  ptp_usb->device_flags = device->device_entry.device_flags;
+  /* Copy the raw device */
+  memcpy(&ptp_usb->rawdevice, device, sizeof(LIBMTP_raw_device_t));
   
   /* Assign endpoints to usbinfo... */
   find_interface_and_endpoints(libusb_device,
