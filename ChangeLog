@@ -1,3 +1,14 @@
+2008-06-03  Linus Walleij <triad@df.lth.se>
+
+	* src/device-flags.h: new device flag for devices that
+	  always need to have their device descriptor probed.
+	* src/music-players.h: generously add this flag to all
+	  SanDisk devices. The e280v2 and Fuze are known to be
+	  especially problematic.
+	* src/libusb-glue.h: helper macro.
+	* src/libusb-glue.c: massage "OS Descriptor" on demand
+	  when opening the device.
+
 2008-06-02  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: refactor PTP_USB to use the raw

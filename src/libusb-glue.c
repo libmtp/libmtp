@@ -1639,6 +1639,15 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
 
   /* Copy the raw device */
   memcpy(&ptp_usb->rawdevice, device, sizeof(LIBMTP_raw_device_t));
+
+  /*
+   * Some devices must have their "OS Descriptor" massaged in order
+   * to work.
+   */
+  if (FLAG_ALWAYS_PROBE_DESCRIPTOR(ptp_usb)) {
+    // Massage the device descriptor
+    (void) probe_device_descriptor(libusb_device, NULL);
+  }
   
   /* Assign endpoints to usbinfo... */
   find_interface_and_endpoints(libusb_device,

@@ -127,7 +127,7 @@
  * this device, but the metadata is plain ignored on
  * tracks, though e.g. playlist names can be set.)
  */
-#define DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST 0x000000100
+#define DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST 0x00000100
 /**
  * The Samsung YP-T10 think Ogg files shall be sent with
  * the "unknown" (PTP_OFC_Undefined) file type, this gives a 
@@ -138,7 +138,7 @@
  * to unknown when storing Ogg files, even though they're not
  * actually unknown.
  */
-#define DEVICE_FLAG_OGG_IS_UNKNOWN 0x000000200
+#define DEVICE_FLAG_OGG_IS_UNKNOWN 0x00000200
 /**
  * The Creative Zen is quite unstable in libmtp but seems to
  * be better with later firmware versions. However, it still
@@ -146,4 +146,10 @@
  * flag disables setting the dimensions (which seems to make
  * no difference to how the graphic is displayed).
  */
-#define DEVICE_FLAG_BROKEN_SET_SAMPLE_DIMENSIONS 0x000000400
+#define DEVICE_FLAG_BROKEN_SET_SAMPLE_DIMENSIONS 0x00000400
+/**
+ * Some devices, particularly SanDisk Sansas, need to always
+ * have their "OS Descriptor" probed in order to work correctly.
+ * This flag provides that extra massage.
+ */
+#define DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR 0x00000800

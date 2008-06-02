@@ -89,6 +89,8 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
   ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_OGG_IS_UNKNOWN)
 #define FLAG_BROKEN_SET_SAMPLE_DIMENSIONS(a) \
   ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_BROKEN_SET_SAMPLE_DIMENSIONS)
+#define FLAG_ALWAYS_PROBE_DESCRIPTOR(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR)
 
 /* connect_first_device return codes */
 #define PTP_CD_RC_CONNECTED	0
