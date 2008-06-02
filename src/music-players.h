@@ -136,6 +136,11 @@
    * Intel
    */
   { "Intel", 0x045e, "Bandon Portable Media Center", 0x00c9, DEVICE_FLAG_NONE },
+  // Reported by Tadimarri Sarath <sarath.tadi@gmail.com>
+  // No idea why this use an Intel PID, perhaps a leftover from
+  // the early PMC development days when Intel and Microsoft were
+  // partnering.
+  { "Microsoft", 0x045e, "Windows MTP Simulator", 0x0622, DEVICE_FLAG_NONE },
 
   /*
    * JVC
