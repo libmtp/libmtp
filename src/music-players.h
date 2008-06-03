@@ -185,46 +185,56 @@
    * several devices (c150 for sure) are definately dual-mode and must 
    * have the USB mass storage driver that hooks them unloaded first.
    * They all have problematic dual-mode making the device unload effect
-   * uncertain on these devices. All except for the Linux based ones seem
-   * to need DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL.
+   * uncertain on these devices.
+   *
+   * All older devices seem to need DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL.
+   * Old chipsets: e200/c200 use PP5024 from Nvidia (formerly PortalPlayer).
+   * m200 use TCC770 from Telechips.
+   *
+   * The newer Sansa v2 chipset, AD3525 from Austriamicrosystems (AMS) found 
+   * in e280 v2 c200 v2, Clip, Fuze etc require DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST
+   * and DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR to work properly.
+   *
+   * For more info see: http://daniel.haxx.se/sansa/v2.html
    */
   // Reported by Brian Robison
   { "SanDisk", 0x0781, "Sansa m230/m240", 0x7400, 
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-    DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by tangent_@users.sourceforge.net
   { "SanDisk", 0x0781, "Sansa c150", 0x7410, 
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-    DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // From libgphoto2 source
   // Reported by <gonkflea@users.sourceforge.net>
   // Reported by Mike Owen <mikeowen@computerbaseusa.com>
   { "SanDisk", 0x0781, "Sansa e200/e250/e260/e270/e280", 0x7420, 
     DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-    DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by XNJB user
   { "SanDisk", 0x0781, "Sansa e280", 0x7421, 
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-    DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by XNJB user
   { "SanDisk", 0x0781, "Sansa e280 v2", 0x7422, 
-    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
     DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
   // Reported by XNJB user
   { "SanDisk", 0x0781, "Sansa m240", 0x7430, 
     DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-    DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by Eugene Brevdo <ebrevdo@princeton.edu>
-  { "SanDisk", 0x0781, "Sansa Clip", 0x7432, DEVICE_FLAG_UNLOAD_DRIVER |
-    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
+  { "SanDisk", 0x0781, "Sansa Clip", 0x7432,
+    DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+    DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
   // Reported by anonymous user at sourceforge.net
   { "SanDisk", 0x0781, "Sansa c240/c250", 0x7450, 
     DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-    DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by Troy Curtis Jr.
   { "SanDisk", 0x0781, "Sansa Express", 0x7460, 
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | 
-    DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by XNJB user, and Miguel de Icaza <miguel@gnome.org>
   // This has no dual-mode so no need to unload any driver.
   // This is a Linux based device!
@@ -232,11 +242,11 @@
   // Reported by anonymous SourceForge user
   { "SanDisk", 0x0781, "Sansa View", 0x74b0, 
     DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-    DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by Patrick <skibler@gmail.com>
   // There are apparently problems with this device.
   { "SanDisk", 0x0781, "Sansa Fuze", 0x74c0, 
-    DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+    DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
     DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
 
   /*

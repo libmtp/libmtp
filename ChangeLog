@@ -8,6 +8,8 @@
 	* src/libusb-glue.h: helper macro.
 	* src/libusb-glue.c: massage "OS Descriptor" on demand
 	  when opening the device.
+	* src/music-players.h: detailed info and flags for the
+	  SanDisk Sansa players. More to be done, probably.
 
 2008-06-02  Linus Walleij <triad@df.lth.se>
 
