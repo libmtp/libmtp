@@ -312,6 +312,10 @@
   { "iRiver", 0x4102, "T60", 0x1134, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
+  // Reported by two anonymous SourceForge users
+  { "iRiver", 0x4102, "E100", 0x1141, 
+    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
+    DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
   // Reported by Scott Call
   { "iRiver", 0x4102, "H10 20GB", 0x2101, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
@@ -408,6 +412,8 @@
    */
   // From: DoomHammer <gaczek@users.sourceforge.net>
   { "Nokia", 0x0421, "N81 Mobile Phone", 0x000a, DEVICE_FLAG_NONE },
+  // From an anonymous SourceForge user
+  { "Nokia", 0x0421, "6120c Classic Mobile Phone", 0x002e, DEVICE_FLAG_NONE },
   // From: DoomHammer <gaczek@users.sourceforge.net>
   { "Nokia", 0x0421, "3110c Mobile Phone", 0x005f, DEVICE_FLAG_NONE },
   // From: Vasily <spc-@users.sourceforge.net>
@@ -489,6 +495,8 @@
   { "Cowon", 0x0e21, "iAudio U3 (MTP mode)", 0x0701, DEVICE_FLAG_NONE },
   // Reported by Roberth Karman
   { "Cowon", 0x0e21, "iAudio 7 (MTP mode)", 0x0751, DEVICE_FLAG_NONE },
+  // Reported by an anonymous SourceForge user
+  { "Cowon", 0x0e21, "iAudio U5 (MTP mode)", 0x0761, DEVICE_FLAG_NONE },
   // Reported by TJ Something <tjbk_tjb@users.sourceforge.net>
   { "Cowon", 0x0e21, "iAudio D2 (MTP mode)", 0x0801, 
    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
@@ -536,6 +544,8 @@
   { "SonyEricsson", 0x0fce, "W910", 0x0076, DEVICE_FLAG_NONE },
   // Reported by Zack <zackdvd@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "W890i", 0x00b3, DEVICE_FLAG_NONE },
+  // Reported by Linus Åkesson <linusakesson@users.sourceforge.net>
+  { "SonyEricsson", 0x0fce, "C902", 0x00d4, DEVICE_FLAG_NONE },
 
   /*
    * Motorola
