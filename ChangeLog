@@ -1,3 +1,10 @@
+2008-06-08  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: check for the langinfo.h header.
+	* examples/connect.c: check charset properly.
+	* examples/sendtr.c: dito.
+	* src/music-players.h: new devices galore.
+	
 2008-06-03  Linus Walleij <triad@df.lth.se>
 
 	* src/device-flags.h: new device flag for devices that

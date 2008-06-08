@@ -60,7 +60,8 @@ AC_HEADER_STDC
 AC_HEADER_TIME
 # zlib.h the day we need to decompress firmware
 AC_CHECK_HEADERS([ctype.h errno.h fcntl.h getopt.h libgen.h \
-	limits.h stdio.h string.h sys/stat.h sys/time.h unistd.h iconv.h])
+	limits.h stdio.h string.h sys/stat.h sys/time.h unistd.h \
+	iconv.h langinfo.h])
 AC_CHECK_HEADER([usb.h],,
 	AC_MSG_ERROR([I can't find the libusb header file on your system.
 	You may need to set the CPPFLAGS environment variable to include

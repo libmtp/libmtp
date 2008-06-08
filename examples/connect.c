@@ -3,6 +3,7 @@
  * Main programs implementing several utilities in one.
  *
  * Copyright (C) 2006 Chris A. Debenham <chris@adebenham.com>
+ * Copyright (C) 2008 Linus Walleij <triad@df.lth.se>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,6 +25,9 @@
 #include "common.h"
 #include "string.h"
 #include "pathutils.h"
+#ifdef HAVE_LANGINFO_H
+#include <langinfo.h>
+#endif
 
 LIBMTP_folder_t *folders;
 LIBMTP_file_t *files;
@@ -71,6 +75,31 @@ usage(void)
   printf("          --newfolder [foldername]\n");
 }
 
+static void checklang(void)
+{
+  char *langsuff = NULL;
+  char *lang = getenv("LANG");
+
+#ifdef HAVE_LANGINFO_H
+  langsuff = nl_langinfo(CODESET);
+#else
+  /*
+   * Check environment variables $LANG and $LC_CTYPE
+   * to see if we want to support UTF-8 unicode
+   */
+  if (lang != NULL) {
+    if (strlen(lang) > 5) {
+      langsuff = &lang[strlen(lang)-5];
+    }
+  }
+#endif
+  if (strcmp(langsuff, "UTF-8")) {
+    printf("Your system does not appear to have UTF-8 enabled ($LANG=\"%s\")\n", lang);
+    printf("If you want to have support for diacritics and Unicode characters,\n");
+    printf("please switch your locale to an UTF-8 locale, e.g. \"en_US.UTF-8\".\n");
+  }
+}
+
 int main (int argc, char **argv)
 {
   if ( argc < 2 ) {
@@ -78,22 +107,7 @@ int main (int argc, char **argv)
     return 1;
   }
 
-  /*
-   * Check environment variables $LANG and $LC_CTYPE
-   * to see if we want to support UTF-8 unicode
-   */
-  char * lang = getenv("LANG");
-  if (lang != NULL) {
-    if (strlen(lang) > 5) {
-      char *langsuff = &lang[strlen(lang)-5];
-      if (strcmp(langsuff, "UTF-8")) {
-        printf("Your system does not appear to have UTF-8 enabled ($LANG=\"%s\")\n", lang);
-        printf("If you want to have support for diacritics and Unicode characters,\n");
-        printf("please switch your locale to an UTF-8 locale, e.g. \"en_US.UTF-8\".\n");
-      }
-    }
-  }
-
+  checklang();
 
   LIBMTP_Init();
 

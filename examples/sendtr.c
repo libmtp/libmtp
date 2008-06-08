@@ -29,12 +29,15 @@
 #define _LARGEFILE_SOURCE
 #define _LARGEFILE64_SOURCE
 
+#include "common.h"
 #include <string.h>
 #include <libgen.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
-#include "common.h"
+#ifdef HAVE_LANGINFO_H
+#include <langinfo.h>
+#endif
 #include "libmtp.h"
 #include "pathutils.h"
 
@@ -53,6 +56,31 @@ void sendtrack_usage (void)
   fprintf(stderr, "    -l <album> -c <codec> -g <genre> -n <track number> -y <year>\n");
   fprintf(stderr, "       -d <duration in seconds> <local path> <remote path>\n");
   fprintf(stderr, "(-q means the program will not ask for missing information.)\n");
+}
+
+static void checklang(void)
+{
+  char *langsuff = NULL;
+  char *lang = getenv("LANG");
+
+#ifdef HAVE_LANGINFO_H
+  langsuff = nl_langinfo(CODESET);
+#else
+  /*
+   * Check environment variables $LANG and $LC_CTYPE
+   * to see if we want to support UTF-8 unicode
+   */
+  if (lang != NULL) {
+    if (strlen(lang) > 5) {
+      langsuff = &lang[strlen(lang)-5];
+    }
+  }
+#endif
+  if (strcmp(langsuff, "UTF-8")) {
+    printf("Your system does not appear to have UTF-8 enabled ($LANG=\"%s\")\n", lang);
+    printf("If you want to have support for diacritics and Unicode characters,\n");
+    printf("please switch your locale to an UTF-8 locale, e.g. \"en_US.UTF-8\".\n");
+  }
 }
 
 static char *prompt (const char *prompt, char *buffer, size_t bufsz, int required)
@@ -406,21 +434,8 @@ void sendtrack_command (int argc, char **argv) {
     printf("You need to pass a filename and destination.\n");
     sendtrack_usage();
   }
-  /*
-   * Check environment variables $LANG and $LC_CTYPE
-   * to see if we want to support UTF-8 unicode
-   */
-  lang = getenv("LANG");
-  if (lang != NULL) {
-    if (strlen(lang) > 5) {
-      char *langsuff = &lang[strlen(lang)-5];
-      if (strcmp(langsuff, "UTF-8")) {
-	printf("Your system does not appear to have UTF-8 enabled ($LANG=\"%s\")\n", lang);
-	printf("If you want to have support for diacritics and Unicode characters,\n");
-	printf("please switch your locale to an UTF-8 locale, e.g. \"en_US.UTF-8\".\n");
-      }
-    }
-  }
+
+  checklang();
   
   printf("%s,%s,%s,%s,%s,%s,%s,%s,%d%d,%d\n",argv[0],argv[1],partist,palbumartist,ptitle,pgenre,palbum,pcomposer,tracknum, length, year);
   sendtrack_function(argv[0],argv[1],partist,palbumartist,ptitle,pgenre,palbum,pcomposer, tracknum, length, year);
