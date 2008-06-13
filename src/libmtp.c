@@ -1547,7 +1547,11 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
     /* Ignore handles that point to non-folders */
     if(oi->ObjectFormat != PTP_OFC_Association)
       continue;
+    /* Ignore NULL files */
     if (oi->Filename == NULL)
+      continue;
+    /* Only look in the primary storage */
+    if (device->storage != NULL && oi->StorageID != device->storage->id)
       continue;
     
     /* Is this the Music Folder */
@@ -4025,6 +4029,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   int subcall_ret;
   uint16_t of =  map_libmtp_type_to_ptp_type(filedata->filetype);
   LIBMTP_file_t *newfilemeta;
+  int use_primary_storage = 1;
 
   // Sanity check: no zerolength files.
   if (filedata->filesize == 0) {
@@ -4043,6 +4048,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       subcall_ret = check_if_file_fits(device, storage, filedata->filesize);
       if (subcall_ret != 0) {
 	storage = storage->next;
+	use_primary_storage = 0;
       }
       break;
     }
@@ -4061,10 +4067,11 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
    * do I know, we use a fixed list in lack of any better method.
    * Some devices obviously need to have their files in certain
    * folders in order to find/display them at all (hello Creative),
-   * so we have to have a method for this.
+   * so we have to have a method for this. We only do this if the
+   * primary storage is in use.
    */
 
-  if (localph == 0) {
+  if (localph == 0 && use_primary_storage) {
     if (LIBMTP_FILETYPE_IS_AUDIO(filedata->filetype)) {
       localph = device->default_music_folder;
     } else if (LIBMTP_FILETYPE_IS_VIDEO(filedata->filetype)) {

@@ -1,3 +1,9 @@
+2008-06-14  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: only look for default folders in the
+	  primary storage, and only try to put files there
+	  if they are targetting the primary storage.
+	
 2008-06-08  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: check for the langinfo.h header.
