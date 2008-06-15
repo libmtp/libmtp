@@ -1532,7 +1532,12 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
       }
     }
   }
-
+  
+  /*
+   * Loop over the handles, fix up any NULL filenames or
+   * keywords, then attempt to locate some default folders
+   * in the root directory of the primary storage.
+   */
   for(i = 0; i < params->handles.n; i++) {
     PTPObjectInfo *oi;
     
@@ -1547,12 +1552,13 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
     /* Ignore handles that point to non-folders */
     if(oi->ObjectFormat != PTP_OFC_Association)
       continue;
-    /* Ignore NULL files */
-    if (oi->Filename == NULL)
+    /* Only look in the root folder */
+    if (oi->ParentObject != 0x00000000U)
       continue;
     /* Only look in the primary storage */
     if (device->storage != NULL && oi->StorageID != device->storage->id)
       continue;
+
     
     /* Is this the Music Folder */
     if (!strcasecmp(oi->Filename, "My Music") ||
