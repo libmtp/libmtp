@@ -1,3 +1,33 @@
+2008-06-22  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: removed the parenthandle argument from
+	  LIBMTP_Send_File_From_File(),
+	  LIBMTP_Send_File_From_File_Descriptor(),
+	  LIBMTP_Send_Track_From_File(),
+	  LIBMTP_Send_Track_From_File_Descriptor(),
+	  LIBMTP_Create_New_Playlist() and
+	  LIBMTP_Create_New_Album()
+	  Now you must pass in parent ID from a metadata or
+	  filedata set. Use the respective field of the
+	  file, track, playlist or album struct to pass in
+	  a parent handle when calling these functions from
+	  now on. The bonus for changing your code is that you
+	  can now also pass in a storage_id with any metadata
+	  set! Consequently LIBMTP_Create_Folder() was
+	  altered to accept THREE metadata arguments: name,
+	  parent_id and storage_id. All calls to any of these
+	  functions in any referring code need to be altered to
+	  use this scheme. It should be quite self-evident for
+	  most code and easy to perform.
+	* src/libmtp.c: changed outlined above were implemented.
+	* examples/newfolder.c: consequental changes.
+	* examples/sendfile.c: consequental changes.
+	* examples/sendtr.c: consequental changes.
+	* examples/albumart.c: consequental changes.
+	* examples/newplaylist.c: consequental changes.
+	* examples/files.c: consequental changes.
+	* examples/tracks.c: correct misleading strings.
+
 2008-06-15  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: only look for default folders in the

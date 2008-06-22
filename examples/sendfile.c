@@ -85,9 +85,11 @@ int sendfile_function(char * from_path, char *to_path)
   genfile->filesize = filesize;
   genfile->filename = strdup(filename);
   genfile->filetype = find_filetype (filename);
+  genfile->parent_id = 0;
+  genfile->storage_id = 0;
 
   printf("Sending file...\n");
-  ret = LIBMTP_Send_File_From_File(device, from_path, genfile, progress, NULL, parent_id);
+  ret = LIBMTP_Send_File_From_File(device, from_path, genfile, progress, NULL);
   printf("\n");
   if (ret != 0) {
     printf("Error sending file.\n");

@@ -44,7 +44,7 @@ static void dump_trackinfo(LIBMTP_track_t *track)
 #ifdef __WIN32__
   printf("   File size %I64u bytes\n", track->filesize);
 #else
-  printf("   File size %llu bytes\n", track->filesize);
+  printf("   File size %llu bytes\n", (long long unsigned int) track->filesize);
 #endif
   printf("   Filetype: %s\n", LIBMTP_Get_Filetype_Description(track->filetype));
   if (track->samplerate != 0) {
@@ -89,25 +89,25 @@ int main (int argc, char **argv)
   switch(LIBMTP_Get_Connected_Devices(&device_list))
   {
   case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
-    fprintf(stdout, "mtp-folders: No Devices have been found\n");
+    fprintf(stdout, "mtp-tracks: No Devices have been found\n");
     return 0;
   case LIBMTP_ERROR_CONNECTING:
-    fprintf(stderr, "mtp-folders: There has been an error connecting. Exit\n");
+    fprintf(stderr, "mtp-tracks: There has been an error connecting. Exit\n");
     return 1;
   case LIBMTP_ERROR_MEMORY_ALLOCATION:
-    fprintf(stderr, "mtp-folders: Memory Allocation Error. Exit\n");
+    fprintf(stderr, "mtp-tracks: Memory Allocation Error. Exit\n");
     return 1;
  
   /* Unknown general errors - This should never execute */
   case LIBMTP_ERROR_GENERAL:
   default:
-    fprintf(stderr, "mtp-folders: Unknown error, please report "
+    fprintf(stderr, "mtp-tracks: Unknown error, please report "
                     "this to the libmtp developers\n");
   return 1;
 
   /* Successfully connected at least one device, so continue */
   case LIBMTP_ERROR_NONE:
-    fprintf(stdout, "mtp-folders: Successfully connected\n");
+    fprintf(stdout, "mtp-tracks: Successfully connected\n");
     fflush(stdout);
   }
   

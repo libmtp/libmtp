@@ -275,6 +275,7 @@ struct LIBMTP_mtpdevice_struct {
 struct LIBMTP_file_struct {
   uint32_t item_id; /**< Unique item ID */
   uint32_t parent_id; /**< ID of parent folder */
+  uint32_t storage_id; /**< ID of storage holding this file */
   char *filename; /**< Filename of this file */
   uint64_t filesize; /**< Size of file in bytes */
   LIBMTP_filetype_t filetype; /**< Filetype used for the current file */
@@ -287,6 +288,7 @@ struct LIBMTP_file_struct {
 struct LIBMTP_track_struct {
   uint32_t item_id; /**< Unique item ID */
   uint32_t parent_id; /**< ID of parent folder */
+  uint32_t storage_id; /**< ID of storage holding this track */
   char *title; /**< Track title */
   char *artist; /**< Name of recording artist */
   char *composer; /**< Name of recording composer */
@@ -314,6 +316,7 @@ struct LIBMTP_track_struct {
 struct LIBMTP_playlist_struct {
   uint32_t playlist_id; /**< Unique playlist ID */
   uint32_t parent_id; /**< ID of parent folder */
+  uint32_t storage_id; /**< ID of storage holding this playlist */
   char *name; /**< Name of playlist */
   uint32_t *tracks; /**< The tracks in this playlist */
   uint32_t no_tracks; /**< The number of tracks in this playlist */
@@ -326,6 +329,7 @@ struct LIBMTP_playlist_struct {
 struct LIBMTP_album_struct {
   uint32_t album_id; /**< Unique playlist ID */
   uint32_t parent_id; /**< ID of parent folder */
+  uint32_t storage_id; /**< ID of storage holding this album */
   char *name; /**< Name of album */
   char *artist; /**< Name of album artist */
   char *composer; /**< Name of recording composer */
@@ -341,6 +345,7 @@ struct LIBMTP_album_struct {
 struct LIBMTP_folder_struct {
   uint32_t folder_id; /**< Unique folder ID */
   uint32_t parent_id; /**< ID of parent folder */
+  uint32_t storage_id; /**< ID of storage holding this folder */
   char *name; /**< Name of folder */
   LIBMTP_folder_t *sibling; /**< Next folder at same level or NULL if no more */
   LIBMTP_folder_t *child; /**< Child folder or NULL if no children */
@@ -449,10 +454,10 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t const, int 
 			LIBMTP_progressfunc_t const, void const * const);
 int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *, char const * const,
 	                 LIBMTP_file_t * const, LIBMTP_progressfunc_t const,
-			 void const * const, uint32_t const);
+			 void const * const);
 int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *, int const,
 	                LIBMTP_file_t * const, LIBMTP_progressfunc_t const,
-			void const * const, uint32_t const);
+			void const * const);
 LIBMTP_filesampledata_t *LIBMTP_new_filesampledata_t(void);
 void LIBMTP_destroy_filesampledata_t(LIBMTP_filesampledata_t *);
 int LIBMTP_Get_Representative_Sample_Format(LIBMTP_mtpdevice_t *,
@@ -481,11 +486,11 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t const, int
 int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *,
 			 char const * const, LIBMTP_track_t * const,
                          LIBMTP_progressfunc_t const,
-			 void const * const, uint32_t const);
+			 void const * const);
 int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *,
 			 int const, LIBMTP_track_t * const,
                          LIBMTP_progressfunc_t const,
-			 void const * const, uint32_t const);
+			 void const * const);
 int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *,
 			LIBMTP_track_t const * const);
 int LIBMTP_Track_Exists(LIBMTP_mtpdevice_t *, uint32_t);
@@ -500,7 +505,7 @@ LIBMTP_folder_t *LIBMTP_new_folder_t(void);
 void LIBMTP_destroy_folder_t(LIBMTP_folder_t*);
 LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t*);
 LIBMTP_folder_t *LIBMTP_Find_Folder(LIBMTP_folder_t*, uint32_t const);
-uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t*, char *, uint32_t);
+uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t*, char *, uint32_t, uint32_t);
 /** @} */
 
 
@@ -513,7 +518,7 @@ LIBMTP_playlist_t *LIBMTP_new_playlist_t(void);
 void LIBMTP_destroy_playlist_t(LIBMTP_playlist_t *);
 LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *);
 LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *, uint32_t const);
-int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *, LIBMTP_playlist_t * const, uint32_t const);
+int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *, LIBMTP_playlist_t * const);
 int LIBMTP_Update_Playlist(LIBMTP_mtpdevice_t *, LIBMTP_playlist_t const * const);
 
 /**
@@ -525,7 +530,7 @@ LIBMTP_album_t *LIBMTP_new_album_t(void);
 void LIBMTP_destroy_album_t(LIBMTP_album_t *);
 LIBMTP_album_t *LIBMTP_Get_Album_List(LIBMTP_mtpdevice_t *);
 LIBMTP_album_t *LIBMTP_Get_Album(LIBMTP_mtpdevice_t *, uint32_t const);
-int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *, LIBMTP_album_t * const, uint32_t const);
+int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *, LIBMTP_album_t * const);
 int LIBMTP_Update_Album(LIBMTP_mtpdevice_t *, LIBMTP_album_t const * const);
 
 /**

@@ -88,7 +88,9 @@ int main (int argc, char **argv) {
   playlist->name = playlistname;
   playlist->no_tracks = idcount;
   playlist->tracks = ids;
-  int ret = LIBMTP_Create_New_Playlist(device,playlist,0);
+  playlist->parent_id = 0;
+  playlist->storage_id = 0;
+  int ret = LIBMTP_Create_New_Playlist(device,playlist);
   if (ret != 0) {
     printf("Couldn't create playlist object\n");
     LIBMTP_Dump_Errorstack(device);

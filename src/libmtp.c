@@ -132,6 +132,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 				    char const * const composer,
 				    char const * const genre,
 				    uint32_t const parenthandle,
+				    uint32_t const storageid,
 				    uint16_t const objectformat,
 				    char const * const suffix,
 				    uint32_t * const newid,
@@ -2667,6 +2668,9 @@ LIBMTP_file_t *LIBMTP_new_file_t(void)
     return NULL;
   }
   new->filename = NULL;
+  new->item_id = 0;
+  new->parent_id = 0;
+  new->storage_id = 0;
   new->filesize = 0;
   new->filetype = LIBMTP_FILETYPE_UNKNOWN;
   new->next = NULL;
@@ -2771,6 +2775,7 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
     file = LIBMTP_new_file_t();
 
     file->parent_id = oi->ParentObject;
+    file->storage_id = oi->StorageID;
 
     // This is some sort of unique ID so we can keep track of the track.
     file->item_id = params->handles.Handler[i];
@@ -2942,6 +2947,7 @@ LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *device, uint32_t cons
     file = LIBMTP_new_file_t();
     
     file->parent_id = oi->ParentObject;
+    file->storage_id = oi->StorageID;
 
     // Set the filetype
     file->filetype = map_ptp_type_to_libmtp_type(oi->ObjectFormat);
@@ -3073,6 +3079,9 @@ LIBMTP_track_t *LIBMTP_new_track_t(void)
   if (new == NULL) {
     return NULL;
   }
+  new->item_id = 0;
+  new->parent_id = 0;
+  new->storage_id = 0;
   new->title = NULL;
   new->artist = NULL;
   new->composer = NULL;
@@ -3429,6 +3438,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
     // This is some sort of unique ID so we can keep track of the track.
     track->item_id = params->handles.Handler[i];
     track->parent_id = oi->ParentObject;
+    track->storage_id = oi->StorageID;
 
     track->filetype = mtptype;
 
@@ -3532,6 +3542,7 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
     // This is some sort of unique ID so we can keep track of the track.
     track->item_id = params->handles.Handler[i];
     track->parent_id = oi->ParentObject;
+    track->storage_id = oi->StorageID;
 
     track->filetype = mtptype;
 
@@ -3740,27 +3751,30 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
  * @param device a pointer to the device to send the track to.
  * @param path the filename of a local file which will be sent.
  * @param metadata a track metadata set to be written along with the file.
- *                 After this call the field <code>item_id</code>
- *                 will contain the new track ID. Other fields such
- *                 as the <code>filename</code> or <code>parent_id</code>
- *                 may also change during this operation
- *                 due to device restrictions, so do not rely on the
- *                 contents of this struct to be preserved in any way.
+ *        After this call the field <code>metadata-&gt;item_id</code>
+ *        will contain the new track ID. Other fields such
+ *        as the <code>metadata-&gt;filename</code>, <code>metadata-&gt;parent_id</code>
+ *        or <code>metadata-&gt;storage_id</code> may also change during this 
+ *        operation due to device restrictions, so do not rely on the
+ *        contents of this struct to be preserved in any way.
+ *        <ul>
+ *        <li><code>metadata-&gt;parent_id</code> should be set to the parent 
+ *        (e.g. folder) to store this track in. Since some 
+ *        devices are a bit picky about where files
+ *        are placed, a default folder will be chosen if libmtp
+ *        has detected one for the current filetype and this
+ *        parameter is set to 0. If this is 0 and no default folder
+ *        can be found, the file will be stored in the root folder.
+ *        <li><code>metadata-&gt;storage_id</code> should be set to the
+ *        desired storage (e.g. memory card or whatever your device
+ *        presents) to store this track in. Setting this to 0 will store
+ *        the track on the primary storage.
+ *        </ul>
  * @param callback a progress indicator function or NULL to ignore.
  * @param data a user-defined pointer that is passed along to
  *             the <code>progress</code> function in order to
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
- * @param parenthandle the parent (e.g. folder) to store this track
- *        in. Since some devices are a bit picky about where files
- *        are placed, a default folder will be chosen if libmtp
- *        has detected one for the current filetype and this
- *        parameter is set to 0. If this is 0 and no default folder
- *        can be found, the file will be stored in the root folder.
- *        The <code>parent_id</code> field of the <code>filedata</code>
- *        struct may have changed to something completely else after 
- *        the operation though: eventually the device will select the
- *        parent it finds suitable.
  * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Send_Track_From_File_Descriptor()
@@ -3770,7 +3784,7 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
 int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
 			 char const * const path, LIBMTP_track_t * const metadata,
                          LIBMTP_progressfunc_t const callback,
-			 void const * const data, uint32_t const parenthandle)
+			 void const * const data)
 {
   int fd;
   int ret;
@@ -3799,7 +3813,7 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
-  ret = LIBMTP_Send_Track_From_File_Descriptor(device, fd, metadata, callback, data, parenthandle);
+  ret = LIBMTP_Send_Track_From_File_Descriptor(device, fd, metadata, callback, data);
 
   // Close file.
 #ifdef USE_WINDOWS_IO_H
@@ -3820,27 +3834,30 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
  * @param device a pointer to the device to send the track to.
  * @param fd the filedescriptor for a local file which will be sent.
  * @param metadata a track metadata set to be written along with the file.
- *                 After this call the field <code>item_id</code>
- *                 will contain the new track ID. Other fields such
- *                 as the <code>filename</code> or <code>parent_id</code>
- *                 may also change during this operation
- *                 due to device restrictions, so do not rely on the
- *                 contents of this struct to be preserved in any way.
+ *        After this call the field <code>metadata-&gt;item_id</code>
+ *        will contain the new track ID. Other fields such
+ *        as the <code>metadata-&gt;filename</code>, <code>metadata-&gt;parent_id</code>
+ *        or <code>metadata-&gt;storage_id</code> may also change during this 
+ *        operation due to device restrictions, so do not rely on the
+ *        contents of this struct to be preserved in any way.
+ *        <ul>
+ *        <li><code>metadata-&gt;parent_id</code> should be set to the parent 
+ *        (e.g. folder) to store this track in. Since some 
+ *        devices are a bit picky about where files
+ *        are placed, a default folder will be chosen if libmtp
+ *        has detected one for the current filetype and this
+ *        parameter is set to 0. If this is 0 and no default folder
+ *        can be found, the file will be stored in the root folder.
+ *        <li><code>metadata-&gt;storage_id</code> should be set to the
+ *        desired storage (e.g. memory card or whatever your device
+ *        presents) to store this track in. Setting this to 0 will store
+ *        the track on the primary storage.
+ *        </ul>
  * @param callback a progress indicator function or NULL to ignore.
  * @param data a user-defined pointer that is passed along to
  *             the <code>progress</code> function in order to
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
- * @param parenthandle the parent (e.g. folder) to store this track
- *        in. Since some devices are a bit picky about where files
- *        are placed, a default folder will be chosen if libmtp
- *        has detected one for the current filetype and this
- *        parameter is set to 0. If this is 0 and no default folder
- *        can be found, the file will be stored in the root folder.
- *        The <code>parent_id</code> field of the <code>filedata</code>
- *        struct may have changed to something completely else after 
- *        the operation though: eventually the device will select the
- *        parent it finds suitable.
  * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Send_Track_From_File()
@@ -3849,7 +3866,7 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
 int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 			 int const fd, LIBMTP_track_t * const metadata,
                          LIBMTP_progressfunc_t const callback,
-			 void const * const data, uint32_t const parenthandle)
+			 void const * const data)
 {
   int subcall_ret;
   LIBMTP_file_t filedata;
@@ -3864,6 +3881,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   // Wrap around the file transfer function
   filedata.item_id = metadata->item_id;
   filedata.parent_id = metadata->parent_id;
+  filedata.storage_id = metadata->storage_id;
   filedata.filename = metadata->filename;
   filedata.filesize = metadata->filesize;
   filedata.filetype = metadata->filetype;
@@ -3873,8 +3891,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 						      fd, 
 						      &filedata,
 						      callback,
-						      data, 
-						      parenthandle);
+						      data);
 
   if (subcall_ret != 0) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, 
@@ -3885,9 +3902,10 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     return -1;
   }
   
-  // Pick up new item (and parent) ID
+  // Pick up new item (and parent, storage) ID
   metadata->item_id = filedata.item_id;
   metadata->parent_id = filedata.parent_id;
+  metadata->storage_id = filedata.storage_id;
 
   // Set track metadata for the new fine track
   subcall_ret = LIBMTP_Update_Track_Metadata(device, metadata);
@@ -3910,28 +3928,27 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
  * given as input.
  * @param device a pointer to the device to send the track to.
  * @param path the filename of a local file which will be sent.
- * @param filedata a file struct to pass in info about the file.
- *                 After this call the field <code>item_id</code>
- *                 will contain the new track ID. Other fields such
- *                 as the <code>parent_id</code> or <code>filename</code>
- *                 may also change during this operation
- *                 due to device restrictions, so do not rely on the
- *                 contents of this struct to be preserved in any way.
+ * @param filedata a file metadata set to be written along with the file.
+ *        After this call the field <code>filedata-&gt;item_id</code>
+ *        will contain the new file ID. Other fields such
+ *        as the <code>filedata-&gt;filename</code>, <code>filedata-&gt;parent_id</code>
+ *        or <code>filedata-&gt;storage_id</code> may also change during this 
+ *        operation due to device restrictions, so do not rely on the
+ *        contents of this struct to be preserved in any way.
+ *        <ul>
+ *        <li><code>filedata-&gt;parent_id</code> should be set to the parent 
+ *        (e.g. folder) to store this file in. If this is 0, 
+ *        the file will be stored in the root folder.
+ *        <li><code>filedata-&gt;storage_id</code> should be set to the
+ *        desired storage (e.g. memory card or whatever your device
+ *        presents) to store this file in. Setting this to 0 will store
+ *        the file on the primary storage.
+ *        </ul>
  * @param callback a progress indicator function or NULL to ignore.
  * @param data a user-defined pointer that is passed along to
  *             the <code>progress</code> function in order to
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
- * @param parenthandle the parent (e.g. folder) to store this file
- *        in. Since some devices are a bit picky about where files
- *        are placed, a default folder will be chosen if libmtp
- *        has detected one for the current filetype and this
- *        parameter is set to 0. If this is 0 and no default folder
- *        can be found, the file will be stored in the root folder.
- *        The <code>parent_id</code> field of the <code>filedata</code>
- *        struct may have changed to something completely else after 
- *        the operation though: eventually the device will select the
- *        parent it finds suitable.
  * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Send_File_From_File_Descriptor()
@@ -3940,7 +3957,7 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
 			       char const * const path, LIBMTP_file_t * const filedata,
 			       LIBMTP_progressfunc_t const callback,
-			       void const * const data, uint32_t const parenthandle)
+			       void const * const data)
 {
   int fd;
   int ret;
@@ -3969,7 +3986,7 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
-  ret = LIBMTP_Send_File_From_File_Descriptor(device, fd, filedata, callback, data, parenthandle);
+  ret = LIBMTP_Send_File_From_File_Descriptor(device, fd, filedata, callback, data);
 
   // Close file.
 #ifdef USE_WINDOWS_IO_H
@@ -3992,28 +4009,27 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
  *
  * @param device a pointer to the device to send the file to.
  * @param fd the filedescriptor for a local file which will be sent.
- * @param filedata a file struct to pass in info about the file.
- *                 After this call the field <code>item_id</code>
- *                 will contain the new track ID. Other fields such
- *                 as the <code>parent_id</code> or <code>filename</code>
- *                 may also change during this operation
- *                 due to device restrictions, so do not rely on the
- *                 contents of this struct to be preserved in any way.
+ * @param filedata a file metadata set to be written along with the file.
+ *        After this call the field <code>filedata-&gt;item_id</code>
+ *        will contain the new file ID. Other fields such
+ *        as the <code>filedata-&gt;filename</code>, <code>filedata-&gt;parent_id</code>
+ *        or <code>filedata-&gt;storage_id</code> may also change during this 
+ *        operation due to device restrictions, so do not rely on the
+ *        contents of this struct to be preserved in any way.
+ *        <ul>
+ *        <li><code>filedata-&gt;parent_id</code> should be set to the parent 
+ *        (e.g. folder) to store this file in. If this is 0, 
+ *        the file will be stored in the root folder.
+ *        <li><code>filedata-&gt;storage_id</code> should be set to the
+ *        desired storage (e.g. memory card or whatever your device
+ *        presents) to store this file in. Setting this to 0 will store
+ *        the file on the primary storage.
+ *        </ul>
  * @param callback a progress indicator function or NULL to ignore.
  * @param data a user-defined pointer that is passed along to
  *             the <code>progress</code> function in order to
  *             pass along some user defined data to the progress
  *             updates. If not used, set this to NULL.
- * @param parenthandle the parent (e.g. folder) to store this file
- *        in. Since some devices are a bit picky about where files
- *        are placed, a default folder will be chosen if libmtp
- *        has detected one for the current filetype and this
- *        parameter is set to 0. If this is 0 and no default folder
- *        can be found, the file will be stored in the root folder.
- *        The <code>parent_id</code> field of the <code>filedata</code>
- *        struct may have changed to something completely else after 
- *        the operation though: eventually the device will select the
- *        parent it finds suitable.
  * @return 0 if the transfer was successful, any other value means
  *           failure.
  * @see LIBMTP_Send_File_From_File()
@@ -4023,12 +4039,12 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
 int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 			 int const fd, LIBMTP_file_t * const filedata,
                          LIBMTP_progressfunc_t const callback,
-			 void const * const data, uint32_t const parenthandle)
+			 void const * const data)
 {
   uint16_t ret;
-  LIBMTP_devicestorage_t *storage;
   uint32_t store;
-  uint32_t localph = parenthandle;
+  uint32_t localph = filedata->parent_id;
+  LIBMTP_devicestorage_t *storage;
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   int i;
@@ -4044,26 +4060,34 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     return -1;
   }
 
-  // See if there is some storage we can fit this file on.
-  storage = device->storage;
-  if (storage == NULL) {
-    // Sometimes the storage just cannot be detected.
-    store = 0x00000000U;
+  if (filedata->storage_id != 0) {
+    store = filedata->storage_id;
   } else {
-    while(storage != NULL) {
-      subcall_ret = check_if_file_fits(device, storage, filedata->filesize);
-      if (subcall_ret != 0) {
-	storage = storage->next;
-	use_primary_storage = 0;
-      }
-      break;
-    }
+    // See if there is some storage we can fit this file on.
+    storage = device->storage;
     if (storage == NULL) {
-      add_error_to_errorstack(device, LIBMTP_ERROR_STORAGE_FULL, "LIBMTP_Send_File_From_File_Descriptor(): " 
-			      "all device storage is full or corrupt.");
-      return -1;
+      // Sometimes the storage just cannot be detected.
+      store = 0x00000000U;
+    } else {
+      while(storage != NULL) {
+	subcall_ret = check_if_file_fits(device, storage, filedata->filesize);
+	if (subcall_ret != 0) {
+	  storage = storage->next;
+	}
+	break;
+      }
+      if (storage == NULL) {
+	add_error_to_errorstack(device, LIBMTP_ERROR_STORAGE_FULL, "LIBMTP_Send_File_From_File_Descriptor(): " 
+				"all device storage is full or corrupt.");
+	return -1;
+      }
+      store = storage->id;
     }
-    store = storage->id;
+  }
+  // Detect if something non-primary is in use.
+  storage = device->storage;
+  if (store != storage->id) {
+    use_primary_storage = 0;
   }
 
   /*
@@ -4327,6 +4351,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   newfilemeta = LIBMTP_Get_Filemetadata(device, filedata->item_id);
   if (newfilemeta != NULL) {
     filedata->parent_id = newfilemeta->parent_id;
+    filedata->storage_id = newfilemeta->storage_id;
     LIBMTP_destroy_file_t(newfilemeta);
   } else {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL,
@@ -4892,6 +4917,7 @@ LIBMTP_folder_t *LIBMTP_new_folder_t(void)
   }
   new->folder_id = 0;
   new->parent_id = 0;
+  new->storage_id = 0;
   new->name = NULL;
   new->sibling = NULL;
   new->child = NULL;
@@ -4985,6 +5011,7 @@ static LIBMTP_folder_t *get_subfolders_for_folder(PTPParams *params, uint32_t pa
     }
     folder->folder_id = params->handles.Handler[i];
     folder->parent_id = oi->ParentObject;
+    folder->storage_id = oi->StorageID;
     if (oi->Filename != NULL) {
       folder->name = (char *)strdup(oi->Filename);
     } else {
@@ -5046,17 +5073,29 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
  * @param name the name of the new folder.
  * @param parent_id id of parent folder to add the new folder to,
  *        or 0 to put it in the root directory.
+ * @param storage_id id of the storage to add this new folder to.
+ *        notice that you cannot mismatch storage id and parent id:
+ *        they must both be on the same storage! Pass in 0 if you
+ *        want to create this folder on the default storage.
  * @return id to new folder or 0 if an error occured
  */
-uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name, uint32_t parent_id)
+uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name,
+			      uint32_t parent_id, uint32_t storage_id)
 {
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   uint32_t parenthandle = 0;
-  uint32_t store = get_first_storageid(device);
+  uint32_t store;
   PTPObjectInfo new_folder;
   uint16_t ret;
   uint32_t new_id = 0;
+
+  if (storage_id == 0) {
+    store = get_first_storageid(device);
+  } else {
+    store = storage_id;
+  }
+  parenthandle = parent_id;
 
   memset(&new_folder, 0, sizeof(new_folder));
   new_folder.Filename = name;
@@ -5066,8 +5105,8 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name, uint32_t p
   new_folder.ObjectCompressedSize = 1;
   new_folder.ObjectFormat = PTP_OFC_Association;
   new_folder.ParentObject = parent_id;
+  new_folder.StorageID = store;
 
-  parenthandle = parent_id;
   // Create the object
   // FIXME: use send list here if available.
   ret = ptp_sendobjectinfo(params, &store, &parenthandle, &new_id, &new_folder);
@@ -5111,6 +5150,7 @@ LIBMTP_playlist_t *LIBMTP_new_playlist_t(void)
   }
   new->playlist_id = 0;
   new->parent_id = 0;
+  new->storage_id = 0;
   new->name = NULL;
   new->tracks = NULL;
   new->no_tracks = 0;
@@ -5181,6 +5221,7 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *device)
     pl->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
     pl->playlist_id = params->handles.Handler[i];
     pl->parent_id = oi->ParentObject;
+    pl->storage_id = oi->StorageID;
 
     // Then get the track listing for this playlist
     ret = ptp_mtp_getobjectreferences(params, pl->playlist_id, &pl->tracks, &pl->no_tracks);
@@ -5245,6 +5286,7 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t cons
     pl->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
     pl->playlist_id = params->handles.Handler[i];
     pl->parent_id = oi->ParentObject;
+    pl->storage_id = oi->StorageID;
     
     // Then get the track listing for this playlist
     ret = ptp_mtp_getobjectreferences(params, pl->playlist_id, &pl->tracks, &pl->no_tracks);
@@ -5285,6 +5327,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 				    char const * const composer,
 				    char const * const genre,
 				    uint32_t const parenthandle,
+				    uint32_t const storageid,
 				    uint16_t const objectformat,
 				    char const * const suffix,
 				    uint32_t * const newid,
@@ -5297,13 +5340,19 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
   uint16_t ret;
   uint16_t *properties = NULL;
   uint32_t propcnt = 0;
-  uint32_t store = get_first_storageid(device);
+  uint32_t store;
   uint32_t localph = parenthandle;
   uint8_t nonconsumable = 0x00U; /* By default it is consumable */
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   char fname[256];
   uint8_t data[2];
+
+  if (storageid == 0) {
+    store = get_first_storageid(device);
+  } else {
+    store = storageid;
+  }
 
   // Check if we can create an object of this type
   for ( i=0; i < params->deviceinfo.ImageFormats_len; i++ ) {
@@ -5787,11 +5836,10 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
  * @see LIBMTP_Delete_Object()
  */
 int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
-			       LIBMTP_playlist_t * const metadata,
-			       uint32_t const parenthandle)
+			       LIBMTP_playlist_t * const metadata)
 {
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
-  uint32_t localph = parenthandle;
+  uint32_t localph = metadata->parent_id;
 
   // Use a default folder if none given
   if (localph == 0) {
@@ -5806,6 +5854,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 				  NULL,
 				  NULL,
 				  localph,
+				  metadata->storage_id,
 				  PTP_OFC_MTP_AbstractAudioVideoPlaylist,
 				  get_playlist_extension(ptp_usb),
 				  &metadata->playlist_id,
@@ -5859,6 +5908,7 @@ LIBMTP_album_t *LIBMTP_new_album_t(void)
   }
   new->album_id = 0;
   new->parent_id = 0;
+  new->storage_id = 0;
   new->name = NULL;
   new->artist = NULL;
   new->composer = NULL;
@@ -5931,6 +5981,7 @@ LIBMTP_album_t *LIBMTP_Get_Album_List(LIBMTP_mtpdevice_t *device)
     alb = LIBMTP_new_album_t();
     alb->album_id = params->handles.Handler[i];
     alb->parent_id = oi->ParentObject;
+    alb->storage_id = oi->StorageID;
 
     // Get metadata for it.
     alb->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
@@ -5999,6 +6050,7 @@ LIBMTP_album_t *LIBMTP_Get_Album(LIBMTP_mtpdevice_t *device, uint32_t const albi
     alb = LIBMTP_new_album_t();
     alb->album_id = params->handles.Handler[i];
     alb->parent_id = oi->ParentObject;
+    alb->storage_id = oi->StorageID;
 
     // Get metadata for it.
     alb->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
@@ -6037,10 +6089,9 @@ LIBMTP_album_t *LIBMTP_Get_Album(LIBMTP_mtpdevice_t *device, uint32_t const albi
  * @see LIBMTP_Delete_Object()
  */
 int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
-			    LIBMTP_album_t * const metadata,
-			    uint32_t const parenthandle)
+			    LIBMTP_album_t * const metadata)
 {
-  uint32_t localph = parenthandle;
+  uint32_t localph = metadata->parent_id;
 
   // Use a default folder if none given
   if (localph == 0) {
@@ -6055,6 +6106,7 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
 				  metadata->composer,
 				  metadata->genre,
 				  localph,
+				  metadata->storage_id,
 				  PTP_OFC_MTP_AbstractAudioAlbum,
 				  ".alb",
 				  &metadata->album_id,

@@ -36,12 +36,13 @@ void newfolder_command (int argc, char **argv)
   uint32_t newid;
   
   if(argc != 3) {
-    printf("Usage: newfolder name id\n");
-    printf("(id = parent folder or 0 to create the new folder in the root dir)\n");
+    printf("Usage: newfolder name <parent> <storage>\n");
+    printf("  parent = parent folder or 0 to create the new folder in the root dir\n");
+    printf("  storage = storage id or 0 to create the new folder on the primary storage\n");
     return;
   }
   
-  newid = LIBMTP_Create_Folder(device, argv[1], atol(argv[2]));
+  newid = LIBMTP_Create_Folder(device, argv[1], atol(argv[2]), atol(argv[3]));
   if (newid == 0) {
     printf("Folder creation failed.\n");
   } else {
@@ -56,7 +57,7 @@ newfolder_function(char * path)
   char * parent = dirname(path);
   char * folder = basename(path);
   int id = parse_path (parent,files,folders);
-  int newid = LIBMTP_Create_Folder(device, folder, id);
+  int newid = LIBMTP_Create_Folder(device, folder, id, 0);
   if (newid == 0) {
     printf("Folder creation failed.\n");
     LIBMTP_Dump_Errorstack(device);

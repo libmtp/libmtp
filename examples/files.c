@@ -35,10 +35,13 @@ static void dump_fileinfo(LIBMTP_file_t *file)
 #ifdef __WIN32__
     printf("   File size %llu (0x%016I64X) bytes\n", file->filesize, file->filesize);
 #else
-    printf("   File size %llu (0x%016llX) bytes\n", file->filesize, file->filesize);
+    printf("   File size %llu (0x%016llX) bytes\n",
+	   (long long unsigned int) file->filesize, 
+	   (long long unsigned int) file->filesize);
 #endif
   }
   printf("   Parent ID: %u\n", file->parent_id);
+  printf("   Storage ID: 0x%08X\n", file->storage_id);
   printf("   Filetype: %s\n", LIBMTP_Get_Filetype_Description(file->filetype));
 }
 

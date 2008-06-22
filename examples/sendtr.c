@@ -166,8 +166,9 @@ static int add_track_to_album(LIBMTP_album_t *albuminfo, LIBMTP_track_t *trackme
     *trackid = trackmeta->item_id;
     albuminfo->tracks = trackid;
     albuminfo->no_tracks = 1;
+    albuminfo->storage_id = trackmeta->storage_id;
     printf("Album doesn't exist: creating...\n");
-    ret = LIBMTP_Create_New_Album(device, albuminfo, 0);
+    ret = LIBMTP_Create_New_Album(device, albuminfo);
     /* albuminfo will be destroyed later by caller */
   }
   
@@ -349,9 +350,12 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pa
       trackmeta->filename = strdup(filename);
     }
     trackmeta->filesize = filesize;
+    trackmeta->parent_id = parent_id;
+    // Use default storage.
+    trackmeta->storage_id = 0;
       
     printf("Sending track...\n");
-    ret = LIBMTP_Send_Track_From_File(device, from_path, trackmeta, progress, NULL, parent_id);
+    ret = LIBMTP_Send_Track_From_File(device, from_path, trackmeta, progress, NULL);
     printf("\n");
     if (ret != 0) {
       printf("Error sending track.\n");

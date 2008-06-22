@@ -125,7 +125,9 @@ int main (int argc, char **argv) {
   album->name = albumname;
   album->no_tracks = idcount;
   album->tracks = ids;
-  int ret = LIBMTP_Create_New_Album(device,album,0);
+  album->parent_id = 0;
+  album->storage_id = 0;
+  int ret = LIBMTP_Create_New_Album(device,album);
   if (ret == 0) {
     ret = LIBMTP_Send_Representative_Sample(device,album->album_id, albumart);
     if (ret != 0) {
