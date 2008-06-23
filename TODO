@@ -11,7 +11,9 @@ COMPATIBILITY fixes:
   the Windows kernel driver apparently does it the other way around, 
   trying the MTP mode first and then not fall back on mass storage if
   MTP is available. (For some more explanations se src/libusb-glue.h.)
-  This may involve kernel modifications.
+  This may involve kernel modifications. Perhaps it is only necessary
+  to tweak the udev config not to load USB mass storage support for
+  these devices. Dunno.
 
 2. COMPATIBILITY: several devices tend to "hang" after disconnect, 
   needing to be unplugged and replugged before they can be used again. 
@@ -20,19 +22,14 @@ COMPATIBILITY fixes:
   avoiding to release the USB interface after closing the PTP/MTP 
   session solves this, and might be a hint at how the Windows MTP stack
   works: perhaps the Windows MTP daemon grabs the interface once the
-  device is plugged in and NEVER release it. (Though it opens new 
-  sessions PTP/MTP sessions.) This behaviour can be emulated by 
-  DEVICE_FLAG_NO_RELEASE_INTERFACE but is it really desireable to have
+  device is plugged in, created a session and NEVER release it.
+  Thus only unplug or shutdown ends the session. This behaviour can be
+  emulated (sort of) by DEVICE_FLAG_NO_RELEASE_INTERFACE which will
+  make the device not release the USB low-level interface, though it'll
+  still close the session. But is it really desireable to have
   as default? Not unless we run an MTP daemon as well, probably, and
   the behaviour is questionable from an USB interoperability point
   of view.
-
-3. COMPATIBILITY: get rid of the remaning "unknown OPFF type" warnings,
-  we have seen OPFF 0x04 (PTP_OPFF_FixedLengthArray) and 0x06 
-  (PTP_OPFF_ByteArray) in the wild but we haven implemented anything
-  but 0x01 (PTP_OPFF_Range) and 0x02 (PTP_OPFF_Enumeration). 0x01
-  and 0x02 are the only types used by PTP for device property field
-  formats.
 
 
 SPEEDUP fixes:
@@ -50,23 +47,19 @@ FEATURE fixes:
 
 2. FEATURE: Support relevant events. MTP devices seen in existance provide
   events for "object added" and "object deleted". These should result in
-  atleast a call to the flus_handles() function.
+  atleast a call to the cache update function.
 
-3. FEATURE: Have libmtp "sendtr" sample optionally create a folder 
-  hierarchy such as /Album/Artist/Song.mp3 on the device. Currently 
-  it'll only put songs into some /Music or /My Music folder if one exists.
-
-4. FEATURE: Mechanism to retrieve the device icon device property, else if not
+3. FEATURE: Mechanism to retrieve the device icon device property, else if not
   present, look for DevIcon.fil (Windows ICO format) and 
   DevLogo.fil (PNG Format) images from the device (if available).
 
-5. FEATURE: Shared device access so that multiple client applications can have
+4. FEATURE: Shared device access so that multiple client applications can have
   an open connection to the device at the same time via a handle. For example,
   it should be somehow possible to run mtp-detect at the same time as amarok or 
   mtpfs is connected to a device. This would require some form of resource
   sharing.
 
-6. FEATURE: Implement an OpenSync backend for devices which have
+5. FEATURE: Implement an OpenSync backend for devices which have
   calendaring, contact etc support. http://opensync.org/
 
 

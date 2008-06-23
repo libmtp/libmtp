@@ -1,3 +1,11 @@
+2008-06-24  Linus Walleij <triad@df.lth.se>
+
+	* TODO: updates.
+	* src/Makefile.am: bump interface to libmtp.so.8.0.0.
+	  It's NOT compatible!
+	* RELEASE libmtp 0.3.0 and let the apps developers have
+	  their apps fixed!
+	
 2008-06-22  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: removed the parenthandle argument from
