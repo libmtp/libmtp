@@ -2551,7 +2551,7 @@ int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *device, uint16_t ** const
  * do not put a reference to any <code>char *</code> field. instead
  * <code>strncpy()</code> it!
  *
- * @param device a pointer to the device to get the filetype capabilities for.
+ * @param device a pointer to the device to get the storage for.
  * @param sortby an integer that determines the sorting of the storage list. 
  *        Valid sort methods are defined in libmtp.h with beginning with
  *        LIBMTP_STORAGE_SORTBY_. 0 or LIBMTP_STORAGE_SORTBY_NOTSORTED to not 
