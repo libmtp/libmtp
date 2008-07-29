@@ -69,6 +69,13 @@ installed. (It will not be created unless you have Doxygen!)
 For information about the Media Transfer Protocol, see:
 http://en.wikipedia.org/wiki/Media_Transfer_Protocol
 
+The official 1.0 specification for MTP was released by the
+USB Implementers Forum in may, 2008. Prior to this, only a
+proprietary Microsoft version was available, and quite a few
+devices out there still use some aspects of the Microsoft
+version, which deviates from the specified standard. You can
+find the official specification here:
+http://www.usb.org/developers/devclass_docs/MTP_1.0.zip
 
 Contributing
 ------------
