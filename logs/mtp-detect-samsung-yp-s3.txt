@@ -1,0 +1,405 @@
+libmtp version: 0.2.6.1
+
+Attempting to connect device(s)
+Device 1 (VID=04e8 and PID=5091) is UNKNOWN.
+Please report this VID/PID and the device model to the libmtp development team
+PTP: Opening session
+Detect: Successfully connected 1 devices
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 04e8
+   idProduct: 5091
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Device flags: 0x00000000
+Microsoft device descriptor 0xee:
+	0000: 1203 4d00 5300 4600 5400 3100 3000 3000	..M.S.F.T.1.0.0.
+	0010: 0400                                   	..
+Microsoft device response to control message 1, CMD 0x04:
+	0000: 2800 0000 0001 0400 0100 0000 0000 0000	(...............
+	0010: 0001 4d54 5000 0000 0000 0000 0000 0000	..MTP...........
+	0020: 0000 0000 0000 0000 0403 0904 3a03 5300	............:.S.
+	0030: 6100 6d00 7300 7500 6e00 6700 2000 4500	a.m.s.u.n.g. .E.
+	0040: 6c00 6500 6300 7400 7200 6f00 6e00 6900	l.e.c.t.r.o.n.i.
+	0050: 6300 7300 2000 4300 6f00 2e00 2c00 4c00	c.s. .C.o...,.L.
+	0060: 7400 6400 2e00 0803 5300 3300 0000 2203	t.d.....S.3...".
+	0070: 3000 3700 6400 6600 3800 6100 6600 3400	0.7.d.f.8.a.f.4.
+	0080: 3000 3000 3000 3000 3000 3000 6600 6400	0.0.0.0.0.0.f.d.
+	0090: 0008 73f7 1b08 73f7 1f08 73f7 5908 73f7	..s...s...s.Y.s.
+	00a0: 6100 0000 0000 0000 0200 0000 0022 0100	a............"..
+	00b0: 0022 0200 0000 0000 0000 0000 8000 0000	."..............
+	00c0: 0000 0000 0000 0000 0000 0000 0000 0000	................
+	00d0: 0000 0000 0000 0000 0100 0002 0000 781f	..............x.
+	00e0: bf00 781f be00 0000 0008 0e25 ac08 0e2b	..x........%...+
+	00f0: 7008 0e2e 7c08 0e30 1808 0e32 ac08 0e35	p...|..0...2...5
+	0100: 0c08 0e35 a408 0e36 7808 0e37 8c08 0e39	...5...6x..7...9
+	0110: 1c08 0e3a 9c00 0000 0000 0000 0000 0000	...:............
+	0120: 0000 0000 0000 0000 0022 0100 0022 0200	........."..."..
+	0130: 00ff ffff ffff ffff ff00 0000 040b ec00	................
+	0140: 000b ec00 0005 f600 0005 f600 0002 fb00	................
+	0150: 0000 2462 0300 11f9 0300 1ad2 0300 2462	..$b..........$b
+	0160: 0200 24f9 0300 0cd2 0100 2462 0100 2172	..$.......$b..!r
+	0170: 0100 11f9 0100 2195 0100 1ad2 0100 2c8a	......!.......,.
+	0180: 0100 26af 0100 3c78 0100 2eaa 0100 24f9	..&...<x......$.
+	0190: 0100 24f9 0100 37ae 0100 2edd 0100 36c7	..$...7.......6.
+	01a0: 0100 36d2 0100 3677 0000 0009 9900 000b	..6...6w........
+	01b0: f600 000e f300 0013 b500 0016 b100 001d	................
+	01c0: e600 0027 3b00 0029 9f00 002f d800 0035	...';..).../...5
+	01d0: d200 003b ce00 0041 c800 0047 8600 004d	...;...A...G...M
+	01e0: be00 0053 7c00 0057 6400 005a c400 0060	...S|..Wd..Z...`
+	01f0: 3500 0066 1c00 006b 8e00 0071 7500 007d	5..f...k...qu..}
+	0200: fe00 0009 da00 000b f600 000e f300 0013	................
+	0210: b500 0017 4e00 001d e600 0027 3b00 0029	....N......';..)
+	0220: 9f00 002f d800 0035 d200 003b ce00 0041	.../...5...;...A
+	0230: c800 0047 8600 004d be00 0053 7c00 0059	...G...M...S|..Y
+	0240: b400 005f b000 0065 6d00 0066 1c00 006b	..._...em..f...k
+	0250: 8e00 0071 7500 007d fe00 0009 da00 000b	...qu..}........
+	0260: f600 000e f300 0013 b500 0017 ec00 001e	................
+	0270: f900 0028 a300 0029 9f00 002f d800 0035	...(...).../...5
+	0280: d200 003b ce00 0041 c800 0047 8600 004d	...;...A...G...M
+	0290: be00 0053 7c00 0059 b400 005f b000 0065	...S|..Y..._...e
+	02a0: 6d00 006b a600 0071 6300 0077 9c00 0084	m..k...qc..w....
+	02b0: 1000 0009 da00 000b f600 000e f300 0013	................
+	02c0: b500 0016 b100 001d e600 0027 3b00 0029	...........';..)
+	02d0: 9f00 002f d800 0035 d200 003b ce00 0041	.../...5...;...A
+	02e0: c800 0047 8600 004d be00 0053 7c00 0059	...G...M...S|..Y
+	02f0: b400 005f b000 0062 cf00 0066 1c00 006b	..._...b...f...k
+	0300: 8e00 0071 7500 007d fe00 000a dc00 000c	...qu..}........
+	0310: 9400 000e f300 0015 b800 0017 ec00 0022	..............."
+	0320: 6400 002b 3a00 002d dd00 0033 b600 0038	d..+:..-...3...8
+	0330: 9900 003e e400 0045 2d00 004a 1800 004d	...>...E-..J...M
+	0340: be00 0056 7c00 0059 b400 0063 2000 0069	...V|..Y...c ..i
+	0350: 1200 006f 8400 0075 7600 007b e800 008b	...o...uv..{....
+	0360: 3900 0009 da00 000b f600 000e f300 0013	9...............
+	0370: b500 0016 b100 001e f900 0029 4100 002b	...........)A..+
+	0380: 1e00 0031 9000 0037 c100 003b ce00 0041	...1...7...;...A
+	0390: c800 0047 8600 004d be00 0053 7c00 0057	...G...M...S|..W
+	03a0: 6400 005a c400 0060 3500 0066 1c00 006b	d..Z...`5..f...k
+	03b0: 8e00 0071 7500 007d fe00 0009 da00 000b	...qu..}........
+	03c0: f600 000e f300 0013 b500 0017 ec00 001e	................
+	03d0: f900 0029 4100 002b c500 0031 9000 0037	...)A..+...1...7
+	03e0: c100 003d f400 0044 2500 0047 8600 004d	...=...D%..G...M
+	03f0: be00 0053 7c00 0059 b400 005f b000 0065	...S|..Y..._...e
+Microsoft device response to control message 2, CMD 0x04:
+	0000: 2800 0000 0001 0400 0100 0000 0000 0000	(...............
+	0010: 0001 4d54 5000 0000 0000 0000 0000 0000	..MTP...........
+	0020: 0000 0000 0000 0000 0403 0904 3a03 5300	............:.S.
+	0030: 6100 6d00 7300 7500 6e00 6700 2000 4500	a.m.s.u.n.g. .E.
+	0040: 6c00 6500 6300 7400 7200 6f00 6e00 6900	l.e.c.t.r.o.n.i.
+	0050: 6300 7300 2000 4300 6f00 2e00 2c00 4c00	c.s. .C.o...,.L.
+	0060: 7400 6400 2e00 0803 5300 3300 0000 2203	t.d.....S.3...".
+	0070: 3000 3700 6400 6600 3800 6100 6600 3400	0.7.d.f.8.a.f.4.
+	0080: 3000 3000 3000 3000 3000 3000 6600 6400	0.0.0.0.0.0.f.d.
+	0090: 0008 73f7 1b08 73f7 1f08 73f7 5908 73f7	..s...s...s.Y.s.
+	00a0: 6100 0000 0000 0000 0200 0000 0022 0100	a............"..
+	00b0: 0022 0200 0000 0000 0000 0000 8000 0000	."..............
+	00c0: 0000 0000 0000 0000 0000 0000 0000 0000	................
+	00d0: 0000 0000 0000 0000 0100 0002 0000 781f	..............x.
+	00e0: bf00 781f be00 0000 0008 0e25 ac08 0e2b	..x........%...+
+	00f0: 7008 0e2e 7c08 0e30 1808 0e32 ac08 0e35	p...|..0...2...5
+	0100: 0c08 0e35 a408 0e36 7808 0e37 8c08 0e39	...5...6x..7...9
+	0110: 1c08 0e3a 9c00 0000 0000 0000 0000 0000	...:............
+	0120: 0000 0000 0000 0000 0022 0100 0022 0200	........."..."..
+	0130: 00ff ffff ffff ffff ff00 0000 040b ec00	................
+	0140: 000b ec00 0005 f600 0005 f600 0002 fb00	................
+	0150: 0000 2462 0300 11f9 0300 1ad2 0300 2462	..$b..........$b
+	0160: 0200 24f9 0300 0cd2 0100 2462 0100 2172	..$.......$b..!r
+	0170: 0100 11f9 0100 2195 0100 1ad2 0100 2c8a	......!.......,.
+	0180: 0100 26af 0100 3c78 0100 2eaa 0100 24f9	..&...<x......$.
+	0190: 0100 24f9 0100 37ae 0100 2edd 0100 36c7	..$...7.......6.
+	01a0: 0100 36d2 0100 3677 0000 0009 9900 000b	..6...6w........
+	01b0: f600 000e f300 0013 b500 0016 b100 001d	................
+	01c0: e600 0027 3b00 0029 9f00 002f d800 0035	...';..).../...5
+	01d0: d200 003b ce00 0041 c800 0047 8600 004d	...;...A...G...M
+	01e0: be00 0053 7c00 0057 6400 005a c400 0060	...S|..Wd..Z...`
+	01f0: 3500 0066 1c00 006b 8e00 0071 7500 007d	5..f...k...qu..}
+	0200: fe00 0009 da00 000b f600 000e f300 0013	................
+	0210: b500 0017 4e00 001d e600 0027 3b00 0029	....N......';..)
+	0220: 9f00 002f d800 0035 d200 003b ce00 0041	.../...5...;...A
+	0230: c800 0047 8600 004d be00 0053 7c00 0059	...G...M...S|..Y
+	0240: b400 005f b000 0065 6d00 0066 1c00 006b	..._...em..f...k
+	0250: 8e00 0071 7500 007d fe00 0009 da00 000b	...qu..}........
+	0260: f600 000e f300 0013 b500 0017 ec00 001e	................
+	0270: f900 0028 a300 0029 9f00 002f d800 0035	...(...).../...5
+	0280: d200 003b ce00 0041 c800 0047 8600 004d	...;...A...G...M
+	0290: be00 0053 7c00 0059 b400 005f b000 0065	...S|..Y..._...e
+	02a0: 6d00 006b a600 0071 6300 0077 9c00 0084	m..k...qc..w....
+	02b0: 1000 0009 da00 000b f600 000e f300 0013	................
+	02c0: b500 0016 b100 001d e600 0027 3b00 0029	...........';..)
+	02d0: 9f00 002f d800 0035 d200 003b ce00 0041	.../...5...;...A
+	02e0: c800 0047 8600 004d be00 0053 7c00 0059	...G...M...S|..Y
+	02f0: b400 005f b000 0062 cf00 0066 1c00 006b	..._...b...f...k
+	0300: 8e00 0071 7500 007d fe00 000a dc00 000c	...qu..}........
+	0310: 9400 000e f300 0015 b800 0017 ec00 0022	..............."
+	0320: 6400 002b 3a00 002d dd00 0033 b600 0038	d..+:..-...3...8
+	0330: 9900 003e e400 0045 2d00 004a 1800 004d	...>...E-..J...M
+	0340: be00 0056 7c00 0059 b400 0063 2000 0069	...V|..Y...c ..i
+	0350: 1200 006f 8400 0075 7600 007b e800 008b	...o...uv..{....
+	0360: 3900 0009 da00 000b f600 000e f300 0013	9...............
+	0370: b500 0016 b100 001e f900 0029 4100 002b	...........)A..+
+	0380: 1e00 0031 9000 0037 c100 003b ce00 0041	...1...7...;...A
+	0390: c800 0047 8600 004d be00 0053 7c00 0057	...G...M...S|..W
+	03a0: 6400 005a c400 0060 3500 0066 1c00 006b	d..Z...`5..f...k
+	03b0: 8e00 0071 7500 007d fe00 0009 da00 000b	...qu..}........
+	03c0: f600 000e f300 0013 b500 0017 ec00 001e	................
+	03d0: f900 0029 4100 002b c500 0031 9000 0037	...)A..+...1...7
+	03e0: c100 003d f400 0044 2500 0047 8600 004d	...=...D%..G...M
+	03f0: be00 0053 7c00 0059 b400 005f b000 0065	...S|..Y..._...e
+Device info:
+   Manufacturer: Samsung Electronics Co.,Ltd.
+   Model: S3
+   Device version: V1.01
+   Serial number: 07DF8AF4000000FD
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0; microsoft.com/WMPPD: 10.0; microsoft.com/WMDRMPD: 10.1microsoft.com/WMPPD: 11.,; 
+   Detected object size: 64 bits
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   101b: Get partial object
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   100f: Format storage
+   1011: Self test device
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9806: Set object property list
+   9810: Get object references
+   9811: Set object references
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Send WMDRM-PD Command
+   9201: Report Added/Deleted Items
+Events supported:
+   None.
+Device Properties Supported:
+   0xd402: Friendly Device Name
+   0xd101: Secure Time
+   0xd102: Device Certificate
+   0xd401: Synchronization Partner
+Playable File (Object) Types and Object Properties Supported:
+   3000: Undefined Type
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc44: Name STRING data type GET/SET
+   3001: Association/Directory
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc44: Name STRING data type GET/SET
+   3008: MS Wave
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc9b: AlbumArtist STRING data type GET/SET
+      dc89: Duration UINT32 data type range: MIN 0, MAX -1, STEP 1 GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      de9a: AudioBitRate UINT32 data type range: MIN 5120, MAX 327680, STEP 1 GET/SET
+      de99: AudioWAVECodec UINT32 data type enumeration: 1, 2,  GET/SET
+      de93: SampleRate UINT32 data type range: MIN 8192, MAX 49152, STEP 1 GET/SET
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  GET/SET
+      dc96: Composer STRING data type GET/SET
+      dc99: OriginalReleaseDate STRING data type GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+   3009: MP3
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc9b: AlbumArtist STRING data type GET/SET
+      dc89: Duration UINT32 data type range: MIN 0, MAX -1, STEP 1 GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      de9a: AudioBitRate UINT32 data type range: MIN 5120, MAX 327680, STEP 1 GET/SET
+      de99: AudioWAVECodec UINT32 data type enumeration: 85,  GET/SET
+      de93: SampleRate UINT32 data type range: MIN 8192, MAX 49152, STEP 1 GET/SET
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  GET/SET
+      dc96: Composer STRING data type GET/SET
+      dc99: OriginalReleaseDate STRING data type GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+   300c: ASF
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc9b: AlbumArtist STRING data type GET/SET
+      dc89: Duration UINT32 data type range: MIN 0, MAX -1, STEP 1 GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      de9a: AudioBitRate UINT32 data type range: MIN 5120, MAX 327680, STEP 1 GET/SET
+      de99: AudioWAVECodec UINT32 data type enumeration: 353,  GET/SET
+      de93: SampleRate UINT32 data type range: MIN 8192, MAX 49152, STEP 1 GET/SET
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  GET/SET
+      dc96: Composer STRING data type GET/SET
+      dc99: OriginalReleaseDate STRING data type GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+   3801: JPEG
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc44: Name STRING data type GET/SET
+      dc88: Height UINT32 data type range: MIN 0, MAX 1920, STEP 1 GET/SET
+      dc87: Width UINT32 data type range: MIN 0, MAX 3072, STEP 1 GET/SET
+   b901: WMA
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc9b: AlbumArtist STRING data type GET/SET
+      dc89: Duration UINT32 data type range: MIN 0, MAX -1, STEP 1 GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      de9a: AudioBitRate UINT32 data type range: MIN 5120, MAX 327680, STEP 1 GET/SET
+      de99: AudioWAVECodec UINT32 data type enumeration: 353, 355,  GET/SET
+      de93: SampleRate UINT32 data type range: MIN 8192, MAX 49152, STEP 1 GET/SET
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  GET/SET
+      dc96: Composer STRING data type GET/SET
+      dc99: OriginalReleaseDate STRING data type GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+   ba05: Abstract Audio Video Playlist
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc44: Name STRING data type GET/SET
+   ba03: Abstract Audio Album
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc44: Name STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc9b: AlbumArtist STRING data type GET/SET
+      dc89: Duration UINT32 data type range: MIN 0, MAX -1, STEP 1 GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      de9a: AudioBitRate UINT32 data type range: MIN 5120, MAX 327680, STEP 1 GET/SET
+      de99: AudioWAVECodec UINT32 data type enumeration: 0,  GET/SET
+      de93: SampleRate UINT32 data type range: MIN 8192, MAX 49152, STEP 1 GET/SET
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  GET/SET
+      dc96: Composer STRING data type GET/SET
+      dc99: OriginalReleaseDate STRING data type GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      d901: BuyFlag UINT8 data type enumeration: 0, 1,  GET/SET
+      dc82: RepresentativeSampleSize UINT32 data type range: MIN 0, MAX -1, STEP 1 READ ONLY
+      dc81: RepresentativeSampleFormat UINT16 data type enumeration: 14337,  GET/SET
+      dc83: RepresentativeSampleHeight UINT32 data type range: MIN 0, MAX 240, STEP 1 GET/SET
+      dc84: RepresentativeSampleWidth UINT32 data type range: MIN 0, MAX 320, STEP 1 GET/SET
+      dc86: RepresentativeSampleData array of UINT8 data type byte array:  GET/SET
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0003
+      FilesystemType: 0x0002
+      AccessCapability: 0x0000
+      MaxCapacity: 3957993472
+      FreeSpaceInBytes: 3911229440
+      FreeSpaceInObjects: 5967
+      StorageDescription: S3
+      VolumeIdentifier: 07df8af4000000fd
+Special directories:
+   Default music folder: 0x00008007
+   Default playlist folder: 0x00008001
+   Default picture folder: 0x00008008
+   Default video folder: 0x00008009
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00008005
+   Default album folder: 0x0000800a
+   Default text folder: 0x00008006
+MTP-specific device properties:
+   Friendly name: (NULL)
+   Synchronization partner: 
+libmtp supported (playable) filetypes:
+   RIFF WAVE file
+   ISO MPEG-1 Audio Layer 3
+   Microsoft Advanced Systems Format
+   JPEG file
+   Microsoft Windows Media Audio
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20000201 08:53:21Z#</VALUE><FLAG>DRM_CLK_NEEDS_REFRESH</FLAG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">CgoKCgoKCgoKCgoKCgoKCgoKCgo=</UNIQUEID><PUBLICKEY private="1">DaMLNXgOJaE7JL6z9qHFYg6nJX4pnIRK/gwlQf1r5RwT142jPgwNIA==</PUBLICKEY><KEYDATA>E64t01R7LRaceo6Clbv21QkKBqQ=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>aXDDaQ3MdAZd/eTMxUCvdv57hoZzWioFgtDlnZL7Rwwrjga3J5YgGw==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>3/p7bm126YT7MPCkdUEj29V9utc=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.105.105</SECURITYVERSION><CERTIFICATE private="1">DaMLNXgOJaE7JL6z9qHFYg6nJX4pnIRK/gwlQf1r5RwT142jPgwNIAIEaWkRWSHSx9NBkP07jg9pYGgBroBlblzkaycTo0CqCCq0nWailL0I4Lga</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><FEATURES><CLOCK>2</CLOCK><SECURECLOCK><URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL><PUBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY></SECURECLOCK><METERING>1</METERING><LICENSE_ACQ>1</LICENSE_ACQ><LICENSE_SYNC>1</LICENSE_SYNC><ENCRYPTION>1</ENCRYPTION><SYMMETRIC_OPT>1</SYMMETRIC_OPT></FEATURES><LIMITS><MAXCHAINDEPTH>2</MAXCHAINDEPTH><MAXLICENSESIZE>10240</MAXLICENSESIZE><MAXHEADERSIZE>5120</MAXHEADERSIZE></LIMITS><PUBLICKEY>2hOkxOCK1QPe10JHYvfVUjYjLBMzXCftotZMbbB+VhO0gpWYnFSNJA==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>zVgOV3F4q2xlvMfFBZtW/YaNhE/9IBGpQpxDJG4cljg81O1sxP/KhA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>1229</AUTH_ID><PUBLICKEY>8l60FgPW1vHhfaAFYkoYXMMHTFZCfCf98BXPcKJLbBjofB1fy8Bcbw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>LpLd030TMk4F6v2kAjf3LecPk0UOgCjPmQrGsKUfmyRBTRujDP3/LQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>YoS6xu8BvaENyvqIISjhFbO5wmakFMYg2/C8ALN0uuXvYRVe3JJZYw==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
+WMPInfo.xml Does not exist on this device
+PTP: Closing session
+OK.

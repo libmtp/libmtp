@@ -116,6 +116,8 @@
   // From Wim Verwimp <wimverwimp@gmail.com>
   // Not sure about the Ogg and broken proplist flags here. Just guessing.
   { "Samsung", 0x04e8, "YP-S5", 0x508b, DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // From Ludovic Danigo
+  { "Samsung", 0x04e8, "YP-S3", 0x5091, DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // From a rouge .INF file,
   // this device ID seems to have been recycled for:
   // the Samsung SGH-A707 Cingular cellphone
@@ -313,16 +315,19 @@
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
   // Reported by two anonymous SourceForge users
+  // Needs the stronger OGG_IS_UNKNOWN flag to support OGG properly,
+  // be aware of newer players that may be needing this too.
   { "iRiver", 0x4102, "E100", 0x1141, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
-    DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
+    DEVICE_FLAG_OGG_IS_UNKNOWN },
   // Reported by Scott Call
+  // Assume this actually supports OGG though it reports it doesn't.
   { "iRiver", 0x4102, "H10 20GB", 0x2101, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
-    DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
+    DEVICE_FLAG_OGG_IS_UNKNOWN },
   { "iRiver", 0x4102, "H10", 0x2102, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
-    DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
+    DEVICE_FLAG_OGG_IS_UNKNOWN },
 
 
   /*
@@ -349,6 +354,10 @@
   { "Toshiba", 0x0930, "Gigabeat MEU202", 0x0018, DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by Rolf <japan (at) dl3lar.de>
   { "Toshiba", 0x0930, "Gigabeat T", 0x0019, DEVICE_FLAG_NONE },
+  // Reported by Phil Ingram <ukpbert@users.sourceforge.net>
+  // Tentatively added - no real reports of this device ID being MTP,
+  // reports as USB Mass Storage currently.
+  { "Toshiba", 0x0930, "Gigabeat MEU201", 0x001a, DEVICE_FLAG_NONE },
 
   
   /*
@@ -381,11 +390,14 @@
    * interface.
    */
   { "Dunlop", 0x10d6, "MP3 player 1GB / EGOMAN MD223AFD", 0x2200, DEVICE_FLAG_UNLOAD_DRIVER},
+  // Reported by Steven Black <stevenblack1956@users.sourceforge.net>
+  // Obviously this company goes by many names.
+  { "Memorex", 0x10d6, "MMP 8585", 0x2300, DEVICE_FLAG_UNLOAD_DRIVER },
   
   /*
    * Microsoft
    */
-  // Reported by Farooq Zaman
+  // Reported by Farooq Zaman (used for all Zunes)
   { "Microsoft", 0x045e, "Zune", 0x0710, DEVICE_FLAG_NONE }, 
   
   /*
@@ -418,8 +430,12 @@
   { "Nokia", 0x0421, "3110c Mobile Phone", 0x005f, DEVICE_FLAG_NONE },
   // From: Vasily <spc-@users.sourceforge.net>
   { "Nokia", 0x0421, "3109c Mobile Phone", 0x0065, DEVICE_FLAG_NONE },
+  // From: <rawc@users.sourceforge.net>
+  { "Nokia", 0x0421, "5310 XpressMusic", 0x006c, DEVICE_FLAG_NONE },
   // From: robin (AT) headbank D0Tco DOTuk
   { "Nokia", 0x0421, "N95 Mobile Phone 8GB", 0x006e, DEVICE_FLAG_NONE },
+  // From: danielw
+  { "Nokia", 0x0421, "E71", 0x00e4, DEVICE_FLAG_NONE },
   // From: Christian Rusa <kristous@users.sourceforge.net>
   { "Nokia", 0x0421, "5700 XpressMusic Mobile Phone", 0x04b4, DEVICE_FLAG_NONE },
   // From: Mitchell Hicks <mitchix@yahoo.com>
@@ -467,17 +483,22 @@
   { "Palm Handspring", 0x1703, "Pocket Tunes 4", 0x0002, DEVICE_FLAG_NONE },
 
   /*
-   * TrekStor devices
+   * TrekStor and Medion devices
    * Their datasheet claims their devices are dualmode so probably needs to
    * unload the attached drivers here.
    */
   // Reported by Stefan Voss <svoss@web.de>
   // This is a Sigmatel SoC with a hard disk.
   { "TrekStor", 0x066f, "Vibez 8/12GB", 0x842a, 
-      DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by anonymous SourceForge user.
+  // This one done for Medion, whatever that is. Error reported so assume
+  // the same bug flag as its ancestor above.
+  { "Medion", 0x066f, "MD8333", 0x8550,
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Cristi Magherusan <majeru@gentoo.ro>
   { "TrekStor", 0x0402, "i.Beat Sweez FM", 0x0611, 
-      DEVICE_FLAG_UNLOAD_DRIVER },
+    DEVICE_FLAG_UNLOAD_DRIVER },
   
   /*
    * Disney/Tevion (have had no reports of these actually working.)
@@ -546,6 +567,8 @@
   { "SonyEricsson", 0x0fce, "W890i", 0x00b3, DEVICE_FLAG_NONE },
   // Reported by Linus Åkesson <linusakesson@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "C902", 0x00d4, DEVICE_FLAG_NONE },
+  // Reported by an anonymous SourceForge user
+  { "SonyEricsson", 0x0fce, "C702", 0x00d9, DEVICE_FLAG_NONE },
 
   /*
    * Motorola

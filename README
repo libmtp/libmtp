@@ -389,6 +389,14 @@ cannot test your solution.
   the quirks, see:
   http://www2.one-eyed-alien.net/~mdharm/linux-usb/target_offenses.txt
 
+* Zen models AVI file seeking problem: the Zens cannot parse the
+  files for the runlength metadata. Do not transfer file with e.g.
+  mtp-sendfile, use mtp-sendtr and set the length of the track to
+  the apropriate number of seconds and it will work. In graphical
+  clients, use a "track transfer" function to send these AVI files,
+  the Zens need the metadata associated with tracks to play back
+  movies properly. Movies are considered "tracks" in the MTP world.
+
 * The Zen Vision:M (possibly more Creative Zens) has a firmware bug
   that makes it drop the last two characters off a playlist name.
   It is fixed in later firmware.

@@ -1,3 +1,7 @@
+2008-07-31  Linus Walleij <triad@df.lth.se>
+
+	* src/music-players.h: several new devices and flags.
+
 2008-06-24  Linus Walleij <triad@df.lth.se>
 
 	* TODO: updates.
