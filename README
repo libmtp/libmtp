@@ -397,6 +397,13 @@ cannot test your solution.
   the Zens need the metadata associated with tracks to play back
   movies properly. Movies are considered "tracks" in the MTP world.
 
+* Some devices that disregard the metadata sent with the MTP 
+  commands will parse the files for e.g. ID3 metadata. Some still
+  of these devices expect only ID3v2.3 metadata and will fail with
+  a modern ID3v2,4 tag writer, like many of those found in Linux
+  applications. Windows Media Player use ID3v2.3 only, so many
+  manufacturers only test this version.
+
 * The Zen Vision:M (possibly more Creative Zens) has a firmware bug
   that makes it drop the last two characters off a playlist name.
   It is fixed in later firmware.
