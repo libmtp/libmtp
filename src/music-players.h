@@ -25,7 +25,6 @@
  * This file is supposed to be included within a struct from both libmtp
  * and libgphoto2.
  */
-
 /*
  * MTP device list, trying real bad to get all devices into
  * this list by stealing from everyone I know.
@@ -535,7 +534,10 @@
    * LG Electronics
    */
   // Not verified - anonymous submission
-  { "LG", 0x043e, "UP3", 0x70b1, DEVICE_FLAG_NONE },
+  { "LG Electronics Inc.", 0x043e, "UP3", 0x70b1, DEVICE_FLAG_NONE },
+  // Reported by Joseph Nahmias <joe@nahimas.net>
+  { "LG Electronics Inc.", 0x1004, "VX8550 V CAST Mobile Phone", 0x6010,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
 
   /*
    * Sony
