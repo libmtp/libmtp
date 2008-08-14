@@ -76,15 +76,18 @@
    */
   // From anonymous SourceForge user, not verified
   { "Samsung", 0x04e8, "YP-900", 0x0409, DEVICE_FLAG_NONE },
+  // From Gabriel Nunes <gabrielkm1@yahoo.com.br>
+  { "Samsung", 0x04e8, "YH-920 (501d)", 0x501d, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Soren O'Neill
-  { "Samsung", 0x04e8, "YH-920", 0x5022, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Samsung", 0x04e8, "YH-920 (5022)", 0x5022, DEVICE_FLAG_UNLOAD_DRIVER },
   // Contributed by aronvanammers on SourceForge
   { "Samsung", 0x04e8, "YH-925GS", 0x5024, DEVICE_FLAG_NONE },
   // From libgphoto2, according to tests by Stephan Fabel it cannot
   // get all objects with the getobjectproplist command..
   { "Samsung", 0x04e8, "YH-820", 0x502e, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Contributed by polux2001@users.sourceforge.net
-  { "Samsung", 0x04e8, "YH-925(-GS)", 0x502f, DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  { "Samsung", 0x04e8, "YH-925(-GS)", 0x502f, DEVICE_FLAG_UNLOAD_DRIVER | 
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Contributed by anonymous person on SourceForge
   { "Samsung", 0x04e8, "YH-J70J", 0x5033, DEVICE_FLAG_UNLOAD_DRIVER },
   // From XNJB user
