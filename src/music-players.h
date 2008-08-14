@@ -66,6 +66,8 @@
   { "Creative", 0x041e, "ZEN", 0x4157, DEVICE_FLAG_IGNORE_HEADER_ERRORS | DEVICE_FLAG_BROKEN_SET_SAMPLE_DIMENSIONS },
   // Reported by Ringofan <mcroman@users.sourceforge.net>
   { "Creative", 0x041e, "ZEN V 2GB", 0x4158, DEVICE_FLAG_NONE },
+  // Reported by Aaron F. Gonzalez <sub_tex@users.sourceforge.net>
+  { "Creative", 0x041e, "ZEN X-Fi", 0x4162, DEVICE_FLAG_NONE },
 
   /*
    * Samsung
@@ -76,6 +78,8 @@
    */
   // From anonymous SourceForge user, not verified
   { "Samsung", 0x04e8, "YP-900", 0x0409, DEVICE_FLAG_NONE },
+  // From MItch <dbaker@users.sourceforge.net>
+  { "Samsung", 0x04e8, "I550W Phone", 0x04a4, DEVICE_FLAG_NONE },
   // From Gabriel Nunes <gabrielkm1@yahoo.com.br>
   { "Samsung", 0x04e8, "YH-920 (501d)", 0x501d, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Soren O'Neill
@@ -322,6 +326,11 @@
   { "iRiver", 0x4102, "E100", 0x1141, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_OGG_IS_UNKNOWN },
+  // Reported by anonymous SourceForge user
+  // Need verification of whether this firmware really need all these flags
+  { "iRiver", 0x4102, "E100 v2", 0x1142, 
+    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
+    DEVICE_FLAG_OGG_IS_UNKNOWN },
   // Reported by Scott Call
   // Assume this actually supports OGG though it reports it doesn't.
   { "iRiver", 0x4102, "H10 20GB", 0x2101, 
@@ -450,6 +459,9 @@
   { "Nokia", 0x0421, "N95 Mobile Phone", 0x04ef, DEVICE_FLAG_NONE },
   // From: Pat Nicholls <pat@patandannie.co.uk>
   { "Nokia", 0x0421, "N80 Internet Edition (Media Player)", 0x04f1, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by anonymous SourceForge user
+  // One thing stated by reporter (Nokia model) another by the detect log...
+  { "Nokia/Verizon", 0x05c6, "6205 Balboa/Verizon Music Phone", 0x3196, DEVICE_FLAG_NONE },
 
 
   /*
@@ -570,6 +582,8 @@
   { "SonyEricsson", 0x0fce, "W910", 0x0076, DEVICE_FLAG_NONE },
   // Reported by Zack <zackdvd@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "W890i", 0x00b3, DEVICE_FLAG_NONE },
+  // Reported by robert dot ahlskog at gmail
+  { "SonyEricsson", 0x0fce, "W760i", 0x00c6, DEVICE_FLAG_NONE },
   // Reported by Linus Åkesson <linusakesson@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "C902", 0x00d4, DEVICE_FLAG_NONE },
   // Reported by an anonymous SourceForge user
