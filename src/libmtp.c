@@ -2709,7 +2709,8 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
 
 /**
  * This returns a long list of all files available
- * on the current MTP device. Folders will not be returned. Typical usage:
+ * on the current MTP device. Folders will not be returned, but abstract
+ * entities like playlists and albums will show up as "files". Typical usage:
  *
  * <pre>
  * LIBMTP_file_t *filelist;
@@ -2725,19 +2726,26 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
  * }
  * </pre>
  *
+ * If you want to group your file listing by storage (per storage unit) or
+ * arrange files into folders, you must dereference the <code>storage_id</code>
+ * and/or <code>parent_id</code> field of the returned <code>LIBMTP_file_t</code>
+ * struct. To arrange by folders or files you typically have to create the proper
+ * trees by calls to <code>LIBMTP_Get_Storage()</code> and/or 
+ * <code>LIBMTP_Get_Folder_List()</code> first.
+ *
  * @param device a pointer to the device to get the file listing for.
  * @param callback a function to be called during the tracklisting retrieveal
- *               for displaying progress bars etc, or NULL if you don't want
- *               any callbacks.
+ *        for displaying progress bars etc, or NULL if you don't want
+ *        any callbacks.
  * @param data a user-defined pointer that is passed along to
- *             the <code>progress</code> function in order to
- *             pass along some user defined data to the progress
- *             updates. If not used, set this to NULL.
+ *        the <code>progress</code> function in order to
+ *        pass along some user defined data to the progress
+ *        updates. If not used, set this to NULL.
  * @return a list of files that can be followed using the <code>next</code>
- *         field of the <code>LIBMTP_file_t</code> data structure.
- *         Each of the metadata tags must be freed after use, and may
- *         contain only partial metadata information, i.e. one or several
- *         fields may be NULL or 0.
+ *        field of the <code>LIBMTP_file_t</code> data structure.
+ *        Each of the metadata tags must be freed after use, and may
+ *        contain only partial metadata information, i.e. one or several
+ *        fields may be NULL or 0.
  * @see LIBMTP_Get_Filemetadata()
  */
 LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
@@ -3358,8 +3366,9 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 }
 
 /**
- * This returns a long list of all tracks available
- * on the current MTP device. Typical usage:
+ * This returns a long list of all tracks available on the current MTP device.
+ * Tracks include multimedia objects, both music tracks and video tracks.
+ * Typical usage:
  *
  * <pre>
  * LIBMTP_track_t *tracklist;
@@ -3375,19 +3384,26 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
  * }
  * </pre>
  *
+ * If you want to group your track listing by storage (per storage unit) or
+ * arrange tracks into folders, you must dereference the <code>storage_id</code>
+ * and/or <code>parent_id</code> field of the returned <code>LIBMTP_track_t</code>
+ * struct. To arrange by folders or files you typically have to create the proper
+ * trees by calls to <code>LIBMTP_Get_Storage()</code> and/or 
+ * <code>LIBMTP_Get_Folder_List()</code> first.
+ *
  * @param device a pointer to the device to get the track listing for.
  * @param callback a function to be called during the tracklisting retrieveal
- *               for displaying progress bars etc, or NULL if you don't want
- *               any callbacks.
+ *        for displaying progress bars etc, or NULL if you don't want
+ *        any callbacks.
  * @param data a user-defined pointer that is passed along to
- *             the <code>progress</code> function in order to
- *             pass along some user defined data to the progress
- *             updates. If not used, set this to NULL.
+ *        the <code>progress</code> function in order to
+ *        pass along some user defined data to the progress
+ *        updates. If not used, set this to NULL.
  * @return a list of tracks that can be followed using the <code>next</code>
- *         field of the <code>LIBMTP_track_t</code> data structure.
- *         Each of the metadata tags must be freed after use, and may
- *         contain only partial metadata information, i.e. one or several
- *         fields may be NULL or 0.
+ *        field of the <code>LIBMTP_track_t</code> data structure.
+ *        Each of the metadata tags must be freed after use, and may
+ *        contain only partial metadata information, i.e. one or several
+ *        fields may be NULL or 0.
  * @see LIBMTP_Get_Trackmetadata()
  */
 LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device,

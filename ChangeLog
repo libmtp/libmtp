@@ -1,3 +1,10 @@
+2008-08-14  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: add some documentation to file and track
+	  listing functions to that it's clear that you have to
+	  inspect storage_id and parent_id in order to group files
+	  into storages and/or folders.
+
 2008-07-31  Linus Walleij <triad@df.lth.se>
 
 	* src/music-players.h: several new devices and flags.
