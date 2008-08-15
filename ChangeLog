@@ -1,3 +1,13 @@
+2008-08-15  Linus Walleij <triad@df.lth.se>
+
+	* examples/Makefile.am: break out utility functions
+	  (currently only checklang()) to a separate file.
+	* examples/util.h: dito.
+	* examples/util.c: dito.
+	* examples/detect.c: dito.
+	* examples/sendtr.c: dito.
+	* examples/connect.c: dito.
+
 2008-08-14  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: add some documentation to file and track

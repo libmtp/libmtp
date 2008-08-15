@@ -30,6 +30,7 @@
 #define _LARGEFILE64_SOURCE
 
 #include "common.h"
+#include "util.h"
 #include <string.h>
 #include <libgen.h>
 #include <sys/stat.h>
@@ -56,31 +57,6 @@ void sendtrack_usage (void)
   fprintf(stderr, "    -l <album> -c <codec> -g <genre> -n <track number> -y <year>\n");
   fprintf(stderr, "       -d <duration in seconds> <local path> <remote path>\n");
   fprintf(stderr, "(-q means the program will not ask for missing information.)\n");
-}
-
-static void checklang(void)
-{
-  char *langsuff = NULL;
-  char *lang = getenv("LANG");
-
-#ifdef HAVE_LANGINFO_H
-  langsuff = nl_langinfo(CODESET);
-#else
-  /*
-   * Check environment variables $LANG and $LC_CTYPE
-   * to see if we want to support UTF-8 unicode
-   */
-  if (lang != NULL) {
-    if (strlen(lang) > 5) {
-      langsuff = &lang[strlen(lang)-5];
-    }
-  }
-#endif
-  if (strcmp(langsuff, "UTF-8")) {
-    printf("Your system does not appear to have UTF-8 enabled ($LANG=\"%s\")\n", lang);
-    printf("If you want to have support for diacritics and Unicode characters,\n");
-    printf("please switch your locale to an UTF-8 locale, e.g. \"en_US.UTF-8\".\n");
-  }
 }
 
 static char *prompt (const char *prompt, char *buffer, size_t bufsz, int required)
