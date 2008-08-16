@@ -159,3 +159,20 @@
  * This flag provides that extra massage.
  */
 #define DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR 0x00000800
+/**
+ * Samsung has implimented its own playlist format as a .spl file
+ * stored in the normal file system, rather than a proper mtp
+ * playlist. There are multiple versions of the .spl format
+ * identified by a line in the file: VERSION X.XX
+ * Version 1.00 is just a simple playlist.
+ */
+#define DEVICE_FLAG_PLAYLIST_SPL_V1 0x00001000
+/**
+ * Samsung has implimented its own playlist format as a .spl file
+ * stored in the normal file system, rather than a proper mtp
+ * playlist. There are multiple versions of the .spl format
+ * identified by a line in the file: VERSION X.XX
+ * Version 2.00 is playlist but allows DNSe sound settings
+ * to be stored, per playlist.
+ */
+#define DEVICE_FLAG_PLAYLIST_SPL_V2 0x00002000

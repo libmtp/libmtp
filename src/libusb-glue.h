@@ -91,6 +91,12 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
   ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_BROKEN_SET_SAMPLE_DIMENSIONS)
 #define FLAG_ALWAYS_PROBE_DESCRIPTOR(a) \
   ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR)
+#define FLAG_PLAYLIST_SPL_V1(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_PLAYLIST_SPL_V1)
+#define FLAG_PLAYLIST_SPL_V2(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_PLAYLIST_SPL_V2)
+#define FLAG_PLAYLIST_SPL(a) \
+  ((a)->rawdevice.device_entry.device_flags & (DEVICE_FLAG_PLAYLIST_SPL_V1 | DEVICE_FLAG_PLAYLIST_SPL_V2))
 
 /* connect_first_device return codes */
 #define PTP_CD_RC_CONNECTED	0

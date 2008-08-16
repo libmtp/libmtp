@@ -1,3 +1,13 @@
+2008-08-15  Alistair Boyle <alistair.js.boyle@gmail.com>
+
+	* src/playlist-spl.c: added handling of Samsung's
+	  proprietary .spl playlist format.
+	* src/playlist-spl.h: dito.
+	* src/device-flags.h: new flags for Samsung playlists.
+	* src/music-players.h: assign flags.
+	* src/libusb-glue.h: convenience macros.
+	* src/libmtp.c: integrate Samsung playlists.
+
 2008-08-15  Linus Walleij <triad@df.lth.se>
 
 	* examples/Makefile.am: break out utility functions

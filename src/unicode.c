@@ -42,20 +42,20 @@
  */
 #define STRING_BUFFER_LENGTH 1024
 
-/** 
- * Gets the length (in characters, not bytes) of a unicode 
+/**
+ * Gets the length (in characters, not bytes) of a unicode
  * UCS-2 string, eg a string which physically is 0x00 0x41 0x00 0x00
  * will return a value of 1.
  *
  * @param unicstr a UCS-2 Unicode string
- * @return the length of the string, in number of characters. If you 
+ * @return the length of the string, in number of characters. If you
  *         want to know the length in bytes, multiply this by two and
  *         add two (for zero terminator).
  */
 int ucs2_strlen(uint16_t const * const unicstr)
 {
   int length;
-  
+
   /* Unicode strings are terminated with 2 * 0x00 */
   for(length = 0; unicstr[length] != 0x0000U; length ++);
   return length;
@@ -79,7 +79,7 @@ char *utf16_to_utf8(LIBMTP_mtpdevice_t *device, const uint16_t *unicstr)
   size_t nconv;
   size_t convlen = (ucs2_strlen(unicstr)+1) * sizeof(uint16_t); // UCS-2 is 16 bit wide, include terminator
   size_t convmax = STRING_BUFFER_LENGTH*3;
-  
+
   loclstr[0]='\0';
   /* Do the conversion.  */
   nconv = iconv(params->cd_ucs2_to_locale, &stringp, &convlen, &locp, &convmax);
@@ -93,6 +93,47 @@ char *utf16_to_utf8(LIBMTP_mtpdevice_t *device, const uint16_t *unicstr)
     return strdup(loclstr+3);
   }
   return strdup(loclstr);
+}
+
+/**
+ * Converts a UTF-8 string to a big-endian UTF-16 2-byte string
+ * Actually just a UCS-2 internal conversion.
+ *
+ * @param device a pointer to the current device.
+ * @param localstr the UTF-8 unicode string to convert
+ * @return a UTF-16 string.
+ */
+uint16_t *utf8_to_utf16(LIBMTP_mtpdevice_t *device, const char *localstr)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  char *stringp = (char *) localstr; // cast away "const"
+  char unicstr[(STRING_BUFFER_LENGTH+1)*2]; // UCS2 encoding is 2 bytes per UTF-8 char.
+  char *unip = unicstr;
+  size_t nconv = 0;
+  size_t convlen = strlen(localstr)+1; // utf8 bytes, include terminator
+  size_t convmax = STRING_BUFFER_LENGTH*2;
+
+  unicstr[0]='\0';
+  unicstr[1]='\0';
+
+  /* Do the conversion.  */
+  nconv = iconv(params->cd_locale_to_ucs2, &stringp, &convlen, &unip, &convmax);
+
+  if (nconv == (size_t) -1) {
+    // Return partial string anyway.
+    unip[0] = '\0';
+    unip[1] = '\0';
+  }
+  // make sure the string is null terminated
+  unicstr[STRING_BUFFER_LENGTH*2] = '\0';
+  unicstr[STRING_BUFFER_LENGTH*2+1] = '\0';
+
+  // allocate the string to be returned
+  // Note: can't use strdup since every other byte is a null byte
+  int ret_len = ucs2_strlen((uint16_t*)unicstr)*sizeof(uint16_t)+2;
+  uint16_t* ret = malloc(ret_len);
+  memcpy(ret,unicstr,(size_t)ret_len);
+  return ret;
 }
 
 /**

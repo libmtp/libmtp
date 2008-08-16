@@ -42,12 +42,14 @@
 #include "ptp.h"
 #include "libusb-glue.h"
 #include "device-flags.h"
+#include "playlist-spl.h"
 
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <time.h>
+#include <errno.h>
 #ifdef _MSC_VER // For MSVC++
 #define USE_WINDOWS_IO_H
 #include <io.h>
@@ -5208,6 +5210,8 @@ void LIBMTP_destroy_playlist_t(LIBMTP_playlist_t *playlist)
  */
 LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *device)
 {
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
+  const int REQ_SPL = FLAG_PLAYLIST_SPL(ptp_usb);
   PTPParams *params = (PTPParams *) device->params;
   LIBMTP_playlist_t *retlists = NULL;
   LIBMTP_playlist_t *curlist = NULL;
@@ -5226,25 +5230,34 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *device)
     oi = &params->objectinfo[i];
 
     // Ignore stuff that isn't playlists
-    if ( oi->ObjectFormat != PTP_OFC_MTP_AbstractAudioVideoPlaylist ) {
+
+    // For Samsung players we must look for the .spl extension explicitly since
+    // playlists are not stored as playlist objects.
+    if ( REQ_SPL && is_spl_playlist(oi) ) {
+      // Allocate a new playlist type
+      pl = LIBMTP_new_playlist_t();
+      spl_to_playlist_t(device, oi, params->handles.Handler[i], pl);
+    }
+    else if ( oi->ObjectFormat != PTP_OFC_MTP_AbstractAudioVideoPlaylist ) {
       continue;
     }
+    else {
+      // Allocate a new playlist type
+      pl = LIBMTP_new_playlist_t();
 
-    // Allocate a new playlist type
-    pl = LIBMTP_new_playlist_t();
+      // Ignoring the oi->Filename field.
+      pl->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
+      pl->playlist_id = params->handles.Handler[i];
+      pl->parent_id = oi->ParentObject;
+      pl->storage_id = oi->StorageID;
 
-    // Ignoring the oi->Filename field.
-    pl->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
-    pl->playlist_id = params->handles.Handler[i];
-    pl->parent_id = oi->ParentObject;
-    pl->storage_id = oi->StorageID;
-
-    // Then get the track listing for this playlist
-    ret = ptp_mtp_getobjectreferences(params, pl->playlist_id, &pl->tracks, &pl->no_tracks);
-    if (ret != PTP_RC_OK) {
-      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Playlist: Could not get object references.");
-      pl->tracks = NULL;
-      pl->no_tracks = 0;
+      // Then get the track listing for this playlist
+      ret = ptp_mtp_getobjectreferences(params, pl->playlist_id, &pl->tracks, &pl->no_tracks);
+      if (ret != PTP_RC_OK) {
+        add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Playlist: Could not get object references.");
+        pl->tracks = NULL;
+        pl->no_tracks = 0;
+      }
     }
     
     // Add playlist to a list that will be returned afterwards.
@@ -5271,6 +5284,8 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *device)
  */
 LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t const plid)
 {
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
+  const int REQ_SPL = FLAG_PLAYLIST_SPL(ptp_usb);
   PTPParams *params = (PTPParams *) device->params;
   uint32_t i;
 
@@ -5290,8 +5305,17 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t cons
     
     oi = &params->objectinfo[i];
 
+    // For Samsung players we must look for the .spl extension explicitly since
+    // playlists are not stored as playlist objects.
+    if ( REQ_SPL && is_spl_playlist(oi) ) {
+      // Allocate a new playlist type
+      pl = LIBMTP_new_playlist_t();
+      spl_to_playlist_t(device, oi, params->handles.Handler[i], pl);
+      return pl;
+    }
+
     // Ignore stuff that isn't playlists
-    if ( oi->ObjectFormat != PTP_OFC_MTP_AbstractAudioVideoPlaylist ) {
+    else if ( oi->ObjectFormat != PTP_OFC_MTP_AbstractAudioVideoPlaylist ) {
       return NULL;
     }
 
@@ -5863,6 +5887,11 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
   }
   metadata->parent_id = localph;
 
+  // Samsung needs its own special type of playlists
+  if(FLAG_PLAYLIST_SPL(ptp_usb)) {
+    return playlist_t_to_spl(device, metadata);
+  }
+
   // Just create a new abstract audio/video playlist...
   return create_new_abstract_list(device,
 				  metadata->name,
@@ -5895,6 +5924,13 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 int LIBMTP_Update_Playlist(LIBMTP_mtpdevice_t *device,
 			   LIBMTP_playlist_t const * const metadata)
 {
+
+  // Samsung needs its own special type of playlists
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
+  if(FLAG_PLAYLIST_SPL(ptp_usb)) {
+    return update_spl_playlist(device, metadata);
+  }
+
   return update_abstract_list(device,
 			      metadata->name,
 			      NULL,

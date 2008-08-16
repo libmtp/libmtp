@@ -1,8 +1,8 @@
 lib_LTLIBRARIES=libmtp.la
-libmtp_la_SOURCES=libmtp.c unicode.c unicode.h util.c util.h \
+libmtp_la_SOURCES=libmtp.c unicode.c unicode.h util.c util.h playlist-spl.c \
 	libusb-glue.c libusb-glue.h \
 	gphoto2-endian.h libptp-stdint.h ptp.c ptp.h \
-	music-players.h device-flags.h
+	music-players.h device-flags.h playlist-spl.h
 include_HEADERS=libmtp.h
 EXTRA_DIST=libmtp.h.in libmtp.sym ptp-pack.c
 
