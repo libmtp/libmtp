@@ -1133,6 +1133,11 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 			}
 		}
 		if (usbdata.length == 0xffffffffU) {
+			/* Copy first part of data to 'data' */
+			handler->putfunc(
+				params, handler->private, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data,
+				&written
+			);
 			/* stuff data directly to passed data handler */
 			while (1) {
 				unsigned long readdata;

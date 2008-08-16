@@ -1,3 +1,10 @@
+2008-08-17  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: some handling of ptp_usb_getdata()
+	  when passed in data size was 0xffffffffU, data
+	  sent in first transaction was ignored, fix by
+	  Rob Woolley.
+
 2008-08-15  Alistair Boyle <alistair.js.boyle@gmail.com>
 
 	* src/playlist-spl.c: added handling of Samsung's
