@@ -41,7 +41,12 @@
  * DEVICE_FLAG_BROKEN_MTPGETOBJECTPROPLIST which only signify
  * that it's broken when getting metadata for a SINGLE object.
  * A typical way the implementation may be broken is that it 
- * may not return a proper count of the objects.
+ * may not return a proper count of the objects, and sometimes
+ * (like on the ZENs) objects are simply missing from the list
+ * if you use this. Sometimes it has been used incorrectly to
+ * mask bugs in the code (like handling transactions of data
+ * with size given to -1 (0xFFFFFFFFU), in that case please
+ * help us remove it now the code is fixed.
  */
 #define DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL 0x00000001
 /**
