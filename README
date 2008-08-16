@@ -389,6 +389,13 @@ cannot test your solution.
   the quirks, see:
   http://www2.one-eyed-alien.net/~mdharm/linux-usb/target_offenses.txt
 
+* Kernel bug on Linux. Linux 2.6.16 is generally speaking required
+  to use any MTP device under USB 2.0. This is because the EHCI
+  driver previously did not support zero-length writes to endpoints.
+  It should work in most cases however, or if you connect it
+  to an UHCI/OHCI port instead (yielding lower speed). But 
+  please just use a recent kernel.
+
 * Zen models AVI file seeking problem: the Zens cannot parse the
   files for the runlength metadata. Do not transfer file with e.g.
   mtp-sendfile, use mtp-sendtr and set the length of the track to

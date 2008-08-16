@@ -4,6 +4,9 @@
 	  when passed in data size was 0xffffffffU, data
 	  sent in first transaction was ignored, fix by
 	  Rob Woolley.
+	* src/ptp-pack.c: sync in from upstream libgphoto2.
+	* src/README: move relevant stuff to README.
+	* README: see above.
 
 2008-08-15  Alistair Boyle <alistair.js.boyle@gmail.com>
 

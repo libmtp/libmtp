@@ -1,18 +1,3 @@
-Lots of docs to follow...
-
-KERNEL BUG ON LINUX
--------------------
-
-Linux 2.6.16 is generally speaking required to use any MTP 
-device under USB 2.0. This is because the EHCI driver 
-previously did not support zero-length writes to endpoints.
-
-It should work in most cases however, or if you connect it
-to an UHCI/OHCI port instead (yielding lower speed). But 
-please just use a recent kernel.
-
-
-
 RELATION TO LIBPTP2
 -------------------
 
