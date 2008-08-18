@@ -1141,7 +1141,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 			/* stuff data directly to passed data handler */
 			while (1) {
 				unsigned long readdata;
-				int xret;
+				uint16_t xret;
 
 				xret = ptp_read_func(
 					PTP_USB_BULK_HS_MAX_PACKET_LEN_READ,
@@ -1151,7 +1151,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 					0
 				);
 				if (xret != PTP_RC_OK)
-					return ret;
+					return xret;
 				if (readdata < PTP_USB_BULK_HS_MAX_PACKET_LEN_READ)
 					break;
 			}

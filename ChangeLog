@@ -1,3 +1,7 @@
+2008-08-18  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: some vartype and return flunkies.
+
 2008-08-17  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: some handling of ptp_usb_getdata()
