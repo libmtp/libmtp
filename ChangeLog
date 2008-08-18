@@ -1,6 +1,8 @@
 2008-08-18  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: some vartype and return flunkies.
+	* configure.ac: check for locale.h
+	* examples/util.c: set locale to pick up environment.
 
 2008-08-17  Linus Walleij <triad@df.lth.se>
 

@@ -24,6 +24,9 @@
 #ifdef HAVE_LANGINFO_H
 #include <langinfo.h>
 #endif
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
+#endif
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -33,6 +36,10 @@ void checklang(void)
   char *langsuff = NULL;
   char *lang = getenv("LANG");
 
+#ifdef HAVE_LOCALE_H
+  // Set the locale in accordance with environment
+  setlocale(LC_ALL, "");
+#endif
 #ifdef HAVE_LANGINFO_H
   langsuff = nl_langinfo(CODESET);
 #else
