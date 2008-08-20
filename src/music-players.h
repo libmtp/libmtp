@@ -430,7 +430,7 @@
   // Reported by Chris Bagwell <chris@cnpbagwell.com>
   // Apparently this comes with a firmware upgrade to the original
   // Stiletto as well.
-  { "Sirius", 0x18f6, "Stiletto 2", 0x0110, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "Sirius", 0x18f6, "Stiletto 2", 0x0110, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
 
   /*
    * Canon

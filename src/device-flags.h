@@ -46,7 +46,9 @@
  * if you use this. Sometimes it has been used incorrectly to
  * mask bugs in the code (like handling transactions of data
  * with size given to -1 (0xFFFFFFFFU), in that case please
- * help us remove it now the code is fixed.
+ * help us remove it now the code is fixed. Sometimes this is
+ * used because getting all the objects is just too slow and
+ * the USB transaction will time out if you use this command.
  */
 #define DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL 0x00000001
 /**
