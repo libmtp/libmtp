@@ -481,6 +481,8 @@ cannot test your solution.
   usb 4-5: configuration #1 chosen from 1 choice
   usb 4-5: can't set config #1, error -110
 
+* The Sirus Stiletto does not seem to allow you to copy any files
+  off the device. This may be someone's idea of copy protection.
 
 Lost symbols
 ------------

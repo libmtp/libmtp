@@ -415,7 +415,8 @@
   { "Dunlop", 0x10d6, "MP3 player 1GB / EGOMAN MD223AFD", 0x2200, DEVICE_FLAG_UNLOAD_DRIVER},
   // Reported by Steven Black <stevenblack1956@users.sourceforge.net>
   // Obviously this company goes by many names.
-  { "Memorex", 0x10d6, "MMP 8585", 0x2300, DEVICE_FLAG_UNLOAD_DRIVER },
+  // This device is USB 2.0 only.
+  { "Memorex", 0x10d6, "MMP 8585/8586", 0x2300, DEVICE_FLAG_UNLOAD_DRIVER },
   
   /*
    * Microsoft
