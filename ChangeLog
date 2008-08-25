@@ -1,3 +1,10 @@
+2008-08-25  Linus Walleij <triad@df.lth.se>
+
+	* src/Makefile.am: bump interface a patchlevel. (Fully
+	  compatible.)
+	* configure.ac: bump version to 0.3.1.
+	* Release as libmtp 0.3.1.
+
 2008-08-18  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: some vartype and return flunkies.
