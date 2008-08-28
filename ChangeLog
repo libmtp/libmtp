@@ -1,3 +1,8 @@
+2008-08-28  Linus Walleij <triad@df.lth.se>
+
+	* examples/sendtr.c: fix non-strdup():ed strings to be
+	  copied, patch courtesy of Juanan Pereira.
+
 2008-08-25  Linus Walleij <triad@df.lth.se>
 
 	* src/Makefile.am: bump interface a patchlevel. (Fully

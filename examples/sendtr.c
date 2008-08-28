@@ -179,8 +179,8 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pa
   trackmeta = LIBMTP_new_track_t();
   albuminfo = LIBMTP_new_album_t();
 
-  parent = dirname(to_path);
-  filename = basename(to_path);
+  parent = dirname(strdup(to_path));
+  filename = basename(strdup(to_path));
   parent_id = parse_path (parent,files,folders);
   if (parent_id == -1) {
     printf("Parent folder could not be found, skipping\n");
