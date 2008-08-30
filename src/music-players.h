@@ -173,7 +173,7 @@
    */
   { "Philips", 0x0471, "HDD6320/00 or HDD6330/17", 0x014b, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Anonymous SourceForge user
-  { "Philips", 0x0471, "HDD1630/17", 0x014c, DEVICE_FLAG_NONE },
+  { "Philips", 0x0471, "HDD1620 or HDD1630/17", 0x014c, DEVICE_FLAG_NONE },
   // from discussion forum
   { "Philips", 0x0471, "HDD085/00 or HDD082/17", 0x014d, DEVICE_FLAG_NONE },
   // from XNJB forum
