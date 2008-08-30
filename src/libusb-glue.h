@@ -6,6 +6,7 @@
  * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2007 Marcus Meissner
  * Copyright (C) 2007 Ted Bullock
+ * Copyright (C) 2008 Chris Bagwell <chris@cnpbagwell.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -48,6 +49,7 @@ struct _PTP_USB {
   int outep;
   int outep_maxpacket;
   int intep;
+  int timeout;
   /** File transfer callbacks and counters */
   int callback_active;
   uint64_t current_transfer_total;
@@ -65,6 +67,8 @@ void close_device(PTP_USB *ptp_usb, PTPParams *params);
 LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device, 
 					   PTPParams *params,
 					   void **usbinfo);
+void set_usb_device_timeout(PTP_USB *ptp_usb, int timeout);
+void get_usb_device_timeout(PTP_USB *ptp_usb, int *timeout);
 
 /* Flag check macros */
 #define FLAG_BROKEN_MTPGETOBJPROPLIST_ALL(a) \

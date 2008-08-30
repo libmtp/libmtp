@@ -367,7 +367,6 @@ void sendtrack_command (int argc, char **argv) {
   uint16_t length = 0;
   uint16_t year = 0;
   uint16_t quiet = 0;
-  char *lang;
   while ( (opt = getopt(argc, argv, "qD:t:a:A:w:l:c:g:n:d:y:")) != -1 ) {
     switch (opt) {
     case 't':

@@ -1311,8 +1311,26 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device,
   MTPProperties  *props = NULL;
   MTPProperties  *prop;
   uint16_t       ret;
+  int            oldtimeout;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
+
+  /* The follow request causes the device to generate
+   * a list of very file on the device and return it
+   * in a single response.
+   *
+   * Some slow devices as well as devices with very
+   * large file systems can easily take longer then
+   * the standard timeout value before it is able
+   * to return a response.
+   *
+   * Temporarly set timeout to allow working with
+   * widest range of devices.
+   */
+  get_usb_device_timeout(ptp_usb, &oldtimeout);
+  set_usb_device_timeout(ptp_usb, 60000);
   
   ret = ptp_mtp_getobjectproplist(params, 0xffffffff, &props, &nrofprops);
+  set_usb_device_timeout(ptp_usb, oldtimeout);
 
   if (ret == PTP_RC_MTP_Specification_By_Group_Unsupported) {
     // What's the point in the device implementing this command if 

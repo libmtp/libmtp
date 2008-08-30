@@ -1,3 +1,18 @@
+2008-08-30  Chris Bagwell <chris@cnpbagwell.com>
+
+	* src/libusb-glue.c: make it possible to have per-command
+	  or otherwise altered timeout values for different PTP
+	  request/response sequences.
+	* src/libusb-glue.h: dito.
+	* src/libmtp.c: increase USB timeout to 30s when getting
+	  a complete track listing off the device.
+	* src/music-players.h: as a consequence, the Sirus Stiletto
+	  no longer needs any brokenness flag.
+
+2008-08-30  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.c: sync to upstream.
+
 2008-08-28  Linus Walleij <triad@df.lth.se>
 
 	* examples/sendtr.c: fix non-strdup():ed strings to be
