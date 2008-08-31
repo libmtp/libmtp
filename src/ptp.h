@@ -26,6 +26,10 @@
 #include <iconv.h>
 #include "gphoto2-endian.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 /* PTP datalayer byteorder */
 
 #define PTP_DL_BE			0xF0
@@ -62,7 +66,7 @@ typedef struct _PTPContainer PTPContainer;
  * and fixed the bugs that made this necessary and it can be 512 again.
  */
 #define PTP_USB_BULK_HS_MAX_PACKET_LEN_WRITE	512
-#define PTP_USB_BULK_HS_MAX_PACKET_LEN_READ	512
+#define PTP_USB_BULK_HS_MAX_PACKET_LEN_READ   512
 #define PTP_USB_BULK_HDR_LEN		(2*sizeof(uint32_t)+2*sizeof(uint16_t))
 #define PTP_USB_BULK_PAYLOAD_LEN_WRITE	(PTP_USB_BULK_HS_MAX_PACKET_LEN_WRITE-PTP_USB_BULK_HDR_LEN)
 #define PTP_USB_BULK_PAYLOAD_LEN_READ	(PTP_USB_BULK_HS_MAX_PACKET_LEN_READ-PTP_USB_BULK_HDR_LEN)
@@ -1766,4 +1770,9 @@ uint16_t ptp_add_object_to_cache(PTPParams *params, uint32_t handle);
 
 /* ptpip.c */
 void ptp_nikon_getptpipguid (unsigned char* guid);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
 #endif /* __PTP_H__ */
