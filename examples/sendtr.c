@@ -150,6 +150,7 @@ static int add_track_to_album(LIBMTP_album_t *albuminfo, LIBMTP_track_t *trackme
   
   if (ret != 0) {
     printf("Error creating or updating album.\n");
+    printf("(This could be due to that your device does not support albums.)\n");
     LIBMTP_Dump_Errorstack(device);
     LIBMTP_Clear_Errorstack(device);
   } else {
@@ -341,8 +342,8 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pa
       printf("New track ID: %d\n", trackmeta->item_id);
     }
 
-/* Add here add to album call */
-		ret = add_track_to_album(albuminfo, trackmeta);
+    /* Add here add to album call */
+    ret = add_track_to_album(albuminfo, trackmeta);
 
     LIBMTP_destroy_album_t(albuminfo);
     LIBMTP_destroy_track_t(trackmeta);

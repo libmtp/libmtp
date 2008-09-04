@@ -236,7 +236,7 @@
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
     DEVICE_FLAG_NO_RELEASE_INTERFACE },
   // Reported by XNJB user
-  { "SanDisk", 0x0781, "Sansa e280 v2", 0x7422, 
+  { "SanDisk", 0x0781, "Sansa e260/e280 v2", 0x7422, 
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
     DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
   // Reported by XNJB user
@@ -458,6 +458,8 @@
   { "Nokia", 0x0421, "N95 Mobile Phone 8GB", 0x006e, DEVICE_FLAG_NONE },
   // From: danielw
   { "Nokia", 0x0421, "E71", 0x00e4, DEVICE_FLAG_NONE },
+  // From: Laurent Bigonville <bigon@users.sourceforge.net>
+  { "Nokia", 0x0421, "E66", 0x00e5, DEVICE_FLAG_NONE },
   // From: Christian Rusa <kristous@users.sourceforge.net>
   { "Nokia", 0x0421, "5700 XpressMusic Mobile Phone", 0x04b4, DEVICE_FLAG_NONE },
   // From: Mitchell Hicks <mitchix@yahoo.com>
@@ -605,7 +607,7 @@
    * Assume DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST on all of these.
    */
   // Reported by David Boyd <tiggrdave@users.sourceforge.net>
-  { "Motorola", 0x22b8, "V3m verizon", 0x2a65, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
+  { "Motorola", 0x22b8, "V3m/V750 verizon", 0x2a65, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Reported by Marcus Meissner to libptp2
   { "Motorola", 0x22b8, "K1", 0x4811, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },

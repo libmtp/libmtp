@@ -5263,8 +5263,11 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *device)
       // Allocate a new playlist type
       pl = LIBMTP_new_playlist_t();
 
-      // Ignoring the oi->Filename field.
+      // Try to look up proper name, else use the oi->Filename field.
       pl->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
+      if (pl->name == NULL) {
+	pl->name = strdup(oi->Filename);
+      }
       pl->playlist_id = params->handles.Handler[i];
       pl->parent_id = oi->ParentObject;
       pl->storage_id = oi->StorageID;
@@ -5340,8 +5343,10 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist(LIBMTP_mtpdevice_t *device, uint32_t cons
     // Allocate a new playlist type
     pl = LIBMTP_new_playlist_t();
 
-    // Ignoring the io.Filename field.
     pl->name = get_string_from_object(device, params->handles.Handler[i], PTP_OPC_Name);
+    if (pl->name == NULL) {
+      pl->name = strdup(oi->Filename);
+    }
     pl->playlist_id = params->handles.Handler[i];
     pl->parent_id = oi->ParentObject;
     pl->storage_id = oi->StorageID;
@@ -5421,7 +5426,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
   }
   if (!supported) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): player does not support this abstract type.");
-    printf("Unsupported type: %04x\n", objectformat);
+    printf("Unsupported abstract list type: %04x\n", objectformat);
     return -1;
   }
 

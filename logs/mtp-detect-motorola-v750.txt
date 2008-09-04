@@ -1,0 +1,313 @@
+libmtp version: 0.2.6.1
+
+Attempting to connect device(s)
+Detect: Successfully connected 1 devices
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 22b8
+   idProduct: 2a65
+   IN endpoint maxpacket: 64 bytes
+   OUT endpoint maxpacket: 64 bytes
+   Device flags: 0x00000000
+Microsoft device descriptor 0xee:
+	0000: 1203 4d00 5300 4600 5400 3100 3000 3000	..M.S.F.T.1.0.0.
+	0010: fe00                                   	..
+Microsoft device response to control message 1, CMD 0xfe:
+	0000: 2800 0000 0001 0400 0100 0000 0000 0000	(...............
+	0010: 0001 4d54 5000 0000 0000 0000 0000 0000	..MTP...........
+	0020: 0000 0000 0000 0000                    	........
+Microsoft device response to control message 2, CMD 0xfe:
+	0000: 2800 0000 0001 0400 0100 0000 0000 0000	(...............
+	0010: 0001 4d54 5000 0000 0000 0000 0000 0000	..MTP...........
+	0020: 0000 0000 0000 0000                    	........
+Device info:
+   Manufacturer: Motorola V750
+   Model: Verizon Music Phone
+   Device version: 02.06.023(0)
+   Serial number: 5CA17800
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0; microsoft.com/WMDRMPD: 10.1; 
+   Detected object size: 64 bits
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1007: Get object handles
+   1008: Get object info
+   9806: Set object property list
+   9808: Send object property list
+   100d: Send object
+   1009: Get object
+   100b: Delete object
+   9802: Get object property description
+   1014: Get device property description
+   9801: Get object properties supported
+   9803: Get object property value
+   9805: Get object property list
+   9810: Get object references
+   1015: Get device property value
+   1016: Set device property value
+   9811: Set object references
+   d402: Unknown (d402)
+   9804: Set object property value
+   1006: Get number of objects
+   100c: Send object info
+   1012: Set object protection
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9109: Get license state
+   9201: Report Added/Deleted Items
+Events supported:
+   0x4004
+   0x4005
+Device Properties Supported:
+   0xd402: Friendly Device Name
+   0xd401: Synchronization Partner
+   0xd102: Device Certificate
+Playable File (Object) Types and Object Properties Supported:
+   b901: WMA
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+      d901: BuyFlag UINT8 data type ANY 8BIT VALUE form GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc9b: AlbumArtist STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      de93: SampleRate UINT32 data type enumeration: 32000, 44100,  READ ONLY
+      de9a: AudioBitRate UINT32 data type range: MIN 8000, MAX 196608, STEP 1000 READ ONLY
+      de94: NumberOfChannels UINT16 data type enumeration: 0, 1, 2,  GET/SET
+      de99: AudioWAVECodec UINT32 data type enumeration: 352, 353, 354,  READ ONLY
+   3009: MP3
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+      d901: BuyFlag UINT8 data type ANY 8BIT VALUE form GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc9b: AlbumArtist STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      de93: SampleRate UINT32 data type enumeration: 32000, 44100,  READ ONLY
+      de9a: AudioBitRate UINT32 data type range: MIN 8000, MAX 196608, STEP 1000 READ ONLY
+      de94: NumberOfChannels UINT16 data type enumeration: 0, 1, 2,  GET/SET
+      de99: AudioWAVECodec UINT32 data type enumeration: 85,  READ ONLY
+   b700: Unknown(b700)
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+      d901: BuyFlag UINT8 data type ANY 8BIT VALUE form GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc9b: AlbumArtist STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      de93: SampleRate UINT32 data type enumeration: 32000, 44100,  READ ONLY
+      de9a: AudioBitRate UINT32 data type range: MIN 8000, MAX 196608, STEP 1000 READ ONLY
+      de94: NumberOfChannels UINT16 data type enumeration: 0, 1, 2,  GET/SET
+      de99: AudioWAVECodec UINT32 data type enumeration:  READ ONLY
+   b701: Unknown(b701)
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+      d901: BuyFlag UINT8 data type ANY 8BIT VALUE form GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc9b: AlbumArtist STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      de93: SampleRate UINT32 data type enumeration: 32000, 44100,  READ ONLY
+      de9a: AudioBitRate UINT32 data type range: MIN 8000, MAX 196608, STEP 1000 READ ONLY
+      de94: NumberOfChannels UINT16 data type enumeration: 0, 1, 2,  GET/SET
+      de99: AudioWAVECodec UINT32 data type enumeration:  READ ONLY
+   b702: Unknown(b702)
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+      d901: BuyFlag UINT8 data type ANY 8BIT VALUE form GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc9b: AlbumArtist STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+      dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      de93: SampleRate UINT32 data type enumeration: 32000, 44100,  READ ONLY
+      de9a: AudioBitRate UINT32 data type range: MIN 8000, MAX 196608, STEP 1000 READ ONLY
+      de94: NumberOfChannels UINT16 data type enumeration: 0, 1, 2,  GET/SET
+      de99: AudioWAVECodec UINT32 data type enumeration:  READ ONLY
+   ba03: Abstract Audio Album
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+      dc46: Artist STRING data type GET/SET
+      dc9b: AlbumArtist STRING data type GET/SET
+      dc83: RepresentativeSampleHeight UINT32 data type range: MIN 0, MAX 320, STEP 1 GET/SET
+      dc84: RepresentativeSampleWidth UINT32 data type range: MIN 0, MAX 320, STEP 1 GET/SET
+      dc86: RepresentativeSampleData array of UINT8 data type byte array:  GET/SET
+      dc81: RepresentativeSampleFormat UINT16 data type enumeration: 14337, 14344,  GET/SET
+      dc82: RepresentativeSampleSize UINT32 data type range: MIN 0, MAX 65536, STEP 1 READ ONLY
+      dc8c: Genre STRING data type GET/SET
+   3001: Association/Directory
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+   3801: JPEG
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+   3808: JFIF
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+   3000: Undefined Type
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+   ba05: Abstract Audio Video Playlist
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: ProtectionStatus UINT16 data type enumeration: 0, 1, 32770, 32771,  READ ONLY
+      dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc07: ObjectFileName STRING data type GET/SET
+Storage Devices:
+   StorageID: 0x00020001
+      StorageType: 0x0004
+      FilesystemType: 0x0000
+      AccessCapability: 0x0000
+      MaxCapacity: 2030960640
+      FreeSpaceInBytes: 2001518592
+      FreeSpaceInObjects: 4294967295
+      StorageDescription: Removable Storage Card
+      VolumeIdentifier: SU02G0002102463
+Special directories:
+   Default music folder: 0x000000c8
+   Default playlist folder: 0x000000cc
+   Default picture folder: 0x00000000
+   Default video folder: 0x00000000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00000000
+   Default text folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: V CAST Mobile Phone - External Memory
+   Synchronization partner: V CAST Sync Partner
+libmtp supported (playable) filetypes:
+   Microsoft Windows Media Audio
+   ISO MPEG-1 Audio Layer 3
+   JPEG file
+   JFIF file
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">AHihXA4AAADwQrkcAAAA4IVyOAA=</UNIQUEID><PUBLICKEY private="1">RaB8z89Dq+RzzGZeVO96vOT7dQM+j9EuxaJHdxb/KyzYZX4HHYykdg==</PUBLICKEY><KEYDATA>oTkhLfogUau7ar5YqiXAEyFv51w=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>ifREcA5re+6fpjk/gByYMRYYKCVRoV7SoWx+LMWF19J6F2JiHuSZJw==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>hR+lm6Q7o39wOregV793mlwduYU=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.109.185</SECURITYVERSION><CERTIFICATE private="1">RaB8z89Dq+RzzGZeVO96vOT7dQM+j9EuxaJHdxb/KyzYZX4HHYykdgIEbbl5VxN+LV4GTXGi/VofwLMhe63CRhorPBDredoTTUgn5+Pq4XckG2Bn</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>Charlotte</NAME>
+    <MANUFACTURER>Motorola</MANUFACTURER>
+    <MAKE>V750</MAKE>
+    <DISTRIBUTOR>Verizon Wireless</DISTRIBUTOR>
+    <MODEL>MOD 2.6</MODEL>
+    <SECURITYLEVEL>2000</SECURITYLEVEL>
+    <HARDWARE_VER_MAJOR>1</HARDWARE_VER_MAJOR>
+    <HARDWARE_VER_MINOR>0</HARDWARE_VER_MINOR>
+    <FIRMWARE_VER_MAJOR>1</FIRMWARE_VER_MAJOR>
+    <FIRMWARE_VER_MINOR>0</FIRMWARE_VER_MINOR>
+    <FEATURES>
+        <CLOCK>1</CLOCK>
+        <METERING>1</METERING>
+        <LICENSE_ACQ>1</LICENSE_ACQ>
+        <LICENSE_SYNC>1</LICENSE_SYNC>
+        <ENCRYPTION>1</ENCRYPTION>
+        <SYMMETRIC_OPT>1</SYMMETRIC_OPT>
+    </FEATURES>
+    <LIMITS>
+        <MAXCHAINDEPTH>2</MAXCHAINDEPTH>
+        <MAXLICENSESIZE>10240</MAXLICENSESIZE>
+        <MAXHEADERSIZE>5120</MAXHEADERSIZE>
+    </LIMITS><PUBLICKEY>fU9lcJB/UX7Ocvydt+6tzdxVXn5e44G7Bggv01bd4VQD6N5SG4r1DA==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>a96iQXnE5Xw8HyDhCO1Qk0rE/Xpw/8Q1ClwfeSUoVbvI+WToCsY8gQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>2333</AUTH_ID><PUBLICKEY>o/NVnyFd6QQ80djHP4LE6y624CGY6QE2gXZXSyFDXCsE+9634ZofXw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>DQqD3lqmRsUe501nUIpNaj1csGHYN5RgiManegaHd3ZsS7YL7MsDPw==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>8NPt7xp/Wu7Q0Do3RKXOH2eLrD+KgihwtIzjnfAesj7oQTXz4AsUZw==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
+WMPInfo.xml Does not exist on this device
+OK.

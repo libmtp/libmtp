@@ -1,3 +1,11 @@
+2008-09-04  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: look up the filename for playlists if the name is 
+	  missing or not properly set. Not doing the same for albums -
+	  these must have proper metadata.
+	* src/music-players.h: more players as usual.
+	* examples/sendtr.c: more warnings.
+
 2008-08-31  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp.h: sync to upstream.
