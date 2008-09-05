@@ -1,3 +1,8 @@
+2008-09-05  Marcus Meissner <meissner@suse.de>
+
+	* src/libmtp.sym: update symbol export table.
+	* src/Makefile.am: fix up some magic for symbol export.
+
 2008-09-04  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: look up the filename for playlists if the name is 
