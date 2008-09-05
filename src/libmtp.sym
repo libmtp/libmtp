@@ -1,9 +1,15 @@
 LIBMTP_Init
 LIBMTP_Get_Supported_Devices_List
-LIBMTP_Detect_Descriptor
+LIBMTP_Detect_Raw_Devices
+LIBMTP_Open_Raw_Device
 LIBMTP_Get_First_Device
+LIBMTP_Get_Connected_Devices
+LIBMTP_Number_Devices_In_List
+LIBMTP_Release_Device_List
 LIBMTP_Release_Device
 LIBMTP_Dump_Device_Info
+LIBMTP_Reset_Device
+LIBMTP_Get_Manufacturername
 LIBMTP_Get_Modelname
 LIBMTP_Get_Serialnumber
 LIBMTP_Get_Deviceversion
@@ -15,6 +21,9 @@ LIBMTP_Get_Batterylevel
 LIBMTP_Get_Secure_Time
 LIBMTP_Get_Device_Certificate
 LIBMTP_Get_Supported_Filetypes
+LIBMTP_Get_Errorstack
+LIBMTP_Clear_Errorstack
+LIBMTP_Dump_Errorstack
 LIBMTP_Get_Storage
 LIBMTP_Format_Storage
 LIBMTP_new_file_t
@@ -31,6 +40,7 @@ LIBMTP_new_filesampledata_t
 LIBMTP_destroy_filesampledata_t
 LIBMTP_Get_Representative_Sample_Format
 LIBMTP_Send_Representative_Sample
+LIBMTP_Get_Representative_Sample
 LIBMTP_new_track_t
 LIBMTP_destroy_track_t
 LIBMTP_Get_Tracklisting
@@ -60,10 +70,4 @@ LIBMTP_Get_Album
 LIBMTP_Create_New_Album
 LIBMTP_Update_Album
 LIBMTP_Delete_Object
-LIBMTP_Dump_Errorstack
-LIBMTP_Clear_Errorstack
-LIBMTP_Detect_Raw_Devices
-LIBMTP_Open_Raw_Device
-LIBMTP_Get_Connected_Devices
-LIBMTP_Release_Device_List
-LIBMTP_Reset_Device
+LIBMTP_Set_Object_Filename
