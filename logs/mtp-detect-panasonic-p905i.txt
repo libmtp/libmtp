@@ -1,0 +1,229 @@
+# mtp-detect
+libmtp version: 0.2.6.1
+
+Attempting to connect device(s)
+Potential MTP Device with VendorID:04da and ProductID:2145 responded to control
+message 2 with a response that was too short. Problems may arrise but continuing
+Device 1 (VID=04da and PID=2145) is UNKNOWN.
+Please report this VID/PID and the device model to the libmtp development team
+PTP: Opening session
+Detect: Successfully connected 1 devices
+USB low-level info:
+  Using kernel interface "usbfs"
+  bcdUSB: 512
+  bDeviceClass: 255
+  bDeviceSubClass: 0
+  bDeviceProtocol: 0
+  idVendor: 04da
+  idProduct: 2145
+  IN endpoint maxpacket: 64 bytes
+  OUT endpoint maxpacket: 64 bytes
+  Device flags: 0x00000000
+Microsoft device descriptor 0xee:
+	0000: 1203 4d00 5300 4600 5400 3100 3000 3000	..M.S.F.T.1.0.0.
+	0010: fe00                                   	..
+Microsoft device response to control message 1, CMD 0xfe:
+	0000: 2800 0000 0001 0400 0100 0000 0000 0000	(...............
+	0010: 0001 4d54 5000 0000 0000 0000 0000 0000	..MTP...........
+	0020: 0000 0000 0000 0000                    	........
+Potential MTP Device with VendorID:04da and ProductID:2145 responded to control
+message 2 with a response that was too short. Problems may arrise but continuing
+Device info:
+  Manufacturer: NTT DoCoMo, Inc.
+  Model: FOMA P905i
+  Device version: 1.00
+  Serial number: 359932012198934
+  Vendor extension ID: 0x00000006
+  Vendor extension description: microsoft.com: 1.0; microsoft.com/WMDRMPD:
+10.1;
+  Detected object size: 64 bits
+Supported operations:
+  1001: get device info
+  1002: Open session
+  1003: Close session
+  1004: Get storage IDs
+  1005: Get storage info
+  1007: Get object handles
+  1008: Get object info
+  100d: Send object
+  9808: Send object property list
+  9802: Get object property description
+  1014: Get device property description
+  1015: Get device property value
+  9801: Get object properties supported
+  9803: Get object property value
+  9805: Get object property list
+  1009: Get object
+  100b: Delete object
+  9806: Set object property list
+  9811: Set object references
+  9810: Get object references
+  1016: Set device property value
+  9103: Set license response
+  9104: Get sync list
+  9105: Send meter challenge query
+  9106: Get meter challenge
+  9107: Get meter response
+  9108: Clean data store
+  9109: Get license state
+  9201: Report Added/Deleted Items
+  9804: Set object property value
+Events supported:
+  None.
+Device Properties Supported:
+  0xd402: Friendly Device Name
+  0xd102: Device Certificate
+Playable File (Object) Types and Object Properties Supported:
+  b901: WMA
+     dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+     dc04: ObjectSize UINT64 data type READ ONLY
+     dc41: PersistantUniqueObjectIdentifier UINT128 data type GET/SET
+     dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form GET/SET
+     dc44: Name STRING data type GET/SET
+     dc07: ObjectFileName STRING data type GET/SET
+     dc9a: AlbumName STRING data type GET/SET
+     dc9b: AlbumArtist STRING data type GET/SET
+     dc46: Artist STRING data type GET/SET
+     dc89: Duration UINT32 data type ANY 32BIT VALUE form GET/SET
+     dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+     dc8c: Genre STRING data type GET/SET
+     de93: SampleRate UINT32 data type enumeration: 32000, 44100, 48000,  READ
+ONLY
+     de9a: AudioBitRate UINT32 data type range: MIN 8000, MAX 393216, STEP
+1 READ ONLY
+     de94: NumberOfChannels UINT16 data type enumeration: 0, 1, 2,  READ ONLY
+     dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
+     dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+  ba03: Abstract Audio Album
+     dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+     dc04: ObjectSize UINT64 data type READ ONLY
+     dc41: PersistantUniqueObjectIdentifier UINT128 data type GET/SET
+     dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form GET/SET
+     dc44: Name STRING data type GET/SET
+     dc07: ObjectFileName STRING data type GET/SET
+     dc9b: AlbumArtist STRING data type GET/SET
+     dc46: Artist STRING data type GET/SET
+     dc8c: Genre STRING data type GET/SET
+     dc81: RepresentativeSampleFormat UINT16 data type enumeration: 14337,
+14344,  READ ONLY
+     dc82: RepresentativeSampleSize UINT32 data type range: MIN 0, MAX 51200,
+STEP 1 READ ONLY
+     dc86: RepresentativeSampleData array of UINT8 data type byte array:
+GET/SET
+     dc83: RepresentativeSampleHeight UINT32 data type ANY 32BIT VALUE form
+GET/SET
+     dc84: RepresentativeSampleWidth UINT32 data type ANY 32BIT VALUE form
+GET/SET
+  3801: JPEG
+     dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+     dc04: ObjectSize UINT64 data type READ ONLY
+     dc41: PersistantUniqueObjectIdentifier UINT128 data type GET/SET
+     dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form GET/SET
+     dc44: Name STRING data type GET/SET
+     dc07: ObjectFileName STRING data type GET/SET
+  3808: JFIF
+     dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+     dc04: ObjectSize UINT64 data type READ ONLY
+     dc41: PersistantUniqueObjectIdentifier UINT128 data type GET/SET
+     dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form GET/SET
+     dc44: Name STRING data type GET/SET
+     dc07: ObjectFileName STRING data type GET/SET
+  ba05: Abstract Audio Video Playlist
+     dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+     dc04: ObjectSize UINT64 data type READ ONLY
+     dc41: PersistantUniqueObjectIdentifier UINT128 data type GET/SET
+     dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form GET/SET
+     dc07: ObjectFileName STRING data type GET/SET
+  3001: Association/Directory
+     dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+     dc04: ObjectSize UINT64 data type READ ONLY
+     dc41: PersistantUniqueObjectIdentifier UINT128 data type GET/SET
+     dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form GET/SET
+     dc07: ObjectFileName STRING data type GET/SET
+  3000: Undefined Type
+     dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+     dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+     dc04: ObjectSize UINT64 data type READ ONLY
+     dc41: PersistantUniqueObjectIdentifier UINT128 data type GET/SET
+     dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form GET/SET
+     dc44: Name STRING data type GET/SET
+     dc07: ObjectFileName STRING data type GET/SET
+Storage Devices:
+  StorageID: 0x20000001
+     StorageType: 0x0004
+     FilesystemType: 0x0000
+     AccessCapability: 0x0000
+     MaxCapacity: 2007105536
+     FreeSpaceInBytes: 1028214784
+     FreeSpaceInObjects: 4294967295
+     StorageDescription: FOMA P905i
+     VolumeIdentifier: FOMA P905i
+Special directories:
+  Default music folder: 0x80000004
+  Default playlist folder: 0x80000006
+  Default picture folder: 0x00000000
+  Default video folder: 0x80000005
+  Default organizer folder: 0x00000000
+  Default zencast folder: 0x00000000
+  Default album folder: 0x00000000
+  Default text folder: 0x00000000
+MTP-specific device properties:
+  Friendly name: FOMA P905i
+  Synchronization partner: (NULL)
+libmtp supported (playable) filetypes:
+  Microsoft Windows Media Audio
+  JPEG file
+  JFIF file
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID
+private="1">MzU5OTMyMDEyMTk4OTM0AA==</UNIQUEID><PUBLICKEY
+private="1">Adw2RbDMqN3623OpbuQ7ITqI30m7NzRg9CzllExqcJp/+8S1mJp2Yg==</PUBLICKEY>
+<KEYDATA>n61BlX1zKoM02xgoMyJExkGQJ6E=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>A4K
++BK7dqQV+5CUHjZanbdQ1PUUzA9U3QqUY49T67mPxBwYiTH2+Yw==</MSDRM_SIGNATURE_VALUE><SY
+MSIGNATURE>CH1xzklFcUG9psOZGdkwk5iP1J8=</SYMSIGNATURE></CERTIFICATE><FALLBACK><S
+ECURITYVERSION>2.4.108.233</SECURITYVERSION><CERTIFICATE
+private="1">Adw2RbDMqN3623OpbuQ7ITqI30m7NzRg9CzllExqcJp/+8S1mJp2YgIEbOkRkrDP4J/p
+41/lyIJhR/emYvf2MsQP+42XHYI6OwPxQ9/U+ooMQRQc</CERTIFICATE></FALLBACK><CERTIFICATE
+type="GROUP"><DATA><NAME>FOMA P905i</NAME>
+   <MANUFACTURER>NTT DoCoMo,Inc.</MANUFACTURER>
+   <MAKE>FOMA</MAKE>
+   <DISTRIBUTOR>NTT DoCoMo,Inc.</DISTRIBUTOR>
+   <MODEL>FOMA P905i</MODEL>
+   <SECURITYLEVEL>2000</SECURITYLEVEL>
+   <HARDWARE_VER_MAJOR>1</HARDWARE_VER_MAJOR>
+   <HARDWARE_VER_MINOR>0</HARDWARE_VER_MINOR>
+   <FIRMWARE_VER_MAJOR>1</FIRMWARE_VER_MAJOR>
+   <FIRMWARE_VER_MINOR>0</FIRMWARE_VER_MINOR>
+   <FEATURES>
+       <CLOCK>1</CLOCK>
+       <METERING>1</METERING>
+       <LICENSE_ACQ>1</LICENSE_ACQ>
+       <LICENSE_SYNC>1</LICENSE_SYNC>
+       <ENCRYPTION>0</ENCRYPTION>
+       <SYMMETRIC_OPT>1</SYMMETRIC_OPT>
+   </FEATURES>
+   <LIMITS>
+       <MAXCHAINDEPTH>2</MAXCHAINDEPTH>
+       <MAXLICENSESIZE>10240</MAXLICENSESIZE>
+       <MAXHEADERSIZE>5120</MAXHEADERSIZE>
+   </LIMITS><PUBLICKEY>HwUCI7gHH1ZybUNQRIoCo7lQbDueSYHFAd1hKelLIeIOpcHYSCkVRA==
+</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>dthTs0fWHk8uKep5zgaHpNgBQYZ5jlJenfYM1R
+FjHD+A66mQcmJ4ag==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE
+type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>2125</AUT
+H_ID><PUBLICKEY>ThEIUCcbtn0ezIiysPDfAGofE3yX9h56YU2JOuXdI+4m9d2U5a6ITA==</PUBLIC
+KEY></DATA><MSDRM_SIGNATURE_VALUE>qWuUY8ejlOo0YtatVCNw2G1fllU7cKxFKzX65RdUjiIaRe
+E2LHw5Zw==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE
+type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnb
+YaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE
+3ccB47pqSRZsN88JmpROZk9uHIJvrTqo2tFebbaN84urCZ7iAWFOGQ==</MSDRM_SIGNATURE_VALUE
+</CERTIFICATE></DEVCERT>
+WMPInfo.xml Does not exist on this device
+PTP: Closing session
+OK.
