@@ -1,3 +1,7 @@
+2008-09-07  Richard Low <richard@wentnet.com>
+
+	* src/music-players.h: added Panasonic P905i
+
 2008-09-05  Marcus Meissner <meissner@suse.de>
 
 	* src/libmtp.sym: update symbol export table.

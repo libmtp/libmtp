@@ -642,6 +642,12 @@
   { "Haier", 0x1302, "Ibiza Rhapsody", 0x1016, DEVICE_FLAG_NONE },
   // This is the 4/8 GiB model
   { "Haier", 0x1302, "Ibiza Rhapsody", 0x1017, DEVICE_FLAG_NONE },
+  
+  /*
+   * Panasonic
+   */
+  // Reported by dmizer
+  { "Panasonic", 0x04da, "P905i", 0x2145, DEVICE_FLAG_NONE },
 
   /*
    * Other strange stuff.
