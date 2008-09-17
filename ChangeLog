@@ -1,3 +1,8 @@
+2008-09-17  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: new helper macros from
+	  Alvin <alvinbeach@gmail.com> plus some docs.
+
 2008-09-12  Linus Walleij <triad@df.lth.se>
 
 	* src/music-players.h: drop bug flags off the Creative devices.

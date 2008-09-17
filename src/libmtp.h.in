@@ -111,7 +111,11 @@ typedef enum {
 } LIBMTP_filetype_t;
 
 /**
- * Helpful macros to determine filetype properties
+ * \def LIBMTP_FILETYPE_IS_AUDIO
+ * Audio filetype test.
+ *
+ * For filetypes that can be either audio
+ * or video, use LIBMTP_FILETYPE_IS_AUDIOVIDEO
  */
 #define LIBMTP_FILETYPE_IS_AUDIO(a)\
 (a == LIBMTP_FILETYPE_WAV ||\
@@ -123,19 +127,71 @@ typedef enum {
  a == LIBMTP_FILETYPE_AAC ||\
  a == LIBMTP_FILETYPE_M4A ||\
  a == LIBMTP_FILETYPE_UNDEF_AUDIO)
+
+/**
+ *  \def LIBMTP_FILETYPE_IS_VIDEO
+ *  Video filetype test.
+ *
+ * For filetypes that can be either audio
+ * or video, use LIBMTP_FILETYPE_IS_AUDIOVIDEO
+ */
 #define LIBMTP_FILETYPE_IS_VIDEO(a)\
 (a == LIBMTP_FILETYPE_WMV ||\
  a == LIBMTP_FILETYPE_AVI ||\
  a == LIBMTP_FILETYPE_MPEG ||\
  a == LIBMTP_FILETYPE_UNDEF_VIDEO)
+
+/**
+ *  \def LIBMTP_FILETYPE_IS_AUDIOVIDEO
+ *  Audio and&slash;or video filetype test.
+ */
 #define LIBMTP_FILETYPE_IS_AUDIOVIDEO(a)\
 (a == LIBMTP_FILETYPE_MP4 ||\
  a == LIBMTP_FILETYPE_ASF ||\
  a == LIBMTP_FILETYPE_QT)
+
+/**
+ *  \def LIBMTP_FILETYPE_IS_TRACK
+ *  Test if filetype is a track.
+ *  Use this to determine if the File API or Track API
+ *  should be used to upload or download an object.
+ */
 #define LIBMTP_FILETYPE_IS_TRACK(a)\
 (LIBMTP_FILETYPE_IS_AUDIO(a) ||\
  LIBMTP_FILETYPE_IS_VIDEO(a) ||\
  LIBMTP_FILETYPE_IS_AUDIOVIDEO(a))
+
+/**
+ *  \def LIBMTP_FILETYPE_IS_IMAGE
+ *  Image filetype test
+ */
+#define LIBMTP_FILETYPE_IS_IMAGE(a)\
+(a == LIBMTP_FILETYPE_JPEG ||\
+a == LIBMTP_FILETYPE_JFIF ||\
+a == LIBMTP_FILETYPE_TIFF ||\
+a == LIBMTP_FILETYPE_BMP ||\
+a == LIBMTP_FILETYPE_GIF ||\
+a == LIBMTP_FILETYPE_PICT ||\
+a == LIBMTP_FILETYPE_PNG ||\
+a == LIBMTP_FILETYPE_JP2 ||\
+a == LIBMTP_FILETYPE_JPX ||\
+a == LIBMTP_FILETYPE_WINDOWSIMAGEFORMAT)
+
+/**
+ *  \def LIBMTP_FILETYPE_IS_ADDRESSBOOK
+ *  Addressbook and Business card filetype test
+ */
+#define LIBMTP_FILETYPE_IS_ADDRESSBOOK(a)\
+(a == LIBMTP_FILETYPE_VCARD2 ||\
+a == LIBMTP_FILETYPE_VCARD2)
+
+/**
+ *  \def LIBMTP_FILETYPE_IS_CALENDAR
+ *  Calendar and Appointment filetype test
+ */
+#define LIBMTP_FILETYPE_IS_CALENDAR(a)\
+(a == LIBMTP_FILETYPE_VCALENDAR1 ||\
+a == LIBMTP_FILETYPE_VCALENDAR2)
 
 /**
  * These are the numbered error codes. You can also
