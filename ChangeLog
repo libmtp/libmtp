@@ -1,3 +1,10 @@
+2008-09-20  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: bump to 0.3.2.
+	* src/Makefile.am: bump to libmtp.so.8.0.2, compatible
+	  interface.
+	* Release this as 0.3.2 mainly to get the Creative fixes out.
+
 2008-09-17  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: new helper macros from
