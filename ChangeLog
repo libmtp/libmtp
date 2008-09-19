@@ -1,3 +1,8 @@
+2008-09-20  Joe Nahmias <joe@nahmias.net>
+
+	* examples/sendtr.c: added option to specify which 
+	  storage_id the track should be copied.
+
 2008-09-20  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bump to 0.3.2.
