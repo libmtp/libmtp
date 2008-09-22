@@ -1,3 +1,9 @@
+2008-09-22  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: make sure we don't try to fit a new file onto
+	  a ROM storage. Add some pretty-print to FourCC codecs so
+	  you can actually understand the enumerations.
+
 2008-09-20  Joe Nahmias <joe@nahmias.net>
 
 	* examples/sendtr.c: added option to specify which 
@@ -14,12 +20,6 @@
 
 	* src/libmtp.h.in: new helper macros from
 	  Alvin <alvinbeach@gmail.com> plus some docs.
-
-2008-09-12  Linus Walleij <triad@df.lth.se>
-
-	* src/libmtp.c: make sure we don't try to fit a new file onto
-	  a ROM storage. Add some pretty-print to FourCC codecs so
-	  you can actually understand the enumerations.
 
 2008-09-12  Linus Walleij <triad@df.lth.se>
 
