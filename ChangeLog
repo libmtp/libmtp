@@ -17,6 +17,12 @@
 
 2008-09-12  Linus Walleij <triad@df.lth.se>
 
+	* src/libmtp.c: make sure we don't try to fit a new file onto
+	  a ROM storage. Add some pretty-print to FourCC codecs so
+	  you can actually understand the enumerations.
+
+2008-09-12  Linus Walleij <triad@df.lth.se>
+
 	* src/music-players.h: drop bug flags off the Creative devices.
 	  I am confident that the bugs they were masking have been
 	  fixed now.

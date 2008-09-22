@@ -93,7 +93,7 @@ static void get_handles_recursively(LIBMTP_mtpdevice_t *device,
 				    uint32_t parent);
 static void free_storage_list(LIBMTP_mtpdevice_t *device);
 static int sort_storage_by(LIBMTP_mtpdevice_t *device, int const sortby);
-static uint32_t get_first_storageid(LIBMTP_mtpdevice_t *device);
+static uint32_t get_writeable_storageid(LIBMTP_mtpdevice_t *device, uint64_t fitsize);
 static int get_storage_freespace(LIBMTP_mtpdevice_t *device,
 				 LIBMTP_devicestorage_t *storage,
 				 uint64_t *freespace);
@@ -1723,18 +1723,57 @@ static int sort_storage_by(LIBMTP_mtpdevice_t *device,int const sortby)
 }
 
 /**
- * This function grabs the first storageid from the device storage 
- * list.
- * @param device a pointer to the MTP device to free the storage
- * list for.
+ * This function grabs the first writeable storageid from the 
+ * device storage list.
+ * @param device a pointer to the MTP device to locate writeable 
+ *        storage for.
+ * @param fitsize a file of this file must fit on the device.
  */
-static uint32_t get_first_storageid(LIBMTP_mtpdevice_t *device)
+static uint32_t get_writeable_storageid(LIBMTP_mtpdevice_t *device, uint64_t fitsize)
 {
   LIBMTP_devicestorage_t *storage = device->storage;
   uint32_t store = 0x00000000; //Should this be 0xffffffffu instead?
+  int subcall_ret;
 
-  if(storage != NULL)
+  // See if there is some storage we can fit this file on.
+  storage = device->storage;
+  if (storage == NULL) {
+    // Sometimes the storage just cannot be detected.
+    store = 0x00000000U;
+  } else {
+    while(storage != NULL) {
+      // These storages cannot be used.
+      if (storage->StorageType == PTP_ST_FixedROM || storage->StorageType == PTP_ST_RemovableROM) {
+	storage = storage->next;
+	continue;
+      }
+      // Storage IDs with the lower 16 bits 0x0000 are not supposed
+      // to be writeable.
+      if ((storage->id & 0x0000FFFFU) == 0x00000000U) {
+	storage = storage->next;
+	continue;
+      }
+      // Also check the access capability to avoid e.g. deletable only storages
+      if (storage->AccessCapability == PTP_AC_ReadOnly || storage->AccessCapability == PTP_AC_ReadOnly_with_Object_Deletion) {
+	storage = storage->next;
+	continue;
+      }
+      // Then see if we can fit the file.
+      subcall_ret = check_if_file_fits(device, storage, fitsize);
+      if (subcall_ret != 0) {
+	storage = storage->next;
+      } else {
+	// We found a storage that is writable and can fit the file!
+	break;
+      }
+    }
+    if (storage == NULL) {
+      add_error_to_errorstack(device, LIBMTP_ERROR_STORAGE_FULL, "LIBMTP_Send_File_From_File_Descriptor(): " 
+			      "all device storage is full or corrupt.");
+      return -1;
+    }
     store = storage->id;
+  }
 
   return store;
 }
@@ -2015,9 +2054,28 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 		       opd.FORM.Range.StepSize.u32);
 		break;
 	      case PTP_OPFF_Enumeration:
-		printf(" enumeration: ");
-		for(k=0;k<opd.FORM.Enum.NumberOfValues;k++) {
-		  printf("%d, ", opd.FORM.Enum.SupportedValue[k].u32);
+		// Special pretty-print for FOURCC codes
+		if (params->deviceinfo.ImageFormats[i] == PTP_OPC_VideoFourCCCodec) {
+		  printf(" enumeration of u32 casted FOURCC: ");
+		  for (k=0;k<opd.FORM.Enum.NumberOfValues;k++) {
+		    if (opd.FORM.Enum.SupportedValue[k].u32 == 0) {
+		      printf("ANY, ");
+		    } else {
+		      char fourcc[6];
+		      fourcc[0] = (opd.FORM.Enum.SupportedValue[k].u32 >> 24) & 0xFFU;
+		      fourcc[1] = (opd.FORM.Enum.SupportedValue[k].u32 >> 16) & 0xFFU;
+		      fourcc[2] = (opd.FORM.Enum.SupportedValue[k].u32 >> 8) & 0xFFU;
+		      fourcc[3] = opd.FORM.Enum.SupportedValue[k].u32 & 0xFFU;
+		      fourcc[4] = '\n';
+		      fourcc[5] = '\0';
+		      printf("\"%s\", ", fourcc);
+		    }
+		  }
+		} else {
+		  printf(" enumeration: ");
+		  for(k=0;k<opd.FORM.Enum.NumberOfValues;k++) {
+		    printf("%d, ", opd.FORM.Enum.SupportedValue[k].u32);
+		  }
 		}
 		break;
 	      default:
@@ -2064,9 +2122,60 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
     printf("Storage Devices:\n");
     while(storage != NULL) {
       printf("   StorageID: 0x%08x\n",storage->id);
-      printf("      StorageType: 0x%04x\n",storage->StorageType);
-      printf("      FilesystemType: 0x%04x\n",storage->FilesystemType);
-      printf("      AccessCapability: 0x%04x\n",storage->AccessCapability);
+      printf("      StorageType: 0x%04x ",storage->StorageType);
+      switch (storage->StorageType) {
+      case PTP_ST_Undefined:
+	printf("(undefined)\n");
+	break;
+      case PTP_ST_FixedROM:
+	printf("fixed ROM storage\n");
+	break;
+      case PTP_ST_RemovableROM:
+	printf("removable ROM storage\n");
+	break;
+      case PTP_ST_FixedRAM:
+	printf("fixed RAM storage\n");
+	break;
+      case PTP_ST_RemovableRAM:
+	printf("removable RAM storage\n");
+	break;
+      default:
+	printf("UNKNOWN storage\n");
+	break;
+      }
+      printf("      FilesystemType: 0x%04x ",storage->FilesystemType);
+      switch(storage->FilesystemType) {
+      case PTP_FST_Undefined:
+	printf("(undefined)\n");
+	break;
+      case PTP_FST_GenericFlat:
+	printf("generic flat filesystem\n");
+	break;
+      case PTP_FST_GenericHierarchical:
+	printf("generic hierarchical\n");
+	break;
+      case PTP_FST_DCF:
+	printf("DCF\n");
+	break;
+      default:
+	printf("UNKNONWN filesystem type\n");
+	break;
+      }
+      printf("      AccessCapability: 0x%04x ",storage->AccessCapability);
+      switch(storage->AccessCapability) {
+      case PTP_AC_ReadWrite:
+	printf("read/write\n");
+	break;
+      case PTP_AC_ReadOnly:
+	printf("read only\n");
+	break;
+      case PTP_AC_ReadOnly_with_Object_Deletion:
+	printf("read only + object deletion\n");
+	break;
+      default:
+	printf("UNKNOWN access capability\n");
+	break;
+      }
       printf("      MaxCapacity: %llu\n", (long long unsigned int) storage->MaxCapacity);
       printf("      FreeSpaceInBytes: %llu\n", (long long unsigned int) storage->FreeSpaceInBytes);
       printf("      FreeSpaceInObjects: %llu\n", (long long unsigned int) storage->FreeSpaceInObjects);
@@ -2345,11 +2454,6 @@ static int check_if_file_fits(LIBMTP_mtpdevice_t *device,
 			    "check_if_file_fits(): error checking free storage.");
     return -1;
   } else {
-    // Storage IDs with the lower 16 bits 0x0000 are not supposed
-    // to be writeable.
-    if ((storage->id & 0x0000FFFFU) == 0x00000000U) {
-      return -1;
-    }
     // See if it fits.
     if (filesize > freebytes) {
       return -1;
@@ -4084,7 +4188,6 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   int i;
-  int subcall_ret;
   uint16_t of =  map_libmtp_type_to_ptp_type(filedata->filetype);
   LIBMTP_file_t *newfilemeta;
   int use_primary_storage = 1;
@@ -4099,26 +4202,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   if (filedata->storage_id != 0) {
     store = filedata->storage_id;
   } else {
-    // See if there is some storage we can fit this file on.
-    storage = device->storage;
-    if (storage == NULL) {
-      // Sometimes the storage just cannot be detected.
-      store = 0x00000000U;
-    } else {
-      while(storage != NULL) {
-	subcall_ret = check_if_file_fits(device, storage, filedata->filesize);
-	if (subcall_ret != 0) {
-	  storage = storage->next;
-	}
-	break;
-      }
-      if (storage == NULL) {
-	add_error_to_errorstack(device, LIBMTP_ERROR_STORAGE_FULL, "LIBMTP_Send_File_From_File_Descriptor(): " 
-				"all device storage is full or corrupt.");
-	return -1;
-      }
-      store = storage->id;
-    }
+    store = get_writeable_storageid(device, filedata->filesize);
   }
   // Detect if something non-primary is in use.
   storage = device->storage;
@@ -5039,6 +5123,16 @@ static LIBMTP_folder_t *get_subfolders_for_folder(PTPParams *params, uint32_t pa
       continue;
     }
 
+    // Do we know how to handle these? They are part
+    // of the MTP 1.0 specification paragraph 3.6.4.
+    // For AssociationDesc 0x00000001U ptp_mtp_getobjectreferences() 
+    // should be called on these to get the contained objects, but 
+    // we basically don't care. Hopefully parent_id is maintained for all
+    // children, because we rely on that instead.
+    if (oi->AssociationDesc != 0x00000000U) {
+      printf("MTP extended association type 0x%08x encountered\n", oi->AssociationDesc);
+    }
+
     // Create a folder struct...
     folder = LIBMTP_new_folder_t();
     if (folder == NULL) {
@@ -5127,7 +5221,8 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name,
   uint32_t new_id = 0;
 
   if (storage_id == 0) {
-    store = get_first_storageid(device);
+    // I'm just guessing that a folder may require 512 bytes
+    store = get_writeable_storageid(device, 512);
   } else {
     store = storage_id;
   }
@@ -5412,7 +5507,8 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
   uint8_t data[2];
 
   if (storageid == 0) {
-    store = get_first_storageid(device);
+    // I'm just guessing that an abstract list may require 512 bytes
+    store = get_writeable_storageid(device, 512);
   } else {
     store = storageid;
   }
