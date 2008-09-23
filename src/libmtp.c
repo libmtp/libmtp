@@ -151,6 +151,10 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 				uint32_t const no_tracks);
 static void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id);
 static void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id);
+static int set_object_filename(LIBMTP_mtpdevice_t *device,
+		uint32_t object_id,
+		uint16_t ptp_type,
+                const char **newname);
 
 /**
  * Create a new file mapping entry
@@ -4899,56 +4903,36 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
 }
 
 /**
- * This function renames a single file, track, playlist, folder or
- * any other object on the MTP device, identified by an object ID.
- * This simply means that the PTP_OPC_ObjectFileName property
- * is updated, if this is supported by the device.
- *
- * @param device a pointer to the device that contains the the file, 
- *        track, foler, playlist or other object to set the filename for.
- * @param object_id the ID of the object to rename.
- * @param newname the new filename for this object. You MUST assume that
- *        this string can be modified by the call to this function, since
- *        some devices have restrictions as to which filenames may be
- *        used on them.
- * @return 0 on success, any other value means failure.
+ * Internal function to update an object filename property.
  */
-int LIBMTP_Set_Object_Filename(LIBMTP_mtpdevice_t *device,
-			       uint32_t object_id, char *newname)
+static int set_object_filename(LIBMTP_mtpdevice_t *device,
+			       uint32_t object_id, uint16_t ptp_type,
+			       const char **newname_ptr)
 {
   PTPParams             *params = (PTPParams *) device->params;
   PTP_USB               *ptp_usb = (PTP_USB*) device->usbinfo;
-  LIBMTP_file_t         *file;
-  uint16_t              ptp_type;
   PTPObjectPropDesc     opd;
   uint16_t              ret;
-
-  // Get metadata for this object.
-  file = LIBMTP_Get_Filemetadata(device, object_id);
-  if (file == NULL) {
-    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Object_Filename(): "
-			    "could not get file metadata for target object.");
-    return -1;
-  }
-  ptp_type = map_libmtp_type_to_ptp_type(file->filetype);
-  LIBMTP_destroy_file_t(file);
+  char                  *newname;
 
   // See if we can modify the filename on this kind of files.
   ret = ptp_mtp_getobjectpropdesc(params, PTP_OPC_ObjectFileName, ptp_type, &opd);
   if (ret != PTP_RC_OK) {
-    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Object_Filename(): "
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "set_object_filename(): "
 			    "could not get property description.");
     return -1;
   }
 
   if (!opd.GetSet) {
     ptp_free_objectpropdesc(&opd);
-    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Object_Filename(): "
-			    "property is not settable.");
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "set_object_filename(): "
+            " property is not settable.");
     // TODO: we COULD actually upload/download the object here, if we feel
     //       like wasting time for the user.
     return -1;
   }
+
+  newname = strdup(*newname_ptr);
 
   if (FLAG_ONLY_7BIT_FILENAMES(ptp_usb)) {
     strip_7bit_from_utf8(newname);
@@ -4959,44 +4943,220 @@ int LIBMTP_Set_Object_Filename(LIBMTP_mtpdevice_t *device,
     MTPProperties *props = NULL;
     MTPProperties *prop = NULL;
     int nrofprops = 0;
-    
+
     prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
-    prop->ObjectHandle = object_id;      
+    prop->ObjectHandle = object_id;  
     prop->property = PTP_OPC_ObjectFileName;
     prop->datatype = PTP_DTC_STR;
-    prop->propval.str = strdup(newname);
-    
+    prop->propval.str = newname;
+
     ret = ptp_mtp_setobjectproplist(params, props, nrofprops);
-    
+
     ptp_destroy_object_prop_list(props, nrofprops);
-    
+
     if (ret != PTP_RC_OK) {
-      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Oject_Filename(): "
-              "could not set object property list.");
-      ptp_free_objectpropdesc(&opd);
-      return -1;
+        add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "set_object_filename(): "
+              " could not set object property list.");
+        ptp_free_objectpropdesc(&opd);
+        return -1;
     }
   } else if (ptp_operation_issupported(params, PTP_OC_MTP_SetObjectPropValue)) {
     ret = set_object_string(device, object_id, PTP_OPC_ObjectFileName, newname);
     if (ret != 0) {
-      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Oject_Filename(): "
-              "could not set object filename.");
+      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "set_object_filename(): "
+              " could not set object filename.");
       ptp_free_objectpropdesc(&opd);
       return -1;
     }
   } else {
-     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Oject_Filename(): "
-              "Your device doesn't seem to support any known way of setting metadata.");
+    free(newname);
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "set_object_filename(): "
+              " your device doesn't seem to support any known way of setting metadata.");
     ptp_free_objectpropdesc(&opd);
     return -1;
   }
-  
+
   ptp_free_objectpropdesc(&opd);
-  
+
   // update cached object properties if metadata cache exists
   update_metadata_cache(device, object_id);
-  
+
   return 0;
+}
+
+/**
+ * This function renames a single file.
+ * This simply means that the PTP_OPC_ObjectFileName property
+ * is updated, if this is supported by the device.
+ *
+ * @param device a pointer to the device that contains the file.
+ * @param file the file metadata of the file to rename.
+ *        On success, the filename member is updated. Be aware, that
+ *        this name can be different than newname depending of device restrictions.
+ * @param newname the new filename for this object.
+ * @return 0 on success, any other value means failure.
+ */
+int LIBMTP_Set_File_Name(LIBMTP_mtpdevice_t *device,
+                   LIBMTP_file_t *file, const char *newname)
+{
+  int         ret;
+
+  ret = set_object_filename(device, file->item_id,
+			    map_libmtp_type_to_ptp_type(file->filetype),
+			    &newname);
+
+  if (ret != 0) {
+    return ret;
+  }
+
+  free(file->filename);
+  file->filename = strdup(newname);
+  return ret;
+}
+
+/**
+ * This function renames a single folder.
+ * This simply means that the PTP_OPC_ObjectFileName property
+ * is updated, if this is supported by the device.
+ *
+ * @param device a pointer to the device that contains the file.
+ * @param folder the folder metadata of the folder to rename.
+ *        On success, the name member is updated. Be aware, that
+ *        this name can be different than newname depending of device restrictions.
+ * @param newname the new name for this object.
+ * @return 0 on success, any other value means failure.
+ */
+int LIBMTP_Set_Folder_Name(LIBMTP_mtpdevice_t *device,
+                   LIBMTP_folder_t *folder, const char* newname)
+{
+  int ret;
+
+  ret = set_object_filename(device, folder->folder_id,
+			    LIBMTP_FILETYPE_UNKNOWN,
+			    &newname);
+
+  if (ret != 0) {
+    return ret;
+    }
+
+  free(folder->name);
+  folder->name = strdup(newname);
+  return ret;
+}
+
+/**
+ * This function renames a single track.
+ * This simply means that the PTP_OPC_ObjectFileName property
+ * is updated, if this is supported by the device.
+ *
+ * @param device a pointer to the device that contains the file.
+ * @param track the track metadata of the track to rename.
+ *        On success, the filename member is updated. Be aware, that
+ *        this name can be different than newname depending of device restrictions.
+ * @param newname the new filename for this object.
+ * @return 0 on success, any other value means failure.
+ */
+int LIBMTP_Set_Track_Name(LIBMTP_mtpdevice_t *device,
+                   LIBMTP_track_t *track, const char* newname)
+{
+  int         ret;
+
+  ret = set_object_filename(device, track->item_id,
+			    map_libmtp_type_to_ptp_type(track->filetype),
+			    &newname);
+
+  if (ret != 0) {
+    return ret;
+  }
+
+  free(track->filename);
+  track->filename = strdup(newname);
+  return ret;
+}
+
+/**
+ * This function renames a single playlist.
+ * This simply means that the PTP_OPC_ObjectFileName property
+ * is updated, if this is supported by the device.
+ *
+ * @param device a pointer to the device that contains the file.
+ * @param playlist the playlist metadata of the playlist to rename.
+ *        On success, the name member is updated. Be aware, that
+ *        this name can be different than newname depending of device restrictions.
+ * @param newname the new name for this object.
+ * @return 0 on success, any other value means failure.
+ */
+int LIBMTP_Set_Playlist_Name(LIBMTP_mtpdevice_t *device,
+                   LIBMTP_playlist_t *playlist, const char* newname)
+{
+  int ret;
+
+  ret = set_object_filename(device, playlist->playlist_id,
+			    PTP_OFC_MTP_AbstractAudioVideoPlaylist,
+			    &newname);
+
+  if (ret != 0) {
+    return ret;
+  }
+
+  free(playlist->name);
+  playlist->name = strdup(newname);
+  return ret;
+}
+
+/**
+ * This function renames a single album.
+ * This simply means that the PTP_OPC_ObjectFileName property
+ * is updated, if this is supported by the device.
+ *
+ * @param device a pointer to the device that contains the file.
+ * @param album the album metadata of the album to rename.
+ *        On success, the name member is updated. Be aware, that
+ *        this name can be different than newname depending of device restrictions.
+ * @param newname the new name for this object.
+ * @return 0 on success, any other value means failure.
+ */
+int LIBMTP_Set_Album_Name(LIBMTP_mtpdevice_t *device,
+                   LIBMTP_album_t *album, const char* newname)
+{
+  int ret;
+
+  ret = set_object_filename(device, album->album_id,
+			    PTP_OFC_MTP_AbstractAudioAlbum,
+			    &newname);
+
+  if (ret != 0) {
+    return ret;
+  }
+
+  free(album->name);
+  album->name = strdup(newname);
+  return ret;
+}
+
+/**
+ * THIS FUNCTION IS DEPRECATED. PLEASE UPDATE YOUR CODE IN ORDER
+ * NOT TO USE IT.
+ *
+ * @see LIBMTP_Set_File_Name()
+ * @see LIBMTP_Set_Track_Name()
+ * @see LIBMTP_Set_Folder_Name()
+ * @see LIBMTP_Set_Playlist_Name()
+ * @see LIBMTP_Set_Album_Name()
+ */
+int LIBMTP_Set_Object_Filename(LIBMTP_mtpdevice_t *device,
+                   uint32_t object_id, char* newname)
+{
+  int             ret;
+  LIBMTP_file_t   *file;
+
+  file = LIBMTP_Get_Filemetadata(device, object_id);
+  
+  ret = set_object_filename(device, object_id, file->filetype, (const char **) &newname);
+  
+  free(file);
+
+  return ret;
 }
 
 /**
@@ -5370,7 +5530,8 @@ LIBMTP_playlist_t *LIBMTP_Get_Playlist_List(LIBMTP_mtpdevice_t *device)
       // Then get the track listing for this playlist
       ret = ptp_mtp_getobjectreferences(params, pl->playlist_id, &pl->tracks, &pl->no_tracks);
       if (ret != PTP_RC_OK) {
-        add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Playlist: Could not get object references.");
+        add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Playlist_List(): "
+				    "could not get object references.");
         pl->tracks = NULL;
         pl->no_tracks = 0;
       }

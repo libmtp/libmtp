@@ -70,4 +70,9 @@ LIBMTP_Get_Album
 LIBMTP_Create_New_Album
 LIBMTP_Update_Album
 LIBMTP_Delete_Object
+LIBMTP_Set_File_Name
+LIBMTP_Set_Folder_Name
+LIBMTP_Set_Track_Name
+LIBMTP_Set_Playlist_Name
+LIBMTP_Set_Album_Name
 LIBMTP_Set_Object_Filename

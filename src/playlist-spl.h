@@ -30,6 +30,6 @@ void spl_to_playlist_t(LIBMTP_mtpdevice_t* device, PTPObjectInfo *oi,
 int playlist_t_to_spl(LIBMTP_mtpdevice_t *device,
                       LIBMTP_playlist_t * const metadata);
 int update_spl_playlist(LIBMTP_mtpdevice_t *device,
-			  LIBMTP_playlist_t const * const metadata);
+			  LIBMTP_playlist_t const * const new);
 
 #endif //__MTP__PLAYLIST_SPL__H
