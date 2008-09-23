@@ -1,3 +1,9 @@
+2008-09-23  Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: check for NULL storage
+	* src/libusb-glue.c: return PTP_RC_OK on zero read
+	* src/music-players.h: give Samsung YP-10 DEVICE_FLAG_NO_ZERO_READS
+
 2008-09-22  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: make sure we don't try to fit a new file onto

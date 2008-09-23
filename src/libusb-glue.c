@@ -764,11 +764,7 @@ ptp_read_func (
       printf("LIBMTP panic: unable to read in zero packet, response 0x%04x", zeroresult);
   }
   
-  if (result > 0) {
-    return (PTP_RC_OK);
-  } else {
-    return PTP_ERROR_IO;
-  }
+  return PTP_RC_OK;
 }
 
 static short

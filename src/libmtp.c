@@ -4206,7 +4206,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   }
   // Detect if something non-primary is in use.
   storage = device->storage;
-  if (store != storage->id) {
+  if (storage != NULL && store != storage->id) {
     use_primary_storage = 0;
   }
 
@@ -5170,7 +5170,7 @@ static LIBMTP_folder_t *get_subfolders_for_folder(PTPParams *params, uint32_t pa
  * This returns a list of all folders available
  * on the current MTP device.
  *
- * @param device a pointer to the device to get the track listing for.
+ * @param device a pointer to the device to get the folder listing for.
  * @return a list of folders
  */
 LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
