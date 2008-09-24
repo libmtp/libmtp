@@ -2340,7 +2340,7 @@ char *LIBMTP_Get_Friendlyname(LIBMTP_mtpdevice_t *device)
  * @param device a pointer to the device to set the friendly name for.
  * @param friendlyname the new friendly name for the device.
  * @return 0 on success, any other value means failure.
- * @see LIBMTP_Get_Ownername()
+ * @see LIBMTP_Get_Friendlyname()
  */
 int LIBMTP_Set_Friendlyname(LIBMTP_mtpdevice_t *device,
 			 char const * const friendlyname)
