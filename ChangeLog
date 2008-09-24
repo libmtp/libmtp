@@ -5,6 +5,7 @@
 	* src/libmtp.c: implementation.
 	* src/playlist-spl.c: consequental changes.
 	* src/libmtp.sym: consequental changes.
+	* Fixup patch from Alvin later this day.
 	* Note to self: remember to bump soname to .so.8.1.0.
 
 2008-09-23  Richard Low <richard@wentnet.com>

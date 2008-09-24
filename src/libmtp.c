@@ -5032,7 +5032,7 @@ int LIBMTP_Set_Folder_Name(LIBMTP_mtpdevice_t *device,
   int ret;
 
   ret = set_object_filename(device, folder->folder_id,
-			    LIBMTP_FILETYPE_UNKNOWN,
+			    PTP_OFC_Association,
 			    &newname);
 
   if (ret != 0) {
@@ -5151,8 +5151,14 @@ int LIBMTP_Set_Object_Filename(LIBMTP_mtpdevice_t *device,
   LIBMTP_file_t   *file;
 
   file = LIBMTP_Get_Filemetadata(device, object_id);
+
+  if (file == NULL) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Set_Object_Filename(): "
+			    "could not get file metadata for target object.");
+    return -1;
+  }
   
-  ret = set_object_filename(device, object_id, file->filetype, (const char **) &newname);
+  ret = set_object_filename(device, object_id, map_libmtp_type_to_ptp_type(file->filetype), (const char **) &newname);
   
   free(file);
 
