@@ -1,3 +1,9 @@
+2008-09-25  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: bump to 0.3.3.
+	* src/Makefile.am: interface to .so.8.1.0
+	* Release as 0.3.3.
+	
 2008-09-24  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: add new filename setting functions, patch
