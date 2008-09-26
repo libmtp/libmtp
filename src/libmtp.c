@@ -5865,58 +5865,76 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
       add_ptp_error_to_errorstack(device, ret, "create_new_abstract_list(): Could not send blank object data.");
       return -1;
     }
-	
-    // Update title
-    // FIXME: check if supported
-    if (name != NULL) {
+    
+    // set the properties one by one
+    ret = ptp_mtp_getobjectpropssupported(params, objectformat, &propcnt, &properties);
+
+    for (i=0;i<propcnt;i++) {
+      PTPObjectPropDesc opd;
+      
+      ret = ptp_mtp_getobjectpropdesc(params, properties[i], objectformat, &opd);
+      if (ret != PTP_RC_OK) {
+	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): "
+				"could not get property description.");
+      } else if (opd.GetSet) {
+	switch (properties[i]) {
+	case PTP_OPC_Name:
+	  if (name != NULL) {
       ret = set_object_string(device, *newid, PTP_OPC_Name, name);
       if (ret != 0) {
-	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity name.");
-	return -1;
+        add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity name.");
+        return -1;
       }
     }
-    
-    // Update artist
-    // FIXME: check if supported
-    if (artist != NULL) {
+	  break;
+	case PTP_OPC_AlbumArtist:
+	  if (artist != NULL) {
       ret = set_object_string(device, *newid, PTP_OPC_AlbumArtist, artist);
       if (ret != 0) {
-	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity album artist.");
-	return -1;
+        add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity album artist.");
+        return -1;
       }
     }
-    // Update artist
-    // FIXME: check if supported
-    if (artist != NULL) {
+	  break;
+	case PTP_OPC_Artist:
+	  if (artist != NULL) {
       ret = set_object_string(device, *newid, PTP_OPC_Artist, artist);
       if (ret != 0) {
-	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity artist.");
-	return -1;
+        add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity artist.");
+        return -1;
       }
     }
-
-    // Update composer
-    // FIXME: check if supported
-    if (composer != NULL) {
+	  break;
+	case PTP_OPC_Composer:
+	  if (composer != NULL) {
       ret = set_object_string(device, *newid, PTP_OPC_Composer, composer);
       if (ret != 0) {
-	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity composer.");
-	return -1;
+        add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity composer.");
+        return -1;
       }
     }
-
-    // Update genre
-    // FIXME: check if supported
-    if (genre != NULL) {
+	  break;
+	case PTP_OPC_Genre:
+	  if (genre != NULL) {
       ret = set_object_string(device, *newid, PTP_OPC_Genre, genre);
       if (ret != 0) {
-	add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity genre.");
-	return -1;
+        add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity genre.");
+        return -1;
       }
     }
-
-    // FIXME: Update date modified
-
+	  break;
+ 	case PTP_OPC_DateModified:
+    ret = set_object_string(device, *newid, PTP_OPC_DateModified, get_iso8601_stamp());
+    if (ret != 0) {
+      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set date modified.");
+      return -1;
+    }
+    break;
+	}
+      }
+      ptp_free_objectpropdesc(&opd);
+    }
+    free(properties);
   }
 
   if (no_tracks > 0) {
