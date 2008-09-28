@@ -1,3 +1,7 @@
+2008-09-28  Alvin <alvinbeach@gmail.com>
+
+	* src/libmtp.c: fix several bugs in Ogg filetype support.
+
 2008-09-26  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: check propdesc before setting props in

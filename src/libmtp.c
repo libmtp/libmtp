@@ -2928,6 +2928,27 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
     }
 
     /*
+     * A special quirk for iriver devices that doesn't quite
+     * remember that some files marked as "unknown" type are
+     * actually OGG files. We look at the filename extension
+     * and see if it happens that this was atleast named "ogg"
+     * and fall back on this heuristic approach in that case, 
+     * for these bugged devices only.
+     */
+    if (file->filetype == LIBMTP_FILETYPE_UNKNOWN &&
+	(FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
+	 FLAG_OGG_IS_UNKNOWN(ptp_usb))) {
+      // Repair forgotten OGG filetype
+      char *ptype;
+      
+      ptype = rindex(file->filename,'.')+1;
+      if (ptype != NULL && !strcasecmp (ptype, "ogg")) {
+	    // Fix it.
+        file->filetype = LIBMTP_FILETYPE_OGG;
+      }
+    }
+
+    /*
      * If we have a cached, large set of metadata, then use it!
      */
     if (params->props) {
@@ -3564,15 +3585,13 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
     // TODO: get this list as an intersection of the sets
     // supported by the device and the from the device and
     // all known audio track files?
-    if (!LIBMTP_FILETYPE_IS_AUDIO(mtptype) &&
-	!LIBMTP_FILETYPE_IS_VIDEO(mtptype) &&
-	!LIBMTP_FILETYPE_IS_AUDIOVIDEO(mtptype) &&
+    if (!LIBMTP_FILETYPE_IS_TRACK(mtptype) &&
 	// This row lets through undefined files for examination since they may be forgotten OGG files.
-	(oi->ObjectFormat != PTP_OFC_Undefined || 
-	 !FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
-	 !FLAG_OGG_IS_UNKNOWN(ptp_usb))
+	(oi->ObjectFormat != PTP_OFC_Undefined && 
+	 (!FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
+	 !FLAG_OGG_IS_UNKNOWN(ptp_usb)))
 	) {
-      // printf("Not a music track (format: %d), skipping...\n",oi.ObjectFormat);
+      //printf("Not a music track (name: %s format: %d), skipping...\n", oi->Filename, oi->ObjectFormat);
       continue;
     }
 
@@ -3654,6 +3673,7 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
 {
   uint32_t i = 0;
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
 
   // Get all the handles if we haven't already done that
   if (params->handles.Handler == NULL) {
@@ -3674,9 +3694,13 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
     mtptype = map_ptp_type_to_libmtp_type(oi->ObjectFormat);
 
     // Ignore stuff we don't know how to handle...
-    if (!LIBMTP_FILETYPE_IS_AUDIO(mtptype) &&
-	!LIBMTP_FILETYPE_IS_VIDEO(mtptype) &&
-	!LIBMTP_FILETYPE_IS_AUDIOVIDEO(mtptype)) {
+    if (!LIBMTP_FILETYPE_IS_TRACK(mtptype) &&
+	// This row lets through undefined files for examination since they may be forgotten OGG files.
+	(oi->ObjectFormat != PTP_OFC_Undefined && 
+	 (!FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
+	 !FLAG_OGG_IS_UNKNOWN(ptp_usb)))
+	) {
+      //printf("Not a music track (name: %s format: %d), skipping...\n", oi->Filename, oi->ObjectFormat);
       return NULL;
     }
 
@@ -3694,6 +3718,31 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
     track->filesize = oi->ObjectCompressedSize;
     if (oi->Filename != NULL) {
       track->filename = strdup(oi->Filename);
+    }
+
+    /*
+     * A special quirk for iriver devices that doesn't quite
+     * remember that some files marked as "unknown" type are
+     * actually OGG files. We look at the filename extension
+     * and see if it happens that this was atleast named "ogg"
+     * and fall back on this heuristic approach in that case, 
+     * for these bugged devices only.
+     */
+    if (track->filetype == LIBMTP_FILETYPE_UNKNOWN &&
+	(FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
+	 FLAG_OGG_IS_UNKNOWN(ptp_usb))) {
+      // Repair forgotten OGG filetype
+      char *ptype;
+      
+      ptype = rindex(track->filename,'.')+1;
+      if (ptype != NULL && !strcasecmp (ptype, "ogg")) {
+	     // Fix it.
+	     track->filetype = LIBMTP_FILETYPE_OGG;
+      } else {
+	    // This was not an OGG file so discard it
+	    LIBMTP_destroy_track_t(track);
+	    return NULL;
+      }
     }
 
     get_track_metadata(device, oi->ObjectFormat, track);
