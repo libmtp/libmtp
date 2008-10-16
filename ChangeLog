@@ -1,3 +1,12 @@
+2008-10-16  Linus Walleij <triad@df.lth.se>
+
+	* src/device-flags.h: new flag for broken updates of
+	  PTP_OPC_DateModified.
+	* src/music-players.h: tag all SanDisk devices with this
+	  flag. Bug appeared in them.
+	* libmtp.c: avoid updating PTP_OPC_DateModified on broken
+	  devices.
+
 2008-09-28  Alvin <alvinbeach@gmail.com>
 
 	* src/libmtp.c: fix several bugs in Ogg filetype support.

@@ -4708,12 +4708,14 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->propval.u32 = adjust_u32(metadata->usecount, &opd);
 	  break;
 	case PTP_OPC_DateModified:
-	  // Tag with current time if that is supported
-	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
-	  prop->ObjectHandle = metadata->item_id;
-	  prop->property = PTP_OPC_DateModified;
-	  prop->datatype = PTP_DTC_STR;
-	  prop->propval.str = get_iso8601_stamp();
+	  if (!FLAG_CANNOT_UPDATE_DATEMODIFIED(ptp_usb)) {
+	    // Tag with current time if that is supported
+	    prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
+	    prop->ObjectHandle = metadata->item_id;
+	    prop->property = PTP_OPC_DateModified;
+	    prop->datatype = PTP_DTC_STR;
+	    prop->propval.str = get_iso8601_stamp();
+	  }
 	  break;
 	default:
 	  break;
@@ -4886,7 +4888,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  }
 	  break;
 	case PTP_OPC_DateModified:
-	  {
+	  if (!FLAG_CANNOT_UPDATE_DATEMODIFIED(ptp_usb)) {
 	    // Update modification time if supported
 	    char *tmpstamp = get_iso8601_stamp();
 	    ret = set_object_string(device, metadata->item_id, PTP_OPC_DateModified, tmpstamp);
@@ -5929,56 +5931,56 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	switch (properties[i]) {
 	case PTP_OPC_Name:
 	  if (name != NULL) {
-      ret = set_object_string(device, *newid, PTP_OPC_Name, name);
-      if (ret != 0) {
-        add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity name.");
-        return -1;
-      }
-    }
+	    ret = set_object_string(device, *newid, PTP_OPC_Name, name);
+	    if (ret != 0) {
+	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity name.");
+	      return -1;
+	    }
+	  }
 	  break;
 	case PTP_OPC_AlbumArtist:
 	  if (artist != NULL) {
-      ret = set_object_string(device, *newid, PTP_OPC_AlbumArtist, artist);
-      if (ret != 0) {
-        add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity album artist.");
-        return -1;
-      }
-    }
+	    ret = set_object_string(device, *newid, PTP_OPC_AlbumArtist, artist);
+	    if (ret != 0) {
+	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity album artist.");
+	      return -1;
+	    }
+	  }
 	  break;
 	case PTP_OPC_Artist:
 	  if (artist != NULL) {
-      ret = set_object_string(device, *newid, PTP_OPC_Artist, artist);
-      if (ret != 0) {
-        add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity artist.");
-        return -1;
-      }
-    }
+	    ret = set_object_string(device, *newid, PTP_OPC_Artist, artist);
+	    if (ret != 0) {
+	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity artist.");
+	      return -1;
+	    }
+	  }
 	  break;
 	case PTP_OPC_Composer:
 	  if (composer != NULL) {
-      ret = set_object_string(device, *newid, PTP_OPC_Composer, composer);
-      if (ret != 0) {
-        add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity composer.");
-        return -1;
-      }
-    }
+	    ret = set_object_string(device, *newid, PTP_OPC_Composer, composer);
+	    if (ret != 0) {
+	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity composer.");
+	      return -1;
+	    }
+	  }
 	  break;
 	case PTP_OPC_Genre:
 	  if (genre != NULL) {
-      ret = set_object_string(device, *newid, PTP_OPC_Genre, genre);
-      if (ret != 0) {
-        add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity genre.");
-        return -1;
-      }
-    }
+	    ret = set_object_string(device, *newid, PTP_OPC_Genre, genre);
+	    if (ret != 0) {
+	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set entity genre.");
+	      return -1;
+	    }
+	  }
 	  break;
  	case PTP_OPC_DateModified:
-    ret = set_object_string(device, *newid, PTP_OPC_DateModified, get_iso8601_stamp());
-    if (ret != 0) {
-      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set date modified.");
-      return -1;
-    }
-    break;
+	  ret = set_object_string(device, *newid, PTP_OPC_DateModified, get_iso8601_stamp());
+	  if (ret != 0) {
+	    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set date modified.");
+	    return -1;
+	  }
+	  break;
 	}
       }
       ptp_free_objectpropdesc(&opd);
@@ -6100,12 +6102,14 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 	  }
 	  break;
  	case PTP_OPC_DateModified:
-	  // Tag with current time if that is supported
-	  prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
-	  prop->ObjectHandle = objecthandle;
-	  prop->property = PTP_OPC_DateModified;
-	  prop->datatype = PTP_DTC_STR;
-	  prop->propval.str = get_iso8601_stamp();
+	  if (!FLAG_CANNOT_UPDATE_DATEMODIFIED(ptp_usb)) {
+	    // Tag with current time if that is supported
+	    prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
+	    prop->ObjectHandle = objecthandle;
+	    prop->property = PTP_OPC_DateModified;
+	    prop->datatype = PTP_DTC_STR;
+	    prop->propval.str = get_iso8601_stamp();
+	  }
 	  break;
 	default:
 	  break;
@@ -6173,7 +6177,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_DateModified:
 	// Update date modified
-	{
+	if (!FLAG_CANNOT_UPDATE_DATEMODIFIED(ptp_usb)) {
 	  char *tmpdate = get_iso8601_stamp();
 	  ret = set_object_string(device, objecthandle, PTP_OPC_DateModified, tmpdate);
 	  if (ret != 0) {

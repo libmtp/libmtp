@@ -101,6 +101,8 @@ void get_usb_device_timeout(PTP_USB *ptp_usb, int *timeout);
   ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_PLAYLIST_SPL_V2)
 #define FLAG_PLAYLIST_SPL(a) \
   ((a)->rawdevice.device_entry.device_flags & (DEVICE_FLAG_PLAYLIST_SPL_V1 | DEVICE_FLAG_PLAYLIST_SPL_V2))
+#define FLAG_CANNOT_UPDATE_DATEMODIFIED(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_CANNOT_UPDATE_DATEMODIFIED)
 
 /* connect_first_device return codes */
 #define PTP_CD_RC_CONNECTED	0
