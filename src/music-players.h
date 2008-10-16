@@ -608,6 +608,8 @@
   { "SonyEricsson", 0x0fce, "C902", 0x00d4, DEVICE_FLAG_NONE },
   // Reported by an anonymous SourceForge user
   { "SonyEricsson", 0x0fce, "C702", 0x00d9, DEVICE_FLAG_NONE },
+  // Reported by Christian Zuckschwerdt <christian@zuckschwerdt.org>
+  { "SonyEricsson", 0x0fce, "W980", 0x00da, DEVICE_FLAG_NONE },
 
   /*
    * Motorola
