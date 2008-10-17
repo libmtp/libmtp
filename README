@@ -77,6 +77,33 @@ version, which deviates from the specified standard. You can
 find the official specification here:
 http://www.usb.org/developers/devclass_docs/MTP_1.0.zip
 
+
+The Examples
+------------
+
+In the subdirectory "examples" you find a number of 
+command-line tools, illustrating the use of libmtp in very
+simple terms.
+
+Please do not complain about the usability or documentation
+of these examples, they look like they do for two reasons:
+
+1. They are examples, not tools. If they were intended for
+   day-to-day usage by commandline freaks, I would have
+   called them "tools" not "examples".
+
+2. The MTP usage paradigm is that a daemon should hook
+   the device upon connection, and that it should be 
+   released by unplugging. GUI tools utilizing HAL (hald)
+   and D-Bus do this much better than any commandline
+   program ever can. (See below on bugs.) Specificationwise
+   this is a bug, however it is present in many, many
+   devices.
+
+That said, if you want to pick up and maintain the examples,
+please volunteer.
+
+
 Contributing
 ------------
 
@@ -483,6 +510,7 @@ cannot test your solution.
 
 * The Sirus Stiletto does not seem to allow you to copy any files
   off the device. This may be someone's idea of copy protection.
+
 
 Lost symbols
 ------------
