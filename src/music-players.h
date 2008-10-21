@@ -599,21 +599,24 @@
 
   /*
    * SonyEricsson
+   * These initially seemed to support GetObjPropList but later revisions
+   * of the firmware seem to have broken it, so all are flagged as broken
+   * for now.
    */
   // Reported by Øyvind Stegard <stegaro@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "K850i", 0x0075, DEVICE_FLAG_NONE },
+  { "SonyEricsson", 0x0fce, "K850i", 0x0075, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Michael Eriksson
-  { "SonyEricsson", 0x0fce, "W910", 0x0076, DEVICE_FLAG_NONE },
+  { "SonyEricsson", 0x0fce, "W910", 0x0076, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Zack <zackdvd@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "W890i", 0x00b3, DEVICE_FLAG_NONE },
+  { "SonyEricsson", 0x0fce, "W890i", 0x00b3, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by robert dot ahlskog at gmail
-  { "SonyEricsson", 0x0fce, "W760i", 0x00c6, DEVICE_FLAG_NONE },
+  { "SonyEricsson", 0x0fce, "W760i", 0x00c6, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Linus Åkesson <linusakesson@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "C902", 0x00d4, DEVICE_FLAG_NONE },
+  { "SonyEricsson", 0x0fce, "C902", 0x00d4, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by an anonymous SourceForge user
-  { "SonyEricsson", 0x0fce, "C702", 0x00d9, DEVICE_FLAG_NONE },
+  { "SonyEricsson", 0x0fce, "C702", 0x00d9, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Christian Zuckschwerdt <christian@zuckschwerdt.org>
-  { "SonyEricsson", 0x0fce, "W980", 0x00da, DEVICE_FLAG_NONE },
+  { "SonyEricsson", 0x0fce, "W980", 0x00da, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
 
   /*
    * Motorola
