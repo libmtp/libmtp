@@ -1,3 +1,12 @@
+2008-10-21  Linus Walleij <triad@df.lth.se>
+
+	* src/device-flags.h: actually the SanDisks cannot handle
+	  PTP_OPC_DateModified at ALL, not even as part of the
+	  initial update so rename the flag to something sensible.
+	* src/music-players.h: consequental changes.
+	* src/libmtp.c: disable all use of PTP_OPC_DateModified if
+	  flag is set, not just updates.
+
 2008-10-16  Linus Walleij <triad@df.lth.se>
 
 	* src/device-flags.h: new flag for broken updates of

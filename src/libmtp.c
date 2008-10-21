@@ -4429,11 +4429,13 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	  break;
 	case PTP_OPC_DateModified:
 	  // Tag with current time if that is supported
-	  prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
-	  prop->ObjectHandle = filedata->item_id;
-	  prop->property = PTP_OPC_DateModified;
-	  prop->datatype = PTP_DTC_STR;
-	  prop->propval.str = get_iso8601_stamp();
+	  if (!FLAG_CANNOT_HANDLE_DATEMODIFIED(ptp_usb)) {
+	    prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
+	    prop->ObjectHandle = filedata->item_id;
+	    prop->property = PTP_OPC_DateModified;
+	    prop->datatype = PTP_DTC_STR;
+	    prop->propval.str = get_iso8601_stamp();
+	  }
 	  break;
 	}
       }
@@ -4708,7 +4710,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  prop->propval.u32 = adjust_u32(metadata->usecount, &opd);
 	  break;
 	case PTP_OPC_DateModified:
-	  if (!FLAG_CANNOT_UPDATE_DATEMODIFIED(ptp_usb)) {
+	  if (!FLAG_CANNOT_HANDLE_DATEMODIFIED(ptp_usb)) {
 	    // Tag with current time if that is supported
 	    prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	    prop->ObjectHandle = metadata->item_id;
@@ -4888,7 +4890,7 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  }
 	  break;
 	case PTP_OPC_DateModified:
-	  if (!FLAG_CANNOT_UPDATE_DATEMODIFIED(ptp_usb)) {
+	  if (!FLAG_CANNOT_HANDLE_DATEMODIFIED(ptp_usb)) {
 	    // Update modification time if supported
 	    char *tmpstamp = get_iso8601_stamp();
 	    ret = set_object_string(device, metadata->item_id, PTP_OPC_DateModified, tmpstamp);
@@ -5850,11 +5852,13 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	  break;
  	case PTP_OPC_DateModified:
 	  // Tag with current time if that is supported
-	  prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
-	  prop->ObjectHandle = *newid;
-	  prop->property = PTP_OPC_DateModified;
-	  prop->datatype = PTP_DTC_STR;
-	  prop->propval.str = get_iso8601_stamp();
+	  if (!FLAG_CANNOT_HANDLE_DATEMODIFIED(ptp_usb)) {
+	    prop = ptp_get_new_object_prop_entry(&props,&nrofprops);
+	    prop->ObjectHandle = *newid;
+	    prop->property = PTP_OPC_DateModified;
+	    prop->datatype = PTP_DTC_STR;
+	    prop->propval.str = get_iso8601_stamp();
+	  }
 	  break;
 	}
       }
@@ -5975,10 +5979,12 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 	  }
 	  break;
  	case PTP_OPC_DateModified:
-	  ret = set_object_string(device, *newid, PTP_OPC_DateModified, get_iso8601_stamp());
-	  if (ret != 0) {
-	    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set date modified.");
-	    return -1;
+	  if (!FLAG_CANNOT_HANDLE_DATEMODIFIED(ptp_usb)) {
+	    ret = set_object_string(device, *newid, PTP_OPC_DateModified, get_iso8601_stamp());
+	    if (ret != 0) {
+	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): could not set date modified.");
+	      return -1;
+	    }
 	  }
 	  break;
 	}
@@ -6102,7 +6108,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 	  }
 	  break;
  	case PTP_OPC_DateModified:
-	  if (!FLAG_CANNOT_UPDATE_DATEMODIFIED(ptp_usb)) {
+	  if (!FLAG_CANNOT_HANDLE_DATEMODIFIED(ptp_usb)) {
 	    // Tag with current time if that is supported
 	    prop = ptp_get_new_object_prop_entry(&props, &nrofprops);
 	    prop->ObjectHandle = objecthandle;
@@ -6177,7 +6183,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 	break;
       case PTP_OPC_DateModified:
 	// Update date modified
-	if (!FLAG_CANNOT_UPDATE_DATEMODIFIED(ptp_usb)) {
+	if (!FLAG_CANNOT_HANDLE_DATEMODIFIED(ptp_usb)) {
 	  char *tmpdate = get_iso8601_stamp();
 	  ret = set_object_string(device, objecthandle, PTP_OPC_DateModified, tmpdate);
 	  if (ret != 0) {

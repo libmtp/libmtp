@@ -189,4 +189,4 @@
  * is read/write but will still fail to update it. It can only
  * be set properly the first time a file is sent.
  */
-#define DEVICE_FLAG_CANNOT_UPDATE_DATEMODIFIED 0x00004000
+#define DEVICE_FLAG_CANNOT_HANDLE_DATEMODIFIED 0x00004000
