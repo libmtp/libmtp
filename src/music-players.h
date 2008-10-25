@@ -468,6 +468,14 @@
   { "Nokia", 0x0421, "E71", 0x00e4, DEVICE_FLAG_NONE },
   // From: Laurent Bigonville <bigon@users.sourceforge.net>
   { "Nokia", 0x0421, "E66", 0x00e5, DEVICE_FLAG_NONE },
+  // From: http://nds2.nokia.com/files/support/global/phones/software/Nokia_3250_WMP10_driver.inf
+  { "Nokia", 0x0421, "3250 Mobile Phone", 0x0462, DEVICE_FLAG_NONE },
+  // From http://nds2.nokia.com/files/support/global/phones/software/Nokia_N93_WMP10_Driver.inf
+  { "Nokia", 0x0421, "N93 Mobile Phone", 0x0478, DEVICE_FLAG_NONE },
+  // From: http://nds2.nokia.com/files/support/global/phones/software/Nokia_5500_Sport_WMP10_driver.inf
+  { "Nokia", 0x0421, "5500 Sport Mobile Phone", 0x047e, DEVICE_FLAG_NONE },
+  // From http://nds2.nokia.com/files/support/global/phones/software/Nokia_N91_WMP10_Driver.inf
+  { "Nokia", 0x0421, "N91 Mobile Phone", 0x0485, DEVICE_FLAG_NONE },
   // From: Christian Rusa <kristous@users.sourceforge.net>
   { "Nokia", 0x0421, "5700 XpressMusic Mobile Phone", 0x04b4, DEVICE_FLAG_NONE },
   // From: Mitchell Hicks <mitchix@yahoo.com>
@@ -476,6 +484,8 @@
   { "Nokia", 0x0421, "N73 Mobile Phone", 0x04d1, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Swapan <swapan@yahoo.com>
   { "Nokia", 0x0421, "N75 Mobile Phone", 0x04e1, DEVICE_FLAG_NONE },
+  // From: http://nds2.nokia.com/files/support/global/phones/software/Nokia_N93i_WMP10_driver.inf
+  { "Nokia", 0x0421, "N93i Mobile Phone", 0x04e5, DEVICE_FLAG_NONE },
   // From Anonymous Sourceforge User
   { "Nokia", 0x0421, "N95 Mobile Phone", 0x04ef, DEVICE_FLAG_NONE },
   // From: Pat Nicholls <pat@patandannie.co.uk>
