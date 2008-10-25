@@ -24,6 +24,9 @@
  *
  * This file is supposed to be included within a struct from both libmtp
  * and libgphoto2.
+ *
+ * Information can be harvested from Windows driver .INF files, see:
+ * http://msdn.microsoft.com/en-us/library/aa973606.aspx
  */
 /*
  * MTP device list, trying real bad to get all devices into
@@ -175,7 +178,7 @@
    */
   { "Philips", 0x0471, "HDD6320/00 or HDD6330/17", 0x014b, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Anonymous SourceForge user
-  { "Philips", 0x0471, "HDD1620 or HDD1630/17", 0x014c, DEVICE_FLAG_NONE },
+  { "Philips", 0x0471, "HDD14XX,HDD1620 or HDD1630/17", 0x014c, DEVICE_FLAG_NONE },
   // from discussion forum
   { "Philips", 0x0471, "HDD085/00 or HDD082/17", 0x014d, DEVICE_FLAG_NONE },
   // from XNJB forum
@@ -650,6 +653,8 @@
   { "Motorola", 0x22b8, "K1", 0x4811, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
   // Reported by Hans-Joachim Baader <hjb@pro-linux.de> to libptp2
   { "Motorola", 0x22b8, "A1200", 0x60ca, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
+  // http://mark.cdmaforums.com/Files/Motdmmtp.inf
+  { "Motorola", 0x22b8, "MTP Test Command Interface", 0x6413, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
   // Reported by anonymous user
   { "Motorola", 0x22b8, "RAZR2 V8/U9/Z6", 0x6415, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
   
