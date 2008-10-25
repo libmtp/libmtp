@@ -448,7 +448,16 @@
    * Nokia
    * Please verify the low device IDs here, I suspect these might be for
    * things like USB storage or modem mode actually, whereas the higher
-   * range (0x04nn) could be for MTP.
+   * range (0x04nn) could be for MTP. Some of the devices were gathered
+   * from the Nokia WMP drivers:
+   * http://nds2.nokia.com/files/support/global/phones/software/
+   * Address was gathered from going to:
+   * nseries.com
+   * -> support
+   * -> select supported device
+   *  -> PC software
+   *    -> Music software
+   *      -> Windows Media Player 10 driver
    */
   // From: DoomHammer <gaczek@users.sourceforge.net>
   { "Nokia", 0x0421, "N81 Mobile Phone", 0x000a, DEVICE_FLAG_NONE },
