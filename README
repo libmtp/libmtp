@@ -589,3 +589,81 @@ Typical remedies:
     (or whatever) from source only and you will be enlighted.
 
 I don't know if this helps you, it's the best answer we can give.
+
+
+API is obscure - I want plain files!
+------------------------------------
+
+PTP/MTP devices does not actually contain "files", they contain
+objects. These objects have file names, but that is actually
+just a name tag on the object.
+
+Folders/directories aren't really such entities: they are just 
+objects too, albeit objects that can act as parent to other
+objects. They are called "association and are created in atomic
+fashion and even though there is an MTP command to get all the
+associations of an association, this command is optional so it is
+perfectly possible (and most common, actually) to create devices
+where the "folders" (which are actually associations) have no idea
+whatsoever of what files they are associated as parents to 
+(i.e. which files they contain). This is very easy for device
+manufacturers to implement, all the association has to be done by
+the MTP Initiator / host computer.
+
+Moving a file to a new folder is for example very simple in a
+"real" file system. In PTP/MTP devices it is often not even possible,
+some devices *may* be able to do that. But actually the only
+reliable way of doing that is to upload the file to the host,
+download it with the new parent, then scratch the old file.
+We have played with the idea of implementing this time consuming
+function, perhaps we will.
+
+Playlists and albums aren't really files, thinking about 
+them as files like the hacks in libgphoto2 is really backwards. They are
+called associations and are more like a symbolic link that links in a
+star-shaped pattern to all the files that are part of the album/playlist.
+Some devices (Samsung) thought that was too complicated and have a
+different way of storing playlists in an UTF-16 encoded .spl-like file
+instead! This is why playlists/albums must have their own structs and 
+functions.
+
+
+I Want Streaming!
+-----------------
+
+Streaming reads is easy. Just connect the output file descriptor from
+LIBMTP_Get_File_To_File_Descriptor() (and a similar function for tracks)
+wherever you want.
+
+People have connected this to TCP sockets for streaming web servers 
+etc, works like a charm. Some devices will even survive if the callback 
+functions return non-zero and cancel the download. Some devices will
+lock up and even require a reset if you do that. Devices are poorly
+implemented so that's life. If you want to stream off a device, the
+best idea is always to stream the entire file and discard the stuff
+at the end you don't want. It will incur a delay if you e.g. want to
+skip between tracks, sadly.
+
+Then we get to the complicated things: streaming WRITES...
+
+There is a function:
+LIBMTP_Send_File_From_File_Descriptor() (and similar for tracks)
+which will write a file to a device from a file descriptor, which may
+be a socket or whatever.
+
+HOWEVER: this requires a piece of metadata with the .filesize properly
+set first.
+
+This is not because we think it is funny to require that, the protocol
+requires it. The reason is that PTP/MTP is a transactional file system
+and it wants to be able to deny file transfer if the file won't fit on
+the device, so the transaction never even starts, it's impossible to
+start a transaction without giving file length.
+
+People really want streaming so I tried a lot of hacks to see if they
+would work, such as setting file size to 0xffffffffU or something other
+unnaturally big and then aborting the file transfer when the stream ends.
+It doesn't work: either the device crashes or the file simply disappears
+since the device rolls back all failed transactions.
+
+So this is an inherent limitation of the PTP/MTP protocol.
