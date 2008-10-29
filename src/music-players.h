@@ -389,6 +389,8 @@
   // Tentatively added - no real reports of this device ID being MTP,
   // reports as USB Mass Storage currently.
   { "Toshiba", 0x0930, "Gigabeat MEU201", 0x001a, DEVICE_FLAG_NONE },
+  // Reported by anonymous SourceForge user
+  { "Toshiba", 0x0930, "Gigabeat MET401", 0x001d, DEVICE_FLAG_NONE },
 
   
   /*
