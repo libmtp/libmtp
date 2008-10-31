@@ -537,9 +537,9 @@
    * Palm device userland program named Pocket Tunes
    * Reported by Peter Gyongyosi <gyp@impulzus.com>
    */
-  { "Palm / Handspring", 0x1703, "Pocket Tunes", 0x0001, DEVICE_FLAG_NONE },
+  { "NormSoft, Inc.", 0x1703, "Pocket Tunes", 0x0001, DEVICE_FLAG_NONE },
   // Reported by anonymous submission
-  { "Palm Handspring", 0x1703, "Pocket Tunes 4", 0x0002, DEVICE_FLAG_NONE },
+  { "NormSoft, Inc.", 0x1703, "Pocket Tunes 4", 0x0002, DEVICE_FLAG_NONE },
 
   /*
    * TrekStor and Medion devices
