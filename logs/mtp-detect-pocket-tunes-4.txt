@@ -1,0 +1,224 @@
+libmtp version: 0.3.3
+
+Listing raw device(s)
+   Found 1 device(s):
+   Palm Handspring: Pocket Tunes 4 (1703:0002) @ bus 0, dev 110
+Attempting to connect device(s)
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 257
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 1703
+   idProduct: 0002
+   IN endpoint maxpacket: 64 bytes
+   OUT endpoint maxpacket: 64 bytes
+   Raw device info:
+      Bus location: 0
+      Device number: 110
+      Device entry info:
+         Vendor: Palm Handspring
+         Vendor id: 0x1703
+         Product: Pocket Tunes 4
+         Vendor id: 0x0002
+         Device flags: 0x00000000
+Microsoft device descriptor 0xee:
+    0000: 1203 4d00 5300 4600 5400 3100 3000 3000    ..M.S.F.T.1.0.0.
+    0010: 0400                                       ..
+Microsoft device response to control message 1, CMD 0x04:
+    0000: 2800 0000 0001 0400 0100 0000 0000 0000    (...............
+    0010: 0001 4d54 5000 0000 0000 0000 0000 0000    ..MTP...........
+    0020: 0000 0000 0000 0000                        ........
+Microsoft device response to control message 2, CMD 0x04:
+    0000: 2800 0000 0001 0400 0100 0000 0000 0000    (...............
+    0010: 0001 4d54 5000 0000 0000 0000 0000 0000    ..MTP...........
+    0020: 0000 0000 0000 0000                        ........
+Device info:
+   Manufacturer: NormSoft, Inc.
+   Model: Pocket Tunes
+   Device version: 4.0.7
+   Serial number: tdKV8yM0qlbI5q9bJ5C66fQC5IM=
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0;microsoft.com/WMPPD: 10.0;microsoft.com/WMDRMPD: 10.1;
+   Detected object size: 64 bits
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1007: Get object handles
+   1014: Get device property description
+   1015: Get device property value
+   1008: Get object info
+   1009: Get object
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   9806: Set object property list
+   9808: Send object property list
+   9810: Get object references
+   9811: Set object references
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+Events supported:
+   None.
+Device Properties Supported:
+   0x5001: Battery Level
+   0x5002: Functional Mode
+   0x5011: Date & Time
+   0xd401: Synchronization Partner
+   0xd402: Friendly Device Name
+   0xd102: Device Certificate
+Playable File (Object) Types and Object Properties Supported:
+   b901: WMA
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc08: DateCreated STRING data type DATETIME FORM READ ONLY
+      dc09: DateModified STRING data type DATETIME FORM READ ONLY
+      dc46: Artist STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      de9a: AudioBitRate UINT32 data type ANY 32BIT VALUE form READ ONLY
+      de93: SampleRate UINT32 data type enumeration: 11025, 22050, 44100,  READ ONLY
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  READ ONLY
+   3009: MP3
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc08: DateCreated STRING data type DATETIME FORM READ ONLY
+      dc09: DateModified STRING data type DATETIME FORM READ ONLY
+      dc46: Artist STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      de9a: AudioBitRate UINT32 data type ANY 32BIT VALUE form READ ONLY
+      de93: SampleRate UINT32 data type enumeration: 11025, 22050, 44100,  READ ONLY
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  READ ONLY
+   ba05: Abstract Audio Video Playlist
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc08: DateCreated STRING data type DATETIME FORM READ ONLY
+      dc09: DateModified STRING data type DATETIME FORM READ ONLY
+      dc46: Artist STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      de9a: AudioBitRate UINT32 data type ANY 32BIT VALUE form READ ONLY
+      de93: SampleRate UINT32 data type enumeration: 11025, 22050, 44100,  READ ONLY
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  READ ONLY
+   ba11: M3U Playlist
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc08: DateCreated STRING data type DATETIME FORM READ ONLY
+      dc09: DateModified STRING data type DATETIME FORM READ ONLY
+      dc46: Artist STRING data type GET/SET
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+      dc8c: Genre STRING data type GET/SET
+      dc9a: AlbumName STRING data type GET/SET
+      de9a: AudioBitRate UINT32 data type ANY 32BIT VALUE form READ ONLY
+      de93: SampleRate UINT32 data type enumeration: 11025, 22050, 44100,  READ ONLY
+      de94: NumberOfChannels UINT16 data type enumeration: 1, 2,  READ ONLY
+   3001: Association/Directory
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+      dc08: DateCreated STRING data type DATETIME FORM READ ONLY
+      dc09: DateModified STRING data type DATETIME FORM READ ONLY
+   3000: Undefined Type
+      dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: ObjectSize UINT64 data type READ ONLY
+      dc07: ObjectFileName STRING data type GET/SET
+      dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+      dc44: Name STRING data type GET/SET
+Storage Devices:
+   StorageID: 0x00020001
+      StorageType: 0x0004 removable RAM storage
+      FilesystemType: 0x0002 generic hierarchical
+      AccessCapability: 0x0000 read/write
+      MaxCapacity: 3955228672
+      FreeSpaceInBytes: 3393978368
+      FreeSpaceInObjects: 4294967295
+      StorageDescription: DSM 4GB
+      VolumeIdentifier: SD04G_B0D9A185380807
+Special directories:
+   Default music folder: 0x00000000
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x00000000
+   Default video folder: 0x00000000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00000000
+   Default text folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: Palm Device: DSM
+   Synchronization partner: Pocket Tunes
+   Battery level 93 of 100 (93%)
+libmtp supported (playable) filetypes:
+   Microsoft Windows Media Audio
+   ISO MPEG-1 Audio Layer 3
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1"></UNIQUEID><PUBLICKEY private="1"></PUBLICKEY><KEYDATA></KEYDATA></DATA><MSDRM_SIGNATURE_VALUE></MSDRM_SIGNATURE_VALUE><SYMSIGNATURE></SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.101.143</SECURITYVERSION><CERTIFICATE private="1"></CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>Pocket Tunes</NAME>
+    <MANUFACTURER>NormSoft, Inc.</MANUFACTURER>
+    <MODEL>Pocket Tunes</MODEL>
+    <SECURITYLEVEL>2000</SECURITYLEVEL>
+    <HARDWARE_VER_MAJOR>1</HARDWARE_VER_MAJOR>
+     <HARDWARE_VER_MINOR>0</HARDWARE_VER_MINOR>
+    <FIRMWARE_VER_MAJOR>3</FIRMWARE_VER_MAJOR>
+    <FIRMWARE_VER_MINOR>1</FIRMWARE_VER_MINOR>
+    <FEATURES>
+        <CLOCK>1</CLOCK>
+        <METERING>1</METERING>
+        <LICENSE_ACQ>0</LICENSE_ACQ>
+        <LICENSE_SYNC>1</LICENSE_SYNC>
+        <ENCRYPTION>0</ENCRYPTION>
+        <SYMMETRIC_OPT>1</SYMMETRIC_OPT>
+    </FEATURES>
+    <LIMITS>
+        <MAXCHAINDEPTH>2</MAXCHAINDEPTH>
+        <MAXLICENSESIZE>10240</MAXLICENSESIZE>
+        <MAXHEADERSIZE>5120</MAXHEADERSIZE>
+    </LIMITS><PUBLICKEY></PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE></MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>243</AUTH_ID><PUBLICKEY></PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE></MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY></PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE></MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
+WMPInfo.xml Does not exist on this device
+OK.
