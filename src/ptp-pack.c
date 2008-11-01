@@ -1001,9 +1001,19 @@ ptp_unpack_OPL (PTPParams *params, unsigned char* data, MTPProperties **pprops, 
 		return 0;
 	}
 	data += sizeof(uint32_t);
+  len -= sizeof(uint32_t);
 	props = malloc(prop_count * sizeof(MTPProperties));
 	if (!props) return 0;
 	for (i = 0; i < prop_count; i++) {
+    if (len <= 0)
+    {
+      // we should never get this, but sometimes we get broken prop lists
+      // devices that get here should have DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL added
+      fprintf(stderr, "Run out of object property list data, bailing out. Your device needs "
+      "DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL - please tell the libmtp developers which device "
+      "you have and that you got this message.\n");
+      return i;
+    }
 		props[i].ObjectHandle = dtoh32a(data);
 		data += sizeof(uint32_t);
 		len -= sizeof(uint32_t);
