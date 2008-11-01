@@ -66,7 +66,7 @@
   { "Creative", 0x041e, "ZEN Vision W", 0x4153, DEVICE_FLAG_NONE },
   // Don't add 0x4155: this is a Zen Stone device which is not MTP
   // Reported by Paul Kurczaba <paul@kurczaba.com>
-  { "Creative", 0x041e, "ZEN", 0x4157, DEVICE_FLAG_IGNORE_HEADER_ERRORS | DEVICE_FLAG_BROKEN_SET_SAMPLE_DIMENSIONS },
+  { "Creative", 0x041e, "ZEN", 0x4157, DEVICE_FLAG_IGNORE_HEADER_ERRORS | DEVICE_FLAG_BROKEN_SET_SAMPLE_DIMENSIONS | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Reported by Ringofan <mcroman@users.sourceforge.net>
   { "Creative", 0x041e, "ZEN V 2GB", 0x4158, DEVICE_FLAG_NONE },
   // Reported by j norment <stormzen@gmail.com>
@@ -104,9 +104,7 @@
   // From XNJB user
   // Guessing on .spl flag
   { "Samsung", 0x04e8, "YP-Z5", 0x503c, DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_PLAYLIST_SPL_V1 },
-  // From XNJB user
-  // Guessing on .spl flag
-  { "Samsung", 0x04e8, "YP-Z5 2GB", 0x5041, DEVICE_FLAG_NONE | DEVICE_FLAG_PLAYLIST_SPL_V1 },
+  // Don't add 0x5041 as this is YP-Z5 in USB mode
   // Contributed by anonymous person on SourceForge
   { "Samsung", 0x04e8, "YP-T7J", 0x5047, DEVICE_FLAG_NONE },
   // Reported by cstrickler@gmail.com
