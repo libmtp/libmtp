@@ -589,7 +589,7 @@ char const * const get_playlist_extension(PTP_USB *ptp_usb)
   return default_pl_extension;
 }
 
-static void
+void
 ptp_debug (PTPParams *params, const char *format, ...)
 {  
         va_list args;
