@@ -3585,8 +3585,8 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
     // Ignore stuff we don't know how to handle...
     // TODO: get this list as an intersection of the sets
     // supported by the device and the from the device and
-    // all known audio track files?
-    if (!LIBMTP_FILETYPE_IS_AUDIO(mtptype) &&
+    // all known track files?
+    if (!LIBMTP_FILETYPE_IS_TRACK(mtptype) &&
 	// This row lets through undefined files for examination since they may be forgotten OGG files.
 	(oi->ObjectFormat != PTP_OFC_Undefined || 
 	 (!FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) &&
@@ -3695,7 +3695,7 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
     mtptype = map_ptp_type_to_libmtp_type(oi->ObjectFormat);
 
     // Ignore stuff we don't know how to handle...
-    if (!LIBMTP_FILETYPE_IS_AUDIO(mtptype) &&
+    if (!LIBMTP_FILETYPE_IS_TRACK(mtptype) &&
 	// This row lets through undefined files for examination since they may be forgotten OGG files.
 	(oi->ObjectFormat != PTP_OFC_Undefined || 
 	 (!FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) &&
