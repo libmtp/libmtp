@@ -5455,6 +5455,7 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name,
   }
   new_folder.ObjectCompressedSize = 1;
   new_folder.ObjectFormat = PTP_OFC_Association;
+  new_folder.ProtectionStatus = PTP_PS_NoProtection;
   new_folder.AssociationType = PTP_AT_GenericFolder;
   new_folder.ParentObject = parent_id;
   new_folder.StorageID = store;
