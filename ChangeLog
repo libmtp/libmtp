@@ -1,3 +1,9 @@
+2008-11-07  Linus Walleij <triad@df.lth.se>
+
+	* Release libmtp 0.3.4.
+	* configure.ac: let's release 0.3.4.
+	* src/Makefile.am: compatible API and ABI.
+	
 2008-11-05  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: fix the association type problem on
