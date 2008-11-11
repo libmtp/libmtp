@@ -1,3 +1,8 @@
+2008-11-11  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: allow for playlists with zero tracks on them,
+	  also in update.
+
 2008-11-09  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp.h: sync from upstream.

@@ -5998,7 +5998,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
   }
 
   if (no_tracks > 0) {
-    // Add tracks to the new playlist as object references.
+    // Add tracks to the list as object references.
     ret = ptp_mtp_setobjectreferences (params, *newid, (uint32_t *) tracks, no_tracks);
     if (ret != PTP_RC_OK) {
       add_ptp_error_to_errorstack(device, ret, "create_new_abstract_list(): could not add tracks as object references.");
@@ -6207,14 +6207,11 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
   }
   
   // Then the object references...
-  if (no_tracks > 0) {
-    // Add tracks to the new album as object references.
-    ret = ptp_mtp_setobjectreferences (params, objecthandle, (uint32_t *) tracks, no_tracks);
-    if (ret != PTP_RC_OK) {
-      add_ptp_error_to_errorstack(device, ret, "update_abstract_list(): could not add tracks as object references.");
-      free(properties);
-      return -1;
-    }
+  ret = ptp_mtp_setobjectreferences (params, objecthandle, (uint32_t *) tracks, no_tracks);
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "update_abstract_list(): could not add tracks as object references.");
+    free(properties);
+    return -1;
   }
 
   free(properties);
