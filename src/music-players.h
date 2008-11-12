@@ -575,6 +575,8 @@
    */
   // Reported by Patrik Johansson <Patrik.Johansson@qivalue.com>
   { "Cowon", 0x0e21, "iAudio U3 (MTP mode)", 0x0701, DEVICE_FLAG_NONE },
+  // Reported by Kevin Michael Smith <hai-etlik@users.sourceforge.net>
+  { "Cowon", 0x0e21, "iAudio 6 (MTP mode)", 0x0711, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Roberth Karman
   { "Cowon", 0x0e21, "iAudio 7 (MTP mode)", 0x0751, DEVICE_FLAG_NONE },
   // Reported by an anonymous SourceForge user
