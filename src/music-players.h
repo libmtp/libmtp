@@ -562,6 +562,9 @@
   // the same bug flag as its ancestor above.
   { "Medion", 0x066f, "MD8333", 0x8550,
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by anonymous Sourceforge user
+  { "Medion", 0x066f, "MD8333", 0x8588,
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Cristi Magherusan <majeru@gentoo.ro>
   { "TrekStor", 0x0402, "i.Beat Sweez FM", 0x0611, 
     DEVICE_FLAG_UNLOAD_DRIVER },
