@@ -6291,6 +6291,11 @@ int LIBMTP_Update_Playlist(LIBMTP_mtpdevice_t *device,
   // Samsung needs its own special type of playlists
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   if(FLAG_PLAYLIST_SPL(ptp_usb)) {
+    // FIXME: this call is NOT SAFE, update_spl_playlist()
+    // changes the object_id of metadata here, and the user callee
+    // (calling application) expects LIBMTP_Update_Playlist()
+    // NOT to change this metadata. If a tracks changed a new playlist
+    // makeid will result!
     return update_spl_playlist(device, metadata);
   }
 

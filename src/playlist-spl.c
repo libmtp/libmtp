@@ -244,7 +244,7 @@ int playlist_t_to_spl(LIBMTP_mtpdevice_t *device,
  * @return 0 on success, any other value means failure.
  */
 int update_spl_playlist(LIBMTP_mtpdevice_t *device,
-			  LIBMTP_playlist_t const * const new)
+			  LIBMTP_playlist_t * const new)
 {
   IF_DEBUG() printf("pl->name='%s'\n",new->name);
 
@@ -276,12 +276,6 @@ int update_spl_playlist(LIBMTP_mtpdevice_t *device,
         printf("name is changing too -> %s\n",new->name);
     }
 
-    // FIXME: this call is NOT SAFE, LIBMTP_Create_New_Playlist()
-    // changes the object_id of new here, and the user callee
-    // (calling application) expects LIBMTP_Update_Playlist()
-    // NOT to change this metadata. Make a copy of the metadata
-    // that you send in here instead, and hope the app finds out
-    // about the object_id change some other way.
     return LIBMTP_Create_New_Playlist(device, new);
   }
 
@@ -402,7 +396,7 @@ static text_t* read_into_spl_text_t(LIBMTP_mtpdevice_t *device, const int fd)
         //   we are dropping all the processed bytes for this line and
         //   proceeding on as if everything is okay, probably losing a track
         //   from the playlist
-        printf("ERROR %s:%u:%s(): buffer overflow! .spl line too long @ %uB\n",
+        printf("ERROR %s:%u:%s(): buffer overflow! .spl line too long @ %zuB\n",
                __FILE__, __LINE__, __func__, WSIZE);
         iw = w; // reset buffer
       }
