@@ -143,7 +143,7 @@
   // this device ID seems to have been recycled for:
   // the Samsung SGH-A707 Cingular cellphone
   // the Samsung L760-V cellphone
-  { "Samsung", 0x04e8, "YH-999 Portable Media Center/SGH-A707/SGH-L760V", 0x5a0f, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  { "Samsung", 0x04e8, "YH-999 Portable Media Center/SGH-A707/SGH-L760V/SGH-U900", 0x5a0f, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // From Santi Béjar <sbejar@gmail.com> - not sure this is MTP...
   // { "Samsung", 0x04e8, "Z170 Mobile Phone", 0x6601, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Santi Béjar <sbejar@gmail.com> - not sure this is MTP...
