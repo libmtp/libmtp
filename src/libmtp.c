@@ -6275,27 +6275,25 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
  * supplied. If the <code>tracks</code> field of the metadata
  * contains a track listing, these tracks will be added to the
  * playlist in place of those already present, i.e. the
- * previous track listing will be deleted.
+ * previous track listing will be deleted. For Samsung devices the
+ * playlist id (metadata->playlist_id) is likely to change.
  * @param device a pointer to the device to create the new playlist on.
  * @param metadata the metadata for the playlist to be updated.
  *                 notice that the field <code>playlist_id</code>
- *                 must contain the apropriate playlist ID.
+ *                 must contain the apropriate playlist ID. Playlist ID
+ *                 be modified to a new playlist ID by the time the
+ *                 function returns since edit-in-place is not always possible.
  * @return 0 on success, any other value means failure.
  * @see LIBMTP_Create_New_Playlist()
  * @see LIBMTP_Delete_Object()
  */
 int LIBMTP_Update_Playlist(LIBMTP_mtpdevice_t *device,
-			   LIBMTP_playlist_t const * const metadata)
+			   LIBMTP_playlist_t * const metadata)
 {
 
   // Samsung needs its own special type of playlists
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   if(FLAG_PLAYLIST_SPL(ptp_usb)) {
-    // FIXME: this call is NOT SAFE, update_spl_playlist()
-    // changes the object_id of metadata here, and the user callee
-    // (calling application) expects LIBMTP_Update_Playlist()
-    // NOT to change this metadata. If a tracks changed a new playlist
-    // makeid will result!
     return update_spl_playlist(device, metadata);
   }
 
