@@ -297,6 +297,11 @@
   { "iRiver", 0x4102, "iFP-880", 0x1008, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
+  // From Steve Cordwell <geoguy@users.sourceforge.net>
+  // VERY uncertain about the device flags for this one.
+  { "iRiver", 0x4102, "Lplayer", 0x1042, 
+    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
+    DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
   // From libgphoto2 source
   { "iRiver", 0x4102, "T10", 0x1113, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
