@@ -476,6 +476,8 @@
   { "Nokia", 0x0421, "N81 Mobile Phone", 0x000a, DEVICE_FLAG_NONE },
   // From an anonymous SourceForge user
   { "Nokia", 0x0421, "6120c Classic Mobile Phone", 0x002e, DEVICE_FLAG_NONE },
+  // From Stefano
+  { "Nokia", 0x0421, "N96 Mobile Phone", 0x0039, DEVICE_FLAG_NONE },
   // From Martijn van de Streek <martijn@vandestreek.net>
   { "Nokia", 0x0421, "6500c Classic Mobile Phone", 0x003c, DEVICE_FLAG_NONE },
   // From: DoomHammer <gaczek@users.sourceforge.net>
