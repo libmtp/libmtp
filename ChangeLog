@@ -1,11 +1,15 @@
+2008-11-25  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: fix a bug on handling folder children with an illegal
+	  ID of 0. Occured in the ZEN Xi-Fi in the "Recordings" folder, when
+	  that is created on the device.
+
 2008-11-17  Alistair Boyle <alistair.js.boyle@gmail.com>
 
-	* Release libmtp 0.3.5
 	* configure.ac: change release to 0.3.5.
 	* libmtp.c: change metadata const*const to *const to allow playlist_id
 	  to be modified by LIBMTP_Update_Playlist. (Samsung playlists)
 	* libmtp.h.in: match libmtp.c
-
 
 2008-11-11  Linus Walleij <triad@df.lth.se>
 

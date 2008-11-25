@@ -5380,7 +5380,12 @@ static LIBMTP_folder_t *get_subfolders_for_folder(PTPParams *params, uint32_t pa
     }
     
     // Recursively get children for this child. Perhaps NULL.
-    folder->child = get_subfolders_for_folder(params, folder->folder_id);
+    if (folder->child == 0) {
+      // The Creative Zen Xi-Fi has this particular bug using an invalid child ID
+      printf("Weirdo folder child with ID 0 encountered, not descending.\n");
+    } else {
+      folder->child = get_subfolders_for_folder(params, folder->folder_id);
+    }
   }
 
   return retfolders;
