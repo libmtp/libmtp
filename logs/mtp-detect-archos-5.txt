@@ -1,0 +1,12 @@
+Device 0 (VID=0e79 and PID=1333) is UNKNOWN.
+Please report this VID/PID and the device model to the libmtp development team
+usb_claim_interface(): Device or resource busy
+LIBMTP PANIC: Unable to initialize device
+Unable to open raw device 0
+libmtp version: 0.3.1
+
+Listing raw device(s)
+   Found 1 device(s):
+   0e79:1333 @ bus 0, dev 20
+Attempting to connect device(s)
+OK.
