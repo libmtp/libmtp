@@ -1,3 +1,7 @@
+2008-12-02  Linus Walleij <triad@df.lth.se>
+
+	* examples/util.c: another NULL check.
+
 2008-11-25  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: fix a bug on handling folder children with an illegal

@@ -53,7 +53,9 @@ void checklang(void)
     }
   }
 #endif
-  if (strcmp(langsuff, "UTF-8")) {
+  if (langsuff == NULL) {
+    printf("Could not determine language suffix for your system. Please check your setup!\n");
+  } else if (strcmp(langsuff, "UTF-8")) {
     printf("Your system does not appear to have UTF-8 enabled ($LANG=\"%s\")\n", lang);
     printf("If you want to have support for diacritics and Unicode characters,\n");
     printf("please switch your locale to an UTF-8 locale, e.g. \"en_US.UTF-8\".\n");
