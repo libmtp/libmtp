@@ -297,15 +297,11 @@
   { "iRiver", 0x1006, "Portable Media Center", 0x4003, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
-  // From an anonymous person at SourceForge
+  // From an anonymous person at SourceForge, uncertain about this one
   { "iRiver", 0x4102, "iFP-880", 0x1008, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
-  // From Steve Cordwell <geoguy@users.sourceforge.net>
-  // VERY uncertain about the device flags for this one.
-  { "iRiver", 0x4102, "Lplayer", 0x1042, 
-    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
-    DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
+  // 0x4102, 0x1042 is a USB mass storage mode for E100 v2/Lplayer
   // From libgphoto2 source
   { "iRiver", 0x4102, "T10", 0x1113, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
@@ -360,7 +356,7 @@
     DEVICE_FLAG_OGG_IS_UNKNOWN },
   // Reported by anonymous SourceForge user
   // Need verification of whether this firmware really need all these flags
-  { "iRiver", 0x4102, "E100 v2", 0x1142, 
+  { "iRiver", 0x4102, "E100 v2/Lplayer", 0x1142, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_OGG_IS_UNKNOWN },
   // Reported by Scott Call
@@ -718,6 +714,11 @@
    */
   // Reported by dmizer
   { "Panasonic", 0x04da, "P905i", 0x2145, DEVICE_FLAG_NONE },
+
+  /*
+   * Polaroid
+   */
+  { "Polaroid", 0x0546, "Freescape/MPU-433158", 0x2035, DEVICE_FLAG_NONE },
 
   /*
    * Other strange stuff.
