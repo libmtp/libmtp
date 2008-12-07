@@ -384,6 +384,13 @@ cannot test your solution.
   to/from the device and will never close the session, thus
   Windows simply does not close sessions at all.
 
+  Typical sign of this illness: broken pipes on closing sessions,
+  on the main transfer pipes(s) or the interrupt pipe:
+
+    Closing session
+    usb_clear_halt() on INTERRUPT endpoint: Broken pipe
+    OK.
+
   This means that device manufacturers doesn't notice any problems
   with devices that do not correctly handle closing PTP/MTP
   sessions, since Windows never do it. The proper way of closing
