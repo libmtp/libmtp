@@ -14,17 +14,17 @@ USB low-level info:
    OUT endpoint maxpacket: 512 bytes
    Device flags: 0x00000000
 Microsoft device descriptor 0xee:
-        0000: 1203 4d00 5300 4600 5400 3100 3000 3000   ..M.S.F.T.1.0.0.
-        0010: 0800                                      ..
+	0000: 1203 4d00 5300 4600 5400 3100 3000 3000	..M.S.F.T.1.0.0.
+	0010: 0800                                   	..
 Microsoft device response to control message 1, CMD 0x08:
-        0000: 2800 0000 0001 0400 0100 0000 0000 0000   (...............
-        0010: 0001 4d54 5000 0000 0000 0000 0000 0000   ..MTP...........
-        0020: 0000 0000 0000 0000                       ........
+	0000: 2800 0000 0001 0400 0100 0000 0000 0000	(...............
+	0010: 0001 4d54 5000 0000 0000 0000 0000 0000	..MTP...........
+	0020: 0000 0000 0000 0000                    	........
 Device info:
    Manufacturer: Sony Ericsson
    Model: C902
    Device version: 1.20
-   Serial number: 00000000000000000004401073483865
+   Serial number: 00000000000000000357149026749790
    Vendor extension ID: 0x00000006
    Vendor extension description: microsoft.com: 1.0; microsoft.com/WMDRMPD: 10.1; microsoft.com/WMPPD: 11.0; microsoft.com/WMPPD: 10.0; vodafone.com/omadrmv2: 1.0;
    Detected object size: 64 bits
@@ -423,7 +423,7 @@ Storage Devices:
       FilesystemType: 0x0002
       AccessCapability: 0x0000
       MaxCapacity: 188506112
-      FreeSpaceInBytes: 142585856
+      FreeSpaceInBytes: 141340672
       FreeSpaceInObjects: 0
       StorageDescription: Phone Memory
       VolumeIdentifier: 
@@ -431,22 +431,22 @@ Storage Devices:
       StorageType: 0x0004
       FilesystemType: 0x0002
       AccessCapability: 0x0000
-      MaxCapacity: 995655680
-      FreeSpaceInBytes: 855408640
+      MaxCapacity: 2045313024
+      FreeSpaceInBytes: 1370095616
       FreeSpaceInObjects: 0
       StorageDescription: Memory Stick (TM)
       VolumeIdentifier: 
 Special directories:
-   Default music folder: 0x000000be
+   Default music folder: 0x00000055
    Default playlist folder: 0x00000000
    Default picture folder: 0x00000000
-   Default video folder: 0x000000de
+   Default video folder: 0x00000060
    Default organizer folder: 0x00000000
    Default zencast folder: 0x00000000
    Default album folder: 0x00000000
    Default text folder: 0x00000000
 MTP-specific device properties:
-   Friendly name: Fhtagn
+   Friendly name: C902
    Synchronization partner: Computer
 libmtp supported (playable) filetypes:
    Text file
@@ -464,6 +464,163 @@ libmtp supported (playable) filetypes:
    MPEG-4 Part 14 Container Format (Audio+Video Empahsis)
 
 Device Certificate:
-<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">AAAEBAABAAc=</UNIQUEID><PUBLICKEY private="1">cJONNxo0zv5nzUGtJ3raZkI2LoQfAkxjOm+7iOeH90gw5OJK8O93eg==</PUBLICKEY><KEYDATA>GRK0Cj2qCHUWGUYQpH0WDZo7JsM=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>n29KJgCfLPo/AoJ3XfN+e+cFX1S5rGfNp5BEG3s/keJCeeoBEb7zBA==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>j81AFnkbPnRtIGrFTrMHoYM1el4=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.3.0.2</SECURITYVERSION><CERTIFICATE private="1">cJONNxo0zv5nzUGtJ3raZkI2LoQfAkxjOm+7iOeH90gw5OJK8O93egIDAAIK4PBmN3b1ZFGUug+q2GiawnyCKAX4JSZj7k4Hd4SSo9bXbTUwOs0w</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><MANUFACTURER>Sony Ericsson</MANUFACTURER><MODEL>K800i</MODEL><SECURITYLEVEL>150</SECURITYLEVEL><FEATURES><CLOCK>1</CLOCK><METERING>1</METERING><LICENSE_ACQ>1</LICENSE_ACQ><LICENSE_SYNC>1</LICENSE_SYNC><ENCRYPTION>0</ENCRYPTION><SYMMETRIC_OPT>1</SYMMETRIC_OPT></FEATURES><PUBLICKEY>+a/V2BD5lB0/0ns+up/CwjULNDGr6Uhul6UmnOoGBcimkArdzHonfQ==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>zbdx8QTyOlEH0Wjushsb2YcOWh0dJ5DCTg7ZR/Jjzo30gbiNHrnYbQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>150</SECURITYLEVEL><AUTH_ID>42</AUTH_ID><PUBLICKEY>AFzyfqVcbOIjqtd5zwiXyPoPNDcqYoyF!4z7zmXU7JNbtYKjDyhWCQ==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>LOWskNah7fYywPbrsr7a6bSKRQBxWIK3mi4S5hbJP!!LOa4qRGaDTg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>3P!hm1OfkD8ZRQ7pIpg1RkMwXgE7JpBJ1ZqG3pCF75RouOXhZCIvKw==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">AwUHAQQJAAI=</UNIQUEID><PUBLICKEY private="1">xgjcxP4EuZ2SDr48o062vwymzTmlTntoKrx0OGy493JC+cYPPHGbbw==</PUBLICKEY><KEYDATA>KQ8YbjV5G+a91tiw3QNL9PKJzhg=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>s2uWQXZCkLkCYzw2PPt/UMf0jk5NPHEajlJr4trzaPV+hwAtjvJLFg==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>AL1jqCmLqI4gRRtSYzM0HVSWhME=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.108.77</SECURITYVERSION><CERTIFICATE private="1">xgjcxP4EuZ2SDr48o062vwymzTmlTntoKrx0OGy493JC+cYPPHGbbwIEbE14/0olfVfOrFXHpdm+ARRNU6IiMVPWsfMMMqAg0RVQ6I5BKVw35Tp8</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><MANUFACTURER>Sony Ericsson</MANUFACTURER><MODEL>C902</MODEL><SECURITYLEVEL>2000</SECURITYLEVEL><FEATURES><CLOCK>1</CLOCK><METERING>1</METERING><LICENSE_ACQ>1</LICENSE_ACQ><LICENSE_SYNC>1</LICENSE_SYNC><ENCRYPTION>0</ENCRYPTION><SYMMETRIC_OPT>1</SYMMETRIC_OPT></FEATURES><PUBLICKEY>SyQnWvwMUyClroHIWBCwWLXLLIK8Qbe2hqNNYoSwbpWnSkLpl+l1bw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>ud9uIuFrA40M40XHidsHHidkiAVB4e+bKKNOG4bDaFVqvbSFddn7Pg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>1969</AUTH_ID><PUBLICKEY>dEpKqNm3Lff2JsYrGEVhBucSUjCkbMUxY/SSk7TEXUJnDhxxY0PzLQ==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>kXlpcNBBIcH5n6uNORD3WU2ddhEYu6NtstpGKeIb32vRW23rJ7N7dg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>eBBGny94VfWc9jc6dyta04wiLnSW9iDcMM841FwyqveWJGTtv3t9fA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
 WMPInfo.xml Does not exist on this device
 OK.
+
+default-capabiliy.xml:
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<devices>
+  <version>0.4</version>
+  <device>
+  <identification>
+    <model>C902</model> 
+    <vendor>Sony Ericsson</vendor> 
+    <brand>Cybershot</brand> 
+  </identification>
+  <storage>
+    <type>PHONE</type>
+    <max-full>90</max-full>
+  </storage>
+  <display index="0"> 
+    <height unit="pixels">320</height> 
+    <width unit="pixels">240</width> 
+    <colors>262144</colors> 
+  </display> 
+  <image> 
+    <format id="JPEG" preferred="true"> 
+      <maxheight>1200</maxheight> 
+      <maxwidth>1600</maxwidth> 
+      <extension>jpg</extension> 
+      <mime-type>image/jpeg</mime-type> 
+    </format> 
+    <format id="BMP" preferred="false"> 
+      <extension>bmp</extension> 
+      <mime-type>image/bmp</mime-type> 
+    </format> 
+    <format id="GIF" preferred="false"> 
+      <extension>gif</extension> 
+      <mime-type>image/gif</mime-type> 
+    </format> 
+    <format id="PNG" preferred="false"> 
+      <extension>png</extension> 
+      <mime-type>image/png</mime-type> 
+    </format> 
+    <format id="SVG" preferred="false">     <extension>svg</extension>     <mime-type>image/svg</mime-type>   </format>   <format id="Flash" preferred="false">     <extension>swf</extension>     <mime-type>application/x-shockwave-flash</mime-type>   </format>
+  </image> 
+  <audio>
+    <format id="3GA" preferred="false"> 
+      <extension>3ga</extension> 
+      <mime-type>audio/3gpp</mime-type> 
+    </format> 
+    <format id="AAC" preferred="false"> 
+      <extension>aac</extension> 
+      <mime-type>audio/aac</mime-type> 
+    </format> 
+    <format id="AMR" preferred="false"> 
+      <extension>amr</extension> 
+      <mime-type>audio/amr</mime-type> 
+    </format> 
+    <format id="AMR-WB" preferred="false"> 
+      <extension>awb</extension> 
+      <mime-type>audio/amr-wb</mime-type> 
+    </format> 
+    <format id="Audio Book" preferred="false"> 
+      <extension>m4b</extension> 
+      <mime-type>audio/m4b</mime-type> 
+    </format> 
+    <format id="WAV" preferred="false"> 
+      <extension>wav</extension> 
+      <mime-type>audio/wav</mime-type> 
+    </format> 
+    <format id="MP3" preferred="false"> 
+      <extension>mp3</extension> 
+      <mime-type>audio/mp3</mime-type> 
+    </format> 
+    <format id="MP4" preferred="true"> 
+      <extension>mp4</extension> 
+      <mime-type>audio/mp4</mime-type> 
+    </format> 
+    <format id="MIDI" preferred="false"> 
+      <extension>mid</extension> 
+      <mime-type>audio/midi</mime-type> 
+    </format> 
+    <format id="iMelody" preferred="false"> 
+      <extension>imy</extension> 
+      <mime-type>audio/iMelody</mime-type> 
+    </format> 
+    <format id="3GPP" preferred="false"> 
+      <extension>3gp</extension> 
+      <mime-type>audio/3gpp</mime-type> 
+    </format> 
+    <format id="SMAF" preferred="false"> 
+      <extension>mmf</extension> 
+      <mime-type>audio/vnd.smaf</mime-type> 
+    </format> 
+    <format id="XMF" preferred="false"> 
+      <extension>xmf</extension> 
+      <mime-type>audio/xmf</mime-type> 
+    </format> 
+    <format id="Real8 audio" preferred="false"> 
+      <extension>ra</extension> 
+      <mime-type>audio/vnd.m-realaudio</mime-type> 
+    </format>
+    <format id="Real media" preferred="false"> 
+      <extension>rm</extension> 
+      <mime-type>audio/vnd.rn-realaudio</mime-type> 
+    </format> 
+    <format id="m4a" preferred="false"> 
+      <extension>m4a</extension> 
+      <mime-type>audio/m4a</mime-type> 
+    </format> 
+    <format id="Windows media" preferred="false"> 
+      <extension>wma</extension> 
+      <mime-type>audio/wma</mime-type> 
+    </format> 
+  </audio> 
+  <video> 
+    <format preferred="true"> 
+      <extension>mp4</extension> 
+      <mime-type>video/mp4</mime-type> 
+      <encoding>mpeg-4</encoding> 
+      <part>2</part> 
+      <profile>Visual simple 0b</profile> 
+      <sound>AAC</sound> 
+      <kbits>96</kbits> 
+    </format> 
+    <format preferred="false"> 
+      <extension>mp4</extension> 
+      <mime-type>video/mp4</mime-type> 
+      <encoding>mpeg-4</encoding> 
+      <part>10</part> 
+      <profile>0</profile> 
+      <sound>AAC</sound> 
+      <kbits>96</kbits> 
+    </format>
+  </video> 
+  <filesystem> 
+    <filename maxlength="254" /> 
+    <folder maxlength="254" /> 
+    <path> 
+      <camera>\DCIM\</camera> 
+      <image>\Picture\</image> 
+      <video>\video\</video> 
+      <sound>\Music\</sound> 
+      <feedsound>\music\podcast\</feedsound> 
+      <feedvideo>\video\podcast\</feedvideo> 
+      <feedimage>\picture\podcast\</feedimage> 
+      <feeds>\other\</feeds> 
+    </path> 
+  </filesystem>
+  <drm> 
+    <oma-v1>true</oma-v1> 
+    <oma-v2>true</oma-v2> 
+    <wmdrm>true</wmdrm> 
+  </drm>
+  <store name="Media Store" url="www.sonyericsson.com/mediastore"> 
+    <launchstoreexternally>true</launchstoreexternally> 
+  </store> 
+  </device>
+</devices>
+ 	  	 
