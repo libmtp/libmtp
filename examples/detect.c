@@ -207,57 +207,55 @@ int main (int argc, char **argv)
       file = files;
       while (file != NULL) {
 	if (!strcmp(file->filename, "WMPInfo.xml") ||
-	    !strcmp(file->filename, "WMPinfo.xml"))
-	  {
-	    xmlfileid = file->item_id;
-	  }
+	    !strcmp(file->filename, "WMPinfo.xml") ||
+	    !strcmp(file->filename, "default-capabilities.xml")) {
+	    if (file->item_id != 0) {
+	      /* Dump this file */
+	      FILE *xmltmp = tmpfile();
+	      int tmpfiledescriptor = fileno(xmltmp);
+	      
+	      if (tmpfiledescriptor != -1) {
+		int ret = LIBMTP_Get_Track_To_File_Descriptor(device,
+							      file->item_id,
+							      tmpfiledescriptor,
+							      NULL,
+							      NULL);
+		if (ret == 0) {
+		  uint8_t *buf = NULL;
+		  uint32_t readbytes;
+		  
+		  buf = malloc(XML_BUFSIZE);
+		  if (buf == NULL) {
+		    printf("Could not allocate %08x bytes...\n", XML_BUFSIZE);
+		    LIBMTP_Dump_Errorstack(device);
+		    LIBMTP_Clear_Errorstack(device);
+		    free(rawdevices);
+		    return 1;
+		  }
+		  
+		  lseek(tmpfiledescriptor, 0, SEEK_SET);
+		  readbytes = read(tmpfiledescriptor, (void*) buf, XML_BUFSIZE);
+		  
+		  if (readbytes >= 2 && readbytes < XML_BUFSIZE) {
+		    fprintf(stdout, "\n%s file contents:\n", file->filename);
+		    dump_xml_fragment(buf, readbytes);
+		  } else {
+		    perror("Unable to read file");
+		    LIBMTP_Dump_Errorstack(device);
+		    LIBMTP_Clear_Errorstack(device);
+		  }
+		  free(buf);
+		} else {
+		  LIBMTP_Dump_Errorstack(device);
+		  LIBMTP_Clear_Errorstack(device);
+		}
+		fclose(xmltmp);
+	      }
+	    }
+	}
 	tmp = file;
 	file = file->next;
 	LIBMTP_destroy_file_t(tmp);
-      }
-    }
-    if (xmlfileid == 0)
-      fprintf(stdout, "WMPInfo.xml Does not exist on this device\n");
-    if (xmlfileid != 0) {
-      FILE *xmltmp = tmpfile();
-      int tmpfiledescriptor = fileno(xmltmp);
-      
-      if (tmpfiledescriptor != -1) {
-	int ret = LIBMTP_Get_Track_To_File_Descriptor(device,
-						      xmlfileid,
-						      tmpfiledescriptor,
-						      NULL,
-						      NULL);
-	if (ret == 0) {
-	  uint8_t *buf = NULL;
-	  uint32_t readbytes;
-	  
-	  buf = malloc(XML_BUFSIZE);
-	  if (buf == NULL) {
-	    printf("Could not allocate %08x bytes...\n", XML_BUFSIZE);
-	    LIBMTP_Dump_Errorstack(device);
-	    LIBMTP_Clear_Errorstack(device);
-	    free(rawdevices);
-	    return 1;
-	  }
-	  
-	  lseek(tmpfiledescriptor, 0, SEEK_SET);
-	  readbytes = read(tmpfiledescriptor, (void*) buf, XML_BUFSIZE);
-	  
-	  if (readbytes >= 2 && readbytes < XML_BUFSIZE) {
-	    fprintf(stdout, "\nDevice description WMPInfo.xml file:\n");
-	    dump_xml_fragment(buf, readbytes);
-	  } else {
-	    perror("Unable to read WMPInfo.xml");
-	    LIBMTP_Dump_Errorstack(device);
-	    LIBMTP_Clear_Errorstack(device);
-	  }
-	  free(buf);
-	} else {
-	  LIBMTP_Dump_Errorstack(device);
-	  LIBMTP_Clear_Errorstack(device);
-	}
-	fclose(xmltmp);
       }
     }
     LIBMTP_Release_Device(device);

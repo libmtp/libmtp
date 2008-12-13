@@ -1,3 +1,8 @@
+2008-12-13  Linus Walleij <triad@df.lth.se>
+
+	* examples/detect.c: make mtp-detect dump out default-capabilities.xml
+	  if such a file exists on the device.
+
 2008-12-02  Linus Walleij <triad@df.lth.se>
 
 	* examples/util.c: another NULL check.
