@@ -1,3 +1,8 @@
+2008-12-15  Nathan Bullock <nathanbullock@gmail.com>
+
+	* src/libmtp.c: get folders to a flat list and we get O(n) searching
+	  instead of the previous O(n^2) algorithm!
+
 2008-12-13  Linus Walleij <triad@df.lth.se>
 
 	* examples/detect.c: make mtp-detect dump out default-capabilities.xml

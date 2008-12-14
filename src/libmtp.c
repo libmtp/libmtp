@@ -130,7 +130,7 @@ static int set_object_u8(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 			 uint16_t const attribute_id, uint8_t const value);
 static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat,
 			       LIBMTP_track_t *track);
-static LIBMTP_folder_t *get_subfolders_for_folder(PTPParams *params, uint32_t parent);
+static LIBMTP_folder_t *get_subfolders_for_folder(LIBMTP_folder_t *list, uint32_t parent);
 static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 				    char const * const name,
 				    char const * const artist,
@@ -5381,17 +5381,66 @@ LIBMTP_folder_t *LIBMTP_Find_Folder(LIBMTP_folder_t *folderlist, uint32_t id)
 /**
  * Function used to recursively get subfolders from params.
  */
-static LIBMTP_folder_t *get_subfolders_for_folder(PTPParams *params, uint32_t parent)
+static LIBMTP_folder_t *get_subfolders_for_folder(LIBMTP_folder_t *list, uint32_t parent)
 {
-  uint32_t i;
-  LIBMTP_folder_t *retfolders = NULL;
+  LIBMTP_folder_t *retfolders = NULL, *children, *iter, *curr;
 
+  iter = list->sibling;
+  while(iter != list) {
+    if (iter->parent_id != parent) {
+      iter = iter->sibling;
+      continue;
+    }
+
+    /* We know that iter is a child of 'parent', therefore we can safely
+     * hold on to 'iter' locally since no one else will steal it
+     * from the 'list' as we recurse. */
+    children = get_subfolders_for_folder(list, iter->folder_id);
+
+    curr = iter;
+    iter = iter->sibling;
+
+    // Remove curr from the list.
+    curr->child->sibling = curr->sibling;
+    curr->sibling->child = curr->child;
+    
+    // Attach the children to curr.
+    curr->child = children;
+      
+    // Put this folder into the list of siblings.
+    curr->sibling = retfolders;
+    retfolders = curr;
+  }
+
+  return retfolders;
+}
+
+/**
+ * This returns a list of all folders available
+ * on the current MTP device.
+ *
+ * @param device a pointer to the device to get the folder listing for.
+ * @return a list of folders
+ */
+LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  LIBMTP_folder_t head, *rv;
+  int i;
+
+  // Get all the handles if we haven't already done that
+  if (params->handles.Handler == NULL) {
+    flush_handles(device);
+  }
+
+  head.sibling = &head;
+  head.child = &head;
   for (i = 0; i < params->handles.n; i++) {
     LIBMTP_folder_t *folder;
     PTPObjectInfo *oi;
-    
+
     oi = &params->objectinfo[i];
-    if (oi->ObjectFormat != PTP_OFC_Association || oi->ParentObject != parent) {
+    if (oi->ObjectFormat != PTP_OFC_Association) {
       continue;
     }
 
@@ -5414,59 +5463,33 @@ static LIBMTP_folder_t *get_subfolders_for_folder(PTPParams *params, uint32_t pa
     folder->folder_id = params->handles.Handler[i];
     folder->parent_id = oi->ParentObject;
     folder->storage_id = oi->StorageID;
-    if (oi->Filename != NULL) {
-      folder->name = (char *)strdup(oi->Filename);
-    } else {
-      folder->name = NULL;
-    }
+    folder->name = (oi->Filename) ? (char *)strdup(oi->Filename) : NULL;
 
-    // Add as first returned or a sibling to current
-    if (retfolders == NULL) {
-      retfolders = folder;
-    } else {
-      LIBMTP_folder_t *tmp = retfolders;
-      while (tmp->sibling != NULL) {
-	tmp = tmp->sibling;
-      }
-      tmp->sibling = folder;
-    }
-    
-    // Recursively get children for this child. Perhaps NULL.
-    if (folder->child == 0) {
-      // The Creative Zen Xi-Fi has this particular bug using an invalid child ID
-      printf("Weirdo folder child with ID 0 encountered, not descending.\n");
-    } else {
-      folder->child = get_subfolders_for_folder(params, folder->folder_id);
-    }
+    // pretend sibling says next, and child says prev.
+    folder->sibling = head.sibling;
+    folder->child = &head;
+    head.sibling->child = folder;
+    head.sibling = folder;
   }
-
-  return retfolders;
-}
-
-/**
- * This returns a list of all folders available
- * on the current MTP device.
- *
- * @param device a pointer to the device to get the folder listing for.
- * @return a list of folders
- */
-LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
-{
-  PTPParams *params = (PTPParams *) device->params;
-
-  // Get all the handles if we haven't already done that
-  if (params->handles.Handler == NULL) {
-    flush_handles(device);
-  }
-
-  // TODO: make a temporary list of folders only to
-  //       speed up searching? Else we get O(n^2) complexity
-  //       where n is the number of handles on the device,
-  //       in the following recursive call. Making a temp
-  //       list will reduce n to the number of folders.
 
   // We begin at the root folder and get them all recursively
-  return get_subfolders_for_folder(params, 0x00000000);
+  rv = get_subfolders_for_folder(&head, 0x00000000);
+
+  // The temp list should be empty. Clean up any orphans just in case.
+  while(head.sibling != &head) {
+    LIBMTP_folder_t *curr = head.sibling;
+
+    printf("Orphan folder with ID: 0x%08x name: \"%s\" encountered.\n",
+	   curr->folder_id,
+	   curr->name);
+    curr->sibling->child = curr->child;
+    curr->child->sibling = curr->sibling;
+    curr->child = NULL;
+    curr->sibling = NULL;
+    LIBMTP_destroy_folder_t(curr);
+  }
+
+  return rv;
 }
 
 /**
