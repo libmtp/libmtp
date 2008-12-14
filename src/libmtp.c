@@ -5433,6 +5433,18 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
     flush_handles(device);
   }
 
+  /*
+   * This creates a temporary list of the folders, this is in a
+   * reverse order and uses the Folder pointers that are already
+   * in the Folder structure. From this we can then build up the
+   * folder hierarchy with only looking at this temporary list,
+   * and removing the folders from this temporary list as we go.
+   * This significantly reduces the number of operations that we
+   * have to do in building the folder hierarchy. Also since the
+   * temp list is in reverse order, when we prepend to the sibling
+   * list things are in the same order as they were originally
+   * in the handle list.
+   */
   head.sibling = &head;
   head.child = &head;
   for (i = 0; i < params->handles.n; i++) {
@@ -5443,13 +5455,14 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
     if (oi->ObjectFormat != PTP_OFC_Association) {
       continue;
     }
-
-    // Do we know how to handle these? They are part
-    // of the MTP 1.0 specification paragraph 3.6.4.
-    // For AssociationDesc 0x00000001U ptp_mtp_getobjectreferences() 
-    // should be called on these to get the contained objects, but 
-    // we basically don't care. Hopefully parent_id is maintained for all
-    // children, because we rely on that instead.
+    /*
+     * Do we know how to handle these? They are part
+     * of the MTP 1.0 specification paragraph 3.6.4.
+     * For AssociationDesc 0x00000001U ptp_mtp_getobjectreferences() 
+     * should be called on these to get the contained objects, but 
+     * we basically don't care. Hopefully parent_id is maintained for all
+     * children, because we rely on that instead.
+     */
     if (oi->AssociationDesc != 0x00000000U) {
       printf("MTP extended association type 0x%08x encountered\n", oi->AssociationDesc);
     }
