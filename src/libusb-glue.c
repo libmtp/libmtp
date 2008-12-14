@@ -43,7 +43,7 @@
 
 #include "ptp-pack.c"
 
-/* To enable debug prints, switch on this */
+/* To enable debug prints for USB stuff, switch on this */
 //#define ENABLE_USB_BULK_DEBUG
 
 /* Default USB timeout length.  This can be overridden as needed
@@ -589,8 +589,8 @@ char const * const get_playlist_extension(PTP_USB *ptp_usb)
   return default_pl_extension;
 }
 
-void
-ptp_debug (PTPParams *params, const char *format, ...)
+static void
+libusb_glue_debug (PTPParams *params, const char *format, ...)
 {  
         va_list args;
 
@@ -607,7 +607,7 @@ ptp_debug (PTPParams *params, const char *format, ...)
 }  
 
 static void
-ptp_error (PTPParams *params, const char *format, ...)
+libusb_glue_error (PTPParams *params, const char *format, ...)
 {  
         va_list args;
 
@@ -985,7 +985,7 @@ ptp_usb_sendreq (PTPParams* params, PTPContainer* req)
 		ret = PTP_ERROR_IO;
 	}
 	if (written != towrite && ret != PTP_ERROR_CANCEL && ret != PTP_ERROR_IO) {
-		ptp_error (params, 
+		libusb_glue_error (params, 
 			"PTP: request code 0x%04x sending req wrote only %ld bytes instead of %d",
 			req->Code, written, towrite
 		);
@@ -1111,7 +1111,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		}
 		if (dtoh16(usbdata.code)!=ptp->Code) {
 			if (FLAG_IGNORE_HEADER_ERRORS(ptp_usb)) {
-				ptp_debug (params, "ptp2/ptp_usb_getdata: detected a broken "
+				libusb_glue_debug (params, "ptp2/ptp_usb_getdata: detected a broken "
 					   "PTP header, code field insane, expect problems! (But continuing)");
 				// Repair the header, so it won't wreak more havoc, don't just ignore it.
 				// Typically these two fields will be broken.
@@ -1125,7 +1125,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 				// getting data. It appears Windows ignores the contents of this 
 				// field entirely.
 				if (ret < PTP_RC_Undefined || ret > PTP_RC_SpecificationOfDestinationUnsupported) {
-					ptp_debug (params, "ptp2/ptp_usb_getdata: detected a broken "
+					libusb_glue_debug (params, "ptp2/ptp_usb_getdata: detected a broken "
 						   "PTP header, code field insane.");
 					ret = PTP_ERROR_IO;
 				}
@@ -1181,7 +1181,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 			/* Ignore reading one extra byte if device flags have been set */
 			} else if(!FLAG_NO_ZERO_READS(ptp_usb) &&
 				  (rlen - dtoh32(usbdata.length) == 1)) {
-			  ptp_debug (params, "ptp2/ptp_usb_getdata: read %d bytes "
+			  libusb_glue_debug (params, "ptp2/ptp_usb_getdata: read %d bytes "
 				     "too much, expect problems!", 
 				     rlen - dtoh32(usbdata.length));
 			}
@@ -1266,7 +1266,7 @@ ptp_usb_getresp (PTPParams* params, PTPContainer* resp)
 	// after a NULL packet when it should send the response. This code ignores
 	// such illegal packets.
 	while (ret==PTP_RC_OK && rlen<PTP_USB_BULK_HDR_LEN && usbresp.length==0) {
-	  ptp_debug (params, "ptp_usb_getresp: detected short response "
+	  libusb_glue_debug (params, "ptp_usb_getresp: detected short response "
 		     "of %d bytes, expect problems! (re-reading "
 		     "response), rlen");
 	  ret = ptp_usb_getpacket(params, &usbresp, &rlen);
@@ -1285,7 +1285,7 @@ ptp_usb_getresp (PTPParams* params, PTPContainer* resp)
 	printf("%04x\n", ret);
 #endif
 	if (ret!=PTP_RC_OK) {
-/*		ptp_error (params,
+/*		libusb_glue_error (params,
 		"PTP: request code 0x%04x getting resp error 0x%04x",
 			resp->Code, ret);*/
 		return ret;
@@ -1296,7 +1296,7 @@ ptp_usb_getresp (PTPParams* params, PTPContainer* resp)
 	resp->Transaction_ID=dtoh32(usbresp.trans_id);
 	if (FLAG_IGNORE_HEADER_ERRORS(ptp_usb)) {
 		if (resp->Transaction_ID != params->transaction_id-1) {
-			ptp_debug (params, "ptp_usb_getresp: detected a broken "
+			libusb_glue_debug (params, "ptp_usb_getresp: detected a broken "
 				   "PTP header, transaction ID insane, expect "
 				   "problems! (But continuing)");
 			// Repair the header, so it won't wreak more havoc.
@@ -1349,13 +1349,13 @@ ptp_usb_event (PTPParams* params, PTPContainer* event, int wait)
 		break;
 	}
 	if (ret!=PTP_RC_OK) {
-		ptp_error (params,
+		libusb_glue_error (params,
 			"PTP: reading event an error 0x%04x occurred", ret);
 		return PTP_ERROR_IO;
 	}
 	rlen = result;
 	if (rlen < 8) {
-		ptp_error (params,
+		libusb_glue_error (params,
 			"PTP: reading event an short read of %ld bytes occurred", rlen);
 		return PTP_ERROR_IO;
 	}
@@ -1402,8 +1402,6 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
 {
   usb_dev_handle *device_handle;
   
-  params->error_func=NULL;
-  params->debug_func=NULL;
   params->sendreq_func=ptp_usb_sendreq;
   params->senddata_func=ptp_usb_senddata;
   params->getresp_func=ptp_usb_getresp;

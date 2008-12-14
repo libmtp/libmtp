@@ -1614,24 +1614,25 @@ ptp_canon_viewfinderoff (PTPParams* params)
 }
 
 /**
- * ptp_canon_aeafawb:
+ * ptp_canon_reset_aeafawb:
  * params:	PTPParams*
- * 		uint32_t p1 	- Yet unknown parameter,
- * 				  value 7 works
+ * 		uint32_t flags 	- what shall be reset.
+ *			1 - autoexposure
+ *			2 - autofocus
+ * 			4 - autowhitebalance
  * 
- * Called AeAfAwb (auto exposure, focus, white balance)
+ * Called "Reset AeAfAwb" (auto exposure, focus, white balance)
  *
  * Return values: Some PTP_RC_* code.
- *
  **/
 uint16_t
-ptp_canon_aeafawb (PTPParams* params, uint32_t p1)
+ptp_canon_reset_aeafawb (PTPParams* params, uint32_t flags)
 {
 	PTPContainer ptp;
 	
 	PTP_CNT_INIT(ptp);
 	ptp.Code=PTP_OC_CANON_DoAeAfAwb;
-	ptp.Param1=p1;
+	ptp.Param1=flags;
 	ptp.Nparam=1;
 	return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
 }
@@ -2366,6 +2367,27 @@ ptp_nikon_capture (PTPParams* params, uint32_t x)
         ptp.Code=PTP_OC_NIKON_Capture;
         ptp.Param1=x;
         ptp.Nparam=1;
+        return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
+}
+
+/**
+ * ptp_nikon_capture_sdram:
+ *
+ * This command captures a picture on the Nikon.
+ *  
+ * params:	PTPParams*
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+uint16_t
+ptp_nikon_capture_sdram (PTPParams* params)
+{
+        PTPContainer ptp;
+        
+        PTP_CNT_INIT(ptp);
+        ptp.Code=PTP_OC_NIKON_AfCaptureSDRAM;
+        ptp.Nparam=0;
         return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
 }
 
@@ -3250,6 +3272,18 @@ ptp_get_property_description(PTPParams* params, uint16_t dpc)
 		uint16_t dpc;
 		const char *txt;
 	} ptp_device_properties_Nikon[] = {
+		{PTP_DPC_NIKON_ShootingBank, 			/* 0xD010 */
+		 N_("Shooting Bank")},
+		{PTP_DPC_NIKON_ShootingBankNameA,		/* 0xD011 */
+		 N_("Shooting Bank Name A")},
+		{PTP_DPC_NIKON_ShootingBankNameB,		/* 0xD012 */
+		 N_("Shooting Bank Name B")},
+		{PTP_DPC_NIKON_ShootingBankNameC,		/* 0xD013 */
+		 N_("Shooting Bank Name C")},
+		{PTP_DPC_NIKON_ShootingBankNameD,		/* 0xD014 */
+		 N_("Shooting Bank Name D")},
+		{PTP_DPC_NIKON_RawCompression,			/* 0xD016 */
+		 N_("Raw Compression")},
 		{PTP_DPC_NIKON_WhiteBalanceAutoBias,		/* 0xD017 */
 		 N_("Auto White Balance Bias")},
 		{PTP_DPC_NIKON_WhiteBalanceTungstenBias,	/* 0xD018 */
@@ -3360,6 +3394,7 @@ ptp_get_property_description(PTPParams* params, uint16_t dpc)
 		 N_("Bracket Order")},
 		{PTP_DPC_NIKON_E8AutoBracketSelection,		/* 0xD07b */
 		 N_("Auto Bracket Selection")},
+		{PTP_DPC_NIKON_BracketingSet, N_("NIKON Auto Bracketing Set")},	/* 0xD07C */
 		{PTP_DPC_NIKON_F1CenterButtonShootingMode,	/* 0xD080 */
 		 N_("Center Button Shooting Mode")},
 		{PTP_DPC_NIKON_CenterButtonPlaybackMode,	/* 0xD081 */
@@ -3382,6 +3417,10 @@ ptp_get_property_description(PTPParams* params, uint16_t dpc)
 		 N_("Buttons and Dials")},
 		{PTP_DPC_NIKON_NoCFCard,			/* 0xD08a */
 		 N_("No CF Card Release")},
+		{PTP_DPC_NIKON_ImageCommentString,		/* 0xD090 */
+		 N_("Image Comment String")},
+		{PTP_DPC_NIKON_ImageCommentAttach,		/* 0xD091 */
+		 N_("Image Comment Attach")},
 		{PTP_DPC_NIKON_ImageRotation,			/* 0xD092 */
 		 N_("Image Rotation")},
 		{PTP_DPC_NIKON_Bracketing,			/* 0xD0c0 */
@@ -3390,68 +3429,79 @@ ptp_get_property_description(PTPParams* params, uint16_t dpc)
 		 N_("Exposure Bracketing Distance")},
 		{PTP_DPC_NIKON_BracketingProgram,		/* 0xD0c2 */
 		 N_("Exposure Bracketing Number")},
+		{PTP_DPC_NIKON_WhiteBalanceBracketStep, N_("NIKON White Balance Bracket Step")}, /* 0xD0C4 */
+		{PTP_DPC_NIKON_LensID,				/* 0xD0E0 */
+		 N_("Lens ID")},
+		{PTP_DPC_NIKON_FocalLengthMin,			/* 0xD0E3 */
+		 N_("Min. Focal Length")},
+		{PTP_DPC_NIKON_FocalLengthMax,			/* 0xD0E4 */
+		 N_("Max. Focal Length")},
+		{PTP_DPC_NIKON_MaxApAtMinFocalLength,		/* 0xD0E5 */
+		 N_("Max. Aperture at Min. Focal Length")},
+		{PTP_DPC_NIKON_MaxApAtMaxFocalLength,		/* 0xD0E6 */
+		 N_("Max. Aperture at Max. Focal Length")},
+		{PTP_DPC_NIKON_ExposureTime,			/* 0xD100 */
+		 N_("Nikon Exposure Time")},
+		{PTP_DPC_NIKON_ACPower, N_("AC Power")},	/* 0xD101 */
+		{PTP_DPC_NIKON_MaximumShots,			/* 0xD103 */
+		 N_("Maximum Shots")},
+		{PTP_DPC_NIKON_AFLLock, N_("NIKON AF-L Locked")},/* 0xD104 */
+		{PTP_DPC_NIKON_AutoExposureLock,		/* 0xD105 */
+		 N_("Auto Exposure Lock")},
+		{PTP_DPC_NIKON_AutoFocusLock,			/* 0xD106 */
+		 N_("Auto Focus Lock")},
 		{PTP_DPC_NIKON_AutofocusLCDTopMode2,		/* 0xD107 */
 		 N_("AF LCD Top Mode 2")},
 		{PTP_DPC_NIKON_AutofocusArea,			/* 0xD108 */
 		 N_("Active AF Sensor")},
 		{PTP_DPC_NIKON_LightMeter,			/* 0xD10a */
 		 N_("Exposure Meter")},
+		{PTP_DPC_NIKON_CameraOrientation,		/* 0xD10e */
+		 N_("Camera Orientation")},
 		{PTP_DPC_NIKON_ExposureApertureLock,		/* 0xD111 */
 		 N_("Exposure Aperture Lock")},
-		{PTP_DPC_NIKON_MaximumShots,			/* 0xD103 */
-		 N_("Maximum Shots")},
+		{PTP_DPC_NIKON_FlashExposureCompensation,	/* 0xD126 */
+		 N_("Flash Exposure Compensation")},
 		{PTP_DPC_NIKON_OptimizeImage,			/* 0xD140 */
 		 N_("Optimize Image")},
 		{PTP_DPC_NIKON_Saturation,			/* 0xD142 */
 		 N_("Saturation")},
+		{PTP_DPC_NIKON_BeepOff,				/* 0xD160 */
+		 N_("AF Beep Mode")},
+		{PTP_DPC_NIKON_AutofocusMode,			/* 0xD161 */
+		 N_("Autofocus Mode")},
+		{PTP_DPC_NIKON_AFAssist,			/* 0xD163 */
+		 N_("AF Assist Lamp")},
+		{PTP_DPC_NIKON_PADVPMode,			/* 0xD164 */
+		 N_("Auto ISO P/A/DVP Setting")},
+		{PTP_DPC_NIKON_ImageReview,			/* 0xD165 */
+		 N_("Image Review")},
+		{PTP_DPC_NIKON_AFAreaIllumination,		/* 0xD166 */
+		 N_("AF Area Illumination")},
+		{PTP_DPC_NIKON_FlashMode,			/* 0xD167 */
+		 N_("Flash Mode")},
+		{PTP_DPC_NIKON_FlashCommanderMode,	 	/* 0xD168 */
+		 N_("Flash Commander Mode")},
+		{PTP_DPC_NIKON_FlashSign,			/* 0xD169 */
+		 N_("Flash Sign")},
+		{PTP_DPC_NIKON_RemoteTimeout,			/* 0xD16B */
+		 N_("Remote Timeout")},
+		{PTP_DPC_NIKON_GridDisplay,			/* 0xD16C */
+		 N_("Viewfinder Grid Display")},
+		{PTP_DPC_NIKON_FlashModeManualPower,		/* 0xD16D */
+		 N_("Flash Mode Manual Power")},
+		{PTP_DPC_NIKON_FlashModeCommanderPower,		/* 0xD16E */
+		 N_("Flash Mode Commander Power")},
 		{PTP_DPC_NIKON_CSMMenu,				/* 0xD180 */
 		 N_("CSM Menu")},
-		{PTP_DPC_NIKON_BeepOff,
-		 N_("AF Beep Mode")},
-		{PTP_DPC_NIKON_AutofocusMode,
-		 N_("Autofocus Mode")},
-		{PTP_DPC_NIKON_AFAssist,
-		 N_("AF Assist Lamp")},
-		{PTP_DPC_NIKON_PADVPMode,
-		 N_("Auto ISO P/A/DVP Setting")},
-		{PTP_DPC_NIKON_ImageReview,
-		 N_("Image Review")},
-		{PTP_DPC_NIKON_GridDisplay,
-		 N_("Viewfinder Grid Display")},
-		{PTP_DPC_NIKON_AFAreaIllumination,
-		 N_("AF Area Illumination")},
-		{PTP_DPC_NIKON_FlashMode,
-		 N_("Flash Mode")},
-		{PTP_DPC_NIKON_FlashModeManualPower,
-		 N_("Flash Mode Manual Power")},
-		{PTP_DPC_NIKON_FlashSign,
-		 N_("Flash Sign")},
-		{PTP_DPC_NIKON_FlashExposureCompensation,
-		 N_("Flash Exposure Compensation")},
-		{PTP_DPC_NIKON_RemoteTimeout,
-		 N_("Remote Timeout")},
-		{PTP_DPC_NIKON_ImageCommentString,
-		 N_("Image Comment String")},
-		{PTP_DPC_NIKON_FlashOpen,
-		 N_("Flash Open")},
-		{PTP_DPC_NIKON_FlashCharged,
-		 N_("Flash Charged")},
-		{PTP_DPC_NIKON_LensID,
-		 N_("Lens ID")},
-		{PTP_DPC_NIKON_FocalLengthMin,
-		 N_("Min. Focal Length")},
-		{PTP_DPC_NIKON_FocalLengthMax,
-		 N_("Max. Focal Length")},
-		{PTP_DPC_NIKON_MaxApAtMinFocalLength,
-		 N_("Max. Aperture at Min. Focal Length")},
-		{PTP_DPC_NIKON_MaxApAtMaxFocalLength,
-		 N_("Max. Aperture at Max. Focal Length")},
-		{PTP_DPC_NIKON_LowLight,
+		{PTP_DPC_NIKON_BracketingFramesAndSteps,	/* 0xD190 */
+		 N_("Bracketing Frames and Steps")},
+		{PTP_DPC_NIKON_LowLight,			/* 0xD1B0 */
 		 N_("Low Light")},
-		{PTP_DPC_NIKON_ACPower, N_("AC Power")},
-		{PTP_DPC_NIKON_BracketingSet, N_("NIKON Auto Bracketing Set")},
-		{PTP_DPC_NIKON_WhiteBalanceBracketStep, N_("NIKON White Balance Bracket Step")},
-		{PTP_DPC_NIKON_AFLLock, N_("NIKON AF-L Locked")},
+		{PTP_DPC_NIKON_FlashOpen,			/* 0xD1C0 */
+		 N_("Flash Open")},
+		{PTP_DPC_NIKON_FlashCharged,			/* 0xD1C1 */
+		 N_("Flash Charged")},
 		{0,NULL}
 	};
         struct {
@@ -3712,14 +3762,31 @@ ptp_render_property_value(PTPParams* params, uint16_t dpc,
 		{PTP_DPC_NIKON_LensID, PTP_VENDOR_NIKON, 83, "AF Nikkor 80-200mm 1:2.8 D ED"},
 		{PTP_DPC_NIKON_LensID, PTP_VENDOR_NIKON, 118, "AF Nikkor 50mm 1:1.8 D"},
 		{PTP_DPC_NIKON_LensID, PTP_VENDOR_NIKON, 127, "AF-S Nikkor 18-70mm 1:3.5-4.5G ED DX"},
+		{PTP_DPC_NIKON_LensID, PTP_VENDOR_NIKON, 139, "AF-S Nikkor 18-200mm 1:3.5-5.6 GED DX VR"},
+		{PTP_DPC_NIKON_LensID, PTP_VENDOR_NIKON, 147, "AF-S Nikkor 24-70mm 1:2.8G ED DX"},
+		{PTP_DPC_NIKON_LensID, PTP_VENDOR_NIKON, 154, "AF-S Nikkor 18-55mm 1:3.5-F5.6G DX VR"},
+
+		{PTP_DPC_NIKON_MonitorOff, PTP_VENDOR_NIKON, 0, N_("10 seconds")},
+		{PTP_DPC_NIKON_MonitorOff, PTP_VENDOR_NIKON, 1, N_("20 seconds")},
+		{PTP_DPC_NIKON_MonitorOff, PTP_VENDOR_NIKON, 2, N_("1 minute")},
+		{PTP_DPC_NIKON_MonitorOff, PTP_VENDOR_NIKON, 3, N_("5 minutes")},
+		{PTP_DPC_NIKON_MonitorOff, PTP_VENDOR_NIKON, 4, N_("10 minutes")},
+		{PTP_DPC_NIKON_MonitorOff, PTP_VENDOR_NIKON, 5, N_("5 seconds")}, /* d80 observed */
+
 		PTP_VENDOR_VAL_YN(PTP_DPC_NIKON_LowLight,PTP_VENDOR_NIKON),
 		PTP_VENDOR_VAL_YN(PTP_DPC_NIKON_CSMMenu,PTP_VENDOR_NIKON),
 		PTP_VENDOR_VAL_RBOOL(PTP_DPC_NIKON_BeepOff,PTP_VENDOR_NIKON),
 
+		{PTP_DPC_NIKON_CameraOrientation, PTP_VENDOR_NIKON, 0, "0'"},
+		{PTP_DPC_NIKON_CameraOrientation, PTP_VENDOR_NIKON, 1, "270'"},
+		{PTP_DPC_NIKON_CameraOrientation, PTP_VENDOR_NIKON, 2, "90'"},
+		{PTP_DPC_NIKON_CameraOrientation, PTP_VENDOR_NIKON, 3, "180'"},
+
 		/* Canon stuff */
-		PTP_VENDOR_VAL_RBOOL(PTP_DPC_CANON_AssistLight,PTP_VENDOR_CANON),
+		PTP_VENDOR_VAL_BOOL(PTP_DPC_CANON_AssistLight,PTP_VENDOR_CANON),
 		PTP_VENDOR_VAL_RBOOL(PTP_DPC_CANON_RotationScene,PTP_VENDOR_CANON),
 		PTP_VENDOR_VAL_RBOOL(PTP_DPC_CANON_BeepMode,PTP_VENDOR_CANON),
+		PTP_VENDOR_VAL_BOOL(PTP_DPC_CANON_Beep,PTP_VENDOR_CANON),
 
 		{PTP_DPC_CANON_RotationAngle, PTP_VENDOR_CANON, 0, "0'"},
 		{PTP_DPC_CANON_RotationAngle, PTP_VENDOR_CANON, 3, "270'"},
@@ -3737,6 +3804,191 @@ ptp_render_property_value(PTPParams* params, uint16_t dpc,
 		{PTP_DPC_CANON_BatteryStatus, PTP_VENDOR_CANON, 2, N_("Warning Level 1")},
 		{PTP_DPC_CANON_BatteryStatus, PTP_VENDOR_CANON, 3, N_("Emergency")},
 		{PTP_DPC_CANON_BatteryStatus, PTP_VENDOR_CANON, 4, N_("Warning Level 0")},
+
+		{PTP_DPC_CANON_ImageQuality, PTP_VENDOR_CANON, 0, N_("Undefined")},
+		{PTP_DPC_CANON_ImageQuality, PTP_VENDOR_CANON, 1, N_("Economy")},
+		{PTP_DPC_CANON_ImageQuality, PTP_VENDOR_CANON, 2, N_("Normal")},
+		{PTP_DPC_CANON_ImageQuality, PTP_VENDOR_CANON, 3, N_("Fine")},
+		{PTP_DPC_CANON_ImageQuality, PTP_VENDOR_CANON, 4, N_("Lossless")},
+		{PTP_DPC_CANON_ImageQuality, PTP_VENDOR_CANON, 5, N_("SuperFine")},
+
+		{PTP_DPC_CANON_FullViewFileFormat, PTP_VENDOR_CANON, 0, N_("Undefined")},
+		{PTP_DPC_CANON_FullViewFileFormat, PTP_VENDOR_CANON, 1, N_("JPEG")},
+		{PTP_DPC_CANON_FullViewFileFormat, PTP_VENDOR_CANON, 2, N_("CRW")},
+
+		{PTP_DPC_CANON_ImageSize, PTP_VENDOR_CANON, 0, N_("Large")},
+		{PTP_DPC_CANON_ImageSize, PTP_VENDOR_CANON, 1, N_("Medium 1")},
+		{PTP_DPC_CANON_ImageSize, PTP_VENDOR_CANON, 2, N_("Small")},
+		{PTP_DPC_CANON_ImageSize, PTP_VENDOR_CANON, 3, N_("Medium 2")},
+		{PTP_DPC_CANON_ImageSize, PTP_VENDOR_CANON, 7, N_("Medium 3")},
+
+		{PTP_DPC_CANON_SelfTime, PTP_VENDOR_CANON, 0,   N_("Not used")},
+		{PTP_DPC_CANON_SelfTime, PTP_VENDOR_CANON, 100, N_("10 seconds")},
+		{PTP_DPC_CANON_SelfTime, PTP_VENDOR_CANON, 20,  N_("2 seconds")},
+
+		{PTP_DPC_CANON_FlashMode, PTP_VENDOR_CANON, 0,  N_("Off")},
+		{PTP_DPC_CANON_FlashMode, PTP_VENDOR_CANON, 1,  N_("Auto")},
+		{PTP_DPC_CANON_FlashMode, PTP_VENDOR_CANON, 2,  N_("On")},
+		{PTP_DPC_CANON_FlashMode, PTP_VENDOR_CANON, 3,  N_("Red Eye Suppression")},
+		{PTP_DPC_CANON_FlashMode, PTP_VENDOR_CANON, 4,  N_("Low Speed Synchronization")},
+		{PTP_DPC_CANON_FlashMode, PTP_VENDOR_CANON, 5,  N_("Auto + Red Eye Suppression")},
+		{PTP_DPC_CANON_FlashMode, PTP_VENDOR_CANON, 6,  N_("On + Red Eye Suppression")},
+
+		{PTP_DPC_CANON_ShootingMode, PTP_VENDOR_CANON, 0,  N_("Auto")},
+		{PTP_DPC_CANON_ShootingMode, PTP_VENDOR_CANON, 1,  N_("P")},
+		{PTP_DPC_CANON_ShootingMode, PTP_VENDOR_CANON, 2,  N_("Tv")},
+		{PTP_DPC_CANON_ShootingMode, PTP_VENDOR_CANON, 3,  N_("Av")},
+		{PTP_DPC_CANON_ShootingMode, PTP_VENDOR_CANON, 4,  N_("M")},
+		{PTP_DPC_CANON_ShootingMode, PTP_VENDOR_CANON, 5,  N_("A_DEP")},
+		{PTP_DPC_CANON_ShootingMode, PTP_VENDOR_CANON, 6,  N_("M_DEP")},
+		{PTP_DPC_CANON_ShootingMode, PTP_VENDOR_CANON, 7,  N_("Bulb")},
+		/* more actually */
+
+		{PTP_DPC_CANON_ImageMode, PTP_VENDOR_CANON, 0,  N_("Auto")},
+		{PTP_DPC_CANON_ImageMode, PTP_VENDOR_CANON, 1,  N_("Manual")},
+		{PTP_DPC_CANON_ImageMode, PTP_VENDOR_CANON, 2,  N_("Distant View")},
+		{PTP_DPC_CANON_ImageMode, PTP_VENDOR_CANON, 3,  N_("High-Speed Shutter")},
+		{PTP_DPC_CANON_ImageMode, PTP_VENDOR_CANON, 4,  N_("Low-Speed Shutter")},
+		{PTP_DPC_CANON_ImageMode, PTP_VENDOR_CANON, 5,  N_("Night View")},
+		{PTP_DPC_CANON_ImageMode, PTP_VENDOR_CANON, 6,  N_("Grayscale")},
+		{PTP_DPC_CANON_ImageMode, PTP_VENDOR_CANON, 7,  N_("Sepia")},
+		{PTP_DPC_CANON_ImageMode, PTP_VENDOR_CANON, 8,  N_("Portrait")},
+		{PTP_DPC_CANON_ImageMode, PTP_VENDOR_CANON, 9,  N_("Sports")},
+		{PTP_DPC_CANON_ImageMode, PTP_VENDOR_CANON, 10,  N_("Macro")},
+		{PTP_DPC_CANON_ImageMode, PTP_VENDOR_CANON, 11,  N_("Monochrome")},
+		{PTP_DPC_CANON_ImageMode, PTP_VENDOR_CANON, 12,  N_("Pan Focus")},
+		{PTP_DPC_CANON_ImageMode, PTP_VENDOR_CANON, 13,  N_("Neutral")},
+		{PTP_DPC_CANON_ImageMode, PTP_VENDOR_CANON, 14,  N_("Soft")},
+
+		{PTP_DPC_CANON_DriveMode, PTP_VENDOR_CANON, 0,  N_("Single-Frame Shooting")},
+		{PTP_DPC_CANON_DriveMode, PTP_VENDOR_CANON, 1,  N_("Continuous Shooting")},
+		{PTP_DPC_CANON_DriveMode, PTP_VENDOR_CANON, 2,  N_("Timer (Single) Shooting")},
+		{PTP_DPC_CANON_DriveMode, PTP_VENDOR_CANON, 4,  N_("Continuous Low-speed Shooting")},
+		{PTP_DPC_CANON_DriveMode, PTP_VENDOR_CANON, 5,  N_("Continuous High-speed Shooting")},
+
+		{PTP_DPC_CANON_EZoom, PTP_VENDOR_CANON, 0,  N_("Off")},
+		{PTP_DPC_CANON_EZoom, PTP_VENDOR_CANON, 1,  N_("2x")},
+		{PTP_DPC_CANON_EZoom, PTP_VENDOR_CANON, 2,  N_("4x")},
+		{PTP_DPC_CANON_EZoom, PTP_VENDOR_CANON, 3,  N_("Smooth")},
+
+		{PTP_DPC_CANON_MeteringMode, PTP_VENDOR_CANON, 0,  N_("Center-weighted Metering")},
+		{PTP_DPC_CANON_MeteringMode, PTP_VENDOR_CANON, 1,  N_("Spot Metering")},
+		{PTP_DPC_CANON_MeteringMode, PTP_VENDOR_CANON, 2,  N_("Average Metering")},
+		{PTP_DPC_CANON_MeteringMode, PTP_VENDOR_CANON, 3,  N_("Evaluative Metering")},
+		{PTP_DPC_CANON_MeteringMode, PTP_VENDOR_CANON, 4,  N_("Partial Metering")},
+		{PTP_DPC_CANON_MeteringMode, PTP_VENDOR_CANON, 5,  N_("Center-weighted Average Metering")},
+		{PTP_DPC_CANON_MeteringMode, PTP_VENDOR_CANON, 6,  N_("Spot Metering Interlocked with AF Frame")},
+		{PTP_DPC_CANON_MeteringMode, PTP_VENDOR_CANON, 7,  N_("Multi-Spot Metering")},
+
+		{PTP_DPC_CANON_AFDistance, PTP_VENDOR_CANON, 0,  N_("Manual")},
+		{PTP_DPC_CANON_AFDistance, PTP_VENDOR_CANON, 1,  N_("Auto")},
+		{PTP_DPC_CANON_AFDistance, PTP_VENDOR_CANON, 2,  N_("Unknown")},
+		{PTP_DPC_CANON_AFDistance, PTP_VENDOR_CANON, 3,  N_("Zone Focus (Close-up)")},
+		{PTP_DPC_CANON_AFDistance, PTP_VENDOR_CANON, 4,  N_("Zone Focus (Very Close)")},
+		{PTP_DPC_CANON_AFDistance, PTP_VENDOR_CANON, 5,  N_("Zone Focus (Close)")},
+		{PTP_DPC_CANON_AFDistance, PTP_VENDOR_CANON, 6,  N_("Zone Focus (Medium)")},
+		{PTP_DPC_CANON_AFDistance, PTP_VENDOR_CANON, 7,  N_("Zone Focus (Far)")},
+
+		{PTP_DPC_CANON_FocusingPoint, PTP_VENDOR_CANON, 0,  N_("Invalid")},
+		{PTP_DPC_CANON_FocusingPoint, PTP_VENDOR_CANON, 0x1000,  N_("Focusing Point on Center Only, Manual")},
+		{PTP_DPC_CANON_FocusingPoint, PTP_VENDOR_CANON, 0x1001,  N_("Focusing Point on Center Only, Auto")},
+		{PTP_DPC_CANON_FocusingPoint, PTP_VENDOR_CANON, 0x3000,  N_("Multiple Focusing Points (No Specification), Manual")},
+		{PTP_DPC_CANON_FocusingPoint, PTP_VENDOR_CANON, 0x3001,  N_("Multiple Focusing Points, Auto")},
+		{PTP_DPC_CANON_FocusingPoint, PTP_VENDOR_CANON, 0x3002,  N_("Multiple Focusing Points (Right)")},
+		{PTP_DPC_CANON_FocusingPoint, PTP_VENDOR_CANON, 0x3003,  N_("Multiple Focusing Points (Center)")},
+		{PTP_DPC_CANON_FocusingPoint, PTP_VENDOR_CANON, 0x3004,  N_("Multiple Focusing Points (Left)")},
+
+		{PTP_DPC_CANON_WhiteBalance, PTP_VENDOR_CANON, 0,  N_("Auto")},
+		{PTP_DPC_CANON_WhiteBalance, PTP_VENDOR_CANON, 1,  N_("Daylight")},
+		{PTP_DPC_CANON_WhiteBalance, PTP_VENDOR_CANON, 2,  N_("Cloudy")},
+		{PTP_DPC_CANON_WhiteBalance, PTP_VENDOR_CANON, 3,  N_("Tungsten")},
+		{PTP_DPC_CANON_WhiteBalance, PTP_VENDOR_CANON, 4,  N_("Fluorescent")},
+		{PTP_DPC_CANON_WhiteBalance, PTP_VENDOR_CANON, 6,  N_("Preset")},
+		{PTP_DPC_CANON_WhiteBalance, PTP_VENDOR_CANON, 7,  N_("Fluorescent H")},
+		{PTP_DPC_CANON_WhiteBalance, PTP_VENDOR_CANON, 9,  N_("Color Temperature")},
+		{PTP_DPC_CANON_WhiteBalance, PTP_VENDOR_CANON, 10,  N_("Custom Whitebalance PC-1")},
+		{PTP_DPC_CANON_WhiteBalance, PTP_VENDOR_CANON, 11,  N_("Custom Whitebalance PC-2")},
+		{PTP_DPC_CANON_WhiteBalance, PTP_VENDOR_CANON, 12,  N_("Custom Whitebalance PC-3")},
+		{PTP_DPC_CANON_WhiteBalance, PTP_VENDOR_CANON, 13,  N_("Missing Number")},
+		{PTP_DPC_CANON_WhiteBalance, PTP_VENDOR_CANON, 14,  N_("Fluorescent H")}, /* dup? */
+
+		{PTP_DPC_CANON_SlowShutterSetting, PTP_VENDOR_CANON, 0,  N_("Off")},
+		{PTP_DPC_CANON_SlowShutterSetting, PTP_VENDOR_CANON, 1,  N_("Night View")},
+		{PTP_DPC_CANON_SlowShutterSetting, PTP_VENDOR_CANON, 2,  N_("On")},
+		{PTP_DPC_CANON_SlowShutterSetting, PTP_VENDOR_CANON, 3,  N_("Low-speed shutter function not available")},
+
+		{PTP_DPC_CANON_AFMode, PTP_VENDOR_CANON, 0,  N_("Single Shot")},
+		{PTP_DPC_CANON_AFMode, PTP_VENDOR_CANON, 1,  N_("AI Servo")},
+		{PTP_DPC_CANON_AFMode, PTP_VENDOR_CANON, 2,  N_("AI Focus")},
+		{PTP_DPC_CANON_AFMode, PTP_VENDOR_CANON, 3,  N_("Manual")},
+		{PTP_DPC_CANON_AFMode, PTP_VENDOR_CANON, 4,  N_("Continuous")},
+
+		PTP_VENDOR_VAL_BOOL(PTP_DPC_CANON_ImageStabilization,PTP_VENDOR_CANON),
+
+		{PTP_DPC_CANON_Contrast, PTP_VENDOR_CANON, -2,  N_("Low 2")},
+		{PTP_DPC_CANON_Contrast, PTP_VENDOR_CANON, -1,  N_("Low")},
+		{PTP_DPC_CANON_Contrast, PTP_VENDOR_CANON, 0,  N_("Standard")},
+		{PTP_DPC_CANON_Contrast, PTP_VENDOR_CANON, 1,  N_("High")},
+		{PTP_DPC_CANON_Contrast, PTP_VENDOR_CANON, 2,  N_("High 2")},
+
+		{PTP_DPC_CANON_ColorGain, PTP_VENDOR_CANON, -2,  N_("Low 2")},
+		{PTP_DPC_CANON_ColorGain, PTP_VENDOR_CANON, -1,  N_("Low")},
+		{PTP_DPC_CANON_ColorGain, PTP_VENDOR_CANON, 0,  N_("Standard")},
+		{PTP_DPC_CANON_ColorGain, PTP_VENDOR_CANON, 1,  N_("High")},
+		{PTP_DPC_CANON_ColorGain, PTP_VENDOR_CANON, 2,  N_("High 2")},
+
+		{PTP_DPC_CANON_Sharpness, PTP_VENDOR_CANON, -2,  N_("Low 2")},
+		{PTP_DPC_CANON_Sharpness, PTP_VENDOR_CANON, -1,  N_("Low")},
+		{PTP_DPC_CANON_Sharpness, PTP_VENDOR_CANON, 0,  N_("Standard")},
+		{PTP_DPC_CANON_Sharpness, PTP_VENDOR_CANON, 1,  N_("High")},
+		{PTP_DPC_CANON_Sharpness, PTP_VENDOR_CANON, 2,  N_("High 2")},
+
+		{PTP_DPC_CANON_Sensitivity, PTP_VENDOR_CANON, 0,  N_("Standard")},
+		{PTP_DPC_CANON_Sensitivity, PTP_VENDOR_CANON, 1,  N_("Upper 1")},
+		{PTP_DPC_CANON_Sensitivity, PTP_VENDOR_CANON, 2,  N_("Upper 2")},
+
+		{PTP_DPC_CANON_ParameterSet, PTP_VENDOR_CANON, 0x08,  N_("Standard Development Parameters")},
+		{PTP_DPC_CANON_ParameterSet, PTP_VENDOR_CANON, 0x10,  N_("Development Parameters 1")},
+		{PTP_DPC_CANON_ParameterSet, PTP_VENDOR_CANON, 0x20,  N_("Development Parameters 2")},
+		{PTP_DPC_CANON_ParameterSet, PTP_VENDOR_CANON, 0x40,  N_("Development Parameters 3")},
+
+		{PTP_DPC_CANON_ISOSpeed, PTP_VENDOR_CANON, 0x00,  N_("Auto")},
+		{PTP_DPC_CANON_ISOSpeed, PTP_VENDOR_CANON, 0x28,  "6"},
+		{PTP_DPC_CANON_ISOSpeed, PTP_VENDOR_CANON, 0x30,  "12"},
+		{PTP_DPC_CANON_ISOSpeed, PTP_VENDOR_CANON, 0x38,  "25"},
+		{PTP_DPC_CANON_ISOSpeed, PTP_VENDOR_CANON, 0x40,  "50"},
+		{PTP_DPC_CANON_ISOSpeed, PTP_VENDOR_CANON, 0x43,  "64"},
+		{PTP_DPC_CANON_ISOSpeed, PTP_VENDOR_CANON, 0x48,  "100"},
+		{PTP_DPC_CANON_ISOSpeed, PTP_VENDOR_CANON, 0x50,  "200"},
+		{PTP_DPC_CANON_ISOSpeed, PTP_VENDOR_CANON, 0x58,  "400"},
+		{PTP_DPC_CANON_ISOSpeed, PTP_VENDOR_CANON, 0x60,  "800"},
+		{PTP_DPC_CANON_ISOSpeed, PTP_VENDOR_CANON, 0x68,  "1600"},
+		{PTP_DPC_CANON_ISOSpeed, PTP_VENDOR_CANON, 0x70,  "3200"},
+		{PTP_DPC_CANON_ISOSpeed, PTP_VENDOR_CANON, 0x78,  "6400"},
+
+		/* 0xd01d - PTP_DPC_CANON_Aperture */
+		/* 0xd01e - PTP_DPC_CANON_ShutterSpeed */
+		/* 0xd01f - PTP_DPC_CANON_ExpCompensation */
+		/* 0xd020 - PTP_DPC_CANON_FlashCompensation */
+		/* 0xd021 - PTP_DPC_CANON_AEBExposureCompensation */
+		/* 0xd023 - PTP_DPC_CANON_AvOpen */
+		/* 0xd024 - PTP_DPC_CANON_AvMax */
+
+		{PTP_DPC_CANON_CameraOutput, PTP_VENDOR_CANON, 0,  N_("Undefined")},
+		{PTP_DPC_CANON_CameraOutput, PTP_VENDOR_CANON, 1,  N_("LCD")},
+		{PTP_DPC_CANON_CameraOutput, PTP_VENDOR_CANON, 2,  N_("Video OUT")},
+		{PTP_DPC_CANON_CameraOutput, PTP_VENDOR_CANON, 3,  N_("Off")},
+
+		{PTP_DPC_CANON_MlSpotPos, PTP_VENDOR_CANON, 0, N_("MlSpotPosCenter")},
+		{PTP_DPC_CANON_MlSpotPos, PTP_VENDOR_CANON, 1, N_("MlSpotPosAfLink")},
+
+		{PTP_DPC_CANON_PhotoEffect, PTP_VENDOR_CANON, 0, N_("Off")},
+		{PTP_DPC_CANON_PhotoEffect, PTP_VENDOR_CANON, 1, N_("Vivid")},
+		{PTP_DPC_CANON_PhotoEffect, PTP_VENDOR_CANON, 2, N_("Neutral")},
+		{PTP_DPC_CANON_PhotoEffect, PTP_VENDOR_CANON, 3, N_("Soft")},
+		{PTP_DPC_CANON_PhotoEffect, PTP_VENDOR_CANON, 4, N_("Sepia")},
+		{PTP_DPC_CANON_PhotoEffect, PTP_VENDOR_CANON, 5, N_("Monochrome")},
+
 		{0, 0, 0, NULL}
 	};
 	for (i=0; ptp_value_trans[i].dpc!=0; i++) {

@@ -55,6 +55,9 @@
 #include <io.h>
 #endif
 
+/* To enable PTP level debug prints (all ptp_debug(...)), switch on this */
+//#define ENABLE_PTP_DEBUG
+
 /*
  * This is a mapping between libmtp internal MTP filetypes and
  * the libgphoto2/PTP equivalent defines. We need this because
@@ -854,6 +857,50 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 }
 
 /**
+ * Overriding debug function.
+ * This way we can disable debug prints.
+ */
+static void
+#ifdef __GNUC__
+__attribute__((__format__(printf,2,0)))
+#endif
+LIBMTP_ptp_debug(void *data, const char *format, va_list args)
+{
+#ifdef ENABLE_PTP_DEBUG
+  vfprintf (stderr, format, args);
+  fflush (stderr);
+#endif
+}
+
+/**
+ * Overriding error function.
+ * This way we can capture all error etc to our errorstack.
+ */
+static void
+#ifdef __GNUC__
+__attribute__((__format__(printf,2,0)))
+#endif
+LIBMTP_ptp_error(void *data, const char *format, va_list args)
+{
+  // if (data == NULL) {
+    vfprintf (stderr, format, args);
+    fflush (stderr);
+  /*
+    FIXME: find out how we shall get the device here.
+  } else {
+    PTP_USB *ptp_usb = data;
+    LIBMTP_mtpdevice_t *device = ...;
+    char buf[2048];
+
+    vsnprintf (buf, sizeof (buf), format, args);
+    add_error_to_errorstack(device,
+			    LIBMTP_ERROR_PTP_LAYER,
+			    buf);
+  }
+  */
+}
+
+/**
  * This function opens a device from a raw device. It is the
  * preferred way to access devices in the new interface where
  * several devices can come and go as the library is working
@@ -893,6 +940,11 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
     return NULL;
   }
   memset(current_params, 0, sizeof(PTPParams));
+  /* This will be a pointer to PTP_USB later */
+  current_params->data = NULL;
+  /* Set upp local debug and error functions */
+  current_params->debug_func = LIBMTP_ptp_debug;
+  current_params->error_func = LIBMTP_ptp_error;
   /* Clear all handlers */
   current_params->handles.Handler = NULL;
   current_params->objectinfo = NULL;
@@ -950,14 +1002,14 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
 				  PTP_OPC_ObjectSize, 
 				  current_params->deviceinfo.ImageFormats[i], 
 				  &opd) != PTP_RC_OK) {
-      printf("LIBMTP PANIC: create_usb_mtp_devices(): "
+      printf("LIBMTP PANIC: "
 	     "could not inspect object property descriptions!\n");
     } else {
       if (opd.DataType == PTP_DTC_UINT32) {
 	if (bs == 0) {
 	  bs = 32;
 	} else if (bs != 32) {
-	  printf("LIBMTP PANIC: create_usb_mtp_devices(): "
+	  printf("LIBMTP PANIC: "
 		 "different objects support different object sizes!\n");
 	  bs = 0;
 	  break;
@@ -966,14 +1018,14 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
 	if (bs == 0) {
 	  bs = 64;
 	} else if (bs != 64) {
-	  printf("LIBMTP PANIC: create_usb_mtp_devices(): "
+	  printf("LIBMTP PANIC: "
 		 "different objects support different object sizes!\n");
 	  bs = 0;
 	  break;
 	}
       } else {
 	// Ignore if other size.
-	printf("LIBMTP PANIC: create_usb_mtp_devices(): "
+	printf("LIBMTP PANIC: "
 	       "awkward object size data type: %04x\n", opd.DataType);
 	bs = 0;
 	break;
