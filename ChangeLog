@@ -8,9 +8,11 @@
 	  http://gphoto.svn.sourceforge.net/viewvc/gphoto/trunk/m4/
 	* configure.ac: fix the renamed _stdint.h too.
 	* Doxyfile.in: some config option got obsolete.
-	* libmtp.c: start to use PTP error redirection to the libmtp error stack.
-	  This also makes it possible to stop the annoying debug prints.
+	* libmtp.c: start to use PTP error redirection to the libmtp error
+	  stack. This also makes it possible to stop the annoying debug prints.
 	* libusb-glue.c: dito.
+	* ptp.c: sync to upstream.
+	* ptp.h: sync to upstream.
 
 2008-12-02  Linus Walleij <triad@df.lth.se>
 
