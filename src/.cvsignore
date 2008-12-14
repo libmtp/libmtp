@@ -2,6 +2,7 @@ libmtp.h
 libmtp.la
 gphoto2-endian.h
 libptp-stdint.h
+_stdint.h
 Makefile.in
 Makefile
 .deps

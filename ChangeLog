@@ -2,6 +2,12 @@
 
 	* examples/detect.c: make mtp-detect dump out default-capabilities.xml
 	  if such a file exists on the device.
+	* m4/stdint.m4: update to newer macro from libgphoto2.
+	* m4/byteorder.m4: update to newer macro from libgphoto2.
+	  We find these here:
+	  http://gphoto.svn.sourceforge.net/viewvc/gphoto/trunk/m4/
+	* configure.ac: fix the renamed _stdint.h too.
+	* Doxyfile.in: some config option got obsolete.
 
 2008-12-02  Linus Walleij <triad@df.lth.se>
 

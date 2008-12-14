@@ -94,7 +94,7 @@ CFLAGS="$CFLAGS -Wall -Wmissing-prototypes"
 # that will always be available. The <stdint.h> file is required by the
 # library, but we provide this anyway because the libptp2 stuff wants this
 # file.
-AX_NEED_STDINT_H([src/libptp-stdint.h])
+AX_NEED_STDINT_H([src/_stdint.h])
 
 # Create a header file containing NetBSD-style byte swapping macros.
 # This m4 macros has caused severe pain, I am considering creating a 

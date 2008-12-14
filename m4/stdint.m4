@@ -31,12 +31,10 @@ fi
 dnl Look for a header file that defines size-specific integer types
 AC_DEFUN([AX_NEED_STDINT_H],
 [
-changequote(, )dnl
-ac_dir=`echo "$1"|sed 's%/[^/][^/]*$%%'`
-changequote([, ])dnl
+ac_dir=`AS_DIRNAME(["$1"])`
 if test "$ac_dir" != "$1" && test "$ac_dir" != .; then
   # The file is in a subdirectory.
-  test ! -d "$ac_dir" && mkdir "$ac_dir"
+  test ! -d "$ac_dir" && AS_MKDIR_P(["$ac_dir"])
 fi
 
 AX_CHECK_DEFINED_TYPE(uint8_t,
