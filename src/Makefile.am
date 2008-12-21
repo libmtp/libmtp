@@ -28,9 +28,9 @@ EXTRA_DIST=libmtp.h.in libmtp.sym ptp-pack.c
 #  increment AGE, Otherwise AGE is reset to 0. If CURRENT has changed, 
 #  REVISION is set to 0, otherwise REVISION is incremented.
 # ---------------------------------------------------------------------------
-CURRENT=9
-AGE=1
-REVISION=1
+CURRENT=10
+AGE=2
+REVISION=0
 SOVERSION=$(CURRENT):$(REVISION):$(AGE)
 
 if COMPILE_MINGW32
