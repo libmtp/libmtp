@@ -607,23 +607,32 @@ just a name tag on the object.
 
 Folders/directories aren't really such entities: they are just 
 objects too, albeit objects that can act as parent to other
-objects. They are called "association and are created in atomic
+objects. They are called "associations" and are created in atomic
 fashion and even though there is an MTP command to get all the
-associations of an association, this command is optional so it is
-perfectly possible (and most common, actually) to create devices
-where the "folders" (which are actually associations) have no idea
-whatsoever of what files they are associated as parents to 
+associations of a certain association, this command is optional
+so it is perfectly possible (and most common, actually) to create
+devices where the "folders" (which are actually associations) have
+no idea whatsoever of what files they are associated as parents to 
 (i.e. which files they contain). This is very easy for device
-manufacturers to implement, all the association has to be done by
-the MTP Initiator / host computer.
+manufacturers to implement, all the association (i.e. finding out
+which files are in a certain folder) has to be done by the MTP
+Initiator / host computer.
 
 Moving a file to a new folder is for example very simple in a
 "real" file system. In PTP/MTP devices it is often not even possible,
 some devices *may* be able to do that. But actually the only
 reliable way of doing that is to upload the file to the host,
-download it with the new parent, then scratch the old file.
+download it with the new parent, then delete the old file.
 We have played with the idea of implementing this time consuming
 function, perhaps we will.
+
+Then the issue that in PTP/MTP it is legal for two files to have
+exactly the same path as long as their object IDs differ. A
+folder/association can contain two files with the exact same name.
+(And on the Creative devices this even works, too, though most devices
+implicitly fail at this.) Perhaps one could add some custom hook for
+handling that, so they become  /Foo.mp3 and /Foo.mp3(1) or something
+similar, but it's really a bit kludgy.
 
 Playlists and albums aren't really files, thinking about 
 them as files like the hacks in libgphoto2 is really backwards. They are
@@ -633,6 +642,10 @@ Some devices (Samsung) thought that was too complicated and have a
 different way of storing playlists in an UTF-16 encoded .spl-like file
 instead! This is why playlists/albums must have their own structs and 
 functions.
+
+Plain file access also assumes to be able to write files of an
+undetermined size, which is simply not possible in a transactional
+file system like PTP/MTP. (See further below.)
 
 
 I Want Streaming!
