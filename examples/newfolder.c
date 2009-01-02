@@ -2,7 +2,7 @@
  * \file newfolder.c
  * Example program to create a folder on the device.
  *
- * Copyright (C) 2006-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2006-2009 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006 Chris A. Debenham <chris@adebenham.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -35,7 +35,7 @@ void newfolder_command (int argc, char **argv)
 {
   uint32_t newid;
   
-  if(argc != 3) {
+  if(argc != 4) {
     printf("Usage: newfolder name <parent> <storage>\n");
     printf("  parent = parent folder or 0 to create the new folder in the root dir\n");
     printf("  storage = storage id or 0 to create the new folder on the primary storage\n");

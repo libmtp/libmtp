@@ -1,3 +1,14 @@
+2009-01-02  Linus Walleij <triad@df.lth.se>
+
+	* examples/connect.c: usage patch from Riley Patterson.
+	* examples/sendtr.c: dito. Plus only try to add track to an
+	  album if and only if an album name was given.
+	* examples/newfolder.c: real bad bug fixed, didn't even work
+	  due to bad args check.
+	* examples/sendfile.c: another bad bug...
+	* examples/common.h: include <config.h> not "config.h"
+	* src/unicode.h: no reason for this to include config.h!
+
 2008-12-21  Linus Walleij <triad@df.lth.se>
 
 	* Release libmtp 0.3.5.

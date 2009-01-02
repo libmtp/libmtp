@@ -2,7 +2,7 @@
  * \file sendfile.c
  * Example program to send an arbitrary file to a device.
  *
- * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2009 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006 Chris A. Debenham <chris@adebenham.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -85,7 +85,7 @@ int sendfile_function(char * from_path, char *to_path)
   genfile->filesize = filesize;
   genfile->filename = strdup(filename);
   genfile->filetype = find_filetype (filename);
-  genfile->parent_id = 0;
+  genfile->parent_id = parent_id;
   genfile->storage_id = 0;
 
   printf("Sending file...\n");

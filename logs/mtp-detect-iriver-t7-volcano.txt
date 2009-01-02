@@ -1,0 +1,207 @@
+~$ mtp-detect
+
+libmtp version: 0.3.3
+
+Listing raw device(s)
+ Found 1 device(s):
+ 1043:1143 @ bus 0, dev 9
+Attempting to connect device(s)
+USB low-level info:
+ Using kernel interface "usbfs"
+ bcdUSB: 512
+ bDeviceClass: 255
+ bDeviceSubClass: 0
+ bDeviceProtocol: 0
+ idVendor: 1043
+ idProduct: 1143
+ IN endpoint maxpacket: 512 bytes
+ OUT endpoint maxpacket: 512 bytes
+ Raw device info:
+    Bus location: 0
+    Device number: 9
+    Device entry info:
+       Vendor: (null)
+       Vendor id: 0x1043
+       Product: (null)
+       Vendor id: 0x1143
+       Device flags: 0x00000000
+Microsoft device descriptor 0xee:
+  0000: 1203 4d00 5300 4600 5400 3100 3000 3000    ..M.S.F.T.1.0.0.
+  0010: fe00                                       ..
+Microsoft device response to control message 1, CMD 0xfe:
+  0000: 2800 0000 0001 0400 0100 0000 0000 0000    (...............
+  0010: 0001 4d54 5000 0000 0000 0000 0000 0000    ..MTP...........
+  0020: 0000 0000 0000 0000                        ........
+Microsoft device response to control message 2, CMD 0xfe:
+  0000: 2800 0000 0001 0400 0100 0000 0000 0000    (...............
+  0010: 0001 4d54 5000 0000 0000 0000 0000 0000    ..MTP...........
+  0020: 0000 0000 0000 0000                        ........
+Device info:
+ Manufacturer: iriver
+ Model: iriver T7
+ Device version: MTP-1.01-N-ENG
+ Serial number: A00000600001
+ Vendor extension ID: 0x00000006
+ Vendor extension description: microsoft.com: 1.0;
+microsoft.com/WMDRMPD: 10.1; microsoft.com/WMPPD: 10.0;
+ Detected object size: 64 bits
+Supported operations:
+ 1001: get device info
+ 1002: Open session
+ 1003: Close session
+ 1004: Get storage IDs
+ 1005: Get storage info
+ 1006: Get number of objects
+ 1007: Get object handles
+ 1008: Get object info
+ 1009: Get object
+ 100b: Delete object
+ 100c: Send object info
+ 100d: Send object
+ 100f: Format storage
+ 1010: Reset device
+ 1014: Get device property description
+ 1015: Get device property value
+ 1016: Set device property value
+ 9801: Get object properties supported
+ 9802: Get object property description
+ 9803: Get object property value
+ 9804: Set object property value
+ 9810: Get object references
+ 9811: Set object references
+ 9101: Get secure time challenge
+ 9102: Get secure time response
+ 9103: Set license response
+ 9104: Get sync list
+ 9105: Send meter challenge query
+ 9106: Get meter challenge
+ 9107: Get meter response
+ 9108: Clean data store
+ 9109: Get license state
+Events supported:
+ 0x4004
+ 0x4005
+Device Properties Supported:
+ 0xd101: Secure Time
+ 0xd102: Device Certificate
+Playable File (Object) Types and Object Properties Supported:
+ 3000: Undefined Type
+    dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+    dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+    dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+    dc04: ObjectSize UINT64 data type READ ONLY
+    dc07: ObjectFileName STRING data type REGULAR EXPRESSION FORM GET/SET
+    dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+    dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+    dc44: Name STRING data type GET/SET
+    dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+ 3001: Association/Directory
+    dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+    dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+    dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+    dc04: ObjectSize UINT64 data type READ ONLY
+    dc07: ObjectFileName STRING data type REGULAR EXPRESSION FORM GET/SET
+    dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+    dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+    dc44: Name STRING data type GET/SET
+    dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+ 3009: MP3
+    dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+    dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+    dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+    dc04: ObjectSize UINT64 data type READ ONLY
+    dc07: ObjectFileName STRING data type REGULAR EXPRESSION FORM GET/SET
+    dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+    dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+    dc44: Name STRING data type GET/SET
+    dc46: Artist STRING data type GET/SET
+    dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+    dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+    dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+    dc8c: Genre STRING data type GET/SET
+    dc96: Composer STRING data type GET/SET
+    dc9a: AlbumName STRING data type GET/SET
+    de93: SampleRate UINT32 data type range: MIN 8000, MAX 48000, STEP 50 READ ONLY
+    de94: NumberOfChannels UINT16 data type enumeration: 2,  READ ONLY
+    de9a: AudioBitRate UINT32 data type range: MIN 5000, MAX 384000, STEP 1 READ ONLY
+ b901: WMA
+    dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+    dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+    dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+    dc04: ObjectSize UINT64 data type READ ONLY
+    dc07: ObjectFileName STRING data type REGULAR EXPRESSION FORM GET/SET
+    dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+    dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+    dc44: Name STRING data type GET/SET
+    dc46: Artist STRING data type GET/SET
+    dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+    dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
+    dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
+    dc8c: Genre STRING data type GET/SET
+    dc96: Composer STRING data type GET/SET
+    dc9a: AlbumName STRING data type GET/SET
+    de93: SampleRate UINT32 data type range: MIN 8000, MAX 48000, STEP 50 READ ONLY
+    de94: NumberOfChannels UINT16 data type enumeration: 2,  READ ONLY
+    de9a: AudioBitRate UINT32 data type range: MIN 5000, MAX 384000, STEP 1 READ ONLY
+ ba03: Abstract Audio Album
+    dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+    dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+    dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+    dc04: ObjectSize UINT64 data type READ ONLY
+    dc07: ObjectFileName STRING data type REGULAR EXPRESSION FORM GET/SET
+    dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+    dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+    dc44: Name STRING data type GET/SET
+    dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+    dc81: RepresentativeSampleFormat UINT16 data type enumeration:  READ ONLY
+    dc8c: Genre STRING data type GET/SET
+ ba05: Abstract Audio Video Playlist
+    dc01: StorageID UINT32 data type ANY 32BIT VALUE form READ ONLY
+    dc02: ObjectFormat UINT16 data type ANY 16BIT VALUE form READ ONLY
+    dc03: ProtectionStatus UINT16 data type enumeration: 0, 1,  READ ONLY
+    dc04: ObjectSize UINT64 data type READ ONLY
+    dc07: ObjectFileName STRING data type REGULAR EXPRESSION FORM GET/SET
+    dc0b: ParentObject UINT32 data type ANY 32BIT VALUE form READ ONLY
+    dc41: PersistantUniqueObjectIdentifier UINT128 data type READ ONLY
+    dc44: Name STRING data type GET/SET
+    dc4f: NonConsumable UINT8 data type enumeration: 0, 1,  GET/SET
+Storage Devices:
+ StorageID: 0x00010001
+    StorageType: 0x0004 removable RAM storage
+    FilesystemType: 0x0002 generic hierarchical
+    AccessCapability: 0x0000 read/write
+    MaxCapacity: 4059193344
+    FreeSpaceInBytes: 4059160576
+    FreeSpaceInObjects: 4294967295
+    StorageDescription: iriver T7 files
+    VolumeIdentifier: (null)
+Special directories:
+ Default music folder: 0x00000000
+ Default playlist folder: 0x00000000
+ Default picture folder: 0x00000000
+ Default video folder: 0x00000000
+ Default organizer folder: 0x00000000
+ Default zencast folder: 0x00000000
+ Default album folder: 0x00000000
+ Default text folder: 0x00000000
+MTP-specific device properties:
+ Friendly name: (NULL)
+ Synchronization partner: (NULL)
+libmtp supported (playable) filetypes:
+ ISO MPEG-1 Audio Layer 3
+ Microsoft Windows Media Audio
+
+Secure Time:
+<DRMCLOCK type="status"><VALUE>#20080114
+19:26:48Z#</VALUE><FLAG>DRM_CLK_NOT_SET</FLAG></DRMCLOCK>
+
+Device Certificate:
+<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID
+private="1">nrDQMNYHb0qoz1fqYUDqxmFA6sY=</UNIQUEID><PUBLICKEY
+private="1">WbWEVwzD/6k56XKst4OnRTXFJSFurpcN/nEqZeM8/1nMhaqcqrUEQw==</PUBLICKEY><KEYDATA>yZBMmoENcUJrZlqoKjB3RqWbZBk=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>WbWEVwzD/6k56XKst4OnRTXFJSENGS5l+4hHr9gLDu1ThP1y59iwSQ==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>AZDXn3sieh4rYaQNQl/MdIAKcL0=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.111.31</SECURITYVERSION><CERTIFICATE
+private="1">WbWEVwzD/6k56XKst4OnRTXFJSFurpcN/nEqZeM8/1nMhaqcqrUEQwIEbx9ZtYRXDMP/qTnpcqy3g6dFNcUlIf4NogOPQJYt/s2w7iE5BAM/r9Iq</CERTIFICATE></FALLBACK><CERTIFICATE
+type="GROUP"><DATA><NAME>T7</NAME><MANUFACTURER>iriver</MANUFACTURER><MAKE>iriver</MAKE><DISTRIBUTOR>iriver</DISTRIBUTOR><MODEL>T7</MODEL><SECURITYLEVEL>2000</SECURITYLEVEL><HARDWARE_VER_MAJOR>1.0</HARDWARE_VER_MAJOR><HARDWARE_VER_MINOR>1.0</HARDWARE_VER_MINOR><FIRMWARE_VER_MAJOR>1.0</FIRMWARE_VER_MAJOR><FIRMWARE_VER_MINOR>1.0</FIRMWARE_VER_MINOR><FEATURES><CLOCK>2</CLOCK><SECURECLOCK><URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL><PUBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY></SECURECLOCK><METERING>1</METERING><LICENSE_ACQ>0</LICENSE_ACQ><LICENSE_SYNC>1</LICENSE_SYNC><ENCRYPTION>0</ENCRYPTION><SYMMETRIC_OPT>0</SYMMETRIC_OPT></FEATURES><LIMITS><MAXCHAINDEPTH>2</MAXCHAINDEPTH><MAXLICENSESIZE>6656</MAXLICENSESIZE><MAXHEADERSIZE>5120</MAXHEADERSIZE></LIMITS><PUBLICKEY>3BpF6JtA7FbR1nASAkawbHYRtEWT5o8TrP7a2L6Bvxb7/P0+i5NLLA==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>WRTND1A2JBpLj8Qsi40ZqMRWx4h/7FCW2OCTmtILKq2DJfeA99WGVg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE
+type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>2691</AUTH_ID><PUBLICKEY>WmzVzzbfShRhYsmIVMx/NHFUoxx4e0Mw84ZZX/Jkb5TDaeO2+Y3whA==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>GU1KjL5g1ZWk23mePnHrT1lJSWscoAt36qwgV2jL+BX5R/uUTr3ADg==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE
+type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>97tzJe/maHwwV07tt0FoMe84Hn9adZfKZ7PJ9j3dWh11FiAzG8jxJA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
+WMPInfo.xml Does not exist on this device
+OK.

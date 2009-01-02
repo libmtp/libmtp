@@ -22,7 +22,7 @@
  */
 #include <libmtp.h>
 #ifndef _MSC_VER
-#include "config.h"
+#include <config.h>
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
 #else

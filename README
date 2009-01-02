@@ -465,6 +465,9 @@ cannot test your solution.
   "blacklist usb-storage". Some have even removed the
   "usb-storage.ko" (kernel module file) to avoid loading.
 
+* Sandisk Sansa Fuze has three modes: auto, MTP or mass storage
+  (MSC). Please set it to MTP to avoid problems with libmtp.
+
 * The iriver devices (possibly all of them) cannot handle the 
   enhanced GetObjectPropList MTP command (0x9805) properly. So 
   they have been banned from using it.
