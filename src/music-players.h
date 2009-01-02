@@ -307,7 +307,7 @@
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
   // From [st]anislav <iamstanislav@gmail.com>
-  { "iRiver", 0x1042, "T7 Volcano", 0x1143, DEVICE_FLAG_NONE },
+  { "iRiver", 0x1042, "T7 Volcano", 0x1143, DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
   // From an anonymous person at SourceForge, uncertain about this one
   { "iRiver", 0x4102, "iFP-880", 0x1008, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
