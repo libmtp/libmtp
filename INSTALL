@@ -17,6 +17,15 @@ help you get used to using the libmtp API, as well as provide some
 immediate gratification. Links to other programs using the libmtp
 API may be found at the homepage: http://libmtp.sourceforge.net/
 
+Install From Distribution
+-------------------------
+
+You should probably prefer to install libmtp from the distribution
+source you're using. Last time we checked, libmtp was part of Ubuntu,
+Fedora, OpenSUSE, Debian testing, Gentoo, FreeBSD ports and OpenBSD 
+packages/ports.
+
+
 Shared Library Support
 ----------------------
 
