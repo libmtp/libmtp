@@ -52,3 +52,5 @@ endif
 
 libmtp_la_LDFLAGS=@LDFLAGS@  -no-undefined -export-symbols libmtp.sym -version-info $(W32LF) $(SOVERSION)
 libmtp_la_DEPENDENCIES=libmtp.sym
+
+DISTCLEANFILES = _stdint.h
