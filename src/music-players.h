@@ -370,6 +370,11 @@
   { "iRiver", 0x4102, "E100 v2/Lplayer", 0x1142, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_OGG_IS_UNKNOWN },
+  // Reported by Richard Vennemann <vennemann@users.sourceforge.net>
+  // Not yet verified to be MTP
+  { "iRiver", 0x4102, "Spinn", 0x1147, 
+    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
+    DEVICE_FLAG_OGG_IS_UNKNOWN },
   // Reported by Scott Call
   // Assume this actually supports OGG though it reports it doesn't.
   { "iRiver", 0x4102, "H10 20GB", 0x2101, 
