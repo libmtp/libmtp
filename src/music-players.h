@@ -371,7 +371,7 @@
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_OGG_IS_UNKNOWN },
   // Reported by Richard Vennemann <vennemann@users.sourceforge.net>
-  // Not yet verified to be MTP
+  // In USB Mass Storage mode it is 0x4102/0x1047
   { "iRiver", 0x4102, "Spinn", 0x1147, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_OGG_IS_UNKNOWN },
