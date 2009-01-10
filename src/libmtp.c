@@ -54,10 +54,6 @@
 #define USE_WINDOWS_IO_H
 #include <io.h>
 #endif
-#ifdef __WIN32__
-/* Windows does not have rindex */
-#define rindex strrchr
-#endif
 
 /* To enable PTP level debug prints (all ptp_debug(...)), switch on this */
 //#define ENABLE_PTP_DEBUG
@@ -2998,7 +2994,7 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
       // Repair forgotten OGG filetype
       char *ptype;
       
-      ptype = rindex(file->filename,'.')+1;
+      ptype = strrchr(file->filename,'.')+1;
       if (ptype != NULL && !strcasecmp (ptype, "ogg")) {
 	    // Fix it.
         file->filetype = LIBMTP_FILETYPE_OGG;
@@ -3684,7 +3680,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
       // Repair forgotten OGG filetype
       char *ptype;
       
-      ptype = rindex(track->filename,'.')+1;
+      ptype = strrchr(track->filename,'.')+1;
       if (ptype != NULL && !strcasecmp (ptype, "ogg")) {
 	// Fix it.
 	track->filetype = LIBMTP_FILETYPE_OGG;
@@ -3791,7 +3787,7 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
       // Repair forgotten OGG filetype
       char *ptype;
       
-      ptype = rindex(track->filename,'.')+1;
+      ptype = strrchr(track->filename,'.')+1;
       if (ptype != NULL && !strcasecmp (ptype, "ogg")) {
 	     // Fix it.
 	     track->filetype = LIBMTP_FILETYPE_OGG;

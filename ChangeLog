@@ -1,7 +1,7 @@
 2009-01-10  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: mingw32 fixes from James Ravenscroft.
-	* src/libmtp.c: dito.
+	* src/libmtp.c: dito. Replaced "rindex" with "strrchr"
 	* src/Makefile.am: dito.
 	* examples/albumart.c: dito.
 
