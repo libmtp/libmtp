@@ -97,7 +97,7 @@ int main (int argc, char **argv) {
   imagedata = malloc(filesize * sizeof(uint8_t));
 
 #ifdef __WIN32__
-  if ( (fd = open(path, O_RDONLY|O_BINARY) == -1 ) {
+  if ( (fd = open(path, O_RDONLY|O_BINARY) == -1) ) {
 #else
   if ( (fd = open(path, O_RDONLY)) == -1) {
 #endif

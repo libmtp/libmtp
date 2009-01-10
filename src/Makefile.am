@@ -35,7 +35,7 @@ SOVERSION=$(CURRENT):$(REVISION):$(AGE)
 
 if COMPILE_MINGW32
 noinst_DATA=libmtp.lib
-W32LF=-export-dynamic
+W32LF=-export-dynamic -liconv -ws2_32
 libmtp.def: libmtp.sym
 	echo "LIBRARY \"@PACKAGE@\"" > libmtp.def
 	echo "DESCRIPTION \"Media Transfer Protocol (MTP) library\"" >> libmtp.def
@@ -50,7 +50,7 @@ install-data-local: libmtp.lib libmtp.def
 	$(INSTALL) libmtp.lib $(DESTDIR)$(libdir)
 endif
 
-libmtp_la_LDFLAGS=@LDFLAGS@  -no-undefined -export-symbols libmtp.sym -version-info $(W32LF) $(SOVERSION)
+libmtp_la_LDFLAGS=@LDFLAGS@ -no-undefined -export-symbols libmtp.sym -version-info $(SOVERSION) $(W32LF)
 libmtp_la_DEPENDENCIES=libmtp.sym
 
 DISTCLEANFILES = _stdint.h

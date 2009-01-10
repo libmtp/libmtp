@@ -1,3 +1,10 @@
+2009-01-10  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: mingw32 fixes from James Ravenscroft.
+	* src/libmtp.c: dito.
+	* src/Makefile.am: dito.
+	* examples/albumart.c: dito.
+
 2009-01-06  Linus Walleij <triad@df.lth.se>
 
 	* src/Makefile.am: patch from Rafael Laboissiere removing a
