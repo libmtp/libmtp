@@ -405,7 +405,7 @@
   // Reported by Michael Davis <slithy@yahoo.com>
   { "Toshiba", 0x0930, "Gigabeat U", 0x0016, DEVICE_FLAG_NONE },
   // Reported by Devon Jacobs <devo@godevo.com>
-  { "Toshiba", 0x0930, "Gigabeat MEU202", 0x0018, DEVICE_FLAG_NO_RELEASE_INTERFACE },
+  { "Toshiba", 0x0930, "Gigabeat MEU202", 0x0018, DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Rolf <japan (at) dl3lar.de>
   { "Toshiba", 0x0930, "Gigabeat T", 0x0019, DEVICE_FLAG_NONE },
   // Reported by Phil Ingram <ukpbert@users.sourceforge.net>
