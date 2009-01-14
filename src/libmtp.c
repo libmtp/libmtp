@@ -4362,7 +4362,8 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     of = PTP_OFC_Undefined;
   }
 
-  if (ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList)) {
+  if (ptp_operation_issupported(params, PTP_OC_MTP_SendObjectPropList) &&
+      !FLAG_BROKEN_SEND_OBJECT_PROPLIST(ptp_usb)) {
     /*
      * MTP enhanched does it this way (from a sniff):
      * -> PTP_OC_MTP_SendObjectPropList (0x9808):
@@ -5858,8 +5859,8 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
     fname[sizeof(fname)-1] = '\0';
   }
 
-  if (ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList)) {
-
+  if (ptp_operation_issupported(params, PTP_OC_MTP_SendObjectPropList) &&
+      !FLAG_BROKEN_SEND_OBJECT_PROPLIST(ptp_usb)) {
     MTPProperties *props = NULL;
     MTPProperties *prop = NULL;
     int nrofprops = 0;

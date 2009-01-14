@@ -251,6 +251,25 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
           usb_close(devh);
           return 1;
         }
+#ifdef LIBUSB_HAS_GET_DRIVER_NP
+	{
+	  /*
+	   * Specifically avoid probing anything else than USB mass storage devices
+	   * and non-associated drivers in Linux.
+	   */
+	  char devname[0x10];
+  
+	  devname[0] = '\0';
+	  ret = usb_get_driver_np(devh,
+				  dev->config[i].interface[j].altsetting[k].iInterface,
+				  devname,
+				  sizeof(devname));
+	  if (devname[0] != '\0' && strcmp(devname, "usb-storage")) {
+	    printf("avoid probing device using kernel interface \"%s\"\n", devname);
+	    return 0;
+	  }
+	}
+#endif
       }
     }
   }

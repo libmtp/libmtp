@@ -1,3 +1,11 @@
+2009-01-14  Linus Walleij <triad@df.lth.se>
+
+	* src/device-flags.h: new device flag for broken
+	  SendObjectPropList, as found broken in MEU202
+	* src/music-players.h: use the new flag.
+	* src/libmtp.c: implement this device flag.
+	* src/libusb-glue.h: dito.
+
 2009-01-10  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: mingw32 fixes from James Ravenscroft.
