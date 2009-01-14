@@ -1,86 +1,54 @@
-This file was created by Farooq Zaman <emotional_keats2h@hotmail.com>
-as a guide to practical Windows porting of libmtp using MSVC (Microsoft
-Visual C++). Some details may have changed, e.g. the things that could be 
-fixed in libmtp sources by #ifdef __WIN32__ macros have been folded back 
-in. This has been tested on Windows 2000.
+This file was created by James Ravenscroft <ravenscroftj@gmail.com> as a direct revision of Farooq Zaman's work with LibMTP on Windows.
 
+ CHANGELOG
+----------------
+14th January 2009: Created the first revision of this file taking information from the work of Farooq Zaman.
 
-libmtp.c
-========
-	1. Include <io.h> file.
-	2. Comment out <sys/mman.h> file.
-	3. Line# 2115 replace "open" with "_open" and replace "S_IRWXU|S_IRGRP" with "_S_IREAD".
-	4. Line# 2126 replace "close" with "_close".
-	5. Line# 2283 replace "open" with "_open" and add one more closing ")" at the end of _open API.
-	6. Line# 2294 replace "close" with "_close".
-	7. Line# 2502 and Line# 2513 repeat steps 5 and 6.
-libmtp.h
-========
-	1. replace <usb.h> and <stdint.h> with "usb.h" and "stdint.h" respectively.
+ 1.0 Compilation of LibMTP on Windows 2000/XP/NT 
+-----------------------------------------------------------
+LibMTP currently compiles under Windows using MingW/MSys. The source relies upon the __WIN32__ macro which is defined by MinGW by default.
 
-libusb-glue.c
-=============
-	1. Comment out <getopt.h>, <unistd.h>, <utime.h> and <sys/mman.h> includes.
-	2. Replace <usb.h> with "usb.h"
-	3. Line# 537 Add usb_set_configuration(device_handle, dev->config->bConfigurationValue); before claiming USB 	interface.
+Libraries:
+LibMTP currently depends on LibUSB and libiconv. There are currently projects that port both of these libraries to Windows. Binary files can be
+obtained from:
 
-ptp.c
-======
-	1. Comment out <config.h> and <unistd.h> include macro.
-	2. Include "libmtp.h" file.
-	3. Line# 484 remove "inline" keyword from the function.
+LibUSB Win32 - http://libusb-win32.sourceforge.net/
 
-ptp.h
-=====
-	1. replace <iconv.h> with "iconv.h".
+LibIconv - http://gnuwin32.sourceforge.net/packages/libiconv.htm
 
-ptp-pack.c
-==========
-	1. replace <iconv.h> with "iconv.h".
-	2. Include "stdint.h" and "ptp.h" files. Windows C doesn't have "stdint.h" file. I took this file from Cygwin.
-	3. Remove "inline" keyword with all the functions in this file.
+With both of these libraries extracted and placed in MinGW's search path, you can compile the library by opening the Msys prompt, navigating to
+the path where the extracted LibMTP source files can be found and typing:
 
-gphoto2-endian.h
-================
-	1. replace <arpa/inet.h> with <winsock.h> .
-
-
-stdint.h
-========
-        1. MSVC doesn't have stdint.h file as part of its C. Get this file from someother source(e.g Cygwin in my case). And 	replace "long long" with "__int64".
-
-byteswap.h
-==========
-        1. MSVC doesn't have this file too. I created this file myself by just copying bswap_16(), bswap_32() and bswap_64() 	macros from Linux /usr/include/bits/byteswap.h file. 
+./configure
+make all
+make install
 
 
 
-Libraries
-=========
-        You will need two libraries for windows "libusb" and "libiconv".
-	1. You can download libusb from
- 		http://libusb-win32.sourceforge.net/#downloads
-	Download the Device driver version, unpack the archive and get libusb.lib and libusb0.dll files.
-        Place libusb.lib in the libs folder and libusb0.dll file in the debug folder of MSVC project.
-	Also get libusb.h file and add it to your project.
+ 2.0 LibUSB and Driver Issues for Windows
+----------------------------------------------
 
-	2. You can Download libiconv-2.dll file from 
-		http://sourceforge.net/project/showfiles.php?group_id=114505&package_id=147572&release_id=356820
-	and libiconv.lib file from 
-		http://gnuwin32.sourceforge.net/packages/libiconv.htm	
-	Download Developer files and get libiconv.lib file.
-	Place libiconv.lib in the libs folder and libicon-2.dll in debug folder of MSVC project. 
-	Also get libiconv.h file and add it to your project.
+Unfortunately, Windows does not have abstract USB support and depends upon specific drivers for each and every device you use. Fortunately, 
+LibUSB-Win32 provide a solution to this problem. LibMTP takes advantage of the LibUSB-Win32 Device Driver package.
 
+1. Download the latest device driver binary package (libusb-win32-device-bin-x.x.x.x.tar.gz) from http://sourceforge.net/project/showfiles.php?group_id=78138
+2. Upon extraction, plug in your music device and run bin/inf-wizard.exe. Selecting your device and saving the inf file in the project root directory.
+3. Copy the files "bin/libusb0.dll" and "libusb0.sys" or "libusb0_x64.dll" and "libusb0_x64.sys" for 32-bit or 64-bit operating systems respectively.
+4. Goto Start -> Run, type "devmgmt.msc" and press "ok".
+5. Select your music device from the list and click Action -> Update Driver, Choose "No, not this time" if prompted to connect to microsoft.
+6. Choose "Install from a list or specific location".
+7.  Choose "Don't search, I will choose the driver to install
+8. Click the "Have Disk..." button in the bottom right corner of the prompt
+9. Browse to your .inf file and select it. Press Ok 
+10. The name of your music device should appear in the prompt, click it and click "Next>" (Ignore any prompts about Driver Signing, continuing 
+installation of the selected driver).
+11. Click finish to end the driver install process.
 
-	3. Goto Project->settings. In the "link" tab and "General" category, add "libusb.lib" and "libiconv.lib" to
-	   "Object/library modules".
+To get your old driver back:
 
-	4. Change Category to Input and add your libs folder Path to "Additional Library Path".
+1. Goto Start -> Run, type "devmgmt.msc" and press "ok".
+2. Select your music device, right click on it and click "Properties"
+3. Go to the "Driver" pane and select "Roll Back Driver".
 
-libusb filter Driver
-====================
-	You will need libusb driver for libusb to function properly. 
-	Get libusb filter driver version from this link
-		http://libusb-win32.sourceforge.net/#downloads
-	Download the filter version and install it.
+ 3.0 
+----------------------------------------------
