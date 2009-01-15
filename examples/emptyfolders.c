@@ -20,6 +20,7 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "common.h"
+#include <stdlib.h>
 
 static void prune_empty_folders(LIBMTP_mtpdevice_t *device, LIBMTP_file_t *files, LIBMTP_folder_t *folderlist, int do_delete)
 {

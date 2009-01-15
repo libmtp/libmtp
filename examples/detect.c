@@ -116,7 +116,6 @@ int main (int argc, char **argv)
   for (i = 0; i < numrawdevices; i++) {
     LIBMTP_mtpdevice_t *device;
     LIBMTP_file_t *files;
-    uint32_t xmlfileid = 0;
     char *friendlyname;
     char *syncpartner;
     char *sectime;

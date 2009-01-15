@@ -23,6 +23,8 @@
 #include "common.h"
 #include "string.h"
 #include "pathutils.h"
+#include <stdlib.h>
+#include <limits.h>
 
 void delfile_usage(void);
 void delfile_function(char *);

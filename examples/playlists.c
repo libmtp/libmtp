@@ -20,6 +20,7 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "common.h"
+#include <stdlib.h>
 
 static void dump_plinfo(LIBMTP_mtpdevice_t *device, LIBMTP_playlist_t *pl)
 {

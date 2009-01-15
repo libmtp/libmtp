@@ -21,6 +21,7 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "common.h"
+#include <stdlib.h>
 
 static void dump_albuminfo(LIBMTP_album_t *album)
 {

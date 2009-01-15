@@ -22,6 +22,7 @@
  */
 #include "common.h"
 #include "pathutils.h"
+#include <stdlib.h>
 #include <libgen.h>
 
 void newfolder_function(char *);

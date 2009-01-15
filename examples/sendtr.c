@@ -32,6 +32,8 @@
 
 #include "common.h"
 #include "util.h"
+#include <stdlib.h>
+#include <limits.h>
 #include <string.h>
 #include <libgen.h>
 #include <sys/stat.h>

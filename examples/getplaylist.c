@@ -20,6 +20,8 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "common.h"
+#include <stdlib.h>
+#include <limits.h>
 
 static uint32_t dump_playlist(LIBMTP_mtpdevice_t *device, LIBMTP_playlist_t *pl)
 {

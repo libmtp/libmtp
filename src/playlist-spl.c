@@ -21,12 +21,13 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
- // TODO do I actually use all these?
 #include <stdio.h>
 #include <stdlib.h> // mkstmp()
+#include <unistd.h>
 #include <errno.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/uio.h>
 #include <fcntl.h>
 
 #include <string.h>

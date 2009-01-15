@@ -21,9 +21,14 @@
  */
 #include "common.h"
 #include "string.h"
-#include <sys/stat.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/uio.h>
 
 static void usage(void) {
   printf("Usage: albumart -i <fileid/trackid> -n <albumname> <imagefile>\n");

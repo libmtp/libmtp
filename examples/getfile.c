@@ -22,6 +22,8 @@
  */
 #include "common.h"
 #include "pathutils.h"
+#include <stdlib.h>
+#include <limits.h>
 
 void getfile_function(char *,char *);
 void getfile_command(int, char **);
