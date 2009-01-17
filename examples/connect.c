@@ -68,9 +68,9 @@ usage(void)
 {
   printf("Usage: connect <command1> <command2>\n");
   printf("Commands: --delete [filename]\n");
-  printf("          --sendfile [source],[destination]\n");
-  printf("          --sendtrack [source],[destination]\n");
-  printf("          --getfile [source],[destination]\n");
+  printf("          --sendfile [source] [destination]\n");
+  printf("          --sendtrack [source] [destination]\n");
+  printf("          --getfile [source] [destination]\n");
   printf("          --newfolder [foldername]\n");
 }
 
