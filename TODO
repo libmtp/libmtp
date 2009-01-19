@@ -34,10 +34,7 @@ COMPATIBILITY fixes:
 
 SPEEDUP fixes:
 
-1. SPEEDUP: The recursive function that builds the folder tree is
-  O(n^2)! Atleast remove all non-folders (PTP associations) from the
-  list before we start sorting and building that tree. We walk the
-  entire list for each group of siblings right now!
+  None known. libmtp is fast :-)
 
 
 FEATURE fixes:
@@ -102,3 +99,8 @@ THOSE ARE ALREADY DONE:
 8. FEATURE: Integrate libmtp with HAL / D-Bus so applications can dynamically
   know when a device has been plugged in or removed. Need a mechanism to 
   connect a specific hal UDI.
+
+9. SPEEDUP: The recursive function that builds the folder tree is
+  O(n^2)! Atleast remove all non-folders (PTP associations) from the
+  list before we start sorting and building that tree. We walk the
+  entire list for each group of siblings right now!

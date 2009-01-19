@@ -1,8 +1,8 @@
 /* ptp.c
  *
  * Copyright (C) 2001-2004 Mariusz Woloszyn <emsi@ipartners.pl>
- * Copyright (C) 2003-2007 Marcus Meissner <marcus@jet.franken.de>
- * Copyright (C) 2006-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2003-2009 Marcus Meissner <marcus@jet.franken.de>
+ * Copyright (C) 2006-2008 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2007 Tero Saarni <tero.saarni@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -415,6 +415,22 @@ ptp_getdeviceinfo (PTPParams* params, PTPDeviceInfo* deviceinfo)
 	return ret;
 }
 
+uint16_t
+ptp_canon_eos_getdeviceinfo (PTPParams* params, unsigned char**di, unsigned long *len )
+{
+	uint16_t 	ret;
+	PTPContainer	ptp;
+	PTPDataHandler	handler;
+
+	ptp_init_recv_memory_handler (&handler);
+	PTP_CNT_INIT(ptp);
+	ptp.Code=PTP_OC_CANON_EOS_GetDeviceInfoEx;
+	ptp.Nparam=0;
+	*len=0;
+	ret=ptp_transaction_new(params, &ptp, PTP_DP_GETDATA, 0, &handler);
+	ptp_exit_recv_memory_handler (&handler, di, len);
+	return ret;
+}
 
 /**
  * ptp_opensession:
@@ -933,6 +949,30 @@ ptp_sendobjectinfo (PTPParams* params, uint32_t* store,
 	*handle=ptp.Param3; 
 	return ret;
 }
+
+/**
+ * ptp_setobjectprotection:
+ * params:	PTPParams*
+ *		uint16_t newprot	- object protection flag
+ *		
+ * Set protection of object.
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ */
+uint16_t
+ptp_setobjectprotection (PTPParams* params, uint32_t oid, uint16_t newprot)
+{
+	PTPContainer ptp;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code = PTP_OC_SetObjectProtection;
+	ptp.Param1 = oid;
+	ptp.Param2 = newprot;
+	ptp.Nparam = 2;
+	return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
+}
+
 
 /**
  * ptp_sendobject:
@@ -2348,6 +2388,26 @@ ptp_nikon_setcontrolmode (PTPParams* params, uint32_t mode)
 }
 
 /**
+ * ptp_nikon_afdrive:
+ *
+ * This command runs (drives) the lens autofocus.
+ *  
+ * params:	PTPParams*
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+uint16_t
+ptp_nikon_afdrive (PTPParams* params)
+{
+        PTPContainer ptp;
+        
+        PTP_CNT_INIT(ptp);
+        ptp.Code=PTP_OC_NIKON_AfDrive;
+        ptp.Nparam=0;
+        return ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
+}
+/**
  * ptp_nikon_capture:
  *
  * This command captures a picture on the Nikon.
@@ -3300,6 +3360,18 @@ ptp_get_property_description(PTPParams* params, uint16_t dpc)
 		 N_("Shady White Balance Bias")},
 		{PTP_DPC_NIKON_WhiteBalanceColorTemperature,	/* 0xD01e */
 		 N_("White Balance Colour Temperature")},
+		{PTP_DPC_NIKON_WhiteBalancePresetNo,		/* 0xD01f */
+		 N_("White Balance Preset Number")},
+		{PTP_DPC_NIKON_WhiteBalancePresetVal0,		/* 0xD025 */
+		 N_("White Balance Preset Value 0")},
+		{PTP_DPC_NIKON_WhiteBalancePresetVal1,		/* 0xD026 */
+		 N_("White Balance Preset Value 1")},
+		{PTP_DPC_NIKON_WhiteBalancePresetVal2,		/* 0xD027 */
+		 N_("White Balance Preset Value 2")},
+		{PTP_DPC_NIKON_WhiteBalancePresetVal3,		/* 0xD028 */
+		 N_("White Balance Preset Value 3")},
+		{PTP_DPC_NIKON_WhiteBalancePresetVal4,		/* 0xD029 */
+		 N_("White Balance Preset Value 4")},
 		{PTP_DPC_NIKON_ImageSharpening,			/* 0xD02a */
 		 N_("Sharpening")},
 		{PTP_DPC_NIKON_ToneCompensation,		/* 0xD02b */
@@ -3315,13 +3387,15 @@ ptp_get_property_description(PTPParams* params, uint16_t dpc)
 		{PTP_DPC_NIKON_CSMMenuBankSelect,		/* 0xD040 */
 		 "PTP_DPC_NIKON_CSMMenuBankSelect"},
 		{PTP_DPC_NIKON_MenuBankNameA,			/* 0xD041 */
-		 "PTP_DPC_NIKON_MenuBankNameA"},
+		 N_("Menu Bank Name A")},
 		{PTP_DPC_NIKON_MenuBankNameB,			/* 0xD042 */
-		 "PTP_DPC_NIKON_MenuBankNameB"},
+		 N_("Menu Bank Name B")},
 		{PTP_DPC_NIKON_MenuBankNameC,			/* 0xD043 */
-		 "PTP_DPC_NIKON_MenuBankNameC"},
+		 N_("Menu Bank Name C")},
 		{PTP_DPC_NIKON_MenuBankNameD,			/* 0xD044 */
-		 "PTP_DPC_NIKON_MenuBankNameD"},
+		 N_("Menu Bank Name D")},
+		{PTP_DPC_NIKON_ResetBank,			/* 0xD045 */
+		 N_("Reset Menu Bank")},
 		{PTP_DPC_NIKON_A1AFCModePriority,		/* 0xD048 */
 		 "PTP_DPC_NIKON_A1AFCModePriority"},
 		{PTP_DPC_NIKON_A2AFSModePriority,		/* 0xD049 */
@@ -3419,19 +3493,26 @@ ptp_get_property_description(PTPParams* params, uint16_t dpc)
 		 N_("No CF Card Release")},
 		{PTP_DPC_NIKON_ImageCommentString,		/* 0xD090 */
 		 N_("Image Comment String")},
-		{PTP_DPC_NIKON_ImageCommentAttach,		/* 0xD091 */
-		 N_("Image Comment Attach")},
+		{PTP_DPC_NIKON_ImageCommentEnable,		/* 0xD091 */
+		 N_("Image Comment Enable")},
 		{PTP_DPC_NIKON_ImageRotation,			/* 0xD092 */
 		 N_("Image Rotation")},
 		{PTP_DPC_NIKON_Bracketing,			/* 0xD0c0 */
-		 N_("Exposure Bracketing")},
-		{PTP_DPC_NIKON_ExposureBracketingIntervalDist,	/* 0xD0c1 */
-		 N_("Exposure Bracketing Distance")},
-		{PTP_DPC_NIKON_BracketingProgram,		/* 0xD0c2 */
-		 N_("Exposure Bracketing Number")},
-		{PTP_DPC_NIKON_WhiteBalanceBracketStep, N_("NIKON White Balance Bracket Step")}, /* 0xD0C4 */
+		 N_("Bracketing Enable")},
+		{PTP_DPC_NIKON_AutoExposureBracketStep,		/* 0xD0c1 */
+		 N_("Exposure Bracketing Step")},
+		{PTP_DPC_NIKON_AutoExposureBracketProgram,	/* 0xD0c2 */
+		 N_("Exposure Bracketing Program")},
+		{PTP_DPC_NIKON_AutoExposureBracketCount,	/* 0xD0c3 */
+		 N_("Auto Exposure Bracket Count")},
+		{PTP_DPC_NIKON_WhiteBalanceBracketStep, N_("White Balance Bracket Step")}, /* 0xD0C4 */
+		{PTP_DPC_NIKON_WhiteBalanceBracketProgram, N_("White Balance Bracket Program")}, /* 0xD0C5 */
 		{PTP_DPC_NIKON_LensID,				/* 0xD0E0 */
 		 N_("Lens ID")},
+		{PTP_DPC_NIKON_LensSort,			/* 0xD0E1 */
+		 N_("Lens Sort")},
+		{PTP_DPC_NIKON_LensType,			/* 0xD0E2 */
+		 N_("Lens Type")},
 		{PTP_DPC_NIKON_FocalLengthMin,			/* 0xD0E3 */
 		 N_("Min. Focal Length")},
 		{PTP_DPC_NIKON_FocalLengthMax,			/* 0xD0E4 */
@@ -3443,23 +3524,34 @@ ptp_get_property_description(PTPParams* params, uint16_t dpc)
 		{PTP_DPC_NIKON_ExposureTime,			/* 0xD100 */
 		 N_("Nikon Exposure Time")},
 		{PTP_DPC_NIKON_ACPower, N_("AC Power")},	/* 0xD101 */
+		{PTP_DPC_NIKON_WarningStatus, N_("Warning Status")},/* 0xD102 */
 		{PTP_DPC_NIKON_MaximumShots,			/* 0xD103 */
 		 N_("Maximum Shots")},
-		{PTP_DPC_NIKON_AFLLock, N_("NIKON AF-L Locked")},/* 0xD104 */
-		{PTP_DPC_NIKON_AutoExposureLock,		/* 0xD105 */
-		 N_("Auto Exposure Lock")},
-		{PTP_DPC_NIKON_AutoFocusLock,			/* 0xD106 */
-		 N_("Auto Focus Lock")},
+		{PTP_DPC_NIKON_AFLockStatus, N_("AF Locked")},/* 0xD104 */
+		{PTP_DPC_NIKON_AELockStatus, N_("AE Locked")},/* 0xD105 */
+		{PTP_DPC_NIKON_FVLockStatus, N_("FV Locked")},/* 0xD106 */
 		{PTP_DPC_NIKON_AutofocusLCDTopMode2,		/* 0xD107 */
 		 N_("AF LCD Top Mode 2")},
 		{PTP_DPC_NIKON_AutofocusArea,			/* 0xD108 */
 		 N_("Active AF Sensor")},
+		{PTP_DPC_NIKON_FlexibleProgram,			/* 0xD109 */
+		 N_("Flexible Program")},
 		{PTP_DPC_NIKON_LightMeter,			/* 0xD10a */
 		 N_("Exposure Meter")},
 		{PTP_DPC_NIKON_CameraOrientation,		/* 0xD10e */
 		 N_("Camera Orientation")},
 		{PTP_DPC_NIKON_ExposureApertureLock,		/* 0xD111 */
 		 N_("Exposure Aperture Lock")},
+		{PTP_DPC_NIKON_ExternalFlashAttached,		/* 0xD120 */
+		 N_("External Flash Attached")},
+		{PTP_DPC_NIKON_ExternalFlashStatus,		/* 0xD121 */
+		 N_("External Flash Status")},
+		{PTP_DPC_NIKON_ExternalFlashSort,		/* 0xD122 */
+		 N_("External Flash Sort")},
+		{PTP_DPC_NIKON_ExternalFlashCompensation,	/* 0xD124 */
+		 N_("External Flash Compensation")},
+		{PTP_DPC_NIKON_NewExternalFlashMode,		/* 0xD125 */
+		 N_("External Flash Mode")},
 		{PTP_DPC_NIKON_FlashExposureCompensation,	/* 0xD126 */
 		 N_("Flash Exposure Compensation")},
 		{PTP_DPC_NIKON_OptimizeImage,			/* 0xD140 */
@@ -3625,6 +3717,7 @@ ptp_render_property_value(PTPParams* params, uint16_t dpc,
 		{PTP_DPC_NIKON_FocalLengthMax, PTP_VENDOR_NIKON, 0.01, 0.0, "%.0f mm"},
 		{PTP_DPC_NIKON_MaxApAtMinFocalLength, PTP_VENDOR_NIKON, 0.01, 0.0, "f/%.2g"},
 		{PTP_DPC_NIKON_MaxApAtMaxFocalLength, PTP_VENDOR_NIKON, 0.01, 0.0, "f/%.2g"},
+		{PTP_DPC_NIKON_ExternalFlashCompensation, PTP_VENDOR_NIKON, 1.0/6.0, 0.0,"%.0f"},
 		{0, 0, 0.0, 0.0, NULL}
 	};
 
@@ -3650,16 +3743,25 @@ ptp_render_property_value(PTPParams* params, uint16_t dpc,
 		{PTP_DPC_WhiteBalance, PTP_VENDOR_NIKON, 32785, N_("Shade")},
 		{PTP_DPC_WhiteBalance, PTP_VENDOR_NIKON, 32786, N_("Color Temperature")},
 		{PTP_DPC_WhiteBalance, PTP_VENDOR_NIKON, 32787, N_("Preset")},
+		{PTP_DPC_FlashMode, 0, 0, N_("Undefined")},
+		{PTP_DPC_FlashMode, 0, 1, N_("Automatic flash")},
+		{PTP_DPC_FlashMode, 0, 2, N_("Flash off")},
+		{PTP_DPC_FlashMode, 0, 3, N_("Fill flash")},
+		{PTP_DPC_FlashMode, 0, 4, N_("Automatic Red-eye Reduction")},
+		{PTP_DPC_FlashMode, 0, 5, N_("Red-eye fill flash")},
+		{PTP_DPC_FlashMode, 0, 6, N_("External sync")},
 		{PTP_DPC_FlashMode, PTP_VENDOR_NIKON, 32784, N_("Default")},
-		{PTP_DPC_FlashMode, 0, 4, N_("Red-eye Reduction")},
-		{PTP_DPC_FlashMode, PTP_VENDOR_NIKON, 32787, N_("Red-eye Reduction + Slow Sync")},
 		{PTP_DPC_FlashMode, PTP_VENDOR_NIKON, 32785, N_("Slow Sync")},
-		{PTP_DPC_FlashMode, PTP_VENDOR_NIKON, 32785, N_("Rear Curtain Sync + Slow Sync")},
-		{PTP_DPC_FocusMeteringMode, 0, 2, N_("Dynamic Area")},
+		{PTP_DPC_FlashMode, PTP_VENDOR_NIKON, 32786, N_("Rear Curtain Sync + Slow Sync")},
+		{PTP_DPC_FlashMode, PTP_VENDOR_NIKON, 32787, N_("Red-eye Reduction + Slow Sync")},
+		{PTP_DPC_FocusMeteringMode, 0, 1, N_("Centre-spot")},
+		{PTP_DPC_FocusMeteringMode, 0, 2, N_("Multi-spot")},
 		{PTP_DPC_FocusMeteringMode, PTP_VENDOR_NIKON, 32784, N_("Single Area")},
 		{PTP_DPC_FocusMeteringMode, PTP_VENDOR_NIKON, 32785, N_("Closest Subject")},
 		{PTP_DPC_FocusMeteringMode, PTP_VENDOR_NIKON, 32786, N_("Group Dynamic")},
 		{PTP_DPC_FocusMode, 0, 1, N_("Manual Focus")},
+		{PTP_DPC_FocusMode, 0, 2, N_("Automatic")},
+		{PTP_DPC_FocusMode, 0, 3, N_("Automatic Macro (close-up)")},
 		{PTP_DPC_FocusMode, PTP_VENDOR_NIKON, 32784, "AF-S"},
 		{PTP_DPC_FocusMode, PTP_VENDOR_NIKON, 32785, "AF-C"},
 		PTP_VENDOR_VAL_BOOL(PTP_DPC_NIKON_ISOAuto,PTP_VENDOR_NIKON),
@@ -3671,9 +3773,10 @@ ptp_render_property_value(PTPParams* params, uint16_t dpc,
 		{PTP_DPC_NIKON_AELAFLMode, PTP_VENDOR_NIKON, 3, N_("AF Lock Hold")},
 		{PTP_DPC_NIKON_AELAFLMode, PTP_VENDOR_NIKON, 4, N_("AF On")},
 		{PTP_DPC_NIKON_AELAFLMode, PTP_VENDOR_NIKON, 5, N_("Flash Lock")},
-		{PTP_DPC_ExposureMeteringMode, 0, 2, N_("Center Weighted")},
-		{PTP_DPC_ExposureMeteringMode, 0, 3, N_("Matrix")},
-		{PTP_DPC_ExposureMeteringMode, 0, 4, N_("Spot")},
+		{PTP_DPC_ExposureMeteringMode, 0, 1, N_("Average")},
+		{PTP_DPC_ExposureMeteringMode, 0, 2, N_("Center Weighted Average")},
+		{PTP_DPC_ExposureMeteringMode, 0, 3, N_("Multi-spot")},
+		{PTP_DPC_ExposureMeteringMode, 0, 4, N_("Center-spot")},
 		{PTP_DPC_ExposureProgramMode, 0, 1, "M"},
 		{PTP_DPC_ExposureProgramMode, 0, 3, "A"},
 		{PTP_DPC_ExposureProgramMode, 0, 4, "S"},
@@ -3687,15 +3790,17 @@ ptp_render_property_value(PTPParams* params, uint16_t dpc,
 		{PTP_DPC_ExposureProgramMode, PTP_VENDOR_NIKON, 32789, N_("Night Portrait")},
 		{PTP_DPC_StillCaptureMode, 0, 1, N_("Single Shot")},
 		{PTP_DPC_StillCaptureMode, 0, 2, N_("Power Wind")},
+		{PTP_DPC_StillCaptureMode, 0, 3, N_("Timelapse")},
 		{PTP_DPC_StillCaptureMode, PTP_VENDOR_NIKON, 32784, N_("Continuous Low Speed")},
 		{PTP_DPC_StillCaptureMode, PTP_VENDOR_NIKON, 32785, N_("Timer")},
 		{PTP_DPC_StillCaptureMode, PTP_VENDOR_NIKON, 32787, N_("Remote")},
 		{PTP_DPC_StillCaptureMode, PTP_VENDOR_NIKON, 32787, N_("Mirror Up")},
 		{PTP_DPC_StillCaptureMode, PTP_VENDOR_NIKON, 32788, N_("Timer + Remote")},
-		PTP_VENDOR_VAL_BOOL(PTP_DPC_NIKON_AutofocusMode,PTP_VENDOR_NIKON),
 		PTP_VENDOR_VAL_RBOOL(PTP_DPC_NIKON_AFAssist,PTP_VENDOR_NIKON),
 		PTP_VENDOR_VAL_RBOOL(PTP_DPC_NIKON_ImageReview,PTP_VENDOR_NIKON),
 		PTP_VENDOR_VAL_BOOL(PTP_DPC_NIKON_GridDisplay,PTP_VENDOR_NIKON),
+		{PTP_DPC_NIKON_AutofocusMode, PTP_VENDOR_NIKON, 0, N_("AF-S")},
+		{PTP_DPC_NIKON_AutofocusMode, PTP_VENDOR_NIKON, 1, N_("AF-C")},
 		{PTP_DPC_NIKON_AFAreaIllumination, PTP_VENDOR_NIKON, 0, N_("Auto")},
 		{PTP_DPC_NIKON_AFAreaIllumination, PTP_VENDOR_NIKON, 1, N_("Off")},
 		{PTP_DPC_NIKON_AFAreaIllumination, PTP_VENDOR_NIKON, 2, N_("On")},
@@ -3723,6 +3828,7 @@ ptp_render_property_value(PTPParams* params, uint16_t dpc,
 		PTP_VENDOR_VAL_RBOOL(PTP_DPC_NIKON_NoCFCard,PTP_VENDOR_NIKON),
 		PTP_VENDOR_VAL_RBOOL(PTP_DPC_NIKON_ImageRotation,PTP_VENDOR_NIKON),
 		PTP_VENDOR_VAL_BOOL(PTP_DPC_NIKON_Bracketing,PTP_VENDOR_NIKON),
+		PTP_VENDOR_VAL_BOOL(PTP_DPC_NIKON_ImageCommentEnable,PTP_VENDOR_NIKON),
 		{PTP_DPC_NIKON_AutofocusArea, PTP_VENDOR_NIKON, 0, N_("Centre")},
 		{PTP_DPC_NIKON_AutofocusArea, PTP_VENDOR_NIKON, 1, N_("Top")},
 		{PTP_DPC_NIKON_AutofocusArea, PTP_VENDOR_NIKON, 2, N_("Bottom")},
@@ -3774,13 +3880,81 @@ ptp_render_property_value(PTPParams* params, uint16_t dpc,
 		{PTP_DPC_NIKON_MonitorOff, PTP_VENDOR_NIKON, 5, N_("5 seconds")}, /* d80 observed */
 
 		PTP_VENDOR_VAL_YN(PTP_DPC_NIKON_LowLight,PTP_VENDOR_NIKON),
+		PTP_VENDOR_VAL_YN(PTP_DPC_NIKON_AFLockStatus,PTP_VENDOR_NIKON),
+		PTP_VENDOR_VAL_YN(PTP_DPC_NIKON_AELockStatus,PTP_VENDOR_NIKON),
+		PTP_VENDOR_VAL_YN(PTP_DPC_NIKON_FVLockStatus,PTP_VENDOR_NIKON),
+		PTP_VENDOR_VAL_YN(PTP_DPC_NIKON_ACPower,PTP_VENDOR_NIKON),
 		PTP_VENDOR_VAL_YN(PTP_DPC_NIKON_CSMMenu,PTP_VENDOR_NIKON),
 		PTP_VENDOR_VAL_RBOOL(PTP_DPC_NIKON_BeepOff,PTP_VENDOR_NIKON),
+
+		{PTP_DPC_NIKON_ISOAuto,	PTP_VENDOR_NIKON, 0, "1/125"},
+		{PTP_DPC_NIKON_ISOAuto,	PTP_VENDOR_NIKON, 1, "1/60"},
+		{PTP_DPC_NIKON_ISOAuto,	PTP_VENDOR_NIKON, 2, "1/30"},
+		{PTP_DPC_NIKON_ISOAuto,	PTP_VENDOR_NIKON, 3, "1/15"},
+		{PTP_DPC_NIKON_ISOAuto,	PTP_VENDOR_NIKON, 4, "1/8"},
+		{PTP_DPC_NIKON_ISOAuto,	PTP_VENDOR_NIKON, 5, "1/4"},
+		{PTP_DPC_NIKON_ISOAuto,	PTP_VENDOR_NIKON, 6, "1/2"},
+		{PTP_DPC_NIKON_ISOAuto,	PTP_VENDOR_NIKON, 7, "1"},
+		{PTP_DPC_NIKON_ISOAuto,	PTP_VENDOR_NIKON, 8, "2"},
+		{PTP_DPC_NIKON_ISOAuto,	PTP_VENDOR_NIKON, 9, "4"},
+		{PTP_DPC_NIKON_ISOAuto,	PTP_VENDOR_NIKON, 10, "8"},
+		{PTP_DPC_NIKON_ISOAuto,	PTP_VENDOR_NIKON, 11, "15"},
+		{PTP_DPC_NIKON_ISOAuto,	PTP_VENDOR_NIKON, 12, "30"},
 
 		{PTP_DPC_NIKON_CameraOrientation, PTP_VENDOR_NIKON, 0, "0'"},
 		{PTP_DPC_NIKON_CameraOrientation, PTP_VENDOR_NIKON, 1, "270'"},
 		{PTP_DPC_NIKON_CameraOrientation, PTP_VENDOR_NIKON, 2, "90'"},
 		{PTP_DPC_NIKON_CameraOrientation, PTP_VENDOR_NIKON, 3, "180'"},
+
+		{PTP_DPC_NIKON_SelfTimer, PTP_VENDOR_NIKON, 0, N_("2 seconds")},
+		{PTP_DPC_NIKON_SelfTimer, PTP_VENDOR_NIKON, 1, N_("5 seconds")},
+		{PTP_DPC_NIKON_SelfTimer, PTP_VENDOR_NIKON, 2, N_("10 seconds")},
+		{PTP_DPC_NIKON_SelfTimer, PTP_VENDOR_NIKON, 3, N_("20 seconds")},
+
+		{PTP_DPC_NIKON_MeterOff, PTP_VENDOR_NIKON, 0, N_("4 seconds")},
+		{PTP_DPC_NIKON_MeterOff, PTP_VENDOR_NIKON, 1, N_("6 seconds")},
+		{PTP_DPC_NIKON_MeterOff, PTP_VENDOR_NIKON, 2, N_("8 seconds")},
+		{PTP_DPC_NIKON_MeterOff, PTP_VENDOR_NIKON, 3, N_("16 seconds")},
+		{PTP_DPC_NIKON_MeterOff, PTP_VENDOR_NIKON, 4, N_("30 minutes")},
+		{PTP_DPC_NIKON_MeterOff, PTP_VENDOR_NIKON, 5, N_("30 seconds")},
+
+		{PTP_DPC_NIKON_BracketSet, PTP_VENDOR_NIKON, 0, N_("AE & Flash")},
+		{PTP_DPC_NIKON_BracketSet, PTP_VENDOR_NIKON, 1, N_("AE only")},
+		{PTP_DPC_NIKON_BracketSet, PTP_VENDOR_NIKON, 2, N_("Flash only")},
+		{PTP_DPC_NIKON_BracketSet, PTP_VENDOR_NIKON, 3, N_("WB bracketing")},
+
+		{PTP_DPC_NIKON_BracketOrder, PTP_VENDOR_NIKON, 0, N_("MTR > Under")},
+		{PTP_DPC_NIKON_BracketOrder, PTP_VENDOR_NIKON, 1, N_("Under > MTR")},
+
+		{PTP_DPC_NIKON_FlashCommanderMode, PTP_VENDOR_NIKON, 0, N_("TTL")},
+		{PTP_DPC_NIKON_FlashCommanderMode, PTP_VENDOR_NIKON, 1, N_("Auto Aperture")},
+		{PTP_DPC_NIKON_FlashCommanderMode, PTP_VENDOR_NIKON, 2, N_("Full Manual")},
+
+		{PTP_DPC_NIKON_FlashModeCommanderPower, PTP_VENDOR_NIKON, 0, N_("Full")},
+		{PTP_DPC_NIKON_FlashModeCommanderPower, PTP_VENDOR_NIKON, 1, "1/2"},
+		{PTP_DPC_NIKON_FlashModeCommanderPower, PTP_VENDOR_NIKON, 2, "1/4"},
+		{PTP_DPC_NIKON_FlashModeCommanderPower, PTP_VENDOR_NIKON, 3, "1/8"},
+		{PTP_DPC_NIKON_FlashModeCommanderPower, PTP_VENDOR_NIKON, 4, "1/16"},
+		{PTP_DPC_NIKON_FlashModeCommanderPower, PTP_VENDOR_NIKON, 5, "1/32"},
+		{PTP_DPC_NIKON_FlashModeCommanderPower, PTP_VENDOR_NIKON, 6, "1/64"},
+		{PTP_DPC_NIKON_FlashModeCommanderPower, PTP_VENDOR_NIKON, 7, "1/128"},
+
+		{PTP_DPC_NIKON_PADVPMode, PTP_VENDOR_NIKON, 0,  "1/125"},
+		{PTP_DPC_NIKON_PADVPMode, PTP_VENDOR_NIKON, 1,  "1/60"},
+		{PTP_DPC_NIKON_PADVPMode, PTP_VENDOR_NIKON, 2,  "1/30"},
+		{PTP_DPC_NIKON_PADVPMode, PTP_VENDOR_NIKON, 3,  "1/15"},
+		{PTP_DPC_NIKON_PADVPMode, PTP_VENDOR_NIKON, 4,  "1/8"},
+		{PTP_DPC_NIKON_PADVPMode, PTP_VENDOR_NIKON, 5,  "1/4"},
+		{PTP_DPC_NIKON_PADVPMode, PTP_VENDOR_NIKON, 6,  "1/2"},
+		{PTP_DPC_NIKON_PADVPMode, PTP_VENDOR_NIKON, 7,  "1"},
+		{PTP_DPC_NIKON_PADVPMode, PTP_VENDOR_NIKON, 8,  "2"},
+		{PTP_DPC_NIKON_PADVPMode, PTP_VENDOR_NIKON, 9,  "4"},
+		{PTP_DPC_NIKON_PADVPMode, PTP_VENDOR_NIKON, 10, "8"},
+		{PTP_DPC_NIKON_PADVPMode, PTP_VENDOR_NIKON, 11, "15"},
+		{PTP_DPC_NIKON_PADVPMode, PTP_VENDOR_NIKON, 12, "30"},
+
+		{PTP_DPC_NIKON_EVStep, PTP_VENDOR_NIKON, 0, "1/3"},
+		{PTP_DPC_NIKON_EVStep, PTP_VENDOR_NIKON, 1, "1/2"},
 
 		/* Canon stuff */
 		PTP_VENDOR_VAL_BOOL(PTP_DPC_CANON_AssistLight,PTP_VENDOR_CANON),
@@ -4562,14 +4736,18 @@ ptp_remove_object_from_cache(PTPParams *params, uint32_t handle)
 	for (i = 0; i < params->handles.n; i++) {
 		if (params->handles.Handler[i] == handle) {
 			ptp_free_objectinfo(&params->objectinfo[i]);
-			memmove(params->handles.Handler+i, params->handles.Handler+i+1,
-				(params->handles.n-i-1)*sizeof(uint32_t));
-			memmove(params->objectinfo+i, params->objectinfo+i+1,
-				(params->handles.n-i-1)*sizeof(PTPObjectInfo));
+
+			if (i < params->handles.n-1) {
+				memmove(params->handles.Handler+i, params->handles.Handler+i+1,
+					(params->handles.n-i-1)*sizeof(uint32_t));
+				memmove(params->objectinfo+i, params->objectinfo+i+1,
+					(params->handles.n-i-1)*sizeof(PTPObjectInfo));
+			}
 			params->handles.n--;
 			/* We use less memory than before so this shouldn't fail */
 			params->handles.Handler = realloc(params->handles.Handler, sizeof(uint32_t)*params->handles.n);
 			params->objectinfo = realloc(params->objectinfo, sizeof(PTPObjectInfo)*params->handles.n);
+			break;
 		}
 	}
 	

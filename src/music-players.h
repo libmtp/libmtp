@@ -391,30 +391,43 @@
   
   /*
    * Toshiba
+   * Tentatively flagged all Toshiba devices with
+   * DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST after one of them
+   * showed erroneous behaviour.
    */
-  { "Toshiba", 0x0930, "Gigabeat MEGF-40", 0x0009, DEVICE_FLAG_NONE },
-  { "Toshiba", 0x0930, "Gigabeat", 0x000c, DEVICE_FLAG_NONE },
+  { "Toshiba", 0x0930, "Gigabeat MEGF-40", 0x0009,
+    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+  { "Toshiba", 0x0930, "Gigabeat", 0x000c,
+    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by Nicholas Tripp
-  { "Toshiba", 0x0930, "Gigabeat P20", 0x000f, DEVICE_FLAG_NONE },
+  { "Toshiba", 0x0930, "Gigabeat P20", 0x000f,
+    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // From libgphoto2
-  { "Toshiba", 0x0930, "Gigabeat S", 0x0010, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  { "Toshiba", 0x0930, "Gigabeat S", 0x0010, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+      DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by Rob Brown
-  { "Toshiba", 0x0930, "Gigabeat P10", 0x0011, DEVICE_FLAG_NONE },
+  { "Toshiba", 0x0930, "Gigabeat P10", 0x0011,
+    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by solanum@users.sourceforge.net
-  { "Toshiba", 0x0930, "Gigabeat V30", 0x0014, DEVICE_FLAG_NONE },
+  { "Toshiba", 0x0930, "Gigabeat V30", 0x0014,
+    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by Michael Davis <slithy@yahoo.com>
-  { "Toshiba", 0x0930, "Gigabeat U", 0x0016, DEVICE_FLAG_NONE },
+  { "Toshiba", 0x0930, "Gigabeat U", 0x0016,
+    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by Devon Jacobs <devo@godevo.com>
   { "Toshiba", 0x0930, "Gigabeat MEU202", 0x0018,
     DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by Rolf <japan (at) dl3lar.de>
-  { "Toshiba", 0x0930, "Gigabeat T", 0x0019, DEVICE_FLAG_NONE },
+  { "Toshiba", 0x0930, "Gigabeat T", 0x0019,
+    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by Phil Ingram <ukpbert@users.sourceforge.net>
   // Tentatively added - no real reports of this device ID being MTP,
   // reports as USB Mass Storage currently.
-  { "Toshiba", 0x0930, "Gigabeat MEU201", 0x001a, DEVICE_FLAG_NONE },
+  { "Toshiba", 0x0930, "Gigabeat MEU201", 0x001a,
+    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by anonymous SourceForge user
-  { "Toshiba", 0x0930, "Gigabeat MET401", 0x001d, DEVICE_FLAG_NONE },
+  { "Toshiba", 0x0930, "Gigabeat MET401", 0x001d,
+    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
 
   
   /*
@@ -611,16 +624,20 @@
    * The iAudio audiophile devices don't encourage the use of MTP.
    */
   // Reported by Patrik Johansson <Patrik.Johansson@qivalue.com>
-  { "Cowon", 0x0e21, "iAudio U3 (MTP mode)", 0x0701, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Cowon", 0x0e21, "iAudio U3 (MTP mode)", 0x0701,
+   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Kevin Michael Smith <hai-etlik@users.sourceforge.net>
-  { "Cowon", 0x0e21, "iAudio 6 (MTP mode)", 0x0711, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Cowon", 0x0e21, "iAudio 6 (MTP mode)", 0x0711,
+   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Roberth Karman
-  { "Cowon", 0x0e21, "iAudio 7 (MTP mode)", 0x0751, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Cowon", 0x0e21, "iAudio 7 (MTP mode)", 0x0751,
+   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by an anonymous SourceForge user
-  { "Cowon", 0x0e21, "iAudio U5 (MTP mode)", 0x0761, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Cowon", 0x0e21, "iAudio U5 (MTP mode)", 0x0761,
+   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by TJ Something <tjbk_tjb@users.sourceforge.net>
   { "Cowon", 0x0e21, "iAudio D2 (MTP mode)", 0x0801, 
-   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
 
   /*
    * Insignia, dual-mode.

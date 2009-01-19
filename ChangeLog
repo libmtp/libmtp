@@ -1,3 +1,8 @@
+2009-01-16  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.c: sync to upstream.
+	* src/ptp.h: dito.
+
 2009-01-15  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: include fixes from Yuri Pankov for *BSD.
