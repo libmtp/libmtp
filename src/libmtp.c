@@ -1,7 +1,7 @@
 /**
  * \file libmtp.c
  *
- * Copyright (C) 2005-2008 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2009 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2005-2008 Richard A. Low <richard@wentnet.com>
  * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  * Copyright (C) 2007 Tero Saarni <tero.saarni@gmail.com>
@@ -5184,9 +5184,15 @@ int LIBMTP_Set_Track_Name(LIBMTP_mtpdevice_t *device,
 }
 
 /**
- * This function renames a single playlist.
- * This simply means that the PTP_OPC_ObjectFileName property
- * is updated, if this is supported by the device.
+ * This function renames a single playlist object file holder.
+ * This simply means that the <code>PTP_OPC_ObjectFileName</code>
+ * property is updated, if this is supported by the device.
+ * The playlist filename should nominally end with an extension
+ * like ".pla".
+ *
+ * NOTE: if you want to change the metadata the device display
+ * about a playlist you must <i>not</i> use this function,
+ * use <code>LIBMTP_Update_Playlist()</code> instead!
  *
  * @param device a pointer to the device that contains the file.
  * @param playlist the playlist metadata of the playlist to rename.
@@ -5194,6 +5200,7 @@ int LIBMTP_Set_Track_Name(LIBMTP_mtpdevice_t *device,
  *        this name can be different than newname depending of device restrictions.
  * @param newname the new name for this object.
  * @return 0 on success, any other value means failure.
+ * @see LIBMTP_Update_Playlist()
  */
 int LIBMTP_Set_Playlist_Name(LIBMTP_mtpdevice_t *device,
                    LIBMTP_playlist_t *playlist, const char* newname)
@@ -5215,8 +5222,14 @@ int LIBMTP_Set_Playlist_Name(LIBMTP_mtpdevice_t *device,
 
 /**
  * This function renames a single album.
- * This simply means that the PTP_OPC_ObjectFileName property
- * is updated, if this is supported by the device.
+ * This simply means that the <code>PTP_OPC_ObjectFileName</code>
+ * property is updated, if this is supported by the device.
+ * The album filename should nominally end with an extension
+ * like ".alb".
+ *
+ * NOTE: if you want to change the metadata the device display
+ * about a playlist you must <i>not</i> use this function,
+ * use <code>LIBMTP_Update_Album()</code> instead!
  *
  * @param device a pointer to the device that contains the file.
  * @param album the album metadata of the album to rename.
@@ -5224,6 +5237,7 @@ int LIBMTP_Set_Playlist_Name(LIBMTP_mtpdevice_t *device,
  *        this name can be different than newname depending of device restrictions.
  * @param newname the new name for this object.
  * @return 0 on success, any other value means failure.
+ * @see LIBMTP_Update_Album()
  */
 int LIBMTP_Set_Album_Name(LIBMTP_mtpdevice_t *device,
                    LIBMTP_album_t *album, const char* newname)
