@@ -139,6 +139,9 @@
   // From Ludovic Danigo
   // Guessing on .spl flag
   { "Samsung", 0x04e8, "YP-S3", 0x5091, DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_PLAYLIST_SPL_V1 },
+  // From Adrian Levi <adrian.levi@gmail.com>
+  // Guessing on .spl flag
+  { "Samsung", 0x04e8, "YP-U4", 0x5093, DEVICE_FLAG_NONE },
   // From Anonymous SourceForge user, NOT VERIFIED TO BE MTP
   // Guessing on .spl flag
   { "Samsung", 0x04e8, "YP-Q1", 0x5115, DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_PLAYLIST_SPL_V1 },
