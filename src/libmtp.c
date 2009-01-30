@@ -6366,7 +6366,10 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
 
   // Use a default folder if none given
   if (localph == 0) {
-    localph = device->default_playlist_folder;
+    if (device->default_playlist_folder != 0)
+      localph = device->default_playlist_folder;
+    else
+      localph = device->default_music_folder;
   }
   metadata->parent_id = localph;
 
@@ -6643,7 +6646,10 @@ int LIBMTP_Create_New_Album(LIBMTP_mtpdevice_t *device,
 
   // Use a default folder if none given
   if (localph == 0) {
-    localph = device->default_album_folder;
+    if (device->default_album_folder != 0)
+      localph = device->default_album_folder;
+    else
+      localph = device->default_music_folder;
   }
   metadata->parent_id = localph;
 
