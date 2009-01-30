@@ -6341,9 +6341,19 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
  * @param metadata the metadata for the new playlist. If the function
  *        exits with success, the <code>playlist_id</code> field of this
  *        struct will contain the new playlist ID of the playlist.
- *        <code>parent_id</code> will also be valid.
- * @param parenthandle the parent (e.g. folder) to store this playlist
- *        in. Pass in 0 to put the playlist in the root directory.
+ *        <ul>
+ *        <li><code>metadata-&gt;parent_id</code> should be set to the parent 
+ *        (e.g. folder) to store this track in. Since some 
+ *        devices are a bit picky about where files
+ *        are placed, a default folder will be chosen if libmtp
+ *        has detected one for the current filetype and this
+ *        parameter is set to 0. If this is 0 and no default folder
+ *        can be found, the file will be stored in the root folder.
+ *        <li><code>metadata-&gt;storage_id</code> should be set to the
+ *        desired storage (e.g. memory card or whatever your device
+ *        presents) to store this track in. Setting this to 0 will store
+ *        the track on the primary storage.
+ *        </ul>
  * @return 0 on success, any other value means failure.
  * @see LIBMTP_Update_Playlist()
  * @see LIBMTP_Delete_Object()
@@ -6609,9 +6619,19 @@ LIBMTP_album_t *LIBMTP_Get_Album(LIBMTP_mtpdevice_t *device, uint32_t const albi
  * @param metadata the metadata for the new album. If the function
  *        exits with success, the <code>album_id</code> field of this
  *        struct will contain the new ID of the album.
- *        <code>parent_id</code> will also be valid.
- * @param parenthandle the parent (e.g. folder) to store this album
- *        in. Pass in 0 to put the album in the default music directory.
+ *        <ul>
+ *        <li><code>metadata-&gt;parent_id</code> should be set to the parent 
+ *        (e.g. folder) to store this track in. Since some 
+ *        devices are a bit picky about where files
+ *        are placed, a default folder will be chosen if libmtp
+ *        has detected one for the current filetype and this
+ *        parameter is set to 0. If this is 0 and no default folder
+ *        can be found, the file will be stored in the root folder.
+ *        <li><code>metadata-&gt;storage_id</code> should be set to the
+ *        desired storage (e.g. memory card or whatever your device
+ *        presents) to store this track in. Setting this to 0 will store
+ *        the track on the primary storage.
+ *        </ul>
  * @return 0 on success, any other value means failure.
  * @see LIBMTP_Update_Album()
  * @see LIBMTP_Delete_Object()
