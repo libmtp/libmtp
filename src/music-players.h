@@ -531,6 +531,8 @@
   { "Nokia", 0x0421, "E71", 0x00e4, DEVICE_FLAG_NONE },
   // From: Laurent Bigonville <bigon@users.sourceforge.net>
   { "Nokia", 0x0421, "E66", 0x00e5, DEVICE_FLAG_NONE },
+  // From: Willy Gardiol (web) <willy@gardiol.org>
+  { "Nokia", 0x0421, "5800 XpressMusic", 0x0155, DEVICE_FLAG_NONE },
   // From an anonymous SourceForge user
   // Not verified to be MTP
   { "Nokia", 0x0421, "E63", 0x0179, DEVICE_FLAG_NONE },
