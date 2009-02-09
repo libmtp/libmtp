@@ -528,12 +528,15 @@
   { "Nokia", 0x0421, "N82 Mobile Phone", 0x0074, DEVICE_FLAG_NONE },
   // From Martijn van de Streek <martijn@vandestreek.net>
   { "Nokia", 0x0421, "N78 Mobile Phone", 0x0079, DEVICE_FLAG_NONE },
+  // From William Pettersson <the_enigma@users.sourceforge.net>
+  { "Nokia", 0x0421, "6220 Classic", 0x008d, DEVICE_FLAG_NONE },
   // From: danielw
   { "Nokia", 0x0421, "E71", 0x00e4, DEVICE_FLAG_NONE },
   // From: Laurent Bigonville <bigon@users.sourceforge.net>
   { "Nokia", 0x0421, "E66", 0x00e5, DEVICE_FLAG_NONE },
   // From: Willy Gardiol (web) <willy@gardiol.org>
-  { "Nokia", 0x0421, "5800 XpressMusic", 0x0155, DEVICE_FLAG_NONE },
+  // Spurious errors for getting all objects, lead me to believe this flag atleast is needed
+  { "Nokia", 0x0421, "5800 XpressMusic", 0x0155, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // From an anonymous SourceForge user
   // Not verified to be MTP
   { "Nokia", 0x0421, "E63", 0x0179, DEVICE_FLAG_NONE },

@@ -1,0 +1,155 @@
+Device 0 (VID=0421 and PID=0155) is UNKNOWN.
+Please report this VID/PID and the device model to the libmtp development team
+Error 2: PTP Layer error 02ff: get_all_metadata_fast(): could not get proplist of all objects.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: get_handles_recursively(): could not get object handles.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: get_handles_recursively(): could not get object handles.
+Error 2: (Look this up in ptp.h for an explanation.)
+libmtp version: 0.3.6
+
+Listing raw device(s)
+   Found 1 device(s):
+   0421:0155 @ bus 0, dev 14
+Attempting to connect device(s)
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 255
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 0421
+   idProduct: 0155
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Raw device info:
+      Bus location: 0
+      Device number: 14
+      Device entry info:
+         Vendor: (null)
+         Vendor id: 0x0421
+         Product: (null)
+         Vendor id: 0x0155
+         Device flags: 0x00000000
+Configuration 0, interface 0, altsetting 0:
+   Interface description contains the string "MTP"
+   Device recognized as MTP, no further probing.
+Device info:
+   Manufacturer: Nokia
+   Model: 5800 XpressMusic
+   Device version: 01
+   Serial number: 354183023422153
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com:1.0;microsoft.com/WMPPD: 11.0;microsoft.com/WMDRMPD: 10.1;vodafone.com/omadrmv2: 1.0
+   Detected object size: 64 bits
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   1010: Reset device
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9810: Get object references
+   9811: Set object references
+   9805: Get object property list
+   9806: Set object property list
+   9807: Get interdependent property description
+   9201: Report Added/Deleted Items
+   9202: Report Acquired Items
+   9203: Get transferable playlist types
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Send WMDRM-PD Command
+   910b: Send WMDRM-PD Request
+Events supported:
+   0x400a
+   0x4004
+   0x4005
+   0x4003
+Device Properties Supported:
+   0xd401: Synchronization Partner
+   0xd402: Friendly Device Name
+   0xd404: Unknown property
+   0xd102: Device Certificate
+   0xd406: Unknown property
+Playable File (Object) Types and Object Properties Supported:
+   3000: Undefined Type
+   3001: Association/Directory
+   b903: AAC
+   b982: MP4
+   3009: MP3
+   b984: 3GP
+   b004: Unknown(b004)
+   b982: MP4
+   b901: WMA
+   300c: ASF
+   b981: WMV
+   ba11: M3U Playlist
+   ba05: Abstract Audio Video Playlist
+   3008: MS Wave
+Storage Devices:
+   StorageID: 0x00040001
+      StorageType: 0x0004 removable RAM storage
+      FilesystemType: 0x0002 generic hierarchical
+      AccessCapability: 0x0000 read/write
+      MaxCapacity: 7964983296
+      FreeSpaceInBytes: 1893857280
+      FreeSpaceInObjects: 908
+      StorageDescription: Memory card
+      VolumeIdentifier: 3455216610
+   StorageID: 0x00020001
+      StorageType: 0x0003 fixed RAM storage
+      FilesystemType: 0x0002 generic hierarchical
+      AccessCapability: 0x0000 read/write
+      MaxCapacity: 90251264
+      FreeSpaceInBytes: 73989120
+      FreeSpaceInObjects: 35
+      StorageDescription: Phone memory (NOKIA)
+      VolumeIdentifier: 1196836185
+Special directories:
+   Default music folder: 0x00000000
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x00000000
+   Default video folder: 0x00000000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00000000
+   Default text folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: (NULL)
+   Synchronization partner: (NULL)
+libmtp supported (playable) filetypes:
+   Advanced Audio Coding (AAC)/MPEG-2 Part 7/MPEG-4 Part 3
+   MPEG-4 Part 14 Container Format (Audio+Video Empahsis)
+   ISO MPEG-1 Audio Layer 3
+   MPEG-4 Part 14 Container Format (Audio+VError 2: PTP Layer error 02ff: get_device_unicode_property(): failed to get unicode property.
+Error 2: (Look this up in ptp.h for an explanation.)
+ERROR: Could not close session!
+ideo Empahsis)
+   Microsoft Windows Media Audio
+   Microsoft Advanced Systems Format
+   Microsoft Windows Media Video
+   RIFF WAVE file
+Unable to acquire device certificate, perhaps this device does not support this
+OK.
+
+ 	  	 
