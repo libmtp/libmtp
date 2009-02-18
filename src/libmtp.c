@@ -3677,14 +3677,19 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
      * for these bugged devices only.
      */
     if (track->filetype == LIBMTP_FILETYPE_UNKNOWN &&
+	track->filename != NULL &&
 	(FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
 	 FLAG_OGG_IS_UNKNOWN(ptp_usb))) {
       // Repair forgotten OGG filetype
-      char *ptype;
-      
-      ptype = strrchr(track->filename,'.')+1;
-      if (ptype != NULL && !strcasecmp (ptype, "ogg")) {
-	// Fix it.
+      int namelen = strlen(track->filename);
+
+      if (namelen < 4) {
+	// Must be atleast 4 characters to end with ".ogg"
+	LIBMTP_destroy_track_t(track);
+	continue;
+      }
+      if (!strcasecmp(track->filename+namelen-4, ".ogg")) {
+	// Fix the filetype
 	track->filetype = LIBMTP_FILETYPE_OGG;
       } else {
 	// This was not an OGG file so discard it and continue

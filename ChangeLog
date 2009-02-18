@@ -1,3 +1,11 @@
+2009-02-18  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: error report from RedHat BZ
+	  http://bugzilla.redhat.com/show_bug.cgi?id=485627
+	  led to strange code for detecting anonymous OGG files
+	  being rewritten to handle NULL filenames and filenames
+	  that do not exceed 4 chars.
+
 2009-01-30  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: store albums and playlists in the default
