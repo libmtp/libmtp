@@ -1,7 +1,9 @@
-libmtp version: 0.2.4
+libmtp version: 0.3.6
 
+Listing raw device(s)
+   Found 1 device(s):
+   Samsung: YH-999 Portable Media Center/SGH-A707/SGH-L760V/SGH-U900 (04e8:5a0f) @ bus 0, dev 5
 Attempting to connect device(s)
-Detect: Successfully connected 1 devices
 USB low-level info:
    Using kernel interface "usbfs"
    bcdUSB: 272
@@ -12,7 +14,15 @@ USB low-level info:
    idProduct: 5a0f
    IN endpoint maxpacket: 64 bytes
    OUT endpoint maxpacket: 64 bytes
-   Device flags: 0x00000000
+   Raw device info:
+      Bus location: 0
+      Device number: 5
+      Device entry info:
+         Vendor: Samsung
+         Vendor id: 0x04e8
+         Product: YH-999 Portable Media Center/SGH-A707/SGH-L760V/SGH-U900
+         Vendor id: 0x5a0f
+         Device flags: 0x00000001
 Microsoft device descriptor 0xee:
 	0000: 1203 4d00 5300 4600 5400 3100 3000 3000	..M.S.F.T.1.0.0.
 	0010: 0900                                   	..
@@ -27,8 +37,8 @@ Microsoft device response to control message 1, CMD 0x09:
 Device info:
    Manufacturer: Samsung Electronics Co., Ltd. 
    Model: SGH-L760V
-   Device version: L760AEGG1
-   Serial number: 356603011513992
+   Device version: L760BUGH1
+   Serial number: 356603013289914
    Vendor extension ID: 0x00000006
    Vendor extension description: microsoft.com: 1.0; microsoft.com/WMPPD: 10.0; microsoft.com/WMPPD: 11.0; vodafone.com/omadrmv2: 1.0; 
    Detected object size: 64 bits
@@ -98,7 +108,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
       dc8c: Genre STRING data type GET/SET
       dc97: EffectiveRating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
-      dc99: OriginalReleaseDate STRING data type GET/SET
+      dc99: OriginalReleaseDate STRING data type DATETIME FORM GET/SET
       dc9a: AlbumName STRING data type GET/SET
       de93: SampleRate UINT32 data type range: MIN 8000, MAX 48000, STEP 50 READ ONLY
       de94: NumberOfChannels UINT16 data type enumeration: 0, 1, 2,  GET/SET
@@ -135,7 +145,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
       dc8c: Genre STRING data type GET/SET
       dc97: EffectiveRating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
-      dc99: OriginalReleaseDate STRING data type GET/SET
+      dc99: OriginalReleaseDate STRING data type DATETIME FORM GET/SET
       dc9a: AlbumName STRING data type GET/SET
       de93: SampleRate UINT32 data type range: MIN 8000, MAX 48000, STEP 50 READ ONLY
       de94: NumberOfChannels UINT16 data type enumeration: 0, 1, 2,  GET/SET
@@ -172,7 +182,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
       dc8c: Genre STRING data type GET/SET
       dc97: EffectiveRating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
-      dc99: OriginalReleaseDate STRING data type GET/SET
+      dc99: OriginalReleaseDate STRING data type DATETIME FORM GET/SET
       dc9a: AlbumName STRING data type GET/SET
       de93: SampleRate UINT32 data type range: MIN 8000, MAX 48000, STEP 50 READ ONLY
       de94: NumberOfChannels UINT16 data type enumeration: 0, 1, 2,  GET/SET
@@ -207,7 +217,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc88: Height UINT32 data type range: MIN 0, MAX 144, STEP 1 GET/SET
       dc8c: Genre STRING data type GET/SET
       dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
-      dc99: OriginalReleaseDate STRING data type GET/SET
+      dc99: OriginalReleaseDate STRING data type DATETIME FORM GET/SET
       de93: SampleRate UINT32 data type range: MIN 8000, MAX 48000, STEP 50 READ ONLY
       de94: NumberOfChannels UINT16 data type enumeration: 0, 1, 2,  GET/SET
       de97: ScanDepth UINT16 data type enumeration: 0, 1, 2, 3, 6, 7,  GET/SET
@@ -335,7 +345,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc88: Height UINT32 data type range: MIN 0, MAX 144, STEP 1 GET/SET
       dc8c: Genre STRING data type GET/SET
       dc91: UseCount UINT32 data type ANY 32BIT VALUE form GET/SET
-      dc99: OriginalReleaseDate STRING data type GET/SET
+      dc99: OriginalReleaseDate STRING data type DATETIME FORM GET/SET
       de93: SampleRate UINT32 data type range: MIN 8000, MAX 48000, STEP 50 READ ONLY
       de94: NumberOfChannels UINT16 data type enumeration: 0, 1, 2,  GET/SET
       de97: ScanDepth UINT16 data type enumeration: 0, 1, 2, 3, 6, 7,  GET/SET
@@ -374,14 +384,14 @@ Playable File (Object) Types and Object Properties Supported:
       d901: BuyFlag UINT8 data type range: MIN 0, MAX 1, STEP 0 GET/SET
 Storage Devices:
    StorageID: 0x00010001
-      StorageType: 0x0003
-      FilesystemType: 0x0002
-      AccessCapability: 0x0000
+      StorageType: 0x0003 fixed RAM storage
+      FilesystemType: 0x0002 generic hierarchical
+      AccessCapability: 0x0000 read/write
       MaxCapacity: 69926912
-      FreeSpaceInBytes: 43137024
+      FreeSpaceInBytes: 34375680
       FreeSpaceInObjects: 4294967295
       StorageDescription: Phone
-      VolumeIdentifier: 356603011513992
+      VolumeIdentifier: 356603013289914
 Special directories:
    Default music folder: 0x00000003
    Default playlist folder: 0x00000000
@@ -393,7 +403,7 @@ Special directories:
    Default text folder: 0x00000000
 MTP-specific device properties:
    Friendly name: SGH-L760V
-   Synchronization partner: (NULL)
+   Synchronization partner: SGH-L760V
    Battery level 85 of 100 (85%)
 libmtp supported (playable) filetypes:
    ISO MPEG-1 Audio Layer 3
@@ -403,5 +413,10 @@ libmtp supported (playable) filetypes:
    GIF bitmap file
    Microsoft Advanced Systems Format
 Unable to acquire device certificate, perhaps this device does not support this
-WMPInfo.xml Does not exist on this device
+
+WMPInfo.xml file contents:
+<DeviceInfo>
+    <WMP DeviceID="{AA9D2C49-2F20-41F8-853F-82C920DBF235}" RelationshipID="{00000000-0000-0000-0000-000000000000}"/>
+</DeviceInfo>
+
 OK.
