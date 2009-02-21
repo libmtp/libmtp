@@ -1295,6 +1295,7 @@ LIBMTP_error_t *LIBMTP_Get_Errorstack(LIBMTP_mtpdevice_t *device)
 {
   if (device == NULL) {
     fprintf(stderr, "LIBMTP PANIC: Trying to get the error stack of a NULL device!\n");
+    return NULL;
   }
   return device->errorstack;
 }
@@ -1772,11 +1773,12 @@ static int sort_storage_by(LIBMTP_mtpdevice_t *device,int const sortby)
     }
   }
  
-  newlist->next = NULL;
-  while(newlist->prev != NULL) 
-   newlist = newlist->prev;
-
-  device->storage = newlist;
+  if (newlist != NULL) {
+    newlist->next = NULL;
+    while(newlist->prev != NULL) 
+      newlist = newlist->prev;
+    device->storage = newlist;
+  }
 
   return 0;
 }
@@ -1790,7 +1792,7 @@ static int sort_storage_by(LIBMTP_mtpdevice_t *device,int const sortby)
  */
 static uint32_t get_writeable_storageid(LIBMTP_mtpdevice_t *device, uint64_t fitsize)
 {
-  LIBMTP_devicestorage_t *storage = device->storage;
+  LIBMTP_devicestorage_t *storage;
   uint32_t store = 0x00000000; //Should this be 0xffffffffu instead?
   int subcall_ret;
 
@@ -2819,7 +2821,8 @@ int LIBMTP_Get_Storage(LIBMTP_mtpdevice_t *device, int const sortby)
       storageprev = storage;
     }
 
-    storage->next = NULL;
+    if (storage != NULL)
+      storage->next = NULL;
 
     sort_storage_by(device,sortby);
     free(storageIDs.Storage);
