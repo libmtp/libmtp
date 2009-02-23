@@ -33,6 +33,18 @@ libmtp is based on several ancestors:
   http://libnjb.sourceforge.net/
 
 
+Contacting and Contributing
+---------------------------
+
+See the project page at http://libmtp.sourceforge.net/
+We always need your help. There is a mailinglist and a
+bug report system there.
+
+People who want to discuss MTP devices in fora seem to
+hang out on the forums at AnythingbutiPod:
+http://www.anythingbutipod.com/forum/
+
+
 Compiling programs for libmtp
 -----------------------------
 
@@ -102,14 +114,6 @@ of these examples, they look like they do for two reasons:
 
 That said, if you want to pick up and maintain the examples,
 please volunteer.
-
-
-Contributing
-------------
-
-See the project page at http://libmtp.sourceforge.net/
-We always need your help. There is a mailinglist and a
-bug report system there.
 
 
 New Devices
