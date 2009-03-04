@@ -525,6 +525,8 @@ cannot test your solution.
 * The Sirus Stiletto does not seem to allow you to copy any files
   off the device. This may be someone's idea of copy protection.
 
+* The Samsung P2 assigns parent folder ID 0 to all unknown file
+  types.(i.e. moves them to the root folder) 
 
 Lost symbols
 ------------
