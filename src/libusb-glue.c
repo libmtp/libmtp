@@ -805,6 +805,7 @@ ptp_write_func (
     return PTP_ERROR_IO;
   }
   while (curwrite < size) {
+    unsigned long usbwritten = 0;
     towrite = size-curwrite;
     if (towrite > CONTEXT_BLOCK_SIZE) {
       towrite = CONTEXT_BLOCK_SIZE;
@@ -815,18 +816,21 @@ ptp_write_func (
       }
     }
     handler->getfunc(NULL, handler->private,towrite,bytes,&towrite);
-    result = USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char*)bytes,towrite,ptp_usb->timeout);
+    while (usbwritten < towrite) {
+	    result = USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,((char*)bytes+usbwritten),towrite-usbwritten,ptp_usb->timeout);
 #ifdef ENABLE_USB_BULK_DEBUG
-    printf("USB OUT==>\n");
-    data_dump_ascii (stdout,bytes,towrite,16);
+	    printf("USB OUT==>\n");
+	    data_dump_ascii (stdout,bytes+usbwritten,result,16);
 #endif
-    if (result < 0) {
-      return PTP_ERROR_IO;
+	    if (result < 0) {
+	      return PTP_ERROR_IO;
+	    }
+	    // check for result == 0 perhaps too.
+	    // Increase counters
+	    ptp_usb->current_transfer_complete += result;
+	    curwrite += result;
+	    usbwritten += result;
     }
-    // Increase counters
-    ptp_usb->current_transfer_complete += result;
-    curwrite += result;
-
     // call callback
     if (ptp_usb->callback_active) {
       if (ptp_usb->current_transfer_complete >= ptp_usb->current_transfer_total) {

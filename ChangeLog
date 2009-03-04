@@ -1,3 +1,8 @@
+2009-03-04  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: patch from Marcus to fix an issue
+	  with retransmit originally reported by Florent Pillet.
+
 2009-02-21  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: some additional NULL checks from
