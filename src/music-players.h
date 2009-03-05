@@ -539,6 +539,8 @@
   { "Nokia", 0x0421, "N78 Mobile Phone", 0x0079, DEVICE_FLAG_NONE },
   // From William Pettersson <the_enigma@users.sourceforge.net>
   { "Nokia", 0x0421, "6220 Classic", 0x008d, DEVICE_FLAG_NONE },
+  // From kellerkev@gmail.com
+  { "Nokia", 0x0421, "N85 Mobile Phone", 0x0092, DEVICE_FLAG_NONE },
   // From: danielw
   { "Nokia", 0x0421, "E71", 0x00e4, DEVICE_FLAG_NONE },
   // From: Laurent Bigonville <bigon@users.sourceforge.net>
