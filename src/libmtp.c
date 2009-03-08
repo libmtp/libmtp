@@ -162,6 +162,27 @@ static int set_object_filename(LIBMTP_mtpdevice_t *device,
                 const char **newname);
 
 /**
+ * Checks if a filename ends with ".ogg"
+ *
+ * @param name string to be checked.
+ * @return 0 if this does not end with ogg, any other
+ *           value means it does.
+ */
+static int has_ogg_extension(char *name) {
+  char *ptype;
+
+  if (name == NULL)
+    return 0;
+  ptype = strrchr(name,'.');
+  if (ptype == NULL)
+    return 0;
+  if (!strcasecmp (ptype, ".ogg"))
+    return 1;
+  return 0;
+}
+
+
+/**
  * Create a new file mapping entry
  * @return a newly allocated filemapping entry.
  */
@@ -2997,11 +3018,8 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
 	(FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
 	 FLAG_OGG_IS_UNKNOWN(ptp_usb))) {
       // Repair forgotten OGG filetype
-      char *ptype;
-      
-      ptype = strrchr(file->filename,'.')+1;
-      if (ptype != NULL && !strcasecmp (ptype, "ogg")) {
-	    // Fix it.
+      if (has_ogg_extension(file->filename)) {
+	// Fix it.
         file->filetype = LIBMTP_FILETYPE_OGG;
       }
     }
@@ -3684,15 +3702,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
 	(FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
 	 FLAG_OGG_IS_UNKNOWN(ptp_usb))) {
       // Repair forgotten OGG filetype
-      int namelen = strlen(track->filename);
-
-      if (namelen < 4) {
-	// Must be atleast 4 characters to end with ".ogg"
-	LIBMTP_destroy_track_t(track);
-	continue;
-      }
-      if (!strcasecmp(track->filename+namelen-4, ".ogg")) {
-	// Fix the filetype
+      if (has_ogg_extension(track->filename)) {
 	track->filetype = LIBMTP_FILETYPE_OGG;
       } else {
 	// This was not an OGG file so discard it and continue
@@ -3794,17 +3804,13 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
     if (track->filetype == LIBMTP_FILETYPE_UNKNOWN &&
 	(FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
 	 FLAG_OGG_IS_UNKNOWN(ptp_usb))) {
-      // Repair forgotten OGG filetype
-      char *ptype;
-      
-      ptype = strrchr(track->filename,'.')+1;
-      if (ptype != NULL && !strcasecmp (ptype, "ogg")) {
-	     // Fix it.
-	     track->filetype = LIBMTP_FILETYPE_OGG;
+      if (has_ogg_extension(track->filename)) {
+	// Fix it.
+	track->filetype = LIBMTP_FILETYPE_OGG;
       } else {
-	    // This was not an OGG file so discard it
-	    LIBMTP_destroy_track_t(track);
-	    return NULL;
+	// This was not an OGG file so discard it
+	LIBMTP_destroy_track_t(track);
+	return NULL;
       }
     }
 

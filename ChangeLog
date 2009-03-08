@@ -1,3 +1,9 @@
+2009-03-08  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: refactored OGG extenstion check again, same
+	  code in three places, broke it out and made it foolproof
+	  (hopefully) in one single spot.
+
 2009-03-04  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: patch from Marcus to fix an issue
