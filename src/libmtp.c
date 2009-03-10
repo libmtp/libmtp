@@ -162,7 +162,9 @@ static int set_object_filename(LIBMTP_mtpdevice_t *device,
                 const char **newname);
 
 /**
- * Checks if a filename ends with ".ogg"
+ * Checks if a filename ends with ".ogg". Used in various
+ * situations when the device has no idea that it support
+ * OGG but still does.
  *
  * @param name string to be checked.
  * @return 0 if this does not end with ogg, any other
