@@ -7,6 +7,7 @@
 	* src/libmtp.c: avoid battery level getting on these devices.
 	* configure.ac: preparing for 0.3.7.
 	* src/Makefile.am: preparing for 0.3.7 (libmtp.so.8.2.2)
+	* Release libmtp 0.3.7.
 
 2009-03-08  Linus Walleij <triad@df.lth.se>
 
