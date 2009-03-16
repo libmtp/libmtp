@@ -201,3 +201,8 @@
  * Gigabeat MEU202 for example has this problem.
  */
 #define DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST 0x00008000
+/**
+ * Devices that cannot support reading out battery
+ * level.
+ */
+#define DEVICE_FLAG_BROKEN_BATTERY_LEVEL 0x00010000

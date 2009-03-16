@@ -1,3 +1,13 @@
+2009-03-17  Linus Walleij <triad@df.lth.se>
+
+	* src/device-flags.h: discovered a new device that cannot even
+	  read out battery level but still claims to be able to. Sigh.
+	* src/libusb-glue.h: flag macro.
+	* src/music-players.h: flag the Slacker.
+	* src/libmtp.c: avoid battery level getting on these devices.
+	* configure.ac: preparing for 0.3.7.
+	* src/Makefile.am: preparing for 0.3.7 (libmtp.so.8.2.2)
+
 2009-03-08  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: refactored OGG extenstion check again, same
@@ -31,7 +41,7 @@
 2009-01-22  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bump to 0.3.6 and release.
-	* src/Makefile.am: interface bump to libmtp.so.8.0.1
+	* src/Makefile.am: interface bump to libmtp.so.8.2.1
 	
 2009-01-16  Linus Walleij <triad@df.lth.se>
 

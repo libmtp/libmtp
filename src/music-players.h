@@ -793,6 +793,15 @@
   { "Pioneer", 0x08e4, "XMP3", 0x0148, DEVICE_FLAG_NONE },
 
   /*
+   * Slacker Inc.
+   * Put in all evilness flags because it looks fragile.
+   */
+  // Reported by Pug Fantus <pugfantus@users.sourceforge.net>
+  { "Slacker Inc.", 0x1bdc, "Slacker Portable Media Player", 0xfabf,
+    DEVICE_FLAG_BROKEN_BATTERY_LEVEL | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+    DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST | DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+
+  /*
    * Other strange stuff.
    */
   { "Isabella", 0x0b20, "Her Prototype", 0xddee, DEVICE_FLAG_NONE }

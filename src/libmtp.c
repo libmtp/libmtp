@@ -1070,8 +1070,8 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
   mtp_device->maximum_battery_level = 100;
   
   /* Check if device supports reading maximum battery level */
-  if(ptp_property_issupported( current_params,
-			       PTP_DPC_BatteryLevel)) {
+  if(!FLAG_BROKEN_BATTERY_LEVEL(ptp_usb) && 
+     ptp_property_issupported( current_params, PTP_DPC_BatteryLevel)) {
     PTPDevicePropDesc dpd;
     
     /* Try to read maximum battery level */
@@ -2566,11 +2566,13 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *device,
   PTPPropertyValue propval;
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
 
   *maximum_level = 0;
   *current_level = 0;
 
-  if (!ptp_property_issupported(params, PTP_DPC_BatteryLevel)) {
+  if (FLAG_BROKEN_BATTERY_LEVEL(ptp_usb) ||
+      !ptp_property_issupported(params, PTP_DPC_BatteryLevel)) {
     return -1;
   }
 
