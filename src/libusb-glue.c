@@ -224,54 +224,65 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
   }
 
   /*
-   * Loop over the device configurations and interfaces. Nokia MTP-capable 
-   * handsets (possibly others) typically have the string "MTP" in their 
-   * MTP interface descriptions, that's how they can be detected, before
-   * we try the more esoteric "OS descriptors" (below).
+   * This sometimes crashes on the j for loop below
+   * I think it is because config is NULL yet 
+   * dev->descriptor.bNumConfigurations > 0
+   * this check should stop this
    */
-  for (i = 0; i < dev->descriptor.bNumConfigurations; i++) {
-    uint8_t j;
+  if (dev->config) {
+    /*
+     * Loop over the device configurations and interfaces. Nokia MTP-capable 
+     * handsets (possibly others) typically have the string "MTP" in their 
+     * MTP interface descriptions, that's how they can be detected, before
+     * we try the more esoteric "OS descriptors" (below).
+     */
+    for (i = 0; i < dev->descriptor.bNumConfigurations; i++) {
+      uint8_t j;
+      
+      for (j = 0; j < dev->config[i].bNumInterfaces; j++) {
+        int k;
+        for (k = 0; k < dev->config[i].interface[j].num_altsetting; k++) {
+          buf[0] = '\0';
+          ret = usb_get_string_simple(devh, 
+              dev->config[i].interface[j].altsetting[k].iInterface, 
+              (char *) buf, 
+              1024);
+    if (ret < 3)
+      continue;
+          if (strcmp((char *) buf, "MTP") == 0) {
+      if (dumpfile != NULL) {
+              fprintf(dumpfile, "Configuration %d, interface %d, altsetting %d:\n", i, j, k);
+        fprintf(dumpfile, "   Interface description contains the string \"MTP\"\n");
+        fprintf(dumpfile, "   Device recognized as MTP, no further probing.\n");
+      }
+            usb_close(devh);
+            return 1;
+          }
+  #ifdef LIBUSB_HAS_GET_DRIVER_NP
+    {
+      /*
+       * Specifically avoid probing anything else than USB mass storage devices
+       * and non-associated drivers in Linux.
+       */
+      char devname[0x10];
     
-    for (j = 0; j < dev->config[i].bNumInterfaces; j++) {
-      int k;
-      for (k = 0; k < dev->config[i].interface[j].num_altsetting; k++) {
-        buf[0] = '\0';
-        ret = usb_get_string_simple(devh, 
-				    dev->config[i].interface[j].altsetting[k].iInterface, 
-				    (char *) buf, 
-				    1024);
-	if (ret < 3)
-	  continue;
-        if (strcmp((char *) buf, "MTP") == 0) {
-	  if (dumpfile != NULL) {
-            fprintf(dumpfile, "Configuration %d, interface %d, altsetting %d:\n", i, j, k);
-	    fprintf(dumpfile, "   Interface description contains the string \"MTP\"\n");
-	    fprintf(dumpfile, "   Device recognized as MTP, no further probing.\n");
-	  }
-          usb_close(devh);
-          return 1;
-        }
-#ifdef LIBUSB_HAS_GET_DRIVER_NP
-	{
-	  /*
-	   * Specifically avoid probing anything else than USB mass storage devices
-	   * and non-associated drivers in Linux.
-	   */
-	  char devname[0x10];
-  
-	  devname[0] = '\0';
-	  ret = usb_get_driver_np(devh,
-				  dev->config[i].interface[j].altsetting[k].iInterface,
-				  devname,
-				  sizeof(devname));
-	  if (devname[0] != '\0' && strcmp(devname, "usb-storage")) {
-	    printf("avoid probing device using kernel interface \"%s\"\n", devname);
-	    return 0;
-	  }
-	}
-#endif
+      devname[0] = '\0';
+      ret = usb_get_driver_np(devh,
+            dev->config[i].interface[j].altsetting[k].iInterface,
+            devname,
+            sizeof(devname));
+      if (devname[0] != '\0' && strcmp(devname, "usb-storage")) {
+        printf("avoid probing device using kernel interface \"%s\"\n", devname);
+        return 0;
       }
     }
+  #endif
+        }
+      }
+    }
+  } else {
+    if (dev->descriptor.bNumConfigurations)
+      printf("dev->config is NULL in probe_device_descriptor yet dev->descriptor.bNumConfigurations > 0\n");
   }
   
   /* Read the special descriptor */
@@ -554,11 +565,11 @@ LIBMTP_error_number_t LIBMTP_Detect_Raw_Devices(LIBMTP_raw_device_t ** devices,
  */
 void dump_usbinfo(PTP_USB *ptp_usb)
 {
-  int res;
   struct usb_device *dev;
 
 #ifdef LIBUSB_HAS_GET_DRIVER_NP
   char devname[0x10];
+  int res;
   
   devname[0] = '\0';
   res = usb_get_driver_np(ptp_usb->handle, (int) ptp_usb->interface, devname, sizeof(devname));
@@ -595,7 +606,7 @@ void dump_usbinfo(PTP_USB *ptp_usb)
  * @param ptp_usb the USB device to get suggestion for.
  * @return the suggested playlist extension.
  */
-char const * const get_playlist_extension(PTP_USB *ptp_usb)
+const char *get_playlist_extension(PTP_USB *ptp_usb)
 {
   struct usb_device *dev;
   static char creative_pl_extension[] = ".zpl";
