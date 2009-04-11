@@ -154,6 +154,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 				uint16_t const objectformat,
 				uint32_t const * const tracks,
 				uint32_t const no_tracks);
+static int send_file_object_info(LIBMTP_mtpdevice_t *device, LIBMTP_file_t *filedata);
 static void add_object_to_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id);
 static void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id);
 static int set_object_filename(LIBMTP_mtpdevice_t *device,
@@ -272,8 +273,8 @@ static void init_filemap()
   register_filetype("Ogg container format", LIBMTP_FILETYPE_OGG, PTP_OFC_MTP_OGG);
   register_filetype("Free Lossless Audio Codec (FLAC)", LIBMTP_FILETYPE_FLAC, PTP_OFC_MTP_FLAC);
   register_filetype("Advanced Audio Coding (AAC)/MPEG-2 Part 7/MPEG-4 Part 3", LIBMTP_FILETYPE_AAC, PTP_OFC_MTP_AAC);
-  register_filetype("MPEG-4 Part 14 Container Format (Audio Empahsis)", LIBMTP_FILETYPE_M4A, PTP_OFC_MTP_M4A);
-  register_filetype("MPEG-4 Part 14 Container Format (Audio+Video Empahsis)", LIBMTP_FILETYPE_MP4, PTP_OFC_MTP_MP4);
+  register_filetype("MPEG-4 Part 14 Container Format (Audio Emphasis)", LIBMTP_FILETYPE_M4A, PTP_OFC_MTP_M4A);
+  register_filetype("MPEG-4 Part 14 Container Format (Audio+Video Emphasis)", LIBMTP_FILETYPE_MP4, PTP_OFC_MTP_MP4);
   register_filetype("Audible.com Audio Codec", LIBMTP_FILETYPE_AUDIBLE, PTP_OFC_MTP_AudibleCodec);
   register_filetype("Undefined audio file", LIBMTP_FILETYPE_UNDEF_AUDIO, PTP_OFC_MTP_UndefinedAudio);
   register_filetype("Microsoft Windows Media Video", LIBMTP_FILETYPE_WMV, PTP_OFC_MTP_WMV);
@@ -305,6 +306,8 @@ static void init_filemap()
   register_filetype("PPT file", LIBMTP_FILETYPE_PPT, PTP_OFC_MTP_MSPowerpointPresentationPPT);
   register_filetype("MHT file", LIBMTP_FILETYPE_MHT, PTP_OFC_MTP_MHTCompiledHTMLDocument);
   register_filetype("Firmware file", LIBMTP_FILETYPE_FIRMWARE, PTP_OFC_MTP_Firmware);
+  register_filetype("Abstract Album file", LIBMTP_FILETYPE_ALBUM, PTP_OFC_MTP_AbstractAudioAlbum);
+  register_filetype("Abstract Playlist file", LIBMTP_FILETYPE_PLAYLIST, PTP_OFC_MTP_AbstractAudioVideoPlaylist);
   register_filetype("Undefined filetype", LIBMTP_FILETYPE_UNKNOWN, PTP_OFC_Undefined);
 }
 
@@ -2883,6 +2886,7 @@ LIBMTP_file_t *LIBMTP_new_file_t(void)
   new->parent_id = 0;
   new->storage_id = 0;
   new->filesize = 0;
+  new->modificationdate = 0;
   new->filetype = LIBMTP_FILETYPE_UNKNOWN;
   new->next = NULL;
   return new;
@@ -3001,6 +3005,9 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
 
     // Set the filetype
     file->filetype = map_ptp_type_to_libmtp_type(oi->ObjectFormat);
+    
+    // Set the modification date
+    file->modificationdate = oi->ModificationDate;
 
     // Original file-specific properties
     // We only have 32-bit file size here; if we find it, we use the 
@@ -3337,6 +3344,7 @@ LIBMTP_track_t *LIBMTP_new_track_t(void)
   new->bitratetype = 0;
   new->rating = 0;
   new->usecount = 0;
+  new->modificationdate = 0;
   new->next = NULL;
   return new;
 }
@@ -3682,6 +3690,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
     track->item_id = params->handles.Handler[i];
     track->parent_id = oi->ParentObject;
     track->storage_id = oi->StorageID;
+    track->modificationdate = oi->ModificationDate;
 
     track->filetype = mtptype;
 
@@ -3788,6 +3797,7 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
     track->item_id = params->handles.Handler[i];
     track->parent_id = oi->ParentObject;
     track->storage_id = oi->StorageID;
+    track->modificationdate = oi->ModificationDate;
 
     track->filetype = mtptype;
 
@@ -3961,6 +3971,84 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
 }
 
 /**
+ * This gets a file off the device and calls put_func
+ * with chunks of data
+ *
+ * @param device a pointer to the device to get the file from.
+ * @param id the file ID of the file to retrieve.
+ * @param put_func the function to call when we have data.
+ * @param priv the user-defined pointer that is passed to
+ *             <code>put_func</code>.
+ * @param callback a progress indicator function or NULL to ignore.
+ * @param data a user-defined pointer that is passed along to
+ *             the <code>progress</code> function in order to
+ *             pass along some user defined data to the progress
+ *             updates. If not used, set this to NULL.
+ * @return 0 if the transfer was successful, any other value means
+ *           failure.
+ */
+int LIBMTP_Get_File_To_Handler(LIBMTP_mtpdevice_t *device,
+					uint32_t const id,
+					MTPDataPutFunc put_func,
+          void * priv,
+					LIBMTP_progressfunc_t const callback,
+					void const * const data)
+{
+  PTPObjectInfo *oi;
+  uint32_t i;
+  uint16_t ret;
+  PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
+
+  oi = NULL;
+  for (i = 0; i < params->handles.n; i++) {
+    if (params->handles.Handler[i] == id) {
+      oi = &params->objectinfo[i];
+      break;
+    }
+  }
+  if (oi == NULL) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Get_File_To_File_Descriptor(): Could not get object info.");
+    return -1;
+  }
+  if (oi->ObjectFormat == PTP_OFC_Association) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Get_File_To_File_Descriptor(): Bad object format.");
+    return -1;
+  }
+
+  // Callbacks
+  ptp_usb->callback_active = 1;
+  ptp_usb->current_transfer_total = oi->ObjectCompressedSize+
+    PTP_USB_BULK_HDR_LEN+sizeof(uint32_t); // Request length, one parameter
+  ptp_usb->current_transfer_complete = 0;
+  ptp_usb->current_transfer_callback = callback;
+  ptp_usb->current_transfer_callback_data = data;
+
+  PTPDataHandler handler;
+  handler.getfunc = NULL;
+  handler.putfunc = (PTPDataPutFunc)put_func;
+  handler.private = priv;
+  
+  ret = ptp_getobject_to_handler(params, id, &handler);
+
+  ptp_usb->callback_active = 0;
+  ptp_usb->current_transfer_callback = NULL;
+  ptp_usb->current_transfer_callback_data = NULL;
+
+  if (ret == PTP_ERROR_CANCEL) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_CANCELLED, "LIBMTP_Get_File_From_File_Descriptor(): Cancelled transfer.");
+    return -1;
+  }
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_File_To_File_Descriptor(): Could not get file from device.");
+    return -1;
+  }
+
+  return 0;
+}
+
+
+/**
  * This gets a track off the device to a file identified
  * by a filename. This is actually just a wrapper for the
  * \c LIBMTP_Get_Track_To_File() function.
@@ -4008,6 +4096,34 @@ int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
 {
   // This is just a wrapper
   return LIBMTP_Get_File_To_File_Descriptor(device, id, fd, callback, data);
+}
+
+/**
+ * This gets a track off the device to a handler function.
+ * This is actually just a wrapper for
+ * the \c LIBMTP_Get_File_To_Handler() function.
+ * @param device a pointer to the device to get the track from.
+ * @param id the track ID of the track to retrieve.
+ * @param put_func the function to call when we have data.
+ * @param priv the user-defined pointer that is passed to
+ *             <code>put_func</code>.
+ * @param callback a progress indicator function or NULL to ignore.
+ * @param data a user-defined pointer that is passed along to
+ *             the <code>progress</code> function in order to
+ *             pass along some user defined data to the progress
+ *             updates. If not used, set this to NULL.
+ * @return 0 if the transfer was successful, any other value means
+ *           failure.
+ */
+int LIBMTP_Get_Track_To_Handler(LIBMTP_mtpdevice_t *device,
+					uint32_t const id,
+					MTPDataPutFunc put_func,
+          void * priv,
+					LIBMTP_progressfunc_t const callback,
+					void const * const data)
+{
+  // This is just a wrapper
+  return LIBMTP_Get_File_To_Handler(device, id, put_func, priv, callback, data);
 }
 
 /**
@@ -4189,6 +4305,104 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 }
 
 /**
+ * This function sends a track from a handler function to an
+ * MTP device. A filename and a set of metadata must be
+ * given as input.
+ * @param device a pointer to the device to send the track to.
+ * @param get_func the function to call when we have data.
+ * @param priv the user-defined pointer that is passed to
+ *             <code>get_func</code>.
+ * @param metadata a track metadata set to be written along with the file.
+ *        After this call the field <code>metadata-&gt;item_id</code>
+ *        will contain the new track ID. Other fields such
+ *        as the <code>metadata-&gt;filename</code>, <code>metadata-&gt;parent_id</code>
+ *        or <code>metadata-&gt;storage_id</code> may also change during this 
+ *        operation due to device restrictions, so do not rely on the
+ *        contents of this struct to be preserved in any way.
+ *        <ul>
+ *        <li><code>metadata-&gt;parent_id</code> should be set to the parent 
+ *        (e.g. folder) to store this track in. Since some 
+ *        devices are a bit picky about where files
+ *        are placed, a default folder will be chosen if libmtp
+ *        has detected one for the current filetype and this
+ *        parameter is set to 0. If this is 0 and no default folder
+ *        can be found, the file will be stored in the root folder.
+ *        <li><code>metadata-&gt;storage_id</code> should be set to the
+ *        desired storage (e.g. memory card or whatever your device
+ *        presents) to store this track in. Setting this to 0 will store
+ *        the track on the primary storage.
+ *        </ul>
+ * @param callback a progress indicator function or NULL to ignore.
+ * @param data a user-defined pointer that is passed along to
+ *             the <code>progress</code> function in order to
+ *             pass along some user defined data to the progress
+ *             updates. If not used, set this to NULL.
+ * @return 0 if the transfer was successful, any other value means
+ *           failure.
+ * @see LIBMTP_Send_Track_From_File()
+ * @see LIBMTP_Delete_Object()
+ */
+int LIBMTP_Send_Track_From_Handler(LIBMTP_mtpdevice_t *device,
+			 MTPDataGetFunc get_func, void * priv, LIBMTP_track_t * const metadata,
+                         LIBMTP_progressfunc_t const callback,
+			 void const * const data)
+{
+  int subcall_ret;
+  LIBMTP_file_t filedata;
+
+  // Sanity check, is this really a track?
+  if (!LIBMTP_FILETYPE_IS_TRACK(metadata->filetype)) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, 
+			    "LIBMTP_Send_Track_From_Handler(): "
+			    "I don't think this is actually a track, strange filetype...");
+  }
+
+  // Wrap around the file transfer function
+  filedata.item_id = metadata->item_id;
+  filedata.parent_id = metadata->parent_id;
+  filedata.storage_id = metadata->storage_id;
+  filedata.filename = metadata->filename;
+  filedata.filesize = metadata->filesize;
+  filedata.filetype = metadata->filetype;
+  filedata.next = NULL;
+
+  subcall_ret = LIBMTP_Send_File_From_Handler(device,
+						      get_func,
+                  priv, 
+						      &filedata,
+						      callback,
+						      data);
+
+  if (subcall_ret != 0) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, 
+			    "LIBMTP_Send_Track_From_Handler(): "
+			    "subcall to LIBMTP_Send_File_From_Handler failed.");
+    // We used to delete the file here, but don't... It might be OK after all.
+    // (void) LIBMTP_Delete_Object(device, metadata->item_id);
+    return -1;
+  }
+  
+  // Pick up new item (and parent, storage) ID
+  metadata->item_id = filedata.item_id;
+  metadata->parent_id = filedata.parent_id;
+  metadata->storage_id = filedata.storage_id;
+
+  // Set track metadata for the new fine track
+  subcall_ret = LIBMTP_Update_Track_Metadata(device, metadata);
+  if (subcall_ret != 0) {
+    // Subcall will add error to errorstack
+    // We used to delete the file here, but don't... It might be OK after all.
+    // (void) LIBMTP_Delete_Object(device, metadata->item_id);
+    return -1;
+  }
+
+  // note we don't need to update the cache here because LIBMTP_Send_File_From_File_Descriptor
+  // has added the object handle and LIBMTP_Update_Track_Metadata has added the metadata.
+
+  return 0;
+}
+
+/**
  * This function sends a local file to an MTP device.
  * A filename and a set of metadata must be
  * given as input.
@@ -4308,23 +4522,198 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 			 void const * const data)
 {
   uint16_t ret;
-  uint32_t store;
-  uint32_t localph = filedata->parent_id;
-  LIBMTP_devicestorage_t *storage;
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
-  int i;
-  uint16_t of =  map_libmtp_type_to_ptp_type(filedata->filetype);
   LIBMTP_file_t *newfilemeta;
-  int use_primary_storage = 1;
 
-  // Sanity check: no zerolength files.
-  if (filedata->filesize == 0) {
-    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Send_File_From_File_Descriptor(): "
-			    "File of zero size.");
+  if (send_file_object_info(device, filedata))
+  {
+    // no need to output an error since send_file_object_info will already have done so
     return -1;
   }
 
+  // Callbacks
+  ptp_usb->callback_active = 1;
+  // The callback will deactivate itself after this amount of data has been sent
+  // One BULK header for the request, one for the data phase. No parameters to the request.
+  ptp_usb->current_transfer_total = filedata->filesize+PTP_USB_BULK_HDR_LEN*2;
+  ptp_usb->current_transfer_complete = 0;
+  ptp_usb->current_transfer_callback = callback;
+  ptp_usb->current_transfer_callback_data = data;
+  
+  ret = ptp_sendobject_fromfd(params, fd, filedata->filesize);
+  
+  ptp_usb->callback_active = 0;
+  ptp_usb->current_transfer_callback = NULL;
+  ptp_usb->current_transfer_callback_data = NULL;
+
+  if (ret == PTP_ERROR_CANCEL) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_CANCELLED, "LIBMTP_Send_File_From_File_Descriptor(): Cancelled transfer.");
+    return -1;
+  }
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor(): "
+				"Could not send object.");
+    return -1;
+  }
+
+  add_object_to_cache(device, filedata->item_id);
+  
+  /*
+   * Get the device-assined parent_id from the cache.
+   * The operation that adds it to the cache will
+   * look it up from the device, so we get the new
+   * parent_id from the cache.
+   */
+  newfilemeta = LIBMTP_Get_Filemetadata(device, filedata->item_id);
+  if (newfilemeta != NULL) {
+    filedata->parent_id = newfilemeta->parent_id;
+    filedata->storage_id = newfilemeta->storage_id;
+    LIBMTP_destroy_file_t(newfilemeta);
+  } else {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL,
+			    "LIBMTP_Send_File_From_File_Descriptor(): "
+			    "Could not retrieve updated metadata.");
+    return -1;
+  }
+
+  return 0;
+}
+
+/**
+ * This function sends a generic file from a handler function to an
+ * MTP device. A filename and a set of metadata must be
+ * given as input.
+ *
+ * This can potentially be used for sending in a stream of unknown
+ * length. Send music files with 
+ * <code>LIBMTP_Send_Track_From_Handler()</code>
+ *
+ * @param device a pointer to the device to send the file to.
+ * @param get_func the function to call to get data to write
+ * @param priv a user-defined pointer that is passed along to
+ *        <code>get_func</code>. If not used, this is set to NULL.
+ * @param filedata a file metadata set to be written along with the file.
+ *        After this call the field <code>filedata-&gt;item_id</code>
+ *        will contain the new file ID. Other fields such
+ *        as the <code>filedata-&gt;filename</code>, <code>filedata-&gt;parent_id</code>
+ *        or <code>filedata-&gt;storage_id</code> may also change during this 
+ *        operation due to device restrictions, so do not rely on the
+ *        contents of this struct to be preserved in any way.
+ *        <ul>
+ *        <li><code>filedata-&gt;parent_id</code> should be set to the parent 
+ *        (e.g. folder) to store this file in. If this is 0, 
+ *        the file will be stored in the root folder.
+ *        <li><code>filedata-&gt;storage_id</code> should be set to the
+ *        desired storage (e.g. memory card or whatever your device
+ *        presents) to store this file in. Setting this to 0 will store
+ *        the file on the primary storage.
+ *        </ul>
+ * @param callback a progress indicator function or NULL to ignore.
+ * @param data a user-defined pointer that is passed along to
+ *             the <code>progress</code> function in order to
+ *             pass along some user defined data to the progress
+ *             updates. If not used, set this to NULL.
+ * @return 0 if the transfer was successful, any other value means
+ *           failure.
+ * @see LIBMTP_Send_File_From_File()
+ * @see LIBMTP_Send_Track_From_File_Descriptor()
+ * @see LIBMTP_Delete_Object()
+ */
+int LIBMTP_Send_File_From_Handler(LIBMTP_mtpdevice_t *device,
+			 MTPDataGetFunc get_func, void * priv, LIBMTP_file_t * const filedata,
+       LIBMTP_progressfunc_t const callback, void const * const data)
+{
+  uint16_t ret;
+  PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
+  LIBMTP_file_t *newfilemeta;
+
+  if (send_file_object_info(device, filedata))
+  {
+    // no need to output an error since send_file_object_info will already have done so
+    return -1;
+  }
+  
+  // Callbacks
+  ptp_usb->callback_active = 1;
+  // The callback will deactivate itself after this amount of data has been sent
+  // One BULK header for the request, one for the data phase. No parameters to the request.
+  ptp_usb->current_transfer_total = filedata->filesize+PTP_USB_BULK_HDR_LEN*2;
+  ptp_usb->current_transfer_complete = 0;
+  ptp_usb->current_transfer_callback = callback;
+  ptp_usb->current_transfer_callback_data = data;
+  
+  PTPDataHandler handler;
+  handler.getfunc = (PTPDataGetFunc)get_func;
+  handler.putfunc = NULL;
+  handler.private = priv;
+  
+  ret = ptp_sendobject_from_handler(params, &handler, filedata->filesize);
+  
+  ptp_usb->callback_active = 0;
+  ptp_usb->current_transfer_callback = NULL;
+  ptp_usb->current_transfer_callback_data = NULL;
+
+  if (ret == PTP_ERROR_CANCEL) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_CANCELLED, "LIBMTP_Send_File_From_Handler(): Cancelled transfer.");
+    return -1;
+  }
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_Handler(): "
+				"Could not send object.");
+    return -1;
+  }
+
+  add_object_to_cache(device, filedata->item_id);
+  
+  /*
+   * Get the device-assined parent_id from the cache.
+   * The operation that adds it to the cache will
+   * look it up from the device, so we get the new
+   * parent_id from the cache.
+   */
+  newfilemeta = LIBMTP_Get_Filemetadata(device, filedata->item_id);
+  if (newfilemeta != NULL) {
+    filedata->parent_id = newfilemeta->parent_id;
+    filedata->storage_id = newfilemeta->storage_id;
+    LIBMTP_destroy_file_t(newfilemeta);
+  } else {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL,
+			    "LIBMTP_Send_File_From_Handler(): "
+			    "Could not retrieve updated metadata.");
+    return -1;
+  }
+
+  return 0;
+}
+
+/** 
+ * This function sends the file object info, ready for sendobject
+ * @param device a pointer to the device to send the file to.
+ * @param filedata a file metadata set to be written along with the file.
+ * @return 0 if the transfer was successful, any other value means
+ *           failure.
+ */
+static int send_file_object_info(LIBMTP_mtpdevice_t *device, LIBMTP_file_t *filedata)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
+  uint32_t store;
+  int use_primary_storage = 1;
+  uint16_t of = map_libmtp_type_to_ptp_type(filedata->filetype);
+  LIBMTP_devicestorage_t *storage;
+  uint32_t localph = filedata->parent_id;
+  uint16_t ret;
+  int i;
+  
+  // Sanity check: no zerolength files.
+  if (filedata->filesize == 0) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "send_file_object_info(): "
+			    "File of zero size.");
+    return -1;
+  }
+  
   if (filedata->storage_id != 0) {
     store = filedata->storage_id;
   } else {
@@ -4463,7 +4852,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
       
       ret = ptp_mtp_getobjectpropdesc(params, properties[i], of, &opd);
       if (ret != PTP_RC_OK) {
-	add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor(): "
+	add_ptp_error_to_errorstack(device, ret, "send_file_object_info(): "
 				"could not get property description.");
       } else if (opd.GetSet) {
 	switch (properties[i]) {
@@ -4509,6 +4898,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 	    prop->property = PTP_OPC_DateModified;
 	    prop->datatype = PTP_DTC_STR;
 	    prop->propval.str = get_iso8601_stamp();
+      filedata->modificationdate = time(NULL);
 	  }
 	  break;
 	}
@@ -4524,7 +4914,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     ptp_destroy_object_prop_list(props, nrofprops);
 
     if (ret != PTP_RC_OK) {
-      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor():" 
+      add_ptp_error_to_errorstack(device, ret, "send_file_object_info():" 
 				  "Could not send object property list.");
       if (ret == PTP_RC_AccessDenied) {
 	add_ptp_error_to_errorstack(device, ret, "ACCESS DENIED.");
@@ -4550,7 +4940,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
     ret = ptp_sendobjectinfo(params, &store, &localph, &filedata->item_id, &new_file);
 
     if (ret != PTP_RC_OK) {
-      add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor(): "
+      add_ptp_error_to_errorstack(device, ret, "send_file_object_info(): "
 				  "Could not send object info.");
       if (ret == PTP_RC_AccessDenied) {
 	add_ptp_error_to_errorstack(device, ret, "ACCESS DENIED.");
@@ -4563,52 +4953,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 
   // Now there IS an object with this parent handle.
   filedata->parent_id = localph;
-
-  // Callbacks
-  ptp_usb->callback_active = 1;
-  // The callback will deactivate itself after this amount of data has been sent
-  // One BULK header for the request, one for the data phase. No parameters to the request.
-  ptp_usb->current_transfer_total = filedata->filesize+PTP_USB_BULK_HDR_LEN*2;
-  ptp_usb->current_transfer_complete = 0;
-  ptp_usb->current_transfer_callback = callback;
-  ptp_usb->current_transfer_callback_data = data;
   
-  ret = ptp_sendobject_fromfd(params, fd, filedata->filesize);
-  
-  ptp_usb->callback_active = 0;
-  ptp_usb->current_transfer_callback = NULL;
-  ptp_usb->current_transfer_callback_data = NULL;
-
-  if (ret == PTP_ERROR_CANCEL) {
-    add_error_to_errorstack(device, LIBMTP_ERROR_CANCELLED, "LIBMTP_Send_File_From_File_Descriptor(): Cancelled transfer.");
-    return -1;
-  }
-  if (ret != PTP_RC_OK) {
-    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Send_File_From_File_Descriptor(): "
-				"Could not send object.");
-    return -1;
-  }
-
-  add_object_to_cache(device, filedata->item_id);
-  
-  /*
-   * Get the device-assined parent_id from the cache.
-   * The operation that adds it to the cache will
-   * look it up from the device, so we get the new
-   * parent_id from the cache.
-   */
-  newfilemeta = LIBMTP_Get_Filemetadata(device, filedata->item_id);
-  if (newfilemeta != NULL) {
-    filedata->parent_id = newfilemeta->parent_id;
-    filedata->storage_id = newfilemeta->storage_id;
-    LIBMTP_destroy_file_t(newfilemeta);
-  } else {
-    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL,
-			    "LIBMTP_Send_File_From_File_Descriptor(): "
-			    "Could not retrieve updated metadata.");
-    return -1;
-  }
-
   return 0;
 }
 

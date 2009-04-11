@@ -105,6 +105,8 @@ typedef enum {
   LIBMTP_FILETYPE_MHT,
   LIBMTP_FILETYPE_JP2,
   LIBMTP_FILETYPE_JPX,
+  LIBMTP_FILETYPE_ALBUM,
+  LIBMTP_FILETYPE_PLAYLIST,
   LIBMTP_FILETYPE_UNKNOWN
 } LIBMTP_filetype_t;
 
@@ -232,6 +234,12 @@ typedef struct LIBMTP_devicestorage_struct LIBMTP_devicestorage_t; /**< @see LIB
 typedef int (* LIBMTP_progressfunc_t) (uint64_t const sent, uint64_t const total,
                 		void const * const data);
 
+typedef uint16_t (* MTPDataGetFunc)	(void* params, void* private,
+					unsigned long wantlen, unsigned char *data, unsigned long *gotlen);
+
+typedef uint16_t (* MTPDataPutFunc)	(void* params, void* private,
+					unsigned long sendlen, unsigned char *data, unsigned long *putlen);
+
 /**
  * @}
  * @defgroup structar libmtp data structures
@@ -332,6 +340,7 @@ struct LIBMTP_file_struct {
   uint32_t storage_id; /**< ID of storage holding this file */
   char *filename; /**< Filename of this file */
   uint64_t filesize; /**< Size of file in bytes */
+  time_t modificationdate; /**< Date of last alteration of the file */
   LIBMTP_filetype_t filetype; /**< Filetype used for the current file */
   LIBMTP_file_t *next; /**< Next file in list or NULL if last file */
 };
@@ -360,6 +369,7 @@ struct LIBMTP_track_struct {
   uint16_t rating; /**< User rating 0-100 (0x00-0x64) */
   uint32_t usecount; /**< Number of times used/played */
   uint64_t filesize; /**< Size of track file in bytes */
+  time_t modificationdate; /**< Date of last alteration of the track */
   LIBMTP_filetype_t filetype; /**< Filetype used for the current track */
   LIBMTP_track_t *next; /**< Next track in list or NULL if last track */
 };
@@ -506,12 +516,16 @@ int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t*, uint32_t, char const * const,
 			LIBMTP_progressfunc_t const, void const * const);
 int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t const, int const,
 			LIBMTP_progressfunc_t const, void const * const);
+int LIBMTP_Get_File_To_Handler(LIBMTP_mtpdevice_t *, uint32_t const, MTPDataPutFunc, void *,
+                   LIBMTP_progressfunc_t const, void const * const);
 int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *, char const * const,
 	                 LIBMTP_file_t * const, LIBMTP_progressfunc_t const,
 			 void const * const);
 int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *, int const,
 	                LIBMTP_file_t * const, LIBMTP_progressfunc_t const,
 			void const * const);
+int LIBMTP_Send_File_From_Handler(LIBMTP_mtpdevice_t *, MTPDataGetFunc, void *,
+      LIBMTP_file_t * const, LIBMTP_progressfunc_t const, void const * const);
 int LIBMTP_Set_File_Name(LIBMTP_mtpdevice_t *, LIBMTP_file_t *, const char *);
 LIBMTP_filesampledata_t *LIBMTP_new_filesampledata_t(void);
 void LIBMTP_destroy_filesampledata_t(LIBMTP_filesampledata_t *);
@@ -538,12 +552,18 @@ int LIBMTP_Get_Track_To_File(LIBMTP_mtpdevice_t*, uint32_t, char const * const,
 			LIBMTP_progressfunc_t const, void const * const);
 int LIBMTP_Get_Track_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t const, int const,
 			LIBMTP_progressfunc_t const, void const * const);
+int LIBMTP_Get_Track_To_Handler(LIBMTP_mtpdevice_t *, uint32_t const, MTPDataPutFunc,
+      void *, LIBMTP_progressfunc_t const, void const * const);
 int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *,
 			 char const * const, LIBMTP_track_t * const,
                          LIBMTP_progressfunc_t const,
 			 void const * const);
 int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *,
 			 int const, LIBMTP_track_t * const,
+                         LIBMTP_progressfunc_t const,
+			 void const * const);
+int LIBMTP_Send_Track_From_Handler(LIBMTP_mtpdevice_t *,
+			 MTPDataGetFunc, void *, LIBMTP_track_t * const,
                          LIBMTP_progressfunc_t const,
 			 void const * const);
 int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *,
