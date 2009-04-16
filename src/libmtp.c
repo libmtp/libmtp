@@ -161,7 +161,20 @@ static int set_object_filename(LIBMTP_mtpdevice_t *device,
 		uint32_t object_id,
 		uint16_t ptp_type,
                 const char **newname);
+                
+/**
+ * These are to wrap the get/put handlers to convert from the MTP types to PTP types
+ * in a reliable way
+ */
+typedef struct _MTPDataHandler {
+	MTPDataGetFunc		getfunc;
+	MTPDataPutFunc		putfunc;
+	void			*private;
+} MTPDataHandler;
 
+static uint16_t get_func_wrapper(PTPParams* params, void* private, unsigned long wantlen, unsigned char *data, unsigned long *gotlen);
+static uint16_t put_func_wrapper(PTPParams* params, void* private, unsigned long sendlen, unsigned char *data, unsigned long *putlen);
+                
 /**
  * Checks if a filename ends with ".ogg". Used in various
  * situations when the device has no idea that it support
@@ -3836,6 +3849,33 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
   return NULL;
 }
 
+/**
+ * This is a manual conversion from MTPDataGetFunc to PTPDataGetFunc
+ * to isolate the internal type.
+ */
+static uint16_t get_func_wrapper(PTPParams* params, void* private, unsigned long wantlen, unsigned char *data, unsigned long *gotlen)
+{
+  MTPDataHandler *handler = (MTPDataHandler *)private;
+  uint16_t ret;
+  uint32_t local_gotlen = 0;
+  ret = handler->getfunc(params, handler->private, wantlen, data, &local_gotlen);
+  *gotlen = local_gotlen;
+  return ret;
+}
+
+/**
+ * This is a manual conversion from MTPDataPutFunc to PTPDataPutFunc
+ * to isolate the internal type.
+ */
+static uint16_t put_func_wrapper(PTPParams* params, void* private, unsigned long sendlen, unsigned char *data, unsigned long *putlen)
+{
+  MTPDataHandler *handler = (MTPDataHandler *)private;
+  uint16_t ret;
+  uint32_t local_putlen = 0;
+  ret = handler->putfunc(params, handler->private, sendlen, data, &local_putlen);
+  *putlen = local_putlen;
+  return ret;
+}
 
 /**
  * This gets a file off the device to a local file identified
@@ -4024,10 +4064,15 @@ int LIBMTP_Get_File_To_Handler(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_callback = callback;
   ptp_usb->current_transfer_callback_data = data;
 
+  MTPDataHandler mtp_handler;
+  mtp_handler.getfunc = NULL;
+  mtp_handler.putfunc = put_func;
+  mtp_handler.private = priv;
+  
   PTPDataHandler handler;
   handler.getfunc = NULL;
-  handler.putfunc = (PTPDataPutFunc)put_func;
-  handler.private = priv;
+  handler.putfunc = put_func_wrapper;
+  handler.private = &mtp_handler;
   
   ret = ptp_getobject_to_handler(params, id, &handler);
 
@@ -4206,8 +4251,6 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
 
   return ret;
 }
-
-
 
 /**
  * This function sends a track from a file descriptor to an
@@ -4644,10 +4687,15 @@ int LIBMTP_Send_File_From_Handler(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_callback = callback;
   ptp_usb->current_transfer_callback_data = data;
   
+  MTPDataHandler mtp_handler;
+  mtp_handler.getfunc = get_func;
+  mtp_handler.putfunc = NULL;
+  mtp_handler.private = priv;
+  
   PTPDataHandler handler;
-  handler.getfunc = (PTPDataGetFunc)get_func;
+  handler.getfunc = get_func_wrapper;
   handler.putfunc = NULL;
-  handler.private = priv;
+  handler.private = &mtp_handler;
   
   ret = ptp_sendobject_from_handler(params, &handler, filedata->filesize);
   

@@ -235,10 +235,10 @@ typedef int (* LIBMTP_progressfunc_t) (uint64_t const sent, uint64_t const total
                 		void const * const data);
 
 typedef uint16_t (* MTPDataGetFunc)	(void* params, void* private,
-					unsigned long wantlen, unsigned char *data, unsigned long *gotlen);
+					uint32_t wantlen, unsigned char *data, uint32_t *gotlen);
 
 typedef uint16_t (* MTPDataPutFunc)	(void* params, void* private,
-					unsigned long sendlen, unsigned char *data, unsigned long *putlen);
+					uint32_t sendlen, unsigned char *data, uint32_t *putlen);
 
 /**
  * @}
