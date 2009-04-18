@@ -108,6 +108,8 @@ void spl_to_playlist_t(LIBMTP_mtpdevice_t* device, PTPObjectInfo *oi,
   // Use the Filename as the playlist name, dropping the ".spl" extension
   pl->name = malloc(sizeof(char)*(strlen(oi->Filename) -4 +1));
   memcpy(pl->name, oi->Filename, strlen(oi->Filename) -4);
+  // Set terminating character
+  pl->name[strlen(oi->Filename) - 4] = 0;
   pl->playlist_id = id;
   pl->parent_id = oi->ParentObject;
   pl->storage_id = oi->StorageID;
