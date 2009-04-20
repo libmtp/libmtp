@@ -635,14 +635,17 @@
     DEVICE_FLAG_UNLOAD_DRIVER },
   
   /*
-   * Disney/Tevion/MyMusix (have had no reports of these actually working.)
+   * Disney/Tevion/MyMusix
    */
   // Reported by XNJB user
   { "Disney", 0x0aa6, "MixMax", 0x6021, DEVICE_FLAG_NONE },
   // Reported by anonymous Sourceforge user 
   { "Tevion", 0x0aa6, "MD 81488", 0x3011, DEVICE_FLAG_NONE },
-  // Reported by Peter Hedlund
-  { "MyMusix", 0x0aa6, "PD-6070", 0x9601, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by Peter Hedlund <peter@peterandlinda.com>
+  { "MyMusix", 0x0aa6, "PD-6070", 0x9601, DEVICE_FLAG_UNLOAD_DRIVER |
+    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+    DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
+    DEVICE_FLAG_NO_RELEASE_INTERFACE },
 
   /*
    * Cowon Systems, Inc.
