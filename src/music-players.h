@@ -691,6 +691,9 @@
   // Reported by Cyrille Potereau <cyrille.potereau@wanadoo.fr>
   { "LG Electronics Inc.", 0x1004, "KC910 Renoir Mobile Phone", 0x608f,
       DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by anonymous sourceforge user
+  { "LG Electronics Inc.", 0x1004, "KM900", 0x6132,
+      DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
    * Sony
@@ -714,6 +717,8 @@
   { "Sony", 0x054c, "Walkman NWZ-B135", 0x036e, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by <tiagoboldt@users.sourceforge.net>
   { "Sony", 0x054c, "Walkman NWZ-E436F", 0x0385, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by Michael Wilkinson
+  { "Sony", 0x054c, "Walkman NWZ-W202", 0x0388, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Ondrej Sury <ondrej@sury.org>
   { "Sony", 0x054c, "Walkman NWZ-S739F", 0x038c, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Marco Filipe Nunes Soares Abrantes Pereira <marcopereira@ua.pt>
