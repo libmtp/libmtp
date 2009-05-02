@@ -253,6 +253,10 @@ int update_spl_playlist(LIBMTP_mtpdevice_t *device,
 
   // read in the playlist of interest
   LIBMTP_playlist_t * old = LIBMTP_Get_Playlist(device, new->playlist_id);
+  
+  // check to see if we found it
+  if (!old)
+    return -1;
 
   // check if the playlists match
   int delta = 0;
