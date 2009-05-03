@@ -74,9 +74,24 @@ typedef struct filemap_struct {
   struct filemap_struct *next;
 } filemap_t;
 
+/*
+ * This is a mapping between libmtp internal MTP properties and
+ * the libgphoto2/PTP equivalent defines. We need this because
+ * otherwise the libmtp.h device has to be dependent on ptp.h
+ * to be installed too, and we don't want that.
+ */
+typedef struct propertymap_struct {
+  char *description; /**< Text description for the property */
+  LIBMTP_property_t id; /**< LIBMTP internal type for the property */
+  uint16_t ptp_id; /**< PTP ID for the property */
+  struct propertymap_struct *next;
+} propertymap_t;
+
 // Global variables
 // This holds the global filetype mapping table
 static filemap_t *filemap = NULL;
+// This holds the global property mapping table
+static propertymap_t *propertymap = NULL;
 
 /*
  * Forward declarations of local (static) functions.
@@ -84,6 +99,9 @@ static filemap_t *filemap = NULL;
 static int register_filetype(char const * const description, LIBMTP_filetype_t const id,
 			     uint16_t const ptp_id);
 static void init_filemap();
+static int register_property(char const * const description, LIBMTP_property_t const id,
+			     uint16_t const ptp_id);
+static void init_propertymap();
 static void add_error_to_errorstack(LIBMTP_mtpdevice_t *device,
 				    LIBMTP_error_number_t errornumber,
 				    char const * const error_text);
@@ -107,6 +125,8 @@ static int check_if_file_fits(LIBMTP_mtpdevice_t *device,
 			      uint64_t const filesize);
 static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype);
 static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype);
+static uint16_t map_libmtp_property_to_ptp_property(LIBMTP_property_t inproperty);
+static LIBMTP_property_t map_ptp_property_to_libmtp_property(uint16_t intype);
 static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
 				       char **unicstring, uint16_t property);
 static uint16_t adjust_u16(uint16_t val, PTPObjectPropDesc *opd);
@@ -368,6 +388,299 @@ static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype)
   return LIBMTP_FILETYPE_UNKNOWN;
 }
 
+/**
+ * Create a new property mapping entry
+ * @return a newly allocated propertymapping entry.
+ */
+static propertymap_t *new_propertymap_entry()
+{
+  propertymap_t *propertymap;
+
+  propertymap = (propertymap_t *)malloc(sizeof(propertymap_t));
+
+  if( propertymap != NULL ) {
+    propertymap->description = NULL;
+    propertymap->id = LIBMTP_PROPERTY_UNKNOWN;
+    propertymap->ptp_id = 0;
+    propertymap->next = NULL;
+  }
+
+  return propertymap;
+}
+
+/**
+ * Register an MTP or PTP property for data retrieval
+ *
+ * @param description Text description of property
+ * @param id libmtp internal property id
+ * @param ptp_id PTP property id
+ * @return 0 for success any other value means error.
+*/
+static int register_property(char const * const description, LIBMTP_property_t const id,
+			     uint16_t const ptp_id)
+{
+  propertymap_t *new = NULL, *current;
+
+  // Has this LIBMTP propety been registered before ?
+  current = propertymap;
+  while (current != NULL) {
+    if(current->id == id) {
+      break;
+    }
+    current = current->next;
+  }
+
+  // Create the entry
+  if(current == NULL) {
+    new = new_propertymap_entry();
+    if(new == NULL) {
+      return 1;
+    }
+
+    new->id = id;
+    if(description != NULL) {
+      new->description = strdup(description);
+    }
+    new->ptp_id = ptp_id;
+
+    // Add the entry to the list
+    if(propertymap == NULL) {
+      propertymap = new;
+    } else {
+      current = propertymap;
+      while (current->next != NULL ) current=current->next;
+      current->next = new;
+    }
+    // Update the existing entry
+  } else {
+    if (current->description != NULL) {
+      free(current->description);
+    }
+    current->description = NULL;
+    if(description != NULL) {
+      current->description = strdup(description);
+    }
+    current->ptp_id = ptp_id;
+  }
+
+  return 0;
+}
+
+static void init_propertymap()
+{
+  register_property("Storage ID", LIBMTP_PROPERTY_StorageID, PTP_OPC_StorageID);
+  register_property("Object Format", LIBMTP_PROPERTY_ObjectFormat, PTP_OPC_ObjectFormat);
+  register_property("Protection Status", LIBMTP_PROPERTY_ProtectionStatus, PTP_OPC_ProtectionStatus);
+  register_property("Object Size", LIBMTP_PROPERTY_ObjectSize, PTP_OPC_ObjectSize);
+  register_property("Association Type", LIBMTP_PROPERTY_AssociationType, PTP_OPC_AssociationType);
+  register_property("Association Desc", LIBMTP_PROPERTY_AssociationDesc, PTP_OPC_AssociationDesc);
+  register_property("Object File Name", LIBMTP_PROPERTY_ObjectFileName, PTP_OPC_ObjectFileName);
+  register_property("Date Created", LIBMTP_PROPERTY_DateCreated, PTP_OPC_DateCreated);
+  register_property("Date Modified", LIBMTP_PROPERTY_DateModified, PTP_OPC_DateModified);
+  register_property("Keywords", LIBMTP_PROPERTY_Keywords, PTP_OPC_Keywords);
+  register_property("Parent Object", LIBMTP_PROPERTY_ParentObject, PTP_OPC_ParentObject);
+  register_property("Allowed Folder Contents", LIBMTP_PROPERTY_AllowedFolderContents, PTP_OPC_AllowedFolderContents);
+  register_property("Hidden", LIBMTP_PROPERTY_Hidden, PTP_OPC_Hidden);
+  register_property("System Object", LIBMTP_PROPERTY_SystemObject, PTP_OPC_SystemObject);
+  register_property("Persistant Unique Object Identifier", LIBMTP_PROPERTY_PersistantUniqueObjectIdentifier, PTP_OPC_PersistantUniqueObjectIdentifier);
+  register_property("Sync ID", LIBMTP_PROPERTY_SyncID, PTP_OPC_SyncID);
+  register_property("Property Bag", LIBMTP_PROPERTY_PropertyBag, PTP_OPC_PropertyBag);
+  register_property("Name", LIBMTP_PROPERTY_Name, PTP_OPC_Name);
+  register_property("Created By", LIBMTP_PROPERTY_CreatedBy, PTP_OPC_CreatedBy);
+  register_property("Artist", LIBMTP_PROPERTY_Artist, PTP_OPC_Artist);
+  register_property("Date Authored", LIBMTP_PROPERTY_DateAuthored, PTP_OPC_DateAuthored);
+  register_property("Description", LIBMTP_PROPERTY_Description, PTP_OPC_Description);
+  register_property("URL Reference", LIBMTP_PROPERTY_URLReference, PTP_OPC_URLReference);
+  register_property("Language Locale", LIBMTP_PROPERTY_LanguageLocale, PTP_OPC_LanguageLocale);
+  register_property("Copyright Information", LIBMTP_PROPERTY_CopyrightInformation, PTP_OPC_CopyrightInformation);
+  register_property("Source", LIBMTP_PROPERTY_Source, PTP_OPC_Source);
+  register_property("Origin Location", LIBMTP_PROPERTY_OriginLocation, PTP_OPC_OriginLocation);
+  register_property("Date Added", LIBMTP_PROPERTY_DateAdded, PTP_OPC_DateAdded);
+  register_property("Non Consumable", LIBMTP_PROPERTY_NonConsumable, PTP_OPC_NonConsumable);
+  register_property("Corrupt Or Unplayable", LIBMTP_PROPERTY_CorruptOrUnplayable, PTP_OPC_CorruptOrUnplayable);
+  register_property("Producer Serial Number", LIBMTP_PROPERTY_ProducerSerialNumber, PTP_OPC_ProducerSerialNumber);
+  register_property("Representative Sample Format", LIBMTP_PROPERTY_RepresentativeSampleFormat, PTP_OPC_RepresentativeSampleFormat);
+  register_property("Representative Sample Sise", LIBMTP_PROPERTY_RepresentativeSampleSize, PTP_OPC_RepresentativeSampleSize);
+  register_property("Representative Sample Height", LIBMTP_PROPERTY_RepresentativeSampleHeight, PTP_OPC_RepresentativeSampleHeight);
+  register_property("Representative Sample Width", LIBMTP_PROPERTY_RepresentativeSampleWidth, PTP_OPC_RepresentativeSampleWidth);
+  register_property("Representative Sample Duration", LIBMTP_PROPERTY_RepresentativeSampleDuration, PTP_OPC_RepresentativeSampleDuration);
+  register_property("Representative Sample Data", LIBMTP_PROPERTY_RepresentativeSampleData, PTP_OPC_RepresentativeSampleData);
+  register_property("Width", LIBMTP_PROPERTY_Width, PTP_OPC_Width);
+  register_property("Height", LIBMTP_PROPERTY_Height, PTP_OPC_Height);
+  register_property("Duration", LIBMTP_PROPERTY_Duration, PTP_OPC_Duration);
+  register_property("Rating", LIBMTP_PROPERTY_Rating, PTP_OPC_Rating);
+  register_property("Track", LIBMTP_PROPERTY_Track, PTP_OPC_Track);
+  register_property("Genre", LIBMTP_PROPERTY_Genre, PTP_OPC_Genre);
+  register_property("Credits", LIBMTP_PROPERTY_Credits, PTP_OPC_Credits);
+  register_property("Lyrics", LIBMTP_PROPERTY_Lyrics, PTP_OPC_Lyrics);
+  register_property("Subscription Content ID", LIBMTP_PROPERTY_SubscriptionContentID, PTP_OPC_SubscriptionContentID);
+  register_property("Produced By", LIBMTP_PROPERTY_ProducedBy, PTP_OPC_ProducedBy);
+  register_property("Use Count", LIBMTP_PROPERTY_UseCount, PTP_OPC_UseCount);
+  register_property("Skip Count", LIBMTP_PROPERTY_SkipCount, PTP_OPC_SkipCount);
+  register_property("Last Accessed", LIBMTP_PROPERTY_LastAccessed, PTP_OPC_LastAccessed);
+  register_property("Parental Rating", LIBMTP_PROPERTY_ParentalRating, PTP_OPC_ParentalRating);
+  register_property("Meta Genre", LIBMTP_PROPERTY_MetaGenre, PTP_OPC_MetaGenre);
+  register_property("Composer", LIBMTP_PROPERTY_Composer, PTP_OPC_Composer);
+  register_property("Effective Rating", LIBMTP_PROPERTY_EffectiveRating, PTP_OPC_EffectiveRating);
+  register_property("Subtitle", LIBMTP_PROPERTY_Subtitle, PTP_OPC_Subtitle);
+  register_property("Original Release Date", LIBMTP_PROPERTY_OriginalReleaseDate, PTP_OPC_OriginalReleaseDate);
+  register_property("Album Name", LIBMTP_PROPERTY_AlbumName, PTP_OPC_AlbumName);
+  register_property("Album Artist", LIBMTP_PROPERTY_AlbumArtist, PTP_OPC_AlbumArtist);
+  register_property("Mood", LIBMTP_PROPERTY_Mood, PTP_OPC_Mood);
+  register_property("DRM Status", LIBMTP_PROPERTY_DRMStatus, PTP_OPC_DRMStatus);
+  register_property("Sub Description", LIBMTP_PROPERTY_SubDescription, PTP_OPC_SubDescription);
+  register_property("Is Cropped", LIBMTP_PROPERTY_IsCropped, PTP_OPC_IsCropped);
+  register_property("Is Color Corrected", LIBMTP_PROPERTY_IsColorCorrected, PTP_OPC_IsColorCorrected);
+  register_property("Image Bit Depth", LIBMTP_PROPERTY_ImageBitDepth, PTP_OPC_ImageBitDepth);
+  register_property("f Number", LIBMTP_PROPERTY_Fnumber, PTP_OPC_Fnumber);
+  register_property("Exposure Time", LIBMTP_PROPERTY_ExposureTime, PTP_OPC_ExposureTime);
+  register_property("Exposure Index", LIBMTP_PROPERTY_ExposureIndex, PTP_OPC_ExposureIndex);
+  register_property("Display Name", LIBMTP_PROPERTY_DisplayName, PTP_OPC_DisplayName);
+  register_property("Body Text", LIBMTP_PROPERTY_BodyText, PTP_OPC_BodyText);
+  register_property("Subject", LIBMTP_PROPERTY_Subject, PTP_OPC_Subject);
+  register_property("Priority", LIBMTP_PROPERTY_Priority, PTP_OPC_Priority);
+  register_property("Given Name", LIBMTP_PROPERTY_GivenName, PTP_OPC_GivenName);
+  register_property("Middle Names", LIBMTP_PROPERTY_MiddleNames, PTP_OPC_MiddleNames);
+  register_property("Family Name", LIBMTP_PROPERTY_FamilyName, PTP_OPC_FamilyName);
+  register_property("Prefix", LIBMTP_PROPERTY_Prefix, PTP_OPC_Prefix);
+  register_property("Suffix", LIBMTP_PROPERTY_Suffix, PTP_OPC_Suffix);
+  register_property("Phonetic Given Name", LIBMTP_PROPERTY_PhoneticGivenName, PTP_OPC_PhoneticGivenName);
+  register_property("Phonetic Family Name", LIBMTP_PROPERTY_PhoneticFamilyName, PTP_OPC_PhoneticFamilyName);
+  register_property("Email: Primary", LIBMTP_PROPERTY_EmailPrimary, PTP_OPC_EmailPrimary);
+  register_property("Email: Personal 1", LIBMTP_PROPERTY_EmailPersonal1, PTP_OPC_EmailPersonal1);
+  register_property("Email: Personal 2", LIBMTP_PROPERTY_EmailPersonal2, PTP_OPC_EmailPersonal2);
+  register_property("Email: Business 1", LIBMTP_PROPERTY_EmailBusiness1, PTP_OPC_EmailBusiness1);
+  register_property("Email: Business 2", LIBMTP_PROPERTY_EmailBusiness2, PTP_OPC_EmailBusiness2);
+  register_property("Email: Others", LIBMTP_PROPERTY_EmailOthers, PTP_OPC_EmailOthers);
+  register_property("Phone Number: Primary", LIBMTP_PROPERTY_PhoneNumberPrimary, PTP_OPC_PhoneNumberPrimary);
+  register_property("Phone Number: Personal", LIBMTP_PROPERTY_PhoneNumberPersonal, PTP_OPC_PhoneNumberPersonal);
+  register_property("Phone Number: Personal 2", LIBMTP_PROPERTY_PhoneNumberPersonal2, PTP_OPC_PhoneNumberPersonal2);
+  register_property("Phone Number: Business", LIBMTP_PROPERTY_PhoneNumberBusiness, PTP_OPC_PhoneNumberBusiness);
+  register_property("Phone Number: Business 2", LIBMTP_PROPERTY_PhoneNumberBusiness2, PTP_OPC_PhoneNumberBusiness2);
+  register_property("Phone Number: Mobile", LIBMTP_PROPERTY_PhoneNumberMobile, PTP_OPC_PhoneNumberMobile);
+  register_property("Phone Number: Mobile 2", LIBMTP_PROPERTY_PhoneNumberMobile2, PTP_OPC_PhoneNumberMobile2);
+  register_property("Fax Number: Primary", LIBMTP_PROPERTY_FaxNumberPrimary, PTP_OPC_FaxNumberPrimary);
+  register_property("Fax Number: Personal", LIBMTP_PROPERTY_FaxNumberPersonal, PTP_OPC_FaxNumberPersonal);
+  register_property("Fax Number: Business", LIBMTP_PROPERTY_FaxNumberBusiness, PTP_OPC_FaxNumberBusiness);
+  register_property("Pager Number", LIBMTP_PROPERTY_PagerNumber, PTP_OPC_PagerNumber);
+  register_property("Phone Number: Others", LIBMTP_PROPERTY_PhoneNumberOthers, PTP_OPC_PhoneNumberOthers);
+  register_property("Primary Web Address", LIBMTP_PROPERTY_PrimaryWebAddress, PTP_OPC_PrimaryWebAddress);
+  register_property("Personal Web Address", LIBMTP_PROPERTY_PersonalWebAddress, PTP_OPC_PersonalWebAddress);
+  register_property("Business Web Address", LIBMTP_PROPERTY_BusinessWebAddress, PTP_OPC_BusinessWebAddress);
+  register_property("Instant Messenger Address 1", LIBMTP_PROPERTY_InstantMessengerAddress, PTP_OPC_InstantMessengerAddress);
+  register_property("Instant Messenger Address 2", LIBMTP_PROPERTY_InstantMessengerAddress2, PTP_OPC_InstantMessengerAddress2);
+  register_property("Instant Messenger Address 3", LIBMTP_PROPERTY_InstantMessengerAddress3, PTP_OPC_InstantMessengerAddress3);
+  register_property("Postal Address: Personal: Full", LIBMTP_PROPERTY_PostalAddressPersonalFull, PTP_OPC_PostalAddressPersonalFull);
+  register_property("Postal Address: Personal: Line 1", LIBMTP_PROPERTY_PostalAddressPersonalFullLine1, PTP_OPC_PostalAddressPersonalFullLine1);
+  register_property("Postal Address: Personal: Line 2", LIBMTP_PROPERTY_PostalAddressPersonalFullLine2, PTP_OPC_PostalAddressPersonalFullLine2);
+  register_property("Postal Address: Personal: City", LIBMTP_PROPERTY_PostalAddressPersonalFullCity, PTP_OPC_PostalAddressPersonalFullCity);
+  register_property("Postal Address: Personal: Region", LIBMTP_PROPERTY_PostalAddressPersonalFullRegion, PTP_OPC_PostalAddressPersonalFullRegion);
+  register_property("Postal Address: Personal: Postal Code", LIBMTP_PROPERTY_PostalAddressPersonalFullPostalCode, PTP_OPC_PostalAddressPersonalFullPostalCode);
+  register_property("Postal Address: Personal: Country", LIBMTP_PROPERTY_PostalAddressPersonalFullCountry, PTP_OPC_PostalAddressPersonalFullCountry);
+  register_property("Postal Address: Business: Full", LIBMTP_PROPERTY_PostalAddressBusinessFull, PTP_OPC_PostalAddressBusinessFull);
+  register_property("Postal Address: Business: Line 1", LIBMTP_PROPERTY_PostalAddressBusinessLine1, PTP_OPC_PostalAddressBusinessLine1);
+  register_property("Postal Address: Business: Line 2", LIBMTP_PROPERTY_PostalAddressBusinessLine2, PTP_OPC_PostalAddressBusinessLine2);
+  register_property("Postal Address: Business: City", LIBMTP_PROPERTY_PostalAddressBusinessCity, PTP_OPC_PostalAddressBusinessCity);
+  register_property("Postal Address: Business: Region", LIBMTP_PROPERTY_PostalAddressBusinessRegion, PTP_OPC_PostalAddressBusinessRegion);
+  register_property("Postal Address: Business: Postal Code", LIBMTP_PROPERTY_PostalAddressBusinessPostalCode, PTP_OPC_PostalAddressBusinessPostalCode);
+  register_property("Postal Address: Business: Country", LIBMTP_PROPERTY_PostalAddressBusinessCountry, PTP_OPC_PostalAddressBusinessCountry);
+  register_property("Postal Address: Other: Full", LIBMTP_PROPERTY_PostalAddressOtherFull, PTP_OPC_PostalAddressOtherFull);
+  register_property("Postal Address: Other: Line 1", LIBMTP_PROPERTY_PostalAddressOtherLine1, PTP_OPC_PostalAddressOtherLine1);
+  register_property("Postal Address: Other: Line 2", LIBMTP_PROPERTY_PostalAddressOtherLine2, PTP_OPC_PostalAddressOtherLine2);
+  register_property("Postal Address: Other: City", LIBMTP_PROPERTY_PostalAddressOtherCity, PTP_OPC_PostalAddressOtherCity);
+  register_property("Postal Address: Other: Region", LIBMTP_PROPERTY_PostalAddressOtherRegion, PTP_OPC_PostalAddressOtherRegion);
+  register_property("Postal Address: Other: Postal Code", LIBMTP_PROPERTY_PostalAddressOtherPostalCode, PTP_OPC_PostalAddressOtherPostalCode);
+  register_property("Postal Address: Other: Counrtry", LIBMTP_PROPERTY_PostalAddressOtherCountry, PTP_OPC_PostalAddressOtherCountry);
+  register_property("Organization Name", LIBMTP_PROPERTY_OrganizationName, PTP_OPC_OrganizationName);
+  register_property("Phonetic Organization Name", LIBMTP_PROPERTY_PhoneticOrganizationName, PTP_OPC_PhoneticOrganizationName);
+  register_property("Role", LIBMTP_PROPERTY_Role, PTP_OPC_Role);
+  register_property("Birthdate", LIBMTP_PROPERTY_Birthdate, PTP_OPC_Birthdate);
+  register_property("Message To", LIBMTP_PROPERTY_MessageTo, PTP_OPC_MessageTo);
+  register_property("Message CC", LIBMTP_PROPERTY_MessageCC, PTP_OPC_MessageCC);
+  register_property("Message BCC", LIBMTP_PROPERTY_MessageBCC, PTP_OPC_MessageBCC);
+  register_property("Message Read", LIBMTP_PROPERTY_MessageRead, PTP_OPC_MessageRead);
+  register_property("Message Received Time", LIBMTP_PROPERTY_MessageReceivedTime, PTP_OPC_MessageReceivedTime);
+  register_property("Message Sender", LIBMTP_PROPERTY_MessageSender, PTP_OPC_MessageSender);
+  register_property("Activity Begin Time", LIBMTP_PROPERTY_ActivityBeginTime, PTP_OPC_ActivityBeginTime);
+  register_property("Activity End Time", LIBMTP_PROPERTY_ActivityEndTime, PTP_OPC_ActivityEndTime);
+  register_property("Activity Location", LIBMTP_PROPERTY_ActivityLocation, PTP_OPC_ActivityLocation);
+  register_property("Activity Required Attendees", LIBMTP_PROPERTY_ActivityRequiredAttendees, PTP_OPC_ActivityRequiredAttendees);
+  register_property("Optional Attendees", LIBMTP_PROPERTY_ActivityOptionalAttendees, PTP_OPC_ActivityOptionalAttendees);
+  register_property("Activity Resources", LIBMTP_PROPERTY_ActivityResources, PTP_OPC_ActivityResources);
+  register_property("Activity Accepted", LIBMTP_PROPERTY_ActivityAccepted, PTP_OPC_ActivityAccepted);
+  register_property("Owner", LIBMTP_PROPERTY_Owner, PTP_OPC_Owner);
+  register_property("Editor", LIBMTP_PROPERTY_Editor, PTP_OPC_Editor);
+  register_property("Webmaster", LIBMTP_PROPERTY_Webmaster, PTP_OPC_Webmaster);
+  register_property("URL Source", LIBMTP_PROPERTY_URLSource, PTP_OPC_URLSource);
+  register_property("URL Destination", LIBMTP_PROPERTY_URLDestination, PTP_OPC_URLDestination);
+  register_property("Time Bookmark", LIBMTP_PROPERTY_TimeBookmark, PTP_OPC_TimeBookmark);
+  register_property("Object Bookmark", LIBMTP_PROPERTY_ObjectBookmark, PTP_OPC_ObjectBookmark);
+  register_property("Byte Bookmark", LIBMTP_PROPERTY_ByteBookmark, PTP_OPC_ByteBookmark);
+  register_property("Last Build Date", LIBMTP_PROPERTY_LastBuildDate, PTP_OPC_LastBuildDate);
+  register_property("Time To Live", LIBMTP_PROPERTY_TimetoLive, PTP_OPC_TimetoLive);
+  register_property("Media GUID", LIBMTP_PROPERTY_MediaGUID, PTP_OPC_MediaGUID);
+  register_property("Total Bit Rate", LIBMTP_PROPERTY_TotalBitRate, PTP_OPC_TotalBitRate);
+  register_property("Bit Rate Type", LIBMTP_PROPERTY_BitRateType, PTP_OPC_BitRateType);
+  register_property("Sample Rate", LIBMTP_PROPERTY_SampleRate, PTP_OPC_SampleRate);
+  register_property("Number Of Channels", LIBMTP_PROPERTY_NumberOfChannels, PTP_OPC_NumberOfChannels);
+  register_property("Audio Bit Depth", LIBMTP_PROPERTY_AudioBitDepth, PTP_OPC_AudioBitDepth);
+  register_property("Scan Depth", LIBMTP_PROPERTY_ScanDepth, PTP_OPC_ScanDepth);
+  register_property("Audio WAVE Codec", LIBMTP_PROPERTY_AudioWAVECodec, PTP_OPC_AudioWAVECodec);
+  register_property("Audio Bit Rate", LIBMTP_PROPERTY_AudioBitRate, PTP_OPC_AudioBitRate);
+  register_property("Video Four CC Codec", LIBMTP_PROPERTY_VideoFourCCCodec, PTP_OPC_VideoFourCCCodec);
+  register_property("Video Bit Rate", LIBMTP_PROPERTY_VideoBitRate, PTP_OPC_VideoBitRate);
+  register_property("Frames Per Thousand Seconds", LIBMTP_PROPERTY_FramesPerThousandSeconds, PTP_OPC_FramesPerThousandSeconds);
+  register_property("Key Frame Distance", LIBMTP_PROPERTY_KeyFrameDistance, PTP_OPC_KeyFrameDistance);
+  register_property("Buffer Size", LIBMTP_PROPERTY_BufferSize, PTP_OPC_BufferSize);
+  register_property("Encoding Quality", LIBMTP_PROPERTY_EncodingQuality, PTP_OPC_EncodingQuality);
+  register_property("Encoding Profile", LIBMTP_PROPERTY_EncodingProfile, PTP_OPC_EncodingProfile);
+  register_property("Buy flag", LIBMTP_PROPERTY_BuyFlag, PTP_OPC_BuyFlag);
+  register_property("Unknown property", LIBMTP_PROPERTY_UNKNOWN, 0);
+}
+
+/**
+ * Returns the PTP property that maps to a certain libmtp internal property type.
+ * @param inproperty the MTP library interface property
+ * @return the PTP (libgphoto2) property type
+ */
+static uint16_t map_libmtp_property_to_ptp_property(LIBMTP_property_t inproperty)
+{
+  propertymap_t *current;
+
+  current = propertymap;
+
+  while (current != NULL) {
+    if(current->id == inproperty) {
+      return current->ptp_id;
+    }
+    current = current->next;
+  }
+  return 0;
+}
+
+
+/**
+ * Returns the MTP internal interface property that maps to a certain ptp
+ * interface property.
+ * @param inproperty the PTP (libgphoto2) interface property
+ * @return the MTP library interface property
+ */
+static LIBMTP_property_t map_ptp_property_to_libmtp_property(uint16_t inproperty)
+{
+  propertymap_t *current;
+
+  current = propertymap;
+
+  while (current != NULL) {
+    if(current->ptp_id == inproperty) {
+      return current->id;
+    }
+    current = current->next;
+  }
+  // printf("map_ptp_type_to_libmtp_type: unknown filetype.\n");
+  return LIBMTP_PROPERTY_UNKNOWN;
+}
+
 
 /**
  * Initialize the library. You are only supposed to call this
@@ -380,6 +693,7 @@ static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype)
 void LIBMTP_Init(void)
 {
   init_filemap();
+  init_propertymap();
   return;
 }
 
@@ -405,6 +719,29 @@ char const * LIBMTP_Get_Filetype_Description(LIBMTP_filetype_t intype)
   }
 
   return "Unknown filetype";
+}
+
+/**
+ * This helper function returns a textual description for a libmtp
+ * property to be used in dialog boxes etc.
+ * @param inproperty the libmtp internal property to get a description for.
+ * @return a string representing the filetype, this must <b>NOT</b>
+ *         be free():ed by the caller!
+ */
+char const * LIBMTP_Get_Property_Description(LIBMTP_property_t inproperty)
+{
+  propertymap_t *current;
+
+  current = propertymap;
+
+  while (current != NULL) {
+    if(current->id == inproperty) {
+      return current->description;
+    }
+    current = current->next;
+  }
+
+  return "Unknown property";
 }
 
 /**
@@ -512,6 +849,378 @@ static char *get_iso8601_stamp(void)
   loctime = localtime(&curtime);
   strftime (tmp, sizeof(tmp), "%Y%m%dT%H%M%S.0%z", loctime);
   return strdup(tmp);
+}
+
+/**
+ * Gets the allowed values (range or enum) for a property
+ * @param device a pointer to an MTP device
+ * @param property the property to query
+ * @param filetype the filetype of the object you want to set values for
+ * @param allowed_vals pointer to a LIBMTP_allowed_values_t struct to
+ *        receive the allowed values.  Call LIBMTP_destroy_allowed_values_t
+ *        on this on successful completion.
+ * @return 0 on success, any other value means failure
+ */
+int LIBMTP_Get_Allowed_Property_Values(LIBMTP_mtpdevice_t *device, LIBMTP_property_t const property,
+            LIBMTP_filetype_t const filetype, LIBMTP_allowed_values_t *allowed_vals)
+{
+  PTPObjectPropDesc opd;
+  uint16_t ret = 0;
+  
+  ret = ptp_mtp_getobjectpropdesc(device->params, map_libmtp_property_to_ptp_property(property), map_libmtp_type_to_ptp_type(filetype), &opd);
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Allowed_Property_Values(): could not get property description.");
+    return -1;
+  }
+
+  if (opd.FormFlag == PTP_OPFF_Enumeration) {
+    int i = 0;
+    
+    allowed_vals->is_range = 0;
+    allowed_vals->num_entries = opd.FORM.Enum.NumberOfValues;
+
+    switch (opd.DataType)
+    {
+      case PTP_DTC_INT8:
+        allowed_vals->i8vals = malloc(sizeof(int8_t) * opd.FORM.Enum.NumberOfValues);
+        allowed_vals->datatype = LIBMTP_DATATYPE_INT8;
+        break;
+      case PTP_DTC_UINT8:
+        allowed_vals->u8vals = malloc(sizeof(uint8_t) * opd.FORM.Enum.NumberOfValues);
+        allowed_vals->datatype = LIBMTP_DATATYPE_UINT8;
+        break;
+      case PTP_DTC_INT16:
+        allowed_vals->i16vals = malloc(sizeof(int16_t) * opd.FORM.Enum.NumberOfValues);
+        allowed_vals->datatype = LIBMTP_DATATYPE_INT16;
+        break;
+      case PTP_DTC_UINT16:
+        allowed_vals->u16vals = malloc(sizeof(uint16_t) * opd.FORM.Enum.NumberOfValues);
+        allowed_vals->datatype = LIBMTP_DATATYPE_UINT16;
+        break;
+      case PTP_DTC_INT32:
+        allowed_vals->i32vals = malloc(sizeof(int32_t) * opd.FORM.Enum.NumberOfValues);
+        allowed_vals->datatype = LIBMTP_DATATYPE_INT32;
+        break;
+      case PTP_DTC_UINT32:
+        allowed_vals->u32vals = malloc(sizeof(uint32_t) * opd.FORM.Enum.NumberOfValues);
+        allowed_vals->datatype = LIBMTP_DATATYPE_UINT32;
+        break;
+      case PTP_DTC_INT64:
+        allowed_vals->i64vals = malloc(sizeof(int64_t) * opd.FORM.Enum.NumberOfValues);
+        allowed_vals->datatype = LIBMTP_DATATYPE_INT64;
+        break;
+      case PTP_DTC_UINT64:
+        allowed_vals->u64vals = malloc(sizeof(uint64_t) * opd.FORM.Enum.NumberOfValues);
+        allowed_vals->datatype = LIBMTP_DATATYPE_UINT64;
+        break;
+    }
+    
+    for (i = 0; i < opd.FORM.Enum.NumberOfValues; i++) {
+      switch (opd.DataType)
+      {
+        case PTP_DTC_INT8:
+          allowed_vals->i8vals[i] = opd.FORM.Enum.SupportedValue[i].i8;
+          break;
+        case PTP_DTC_UINT8:
+          allowed_vals->u8vals[i] = opd.FORM.Enum.SupportedValue[i].u8;
+          break;
+        case PTP_DTC_INT16:
+          allowed_vals->i16vals[i] = opd.FORM.Enum.SupportedValue[i].i16;
+          break;
+        case PTP_DTC_UINT16:
+          allowed_vals->u16vals[i] = opd.FORM.Enum.SupportedValue[i].u16;
+          break;
+        case PTP_DTC_INT32:
+          allowed_vals->i32vals[i] = opd.FORM.Enum.SupportedValue[i].i32;
+          break;
+        case PTP_DTC_UINT32:
+          allowed_vals->u32vals[i] = opd.FORM.Enum.SupportedValue[i].u32;
+          break;
+        case PTP_DTC_INT64:
+          allowed_vals->i64vals[i] = opd.FORM.Enum.SupportedValue[i].i64;
+          break;
+        case PTP_DTC_UINT64:
+          allowed_vals->u64vals[i] = opd.FORM.Enum.SupportedValue[i].u64;
+          break;
+      }
+    }
+    ptp_free_objectpropdesc(&opd);
+    return 0;
+  } else if (opd.FormFlag == PTP_OPFF_Range) {
+    allowed_vals->is_range = 1;
+    
+    switch (opd.DataType)
+    {
+      case PTP_DTC_INT8:
+        allowed_vals->i8min = opd.FORM.Range.MinimumValue.i8;
+        allowed_vals->i8max = opd.FORM.Range.MaximumValue.i8;
+        allowed_vals->i8step = opd.FORM.Range.StepSize.i8;
+        allowed_vals->datatype = LIBMTP_DATATYPE_INT8;
+        break;
+      case PTP_DTC_UINT8:
+        allowed_vals->u8min = opd.FORM.Range.MinimumValue.u8;
+        allowed_vals->u8max = opd.FORM.Range.MaximumValue.u8;
+        allowed_vals->u8step = opd.FORM.Range.StepSize.u8;
+        allowed_vals->datatype = LIBMTP_DATATYPE_UINT8;
+        break;
+      case PTP_DTC_INT16:
+        allowed_vals->i16min = opd.FORM.Range.MinimumValue.i16;
+        allowed_vals->i16max = opd.FORM.Range.MaximumValue.i16;
+        allowed_vals->i16step = opd.FORM.Range.StepSize.i16;
+        allowed_vals->datatype = LIBMTP_DATATYPE_INT16;
+        break;
+      case PTP_DTC_UINT16:
+        allowed_vals->u16min = opd.FORM.Range.MinimumValue.u16;
+        allowed_vals->u16max = opd.FORM.Range.MaximumValue.u16;
+        allowed_vals->u16step = opd.FORM.Range.StepSize.u16;
+        allowed_vals->datatype = LIBMTP_DATATYPE_UINT16;
+        break;
+      case PTP_DTC_INT32:
+        allowed_vals->i32min = opd.FORM.Range.MinimumValue.i32;
+        allowed_vals->i32max = opd.FORM.Range.MaximumValue.i32;
+        allowed_vals->i32step = opd.FORM.Range.StepSize.i32;
+        allowed_vals->datatype = LIBMTP_DATATYPE_INT32;
+        break;
+      case PTP_DTC_UINT32:
+        allowed_vals->u32min = opd.FORM.Range.MinimumValue.u32;
+        allowed_vals->u32max = opd.FORM.Range.MaximumValue.u32;
+        allowed_vals->u32step = opd.FORM.Range.StepSize.u32;
+        allowed_vals->datatype = LIBMTP_DATATYPE_UINT32;
+        break;
+      case PTP_DTC_INT64:
+        allowed_vals->i64min = opd.FORM.Range.MinimumValue.i64;
+        allowed_vals->i64max = opd.FORM.Range.MaximumValue.i64;
+        allowed_vals->i64step = opd.FORM.Range.StepSize.i64;
+        allowed_vals->datatype = LIBMTP_DATATYPE_INT64;
+        break;
+      case PTP_DTC_UINT64:
+        allowed_vals->u64min = opd.FORM.Range.MinimumValue.u64;
+        allowed_vals->u64max = opd.FORM.Range.MaximumValue.u64;
+        allowed_vals->u64step = opd.FORM.Range.StepSize.u64;
+        allowed_vals->datatype = LIBMTP_DATATYPE_UINT64;
+        break;
+    }
+    return 0; 
+  } else
+    return -1;
+}
+
+/**
+ * Destroys a LIBMTP_allowed_values_t struct
+ * @param allowed_vals the struct to destroy
+ */
+void LIBMTP_destroy_allowed_values_t(LIBMTP_allowed_values_t *allowed_vals)
+{
+  if (!allowed_vals->is_range)
+  {
+    switch (allowed_vals->datatype)
+    {
+      case LIBMTP_DATATYPE_INT8:
+        if (allowed_vals->i8vals)
+          free(allowed_vals->i8vals);
+        break;
+      case LIBMTP_DATATYPE_UINT8:
+        if (allowed_vals->u8vals)
+          free(allowed_vals->u8vals);
+        break;
+      case LIBMTP_DATATYPE_INT16:
+        if (allowed_vals->i16vals)
+          free(allowed_vals->i16vals);
+        break;
+      case LIBMTP_DATATYPE_UINT16:
+        if (allowed_vals->u16vals)
+          free(allowed_vals->u16vals);
+        break;
+      case LIBMTP_DATATYPE_INT32:
+        if (allowed_vals->i32vals)
+          free(allowed_vals->i32vals);
+        break;
+      case LIBMTP_DATATYPE_UINT32:
+        if (allowed_vals->u32vals)
+          free(allowed_vals->u32vals);
+        break;
+      case LIBMTP_DATATYPE_INT64:
+        if (allowed_vals->i64vals)
+          free(allowed_vals->i64vals);
+        break;
+      case LIBMTP_DATATYPE_UINT64:
+        if (allowed_vals->u64vals)
+          free(allowed_vals->u64vals);
+        break;
+    }
+  }
+}
+
+/**
+ * Determine if a property is supported for a given file type
+ * @param device a pointer to an MTP device
+ * @param property the property to query
+ * @param filetype the filetype of the object you want to set values for
+ * @return 0 if not supported, positive if supported, negative on error
+ */
+int LIBMTP_Is_Property_Supported(LIBMTP_mtpdevice_t *device, LIBMTP_property_t const property,
+            LIBMTP_filetype_t const filetype)
+{
+  uint16_t *props = NULL;
+  uint32_t propcnt = 0;
+  uint16_t ret = 0;
+  int i = 0;
+  int supported = 0;
+  uint16_t ptp_prop = map_libmtp_property_to_ptp_property(property);
+  
+  ret = ptp_mtp_getobjectpropssupported(device->params, map_libmtp_type_to_ptp_type(filetype), &propcnt, &props);
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Is_Property_Supported(): could not get properties supported.");
+    return -1;
+  }
+
+	for (i = 0; i < propcnt; i++) {
+    if (props[i] == ptp_prop) {
+      supported = 1;
+      break;
+    }
+  }
+  
+  free(props);
+  
+  return supported;
+}
+
+/**
+ * Retrieves a string from an object
+ *
+ * @param device a pointer to an MTP device.
+ * @param object_id Object reference
+ * @param attribute_id MTP attribute ID
+ * @return valid string or NULL on failure. The returned string
+ *         must bee <code>free()</code>:ed by the caller after
+ *         use.
+ */
+char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+				    LIBMTP_property_t const attribute_id)
+{
+  return get_string_from_object(device, object_id, attribute_id);
+}
+
+/**
+* Retrieves an unsigned 64-bit integer from an object attribute
+ *
+ * @param device a pointer to an MTP device.
+ * @param object_id Object reference
+ * @param attribute_id MTP attribute ID
+ * @param value_default Default value to return on failure
+ * @return the value
+ */
+uint64_t LIBMTP_Get_u64_From_Object(LIBMTP_mtpdevice_t *device,uint32_t const object_id,
+                                    LIBMTP_property_t const attribute_id, uint64_t const value_default)
+{
+  return get_u64_from_object(device, object_id, map_libmtp_property_to_ptp_property(attribute_id), value_default);
+}
+
+/**
+ * Retrieves an unsigned 32-bit integer from an object attribute
+ *
+ * @param device a pointer to an MTP device.
+ * @param object_id Object reference
+ * @param attribute_id MTP attribute ID
+ * @param value_default Default value to return on failure
+ * @return the value
+ */
+uint32_t LIBMTP_Get_u32_From_Object(LIBMTP_mtpdevice_t *device,uint32_t const object_id,
+				    LIBMTP_property_t const attribute_id, uint32_t const value_default)
+{
+  return get_u32_from_object(device, object_id, map_libmtp_property_to_ptp_property(attribute_id), value_default);
+}
+
+/**
+ * Retrieves an unsigned 16-bit integer from an object attribute
+ *
+ * @param device a pointer to an MTP device.
+ * @param object_id Object reference
+ * @param attribute_id MTP attribute ID
+ * @param value_default Default value to return on failure
+ * @return a value
+ */
+uint16_t LIBMTP_Get_u16_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+				    LIBMTP_property_t const attribute_id, uint16_t const value_default)
+{
+  return get_u16_from_object(device, object_id, map_libmtp_property_to_ptp_property(attribute_id), value_default);
+}
+
+/**
+ * Retrieves an unsigned 8-bit integer from an object attribute
+ *
+ * @param device a pointer to an MTP device.
+ * @param object_id Object reference
+ * @param attribute_id MTP attribute ID
+ * @param value_default Default value to return on failure
+ * @return a value
+ */
+uint8_t LIBMTP_Get_u8_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+				  LIBMTP_property_t const attribute_id, uint8_t const value_default)
+{
+  return get_u8_from_object(device, object_id, map_libmtp_property_to_ptp_property(attribute_id), value_default);
+}
+
+/**
+ * Sets an object attribute from a string
+ *
+ * @param device a pointer to an MTP device.
+ * @param object_id Object reference
+ * @param attribute_id MTP attribute ID
+ * @param string string value to set
+ * @return 0 on success, any other value means failure
+ */
+int LIBMTP_Set_Object_String(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+			     LIBMTP_property_t const attribute_id, char const * const string)
+{
+  return set_object_string(device, object_id, map_libmtp_property_to_ptp_property(attribute_id), string);
+}
+
+
+/**
+ * Sets an object attribute from an unsigned 32-bit integer
+ *
+ * @param device a pointer to an MTP device.
+ * @param object_id Object reference
+ * @param attribute_id MTP attribute ID
+ * @param value 32-bit unsigned integer to set
+ * @return 0 on success, any other value means failure
+ */
+int LIBMTP_Set_Object_u32(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+			  LIBMTP_property_t const attribute_id, uint32_t const value)
+{
+  return set_object_u32(device, object_id, map_libmtp_property_to_ptp_property(attribute_id), value);
+}
+
+/**
+ * Sets an object attribute from an unsigned 16-bit integer
+ *
+ * @param device a pointer to an MTP device.
+ * @param object_id Object reference
+ * @param attribute_id MTP attribute ID
+ * @param value 16-bit unsigned integer to set
+ * @return 0 on success, any other value means failure
+ */
+int LIBMTP_Set_Object_u16(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+			  LIBMTP_property_t const attribute_id, uint16_t const value)
+{
+  return set_object_u16(device, object_id, map_libmtp_property_to_ptp_property(attribute_id), value);
+}
+
+/**
+ * Sets an object attribute from an unsigned 8-bit integer
+ *
+ * @param device a pointer to an MTP device.
+ * @param object_id Object reference
+ * @param attribute_id MTP attribute ID
+ * @param value 8-bit unsigned integer to set
+ * @return 0 on success, any other value means failure
+ */
+int LIBMTP_Set_Object_u8(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
+			 LIBMTP_property_t const attribute_id, uint8_t const value)
+{
+  return set_object_u8(device, object_id, map_libmtp_property_to_ptp_property(attribute_id), value);
 }
 
 /**
@@ -1997,8 +2706,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 	  PTPObjectPropDesc opd;
 	  int k;
 	  
-	  (void) ptp_render_mtp_propname(props[j],sizeof(txt),txt);
-	  printf("      %04x: %s", props[j], txt);
+	  printf("      %04x: %s", props[j], LIBMTP_Get_Property_Description(map_ptp_property_to_libmtp_property(props[j])));
 	  // Get a more verbose description
 	  ret = ptp_mtp_getobjectpropdesc(params, props[j], params->deviceinfo.ImageFormats[i], &opd);
 	  if (ret != PTP_RC_OK) {
@@ -3860,7 +4568,17 @@ static uint16_t get_func_wrapper(PTPParams* params, void* private, unsigned long
   uint32_t local_gotlen = 0;
   ret = handler->getfunc(params, handler->private, wantlen, data, &local_gotlen);
   *gotlen = local_gotlen;
-  return ret;
+  switch (ret)
+  {
+    case LIBMTP_HANDLER_RETURN_OK:
+      return PTP_RC_OK;
+    case LIBMTP_HANDLER_RETURN_ERROR:
+      return PTP_ERROR_IO;
+    case LIBMTP_HANDLER_RETURN_CANCEL:
+      return PTP_ERROR_CANCEL;
+    default:
+      return PTP_ERROR_IO;
+  }
 }
 
 /**
@@ -7157,11 +7875,13 @@ int LIBMTP_Get_Representative_Sample_Format(LIBMTP_mtpdevice_t *device,
   int support_height = 0;
   int support_width = 0;
   int support_duration = 0;
+  int support_size = 0;
 
   PTPObjectPropDesc opd_height;
   PTPObjectPropDesc opd_width;
   PTPObjectPropDesc opd_format;
   PTPObjectPropDesc opd_duration;
+  PTPObjectPropDesc opd_size;
   
   // Default to no type supported.
   *sample = NULL;
@@ -7186,6 +7906,7 @@ int LIBMTP_Get_Representative_Sample_Format(LIBMTP_mtpdevice_t *device,
       support_format = 1;
       break;
     case PTP_OPC_RepresentativeSampleSize:
+      support_size = 1;
       break;
     case PTP_OPC_RepresentativeSampleHeight:
       support_height = 1;
@@ -7201,7 +7922,7 @@ int LIBMTP_Get_Representative_Sample_Format(LIBMTP_mtpdevice_t *device,
     }
   }
   free(props);
-  
+    
   if (support_data && support_format && support_height && support_width && !support_duration) {
     // Something that supports height and width and not duration is likely to be JPEG
     LIBMTP_filesampledata_t *retsam = LIBMTP_new_filesampledata_t();
@@ -7213,12 +7934,21 @@ int LIBMTP_Get_Representative_Sample_Format(LIBMTP_mtpdevice_t *device,
      */
     ptp_mtp_getobjectpropdesc (params, PTP_OPC_RepresentativeSampleFormat, map_libmtp_type_to_ptp_type(filetype), &opd_format);    
     retsam->filetype = map_ptp_type_to_libmtp_type(opd_format.FORM.Enum.SupportedValue[0].u16);
+    ptp_free_objectpropdesc(&opd_format);
     /* Populate the maximum image height */
     ptp_mtp_getobjectpropdesc (params, PTP_OPC_RepresentativeSampleWidth, map_libmtp_type_to_ptp_type(filetype), &opd_width);        
     retsam->width = opd_width.FORM.Range.MaximumValue.u32;
+    ptp_free_objectpropdesc(&opd_width);
     /* Populate the maximum image width */
     ptp_mtp_getobjectpropdesc (params, PTP_OPC_RepresentativeSampleHeight, map_libmtp_type_to_ptp_type(filetype), &opd_height);    						
     retsam->height = opd_height.FORM.Range.MaximumValue.u32;
+    ptp_free_objectpropdesc(&opd_height);
+    /* Populate the maximum size */
+    if (support_size) {
+      ptp_mtp_getobjectpropdesc (params, PTP_OPC_RepresentativeSampleSize, map_libmtp_type_to_ptp_type(filetype), &opd_size);
+      retsam->size = opd_size.FORM.Range.MaximumValue.u32;
+      ptp_free_objectpropdesc(&opd_size);
+    }
     *sample = retsam;
   } else if (support_data && support_format && !support_height && !support_width && support_duration) {
     // Another qualified guess
@@ -7231,9 +7961,17 @@ int LIBMTP_Get_Representative_Sample_Format(LIBMTP_mtpdevice_t *device,
      */
     ptp_mtp_getobjectpropdesc (params, PTP_OPC_RepresentativeSampleFormat, map_libmtp_type_to_ptp_type(filetype), &opd_format);    
     retsam->filetype = map_ptp_type_to_libmtp_type(opd_format.FORM.Enum.SupportedValue[0].u16);
-	/* Populate the maximum duration */
+    ptp_free_objectpropdesc(&opd_format);
+    /* Populate the maximum duration */
     ptp_mtp_getobjectpropdesc (params, PTP_OPC_RepresentativeSampleDuration, map_libmtp_type_to_ptp_type(filetype), &opd_duration);    
     retsam->duration = opd_duration.FORM.Range.MaximumValue.u32;
+    ptp_free_objectpropdesc(&opd_duration);
+    /* Populate the maximum size */
+    if (support_size) {
+      ptp_mtp_getobjectpropdesc (params, PTP_OPC_RepresentativeSampleSize, map_libmtp_type_to_ptp_type(filetype), &opd_size);
+      retsam->size = opd_size.FORM.Range.MaximumValue.u32;
+      ptp_free_objectpropdesc(&opd_size);
+    }
     *sample = retsam;
   }
   return 0;
@@ -7245,7 +7983,8 @@ int LIBMTP_Get_Representative_Sample_Format(LIBMTP_mtpdevice_t *device,
  * if the device supports it. The data should be of a format acceptable
  * to the player (for iRiver and Creative, this seems to be JPEG) and
  * must not be too large. (for a Creative, max seems to be about 20KB.)
- * TODO: there must be a way to find the max size for an ObjectPropertyValue.
+ * Check by calling LIBMTP_Get_Representative_Sample_Format() to get
+ * maximum size, dimensions, etc..
  * @param device a pointer to the device which the object is on.
  * @param id unique id of the object to set artwork for.
  * @param pointer to LIBMTP_filesampledata_t struct containing data
