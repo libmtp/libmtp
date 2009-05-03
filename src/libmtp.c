@@ -4592,7 +4592,17 @@ static uint16_t put_func_wrapper(PTPParams* params, void* private, unsigned long
   uint32_t local_putlen = 0;
   ret = handler->putfunc(params, handler->private, sendlen, data, &local_putlen);
   *putlen = local_putlen;
-  return ret;
+  switch (ret)
+  {
+    case LIBMTP_HANDLER_RETURN_OK:
+      return PTP_RC_OK;
+    case LIBMTP_HANDLER_RETURN_ERROR:
+      return PTP_ERROR_IO;
+    case LIBMTP_HANDLER_RETURN_CANCEL:
+      return PTP_ERROR_CANCEL;
+    default:
+      return PTP_ERROR_IO;
+  }
 }
 
 /**
