@@ -749,7 +749,9 @@ ptp_read_func (
       result--;
     }
     
-    handler->putfunc(NULL, handler->private, result, bytes, &written);
+    int putfunc_ret = handler->putfunc(NULL, handler->private, result, bytes, &written);
+    if (putfunc_ret != PTP_RC_OK)
+      return putfunc_ret;
     
     ptp_usb->current_transfer_complete += result;
     curread += result;
@@ -826,7 +828,9 @@ ptp_write_func (
         towrite -= towrite % ptp_usb->outep_maxpacket;
       }
     }
-    handler->getfunc(NULL, handler->private,towrite,bytes,&towrite);
+    int getfunc_ret = handler->getfunc(NULL, handler->private,towrite,bytes,&towrite);
+    if (getfunc_ret != PTP_RC_OK)
+      return getfunc_ret;
     while (usbwritten < towrite) {
 	    result = USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,((char*)bytes+usbwritten),towrite-usbwritten,ptp_usb->timeout);
 #ifdef ENABLE_USB_BULK_DEBUG
@@ -1059,6 +1063,7 @@ ptp_usb_senddata (PTPParams* params, PTPContainer* ptp,
 		/* For all camera devices. */
 		datawlen = (size<PTP_USB_BULK_PAYLOAD_LEN_WRITE)?size:PTP_USB_BULK_PAYLOAD_LEN_WRITE;
 		wlen = PTP_USB_BULK_HDR_LEN + datawlen;
+    
 		ret = handler->getfunc(params, handler->private, datawlen, usbdata.payload.data, &gotlen);
 		if (ret != PTP_RC_OK)
 			return ret;
@@ -1168,10 +1173,13 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		}
 		if (usbdata.length == 0xffffffffU) {
 			/* Copy first part of data to 'data' */
+      int putfunc_ret = 
 			handler->putfunc(
 				params, handler->private, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data,
 				&written
 			);
+      if (putfunc_ret != PTP_RC_OK)
+        return putfunc_ret;
 			/* stuff data directly to passed data handler */
 			while (1) {
 				unsigned long readdata;
@@ -1234,10 +1242,13 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 			params->split_header_data = 1;
 
 		/* Copy first part of data to 'data' */
+    int putfunc_ret = 
 		handler->putfunc(
 			params, handler->private, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data,
 			&written
 		);
+    if (putfunc_ret != PTP_RC_OK)
+      return putfunc_ret;
     
 		if (FLAG_NO_ZERO_READS(ptp_usb) && 
 		    len+PTP_USB_BULK_HDR_LEN == PTP_USB_BULK_HS_MAX_PACKET_LEN_READ) {
