@@ -1,3 +1,41 @@
+2009-05-03  Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: add external property types just like file
+	  types so any property can be retrieved/set. Add function
+	  LIBMTP_Is_Property_Supported to determine if a property is
+	  supported for a given object type. Add function
+	  LIBMTP_Get_Allowed_Property_Values to get alowed range/enum
+	  of a property value. Make
+	  LIBMTP_Get_Representative_Sample_Format get the size parameter
+	  to allow us to determine the maximum size for a representative
+	  sample.
+	* src/libmtp.h.in: ditto
+	* src/libusb-glue.c: update to check the handler function return
+	  value so the handler can return PTP_ERROR_CANCEL to cancel the
+	  transfer.
+
+2009-05-02  Richard Low <richard@wentnet.com>
+
+	* src/ptp-pack.c: add a NULL check
+
+2009-04-18  Richard Low <richard@wentnet.com>
+
+	* src/ptp-pack.c: add terminating NULL character
+
+2009-04-11  Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: Make get_playlist_extension return type
+	  const char *
+	* src/libusb-glue.h: ditto
+	* src/libusb-glue.c: In probe_device_descriptor, check to see if
+	  dev->config is NULL before going round the first loop
+	* src/libmtp.c: Add LIBMTP_Get_File_To_Handler,
+	  LIBMTP_Send_File_From_Handler, LIBMTP_Get_Track_To_Handler,
+	  LIBMTP_Send_Track_From_Handler functions to get/send files/tracks
+	  from/to handler functions. Add modificationdate to file and track
+	  structs. Add LIBMTP_FILETYPE_ALBUM and LIBMTP_FILETYPE_PLAYLIST
+	  filetypes.
+
 2009-03-17  Linus Walleij <triad@df.lth.se>
 
 	* src/device-flags.h: discovered a new device that cannot even
