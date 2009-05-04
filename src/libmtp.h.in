@@ -880,7 +880,7 @@ LIBMTP_folder_t *LIBMTP_new_folder_t(void);
 void LIBMTP_destroy_folder_t(LIBMTP_folder_t*);
 LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t*);
 LIBMTP_folder_t *LIBMTP_Find_Folder(LIBMTP_folder_t*, uint32_t const);
-uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t*, const char *, uint32_t, uint32_t);
+uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t*, char *, uint32_t, uint32_t);
 int LIBMTP_Set_Folder_Name(LIBMTP_mtpdevice_t *, LIBMTP_folder_t *, const char *);
 /** @} */
 
