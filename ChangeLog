@@ -1,3 +1,8 @@
+2009-05-04  Richard Low <richard@wentnet.com>
+
+	* src/libmtp.c: make name arg of LIBMTP_Create_Folder const
+	* src/libmtp.h.in: ditto
+
 2009-05-03  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: add external property types just like file

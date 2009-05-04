@@ -6679,7 +6679,7 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
  *        want to create this folder on the default storage.
  * @return id to new folder or 0 if an error occured
  */
-uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name,
+uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, const char * name,
 			      uint32_t parent_id, uint32_t storage_id)
 {
   PTPParams *params = (PTPParams *) device->params;
@@ -6699,7 +6699,8 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name,
   parenthandle = parent_id;
 
   memset(&new_folder, 0, sizeof(new_folder));
-  new_folder.Filename = name;
+  new_folder.Filename = malloc(strlen(name)+1);
+  memcpy(new_folder.Filename, name, strlen(name)+1);
   if (FLAG_ONLY_7BIT_FILENAMES(ptp_usb)) {
     strip_7bit_from_utf8(new_folder.Filename);
   }
@@ -6720,8 +6721,8 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name,
     }
     return 0;
   }
-  // NOTE: don't destroy the new_folder objectinfo, because it is statically referencing
-  // several strings.
+  
+  free(new_folder.Filename);
 
   add_object_to_cache(device, new_id);
 
