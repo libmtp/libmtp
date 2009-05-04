@@ -6700,6 +6700,7 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name,
   }
   parenthandle = parent_id;
 
+  memset(&new_folder, 0, sizeof(new_folder));
   new_folder.Filename = name;
   if (FLAG_ONLY_7BIT_FILENAMES(ptp_usb)) {
     strip_7bit_from_utf8(new_folder.Filename);
