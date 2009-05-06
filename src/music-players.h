@@ -31,6 +31,8 @@
 /*
  * MTP device list, trying real bad to get all devices into
  * this list by stealing from everyone I know.
+ * Some devices taken from the Rockbox device listing:
+ * http://www.rockbox.org/twiki/bin/view/Main/DeviceDetection
  */
 
   /*
@@ -241,6 +243,10 @@
   { "SanDisk", 0x0781, "Sansa m230/m240", 0x7400, 
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
     DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_CANNOT_HANDLE_DATEMODIFIED },
+  // From Rockbox device listing
+  { "SanDisk", 0x0781, "Sansa m200-tcc (MTP mode)", 0x7401, 
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+    DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_CANNOT_HANDLE_DATEMODIFIED },
   // Reported by tangent_@users.sourceforge.net
   { "SanDisk", 0x0781, "Sansa c150", 0x7410, 
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
@@ -248,12 +254,12 @@
   // From libgphoto2 source
   // Reported by <gonkflea@users.sourceforge.net>
   // Reported by Mike Owen <mikeowen@computerbaseusa.com>
-  { "SanDisk", 0x0781, "Sansa e200/e250/e260/e270/e280", 0x7420, 
+  { "SanDisk", 0x0781, "Sansa e200/e250/e260/e270/e280", 0x7420,
     DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
     DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_CANNOT_HANDLE_DATEMODIFIED },
   // Don't add 0x7421 as this is e280 in MSC mode
   // Reported by XNJB user
-  { "SanDisk", 0x0781, "Sansa e260/e280 v2", 0x7422, 
+  { "SanDisk", 0x0781, "Sansa e260/e280 v2", 0x7422,
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
     DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR |
     DEVICE_FLAG_CANNOT_HANDLE_DATEMODIFIED },
@@ -310,10 +316,13 @@
    * all properties for a file when asking for metadata 0xffffffff. 
    * Please test on your device if you believe it isn't broken!
    */
-  { "iRiver", 0x1006, "Portable Media Center", 0x4002, 
+  { "iRiver", 0x1006, "H300 Series MTP", 0x3004,
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
-  { "iRiver", 0x1006, "Portable Media Center", 0x4003, 
+  { "iRiver", 0x1006, "Portable Media Center", 0x4002,
+    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
+    DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
+  { "iRiver", 0x1006, "Portable Media Center", 0x4003,
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_IRIVER_OGG_ALZHEIMER },
   // From [st]anislav <iamstanislav@gmail.com>
@@ -389,7 +398,11 @@
   { "iRiver", 0x4102, "H10 20GB", 0x2101, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_OGG_IS_UNKNOWN },
-  { "iRiver", 0x4102, "H10", 0x2102, 
+  { "iRiver", 0x4102, "H10 5GB", 0x2102, 
+    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
+    DEVICE_FLAG_OGG_IS_UNKNOWN },
+  // From Rockbox device listing
+  { "iRiver", 0x4102, "H10 5.6GB", 0x2105, 
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
     DEVICE_FLAG_OGG_IS_UNKNOWN },
 
@@ -668,7 +681,16 @@
   { "Cowon", 0x0e21, "iAudio D2 (MTP mode)", 0x0801,
    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by anonymous Sourceforge user
-  { "Cowon", 0x0e21, "iAudio D2+ (MTP mode)", 0x0861,
+  { "Cowon", 0x0e21, "iAudio D2+ FW 2.x (MTP mode)", 0x0861,
+   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // From Rockbox device listing
+  { "Cowon", 0x0e21, "iAudio D2+ DAB FW 4.x (MTP mode)", 0x0871,
+   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // From Rockbox device listing
+  { "Cowon", 0x0e21, "iAudio D2+ FW 3.x (MTP mode)", 0x0881,
+   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // From Rockbox device listing
+  { "Cowon", 0x0e21, "iAudio D2+ DMB FW 1.x (MTP mode)", 0x0891,
    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by <twkonefal@users.sourceforge.net>
   { "Cowon", 0x0e21, "iAudio S9 (MTP mode)", 0x0901,
