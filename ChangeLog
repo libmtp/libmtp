@@ -1,5 +1,11 @@
 2009-05-06  Linus Walleij <triad@df.lth.se>
 
+	* src/ptp.h: sync to upstream.
+	* src/ptp.c: dito.
+	* src/ptp-pack.c: dito.
+
+2009-05-06  Linus Walleij <triad@df.lth.se>
+
 	A host of Windows fixes from
 	Carlo Bramini <carlo_bramini@users.sourcefore.net>
 	With this patch everything works fine with cygwin and
