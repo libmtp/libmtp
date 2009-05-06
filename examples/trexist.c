@@ -31,7 +31,7 @@ static void usage (void)
 int main (int argc, char **argv)
 {
   LIBMTP_mtpdevice_t *device;
-  u_int32_t id;
+  uint32_t id;
   char *endptr;
   
   fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");

@@ -27,8 +27,8 @@ LDADD=../src/libmtp.la
 EXTRA_DIST=evolution-sync.sh
 
 install-exec-hook:
-	ln -f -s mtp-connect $(DESTDIR)$(bindir)/mtp-delfile
-	ln -f -s mtp-connect $(DESTDIR)$(bindir)/mtp-getfile
-	ln -f -s mtp-connect $(DESTDIR)$(bindir)/mtp-newfolder
-	ln -f -s mtp-connect $(DESTDIR)$(bindir)/mtp-sendfile
-	ln -f -s mtp-connect $(DESTDIR)$(bindir)/mtp-sendtr
+	ln -f -s $(DESTDIR)$(bindir)/mtp-connect$(EXEEXT) $(DESTDIR)$(bindir)/mtp-delfile$(EXEEXT)
+	ln -f -s $(DESTDIR)$(bindir)/mtp-connect$(EXEEXT) $(DESTDIR)$(bindir)/mtp-getfile$(EXEEXT)
+	ln -f -s $(DESTDIR)$(bindir)/mtp-connect$(EXEEXT) $(DESTDIR)$(bindir)/mtp-newfolder$(EXEEXT)
+	ln -f -s $(DESTDIR)$(bindir)/mtp-connect$(EXEEXT) $(DESTDIR)$(bindir)/mtp-sendfile$(EXEEXT)
+	ln -f -s $(DESTDIR)$(bindir)/mtp-connect$(EXEEXT) $(DESTDIR)$(bindir)/mtp-sendtr$(EXEEXT)

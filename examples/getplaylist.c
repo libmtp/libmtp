@@ -50,7 +50,7 @@ int main (int argc, char **argv)
 {
   LIBMTP_mtpdevice_t *device;
   LIBMTP_playlist_t *playlist;
-  u_int32_t id;
+  uint32_t id;
   char *endptr;
 
   fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");

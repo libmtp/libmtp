@@ -21,13 +21,17 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <config.h>
+
 #include <stdio.h>
 #include <stdlib.h> // mkstmp()
 #include <unistd.h>
 #include <errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#ifdef HAVE_SYS_UIO_H
 #include <sys/uio.h>
+#endif
 #include <fcntl.h>
 
 #include <string.h>
@@ -90,6 +94,15 @@ int is_spl_playlist(PTPObjectInfo *oi)
          (strlen(oi->Filename) > 4) &&
          (strcmp((oi->Filename + strlen(oi->Filename) -4), ".spl") == 0);
 }
+
+#ifndef HAVE_MKSTEMP
+# ifdef __WIN32__
+#  include <fcntl.h>
+#  define mkstemp(_pattern) _open(_mktemp(_pattern), _O_CREAT | _O_SHORT_LIVED | _O_EXCL)
+# else
+#  error Missing mkstemp() function.
+# endif
+#endif
 
 /**
  * Take an object ID, a .spl playlist on the MTP device,

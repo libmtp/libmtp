@@ -55,7 +55,7 @@ getfile_function(char * from_path,char * to_path)
 
 void getfile_command(int argc, char **argv)
 {
-  u_int32_t id;
+  uint32_t id;
   char *endptr;
   char *file;
 

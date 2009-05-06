@@ -1,3 +1,49 @@
+2009-05-06  Linus Walleij <triad@df.lth.se>
+
+	A host of Windows fixes from
+	Carlo Bramini <carlo_bramini@users.sourcefore.net>
+	With this patch everything works fine with cygwin and
+	Debian 5.0. Unfortunately, with MSys the "make install"
+	still fails at the very last actions. It happens that
+	everything is re-linked (strange, but not a big problem)
+	and for some unknown reason it loops forever when executing
+	"examples/hotplug > libmtp.usermap". But hopefully the
+	simple "make" completes without errors.
+	
+	* configure.ac:
+	  * iconv is now detected with autotools, this makes libmtp
+	    linkable on cygwin too (previously it was not).
+	  * the presence of Microsoft LIB.EXE is checked; if it is
+	    absent then the MSVC libraries won't be generated.
+	  * Added checking for some include files not available on
+	    Windows: arpa/inet.h, byteswap.h, sys/uio.h.
+	  * Check for presence of mkstemp: a replacement has been
+	    written for Windows.
+	* examples/Makefile.am: the creation of the links failed:
+	  I added source path and $(EXEEXT) extension for executables.
+	  This is tested and working with Mingw+MSys, Cygwin, Debian 5.0.
+	* examples/albumart.c: include sys/uio.h only if it's available.
+	* examples/trexist.c: u_int32_t does not exists, into almost all
+	  other parts libmtp is using uint32_t so I fixed it in that
+	  manner. (Same for u_int64_t/uint64_t).
+	* examples/getfile.c: dito.
+	* examples/pathutils.c: dito, plus rindex() does not exist under
+	  Windows, we must user strrchr() instead.
+	* examples/pathutils.h: fixes for prototypes changes made into
+	  examples/pathutils.c
+	* examples/thumb.c: include sys/uio.h only if it's available.
+	* src/Makefile.am:
+	  * Several fixes because the check on the presence of LIB.EXE
+	    libmtp.sym is now prefixed by $(srcdir), this allows to
+	    configure libmtp outside the source tree in Windows too.
+	  * Libraries are put into LIBADD instead of LDFLAGS, this is the
+	    right place.
+	  * Previously the linker crashed because there was -ws2_32
+	    instead of -lws2_32.
+	* src/playlist-spl.c:
+	  * include sys/uio.h only if it's available.
+	  * include replacement for mkstemp() function.
+
 2009-05-03  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: add external property types just like file
@@ -14,7 +60,7 @@
 	  value so the handler can return PTP_ERROR_CANCEL to cancel the
 	  transfer.
 
-2009-05-02  Richard Low <richard@wentnet.com>
+2009-05-02 Richard Low <richard@wentnet.com>
 
 	* src/ptp-pack.c: add a NULL check
 

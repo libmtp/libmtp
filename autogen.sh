@@ -33,6 +33,7 @@ echo "Removing automake cruft"
 rm -f depcomp install-sh missing mkinstalldirs
 rm -f stamp-h*
 echo "Running automake"
+touch config.rpath
 automake --add-missing --gnu || fail
 
 # Refresh GNU autotools toolchain: autoconf

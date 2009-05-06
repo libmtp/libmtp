@@ -113,7 +113,7 @@ parse_path (char * path, LIBMTP_file_t * files, LIBMTP_folder_t * folders)
   return -1;
 }
 
-int progress (u_int64_t const sent, u_int64_t const total, void const * const data)
+int progress (const uint64_t sent, const uint64_t total, void const * const data)
 {
   int percent = (sent*100)/total;
 #ifdef __WIN32__
@@ -132,7 +132,11 @@ find_filetype (const char * filename)
   char *ptype;
   LIBMTP_filetype_t filetype;
 
+#ifdef __WIN32__
+  ptype = strrchr(filename, '.');
+#else
   ptype = rindex(filename,'.');
+#endif
   // This accounts for the case with a filename without any "." (period).
   if (!ptype) {
     ptype = "";

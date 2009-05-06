@@ -17,6 +17,8 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
+AM_ICONV
+
 # Check for doxygen
 AC_CHECK_PROG(HAVE_DOXYGEN, doxygen, true, false)
 AM_CONDITIONAL(HAVE_DOXYGEN,$HAVE_DOXYGEN)
@@ -47,6 +49,11 @@ case "$host" in
 esac
 AM_CONDITIONAL(COMPILE_MINGW32, [test "$mingw_compiler" = "yes"])
 
+# Check if Microsoft LIB.EXE is available
+if test "$mingw_compiler" = "yes"; then
+  AC_CHECK_PROG(ms_lib_exe, lib.exe, yes, no)
+fi
+AM_CONDITIONAL(MS_LIB_EXE, test x$ms_lib_exe = xyes)
 
 # Checks for libraries.
 AC_CHECK_LIB([usb], [usb_control_msg],,
@@ -61,7 +68,7 @@ AC_HEADER_TIME
 # zlib.h the day we need to decompress firmware
 AC_CHECK_HEADERS([ctype.h errno.h fcntl.h getopt.h libgen.h \
 	limits.h stdio.h string.h sys/stat.h sys/time.h unistd.h \
-	iconv.h langinfo.h locale.h])
+	iconv.h langinfo.h locale.h arpa/inet.h byteswap.h sys/uio.h])
 AC_CHECK_HEADER([usb.h],,
 	AC_MSG_ERROR([I can't find the libusb header file on your system.
 	You may need to set the CPPFLAGS environment variable to include
@@ -79,7 +86,7 @@ AC_STRUCT_ST_BLKSIZE
 AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
 AC_FUNC_STAT
-AC_CHECK_FUNCS(basename memset select strdup strerror strrchr strtoul usleep)
+AC_CHECK_FUNCS(basename memset select strdup strerror strrchr strtoul usleep mkstemp)
 
 # Switches.
 # Enable LFS (Large File Support)

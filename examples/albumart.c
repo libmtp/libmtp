@@ -28,7 +28,9 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#ifdef HAVE_SYS_UIO_H
 #include <sys/uio.h>
+#endif
 
 static void usage(void) {
   printf("Usage: albumart -i <fileid/trackid> -n <albumname> <imagefile>\n");
