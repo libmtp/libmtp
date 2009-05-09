@@ -25,7 +25,9 @@
 
 #include <stdarg.h>
 #include <time.h>
+#ifdef HAVE_ICONV
 #include <iconv.h>
+#endif
 #include "gphoto2-endian.h"
 
 #ifdef __cplusplus
@@ -1879,9 +1881,11 @@ struct _PTPParams {
 	uint32_t	eventpipeid;
 	char		*cameraname;
 
+#ifdef HAVE_ICONV
 	/* PTP: iconv converters */
 	iconv_t	cd_locale_to_ucs2;
 	iconv_t cd_ucs2_to_locale;
+#endif
 
 	/* IO: Sometimes the response packet get send in the dataphase
 	 * too. This only happens for a Samsung player now.
@@ -1994,7 +1998,7 @@ uint16_t ptp_ek_9007 (PTPParams* params, unsigned char **serial, unsigned int *s
 uint16_t ptp_ek_9009 (PTPParams* params, uint32_t*, uint32_t*);
 uint16_t ptp_ek_900c (PTPParams* params, unsigned char **serial, unsigned int *size);
 uint16_t ptp_ek_getserial (PTPParams* params, unsigned char **serial, unsigned int *size);
-uint16_t ptp_ek_setserial (PTPParams* params, unsigned char *serial, uint32_t size);
+uint16_t ptp_ek_setserial (PTPParams* params, unsigned char *serial, unsigned int size);
 uint16_t ptp_ek_settext (PTPParams* params, PTPEKTextParams *text);
 uint16_t ptp_ek_sendfileobjectinfo (PTPParams* params, uint32_t* store,
 				uint32_t* parenthandle, uint32_t* handle,

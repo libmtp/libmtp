@@ -10,7 +10,7 @@
  * <a href="http://en.wikipedia.org/wiki/UTF-16/UCS-2">UTF-16/UCS-2</a>
  * and <a href="http://en.wikipedia.org/wiki/UTF-8">UTF-8</a>.
  *
- * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2009 Linus Walleij <triad@df.lth.se>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,9 +29,14 @@
  *
  */
 
+#include <config.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef HAVE_ICONV
 #include <iconv.h>
+#else
+#error "libmtp unicode.c needs fixing to work without iconv()!"
+#endif
 #include "libmtp.h"
 #include "unicode.h"
 #include "util.h"

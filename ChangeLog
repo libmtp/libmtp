@@ -1,3 +1,13 @@
+2009-05-09  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: include <config.h> for iconv() compatibility.
+	* src/unicode.c: dito. NOTE: this file needs fixing to work
+	  without iconv!
+	* src/ptp.h: sync to upstream and get all the embedded support
+	  for FREE!
+	* src/ptp.c: dito.
+	* src/ptp-pack.c: dito.
+
 2009-05-06  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp.h: sync to upstream.
