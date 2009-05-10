@@ -37,7 +37,7 @@
 #define _LARGEFILE_SOURCE
 #define _LARGEFILE64_SOURCE
 
-#include <config.h>
+#include "config.h"
 #include "libmtp.h"
 #include "unicode.h"
 #include "ptp.h"

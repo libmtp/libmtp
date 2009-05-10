@@ -33,7 +33,7 @@
 #include <stdlib.h>
 #include <string.h>
 #ifdef HAVE_ICONV
-#include <iconv.h>
+#include "iconv.h"
 #else
 #error "libmtp unicode.c needs fixing to work without iconv()!"
 #endif
