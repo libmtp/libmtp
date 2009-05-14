@@ -393,6 +393,10 @@
   // In USB Mass Storage mode it is 0x4102/0x1047
   // Seems to use the new shaped-up firmware.
   { "iRiver", 0x4102, "Spinn", 0x1147, DEVICE_FLAG_NONE },
+  // Reported by Tony Janssen <tonyjanssen@users.sourceforge.net>
+  { "iRiver", 0x4102, "E50", 0x1151,
+    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS | 
+    DEVICE_FLAG_OGG_IS_UNKNOWN },
   // Reported by Scott Call
   // Assume this actually supports OGG though it reports it doesn't.
   { "iRiver", 0x4102, "H10 20GB", 0x2101, 
