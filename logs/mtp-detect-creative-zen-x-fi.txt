@@ -1,3 +1,172 @@
+libmtp version: 0.3.0
+
+Listing raw device(s)
+Device 0 (VID=041e and PID=4162) is UNKNOWN.
+Please report this VID/PID and the device model to the
+libmtp development team
+   Found 1 device(s):
+   041e:4162 @ bus 0, dev 4
+Attempting to connect device(s)
+PTP: Opening session
+Error 2: PTP Layer error 02ff: get_all_metadata_fast():
+could not get proplist of all objects.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: get_handles_recursively():
+could not get object handles.
+Error 2: (Look this up in ptp.h for an explanation.)
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 255
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 041e
+   idProduct: 4162
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Raw device info:
+      Bus location: 0
+      Device number: 4
+      Device entry info:
+         Vendor: (null)
+         Vendor id: 0x041e
+         Product: (null)
+         Vendor id: 0x4162
+         Device flags: 0x00000000
+Device info:
+   Manufacturer: Creative Technology Ltd
+   Model: Creative ZEN X-Fi
+   Device version: 1.04.08_1.03.03
+   Serial number: 130300006B749DAF0002D409F474DDAF
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com:
+1.0;microsoft.com/WMPPD: 10.0;microsoft.com/WMDRMPD:
+10.1;audible.com: 1.0;
+   Detected object size: 64 bits
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1007: Get object handles
+   100c: Send object info
+   100d: Send object
+   100f: Format storage
+   1014: Get device property description
+   1015: Get device property value
+   1006: Get number of objects
+   1008: Get object info
+   1009: Get object
+   100b: Delete object
+   1010: Reset device
+   1012: Set object protection
+   1016: Set device property value
+   1017: Reset device property value
+   1019: Move object
+   101b: Get partial object
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9806: Set object property list
+   9808: Send object property list
+   9807: Get interdependent property description
+   9810: Get object references
+   9811: Set object references
+   9201: Report Added/Deleted Items
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Send WMDRM-PD Command
+   910b: Send WMDRM-PD Request
+Events supported:
+   0x4006
+Device Properties Supported:
+   0x5001: Battery Level
+   0xd401: Synchronization Partner
+   0xd402: Friendly Device Name
+   0xd101: Secure Time
+   0xd102: Device Certificate
+   0xd201: Unknown property
+   0xd001: Unknown property
+Playable File (Object) Types and Object Properties Supported:
+   3009: MP3
+   b901: WMA
+   3008: MS Wave
+   b904: Audible.com Codec
+   b982: MP4
+   ba03: Abstract Audio Album
+   ba05: Abstract Audio Video Playlist
+   ba01: Abstract Multimedia Album
+   3801: JPEG
+   300a: MS AVI
+   300c: ASF
+   b981: WMV
+   bb83: vCard3
+   be03: vCalendar2
+   b802: Firmware
+   3000: Undefined Type
+   3001: Association/Directory
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0003
+      FilesystemType: 0x0002
+      AccessCapability: 0x0000
+      MaxCapacity: 32127975424
+      FreeSpaceInBytes: 8015151104
+      FreeSpaceInObjects: 4294967295
+      StorageDescription: Storage Media
+      VolumeIdentifier: 130300006B749DAF0002D409F474DDAF
+Special directories:
+   Default music folder: 0x00000000
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x00000000
+   Default video folder: 0x00000000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00000000
+   Default text folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: (NULL)
+   Synchronization partner: (NULL)
+libmtp supported (playable) filetypes:
+   ISO MPEG-1 Audio Layer 3
+   Microsoft Windows Media Audio
+   RIFF WAVE file
+   Audible.com Audio Codec
+   MPEG-4 Part 14 Container Format (Audio+Video Empahsis)
+   JPEG file
+   Audio Video Interleave
+   Microsoft Advanced Systems Format
+   Microsoft Windows Media Video
+   VCard version 3
+   VCalendar version 2
+   Firmware file
+Unable to acquire device certificate, perhaps this device
+does not support this
+Error 2: PTP Layer error 02ff:
+get_device_unicode_property(): failed to get unicode property.
+Error 2: (Look this up in ptp.h for an explanation.)
+WMPInfo.xml Does not exist on this device
+PTP: Closing session
+ERROR: Could not close session!
+inep: usb_get_endpoint_status(): Protocol error
+outep: usb_get_endpoint_status(): Protocol error
+usb_clear_halt() on IN endpoint: Protocol error
+usb_clear_halt() on OUT endpoint: Protocol error
+usb_clear_halt() on INTERRUPT endpoint: Protocol error
+OK.
+
+
+
 libmtp version: 0.2.5
 
 Attempting to connect device(s)

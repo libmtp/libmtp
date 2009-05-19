@@ -656,6 +656,9 @@
   // Reported by Cristi Magherusan <majeru@gentoo.ro>
   { "TrekStor", 0x0402, "i.Beat Sweez FM", 0x0611, 
     DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by Anonymous SourceForge user
+  {"TrekStor", 0x1e68, "i.Beat Organix 2.0", 0x0002,
+    DEVICE_FLAG_UNLOAD_DRIVER },
   
   /*
    * Disney/Tevion/MyMusix
