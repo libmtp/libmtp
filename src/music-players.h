@@ -790,7 +790,7 @@
   { "SonyEricsson", 0x0fce, "C905", 0x00ef, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by David House <dmhouse@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "W595", 0x00f3,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL | DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
   // Reported by Mattias Evensson <mevensson@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "W902", 0x00f5, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Stéphane Pontier <shadow_walker@users.sourceforge.net>
