@@ -1,3 +1,9 @@
+2009-06-02  Linus Walleij <triad@df.lth.se>
+
+	* examples/hotplug.c: change the udev match rule from
+	  ATTR{dev}!="?*" to ENV{MAJOR}!="?*" at the suggestion of
+	  Alan Jenkins, this should be faster.
+	
 2009-05-09  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: include <config.h> for iconv() compatibility.

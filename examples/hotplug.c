@@ -90,7 +90,7 @@ int main (int argc, char **argv)
       printf("# UDEV-style hotplug map for libmtp\n");
       printf("# Put this file in /etc/udev/rules.d\n\n");
       printf("ACTION!=\"add\", GOTO=\"libmtp_rules_end\"\n");
-      printf("ATTR{dev}!=\"?*\", GOTO=\"libmtp_rules_end\"\n");
+      printf("ENV{MAJOR}!=\"?*\", GOTO=\"libmtp_rules_end\"\n");
       printf("SUBSYSTEM==\"usb\", GOTO=\"libmtp_usb_rules\"\n"
 	     "# The following thing will be deprecated when older kernels are phased out.\n"
              "SUBSYSTEM==\"usb_device\", GOTO=\"libmtp_usb_device_rules\"\n"
