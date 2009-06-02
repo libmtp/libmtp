@@ -29,6 +29,7 @@
  *   use big-endian dates.)
  *
  */
+#include "config.h"
 #include "libmtp.h"
 #include "libusb-glue.h"
 #include "device-flags.h"
