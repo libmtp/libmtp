@@ -1,3 +1,84 @@
+2009-06-15  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: some buildsystem updates.
+	* INSTALL: some doc updates.
+
+2009-06-15  Marcus Meissner <meissner@suse.de>
+
+	* src/libmtp.c: synced to new libgphoto2 code.
+	* src/device-flags.h: dito.
+	* src/ptp.h: sync to upstream.
+	* src/ptp.c: dito.
+	* src/ptp-pack.c: dito.
+
+	The handles, the PTPObjectInfo and the MTP proplists
+	are now consolidated into "PTPObject"s.
+
+	This and abstraction and the resulting helper functions
+	allow implementation of easier dynamic operations like
+	I need for libgphoto2.
+
+	Some corner stones:
+
+	- PTPParams now contains the device flags itself.
+	  (from device-flags.h) This is needed due to
+	  ptp_object_want() needing to decide whether it can call
+	  GetObjPropList, and it makes it cleaner.
+
+	  So the ptp-bugs and device-flags handling are unified.
+
+	- PTPObjects are sorted by object handle. This allows binary
+	  search by handle.
+
+	- New generic helper functions.
+
+	  * uint16_t ptp_object_find (PTPParams *params,
+	    uint32_t handle, PTPObject **retob)
+	    binary searches the handle in the object list and returns
+	    a pointer to the object.
+
+	  * uint16_t ptp_object_find_or_insert (PTPParams *params,
+	    uint32_t handle, PTPObject **retob)
+	    binary searches the handle in the object list, inserts it
+	    if not there yet, and returns a pointer to the object.
+
+	  * uint16_t ptp_object_want (PTPParams *params, uint32_t handle,
+	    int want, PTPObject **retob)
+	    The most magic function, which does the "on demand" loading
+	    of objectinfos, mtp proplists (and more).
+	    want is a flag mask of PTPOBJECT_*_LOADED
+	    PTPOBJECT_OBJECTINFO_LOADED   clear
+	    PTPOBJECT_CANONFLAGS_LOADED   (special canon flags)
+	    PTPOBJECT_MTPPROPLIST_LOADED  mtp properties for this object
+	                                  loaded
+	    PTPOBJECT_DIRECTORY_LOADED    (only used by libgphoto2 currently)
+	    PTPOBJECT_PARENTOBJECT_LOADED this and storageid are
+	                                  interesting for directory based
+	                                  lookups
+	    PTPOBJECT_STORAGEID_LOADED    and can be filled out by directory
+	                                  loading
+
+	  * void ptp_objects_sort (PTPParams *params);
+	    Sort the objects list if you did any modification of your own
+	    on it and the order of object handles might not be linear
+	    anymore.
+
+	- Multiple object information loading strategies are possible.
+	  libmtp uses getobjecthandles() /getobjectinfo() and
+	  getobjectproplist() loading strategies for initial setup. This
+	  stays of course, it will just fill out the PTPObject array.
+
+	  libgphoto2 now uses a per-directory getobjecthandles() /
+	  getobjectinfo() loading approach, and I will readd the
+	  getobjectproplist() approach.
+
+	  It is open what you chose to use here. For libmtp the "load all
+	  handles at startup" is good, dynamic loading is better for
+	  libgphoto2.
+
+	  Only rule is: The objectlist must be in order of objecthandles!
+	  (ptp_object_sort()).
+
 2009-06-02  Linus Walleij <triad@df.lth.se>
 
 	* examples/hotplug.c: change the udev match rule from
@@ -5,7 +86,7 @@
 	  Alan Jenkins, this should be faster.
 	* src/libusb-glue.c: include config.h (Marcus Meissner found
 	  this is needed when you're not using iconv().)
-	
+
 2009-05-09  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: include <config.h> for iconv() compatibility.
@@ -33,7 +114,7 @@
 	and for some unknown reason it loops forever when executing
 	"examples/hotplug > libmtp.usermap". But hopefully the
 	simple "make" completes without errors.
-	
+
 	* configure.ac:
 	  * iconv is now detected with autotools, this makes libmtp
 	    linkable on cygwin too (previously it was not).

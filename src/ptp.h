@@ -29,6 +29,7 @@
 #include <iconv.h>
 #endif
 #include "gphoto2-endian.h"
+#include "device-flags.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -785,6 +786,7 @@ typedef struct _PTPObjectInfo PTPObjectInfo;
 /* Canon extension */
 #define PTP_OFC_CANON_CRW			0xb101
 #define PTP_OFC_CANON_CRW3			0xb103
+#define PTP_OFC_CANON_MOV			0xb104
 /* MTP extensions */
 #define PTP_OFC_MTP_MediaCard			0xb211
 #define PTP_OFC_MTP_MediaCardGroup		0xb212
@@ -1044,8 +1046,9 @@ struct _PTPNIKONWifiProfile {
 
 typedef struct _PTPNIKONWifiProfile PTPNIKONWifiProfile;
 
-#define PTP_CANON_EOS_CHANGES_TYPE_UNKNOWN	0
-#define PTP_CANON_EOS_CHANGES_TYPE_OBJECTINFO	1
+#define PTP_CANON_EOS_CHANGES_TYPE_UNKNOWN		0
+#define PTP_CANON_EOS_CHANGES_TYPE_OBJECTINFO		1
+#define PTP_CANON_EOS_CHANGES_TYPE_OBJECTTRANSFER	2
 
 struct _PTPCanon_New_Object {
 	uint32_t		oid;
@@ -1818,7 +1821,27 @@ typedef void (* PTPDebugFunc) (void *data, const char *format, va_list args)
 #endif
 ;
 
+struct _PTPObject {
+	uint32_t	oid;
+	unsigned int	flags;
+#define PTPOBJECT_OBJECTINFO_LOADED	(1<<0)
+#define PTPOBJECT_CANONFLAGS_LOADED	(1<<1)
+#define PTPOBJECT_MTPPROPLIST_LOADED	(1<<2)
+#define PTPOBJECT_DIRECTORY_LOADED	(1<<3)
+#define PTPOBJECT_PARENTOBJECT_LOADED	(1<<4)
+#define PTPOBJECT_STORAGEID_LOADED	(1<<5)
+
+	PTPObjectInfo	oi;
+	uint32_t	canon_flags;
+	MTPProperties	*mtpprops;
+	int		nrofmtpprops;
+};
+typedef struct _PTPObject PTPObject;
+
 struct _PTPParams {
+	/* device flags */
+	uint32_t	device_flags;
+
 	/* data layer byteorder */
 	uint8_t		byteorder;
 	uint16_t	maxpacketsize;
@@ -1847,13 +1870,10 @@ struct _PTPParams {
 	/* PTP IO: if we have MTP style split header/data transfers */
 	int		split_header_data;
 
-	/* PTP: MTP specific structure. */
-	MTPProperties	*props;
-	int		nrofprops;
-
 	/* PTP: internal structures used by ptp driver */
-	PTPObjectHandles handles;
-	PTPObjectInfo	*objectinfo;
+	PTPObject	*objects;
+	int		nrofobjects;
+
 	PTPDeviceInfo	deviceinfo;
 
 	/* PTP: the current event queue */
@@ -1861,7 +1881,6 @@ struct _PTPParams {
 	int		nrofevents;
 
 	/* PTP: Canon specific flags list */
-	uint32_t		*canon_flags; /* size(handles.n) */
 	PTPCanon_Property	*canon_props;
 	int			nrofcanon_props;
 
@@ -2031,6 +2050,7 @@ uint16_t ptp_canon_checkevent (PTPParams* params,
 uint16_t ptp_canon_focuslock (PTPParams* params);
 uint16_t ptp_canon_focusunlock (PTPParams* params);
 uint16_t ptp_canon_keepdeviceon (PTPParams* params);
+uint16_t ptp_canon_eos_keepdeviceon (PTPParams* params);
 uint16_t ptp_canon_initiatecaptureinmemory (PTPParams* params);
 uint16_t ptp_canon_eos_capture (PTPParams* params);
 uint16_t ptp_canon_eos_getevent (PTPParams* params, PTPCanon_changes_entry **entries, int *nrofentries);
@@ -2104,7 +2124,7 @@ void ptp_free_devicepropvalue	(uint16_t dt, PTPPropertyValue* dpd);
 void ptp_free_objectpropdesc	(PTPObjectPropDesc* dpd);
 void ptp_free_params		(PTPParams *params);
 void ptp_free_objectinfo	(PTPObjectInfo *oi);
-
+void ptp_free_object		(PTPObject *oi);
 
 void ptp_perror			(PTPParams* params, uint16_t error);
 
@@ -2123,7 +2143,10 @@ void ptp_destroy_object_prop_list(MTPProperties *props, int nrofprops);
 MTPProperties *ptp_find_object_prop_in_cache(PTPParams *params, uint32_t const handle, uint32_t const attribute_id);
 void ptp_remove_object_from_cache(PTPParams *params, uint32_t handle);
 uint16_t ptp_add_object_to_cache(PTPParams *params, uint32_t handle);
-
+uint16_t ptp_object_want (PTPParams *, uint32_t handle, int want, PTPObject**retob);
+void ptp_objects_sort (PTPParams *);
+uint16_t ptp_object_find (PTPParams *params, uint32_t handle, PTPObject **retob);
+uint16_t ptp_object_find_or_insert (PTPParams *params, uint32_t handle, PTPObject **retob);
 /* ptpip.c */
 void ptp_nikon_getptpipguid (unsigned char* guid);
 

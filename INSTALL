@@ -17,13 +17,22 @@ help you get used to using the libmtp API, as well as provide some
 immediate gratification. Links to other programs using the libmtp
 API may be found at the homepage: http://libmtp.sourceforge.net/
 
+
 Install From Distribution
 -------------------------
 
 You should probably prefer to install libmtp from the distribution
 source you're using. Last time we checked, libmtp was part of Ubuntu,
-Fedora, OpenSUSE, Debian testing, Gentoo, FreeBSD ports and OpenBSD 
+Fedora, OpenSUSE, Debian testing, Gentoo, FreeBSD ports and OpenBSD
 packages/ports.
+
+
+Dependencies
+------------
+
+To build libmtp you should only need development files for libusb.
+(Often named libusb-devel or similar.) For working with CVS versions
+you may need autoconf, automake, libtool, gettext(-devel).
 
 
 Shared Library Support
@@ -36,8 +45,8 @@ libmtp install directory to your shared library search path.
 On Linux, you would add the line "/usr/local/lib" to your
 "/etc/ld.so.conf" or as a oneliner in for example a
 "/etc/ld.so.conf.d/local.conf" file and run the
-program "ldconfig" to scan in the shared libraries at 
-the new path. This is a part of the Linux shared library 
+program "ldconfig" to scan in the shared libraries at
+the new path. This is a part of the Linux shared library
 loader actually.
 
 To access the library from real odd locations you can use
@@ -57,8 +66,8 @@ here: http://www.visi.com/~barr/ldpath.html
 The shared library comes with different interface version numbers,
 for example libmtp.so.4, libmtp.so.5 and so forth. This is used so
 that both old and new libmtp libraries shall be able to coexist on
-the same system. When you compile your programs they will typically 
-bind to the latest version of the shared library. A link to the 
+the same system. When you compile your programs they will typically
+bind to the latest version of the shared library. A link to the
 latest version is always provided as $PREFIX/lib/libmtp.so.
 
 libusb Support
