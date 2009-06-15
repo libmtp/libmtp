@@ -217,7 +217,7 @@ find_filetype (const char * filename)
     /* Tagging as unknown file type */
     filetype = LIBMTP_FILETYPE_UNKNOWN;
   }
-  printf("type:%s,%d\n",ptype,filetype);
+  printf("type: %s, %d\n", ptype, filetype);
   return filetype;
 }
 
@@ -234,4 +234,3 @@ static char *basename(char *in) {
   return ++p;
 }
 #endif
-
