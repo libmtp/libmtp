@@ -159,7 +159,7 @@
      DEVICE_FLAG_PLAYLIST_SPL_V1 },
   // From Anonymous SourceForge user
   // Guessing on .spl flag
-  { "Samsung", 0x04e8, "YP-Q1", 0x511d, DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_PLAYLIST_SPL_V1 },
+  { "Samsung", 0x04e8, "YP-Q2", 0x511d, DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_PLAYLIST_SPL_V1 },
   // From Marco Pizzocaro <mpizzocaro@users.sourceforge.net>
   // Guessing on .spl flag
   { "Samsung", 0x04e8, "YP-U5", 0x5121,
