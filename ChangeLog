@@ -1,3 +1,14 @@
+2009-06-15  Marcus Meissner <meissner@suse.de>
+
+	* configure.ac: use the AC_SYS_LARGEFILE macro instead
+	  of the ugly largefile hacks.
+	* src/libmtp.c: fix use of largefile back to the simple
+	  functions instead.
+	* examples/albumart.c: dito.
+	* examples/sendfile.c: dito.
+	* examples/sendtr.c: dito.
+	* examples/thumb.c: dito.
+
 2009-06-15  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: some buildsystem updates.
