@@ -252,15 +252,15 @@
    * For more info see: http://daniel.haxx.se/sansa/v2.html
    */
   // Reported by Brian Robison
-  { "SanDisk", 0x0781, "Sansa m230/m240", 0x7400, 
+  { "SanDisk", 0x0781, "Sansa m230/m240", 0x7400,
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
     DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_CANNOT_HANDLE_DATEMODIFIED },
   // From Rockbox device listing
-  { "SanDisk", 0x0781, "Sansa m200-tcc (MTP mode)", 0x7401, 
+  { "SanDisk", 0x0781, "Sansa m200-tcc (MTP mode)", 0x7401,
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
     DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_CANNOT_HANDLE_DATEMODIFIED },
   // Reported by tangent_@users.sourceforge.net
-  { "SanDisk", 0x0781, "Sansa c150", 0x7410, 
+  { "SanDisk", 0x0781, "Sansa c150", 0x7410,
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
     DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_CANNOT_HANDLE_DATEMODIFIED },
   // From libgphoto2 source
@@ -276,7 +276,7 @@
     DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR |
     DEVICE_FLAG_CANNOT_HANDLE_DATEMODIFIED },
   // Reported by XNJB user
-  { "SanDisk", 0x0781, "Sansa m240/m250", 0x7430, 
+  { "SanDisk", 0x0781, "Sansa m240/m250", 0x7430,
     DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
     DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_CANNOT_HANDLE_DATEMODIFIED },
   // Reported by Eugene Brevdo <ebrevdo@princeton.edu>
@@ -290,23 +290,23 @@
     DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR |
     DEVICE_FLAG_CANNOT_HANDLE_DATEMODIFIED},
   // Reported by anonymous user at sourceforge.net
-  { "SanDisk", 0x0781, "Sansa c240/c250", 0x7450, 
+  { "SanDisk", 0x0781, "Sansa c240/c250", 0x7450,
     DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
     DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_CANNOT_HANDLE_DATEMODIFIED },
   // Reported by anonymous SourceForge user
-  { "SanDisk", 0x0781, "Sansa c250 v2", 0x7452, 
+  { "SanDisk", 0x0781, "Sansa c250 v2", 0x7452,
     DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
     DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_CANNOT_HANDLE_DATEMODIFIED },
   // Reported by Troy Curtis Jr.
-  { "SanDisk", 0x0781, "Sansa Express", 0x7460, 
-    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | 
+  { "SanDisk", 0x0781, "Sansa Express", 0x7460,
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
     DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_CANNOT_HANDLE_DATEMODIFIED },
   // Reported by XNJB user, and Miguel de Icaza <miguel@gnome.org>
   // This has no dual-mode so no need to unload any driver.
   // This is a Linux based device!
   { "SanDisk", 0x0781, "Sansa Connect", 0x7480, DEVICE_FLAG_NONE },
   // Reported by anonymous SourceForge user
-  { "SanDisk", 0x0781, "Sansa View", 0x74b0, 
+  { "SanDisk", 0x0781, "Sansa View", 0x74b0,
     DEVICE_FLAG_UNLOAD_DRIVER |  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
     DEVICE_FLAG_NO_RELEASE_INTERFACE | DEVICE_FLAG_CANNOT_HANDLE_DATEMODIFIED },
   // Reported by Patrick <skibler@gmail.com>
