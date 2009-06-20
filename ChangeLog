@@ -1,3 +1,7 @@
+2009-06-20  Linus Walleij <triad@df.lth.se>
+
+	* examples/pathutils.c: detect VCF files too.
+
 2009-06-15  Marcus Meissner <meissner@suse.de>
 
 	* configure.ac: use the AC_SYS_LARGEFILE macro instead

@@ -213,6 +213,8 @@ find_filetype (const char * filename)
     filetype = LIBMTP_FILETYPE_JPX;
   } else if (!strcasecmp (ptype, "bin")) {
     filetype = LIBMTP_FILETYPE_FIRMWARE;
+  } else if (!strcasecmp (ptype, "vcf")) {
+    filetype = LIBMTP_FILETYPE_VCARD3;
   } else {
     /* Tagging as unknown file type */
     filetype = LIBMTP_FILETYPE_UNKNOWN;
