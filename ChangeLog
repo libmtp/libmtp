@@ -1,7 +1,8 @@
 2009-06-24  Linus Walleij <triad@df.lth.se>
 
 	* src/music-players.h: tag most all Samsung devices with
-	  the UNLOAD_DRIVER flag.
+	  the UNLOAD_DRIVER flag. Broken GET_ALL info in all
+	  Creative devices.
 
 2009-06-20  Linus Walleij <triad@df.lth.se>
 
