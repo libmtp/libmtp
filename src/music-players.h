@@ -801,6 +801,9 @@
   { "Sony", 0x054c, "Walkman NWZ-S739F", 0x038c, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Marco Filipe Nunes Soares Abrantes Pereira <marcopereira@ua.pt>
   { "Sony", 0x054c, "Walkman NWZ-S638F", 0x038e, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by Elliot <orwells@users.sourceforge.net>
+  { "Sony", 0x054c, "Walkman NWZ-X1050B/NWZ-X1060B/NWZ-X1051/NWZ-X1061",
+    0x0397, DEVICE_FLAG_UNLOAD_DRIVER },
 
 
   /*
