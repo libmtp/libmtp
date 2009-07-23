@@ -254,6 +254,12 @@
   { "Philips", 0x0471, "GoGear SA3345", 0x2004, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Roberto Vidmar <rvidmar@libero.it>
   { "Philips", 0x0471, "SA5285", 0x2022, DEVICE_FLAG_UNLOAD_DRIVER },
+  // From Elie De Brauwer <elie@de-brauwer.be>
+  { "Philips", 0x0471, "GoGear ViBE SA1VBE04", 0x2075,
+    DEVICE_FLAG_UNLOAD_DRIVER },
+  // From Elie De Brauwer <elie@de-brauwer.be>
+  { "Philips", 0x0471, "GoGear ViBE SA1VBE08", 0x207b,
+    DEVICE_FLAG_UNLOAD_DRIVER },
   // from XNJB user
   { "Philips", 0x0471, "PSA235", 0x7e01, DEVICE_FLAG_NONE },
 
