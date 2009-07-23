@@ -270,8 +270,8 @@ transaction. The bulk transactions contain all the PTP/MTP layer
 data, which is usually where the problems appear.
 
 
-Devices does not work - last resort:
-------------------------------------
+Dual-mode devices does not work - last resort:
+----------------------------------------------
 
 Some devices that are dual-mode are simply impossible to get
 to work under Linux because the usb-storage(.ko) kernel
@@ -280,6 +280,17 @@ when we specify the DEVICE_FLAG_UNLOAD_DRIVER flag. (Maybe
 it DOES release it but the device will immediately be probed
 at the USB mass storage interface AGAIN because it 
 enumerates.)
+
+Here is what some people do:
+
+ 1. Plug in the device.
+ 2. USB-mass storage folder will open automatically.
+ 3. Unmount the device.
+ 4. Run mtp-detect. It will most likely fail the first time.
+ 5. Run mtp-detect again, it might work this time, or fail. Keep running
+    till it works. 99% it works by the third try.
+ 6. Once mtp-detect gives you an "Ok", open either Rhythmbox or Gnomad2,
+    everything should work.
 
 Linux: Try this, if you have a recent 2.6.x Linux kernel,
 run (as root) something like:
