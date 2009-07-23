@@ -677,7 +677,7 @@
   { "NormSoft, Inc.", 0x1703, "Pocket Tunes 4", 0x0002, DEVICE_FLAG_NONE },
 
   /*
-   * TrekStor and Medion devices
+   * TrekStor, Medion and Maxfield devices
    * Their datasheet claims their devices are dualmode so probably needs to
    * unload the attached drivers here.
    */
@@ -690,8 +690,11 @@
   // the same bug flag as its ancestor above.
   { "Medion", 0x066f, "MD8333", 0x8550,
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
-  // Reported by anonymous Sourceforge user
+  // Reported by anonymous SourceForge user
   { "Medion", 0x066f, "MD8333", 0x8588,
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by anonymous SourceForge user
+  { "Maxfield", 0x066f, "G-Flash NG 1GB", 0x846c,
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Cristi Magherusan <majeru@gentoo.ro>
   { "TrekStor", 0x0402, "i.Beat Sweez FM", 0x0611, 

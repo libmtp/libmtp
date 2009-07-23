@@ -1,0 +1,145 @@
+Device 0 (VID=066f and PID=846c) is a Maxfield G-Flash NG 1GB.
+Error 2: PTP Layer error 02ff: get_device_unicode_property(): failed to get unicode property.
+Error 2: (Look this up in ptp.h for an explanation.)
+ERROR: Could not close session!
+inep: usb_get_endpoint_status(): No such device
+outep: usb_get_endpoint_status(): No such device
+usb_clear_halt() on IN endpoint: No such device
+usb_clear_halt() on OUT endpoint: No such device
+usb_clear_halt() on INTERRUPT endpoint: No such device
+libmtp version: 0.3.7
+
+Listing raw device(s)
+   Found 1 device(s):
+   Maxfield: G-Flash NG 1GB (066f:846c) @ bus 0, dev 30
+Attempting to connect device(s)
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 066f
+   idProduct: 846c
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Raw device info:
+      Bus location: 0
+      Device number: 30
+      Device entry info:
+         Vendor: Maxfield
+         Vendor id: 0x066f
+         Product: G-Flash NG 1GB
+         Vendor id: 0x846c
+         Device flags: 0x00000006
+Microsoft device descriptor 0xee:
+	0000: 1203 4d00 5300 4600 5400 3100 3000 3000	..M.S.F.T.1.0.0.
+	0010: 0100                                   	..
+Device info:
+   Manufacturer: SigmaTel
+   Model: MTP Player
+   Device version: SDK4.210
+   Serial number: 0002FA82174ED9C80002FA82174ACA0C
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0; microsoft.com/WMDRMPD: 10.1; microsoft.com/WMPPD: 10.0
+   Detected object size: 64 bits
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   101b: Get partial object
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   9802: Get object property description
+   9801: Get object properties supported
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9806: Set object property list
+   9808: Send object property list
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Send WMDRM-PD Command
+   910b: Send WMDRM-PD Request
+   100f: Format storage
+   9810: Get object references
+   9811: Set object references
+   9201: Report Added/Deleted Items
+   97f1: Unknown (97f1)
+   97f2: Unknown (97f2)
+   97f3: Unknown (97f3)
+   1010: Reset device
+Events supported:
+   0x4004
+   0x4005
+Device Properties Supported:
+   0xd101: Secure Time
+   0xd102: Device Certificate
+   0xd402: Friendly Device Name
+   0xd401: Synchronization Partner
+   0x5001: Battery Level
+Playable File (Object) Types and Object Properties Supported:
+   3009: MP3
+   3008: MS Wave
+   b901: WMA
+   b902: OGG
+   3007: AIFF
+   b903: AAC
+   300c: ASF
+   3001: Association/Directory
+   ba05: Abstract Audio Video Playlist
+   3801: JPEG
+   ba11: M3U Playlist
+   ba03: Abstract Audio Album
+   3000: Undefined Type
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0003 fixed RAM storage
+      FilesystemType: 0x0002 generic hierarchical
+      AccessCapability: 0x0000 read/write
+      MaxCapacity: 990117888
+      FreeSpaceInBytes: 478984104
+      FreeSpaceInObjects: 4294967295
+      StorageDescription: Internal Storage
+      VolumeIdentifier: 0002FA82174ED9C80002FA82174ACA0C
+Special directories:
+   Default music folder: 0x00000000
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x00000000
+   Default video folder: 0x00000000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00000000
+   Default text folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: (NULL)
+   Synchronization partner: (NULL)
+libmtp supported (playable) filetypes:
+   ISO MPEG-1 Audio Layer 3
+   RIFF WAVE file
+   Microsoft Windows Media Audio
+   Ogg container format
+   Advanced Audio Coding (AAC)/MPEG-2 Part 7/MPEG-4 Part 3
+   Microsoft Advanced Systems Format
+   JPEG file
+Unable to acquire device certificate, perhaps this device does not support this
+OK.
+
+ 	  	 
