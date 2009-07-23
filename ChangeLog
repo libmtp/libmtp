@@ -1,3 +1,10 @@
+2009-07-24  Linus Walleij <triad@df.lth.se>
+
+	* src/music-players.h: a number of new devices.
+	* src/ptp.c: sync to upstream.
+	* src/ptp.h: sync to upstream.
+	* src/ptp-pack.c: sync to upstream.
+
 2009-06-24  Linus Walleij <triad@df.lth.se>
 
 	* src/music-players.h: tag most all Samsung devices with
