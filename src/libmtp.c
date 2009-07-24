@@ -214,6 +214,29 @@ static int has_ogg_extension(char *name) {
   return 0;
 }
 
+/**
+ * Checks if a filename ends with ".flac". Used in various
+ * situations when the device has no idea that it support
+ * FLAC but still does.
+ *
+ * @param name string to be checked.
+ * @return 0 if this does not end with flac, any other
+ *           value means it does.
+ */
+static int has_flac_extension(char *name) {
+  char *ptype;
+
+  if (name == NULL)
+    return 0;
+  ptype = strrchr(name,'.');
+  if (ptype == NULL)
+    return 0;
+  if (!strcasecmp (ptype, ".flac"))
+    return 1;
+  return 0;
+}
+
+
 
 /**
  * Create a new file mapping entry
@@ -3408,6 +3431,12 @@ int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *device, uint16_t ** const
     localtypes[localtypelen] = LIBMTP_FILETYPE_OGG;
     localtypelen++;
   }
+  // The forgotten FLAC support on Cowon iAudio S9 and others...
+  if (FLAG_FLAC_IS_UNKNOWN(ptp_usb)) {
+    localtypes = (uint16_t *) realloc(localtypes, (params->deviceinfo.ImageFormats_len+1) * sizeof(uint16_t));
+    localtypes[localtypelen] = LIBMTP_FILETYPE_FLAC;
+    localtypelen++;
+  }
 
   *filetypes = localtypes;
   *length = localtypelen;
@@ -3686,21 +3715,21 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
     }
 
     /*
-     * A special quirk for iriver devices that doesn't quite
+     * A special quirk for devices that doesn't quite
      * remember that some files marked as "unknown" type are
-     * actually OGG files. We look at the filename extension
-     * and see if it happens that this was atleast named "ogg"
+     * actually OGG or FLAC files. We look at the filename extension
+     * and see if it happens that this was atleast named "ogg" or "flac"
      * and fall back on this heuristic approach in that case, 
      * for these bugged devices only.
      */
-    if (file->filetype == LIBMTP_FILETYPE_UNKNOWN &&
-	(FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
-	 FLAG_OGG_IS_UNKNOWN(ptp_usb))) {
-      // Repair forgotten OGG filetype
-      if (has_ogg_extension(file->filename)) {
-	// Fix it.
-        file->filetype = LIBMTP_FILETYPE_OGG;
-      }
+    if (file->filetype == LIBMTP_FILETYPE_UNKNOWN) {
+      if ((FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
+	   FLAG_OGG_IS_UNKNOWN(ptp_usb)) &&
+	  has_ogg_extension(file->filename))
+	file->filetype = LIBMTP_FILETYPE_OGG;
+      if (FLAG_FLAC_IS_UNKNOWN(ptp_usb) &&
+	  has_flac_extension(file->filename))
+	file->filetype = LIBMTP_FILETYPE_FLAC;
     }
 
     /*
@@ -4217,7 +4246,8 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
 	// This row lets through undefined files for examination since they may be forgotten OGG files.
 	(ob->oi.ObjectFormat != PTP_OFC_Undefined || 
 	 (!FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) &&
-	 !FLAG_OGG_IS_UNKNOWN(ptp_usb)))
+	  !FLAG_OGG_IS_UNKNOWN(ptp_usb) &&
+	  !FLAG_FLAC_IS_UNKNOWN(ptp_usb)))
 	) {
       //printf("Not a music track (name: %s format: %d), skipping...\n", oi->Filename, oi->ObjectFormat);
       continue;
@@ -4245,20 +4275,22 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
     /*
      * A special quirk for iriver devices that doesn't quite
      * remember that some files marked as "unknown" type are
-     * actually OGG files. We look at the filename extension
-     * and see if it happens that this was atleast named "ogg"
-     * and fall back on this heuristic approach in that case, 
+     * actually OGG or FLAC files. We look at the filename extension
+     * and see if it happens that this was atleast named "ogg" or "flac"
+     * and fall back on this heuristic approach in that case,
      * for these bugged devices only.
      */
     if (track->filetype == LIBMTP_FILETYPE_UNKNOWN &&
-	track->filename != NULL &&
-	(FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
-	 FLAG_OGG_IS_UNKNOWN(ptp_usb))) {
-      // Repair forgotten OGG filetype
-      if (has_ogg_extension(track->filename)) {
+	track->filename != NULL) {
+      if ((FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
+	   FLAG_OGG_IS_UNKNOWN(ptp_usb)) &&
+	  has_ogg_extension(track->filename))
 	track->filetype = LIBMTP_FILETYPE_OGG;
-      } else {
-	// This was not an OGG file so discard it and continue
+      else if (FLAG_FLAC_IS_UNKNOWN(ptp_usb) &&
+	       has_flac_extension(track->filename))
+	track->filetype = LIBMTP_FILETYPE_FLAC;
+      else {
+	// This was not an OGG/FLAC file so discard it and continue
 	LIBMTP_destroy_track_t(track);
 	continue;
       }
@@ -4316,10 +4348,14 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
 
   // Ignore stuff we don't know how to handle...
   if (!LIBMTP_FILETYPE_IS_TRACK(mtptype) &&
-      // This row lets through undefined files for examination since they may be forgotten OGG files.
+      /*
+       * This row lets through undefined files for examination
+       * since they may be forgotten OGG or FLAC files.
+       */
       (ob->oi.ObjectFormat != PTP_OFC_Undefined || 
        (!FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) &&
-       !FLAG_OGG_IS_UNKNOWN(ptp_usb)))
+	!FLAG_OGG_IS_UNKNOWN(ptp_usb) &&
+	!FLAG_FLAC_IS_UNKNOWN(ptp_usb)))
       ) {
     //printf("Not a music track (name: %s format: %d), skipping...\n", oi->Filename, oi->ObjectFormat);
     return NULL;
@@ -4343,21 +4379,24 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
   }
 
   /*
-   * A special quirk for iriver devices that doesn't quite
+   * A special quirk for devices that doesn't quite
    * remember that some files marked as "unknown" type are
-   * actually OGG files. We look at the filename extension
+   * actually OGG or FLAC files. We look at the filename extension
    * and see if it happens that this was atleast named "ogg"
    * and fall back on this heuristic approach in that case, 
    * for these bugged devices only.
    */
   if (track->filetype == LIBMTP_FILETYPE_UNKNOWN &&
-      (FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
-       FLAG_OGG_IS_UNKNOWN(ptp_usb))) {
-    if (has_ogg_extension(track->filename)) {
-      // Fix it.
+      track->filename != NULL) {
+    if ((FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
+	 FLAG_OGG_IS_UNKNOWN(ptp_usb)) &&
+	has_ogg_extension(track->filename))
       track->filetype = LIBMTP_FILETYPE_OGG;
-    } else {
-      // This was not an OGG file so discard it
+    else if (FLAG_FLAC_IS_UNKNOWN(ptp_usb) &&
+	     has_flac_extension(track->filename))
+      track->filetype = LIBMTP_FILETYPE_FLAC;
+    else {
+      // This was not an OGG/FLAC file so discard it
       LIBMTP_destroy_track_t(track);
       return NULL;
     }
@@ -5325,8 +5364,11 @@ static int send_file_object_info(LIBMTP_mtpdevice_t *device, LIBMTP_file_t *file
   }
 
   // Here we wire the type to unknown on bugged, but
-  // Ogg-supportive devices.
+  // Ogg or FLAC-supportive devices.
   if (FLAG_OGG_IS_UNKNOWN(ptp_usb) && of == PTP_OFC_MTP_OGG) {
+    of = PTP_OFC_Undefined;
+  }
+  if (FLAG_FLAC_IS_UNKNOWN(ptp_usb) && of == PTP_OFC_MTP_FLAC) {
     of = PTP_OFC_Undefined;
   }
 

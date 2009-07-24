@@ -107,6 +107,8 @@ void get_usb_device_timeout(PTP_USB *ptp_usb, int *timeout);
   ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST)
 #define FLAG_BROKEN_BATTERY_LEVEL(a) \
   ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_BROKEN_BATTERY_LEVEL)
+#define FLAG_FLAC_IS_UNKNOWN(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_FLAC_IS_UNKNOWN)
 
 /* connect_first_device return codes */
 #define PTP_CD_RC_CONNECTED	0
