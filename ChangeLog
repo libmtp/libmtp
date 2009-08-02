@@ -1,3 +1,10 @@
+2009-08-02  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: tag for libmtp 1.0.0!
+	* src/Makefile.am: bump to compatible API/ABI
+	  result = libmtp.so.8.3.0
+	* src/libmtp.c: missing flag fix from Marcus.
+
 2009-07-24  Linus Walleij <triad@df.lth.se>
 
 	* src/device-flags.h: add a flag for unknown FLAC type.
@@ -297,7 +304,7 @@
 
 	* src/Makefile.am: patch from Rafael Laboissiere removing a
 	  build artifact in distclean.
-	
+
 2009-01-02  Linus Walleij <triad@df.lth.se>
 
 	* examples/connect.c: usage patch from Riley Patterson.

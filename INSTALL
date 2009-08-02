@@ -115,8 +115,9 @@ if you want to install the documentation type:
 
 if you checked out the sources from CVS, you must first run the
 autogen.sh script that generates all the GNU autotools files.
-Notice that this requires GNU autoconf, automake and libtool. This
-is done with:
+Notice that this requires GNU autoconf, automake and libtool and
+possibly some other packages like gettext, readline, intltool and
+other M4 macro sources. This is done with:
 
    % ./autogen.sh
 

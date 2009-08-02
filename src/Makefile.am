@@ -17,20 +17,20 @@ EXTRA_DIST=libmtp.h.in libmtp.sym ptp-pack.c
 #  - CURRENT (Major):  Increment if the interface has changes. AGE is always
 #                      *changed* at the same time.
 #  - AGE (Micro):      Increment if any interfaces have been added; set to 0
-#		         if any interfaces have been removed. Removal has 
+#		         if any interfaces have been removed. Removal has
 #                      precedence over adding, so set to 0 if both happened.
 #                      It denotes upward compatibility.
-#  - REVISION (Minor): Increment any time the source changes; set to 
+#  - REVISION (Minor): Increment any time the source changes; set to
 #			 0 if you incremented CURRENT.
 #
 #  To summarize. Any interface *change* increment CURRENT. If that interface
-#  change does not break upward compatibility (ie it is an addition), 
-#  increment AGE, Otherwise AGE is reset to 0. If CURRENT has changed, 
+#  change does not break upward compatibility (ie it is an addition),
+#  increment AGE, Otherwise AGE is reset to 0. If CURRENT has changed,
 #  REVISION is set to 0, otherwise REVISION is incremented.
 # ---------------------------------------------------------------------------
-CURRENT=10
-AGE=2
-REVISION=2
+CURRENT=11
+AGE=3
+REVISION=0
 SOVERSION=$(CURRENT):$(REVISION):$(AGE)
 LT_CURRENT_MINUS_AGE=`expr $(CURRENT) - $(AGE)`
 

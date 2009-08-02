@@ -2238,6 +2238,7 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device,
       params->objects[i].mtpprops = newprops;
       memcpy(&params->objects[i].mtpprops[params->objects[i].nrofmtpprops],&props[j],sizeof(props[j]));
       params->objects[i].nrofmtpprops++;
+      params->objects[i].flags |= PTPOBJECT_MTPPROPLIST_LOADED;
       break;
     }
     }
