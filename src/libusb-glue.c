@@ -226,57 +226,76 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
 
   /*
    * This sometimes crashes on the j for loop below
-   * I think it is because config is NULL yet 
+   * I think it is because config is NULL yet
    * dev->descriptor.bNumConfigurations > 0
    * this check should stop this
    */
   if (dev->config) {
     /*
-     * Loop over the device configurations and interfaces. Nokia MTP-capable 
-     * handsets (possibly others) typically have the string "MTP" in their 
+     * Loop over the device configurations and interfaces. Nokia MTP-capable
+     * handsets (possibly others) typically have the string "MTP" in their
      * MTP interface descriptions, that's how they can be detected, before
      * we try the more esoteric "OS descriptors" (below).
      */
     for (i = 0; i < dev->descriptor.bNumConfigurations; i++) {
       uint8_t j;
-      
+
       for (j = 0; j < dev->config[i].bNumInterfaces; j++) {
         int k;
         for (k = 0; k < dev->config[i].interface[j].num_altsetting; k++) {
-          buf[0] = '\0';
-          ret = usb_get_string_simple(devh, 
-              dev->config[i].interface[j].altsetting[k].iInterface, 
-              (char *) buf, 
-              1024);
-    if (ret < 3)
-      continue;
-          if (strcmp((char *) buf, "MTP") == 0) {
-      if (dumpfile != NULL) {
+	  /* Current interface descriptor */
+	  struct usb_interface_descriptor *intf =
+	    &dev->config[i].interface[j].altsetting[k];
+
+	  /*
+	   * Check for Still Image Capture class with PIMA 15740 protocol,
+	   * also known as PTP
+	   */
+	  if (intf->bInterfaceClass == USB_CLASS_PTP
+	      && intf->bInterfaceSubClass == 0x01
+	      && intf->bInterfaceProtocol == 0x01) {
+	    if (dumpfile != NULL) {
               fprintf(dumpfile, "Configuration %d, interface %d, altsetting %d:\n", i, j, k);
-        fprintf(dumpfile, "   Interface description contains the string \"MTP\"\n");
-        fprintf(dumpfile, "   Device recognized as MTP, no further probing.\n");
-      }
+	      fprintf(dumpfile, "   Interface implements PTP class,"
+		      " no further probing.\n");
+	    }
+            usb_close(devh);
+            return 1;
+	  }
+          buf[0] = '\0';
+          ret = usb_get_string_simple(devh,
+				      dev->config[i].interface[j].altsetting[k].iInterface,
+				      (char *) buf,
+				      1024);
+	  if (ret < 3)
+	    continue;
+          if (strcmp((char *) buf, "MTP") == 0) {
+	    if (dumpfile != NULL) {
+              fprintf(dumpfile, "Configuration %d, interface %d, altsetting %d:\n", i, j, k);
+	      fprintf(dumpfile, "   Interface description contains the string \"MTP\"\n");
+	      fprintf(dumpfile, "   Device recognized as MTP, no further probing.\n");
+	    }
             usb_close(devh);
             return 1;
           }
   #ifdef LIBUSB_HAS_GET_DRIVER_NP
-    {
-      /*
-       * Specifically avoid probing anything else than USB mass storage devices
-       * and non-associated drivers in Linux.
-       */
-      char devname[0x10];
-    
-      devname[0] = '\0';
-      ret = usb_get_driver_np(devh,
-            dev->config[i].interface[j].altsetting[k].iInterface,
-            devname,
-            sizeof(devname));
-      if (devname[0] != '\0' && strcmp(devname, "usb-storage")) {
-        printf("avoid probing device using kernel interface \"%s\"\n", devname);
-        return 0;
-      }
-    }
+	  {
+	    /*
+	     * Specifically avoid probing anything else than USB mass storage devices
+	     * and non-associated drivers in Linux.
+	     */
+	    char devname[0x10];
+
+	    devname[0] = '\0';
+	    ret = usb_get_driver_np(devh,
+				    dev->config[i].interface[j].altsetting[k].iInterface,
+				    devname,
+				    sizeof(devname));
+	    if (devname[0] != '\0' && strcmp(devname, "usb-storage")) {
+	      printf("avoid probing device using kernel interface \"%s\"\n", devname);
+	      return 0;
+	    }
+	  }
   #endif
         }
       }

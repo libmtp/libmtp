@@ -1,3 +1,8 @@
+2009-08-12  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: patch from Simon Berg to detect PTP
+	  interface descriptors.
+
 2009-08-02  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: tag for libmtp 1.0.0!
