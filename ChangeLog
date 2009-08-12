@@ -2,6 +2,9 @@
 
 	* src/libusb-glue.c: patch from Simon Berg to detect PTP
 	  interface descriptors.
+	* src/ptp.c: sync to upstream with correct MTP interface
+	  detection in accordance with MTP spec.
+	* src/ptp.h: dito.
 
 2009-08-02  Linus Walleij <triad@df.lth.se>
 

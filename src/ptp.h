@@ -157,6 +157,9 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_VENDOR_STMICROELECTRONICS	0x00000009
 #define PTP_VENDOR_NIKON		0x0000000A
 #define PTP_VENDOR_CANON		0x0000000B
+  
+/* Vendor extension ID used for MTP */
+#define PTP_VENDOR_MTP			0xffffffff  
 
 /* Operation Codes */
 
@@ -587,6 +590,7 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_ERROR_RESP_EXPECTED		0x02FD
 #define PTP_ERROR_BADPARAM		0x02FC
 #define PTP_ERROR_CANCEL		0x02FB
+#define PTP_ERROR_TIMEOUT		0x02FA
 
 /* PTP Event Codes */
 
@@ -1935,6 +1939,7 @@ struct _PTPParams {
 	/* PTP: Canon specific flags list */
 	PTPCanon_Property	*canon_props;
 	int			nrofcanon_props;
+	int			canon_viewfinder_on;
 
 	/* PTP: Canon EOS event queue */
 	PTPCanon_changes_entry	*backlogentries;
