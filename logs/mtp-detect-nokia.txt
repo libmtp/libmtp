@@ -86,9 +86,7 @@ Device info:
    Device version: v. 1.00
    Serial number: ############
    Vendor extension ID: 0x00000006
-   Vendor extension description:
-microsoft.com:1.0;microsoft.com/WMPPD: 11.0;microsoft.com/WMDRMPD:
-10.1
+   Vendor extension description: microsoft.com:1.0;microsoft.com/WMPPD: 11.0;microsoft.com/WMDRMPD: 10.1
 Supported operations:
    1001: get device info
    1002: Open session
