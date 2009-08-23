@@ -27,11 +27,18 @@
  * Modified by Linus Walleij
  *
  */
+#ifndef LIBUSB_GLUE_H
+#define LIBUSB_GLUE_H
 
 #include "ptp.h"
 #include <usb.h>
 #include "libmtp.h"
 #include "device-flags.h"
+
+/* Make functions available for C++ */
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 #define USB_BULK_READ usb_bulk_read
 #define USB_BULK_WRITE usb_bulk_write
@@ -114,3 +121,9 @@ void get_usb_device_timeout(PTP_USB *ptp_usb, int *timeout);
 #define PTP_CD_RC_CONNECTED	0
 #define PTP_CD_RC_NO_DEVICES	1
 #define PTP_CD_RC_ERROR_CONNECTING	2
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif //  LIBUSB-GLUE_H

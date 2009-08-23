@@ -25,7 +25,7 @@
  *
  * Created by Richard Low on 24/12/2005. (as mtp-utils.c)
  * Modified by Linus Walleij 2006-03-06
- *  (Notice that Anglo-Saxons use little-endian dates and Swedes 
+ *  (Notice that Anglo-Saxons use little-endian dates and Swedes
  *   use big-endian dates.)
  *
  */
@@ -43,6 +43,11 @@
 #include <usb.h>
 
 #include "ptp-pack.c"
+
+/* Aha, older libusb does not have USB_CLASS_PTP */
+#ifndef USB_CLASS_PTP
+#define USB_CLASS_PTP 6
+#endif
 
 /* To enable debug prints for USB stuff, switch on this */
 //#define ENABLE_USB_BULK_DEBUG
@@ -454,6 +459,18 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
 							dev,
 							bus->location);
           }
+          /*
+	   * By thomas_-_s: Also append devices that are no MTP but PTP devices
+	   * if this is commented out.
+	   */
+	  /*
+	  else {
+	    // Check whether the device is no USB hub but a PTP.
+	    if ( dev->config != NULL &&dev->config->interface->altsetting->bInterfaceClass == USB_CLASS_PTP && dev->descriptor.bDeviceClass != USB_CLASS_HUB ) {
+	      *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, dev, bus->location);
+	    }
+          }
+	  */
         }
       }
     }
@@ -769,7 +786,7 @@ ptp_read_func (
       result--;
     }
     
-    int putfunc_ret = handler->putfunc(NULL, handler->private, result, bytes, &written);
+    int putfunc_ret = handler->putfunc(NULL, handler->priv, result, bytes, &written);
     if (putfunc_ret != PTP_RC_OK)
       return putfunc_ret;
     
@@ -848,7 +865,7 @@ ptp_write_func (
         towrite -= towrite % ptp_usb->outep_maxpacket;
       }
     }
-    int getfunc_ret = handler->getfunc(NULL, handler->private,towrite,bytes,&towrite);
+    int getfunc_ret = handler->getfunc(NULL, handler->priv,towrite,bytes,&towrite);
     if (getfunc_ret != PTP_RC_OK)
       return getfunc_ret;
     while (usbwritten < towrite) {
@@ -952,7 +969,7 @@ static uint16_t
 ptp_init_recv_memory_handler(PTPDataHandler *handler) {
 	PTPMemHandlerPrivate* priv;
 	priv = malloc (sizeof(PTPMemHandlerPrivate));
-	handler->private = priv;
+	handler->priv = priv;
 	handler->getfunc = memory_getfunc;
 	handler->putfunc = memory_putfunc;
 	priv->data = NULL;
@@ -972,7 +989,7 @@ ptp_init_send_memory_handler(PTPDataHandler *handler,
 	priv = malloc (sizeof(PTPMemHandlerPrivate));
 	if (!priv)
 		return PTP_RC_GeneralError;
-	handler->private = priv;
+	handler->priv = priv;
 	handler->getfunc = memory_getfunc;
 	handler->putfunc = memory_putfunc;
 	priv->data = data;
@@ -984,7 +1001,7 @@ ptp_init_send_memory_handler(PTPDataHandler *handler,
 /* free private struct + data */
 static uint16_t
 ptp_exit_send_memory_handler (PTPDataHandler *handler) {
-	PTPMemHandlerPrivate* priv = (PTPMemHandlerPrivate*)handler->private;
+	PTPMemHandlerPrivate* priv = (PTPMemHandlerPrivate*)handler->priv;
 	/* data is owned by caller */
 	free (priv);
 	return PTP_RC_OK;
@@ -995,7 +1012,7 @@ static uint16_t
 ptp_exit_recv_memory_handler (PTPDataHandler *handler,
 	unsigned char **data, unsigned long *size
 ) {
-	PTPMemHandlerPrivate* priv = (PTPMemHandlerPrivate*)handler->private;
+	PTPMemHandlerPrivate* priv = (PTPMemHandlerPrivate*)handler->priv;
 	*data = priv->data;
 	*size = priv->size;
 	free (priv);
@@ -1084,7 +1101,7 @@ ptp_usb_senddata (PTPParams* params, PTPContainer* ptp,
 		datawlen = (size<PTP_USB_BULK_PAYLOAD_LEN_WRITE)?size:PTP_USB_BULK_PAYLOAD_LEN_WRITE;
 		wlen = PTP_USB_BULK_HDR_LEN + datawlen;
     
-		ret = handler->getfunc(params, handler->private, datawlen, usbdata.payload.data, &gotlen);
+		ret = handler->getfunc(params, handler->priv, datawlen, usbdata.payload.data, &gotlen);
 		if (ret != PTP_RC_OK)
 			return ret;
 		if (gotlen != datawlen)
@@ -1195,7 +1212,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 			/* Copy first part of data to 'data' */
       int putfunc_ret = 
 			handler->putfunc(
-				params, handler->private, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data,
+				params, handler->priv, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data,
 				&written
 			);
       if (putfunc_ret != PTP_RC_OK)
@@ -1264,13 +1281,13 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		/* Copy first part of data to 'data' */
     int putfunc_ret = 
 		handler->putfunc(
-			params, handler->private, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data,
+			params, handler->priv, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data,
 			&written
 		);
     if (putfunc_ret != PTP_RC_OK)
       return putfunc_ret;
-    
-		if (FLAG_NO_ZERO_READS(ptp_usb) && 
+
+		if (FLAG_NO_ZERO_READS(ptp_usb) &&
 		    len+PTP_USB_BULK_HDR_LEN == PTP_USB_BULK_HS_MAX_PACKET_LEN_READ) {
 #ifdef ENABLE_USB_BULK_DEBUG
 		  printf("Reading in extra terminating byte\n");
@@ -1279,7 +1296,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		  int result = 0;
 		  char byte = 0;
                   result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, &byte, 1, ptp_usb->timeout);
-		  
+
 		  if (result != 1)
 		    printf("Could not read in extra byte for PTP_USB_BULK_HS_MAX_PACKET_LEN_READ long file, return value 0x%04x\n", result);
 		} else if (len+PTP_USB_BULK_HDR_LEN == PTP_USB_BULK_HS_MAX_PACKET_LEN_READ && params->split_header_data == 0) {

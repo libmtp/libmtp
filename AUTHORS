@@ -13,7 +13,7 @@ derived into its own project.
 
 We later started to use libgphoto2 which is also based on the same
 code as libptp2 but with large contributions from
-Marcus Meissner <marcus@jet.franken.de>. Marcus is also a 
+Marcus Meissner <marcus@jet.franken.de>. Marcus is also a
 contributor on libmtp from time to time and we're great friends.
 
 Other contributors to libmtp include:
@@ -36,3 +36,4 @@ Joseph Nahmias <joe@nahmias.net>
 Florent Mertens <flomertens@gmail.com>
 Alvin <alvinbeach@gmail.com>
 James Ravenscroft <ravenscroftj@gmail.com>
+Thomas Schweitzer <thomas_-_s@users.sourceforge.net>

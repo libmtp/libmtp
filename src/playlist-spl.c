@@ -1,5 +1,5 @@
 /**
- * \file playlist-spl.c
+ * \File playlist-spl.c
  *
  * Playlist_t to Samsung (.spl) and back conversion functions.
  *
@@ -260,12 +260,12 @@ int playlist_t_to_spl(LIBMTP_mtpdevice_t *device,
  * @return 0 on success, any other value means failure.
  */
 int update_spl_playlist(LIBMTP_mtpdevice_t *device,
-			  LIBMTP_playlist_t * const new)
+			  LIBMTP_playlist_t * const newlist)
 {
-  IF_DEBUG() printf("pl->name='%s'\n",new->name);
+  IF_DEBUG() printf("pl->name='%s'\n",newlist->name);
 
   // read in the playlist of interest
-  LIBMTP_playlist_t * old = LIBMTP_Get_Playlist(device, new->playlist_id);
+  LIBMTP_playlist_t * old = LIBMTP_Get_Playlist(device, newlist->playlist_id);
   
   // check to see if we found it
   if (!old)
@@ -274,10 +274,10 @@ int update_spl_playlist(LIBMTP_mtpdevice_t *device,
   // check if the playlists match
   int delta = 0;
   int i;
-  if(old->no_tracks != new->no_tracks)
+  if(old->no_tracks != newlist->no_tracks)
     delta++;
-  for(i=0;i<new->no_tracks && delta==0;i++) {
-    if(old->tracks[i] != new->tracks[i])
+  for(i=0;i<newlist->no_tracks && delta==0;i++) {
+    if(old->tracks[i] != newlist->tracks[i])
       delta++;
   }
 
@@ -290,24 +290,24 @@ int update_spl_playlist(LIBMTP_mtpdevice_t *device,
       return -1;
 
     IF_DEBUG() {
-      if(strcmp(old->name,new->name) == 0)
+      if(strcmp(old->name,newlist->name) == 0)
         printf("name unchanged\n");
       else
-        printf("name is changing too -> %s\n",new->name);
+        printf("name is changing too -> %s\n",newlist->name);
     }
 
-    return LIBMTP_Create_New_Playlist(device, new);
+    return LIBMTP_Create_New_Playlist(device, newlist);
   }
 
 
   // update the name only
-  if(strcmp(old->name,new->name) != 0) {
-    IF_DEBUG() printf("ONLY name is changing -> %s\n",new->name);
+  if(strcmp(old->name,newlist->name) != 0) {
+    IF_DEBUG() printf("ONLY name is changing -> %s\n",newlist->name);
     IF_DEBUG() printf("playlist_id will remain unchanged\n");
-    char* s = malloc(sizeof(char)*(strlen(new->name)+5));
-    strcpy(s, new->name);
+    char* s = malloc(sizeof(char)*(strlen(newlist->name)+5));
+    strcpy(s, newlist->name);
     strcat(s,".spl"); // FIXME check for success
-    int ret = LIBMTP_Set_Playlist_Name(device, new, s);
+    int ret = LIBMTP_Set_Playlist_Name(device, newlist, s);
     free(s);
     return ret;
   }

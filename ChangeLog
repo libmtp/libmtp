@@ -1,3 +1,16 @@
+2009-08-23  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.c: sync to upstream
+	* src/ptp.h: dito.
+	* src/libmtp.c: patch from Thomas Schweitzer to not use
+	  C++ reserved words like "private" and "new", this was
+	  changed to "priv" and "newlist" making C++ happy.
+	* src/libusb-glue.h: inclusion guard, export functions to
+	  C++ (whoever wants to do that...)
+	* src/libusb-glue.c: define USB_CLASS_PTP unless defined,
+	  out-commented code to detect all PTP devices as MTP
+	  devices as well.
+
 2009-08-12  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: patch from Simon Berg to detect PTP

@@ -186,11 +186,11 @@ static int set_object_filename(LIBMTP_mtpdevice_t *device,
 typedef struct _MTPDataHandler {
 	MTPDataGetFunc		getfunc;
 	MTPDataPutFunc		putfunc;
-	void			*private;
+	void			*priv;
 } MTPDataHandler;
 
-static uint16_t get_func_wrapper(PTPParams* params, void* private, unsigned long wantlen, unsigned char *data, unsigned long *gotlen);
-static uint16_t put_func_wrapper(PTPParams* params, void* private, unsigned long sendlen, unsigned char *data, unsigned long *putlen);
+static uint16_t get_func_wrapper(PTPParams* params, void* priv, unsigned long wantlen, unsigned char *data, unsigned long *gotlen);
+static uint16_t put_func_wrapper(PTPParams* params, void* priv, unsigned long sendlen, unsigned char *data, unsigned long *putlen);
                 
 /**
  * Checks if a filename ends with ".ogg". Used in various
@@ -4410,12 +4410,12 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
  * This is a manual conversion from MTPDataGetFunc to PTPDataGetFunc
  * to isolate the internal type.
  */
-static uint16_t get_func_wrapper(PTPParams* params, void* private, unsigned long wantlen, unsigned char *data, unsigned long *gotlen)
+static uint16_t get_func_wrapper(PTPParams* params, void* priv, unsigned long wantlen, unsigned char *data, unsigned long *gotlen)
 {
-  MTPDataHandler *handler = (MTPDataHandler *)private;
+  MTPDataHandler *handler = (MTPDataHandler *)priv;
   uint16_t ret;
   uint32_t local_gotlen = 0;
-  ret = handler->getfunc(params, handler->private, wantlen, data, &local_gotlen);
+  ret = handler->getfunc(params, handler->priv, wantlen, data, &local_gotlen);
   *gotlen = local_gotlen;
   switch (ret)
   {
@@ -4434,12 +4434,12 @@ static uint16_t get_func_wrapper(PTPParams* params, void* private, unsigned long
  * This is a manual conversion from MTPDataPutFunc to PTPDataPutFunc
  * to isolate the internal type.
  */
-static uint16_t put_func_wrapper(PTPParams* params, void* private, unsigned long sendlen, unsigned char *data, unsigned long *putlen)
+static uint16_t put_func_wrapper(PTPParams* params, void* priv, unsigned long sendlen, unsigned char *data, unsigned long *putlen)
 {
-  MTPDataHandler *handler = (MTPDataHandler *)private;
+  MTPDataHandler *handler = (MTPDataHandler *)priv;
   uint16_t ret;
   uint32_t local_putlen = 0;
-  ret = handler->putfunc(params, handler->private, sendlen, data, &local_putlen);
+  ret = handler->putfunc(params, handler->priv, sendlen, data, &local_putlen);
   *putlen = local_putlen;
   switch (ret)
   {
@@ -4626,13 +4626,13 @@ int LIBMTP_Get_File_To_Handler(LIBMTP_mtpdevice_t *device,
   MTPDataHandler mtp_handler;
   mtp_handler.getfunc = NULL;
   mtp_handler.putfunc = put_func;
-  mtp_handler.private = priv;
-  
+  mtp_handler.priv = priv;
+
   PTPDataHandler handler;
   handler.getfunc = NULL;
   handler.putfunc = put_func_wrapper;
-  handler.private = &mtp_handler;
-  
+  handler.priv = &mtp_handler;
+
   ret = ptp_getobject_to_handler(params, id, &handler);
 
   ptp_usb->callback_active = 0;
@@ -5228,7 +5228,7 @@ int LIBMTP_Send_File_From_Handler(LIBMTP_mtpdevice_t *device,
     // no need to output an error since send_file_object_info will already have done so
     return -1;
   }
-  
+
   // Callbacks
   ptp_usb->callback_active = 1;
   // The callback will deactivate itself after this amount of data has been sent
@@ -5237,19 +5237,19 @@ int LIBMTP_Send_File_From_Handler(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_complete = 0;
   ptp_usb->current_transfer_callback = callback;
   ptp_usb->current_transfer_callback_data = data;
-  
+
   MTPDataHandler mtp_handler;
   mtp_handler.getfunc = get_func;
   mtp_handler.putfunc = NULL;
-  mtp_handler.private = priv;
-  
+  mtp_handler.priv = priv;
+
   PTPDataHandler handler;
   handler.getfunc = get_func_wrapper;
   handler.putfunc = NULL;
-  handler.private = &mtp_handler;
-  
+  handler.priv = &mtp_handler;
+
   ret = ptp_sendobject_from_handler(params, &handler, filedata->filesize);
-  
+
   ptp_usb->callback_active = 0;
   ptp_usb->current_transfer_callback = NULL;
   ptp_usb->current_transfer_callback_data = NULL;
@@ -5265,7 +5265,7 @@ int LIBMTP_Send_File_From_Handler(LIBMTP_mtpdevice_t *device,
   }
 
   add_object_to_cache(device, filedata->item_id);
-  
+
   /*
    * Get the device-assined parent_id from the cache.
    * The operation that adds it to the cache will
@@ -5287,7 +5287,7 @@ int LIBMTP_Send_File_From_Handler(LIBMTP_mtpdevice_t *device,
   return 0;
 }
 
-/** 
+/**
  * This function sends the file object info, ready for sendobject
  * @param device a pointer to the device to send the file to.
  * @param filedata a file metadata set to be written along with the file.
