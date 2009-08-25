@@ -2189,7 +2189,7 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device,
   for (j=0;j<nrofprops;j++) {
     if (lasthandle != prop->ObjectHandle) {
       if (i >= 0) {
-        params->objects[i].flags |= PTPOBJECT_MTPPROPLIST_LOADED|PTPOBJECT_OBJECTINFO_LOADED;
+        params->objects[i].flags |= PTPOBJECT_OBJECTINFO_LOADED;
 	if (!params->objects[i].oi.Filename) {
 	  /* I have one such file on my Creative (Marcus) */
 	  params->objects[i].oi.Filename = strdup("<null>");
@@ -2244,6 +2244,11 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device,
     }
     prop++;
   }
+  /* mark last entry also */
+  params->objects[i].flags |= PTPOBJECT_OBJECTINFO_LOADED;
+
+  /* The device might not give the list in linear ascending order */
+  ptp_objects_sort (params);
   return 0;
 }
 
