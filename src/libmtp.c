@@ -2246,7 +2246,7 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device,
   }
   /* mark last entry also */
   params->objects[i].flags |= PTPOBJECT_OBJECTINFO_LOADED;
-
+  params->nrofobjects = i+1;
   /* The device might not give the list in linear ascending order */
   ptp_objects_sort (params);
   return 0;

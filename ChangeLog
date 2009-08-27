@@ -1,3 +1,7 @@
+2009-08-27  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: bugfixes again...
+
 2009-08-25  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: fix a bug where the metadata was cached
