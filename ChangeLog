@@ -1,5 +1,13 @@
 2009-08-27  Linus Walleij <triad@df.lth.se>
 
+	* src/libmtp.c: modernize the album retrieveal functions
+	  so they work just as nicely as the track/playlist etc
+	  functions. Triggered by Nyalls excellent bug report that
+	  showed how libmtp tried to get "composer" info for an
+	  album eventhough the device didn't support it.
+
+2009-08-27  Linus Walleij <triad@df.lth.se>
+
 	* src/libmtp.c: bugfixes again...
 
 2009-08-25  Linus Walleij <triad@df.lth.se>
