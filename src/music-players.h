@@ -860,7 +860,7 @@
   { "SonyEricsson", 0x0fce, "W902", 0x00f5, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Sarunas <sarunas@users.sourceforge.net>
   // Doesn't need any flags according to reporter
-  { "SonyEricsson", 0x0fce, "T700", 0x00fb, DEVICE_FLAG_NONE },
+  { "SonyEricsson", 0x0fce, "T700", 0x00fb, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Reported by Stéphane Pontier <shadow_walker@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "W705/W715", 0x0105, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Håkan Kvist
