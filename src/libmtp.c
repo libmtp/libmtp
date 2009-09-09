@@ -4984,7 +4984,7 @@ int LIBMTP_Send_Track_From_Handler(LIBMTP_mtpdevice_t *device,
     // (void) LIBMTP_Delete_Object(device, metadata->item_id);
     return -1;
   }
-  
+
   // Pick up new item (and parent, storage) ID
   metadata->item_id = filedata.item_id;
   metadata->parent_id = filedata.parent_id;
@@ -5015,12 +5015,12 @@ int LIBMTP_Send_Track_From_Handler(LIBMTP_mtpdevice_t *device,
  *        After this call the field <code>filedata-&gt;item_id</code>
  *        will contain the new file ID. Other fields such
  *        as the <code>filedata-&gt;filename</code>, <code>filedata-&gt;parent_id</code>
- *        or <code>filedata-&gt;storage_id</code> may also change during this 
+ *        or <code>filedata-&gt;storage_id</code> may also change during this
  *        operation due to device restrictions, so do not rely on the
  *        contents of this struct to be preserved in any way.
  *        <ul>
- *        <li><code>filedata-&gt;parent_id</code> should be set to the parent 
- *        (e.g. folder) to store this file in. If this is 0, 
+ *        <li><code>filedata-&gt;parent_id</code> should be set to the parent
+ *        (e.g. folder) to store this file in. If this is 0,
  *        the file will be stored in the root folder.
  *        <li><code>filedata-&gt;storage_id</code> should be set to the
  *        desired storage (e.g. memory card or whatever your device
@@ -5083,7 +5083,7 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
  * given as input.
  *
  * This can potentially be used for sending in a stream of unknown
- * length. Send music files with 
+ * length. Send music files with
  * <code>LIBMTP_Send_Track_From_File_Descriptor()</code>
  *
  * @param device a pointer to the device to send the file to.
@@ -5092,12 +5092,12 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
  *        After this call the field <code>filedata-&gt;item_id</code>
  *        will contain the new file ID. Other fields such
  *        as the <code>filedata-&gt;filename</code>, <code>filedata-&gt;parent_id</code>
- *        or <code>filedata-&gt;storage_id</code> may also change during this 
+ *        or <code>filedata-&gt;storage_id</code> may also change during this
  *        operation due to device restrictions, so do not rely on the
  *        contents of this struct to be preserved in any way.
  *        <ul>
- *        <li><code>filedata-&gt;parent_id</code> should be set to the parent 
- *        (e.g. folder) to store this file in. If this is 0, 
+ *        <li><code>filedata-&gt;parent_id</code> should be set to the parent
+ *        (e.g. folder) to store this file in. If this is 0,
  *        the file will be stored in the root folder.
  *        <li><code>filedata-&gt;storage_id</code> should be set to the
  *        desired storage (e.g. memory card or whatever your device
@@ -5139,9 +5139,9 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_complete = 0;
   ptp_usb->current_transfer_callback = callback;
   ptp_usb->current_transfer_callback_data = data;
-  
+
   ret = ptp_sendobject_fromfd(params, fd, filedata->filesize);
-  
+
   ptp_usb->callback_active = 0;
   ptp_usb->current_transfer_callback = NULL;
   ptp_usb->current_transfer_callback_data = NULL;
@@ -5157,7 +5157,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   }
 
   add_object_to_cache(device, filedata->item_id);
-  
+
   /*
    * Get the device-assined parent_id from the cache.
    * The operation that adds it to the cache will
@@ -5185,7 +5185,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
  * given as input.
  *
  * This can potentially be used for sending in a stream of unknown
- * length. Send music files with 
+ * length. Send music files with
  * <code>LIBMTP_Send_Track_From_Handler()</code>
  *
  * @param device a pointer to the device to send the file to.
@@ -5196,12 +5196,12 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
  *        After this call the field <code>filedata-&gt;item_id</code>
  *        will contain the new file ID. Other fields such
  *        as the <code>filedata-&gt;filename</code>, <code>filedata-&gt;parent_id</code>
- *        or <code>filedata-&gt;storage_id</code> may also change during this 
+ *        or <code>filedata-&gt;storage_id</code> may also change during this
  *        operation due to device restrictions, so do not rely on the
  *        contents of this struct to be preserved in any way.
  *        <ul>
- *        <li><code>filedata-&gt;parent_id</code> should be set to the parent 
- *        (e.g. folder) to store this file in. If this is 0, 
+ *        <li><code>filedata-&gt;parent_id</code> should be set to the parent
+ *        (e.g. folder) to store this file in. If this is 0,
  *        the file will be stored in the root folder.
  *        <li><code>filedata-&gt;storage_id</code> should be set to the
  *        desired storage (e.g. memory card or whatever your device
@@ -5505,7 +5505,7 @@ static int send_file_object_info(LIBMTP_mtpdevice_t *device, LIBMTP_file_t *file
 	    prop->property = PTP_OPC_DateModified;
 	    prop->datatype = PTP_DTC_STR;
 	    prop->propval.str = get_iso8601_stamp();
-      filedata->modificationdate = time(NULL);
+	    filedata->modificationdate = time(NULL);
 	  }
 	  break;
 	}
@@ -5521,7 +5521,7 @@ static int send_file_object_info(LIBMTP_mtpdevice_t *device, LIBMTP_file_t *file
     ptp_destroy_object_prop_list(props, nrofprops);
 
     if (ret != PTP_RC_OK) {
-      add_ptp_error_to_errorstack(device, ret, "send_file_object_info():" 
+      add_ptp_error_to_errorstack(device, ret, "send_file_object_info():"
 				  "Could not send object property list.");
       if (ret == PTP_RC_AccessDenied) {
 	add_ptp_error_to_errorstack(device, ret, "ACCESS DENIED.");
@@ -5532,7 +5532,7 @@ static int send_file_object_info(LIBMTP_mtpdevice_t *device, LIBMTP_file_t *file
     PTPObjectInfo new_file;
 
     memset(&new_file, 0, sizeof(PTPObjectInfo));
-  
+
     new_file.Filename = filedata->filename;
     if (FLAG_ONLY_7BIT_FILENAMES(ptp_usb)) {
       strip_7bit_from_utf8(new_file.Filename);
@@ -5561,7 +5561,7 @@ static int send_file_object_info(LIBMTP_mtpdevice_t *device, LIBMTP_file_t *file
 
   // Now there IS an object with this parent handle.
   filedata->parent_id = localph;
-  
+
   return 0;
 }
 
