@@ -83,7 +83,7 @@
   // Reported by Aaron F. Gonzalez <sub_tex@users.sourceforge.net>
   { "Creative", 0x041e, "ZEN X-Fi", 0x4162,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
-  // Reported by Anonymous SourceForge user
+  // Reported by Todor Gyumyushev <yodor1@users.sourceforge.net>
   { "ZiiLABS", 0x041e, "Zii EGG", 0x6000,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
 
