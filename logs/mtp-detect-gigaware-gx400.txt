@@ -1,0 +1,14 @@
+libmtp version: 0.3.7
+
+Listing raw device(s)
+
+Potential MTP Device with VendorID:0aa6 and ProductID:9702 responded to control message 2 with a response that was too short. Problems may arrise but continuing
+Device 0 (VID=0aa6 and PID=9702) is UNKNOWN.
+Please report this VID/PID and the device model to the libmtp development team
+   Found 1 device(s):
+   0aa6:9702 @ bus 0, dev 3
+Attempting to connect device(s)
+usb_claim_interface(): Device or resource busy
+LIBMTP PANIC: Unable to initialize device
+Unable to open raw device 0
+OK.
