@@ -36,7 +36,7 @@
  */
 
   /*
-   * Creative Technology
+   * Creative Technology and ZiiLABS
    * Initially the Creative devices was all we supported so these are
    * the most thoroughly tested devices. Presumably only the devices
    * with older firmware (the ones that have 32bit object size) will
@@ -82,6 +82,9 @@
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Reported by Aaron F. Gonzalez <sub_tex@users.sourceforge.net>
   { "Creative", 0x041e, "ZEN X-Fi", 0x4162,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  // Reported by Anonymous SourceForge user
+  { "ZiiLABS", 0x041e, "Zii EGG", 0x6000,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
 
   /*
