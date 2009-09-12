@@ -93,13 +93,13 @@ static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMT
 // Local functions
 static struct usb_bus* init_usb();
 static void close_usb(PTP_USB* ptp_usb);
-static void find_interface_and_endpoints(struct usb_device *dev,
-					 uint8_t *interface,
-					 int* inep, 
-					 int* inep_maxpacket, 
-					 int* outep, 
-					 int* outep_maxpacket, 
-					 int* intep);
+static int find_interface_and_endpoints(struct usb_device *dev,
+					uint8_t *interface,
+					int* inep,
+					int* inep_maxpacket,
+					int* outep,
+					int* outep_maxpacket,
+					int* intep);
 static void clear_stall(PTP_USB* ptp_usb);
 static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev);
 static short ptp_write_func (unsigned long,PTPDataHandler*,void *data,unsigned long*);
@@ -1307,20 +1307,20 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		  printf("Reading in zero packet after header\n");
 #endif
                   zeroresult = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, &zerobyte, 0, ptp_usb->timeout);
-		  
+
 		  if (zeroresult != 0)
 		    printf("LIBMTP panic: unable to read in zero packet, response 0x%04x", zeroresult);
 		}
-		
+
 		/* Is that all of data? */
 		if (len+PTP_USB_BULK_HDR_LEN<=rlen) {
 		  break;
 		}
-		
+
 		ret = ptp_read_func(len - (rlen - PTP_USB_BULK_HDR_LEN),
 				    handler,
 				    params->data, &rlen, 1);
-		
+
 		if (ret!=PTP_RC_OK) {
 		  break;
 		}
@@ -1410,7 +1410,7 @@ ptp_usb_event (PTPParams* params, PTPContainer* event, int wait)
 
 	memset(&usbevent,0,sizeof(usbevent));
 
-	if ((params==NULL) || (event==NULL)) 
+	if ((params==NULL) || (event==NULL))
 		return PTP_ERROR_BADPARAM;
 	ret = PTP_RC_OK;
 	switch(wait) {
@@ -1472,7 +1472,7 @@ ptp_usb_control_cancel_request (PTPParams *params, uint32_t transactionid) {
 
 	htod16a(&buffer[0],PTP_EC_CancelTransaction);
 	htod32a(&buffer[2],transactionid);
-	ret = usb_control_msg(ptp_usb->handle, 
+	ret = usb_control_msg(ptp_usb->handle,
 			      USB_TYPE_CLASS | USB_RECIP_INTERFACE,
                               0x64, 0x0000, 0x0000, (char *) buffer, sizeof(buffer), ptp_usb->timeout);
 	if (ret < sizeof(buffer))
@@ -1483,7 +1483,7 @@ ptp_usb_control_cancel_request (PTPParams *params, uint32_t transactionid) {
 static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev)
 {
   usb_dev_handle *device_handle;
-  
+
   params->sendreq_func=ptp_usb_sendreq;
   params->senddata_func=ptp_usb_senddata;
   params->getresp_func=ptp_usb_getresp;
@@ -1496,9 +1496,9 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
    * Change this the day we run into our first BE device (if ever).
    */
   params->byteorder = PTP_DL_LE;
-  
+
   ptp_usb->timeout = USB_TIMEOUT_DEFAULT;
-  
+
   if ((device_handle = usb_open(dev))){
     if (!device_handle) {
       perror("usb_open()");
@@ -1529,6 +1529,14 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
       perror("usb_claim_interface()");
       return -1;
     }
+    // FIXME : Discovered in the Barry project
+    // kernels >= 2.6.28 don't set the interface the same way as
+    // previous versions did, and the Blackberry gets confused
+    // if it isn't explicitly set
+    if (usb_set_altinterface(device_handle, 0)) {
+      perror("usb_set_altinterface()");
+      return -1;
+    }
   }
   return 0;
 }
@@ -1537,7 +1545,7 @@ static void clear_stall(PTP_USB* ptp_usb)
 {
   uint16_t status;
   int ret;
-  
+
   /* check the inep status */
   status = 0;
   ret = usb_get_endpoint_status(ptp_usb,ptp_usb->inep,&status);
@@ -1550,7 +1558,7 @@ static void clear_stall(PTP_USB* ptp_usb)
       perror ("usb_clear_stall_feature()");
     }
   }
-  
+
   /* check the outep status */
   status=0;
   ret = usb_get_endpoint_status(ptp_usb,ptp_usb->outep,&status);
@@ -1595,9 +1603,9 @@ static void close_usb(PTP_USB* ptp_usb)
      * On misbehaving devices designed for Windows/Mac, quote from:
      * http://www2.one-eyed-alien.net/~mdharm/linux-usb/target_offenses.txt
      * Device does Bad Things(tm) when it gets a GET_STATUS after CLEAR_HALT
-     * (...) Windows, when clearing a stall, only sends the CLEAR_HALT command, 
-     * and presumes that the stall has cleared.  Some devices actually choke 
-     * if the CLEAR_HALT is followed by a GET_STATUS (used to determine if the 
+     * (...) Windows, when clearing a stall, only sends the CLEAR_HALT command,
+     * and presumes that the stall has cleared.  Some devices actually choke
+     * if the CLEAR_HALT is followed by a GET_STATUS (used to determine if the
      * STALL is persistant or not).
      */
     clear_stall(ptp_usb);
@@ -1618,13 +1626,13 @@ static void close_usb(PTP_USB* ptp_usb)
 /**
  * Self-explanatory?
  */
-static void find_interface_and_endpoints(struct usb_device *dev, 
-					 uint8_t *interface,
-					 int* inep, 
-					 int* inep_maxpacket, 
-					 int* outep, 
-					 int *outep_maxpacket, 
-					 int* intep)
+static int find_interface_and_endpoints(struct usb_device *dev,
+					uint8_t *interface,
+					int* inep,
+					int* inep_maxpacket,
+					int* outep,
+					int *outep_maxpacket,
+					int* intep)
 {
   int i;
 
@@ -1632,22 +1640,26 @@ static void find_interface_and_endpoints(struct usb_device *dev,
   for (i = 0; i < dev->descriptor.bNumConfigurations; i++) {
     uint8_t j;
 
+    // Loop over each configurations interfaces
     for (j = 0; j < dev->config[i].bNumInterfaces; j++) {
       uint8_t k;
       uint8_t no_ep;
+      int found_inep = 0;
+      int found_outep = 0;
+      int found_intep = 0;
       struct usb_endpoint_descriptor *ep;
-      
-      if (dev->descriptor.bNumConfigurations > 1 || dev->config[i].bNumInterfaces > 1) {
-	// OK This device has more than one interface, so we have to find out
-	// which one to use! 
-	// FIXME: Probe the interface.
-	// FIXME: Release modules attached to all other interfaces in Linux...?
-      }
+
+      // MTP devices shall have 3 endpoints, ignore those interfaces
+      // that haven't.
+      no_ep = dev->config[i].interface[j].altsetting->bNumEndpoints;
+      if (no_ep != 3)
+	continue;
 
       *interface = dev->config[i].interface[j].altsetting->bInterfaceNumber;
       ep = dev->config[i].interface[j].altsetting->endpoint;
-      no_ep = dev->config[i].interface[j].altsetting->bNumEndpoints;
-      
+
+      // Loop over the three endpoints to locate two bulk and
+      // one interrupt endpoint and FAIL if we cannot, and continue.
       for (k = 0; k < no_ep; k++) {
 	if (ep[k].bmAttributes==USB_ENDPOINT_TYPE_BULK)	{
 	  if ((ep[k].bEndpointAddress&USB_ENDPOINT_DIR_MASK)==
@@ -1655,24 +1667,30 @@ static void find_interface_and_endpoints(struct usb_device *dev,
 	    {
 	      *inep=ep[k].bEndpointAddress;
 	      *inep_maxpacket=ep[k].wMaxPacketSize;
+	      found_inep = 1;
 	    }
 	  if ((ep[k].bEndpointAddress&USB_ENDPOINT_DIR_MASK)==0)
 	    {
 	      *outep=ep[k].bEndpointAddress;
 	      *outep_maxpacket=ep[k].wMaxPacketSize;
+	      found_outep = 1;
 	    }
 	} else if (ep[k].bmAttributes==USB_ENDPOINT_TYPE_INTERRUPT){
 	  if ((ep[k].bEndpointAddress&USB_ENDPOINT_DIR_MASK)==
 	      USB_ENDPOINT_DIR_MASK)
 	    {
 	      *intep=ep[k].bEndpointAddress;
+	      found_intep = 1;
 	    }
 	}
       }
-      // We assigned the endpoints so return here.
-      return;
+      if (found_inep && found_outep && found_intep)
+	// We assigned the endpoints so return here.
+	return 0;
+      // Else loop to next interface/config
     }
   }
+  return -1;
 }
 
 /**
@@ -1691,6 +1709,7 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
   uint16_t ret = 0;
   struct usb_bus *bus;
   int found = 0;
+  int err;
 
   /* See if we can find this raw device again... */
   bus = init_usb();
@@ -1735,39 +1754,44 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
     // Massage the device descriptor
     (void) probe_device_descriptor(libusb_device, NULL);
   }
-  
-  /* Assign endpoints to usbinfo... */
-  find_interface_and_endpoints(libusb_device,
-		   &ptp_usb->interface,
-		   &ptp_usb->inep,
-		   &ptp_usb->inep_maxpacket,
-		   &ptp_usb->outep,
-		   &ptp_usb->outep_maxpacket,
-		   &ptp_usb->intep);
-    
+
+  /* Assign interface and endpoints to usbinfo... */
+  err = find_interface_and_endpoints(libusb_device,
+				     &ptp_usb->interface,
+				     &ptp_usb->inep,
+				     &ptp_usb->inep_maxpacket,
+				     &ptp_usb->outep,
+				     &ptp_usb->outep_maxpacket,
+				     &ptp_usb->intep);
+
+  if (err) {
+    fprintf(stderr, "LIBMTP PANIC: Unable to find interface & endpoints of device\n");
+    return LIBMTP_ERROR_CONNECTING;
+  }
+
   /* Attempt to initialize this device */
   if (init_ptp_usb(params, ptp_usb, libusb_device) < 0) {
     fprintf(stderr, "LIBMTP PANIC: Unable to initialize device\n");
     return LIBMTP_ERROR_CONNECTING;
   }
-  
+
   /*
    * This works in situations where previous bad applications
-   * have not used LIBMTP_Release_Device on exit 
+   * have not used LIBMTP_Release_Device on exit
    */
   if ((ret = ptp_opensession(params, 1)) == PTP_ERROR_IO) {
     fprintf(stderr, "PTP_ERROR_IO: Trying again after re-initializing USB interface\n");
     close_usb(ptp_usb);
-      
+
     if(init_ptp_usb(params, ptp_usb, libusb_device) <0) {
       fprintf(stderr, "LIBMTP PANIC: Could not open session on device\n");
       return LIBMTP_ERROR_CONNECTING;
     }
-    
+
     /* Device has been reset, try again */
     ret = ptp_opensession(params, 1);
   }
-  
+
   /* Was the transaction id invalid? Try again */
   if (ret == PTP_RC_InvalidTransactionID) {
     fprintf(stderr, "LIBMTP WARNING: Transaction ID was invalid, increment and try again\n");
@@ -1809,7 +1833,6 @@ void get_usb_device_timeout(PTP_USB *ptp_usb, int *timeout)
 
 static int usb_clear_stall_feature(PTP_USB* ptp_usb, int ep)
 {
-  
   return (usb_control_msg(ptp_usb->handle,
 			  USB_RECIP_ENDPOINT, USB_REQ_CLEAR_FEATURE, USB_FEATURE_HALT,
                           ep, NULL, 0, ptp_usb->timeout));

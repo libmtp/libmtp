@@ -961,6 +961,13 @@
 
   // Reported by Sense Hofstede <qense@users.sourceforge.net>
   { "Perception Digital, Ltd", 0x0aa6, "Gigaware GX400", 0x9702, DEVICE_FLAG_NONE },
+
+  /*
+   * RIM's BlackBerry 
+   */
+  // Reported by Nicolas VIVIEN <nicolas@vivien.fr>
+  { "RIM", 0x0fca, "BlackBerry Storm", 0x8007, DEVICE_FLAG_UNLOAD_DRIVER },
+
   /*
    * Other strange stuff.
    */

@@ -1,3 +1,15 @@
+2009-09-12  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: skip interfaces with != 3 endpoints
+	  and make sure we locate 1 bulk in, 1 bulk out and 1 interrupt
+	  endpoint on the interface, else SKIP IT. Based on a patch
+	  from Nicolas Vivien <nicolas@vivien.fr>.
+
+2009-09-12  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: bump version to libmtp 1.0.1 and release!
+	* src/Makefile.am: bump soversion to libmtp.so.8.3.1
+
 2009-09-11  Linus Walleij <triad@df.lth.se>
 
 	* src/music-players.h: tag all SONY NWZ walkmen with
