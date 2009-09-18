@@ -220,9 +220,8 @@
   { "Samsung", 0x04e8, "GT-S5230", 0xe20c, DEVICE_FLAG_NONE },
 
 
-
   /*
-   * Intel
+   * Microsoft & Intel
    */
   { "Intel", 0x045e, "Bandon Portable Media Center", 0x00c9, DEVICE_FLAG_NONE },
   // Reported by Tadimarri Sarath <sarath.tadi@gmail.com>
@@ -230,6 +229,10 @@
   // the early PMC development days when Intel and Microsoft were
   // partnering.
   { "Microsoft", 0x045e, "Windows MTP Simulator", 0x0622, DEVICE_FLAG_NONE },
+  // Reported by Edward Hutchins (used for Zune HDs)
+  { "Microsoft", 0x045e, "Zune HD", 0x063e, DEVICE_FLAG_NONE },
+  // Reported by Farooq Zaman (used for all Zunes)
+  { "Microsoft", 0x045e, "Zune", 0x0710, DEVICE_FLAG_NONE }, 
 
   /*
    * JVC
@@ -554,13 +557,7 @@
   // This device is USB 2.0 only. Broken pipe on closing.
   { "Memorex", 0x10d6, "MMP 8585/8586", 0x2300, DEVICE_FLAG_UNLOAD_DRIVER | 
       DEVICE_FLAG_NO_RELEASE_INTERFACE},
-  
-  /*
-   * Microsoft
-   */
-  // Reported by Farooq Zaman (used for all Zunes)
-  { "Microsoft", 0x045e, "Zune", 0x0710, DEVICE_FLAG_NONE }, 
-  
+ 
   /*
    * Sirius
    */
