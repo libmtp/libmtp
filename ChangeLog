@@ -1,3 +1,8 @@
+2009-09-21  Linus Walleij <triad@df.lth.se>
+
+	* examples/sendtr.c: patch from Andrea Grillini to suppor
+	  quiet mode operation.
+
 2009-09-12  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: skip interfaces with != 3 endpoints

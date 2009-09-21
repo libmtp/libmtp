@@ -48,7 +48,7 @@ extern LIBMTP_folder_t *folders;
 extern LIBMTP_file_t *files;
 extern LIBMTP_mtpdevice_t *device;
 
-int sendtrack_function (char *, char *, char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t, uint32_t);
+int sendtrack_function (char *, char *, char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t, uint32_t, uint16_t);
 void sendtrack_command (int, char **);
 void sendtrack_usage (void);
 
@@ -161,7 +161,7 @@ static int add_track_to_album(LIBMTP_album_t *albuminfo, LIBMTP_track_t *trackme
   return ret;
 }
 
-int sendtrack_function(char * from_path, char * to_path, char *partist, char *palbumartist, char *ptitle, char *pgenre, char *palbum, char *pcomposer, uint16_t tracknum, uint16_t length, uint16_t year, uint32_t storageid)
+int sendtrack_function(char * from_path, char * to_path, char *partist, char *palbumartist, char *ptitle, char *pgenre, char *palbum, char *pcomposer, uint16_t tracknum, uint16_t length, uint16_t year, uint32_t storageid, uint16_t quiet)
 {
   char *filename, *parent;
   char artist[80], albumartist[80], title[80], genre[80], album[80], composer[80];
@@ -173,7 +173,7 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pa
   LIBMTP_album_t *albuminfo;
   int ret;
 
-  printf("Sending track %s to %s\n",from_path,to_path);
+  printf("Sending track %s to %s\n", from_path, to_path);
 
   trackmeta = LIBMTP_new_track_t();
   albuminfo = LIBMTP_new_album_t();
@@ -197,71 +197,59 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pa
       printf("Not a valid track codec: \"%s\"\n", LIBMTP_Get_Filetype_Description(trackmeta->filetype));
       return 1;
     }
-
-    if (ptitle == NULL) {
-      ptitle = prompt("Title", title, 80, 0);
+    
+    if ((ptitle == NULL) && (quiet == 0)) {
+       if ( (ptitle = prompt("Title", title, 80, 0)) != NULL ) 
+         if (!strlen(ptitle)) ptitle = NULL;
     }
-    if (!strlen(ptitle))
-      ptitle = NULL;
 
-    if (palbum == NULL) {
-      palbum = prompt("Album", album, 80, 0);
+    if ((palbum == NULL) && (quiet == 0)) {
+      if ( (palbum = prompt("Album", album, 80, 0)) != NULL )
+        if (!strlen(palbum)) palbum = NULL;
     }
-    if (!strlen(palbum))
-      palbum = NULL;
 
-    if (palbumartist == NULL) {
-      palbumartist = prompt("Album artist", albumartist, 80, 0);
+    if ((palbumartist == NULL) && (quiet == 0)) {
+      if ( (palbumartist = prompt("Album artist", albumartist, 80, 0)) != NULL )
+          if (!strlen(palbumartist)) palbumartist = NULL;
     }
-    if (partist == NULL) {
-      partist = prompt("Artist", artist, 80, 0);
-    }
-    if (!strlen(partist))
-      partist = NULL;
 
-    if (pcomposer == NULL) {
-      pcomposer = prompt("Writer or Composer", composer, 80, 0);
+    if ((partist == NULL) && (quiet == 0)) {
+        if ( (partist = prompt("Artist", artist, 80, 0)) != NULL )
+          if (!strlen(partist)) partist = NULL;
     }
-    if (!strlen(pcomposer))
-      pcomposer = NULL;
 
-    if (pgenre == NULL) {
-      pgenre = prompt("Genre", genre, 80, 0);
+    if ((pcomposer == NULL) && (quiet == 0)) {
+      if ( (pcomposer = prompt("Writer or Composer", composer, 80, 0)) != NULL )
+        if (!strlen(pcomposer)) pcomposer = NULL;
     }
-    if (!strlen(pgenre))
-      pgenre = NULL;
 
-    if (tracknum == 0) {
+    if ((pgenre == NULL) && (quiet == 0)) {
+      if ( (pgenre = prompt("Genre", genre, 80, 0)) != NULL )
+        if (!strlen(pgenre)) pgenre = NULL;
+    }
+
+    if ((tracknum == 0) && (quiet == 0)) {
       char *pnum;
       if ( (pnum = prompt("Track number", num, 80, 0)) == NULL )
-      tracknum = 0;
-      if ( strlen(pnum) ) {
-        tracknum = strtoul(pnum, 0, 10);
-      } else {
         tracknum = 0;
-      }
+      else
+        tracknum = strtoul(pnum, 0, 10);
     }
 
-    if (year == 0) {
+    if ((year == 0) && (quiet == 0)) {
       char *pnum;
       if ( (pnum = prompt("Year", num, 80, 0)) == NULL )
         year = 0;
-      if ( strlen(pnum) ) {
+      else
         year = strtoul(pnum, 0, 10);
-      } else {
-        year = 0;
-      }
     }
 
-    if (length == 0) {
+    if ((length == 0) && (quiet == 0)) {
       char *pnum;
       if ( (pnum = prompt("Length", num, 80, 0)) == NULL )
         length = 0;
-      if ( strlen(pnum) ) {
+      else
         length = strtoul(pnum, 0, 10);
-      } else {
-        length = 0;
-      }
     }
     
     printf("Sending track:\n");
@@ -438,6 +426,6 @@ void sendtrack_command (int argc, char **argv) {
 
   checklang();
   
-  printf("%s,%s,%s,%s,%s,%s,%s,%s,%d%d,%d,%u\n",argv[0],argv[1],partist,palbumartist,ptitle,pgenre,palbum,pcomposer,tracknum, length, year, storageid);
-  sendtrack_function(argv[0],argv[1],partist,palbumartist,ptitle,pgenre,palbum,pcomposer, tracknum, length, year, storageid);
+  printf("%s,%s,%s,%s,%s,%s,%s,%s,%d%d,%d,%u,%d\n",argv[0],argv[1],partist,palbumartist,ptitle,pgenre,palbum,pcomposer,tracknum, length, year, storageid, quiet);
+  sendtrack_function(argv[0],argv[1],partist,palbumartist,ptitle,pgenre,palbum,pcomposer, tracknum, length, year, storageid, quiet);
 }
