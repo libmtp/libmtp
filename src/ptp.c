@@ -246,7 +246,7 @@ static uint16_t
 ptp_init_recv_memory_handler(PTPDataHandler *handler) {
 	PTPMemHandlerPrivate* priv;
 	priv = malloc (sizeof(PTPMemHandlerPrivate));
-  if (!priv)
+	if (!priv)
 		return PTP_RC_GeneralError;
 	handler->priv = priv;
 	handler->getfunc = memory_getfunc;
