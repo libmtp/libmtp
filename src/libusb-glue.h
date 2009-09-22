@@ -116,6 +116,8 @@ void get_usb_device_timeout(PTP_USB *ptp_usb, int *timeout);
   ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_BROKEN_BATTERY_LEVEL)
 #define FLAG_FLAC_IS_UNKNOWN(a) \
   ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_FLAC_IS_UNKNOWN)
+#define FLAG_UNIQUE_FILENAMES(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_UNIQUE_FILENAMES)
 #define FLAG_SWITCH_MODE_BLACKBERRY(a) \
   ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_SWITCH_MODE_BLACKBERRY)
 

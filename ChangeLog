@@ -1,5 +1,13 @@
 2009-09-23  Linus Walleij <triad@df.lth.se>
 
+	* src/libmtp.c: patch from Nyall Dawson to make all
+	  filenames unique if the device requires this.
+	* src/libusb-glue.h: dito.
+	* src/device-flags.h: dito.
+	* src/music-players.h: dito.
+
+2009-09-23  Linus Walleij <triad@df.lth.se>
+
 	* src/libusb-glue.c: several patches from Nicolas Vivien to
 	  support the BlackBerry Storm.
 	* src/device-flags.h: add special flag for the BlackBerry

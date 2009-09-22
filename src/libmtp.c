@@ -178,6 +178,8 @@ static int set_object_filename(LIBMTP_mtpdevice_t *device,
 		uint32_t object_id,
 		uint16_t ptp_type,
                 const char **newname);
+static char *generate_unique_filename(PTPParams* params, char const * const filename);
+static int check_filename_exists(PTPParams* params, char const * const filename);
                 
 /**
  * These are to wrap the get/put handlers to convert from the MTP types to PTP types
@@ -4812,6 +4814,62 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
   return ret;
 }
 
+
+
+/**
+ * This helper function checks if a filename already exists on the device
+ * @param PTPParams*
+ * @param string representing the filename
+ * @return 0 if the filename doesn't exist, -1 if it does
+ */
+static int check_filename_exists(PTPParams* params, char const * const filename)
+{
+  int i;
+
+  for (i = 0; i < params->nrofobjects; i++) {
+    char *fname = params->objects[i].oi.Filename;
+    if ((fname != NULL) && (strcmp(filename, fname) == 0))
+    {
+      return -1;
+    }
+  }
+
+  return 0;
+}
+
+/**
+ * This helper function returns a unique filename, with a random string before the extension
+ * @param string representing the original filename
+ * @return a string representing the unique filename
+ */
+static char *generate_unique_filename(PTPParams* params, char const * const filename)
+{
+  int suffix;
+  char * extension_position;
+
+  if (check_filename_exists(params, filename))
+  {
+    extension_position = strrchr(filename,'.');
+
+    char basename[extension_position - filename + 1];
+    strncpy(basename, filename, extension_position - filename);
+    basename[extension_position - filename] = '\0';
+ 	
+    suffix = 1;
+    char newname[ strlen(basename) + 6 + strlen(extension_position)];
+    sprintf(newname, "%s_%d%s", basename, suffix, extension_position);
+    while ((check_filename_exists(params, newname)) && (suffix < 1000000)) {
+      suffix++;
+      sprintf(newname, "%s_%d%s", basename, suffix, extension_position);
+    }
+  return strdup(newname);
+  }
+  else
+  {
+    return strdup(filename);
+  }
+}
+
 /**
  * This function sends a track from a file descriptor to an
  * MTP device. A filename and a set of metadata must be
@@ -4855,6 +4913,8 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
 {
   int subcall_ret;
   LIBMTP_file_t filedata;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
+  PTPParams *params = (PTPParams *) device->params;
 
   // Sanity check, is this really a track?
   if (!LIBMTP_FILETYPE_IS_TRACK(metadata->filetype)) {
@@ -4867,7 +4927,12 @@ int LIBMTP_Send_Track_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   filedata.item_id = metadata->item_id;
   filedata.parent_id = metadata->parent_id;
   filedata.storage_id = metadata->storage_id;
-  filedata.filename = metadata->filename;
+  if FLAG_UNIQUE_FILENAMES(ptp_usb) {
+    filedata.filename = generate_unique_filename(params, metadata->filename);
+  }
+  else {
+    filedata.filename = metadata->filename;
+  }
   filedata.filesize = metadata->filesize;
   filedata.filetype = metadata->filetype;
   filedata.next = NULL;
@@ -4952,6 +5017,8 @@ int LIBMTP_Send_Track_From_Handler(LIBMTP_mtpdevice_t *device,
 {
   int subcall_ret;
   LIBMTP_file_t filedata;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
+  PTPParams *params = (PTPParams *) device->params;
 
   // Sanity check, is this really a track?
   if (!LIBMTP_FILETYPE_IS_TRACK(metadata->filetype)) {
@@ -4964,7 +5031,12 @@ int LIBMTP_Send_Track_From_Handler(LIBMTP_mtpdevice_t *device,
   filedata.item_id = metadata->item_id;
   filedata.parent_id = metadata->parent_id;
   filedata.storage_id = metadata->storage_id;
-  filedata.filename = metadata->filename;
+  if FLAG_UNIQUE_FILENAMES(ptp_usb) {
+    filedata.filename = generate_unique_filename(params, metadata->filename);
+  }
+  else {
+    filedata.filename = metadata->filename;
+  }
   filedata.filesize = metadata->filesize;
   filedata.filetype = metadata->filetype;
   filedata.next = NULL;
