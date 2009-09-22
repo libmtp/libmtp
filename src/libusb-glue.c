@@ -135,6 +135,10 @@ int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t ** const devices, in
 
 static struct usb_bus* init_usb()
 {
+  /* Some additional libusb debugging please */
+#ifdef ENABLE_USB_BULK_DEBUG
+  usb_set_debug(9);
+#endif
   usb_init();
   usb_find_busses();
   usb_find_devices();
@@ -274,7 +278,9 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
 				      1024);
 	  if (ret < 3)
 	    continue;
-          if (strcmp((char *) buf, "MTP") == 0) {
+	  // We search for the MTP string.
+	  // For example : "RIM MS/MTP" should work.
+          if (strstr((char *) buf, "MTP") != NULL) {
 	    if (dumpfile != NULL) {
               fprintf(dumpfile, "Configuration %d, interface %d, altsetting %d:\n", i, j, k);
 	      fprintf(dumpfile, "   Interface description contains the string \"MTP\"\n");
@@ -309,7 +315,7 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
     if (dev->descriptor.bNumConfigurations)
       printf("dev->config is NULL in probe_device_descriptor yet dev->descriptor.bNumConfigurations > 0\n");
   }
-  
+
   /* Read the special descriptor */
   ret = usb_get_descriptor(devh, 0x03, 0xee, buf, sizeof(buf));
 
@@ -318,24 +324,24 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
     fprintf(dumpfile, "Microsoft device descriptor 0xee:\n");
     data_dump_ascii(dumpfile, buf, ret, 16);
   }
-  
+
   /* Check if descriptor length is at least 10 bytes */
   if (ret < 10) {
     usb_close(devh);
     return 0;
   }
-      
+
   /* Check if this device has a Microsoft Descriptor */
   if (!((buf[2] == 'M') && (buf[4] == 'S') &&
 	(buf[6] == 'F') && (buf[8] == 'T'))) {
     usb_close(devh);
     return 0;
   }
-      
+
   /* Check if device responds to control message 1 or if there is an error */
   cmd = buf[16];
   ret = usb_control_msg (devh,
-			 USB_ENDPOINT_IN|USB_RECIP_DEVICE|USB_TYPE_VENDOR,
+			 USB_ENDPOINT_IN | USB_RECIP_DEVICE | USB_TYPE_VENDOR,
 			 cmd,
 			 0,
 			 4,
@@ -348,7 +354,7 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
     fprintf(dumpfile, "Microsoft device response to control message 1, CMD 0x%02x:\n", cmd);
     data_dump_ascii(dumpfile, buf, ret, 16);
   }
-  
+
   /* If this is true, the device either isn't MTP or there was an error */
   if (ret <= 0x15) {
     /* TODO: If there was an error, flag it and let the user know somehow */
@@ -356,19 +362,19 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
     usb_close(devh);
     return 0;
   }
-  
-  /* Check if device is MTP or if it is something like a USB Mass Storage 
+
+  /* Check if device is MTP or if it is something like a USB Mass Storage
      device with Janus DRM support */
   if ((buf[0x12] != 'M') || (buf[0x13] != 'T') || (buf[0x14] != 'P')) {
     usb_close(devh);
     return 0;
   }
-      
+
   /* After this point we are probably dealing with an MTP device */
 
   /* Check if device responds to control message 2 or if there is an error*/
   ret = usb_control_msg (devh,
-			 USB_ENDPOINT_IN|USB_RECIP_DEVICE|USB_TYPE_VENDOR,
+			 USB_ENDPOINT_IN | USB_RECIP_DEVICE | USB_TYPE_VENDOR,
 			 cmd,
 			 0,
 			 5,
@@ -381,7 +387,7 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
     fprintf(dumpfile, "Microsoft device response to control message 2, CMD 0x%02x:\n", cmd);
     data_dump_ascii(dumpfile, buf, ret, 16);
   }
-  
+
   /* If this is true, the device errored against control message 2 */
   if (ret == -1) {
     /* TODO: Implement callback function to let managing program know there
@@ -408,7 +414,7 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
 	    "Problems may arrise but continuing\n",
 	    dev->descriptor.idVendor, dev->descriptor.idProduct);
   }
-  
+
   /* Close the USB device handle */
   usb_close(devh);
   return 1;
@@ -1483,6 +1489,7 @@ ptp_usb_control_cancel_request (PTPParams *params, uint32_t transactionid) {
 static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device* dev)
 {
   usb_dev_handle *device_handle;
+  char buf[255];
 
   params->sendreq_func=ptp_usb_sendreq;
   params->senddata_func=ptp_usb_senddata;
@@ -1512,9 +1519,14 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
      * accessible from user space.
      */
     if (FLAG_UNLOAD_DRIVER(ptp_usb)) {
-      if (usb_detach_kernel_driver_np(device_handle, (int) ptp_usb->interface)) {
-	// Totally ignore this error!
-	// perror("usb_detach_kernel_driver_np()");
+      if (usb_get_driver_np(device_handle, (int) ptp_usb->interface,
+			    buf, sizeof(buf)) == 0) {
+	if (usb_detach_kernel_driver_np(device_handle,
+					(int) ptp_usb->interface)) {
+	  // FIXME : Now we don't need to ignore this error ?
+	  // Totally ignore this error!
+	  // perror("usb_detach_kernel_driver_np()");
+        }
       }
     }
 #endif
@@ -1536,6 +1548,27 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
     if (usb_set_altinterface(device_handle, 0)) {
       perror("usb_set_altinterface()");
       return -1;
+    }
+    if (FLAG_SWITCH_MODE_BLACKBERRY(ptp_usb)) {
+      // FIXME : Only for BlackBerry Storm
+      // What does it mean? Maybe switch mode...
+      usleep(1000);
+      usb_control_msg(device_handle,
+		      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
+		      0xaa, 0x00, 0x04, buf, 0x40, 1000);
+      usleep(1000);
+      usb_control_msg(device_handle,
+		      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
+		      0xa5, 0x00, 0x01, buf, 0x02, 1000);
+      usleep(1000);
+      usb_control_msg(device_handle,
+		      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
+		      0xa8, 0x00, 0x01, buf, 0x05, 1000);
+      usleep(1000);
+      usb_control_msg(device_handle,
+		      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
+		      0xa8, 0x00, 0x01, buf, 0x11, 1000);
+      usleep(1000);
     }
   }
   return 0;

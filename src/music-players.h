@@ -967,7 +967,8 @@
    * RIM's BlackBerry 
    */
   // Reported by Nicolas VIVIEN <nicolas@vivien.fr>
-  { "RIM", 0x0fca, "BlackBerry Storm", 0x8007, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "RIM", 0x0fca, "BlackBerry Storm", 0x8007, DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_SWITCH_MODE_BLACKBERRY },
 
   /*
    * Other strange stuff.

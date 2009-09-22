@@ -245,3 +245,8 @@
  * files instead. Using the unknown filetype for FLAC files.
  */
 #define DEVICE_FLAG_FLAC_IS_UNKNOWN 0x01000000
+/**
+ * This flag performs some random magic on the BlackBerry
+ * device to switch from USB mass storage to MTP mode we think.
+ */
+#define DEVICE_FLAG_SWITCH_MODE_BLACKBERRY 0x02000000

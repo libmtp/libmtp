@@ -1,6 +1,15 @@
+2009-09-23  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: several patches from Nicolas Vivien to
+	  support the BlackBerry Storm.
+	* src/device-flags.h: add special flag for the BlackBerry
+	  "switch mode" command.
+	* src/libusb-glue.h: dito.
+	* src/music-players.h: tag the BlackBerry with this flag.
+
 2009-09-21  Linus Walleij <triad@df.lth.se>
 
-	* examples/sendtr.c: patch from Andrea Grillini to suppor
+	* examples/sendtr.c: patch from Andrea Grillini to support
 	  quiet mode operation.
 
 2009-09-12  Linus Walleij <triad@df.lth.se>
