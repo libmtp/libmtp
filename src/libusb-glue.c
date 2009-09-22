@@ -1550,24 +1550,34 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
       return -1;
     }
     if (FLAG_SWITCH_MODE_BLACKBERRY(ptp_usb)) {
+      int ret;
+
       // FIXME : Only for BlackBerry Storm
       // What does it mean? Maybe switch mode...
       usleep(1000);
-      usb_control_msg(device_handle,
+      ret = usb_control_msg(device_handle,
 		      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
 		      0xaa, 0x00, 0x04, buf, 0x40, 1000);
+      fprintf(stdout, "BlackBerry magic part 1:\n");
+      data_dump_ascii(stdout, buf, ret, 16);
       usleep(1000);
-      usb_control_msg(device_handle,
+      ret = usb_control_msg(device_handle,
 		      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
 		      0xa5, 0x00, 0x01, buf, 0x02, 1000);
+      fprintf(stdout, "BlackBerry magic part 2:\n");
+      data_dump_ascii(stdout, buf, ret, 16);
       usleep(1000);
-      usb_control_msg(device_handle,
+      ret = usb_control_msg(device_handle,
 		      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
 		      0xa8, 0x00, 0x01, buf, 0x05, 1000);
+      fprintf(stdout, "BlackBerry magic part 3:\n");
+      data_dump_ascii(stdout, buf, ret, 16);
       usleep(1000);
-      usb_control_msg(device_handle,
+      ret = usb_control_msg(device_handle,
 		      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
 		      0xa8, 0x00, 0x01, buf, 0x11, 1000);
+      fprintf(stdout, "BlackBerry magic part 4:\n");
+      data_dump_ascii(stdout, buf, ret, 16);
       usleep(1000);
     }
   }
