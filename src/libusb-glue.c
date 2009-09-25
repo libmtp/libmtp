@@ -1523,9 +1523,8 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
 			    buf, sizeof(buf)) == 0) {
 	if (usb_detach_kernel_driver_np(device_handle,
 					(int) ptp_usb->interface)) {
-	  // FIXME : Now we don't need to ignore this error ?
-	  // Totally ignore this error!
-	  // perror("usb_detach_kernel_driver_np()");
+	  perror("usb_detach_kernel_driver_np()");
+	  return -1;
         }
       }
     }
@@ -1554,30 +1553,42 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
 
       // FIXME : Only for BlackBerry Storm
       // What does it mean? Maybe switch mode...
+	  // This first control message is absolutely necessary
       usleep(1000);
       ret = usb_control_msg(device_handle,
 		      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
 		      0xaa, 0x00, 0x04, buf, 0x40, 1000);
+#ifdef ENABLE_USB_BULK_DEBUG
       fprintf(stdout, "BlackBerry magic part 1:\n");
       data_dump_ascii(stdout, buf, ret, 16);
+#endif
       usleep(1000);
+	  // This control message is unnecessary
       ret = usb_control_msg(device_handle,
 		      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
 		      0xa5, 0x00, 0x01, buf, 0x02, 1000);
+#ifdef ENABLE_USB_BULK_DEBUG
       fprintf(stdout, "BlackBerry magic part 2:\n");
       data_dump_ascii(stdout, buf, ret, 16);
+#endif
       usleep(1000);
+	  // This control message is unnecessary
       ret = usb_control_msg(device_handle,
 		      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
 		      0xa8, 0x00, 0x01, buf, 0x05, 1000);
+#ifdef ENABLE_USB_BULK_DEBUG
       fprintf(stdout, "BlackBerry magic part 3:\n");
       data_dump_ascii(stdout, buf, ret, 16);
+#endif
       usleep(1000);
+	  // This control message is unnecessary
       ret = usb_control_msg(device_handle,
 		      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
 		      0xa8, 0x00, 0x01, buf, 0x11, 1000);
+#ifdef ENABLE_USB_BULK_DEBUG
       fprintf(stdout, "BlackBerry magic part 4:\n");
       data_dump_ascii(stdout, buf, ret, 16);
+#endif
       usleep(1000);
     }
   }

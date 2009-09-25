@@ -1,11 +1,21 @@
-Error 2: PTP Layer error 02fe: get_all_metadata_fast(): could not get proplist of all objects.
-Error 2: (Look this up in ptp.h for an explanation.)
 libmtp version: 1.0.1
 
 Listing raw device(s)
    Found 1 device(s):
-   RIM: BlackBerry Storm (0fca:8007) @ bus 0, dev 5
+   RIM: BlackBerry Storm (0fca:8007) @ bus 0, dev 6
 Attempting to connect device(s)
+BlackBerry magic part 1:
+	0000: 4000 0000 0001 0400 0200 0000 0000 0000	@...............
+	0010: 0001 0000 0000 0000 0000 0000 0000 0000	................
+	0020: 0000 0000 0000 0000 0101 4d54 5000 0000	..........MTP...
+	0030: 0000 3400 0000 0000 0000 0000 0000 0000	..4.............
+BlackBerry magic part 2:
+	0000: 0200                                   	..
+BlackBerry magic part 3:
+	0000: 1100 0001 04                           	.....
+BlackBerry magic part 4:
+	0000: 1100 0001 0400 0102 0102 0202 0302 0303	................
+	0010: 02                                     	.
 USB low-level info:
    Using kernel interface "usbfs"
    bcdUSB: 512
@@ -18,13 +28,13 @@ USB low-level info:
    OUT endpoint maxpacket: 512 bytes
    Raw device info:
       Bus location: 0
-      Device number: 5
+      Device number: 6
       Device entry info:
          Vendor: RIM
          Vendor id: 0x0fca
          Product: BlackBerry Storm
          Vendor id: 0x8007
-         Device flags: 0x00000002
+         Device flags: 0x04000002
 Configuration 0, interface 1, altsetting 0:
    Interface description contains the string "MTP"
    Device recognized as MTP, no further probing.
@@ -231,7 +241,9 @@ Playable File (Object) Types and Object Properties Supported:
       dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
       dc44: Name STRING data type GET/SET
       dc4f: Non Consumable UINT8 data type enumeration: 0, 1,  GET/SET
-      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+     Error 2: PTP Layer error 02fe: get_device_unicode_property(): failed to get unicode property.
+Error 2: (Look this up in ptp.h for an explanation.)
+ dc09: Date Modified STRING data type DATETIME FORM READ ONLY
    3001: Association/Directory
       dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
       dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
@@ -240,9 +252,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc07: Object File Name STRING data type GET/SET
       dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
       dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
-  Error 2: PTP Layer error 02fe: get_device_unicode_property(): failed to get unicode property.
-Error 2: (Look this up in ptp.h for an explanation.)
-    dc44: Name STRING data type GET/SET
+      dc44: Name STRING data type GET/SET
       dc4f: Non Consumable UINT8 data type enumeration: 0, 1,  GET/SET
       dc09: Date Modified STRING data type DATETIME FORM READ ONLY
       dc05: Association Type UINT16 data type enumeration: 0, 1,  GET/SET
@@ -252,8 +262,8 @@ Storage Devices:
       StorageType: 0x0003 fixed RAM storage
       FilesystemType: 0x0001 generic flat filesystem
       AccessCapability: 0x0000 read/write
-      MaxCapacity: 910114816
-      FreeSpaceInBytes: 910114816
+      MaxCapacity: 910098432
+      FreeSpaceInBytes: 910098432
       FreeSpaceInObjects: 0
       StorageDescription: Mémoire terminal
       VolumeIdentifier: 10001-********-**************
@@ -261,8 +271,8 @@ Storage Devices:
       StorageType: 0x0004 removable RAM storage
       FilesystemType: 0x0001 generic flat filesystem
       AccessCapability: 0x0000 read/write
-      MaxCapacity: 7822573568
-      FreeSpaceInBytes: 7822573568
+      MaxCapacity: 7820148736
+      FreeSpaceInBytes: 7820148736
       FreeSpaceInObjects: 0
       StorageDescription: Carte Média
       VolumeIdentifier: 20001-********-**************

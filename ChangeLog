@@ -1,3 +1,11 @@
+2009-09-25  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: some more BlackBerry fixing from
+	  Nicolas.
+	* examples/albumart.c: add p and s switches, to support
+	  storage and parent ID:s. (Nicolas)
+	* examples/newplaylist.c: dito. (Nicolas)
+
 2009-09-23  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: patch from Nyall Dawson to make all
