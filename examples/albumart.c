@@ -34,7 +34,7 @@
 #endif
 
 static void usage(void) {
-  printf("Usage: albumart -i <fileid/trackid> -n <albumname> -s <storage_id> -p <parent_id> <imagefile>\n");
+  printf("Usage: albumart -d -i <fileid/trackid> -n <albumname> -s <storage_id> -p <parent_id> <imagefile>\n");
   exit(0);
 }
 
@@ -58,10 +58,13 @@ int main (int argc, char **argv) {
 
   fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
 
-  while ( (opt = getopt(argc, argv, "hn:i:s:p:")) != -1 ) {
+  while ( (opt = getopt(argc, argv, "dhn:i:s:p:")) != -1 ) {
     switch (opt) {
     case 'h':
       usage();
+    case 'd':
+      LIBMTP_Set_Debug(9);
+      break;
     case 'i':
       idcount++;
       if ((tmp = realloc(ids, sizeof(uint32_t) * (idcount))) == NULL) {

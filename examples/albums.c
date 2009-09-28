@@ -34,8 +34,23 @@ static void dump_albuminfo(LIBMTP_album_t *album)
   printf("    Tracks: %d\n\n",album->no_tracks);
 }
 
-int main () {
+int main (int argc, char *argv[]) {
   LIBMTP_mtpdevice_t *device_list, *iter;
+
+  int opt;
+  extern int optind;
+  extern char *optarg;
+
+  while ((opt = getopt(argc, argv, "d")) != -1 ) {
+    switch (opt) {
+    case 'd':
+      LIBMTP_Set_Debug(9);
+      break;
+    }
+  }
+
+  argc -= optind;
+  argv += optind;
 
   LIBMTP_Init();
     

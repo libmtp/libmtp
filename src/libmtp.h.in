@@ -56,6 +56,29 @@ typedef unsigned __int64 uint64_t;
 #include <usb.h>
 #include <stdint.h>
 
+
+/**
+ * Info macro
+ */
+#define LIBMTP_INFO(format, args...) \
+  do { \
+    if (LIBMTP_debug != 0) \
+      fprintf(stdout, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##args); \
+	else \
+      fprintf(stdout, format, ##args); \
+  } while (0)
+
+/**
+ * Error macro
+ */
+#define LIBMTP_ERROR(format, args...) \
+  do { \
+    if (LIBMTP_debug != 0) \
+      fprintf(stderr, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##args); \
+	else \
+      fprintf(stderr, format, ##args); \
+  } while (0)
+
 /**
  * @defgroup types libmtp global type definitions
  * @{
@@ -724,10 +747,13 @@ struct LIBMTP_devicestorage_struct {
 extern "C" {
 #endif
 
+extern int LIBMTP_debug;
+
 /**
  * @defgroup internals The libmtp internals API.
  * @{
  */
+void LIBMTP_Set_Debug(int);
 void LIBMTP_Init(void);
 int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t ** const, int * const);
 /**

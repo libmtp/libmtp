@@ -64,6 +64,21 @@ int main (int argc, char **argv)
   LIBMTP_error_number_t err;
   int i;
 
+  int opt;
+  extern int optind;
+  extern char *optarg;
+
+  while ((opt = getopt(argc, argv, "d")) != -1 ) {
+    switch (opt) {
+    case 'd':
+      LIBMTP_Set_Debug(9);
+      break;
+    }
+  }
+
+  argc -= optind;
+  argv += optind;
+
   LIBMTP_Init();
 
   fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");

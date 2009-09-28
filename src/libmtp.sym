@@ -1,3 +1,4 @@
+LIBMTP_Set_Debug
 LIBMTP_Init
 LIBMTP_Get_Supported_Devices_List
 LIBMTP_Detect_Raw_Devices

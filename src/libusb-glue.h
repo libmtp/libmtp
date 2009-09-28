@@ -40,6 +40,22 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/**
+ * Debug macro
+ */
+#define LIBMTP_USB_DEBUG(format, args...) \
+  do { \
+    if ((LIBMTP_debug & 0x04) != 0) \
+      fprintf(stdout, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##args); \
+  } while (0)
+
+#define LIBMTP_USB_DATA(buffer, length, base) \
+  do { \
+    if ((LIBMTP_debug & 0x08) != 0) \
+      data_dump_ascii (stdout, buffer, length, base); \
+  } while (0)
+
+
 #define USB_BULK_READ usb_bulk_read
 #define USB_BULK_WRITE usb_bulk_write
 

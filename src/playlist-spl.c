@@ -43,15 +43,15 @@
 
 #include "playlist-spl.h"
 
-// set this to 1 to add lots of messy debug output to the playlist code
-#define DEBUG_ENABLED 0
+/**
+ * Debug macro
+ */
+#define LIBMTP_PLST_DEBUG(format, args...) \
+  do { \
+    if ((LIBMTP_debug & 0x02) != 0) \
+      fprintf(stdout, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##args); \
+  } while (0)
 
-// debug macro
-// d = indenting depth
-#define IF_DEBUG() if(DEBUG_ENABLED) {\
-                     printf("%s:%u:%s(): ", __FILE__, __LINE__, __func__); \
-                   } \
-                   if(DEBUG_ENABLED)
 
 // Internal singly linked list of strings
 // used to hold .spl playlist in memory
@@ -129,23 +129,23 @@ void spl_to_playlist_t(LIBMTP_mtpdevice_t* device, PTPObjectInfo *oi,
   pl->tracks = NULL;
   pl->no_tracks = 0;
 
-  IF_DEBUG() printf("pl->name='%s'\n",pl->name);
+  LIBMTP_PLST_DEBUG("pl->name='%s'\n", pl->name);
 
   // open a temporary file
   char tmpname[] = "/tmp/mtp-spl2pl-XXXXXX";
   int fd = mkstemp(tmpname);
   if(fd < 0) {
-    printf("failed to make temp file for %s.spl -> %s, errno=%s\n", pl->name, tmpname, strerror(errno));
+    LIBMTP_ERROR("failed to make temp file for %s.spl -> %s, errno=%s\n", pl->name, tmpname, strerror(errno));
     return;
   }
   // make sure the file will be deleted afterwards
   if(unlink(tmpname) < 0)
-    printf("failed to delete temp file for %s.spl -> %s, errno=%s\n", pl->name, tmpname, strerror(errno));
+    LIBMTP_ERROR("failed to delete temp file for %s.spl -> %s, errno=%s\n", pl->name, tmpname, strerror(errno));
   int ret = LIBMTP_Get_File_To_File_Descriptor(device, pl->playlist_id, fd, NULL, NULL);
   if( ret < 0 ) {
     // FIXME     add_ptp_error_to_errorstack(device, ret, "LIBMTP_Get_Playlist: Could not get .spl playlist file.");
     close(fd);
-    printf("FIXME closed\n");
+    LIBMTP_INFO("FIXME closed\n");
   }
 
   text_t* p = read_into_spl_text_t(device, fd);
@@ -159,14 +159,14 @@ void spl_to_playlist_t(LIBMTP_mtpdevice_t* device, PTPObjectInfo *oi,
 
   // convert the playlist listing to track ids
   pl->no_tracks = trackno_spl_text_t(p);
-  IF_DEBUG() printf("%u track%s found\n", pl->no_tracks, pl->no_tracks==1?"":"s");
+  LIBMTP_PLST_DEBUG("%u track%s found\n", pl->no_tracks, pl->no_tracks==1?"":"s");
   pl->tracks = malloc(sizeof(uint32_t)*(pl->no_tracks));
   tracks_from_spl_text_t(p, pl->tracks, folders, files);
 
   free_spl_text_t(p);
 
   // debug: add a break since this is the top level function call
-  IF_DEBUG() printf("------------\n\n");
+  LIBMTP_PLST_DEBUG("------------\n\n");
 }
 
 
@@ -189,17 +189,17 @@ int playlist_t_to_spl(LIBMTP_mtpdevice_t *device,
 
   char tmpname[] = "/tmp/mtp-spl2pl-XXXXXX"; // must be a var since mkstemp modifies it
 
-  IF_DEBUG() printf("pl->name='%s'\n",pl->name);
+  LIBMTP_PLST_DEBUG("pl->name='%s'\n",pl->name);
 
   // open a file descriptor
   int fd = mkstemp(tmpname);
   if(fd < 0) {
-    printf("failed to make temp file for %s.spl -> %s, errno=%s\n", pl->name, tmpname, strerror(errno));
+    LIBMTP_ERROR("failed to make temp file for %s.spl -> %s, errno=%s\n", pl->name, tmpname, strerror(errno));
     return -1;
   }
   // make sure the file will be deleted afterwards
   if(unlink(tmpname) < 0)
-    printf("failed to delete temp file for %s.spl -> %s, errno=%s\n", pl->name, tmpname, strerror(errno));
+    LIBMTP_ERROR("failed to delete temp file for %s.spl -> %s, errno=%s\n", pl->name, tmpname, strerror(errno));
 
   // decide on which version of the .spl format to use
   uint32_t ver_major;
@@ -208,8 +208,8 @@ int playlist_t_to_spl(LIBMTP_mtpdevice_t *device,
   if(FLAG_PLAYLIST_SPL_V2(ptp_usb)) ver_major = 2;
   else ver_major = 1; // FLAG_PLAYLIST_SPL_V1()
 
-  IF_DEBUG() printf("%u track%s\n", pl->no_tracks, pl->no_tracks==1?"":"s");
-  IF_DEBUG() printf(".spl version %d.%02d\n", ver_major, ver_minor);
+  LIBMTP_PLST_DEBUG("%u track%s\n", pl->no_tracks, pl->no_tracks==1?"":"s");
+  LIBMTP_PLST_DEBUG(".spl version %d.%02d\n", ver_major, ver_minor);
 
   // create the text for the playlist
   spl_text_t_from_tracks(&t, pl->tracks, pl->no_tracks, ver_major, ver_minor, NULL, folders, files);
@@ -228,7 +228,7 @@ int playlist_t_to_spl(LIBMTP_mtpdevice_t *device,
   f->filetype = LIBMTP_FILETYPE_UNKNOWN;
   f->next = NULL;
 
-  IF_DEBUG() printf("%s is %dB\n", f->filename, (int)f->filesize);
+  LIBMTP_PLST_DEBUG("%s is %dB\n", f->filename, (int)f->filesize);
 
   // push the playlist to the device
   lseek(fd, 0, SEEK_SET); // reset file desc. to start of file
@@ -240,7 +240,7 @@ int playlist_t_to_spl(LIBMTP_mtpdevice_t *device,
   // release the memory when we're done with it
   close(fd);
   // debug: add a break since this is the top level function call
-  IF_DEBUG() printf("------------\n\n");
+  LIBMTP_PLST_DEBUG("------------\n\n");
 
   return ret;
 }
@@ -262,7 +262,7 @@ int playlist_t_to_spl(LIBMTP_mtpdevice_t *device,
 int update_spl_playlist(LIBMTP_mtpdevice_t *device,
 			  LIBMTP_playlist_t * const newlist)
 {
-  IF_DEBUG() printf("pl->name='%s'\n",newlist->name);
+  LIBMTP_PLST_DEBUG("pl->name='%s'\n",newlist->name);
 
   // read in the playlist of interest
   LIBMTP_playlist_t * old = LIBMTP_Get_Playlist(device, newlist->playlist_id);
@@ -283,18 +283,16 @@ int update_spl_playlist(LIBMTP_mtpdevice_t *device,
 
   // if not, kill the playlist and replace it
   if(delta) {
-    IF_DEBUG() printf("new tracks detected:\n");
-    IF_DEBUG() printf("delete old playlist and build a new one\n");
-    IF_DEBUG() printf(" NOTE: new playlist_id will result!\n");
+    LIBMTP_PLST_DEBUG("new tracks detected:\n");
+    LIBMTP_PLST_DEBUG("delete old playlist and build a new one\n");
+    LIBMTP_PLST_DEBUG(" NOTE: new playlist_id will result!\n");
     if(LIBMTP_Delete_Object(device, old->playlist_id) != 0)
       return -1;
 
-    IF_DEBUG() {
-      if(strcmp(old->name,newlist->name) == 0)
-        printf("name unchanged\n");
-      else
-        printf("name is changing too -> %s\n",newlist->name);
-    }
+    if(strcmp(old->name,newlist->name) == 0)
+      LIBMTP_PLST_DEBUG("name unchanged\n");
+    else
+      LIBMTP_PLST_DEBUG("name is changing too -> %s\n",newlist->name);
 
     return LIBMTP_Create_New_Playlist(device, newlist);
   }
@@ -302,8 +300,8 @@ int update_spl_playlist(LIBMTP_mtpdevice_t *device,
 
   // update the name only
   if(strcmp(old->name,newlist->name) != 0) {
-    IF_DEBUG() printf("ONLY name is changing -> %s\n",newlist->name);
-    IF_DEBUG() printf("playlist_id will remain unchanged\n");
+    LIBMTP_PLST_DEBUG("ONLY name is changing -> %s\n",newlist->name);
+    LIBMTP_PLST_DEBUG("playlist_id will remain unchanged\n");
     char* s = malloc(sizeof(char)*(strlen(newlist->name)+5));
     strcpy(s, newlist->name);
     strcat(s,".spl"); // FIXME check for success
@@ -312,7 +310,7 @@ int update_spl_playlist(LIBMTP_mtpdevice_t *device,
     return ret;
   }
 
-  IF_DEBUG() printf("no change\n");
+  LIBMTP_PLST_DEBUG("no change\n");
   return 0; // nothing to be done, success
 }
 
@@ -356,16 +354,16 @@ static text_t* read_into_spl_text_t(LIBMTP_mtpdevice_t *device, const int fd)
     it = t; // set ptr to start of buffer
     rdcnt = read(fd, it, sizeof(char)*MAXREAD);
     if(rdcnt < 0)
-      printf("load_spl_fd read err %s\n", strerror(errno));
+      LIBMTP_INFO("load_spl_fd read err %s\n", strerror(errno));
     else if(rdcnt == 0) { // for EOF, fix rdcnt
       if(it-t == MAXREAD)
-        printf("error -- buffer too small to read in .spl playlist entry\n");
+        LIBMTP_ERROR("error -- buffer too small to read in .spl playlist entry\n");
 
       rdcnt = lseek(fd, 0, SEEK_CUR) - offcnt;
       eof = 1;
     }
 
-    IF_DEBUG() printf("read buff= {%dB new, %dB old/left-over}%s\n",(int)rdcnt, (int)(iw-w), eof?", EOF":"");
+    LIBMTP_PLST_DEBUG("read buff= {%dB new, %dB old/left-over}%s\n",(int)rdcnt, (int)(iw-w), eof?", EOF":"");
 
     // while more input bytes
     char* it_end = t + rdcnt;
@@ -407,7 +405,7 @@ static text_t* read_into_spl_text_t(LIBMTP_mtpdevice_t *device, const int fd)
         tail->text = utf16_to_utf8(device, (uint16_t*) w);
         iw = w; // start again
 
-        IF_DEBUG() printf("line: %s\n", tail->text);
+        LIBMTP_PLST_DEBUG("line: %s\n", tail->text);
       }
 
       // prevent buffer overflow
@@ -416,7 +414,7 @@ static text_t* read_into_spl_text_t(LIBMTP_mtpdevice_t *device, const int fd)
         //   we are dropping all the processed bytes for this line and
         //   proceeding on as if everything is okay, probably losing a track
         //   from the playlist
-        printf("ERROR %s:%u:%s(): buffer overflow! .spl line too long @ %zuB\n",
+        LIBMTP_ERROR("ERROR %s:%u:%s(): buffer overflow! .spl line too long @ %zuB\n",
                __FILE__, __LINE__, __func__, WSIZE);
         iw = w; // reset buffer
       }
@@ -461,16 +459,14 @@ static void write_from_spl_text_t(LIBMTP_mtpdevice_t *device,
     const size_t len = ucs2_strlen((uint16_t*)t)*sizeof(uint16_t);
     int i;
 
-    IF_DEBUG() {
-      printf("\nutf8=%s ",p->text);
-      for(i=0;i<strlen(p->text);i++)
-        printf("%02x ", p->text[i] & 0xff);
-      printf("\n");
-      printf("ucs2=");
-      for(i=0;i<ucs2_strlen((uint16_t*)t)*sizeof(uint16_t);i++)
-        printf("%02x ", t[i] & 0xff);
-      printf("\n");
-    }
+    LIBMTP_PLST_DEBUG("\nutf8=%s ",p->text);
+    for(i=0;i<strlen(p->text);i++)
+      LIBMTP_PLST_DEBUG("%02x ", p->text[i] & 0xff);
+    LIBMTP_PLST_DEBUG("\n");
+    LIBMTP_PLST_DEBUG("ucs2=");
+    for(i=0;i<ucs2_strlen((uint16_t*)t)*sizeof(uint16_t);i++)
+      LIBMTP_PLST_DEBUG("%02x ", t[i] & 0xff);
+    LIBMTP_PLST_DEBUG("\n");
 
     // write: utf8 -> utf16
     ret += write(fd, t, len);
@@ -480,16 +476,16 @@ static void write_from_spl_text_t(LIBMTP_mtpdevice_t *device,
 
     // check for failures
     if(ret < 0)
-      printf("write spl file failed: %s\n", strerror(errno));
+      LIBMTP_ERROR("write spl file failed: %s\n", strerror(errno));
     else if(ret != len +2)
-      printf("write spl file wrong number of bytes ret=%d len=%d '%s'\n", (int)ret, (int)len, p->text);
+      LIBMTP_ERROR("write spl file wrong number of bytes ret=%d len=%d '%s'\n", (int)ret, (int)len, p->text);
 
     // write carriage return, line feed in ucs2
     ret = write(fd, "\r\0\n\0", 4);
     if(ret < 0)
-      printf("write spl file failed: %s\n", strerror(errno));
+      LIBMTP_ERROR("write spl file failed: %s\n", strerror(errno));
     else if(ret != 4)
-      printf("failed to write the correct number of bytes '\\n'!\n");
+      LIBMTP_ERROR("failed to write the correct number of bytes '\\n'!\n");
 
     // fake out count (first time through has two extra bytes from BOM)
     ret = 2;
@@ -519,13 +515,14 @@ static void free_spl_text_t(text_t* p)
 
 /**
  * Print a linked-list of strings to stdout.
+ * Used to debug.
  *
  * @param p the list to print
  */
 static void print_spl_text_t(text_t* p)
 {
   while(p != NULL) {
-    printf("%s\n",p->text);
+    LIBMTP_PLST_DEBUG("%s\n",p->text);
     p = p->next;
   }
 }
@@ -569,8 +566,7 @@ static void tracks_from_spl_text_t(text_t* p,
   while(p != NULL) {
     if(p->text[0] == '\\' ) {
       tracks[c] = discover_id_from_filepath(p->text, folders, files);
-      IF_DEBUG()
-        printf("track %d = %s (%u)\n", c+1, p->text, tracks[c]);
+      LIBMTP_PLST_DEBUG("track %d = %s (%u)\n", c+1, p->text, tracks[c]);
       c++;
     }
     p = p->next;
@@ -617,11 +613,10 @@ static void spl_text_t_from_tracks(text_t** p,
 
     if(f != NULL) {
       append_text_t(&c, f);
-      IF_DEBUG()
-        printf("track %d = %s (%u)\n", i+1, f, tracks[i]);
+      LIBMTP_PLST_DEBUG("track %d = %s (%u)\n", i+1, f, tracks[i]);
     }
     else
-      printf("failed to find filepath for track=%d\n", tracks[i]);
+      LIBMTP_ERROR("failed to find filepath for track=%d\n", tracks[i]);
   }
 
   // FOOTER
@@ -643,10 +638,8 @@ static void spl_text_t_from_tracks(text_t** p,
   c->next = NULL;
 
   // debug
-  IF_DEBUG() {
-    printf(".spl playlist:\n");
-    print_spl_text_t(*p);
-  }
+  LIBMTP_PLST_DEBUG(".spl playlist:\n");
+  print_spl_text_t(*p);
 }
 
 

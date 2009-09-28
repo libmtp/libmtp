@@ -55,8 +55,20 @@
 #include <io.h>
 #endif
 
-/* To enable PTP level debug prints (all ptp_debug(...)), switch on this */
-//#define ENABLE_PTP_DEBUG
+
+/**
+ * Global debug level
+ * We use a flag system to enable a part of logs.
+ * To choose a particular flag, you have to use LIBMTP_DEBUG env variable.
+ * Indeed, the option '-d' enables all logs.
+ *  0x00 [0000 0000] : no debug (default)
+ *  0x01 [0000 0001] : PTP debug
+ *  0x02 [0000 0010] : Playlist debug
+ *  0x04 [0000 0100] : USB debug
+ *  0x08 [0000 1000] : USB data debug
+ */
+int LIBMTP_debug = 0;
+
 
 /*
  * This is a mapping between libmtp internal MTP filetypes and
@@ -705,6 +717,21 @@ static LIBMTP_property_t map_ptp_property_to_libmtp_property(uint16_t inproperty
 
 
 /**
+ * Set the debug level.
+ *
+ * By default, the debug level is set to '0' (disable).
+ */
+void LIBMTP_Set_Debug(int level)
+{
+  if (LIBMTP_debug || level)
+    LIBMTP_ERROR("LIBMTP_Set_Debug: Setting debugging level to %d (%s)\n",
+    level, level ? "on" : "off");
+
+  LIBMTP_debug = level;
+}
+
+
+/**
  * Initialize the library. You are only supposed to call this
  * one, before using the library for the first time in a program.
  * Never re-initialize libmtp!
@@ -714,6 +741,9 @@ static LIBMTP_property_t map_ptp_property_to_libmtp_property(uint16_t inproperty
  */
 void LIBMTP_Init(void)
 {
+  if (getenv("LIBMTP_DEBUG"))
+    LIBMTP_Set_Debug(atoi(getenv("LIBMTP_DEBUG")));
+
   init_filemap();
   init_propertymap();
   return;
@@ -1626,10 +1656,10 @@ __attribute__((__format__(printf,2,0)))
 #endif
 LIBMTP_ptp_debug(void *data, const char *format, va_list args)
 {
-#ifdef ENABLE_PTP_DEBUG
-  vfprintf (stderr, format, args);
-  fflush (stderr);
-#endif
+  if ((LIBMTP_debug & 0x01) != 0) {
+    vfprintf (stderr, format, args);
+    fflush (stderr);
+  }
 }
 
 /**
@@ -1686,7 +1716,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
        device and attempt to continue */
     
     /* TODO: This error statement could probably be a bit more robust */
-    fprintf(stderr, "LIBMTP PANIC: connect_usb_devices encountered a memory "
+    LIBMTP_ERROR("LIBMTP PANIC: connect_usb_devices encountered a memory "
 	    "allocation error with device %d on bus %d, trying to continue",
 	    rawdevice->devnum, rawdevice->bus_location);
     
@@ -1717,7 +1747,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
     
   if(current_params->cd_locale_to_ucs2 == (iconv_t) -1 ||
      current_params->cd_ucs2_to_locale == (iconv_t) -1) {
-    fprintf(stderr, "LIBMTP PANIC: Cannot open iconv() converters to/from UCS-2!\n"
+    LIBMTP_ERROR("LIBMTP PANIC: Cannot open iconv() converters to/from UCS-2!\n"
 	    "Too old stdlibc, glibc and libiconv?\n");
     free(current_params);
     free(mtp_device);
@@ -1743,7 +1773,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
   /* Cache the device information for later use */
   if (ptp_getdeviceinfo(current_params,
 			&current_params->deviceinfo) != PTP_RC_OK) {
-    fprintf(stderr, "LIBMTP PANIC: Unable to read device information on device "
+    LIBMTP_ERROR("LIBMTP PANIC: Unable to read device information on device "
 	    "%d on bus %d, trying to continue",
 	    rawdevice->devnum, rawdevice->bus_location);
     
@@ -1763,14 +1793,14 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
 				  PTP_OPC_ObjectSize, 
 				  current_params->deviceinfo.ImageFormats[i], 
 				  &opd) != PTP_RC_OK) {
-      printf("LIBMTP PANIC: "
+      LIBMTP_ERROR("LIBMTP PANIC: "
 	     "could not inspect object property descriptions!\n");
     } else {
       if (opd.DataType == PTP_DTC_UINT32) {
 	if (bs == 0) {
 	  bs = 32;
 	} else if (bs != 32) {
-	  printf("LIBMTP PANIC: "
+	  LIBMTP_ERROR("LIBMTP PANIC: "
 		 "different objects support different object sizes!\n");
 	  bs = 0;
 	  break;
@@ -1779,14 +1809,14 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
 	if (bs == 0) {
 	  bs = 64;
 	} else if (bs != 64) {
-	  printf("LIBMTP PANIC: "
+	  LIBMTP_ERROR("LIBMTP PANIC: "
 		 "different objects support different object sizes!\n");
 	  bs = 0;
 	  break;
 	}
       } else {
 	// Ignore if other size.
-	printf("LIBMTP PANIC: "
+	LIBMTP_ERROR("LIBMTP PANIC: "
 	       "awkward object size data type: %04x\n", opd.DataType);
 	bs = 0;
 	break;
@@ -1997,7 +2027,7 @@ static void add_error_to_errorstack(LIBMTP_mtpdevice_t *device,
   LIBMTP_error_t *newerror;
   
   if (device == NULL) {
-    fprintf(stderr, "LIBMTP PANIC: Trying to add error to a NULL device!\n");
+    LIBMTP_ERROR("LIBMTP PANIC: Trying to add error to a NULL device!\n");
     return;
   }
   newerror = (LIBMTP_error_t *) malloc(sizeof(LIBMTP_error_t));
@@ -2024,7 +2054,7 @@ static void add_ptp_error_to_errorstack(LIBMTP_mtpdevice_t *device,
 					char const * const error_text)
 {
   if (device == NULL) {
-    fprintf(stderr, "LIBMTP PANIC: Trying to add PTP error to a NULL device!\n");
+    LIBMTP_ERROR("LIBMTP PANIC: Trying to add PTP error to a NULL device!\n");
     return;
   } else {
     char outstr[256];
@@ -2053,7 +2083,7 @@ static void add_ptp_error_to_errorstack(LIBMTP_mtpdevice_t *device,
 LIBMTP_error_t *LIBMTP_Get_Errorstack(LIBMTP_mtpdevice_t *device)
 {
   if (device == NULL) {
-    fprintf(stderr, "LIBMTP PANIC: Trying to get the error stack of a NULL device!\n");
+    LIBMTP_ERROR("LIBMTP PANIC: Trying to get the error stack of a NULL device!\n");
     return NULL;
   }
   return device->errorstack;
@@ -2069,7 +2099,7 @@ LIBMTP_error_t *LIBMTP_Get_Errorstack(LIBMTP_mtpdevice_t *device)
 void LIBMTP_Clear_Errorstack(LIBMTP_mtpdevice_t *device)
 {
   if (device == NULL) {
-    fprintf(stderr, "LIBMTP PANIC: Trying to clear the error stack of a NULL device!\n");
+    LIBMTP_ERROR("LIBMTP PANIC: Trying to clear the error stack of a NULL device!\n");
   } else {
     LIBMTP_error_t *tmp = device->errorstack;
   
@@ -2096,15 +2126,15 @@ void LIBMTP_Clear_Errorstack(LIBMTP_mtpdevice_t *device)
 void LIBMTP_Dump_Errorstack(LIBMTP_mtpdevice_t *device)
 {
   if (device == NULL) {
-    fprintf(stderr, "LIBMTP PANIC: Trying to dump the error stack of a NULL device!\n");
+    LIBMTP_ERROR("LIBMTP PANIC: Trying to dump the error stack of a NULL device!\n");
   } else {
     LIBMTP_error_t *tmp = device->errorstack;
 
     while (tmp != NULL) {
       if (tmp->error_text != NULL) {
-	fprintf(stderr, "Error %d: %s\n", tmp->errornumber, tmp->error_text);
+	LIBMTP_ERROR("Error %d: %s\n", tmp->errornumber, tmp->error_text);
       } else {
-	fprintf(stderr, "Error %d: (unknown)\n", tmp->errornumber);
+	LIBMTP_ERROR("Error %d: (unknown)\n", tmp->errornumber);
       }
       tmp = tmp->next;
     }
@@ -2357,7 +2387,7 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
     ob = &params->objects[i];
     ret = ptp_object_want(params,params->objects[i].oid,PTPOBJECT_OBJECTINFO_LOADED, &xob);
     if (ret != PTP_RC_OK) {
-	fprintf(stderr,"broken! %x not found\n", params->objects[i].oid);
+	LIBMTP_ERROR("broken! %x not found\n", params->objects[i].oid);
     }
     if (ob->oi.Filename == NULL)
       ob->oi.Filename = strdup("<null>");
@@ -3622,8 +3652,8 @@ void LIBMTP_destroy_file_t(LIBMTP_file_t *file)
  */
 LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *device)
 {
-  printf("WARNING: LIBMTP_Get_Filelisting() is deprecated.\n");
-  printf("WARNING: please update your code to use LIBMTP_Get_Filelisting_With_Callback()\n");
+  LIBMTP_INFO("WARNING: LIBMTP_Get_Filelisting() is deprecated.\n");
+  LIBMTP_INFO("WARNING: please update your code to use LIBMTP_Get_Filelisting_With_Callback()\n");
   return LIBMTP_Get_Filelisting_With_Callback(device, NULL, NULL);
 }
 
@@ -4174,8 +4204,8 @@ static void get_track_metadata(LIBMTP_mtpdevice_t *device, uint16_t objectformat
  */
 LIBMTP_track_t *LIBMTP_Get_Tracklisting(LIBMTP_mtpdevice_t *device)
 {
-  printf("WARNING: LIBMTP_Get_Tracklisting() is deprecated.\n");
-  printf("WARNING: please update your code to use LIBMTP_Get_Tracklisting_With_Callback()\n");
+  LIBMTP_INFO("WARNING: LIBMTP_Get_Tracklisting() is deprecated.\n");
+  LIBMTP_INFO("WARNING: please update your code to use LIBMTP_Get_Tracklisting_With_Callback()\n");
   return LIBMTP_Get_Tracklisting_With_Callback(device, NULL, NULL);
 }
 
@@ -4798,7 +4828,7 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
 #else
   if ( (fd = open(path, O_RDONLY)) == -1) {
 #endif
-    printf("LIBMTP_Send_Track_From_File(): Could not open source file \"%s\"\n", path);
+    LIBMTP_ERROR("LIBMTP_Send_Track_From_File(): Could not open source file \"%s\"\n", path);
     return -1;
   }
 
@@ -6523,7 +6553,7 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
      * children, because we rely on that instead.
      */
     if (ob->oi.AssociationDesc != 0x00000000U) {
-      printf("MTP extended association type 0x%08x encountered\n", ob->oi.AssociationDesc);
+      LIBMTP_INFO("MTP extended association type 0x%08x encountered\n", ob->oi.AssociationDesc);
     }
 
     // Create a folder struct...
@@ -6551,7 +6581,7 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
   while(head.sibling != &head) {
     LIBMTP_folder_t *curr = head.sibling;
 
-    printf("Orphan folder with ID: 0x%08x name: \"%s\" encountered.\n",
+    LIBMTP_INFO("Orphan folder with ID: 0x%08x name: \"%s\" encountered.\n",
 	   curr->folder_id,
 	   curr->name);
     curr->sibling->child = curr->child;
@@ -6892,7 +6922,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
   }
   if (!supported) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): player does not support this abstract type.");
-    printf("Unsupported abstract list type: %04x\n", objectformat);
+    LIBMTP_ERROR("Unsupported abstract list type: %04x\n", objectformat);
     return -1;
   }
 
