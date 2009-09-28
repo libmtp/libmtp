@@ -1,3 +1,16 @@
+2009-09-28  Nicolas VIVIEN <nicolas@vivien.fr>
+
+    * examples/albumart.c : add d option, to enable or not debug
+	  ouput.
+	* examples/albums.c : dito.
+	* examples/detect.c : dito.
+	* src/libmtp.c : Add LIBMTP_Set_Debug function.
+	* src/libmtp.h.in : Add LIBMTP_Set_Debug function to API.
+	* src/libmtp.sym : Add LIBMTP_Set_Debug function to exported symbol.
+	* src/libusb-glue.h : Add LIBMTP_USB_DEBUG / LIBMTP_DATA_DEBUG macros.
+	* src/libusb-glue.c : Use previous macros inside of printf.
+	* src/playlist-spl.c : Add LIBMTP_PLST_DEBUG macro.
+
 2009-09-25  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: some more BlackBerry fixing from
