@@ -82,6 +82,21 @@ typedef unsigned __int64 uint64_t;
 /**
  * @defgroup types libmtp global type definitions
  * @{
+ */
+
+/**
+ * The debug flags defined here are the external flags used
+ * by the libmtp library interface.
+ */
+#define LIBMTP_DEBUG_NONE		0x00
+#define LIBMTP_DEBUG_PTP		0x01
+#define LIBMTP_DEBUG_PLST		0x02
+#define LIBMTP_DEBUG_USB		0x04
+#define LIBMTP_DEBUG_DATA		0x08
+#define LIBMTP_DEBUG_ALL		0xFF
+
+
+/**
  * The filetypes defined here are the external types used
  * by the libmtp library interface. The types used internally
  * as PTP-defined enumerator types is something different.

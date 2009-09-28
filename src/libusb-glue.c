@@ -136,7 +136,7 @@ static struct usb_bus* init_usb()
    * Some additional libusb debugging please.
    * We use the same level debug between MTP and USB.
    */
-  if ((LIBMTP_debug & 0x04) != 0)
+  if ((LIBMTP_debug & LIBMTP_DEBUG_USB) != 0)
     usb_set_debug(9);
 
   usb_init();

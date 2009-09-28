@@ -45,13 +45,13 @@ extern "C" {
  */
 #define LIBMTP_USB_DEBUG(format, args...) \
   do { \
-    if ((LIBMTP_debug & 0x04) != 0) \
+    if ((LIBMTP_debug & LIBMTP_DEBUG_USB) != 0) \
       fprintf(stdout, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##args); \
   } while (0)
 
 #define LIBMTP_USB_DATA(buffer, length, base) \
   do { \
-    if ((LIBMTP_debug & 0x08) != 0) \
+    if ((LIBMTP_debug & LIBMTP_DEBUG_DATA) != 0) \
       data_dump_ascii (stdout, buffer, length, base); \
   } while (0)
 

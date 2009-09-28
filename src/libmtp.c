@@ -67,7 +67,7 @@
  *  0x04 [0000 0100] : USB debug
  *  0x08 [0000 1000] : USB data debug
  */
-int LIBMTP_debug = 0;
+int LIBMTP_debug = LIBMTP_DEBUG_NONE;
 
 
 /*
@@ -1656,7 +1656,7 @@ __attribute__((__format__(printf,2,0)))
 #endif
 LIBMTP_ptp_debug(void *data, const char *format, va_list args)
 {
-  if ((LIBMTP_debug & 0x01) != 0) {
+  if ((LIBMTP_debug & LIBMTP_DEBUG_PTP) != 0) {
     vfprintf (stderr, format, args);
     fflush (stderr);
   }
