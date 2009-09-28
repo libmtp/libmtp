@@ -28,7 +28,7 @@
 #include <errno.h>
 
 static void usage(void) {
-  printf("Usage: newplaylist -i <fileid/trackid> -n <playlistname>\n");
+  printf("Usage: newplaylist -i <fileid/trackid> -n <playlistname> -s <storage_id> -p <parent_id>\n");
   exit(0);
 }
 
@@ -42,10 +42,12 @@ int main (int argc, char **argv) {
   uint32_t *tmp = NULL;
   char *playlistname = NULL;
   char *rest;
+  uint32_t storageid = 0;
+  uint32_t parentid = 0;
  
   fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
 
-  while ( (opt = getopt(argc, argv, "hn:i:")) != -1 ) {
+  while ( (opt = getopt(argc, argv, "hn:i:s:p:")) != -1 ) {
     switch (opt) {
     case 'h':
       usage();
@@ -61,6 +63,12 @@ int main (int argc, char **argv) {
     case 'n':
       playlistname = strdup(optarg);
       break;
+    case 's':
+      storageid = (uint32_t) strtoul(optarg, NULL, 0);
+	  break;
+    case 'p':
+      parentid = (uint32_t) strtoul(optarg, NULL, 0);
+	  break;
     default:
       usage();
     }
@@ -90,8 +98,8 @@ int main (int argc, char **argv) {
   playlist->name = playlistname;
   playlist->no_tracks = idcount;
   playlist->tracks = ids;
-  playlist->parent_id = 0;
-  playlist->storage_id = 0;
+  playlist->parent_id = parentid;
+  playlist->storage_id = storageid;
   int ret = LIBMTP_Create_New_Playlist(device,playlist);
   if (ret != 0) {
     printf("Couldn't create playlist object\n");
