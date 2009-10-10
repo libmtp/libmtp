@@ -2,6 +2,7 @@
 
 	* src/libmtp.h.in: move debugmacros to util.h
 	* src/util.h: dito
+	* libmtp.pc.in: erroneouse Libs.private, lacking ":"
 
 2009-09-28  Nicolas VIVIEN <nicolas@vivien.fr>
 
