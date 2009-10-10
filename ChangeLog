@@ -1,6 +1,11 @@
+2009-10-10  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: move debugmacros to util.h
+	* src/util.h: dito
+
 2009-09-28  Nicolas VIVIEN <nicolas@vivien.fr>
 
-    * examples/albumart.c : add d option, to enable or not debug
+	* examples/albumart.c : add d option, to enable or not debug
 	  ouput.
 	* examples/albums.c : dito.
 	* examples/detect.c : dito.

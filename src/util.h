@@ -26,4 +26,27 @@
 void data_dump(FILE *f, void *buf, uint32_t nbytes);
 void data_dump_ascii (FILE *f, void *buf, uint32_t n, uint32_t dump_boundry);
 
+/**
+ * Info macro
+ */
+#define LIBMTP_INFO(format, args...) \
+  do { \
+    if (LIBMTP_debug != 0) \
+      fprintf(stdout, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##args); \
+	else \
+      fprintf(stdout, format, ##args); \
+  } while (0)
+
+/**
+ * Error macro
+ */
+#define LIBMTP_ERROR(format, args...) \
+  do { \
+    if (LIBMTP_debug != 0) \
+      fprintf(stderr, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##args); \
+	else \
+      fprintf(stderr, format, ##args); \
+  } while (0)
+
+
 #endif //__MTP__UTIL__H

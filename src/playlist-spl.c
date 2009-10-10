@@ -33,13 +33,13 @@
 #include <sys/uio.h>
 #endif
 #include <fcntl.h>
-
 #include <string.h>
 
 #include "libmtp.h"
 #include "libusb-glue.h"
 #include "ptp.h"
 #include "unicode.h"
+#include "util.h"
 
 #include "playlist-spl.h"
 

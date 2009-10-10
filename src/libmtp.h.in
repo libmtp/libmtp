@@ -2,7 +2,7 @@
  * \file libmtp.h
  * Interface to the Media Transfer Protocol library.
  *
- * Copyright (C) 2005-2008 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2009 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2005-2008 Richard A. Low <richard@wentnet.com>
  * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  * Copyright (C) 2008 Florent Mertens <flomertens@gmail.com>
@@ -55,29 +55,6 @@ typedef unsigned __int64 uint64_t;
 #include <stdio.h>
 #include <usb.h>
 #include <stdint.h>
-
-
-/**
- * Info macro
- */
-#define LIBMTP_INFO(format, args...) \
-  do { \
-    if (LIBMTP_debug != 0) \
-      fprintf(stdout, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##args); \
-	else \
-      fprintf(stdout, format, ##args); \
-  } while (0)
-
-/**
- * Error macro
- */
-#define LIBMTP_ERROR(format, args...) \
-  do { \
-    if (LIBMTP_debug != 0) \
-      fprintf(stderr, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##args); \
-	else \
-      fprintf(stderr, format, ##args); \
-  } while (0)
 
 /**
  * @defgroup types libmtp global type definitions

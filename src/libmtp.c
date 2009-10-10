@@ -41,6 +41,7 @@
 #include "libusb-glue.h"
 #include "device-flags.h"
 #include "playlist-spl.h"
+#include "util.h"
 
 #include <stdlib.h>
 #include <unistd.h>
