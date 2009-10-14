@@ -573,9 +573,11 @@
 
   /*
    * Canon
-   * This is actually a camera, but it has a Microsoft device descriptor
-   * and reports itself as supporting the MTP extension.
+   * These are actually cameras, but they have a Microsoft device descriptor
+   * and reports themselves as supporting the MTP extension.
    */
+  { "Canon", 0x04a9, "Ixus Digital 700 (PTP/MTP mode)", 0x30f2,
+     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   { "Canon", 0x04a9, "PowerShot A640 (PTP/MTP mode)", 0x3139,
      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
 
