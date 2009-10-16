@@ -93,7 +93,7 @@ http://www.usb.org/developers/devclass_docs/MTP_1.0.zip
 The Examples
 ------------
 
-In the subdirectory "examples" you find a number of 
+In the subdirectory "examples" you find a number of
 command-line tools, illustrating the use of libmtp in very
 simple terms.
 
@@ -105,7 +105,7 @@ of these examples, they look like they do for two reasons:
    called them "tools" not "examples".
 
 2. The MTP usage paradigm is that a daemon should hook
-   the device upon connection, and that it should be 
+   the device upon connection, and that it should be
    released by unplugging. GUI tools utilizing HAL (hald)
    and D-Bus do this much better than any commandline
    program ever can. (See below on bugs.) Specificationwise
@@ -120,18 +120,18 @@ New Devices
 -----------
 
 If you happen upon a device which libmtp claims it cannot
-autodetect, please submit the vendor ID and device ID 
+autodetect, please submit the vendor ID and device ID
 (these can be obtained from the "lsusb" and "lsusb -n"
-commands run as root) as a bug, patch or feature request 
-on the Sourceforge bug tracker at our homepage. If it 
-gives a sensible  output from "mtp-detect" then please attach 
-the result as well as it teach us some stuff about your 
-device. If you've done some additional hacking, join our 
+commands run as root) as a bug, patch or feature request
+on the Sourceforge bug tracker at our homepage. If it
+gives a sensible  output from "mtp-detect" then please attach
+the result as well as it teach us some stuff about your
+device. If you've done some additional hacking, join our
 mailinglist and post your experiences there.
 
 If you want to be able to hack some more and you're not
-afraid of C hacking, add an entry for your device's 
-vendor/product ID and a descriptive string to the database 
+afraid of C hacking, add an entry for your device's
+vendor/product ID and a descriptive string to the database
 in the file src/music-players.h.
 
 If you want to poke around to see if your device has some
@@ -143,33 +143,24 @@ Flags can be tested in isolation or catenated with "|"
 flag, chances are high that a new device will need it
 too, typically from the same manufacturer.
 
-The most common flag that needs to be set is the 
+The most common flag that needs to be set is the
 DEVICE_FLAG_UNLOAD_DRIVER that detach any Linux kernel
 drivers that may have attached to the device making
 MTP access impossible. This is however not expected to
 really work: this is a problem being tracked as of
 now (2007-08-04). See the "last resort" solutions below
-if you really need to get your dual-mode device to work 
+if you really need to get your dual-mode device to work
 with MTP.
 
 Another flag which is easy to identify is the
 DEVICE_FLAG_NO_ZERO_READS, which remedies connection
-timeouts when getting files, and some timeouts on e.g. 
+timeouts when getting files, and some timeouts on e.g.
 successive "mtp-connect" calls.
-
-If you are a device vendor, please consider assigning one 
-of your employees as a contact person for libmtp, have them
-sign up to the libmtp development list and answer questions
-and post new device ID:s as they are released to our
-mailing list. By the way: do you have spare devices you
-can give us? Send them to Richard (Mac support) or Linus
-(Linux support). (So far nobody did that except for Microsoft
-who sent us a Zune by proxy!)
 
 If your device is very problematic we are curious of how it
 works under Windows, so we enjoy reading USB packet sniffs
 that reveal the low-level traffic carried out between
-Windows Media Player and your device. This can be done 
+Windows Media Player and your device. This can be done
 using e.g.:
 
 * USBsnoop:
@@ -177,13 +168,13 @@ using e.g.:
 
 * The trial version of HHD Softwares software-only
   USB monitor. You need to get a copy of version 2.37 since
-  the newer trial versions won't let you carry out the 
+  the newer trial versions won't let you carry out the
   needed packet sniffs. (As of 2007-03-10 a copy can be found
   at: http://www.cobbleware.com/files/usb-monitor-237.exe)
 
 There are other USB monitors as well, some more expensive
 alternatives use hardware and even measure electronic
-characteristics of the traffic (which is far too much 
+characteristics of the traffic (which is far too much
 detail for us).
 
 Device sniffs are an easy read since the PTP/MTP protocol
@@ -218,15 +209,15 @@ Get 0xc bytes from the device:
 
 * One send (OUT to the device), two reads (IN from the device).
 
-* All three byte chunks commands are 
-  sent/recieved/recieeved by the function  ptp_transaction() 
+* All three byte chunks commands are
+  sent/recieved/recieeved by the function  ptp_transaction()
   in the file ptp.c.
 
-* It boils down to ptp_usb_sendreq(), optionally ptp_usb_senddata() 
-  or ptp_usb_getdata() and finally ptp_usb_getresp() in the file 
+* It boils down to ptp_usb_sendreq(), optionally ptp_usb_senddata()
+  or ptp_usb_getdata() and finally ptp_usb_getresp() in the file
   libusb-glue.c. Notice ptp_usb_sendreq() and ptp_usb_getresp()
   are ALWAYS called. The TYPE field correspond to this, so the
-  TYPES in this case are "COMMAND" (0x0001), "DATA" (0x0002), 
+  TYPES in this case are "COMMAND" (0x0001), "DATA" (0x0002),
   and "RESPONSE" (0x0003).
 
 * Notice that the byte order is little endian, so you need to read
@@ -255,10 +246,10 @@ Get 0xc bytes from the device:
 * This RESPONSE has:
   CMD 0x99805, we see in ptp.h that this is PTP_OC_MTP_GetObjPropList.
   Return Code ("RC") = 0x2001, PTP_RC_OK, all went fine.
-  Transaction# 0x00000023.  
+  Transaction# 0x00000023.
 
 If you want to compare the Windows behaviour with a similar
-operation using libmtp you can go into the src/libusb-glue.c 
+operation using libmtp you can go into the src/libusb-glue.c
 file and uncomment the row that reads:
 
 //#define ENABLE_USB_BULK_DEBUG
@@ -278,7 +269,7 @@ to work under Linux because the usb-storage(.ko) kernel
 module hook them first, and refuse to release them, even
 when we specify the DEVICE_FLAG_UNLOAD_DRIVER flag. (Maybe
 it DOES release it but the device will immediately be probed
-at the USB mass storage interface AGAIN because it 
+at the USB mass storage interface AGAIN because it
 enumerates.)
 
 Here is what some people do:
@@ -298,7 +289,7 @@ run (as root) something like:
 > rmmod usb_storage ; mtp-detect
 
 You can run most any command or a client like gnomad2 or
-Amarok immediately after the rmmod command. This works 
+Amarok immediately after the rmmod command. This works
 sometimes. Another way:
 
 * Edit /etc/modprobe.d/blacklist
@@ -307,19 +298,19 @@ sometimes. Another way:
 
 * Reboot.
 
-Now none of you USB disks, flash memory sticks etc will be 
+Now none of you USB disks, flash memory sticks etc will be
 working (you just disabled them all). However you *can* try
 your device, and it might have started working because there
 is no longer a USB mass storage driver that tries to hook onto
 the mass storage interface of your device.
 
-If not even blacklisting works (check with 
+If not even blacklisting works (check with
 "lsmod | grep usb-storage"), there is some problem with
-something else and you may need to remove or rename the file 
+something else and you may need to remove or rename the file
 /lib/modules/<VERSION>/kernel/drivers/usb/storage/usb-storage.ko
 manually.
 
-If you find the PerfectSolution(TM) to this dilemma, so you 
+If you find the PerfectSolution(TM) to this dilemma, so you
 can properly switch for individual devices whether to use it
 as USB mass storage or not, please tell us how you did it. We
 know we cannot use udev, because udev is called after-the-fact:
@@ -351,17 +342,17 @@ Calendar and contact support:
 
 The Creative Zen series can read VCALENDAR2 (.ics) files
 and VCard (.vcf) files from programs like for example
-Evolution with the following limitations/conditions: 
+Evolution with the following limitations/conditions:
 
 - The file must be in DOS (CR/LF) format, use the unix2dos
   program to convert if needed
 
-- Repeat events in calendar files do not seem to be supported, 
+- Repeat events in calendar files do not seem to be supported,
   entries will only appear once.
 
-- Calendar (.ics) files should be stored in the folder "My Organizer" 
+- Calendar (.ics) files should be stored in the folder "My Organizer"
   when sent to the device (this directory should be autodetected
-  for use with calendar files, otherwise use the option 
+  for use with calendar files, otherwise use the option
   -f "My Organizer" to sendfile for this) Apparently this file can
   also contain tasklists.
 
@@ -388,14 +379,14 @@ It's Not Our Bug!
 -----------------
 
 Some MTP devices have strange pecularities. We try to work around
-these whenever we can, sometimes we cannot work around it or we 
+these whenever we can, sometimes we cannot work around it or we
 cannot test your solution.
 
-* Generic MTP/PTP disconnect misbehaviour: we have noticed that 
+* Generic MTP/PTP disconnect misbehaviour: we have noticed that
   Windows Media Player apparently never close the session to an MTP
   device. There is a daemon in Windows that "hooks" the device
-  by opening a PTP session to any MTP device, whenever it is 
-  plugged in. This daemon proxies any subsequent transactions 
+  by opening a PTP session to any MTP device, whenever it is
+  plugged in. This daemon proxies any subsequent transactions
   to/from the device and will never close the session, thus
   Windows simply does not close sessions at all.
 
@@ -421,14 +412,14 @@ cannot test your solution.
   the device when you plug it in, and "release" it if you unplug
   it.
 
-  If this bug in your device annoys you, contact your device 
-  manufacturer and ask them to test their product with some libmtp 
+  If this bug in your device annoys you, contact your device
+  manufacturer and ask them to test their product with some libmtp
   program.
 
 * Generic USB misbehaviour: some devices behave badly under MTP
   and USB mass storage alike, even down to the lowest layers
   of USB. You can always discuss such issues at the linux-usb
-  mailing list if you're using Linux: 
+  mailing list if you're using Linux:
   http://www.linux-usb.org/mailing.html
 
   If you have a problem specific to USB mass storage mode, there
@@ -442,7 +433,7 @@ cannot test your solution.
   to use any MTP device under USB 2.0. This is because the EHCI
   driver previously did not support zero-length writes to endpoints.
   It should work in most cases however, or if you connect it
-  to an UHCI/OHCI port instead (yielding lower speed). But 
+  to an UHCI/OHCI port instead (yielding lower speed). But
   please just use a recent kernel.
 
 * Zen models AVI file seeking problem: the Zens cannot parse the
@@ -453,7 +444,7 @@ cannot test your solution.
   the Zens need the metadata associated with tracks to play back
   movies properly. Movies are considered "tracks" in the MTP world.
 
-* Some devices that disregard the metadata sent with the MTP 
+* Some devices that disregard the metadata sent with the MTP
   commands will parse the files for e.g. ID3 metadata. Some still
   of these devices expect only ID3v2.3 metadata and will fail with
   a modern ID3v2,4 tag writer, like many of those found in Linux
@@ -470,12 +461,12 @@ cannot test your solution.
   is 15000 files. For further Creative pecularities, see the
   FAQ sections at www.nomadness.net.
 
-* Sandisk sansa c150 and probably several other Sandisk devices 
+* Sandisk sansa c150 and probably several other Sandisk devices
   (and possibly devices from other manufacturers) have a dual
   mode with MTP and USB mass storage. The device will initially
   claim to be mass storage so udev will capture is and make the
   use of MTP mode impossible. One way of avoiding it could be to
-  be to blacklist the "usb-storage" module in 
+  be to blacklist the "usb-storage" module in
   /etc/modprobe.c/blacklist with a row like this:
   "blacklist usb-storage". Some have even removed the
   "usb-storage.ko" (kernel module file) to avoid loading.
@@ -483,8 +474,8 @@ cannot test your solution.
 * Sandisk Sansa Fuze has three modes: auto, MTP or mass storage
   (MSC). Please set it to MTP to avoid problems with libmtp.
 
-* The iriver devices (possibly all of them) cannot handle the 
-  enhanced GetObjectPropList MTP command (0x9805) properly. So 
+* The iriver devices (possibly all of them) cannot handle the
+  enhanced GetObjectPropList MTP command (0x9805) properly. So
   they have been banned from using it.
 
 * iriver devices have problems with older versions of libmtp and
@@ -498,7 +489,7 @@ cannot test your solution.
   that we've managed to work around. (For example it will return
   multiple PTP packages in a single transaction.)
 
-* The early firmware for Philips HDD players is known to be 
+* The early firmware for Philips HDD players is known to be
   problematic. Please upgrade to as new firmware as you can get.
   (Yes this requires some kind of Windows Installation I think.)
 
@@ -514,12 +505,12 @@ cannot test your solution.
   0xffffffffu. (But they should.) So they may need the special
   DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL.
 
-* Some (smaller) subset of devices cannot even get all the 
+* Some (smaller) subset of devices cannot even get all the
   properties for a single object in one go, these need the
   DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST. Currently only the
   iriver devices seem to have this bug.
 
-* The Toshiba Gigabeat S (and probably its sibling the 
+* The Toshiba Gigabeat S (and probably its sibling the
   Microsoft Zune and other Toshiba devices) will only display
   album information tags for a song in case there is also
   an abstract album (created with the album interface) with
@@ -537,13 +528,13 @@ cannot test your solution.
   off the device. This may be someone's idea of copy protection.
 
 * The Samsung P2 assigns parent folder ID 0 to all unknown file
-  types.(i.e. moves them to the root folder) 
+  types.(i.e. moves them to the root folder)
 
 Lost symbols
 ------------
 
 Shared libraries can be troublesome to users not experienced with
-them. The following is a condensed version of a generic question 
+them. The following is a condensed version of a generic question
 that has appeared on the libmtp mailing list from time to time.
 
 > PTP: Opening session
@@ -553,25 +544,25 @@ that has appeared on the libmtp mailing list from time to time.
 > (...)
 > Are these type of errors related to libmtp or something else?
 
-The problem is of a generic nature, and related to dynamic library 
+The problem is of a generic nature, and related to dynamic library
 loading. It is colloquially known as "dependency hell".
 (http://en.wikipedia.org/wiki/Dependency_hell)
 
 The gnomad2 application calls upon the dynamic linker in Linux to
 resolve the symbol "LIBMTP_Get_Storageinfo" or any other symbol
 (ELF symbol, or link point or whatever you want to call them, a
-symbol is a label on a memory address that the linker shall 
+symbol is a label on a memory address that the linker shall
 resolve from label to actual address.)
 For generic information on this subject see the INSTALL file and
 this Wikipedia page:
 
 http://en.wikipedia.org/wiki/Library_(computing)
 
-When Linux /lib/ld-linux.so.X is called to link the symbols compiled 
-into gnomad2 (or any other executable using libmtp), it examines the 
-ELF file for the libmtp.so.X file it finds first and cannot resolve 
+When Linux /lib/ld-linux.so.X is called to link the symbols compiled
+into gnomad2 (or any other executable using libmtp), it examines the
+ELF file for the libmtp.so.X file it finds first and cannot resolve
 the symbol "LIBMTP_Get_Storageinfo" (or whichever symbol you have a
-problem witj) from it, since it's probably not there. There are many 
+problem witj) from it, since it's probably not there. There are many
 possible causes of this symbol breakage:
 
 1) You installed precompiled libmtp and gnomad2 packages (RPMs, debs
@@ -625,14 +616,14 @@ PTP/MTP devices does not actually contain "files", they contain
 objects. These objects have file names, but that is actually
 just a name tag on the object.
 
-Folders/directories aren't really such entities: they are just 
+Folders/directories aren't really such entities: they are just
 objects too, albeit objects that can act as parent to other
 objects. They are called "associations" and are created in atomic
 fashion and even though there is an MTP command to get all the
 associations of a certain association, this command is optional
 so it is perfectly possible (and most common, actually) to create
 devices where the "folders" (which are actually associations) have
-no idea whatsoever of what files they are associated as parents to 
+no idea whatsoever of what files they are associated as parents to
 (i.e. which files they contain). This is very easy for device
 manufacturers to implement, all the association (i.e. finding out
 which files are in a certain folder) has to be done by the MTP
@@ -654,13 +645,13 @@ implicitly fail at this.) Perhaps one could add some custom hook for
 handling that, so they become  /Foo.mp3 and /Foo.mp3(1) or something
 similar, but it's really a bit kludgy.
 
-Playlists and albums aren't really files, thinking about 
+Playlists and albums aren't really files, thinking about
 them as files like the hacks in libgphoto2 is really backwards. They are
 called associations and are more like a symbolic link that links in a
 star-shaped pattern to all the files that are part of the album/playlist.
 Some devices (Samsung) thought that was too complicated and have a
 different way of storing playlists in an UTF-16 encoded .spl-like file
-instead! This is why playlists/albums must have their own structs and 
+instead! This is why playlists/albums must have their own structs and
 functions.
 
 Plain file access also assumes to be able to write files of an
@@ -675,8 +666,8 @@ Streaming reads is easy. Just connect the output file descriptor from
 LIBMTP_Get_File_To_File_Descriptor() (and a similar function for tracks)
 wherever you want.
 
-People have connected this to TCP sockets for streaming web servers 
-etc, works like a charm. Some devices will even survive if the callback 
+People have connected this to TCP sockets for streaming web servers
+etc, works like a charm. Some devices will even survive if the callback
 functions return non-zero and cancel the download. Some devices will
 lock up and even require a reset if you do that. Devices are poorly
 implemented so that's life. If you want to stream off a device, the
@@ -707,3 +698,40 @@ It doesn't work: either the device crashes or the file simply disappears
 since the device rolls back all failed transactions.
 
 So this is an inherent limitation of the PTP/MTP protocol.
+
+
+I make MTP devices!
+-------------------
+
+If you are a device vendor there is a lot you can do for libmtp:
+
+* Please consider assigning one of your employees as a contact person
+  for libmtp, have them sign up to the libmtp development list and answer
+  questions and post new device ID:s as they are released to our
+  mailing list.
+
+* If you want to help even more, assign someone to look deeper into
+  error reports on your specific devices, understand why your firmware
+  may require some special device flags and what can be done about it.
+
+* Do you have spare devices you can give us? Send them to Richard (Mac
+  support) or Linus (Linux support). (So far nobody did that except for
+  Microsoft who sent us a Zune by proxy!)
+
+Vendors do need help from libmtp too, especially we want to help
+vendors improve their MTP stacks, because they all suffer from the
+same problem: the lack of a proper conformance test has made many devices
+incompliant with the MTP specification as it is published today: most
+devices are just compliant with the Windows MTP stack, and don't work
+out-of-the-box with libmtp. We need someone on the inside to help in
+bug reporting vendors MTP stacks internally so these issues are raised.
+A good way to go toward better MTP compliance is to test with an
+alternative implementation of the stack. In e.g. IETF standardization
+it is compulsory for an RFC to have atleast two independent implementations
+for it to reach the status as standard.
+
+Being compliant with libmtp is also more and more important for
+vendors: libmtp is being deployed in some embedded systems like
+set-top-boxes etc. It will be very irritating for customers if a device
+will not dock properly with some home entertainment equipment just because
+it is based on Linux and libmtp and not the Windows MTP stack.
