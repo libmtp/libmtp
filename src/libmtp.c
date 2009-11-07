@@ -7655,6 +7655,7 @@ static void get_album_metadata(LIBMTP_mtpdevice_t *device,
   }
 }
 
+
 /**
  * This function returns a list of the albums available on the
  * device.
@@ -7665,6 +7666,24 @@ static void get_album_metadata(LIBMTP_mtpdevice_t *device,
  * @see LIBMTP_Get_Album()
  */
 LIBMTP_album_t *LIBMTP_Get_Album_List(LIBMTP_mtpdevice_t *device)
+{
+	// Read all storage devices
+	return LIBMTP_Get_Album_List_For_Storage(device, 0);
+}
+
+
+/**
+ * This function returns a list of the albums available on the
+ * device. You can filter on the storage ID.
+ *
+ * @param device a pointer to the device to get the album listing from.
+ * @param storage_id ID of device storage (if null, all storages)
+ *
+ * @return an album list on success, else NULL. If there are no albums
+ *         on the device, NULL will be returned as well.
+ * @see LIBMTP_Get_Album()
+ */
+LIBMTP_album_t *LIBMTP_Get_Album_List_For_Storage(LIBMTP_mtpdevice_t *device, uint32_t const storage_id)
 {
   PTPParams *params = (PTPParams *) device->params;
   LIBMTP_album_t *retalbums = NULL;
@@ -7685,6 +7704,10 @@ LIBMTP_album_t *LIBMTP_Get_Album_List(LIBMTP_mtpdevice_t *device)
     // Ignore stuff that isn't an album
     if ( ob->oi.ObjectFormat != PTP_OFC_MTP_AbstractAudioAlbum )
       continue;
+
+	// Ignore stuff that isn't into the storage device
+	if ((storage_id != 0) && (ob->oi.StorageID != storage_id ))
+		continue;
 
     // Allocate a new album type
     alb = LIBMTP_new_album_t();
