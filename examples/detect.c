@@ -1,4 +1,4 @@
-/** 
+/**
  * \file detect.c
  * Example program to detect a device and list capabilities.
  *
@@ -34,7 +34,7 @@ static void dump_xml_fragment(uint8_t *buf, uint32_t len)
 {
   static int endianness = 0; // 0 = LE, 1 = BE
   uint32_t bp = 0;
-  
+
   while (bp < len) {
     if (buf[bp+0] == 0xFF && buf[bp+1] == 0xFE) {
       endianness = 0;
@@ -42,7 +42,7 @@ static void dump_xml_fragment(uint8_t *buf, uint32_t len)
       endianness = 1;
     } else {
       uint16_t tmp;
-      
+
       if (endianness == 0) {
 	tmp = buf[bp+1] << 8 | buf[bp+0];
       } else {
@@ -98,12 +98,12 @@ int main (int argc, char **argv)
   case LIBMTP_ERROR_NONE:
     {
       int i;
-      
+
       fprintf(stdout, "   Found %d device(s):\n", numrawdevices);
       for (i = 0; i < numrawdevices; i++) {
 	if (rawdevices[i].device_entry.vendor != NULL ||
 	    rawdevices[i].device_entry.product != NULL) {
-	  fprintf(stdout, "   %s: %s (%04x:%04x) @ bus %d, dev %d\n", 
+	  fprintf(stdout, "   %s: %s (%04x:%04x) @ bus %d, dev %d\n",
 		  rawdevices[i].device_entry.vendor,
 		  rawdevices[i].device_entry.product,
 		  rawdevices[i].device_entry.vendor_id,
@@ -111,7 +111,7 @@ int main (int argc, char **argv)
 		  rawdevices[i].bus_location,
 		  rawdevices[i].devnum);
 	} else {
-	  fprintf(stdout, "   %04x:%04x @ bus %d, dev %d\n", 
+	  fprintf(stdout, "   %04x:%04x @ bus %d, dev %d\n",
 		  rawdevices[i].device_entry.vendor_id,
 		  rawdevices[i].device_entry.product_id,
 		  rawdevices[i].bus_location,
@@ -150,7 +150,7 @@ int main (int argc, char **argv)
     LIBMTP_Dump_Errorstack(device);
     LIBMTP_Clear_Errorstack(device);
     LIBMTP_Dump_Device_Info(device);
-    
+
     printf("MTP-specific device properties:\n");
     // The friendly name
     friendlyname = LIBMTP_Get_Friendlyname(device);
@@ -167,22 +167,22 @@ int main (int argc, char **argv)
       fprintf(stdout, "   Synchronization partner: %s\n", syncpartner);
       free(syncpartner);
     }
-    
+
     // Some battery info
     ret = LIBMTP_Get_Batterylevel(device, &maxbattlevel, &currbattlevel);
     if (ret == 0) {
-      fprintf(stdout, "   Battery level %d of %d (%d%%)\n",currbattlevel, maxbattlevel, 
+      fprintf(stdout, "   Battery level %d of %d (%d%%)\n",currbattlevel, maxbattlevel,
 	      (int) ((float) currbattlevel/ (float) maxbattlevel * 100.0));
     } else {
-      // Silently ignore. Some devices does not support getting the 
+      // Silently ignore. Some devices does not support getting the
       // battery level.
       LIBMTP_Clear_Errorstack(device);
     }
-    
+
     ret = LIBMTP_Get_Supported_Filetypes(device, &filetypes, &filetypes_len);
     if (ret == 0) {
       uint16_t i;
-      
+
       printf("libmtp supported (playable) filetypes:\n");
       for (i = 0; i < filetypes_len; i++) {
 	fprintf(stdout, "   %s\n", LIBMTP_Get_Filetype_Description(filetypes[i]));
@@ -191,7 +191,7 @@ int main (int argc, char **argv)
       LIBMTP_Dump_Errorstack(device);
       LIBMTP_Clear_Errorstack(device);
     }
-    
+
     // Secure time XML fragment
     ret = LIBMTP_Get_Secure_Time(device, &sectime);
     if (ret == 0 && sectime != NULL) {
@@ -201,7 +201,7 @@ int main (int argc, char **argv)
       // Silently ignore - there may be devices not supporting secure time.
       LIBMTP_Clear_Errorstack(device);
     }
-    
+
     // Device certificate XML fragment
     ret = LIBMTP_Get_Device_Certificate(device, &devcert);
     if (ret == 0 && devcert != NULL) {
@@ -227,7 +227,7 @@ int main (int argc, char **argv)
 	      /* Dump this file */
 	      FILE *xmltmp = tmpfile();
 	      int tmpfiledescriptor = fileno(xmltmp);
-	      
+
 	      if (tmpfiledescriptor != -1) {
 		int ret = LIBMTP_Get_Track_To_File_Descriptor(device,
 							      file->item_id,
@@ -237,7 +237,7 @@ int main (int argc, char **argv)
 		if (ret == 0) {
 		  uint8_t *buf = NULL;
 		  uint32_t readbytes;
-		  
+
 		  buf = malloc(XML_BUFSIZE);
 		  if (buf == NULL) {
 		    printf("Could not allocate %08x bytes...\n", XML_BUFSIZE);
@@ -246,10 +246,10 @@ int main (int argc, char **argv)
 		    free(rawdevices);
 		    return 1;
 		  }
-		  
+
 		  lseek(tmpfiledescriptor, 0, SEEK_SET);
 		  readbytes = read(tmpfiledescriptor, (void*) buf, XML_BUFSIZE);
-		  
+
 		  if (readbytes >= 2 && readbytes < XML_BUFSIZE) {
 		    fprintf(stdout, "\n%s file contents:\n", file->filename);
 		    dump_xml_fragment(buf, readbytes);
@@ -278,6 +278,6 @@ int main (int argc, char **argv)
   free(rawdevices);
 
   printf("OK.\n");
-  
-  return 0; 
+
+  return 0;
 }
