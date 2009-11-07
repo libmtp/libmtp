@@ -46,6 +46,7 @@ LIBMTP_new_track_t
 LIBMTP_destroy_track_t
 LIBMTP_Get_Tracklisting
 LIBMTP_Get_Tracklisting_With_Callback
+LIBMTP_Get_Tracklisting_With_Callback_For_Storage
 LIBMTP_Get_Trackmetadata
 LIBMTP_Get_Track_To_File
 LIBMTP_Get_Track_To_File_Descriptor

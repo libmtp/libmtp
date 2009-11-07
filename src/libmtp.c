@@ -4251,6 +4251,56 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
                                                       LIBMTP_progressfunc_t const callback,
                                                       void const * const data)
 {
+	return LIBMTP_Get_Tracklisting_With_Callback_For_Storage(device, 0, callback, data);
+}
+
+
+/**
+ * This returns a long list of all tracks available on the current MTP device.
+ * Tracks include multimedia objects, both music tracks and video tracks.
+ * Typical usage:
+ *
+ * <pre>
+ * LIBMTP_track_t *tracklist;
+ *
+ * tracklist = LIBMTP_Get_Tracklisting_With_Callback_For_Storage(device, storage_id, callback, data);
+ * while (tracklist != NULL) {
+ *   LIBMTP_track_t *tmp;
+ *
+ *   // Do something on each element in the list here...
+ *   tmp = tracklist;
+ *   tracklist = tracklist->next;
+ *   LIBMTP_destroy_track_t(tmp);
+ * }
+ * </pre>
+ *
+ * If you want to group your track listing by storage (per storage unit) or
+ * arrange tracks into folders, you must dereference the <code>storage_id</code>
+ * and/or <code>parent_id</code> field of the returned <code>LIBMTP_track_t</code>
+ * struct. To arrange by folders or files you typically have to create the proper
+ * trees by calls to <code>LIBMTP_Get_Storage()</code> and/or 
+ * <code>LIBMTP_Get_Folder_List()</code> first.
+ *
+ * @param device a pointer to the device to get the track listing for.
+ * @param storage_id ID of device storage (if null, no filter)
+ * @param callback a function to be called during the tracklisting retrieveal
+ *        for displaying progress bars etc, or NULL if you don't want
+ *        any callbacks.
+ * @param data a user-defined pointer that is passed along to
+ *        the <code>progress</code> function in order to
+ *        pass along some user defined data to the progress
+ *        updates. If not used, set this to NULL.
+ * @return a list of tracks that can be followed using the <code>next</code>
+ *        field of the <code>LIBMTP_track_t</code> data structure.
+ *        Each of the metadata tags must be freed after use, and may
+ *        contain only partial metadata information, i.e. one or several
+ *        fields may be NULL or 0.
+ * @see LIBMTP_Get_Trackmetadata()
+ */
+LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback_For_Storage(LIBMTP_mtpdevice_t *device, uint32_t const storage_id,
+                                                      LIBMTP_progressfunc_t const callback,
+                                                      void const * const data)
+{
   uint32_t i = 0;
   LIBMTP_track_t *retracks = NULL;
   LIBMTP_track_t *curtrack = NULL;
@@ -4287,6 +4337,10 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
       //printf("Not a music track (name: %s format: %d), skipping...\n", oi->Filename, oi->ObjectFormat);
       continue;
     }
+
+	// Ignore stuff that isn't into the storage device
+	if ((storage_id != 0) && (ob->oi.StorageID != storage_id ))
+		continue;
 
     // Allocate a new track type
     track = LIBMTP_new_track_t();
