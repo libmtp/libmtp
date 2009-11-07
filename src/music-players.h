@@ -670,10 +670,16 @@
 
 
   /*
-   * LOGIK
-   * Sold in the UK, seem to be manufactured by CCTech in China.
+   * Vendor ID 0x13d1 is some offshoring company in China,
+   * in one source named "A-Max Technology Macao Commercial
+   * Offshore Co. Ltd." sometime "CCTech".
    */
+  // Logik brand
   { "Logik", 0x13d1, "LOG DAX MP3 and DAB Player", 0x7002, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Technika brand
+  // Reported by <Ooblick@users.sourceforge.net>
+  { "Technika", 0x13d1, "MP-709", 0x7017, DEVICE_FLAG_UNLOAD_DRIVER },
+
 
   /*
    * RCA / Thomson
