@@ -793,6 +793,10 @@
   /*
    * LG Electronics
    */
+  // From anonymous SourceForge user
+  // Uncertain if this is really the MTP mode device ID...
+  { "LG Electronics Inc.", 0x043e, "T54", 0x7040,
+      DEVICE_FLAG_UNLOAD_DRIVER },
   // Not verified - anonymous submission
   { "LG Electronics Inc.", 0x043e, "UP3", 0x70b1, DEVICE_FLAG_NONE },
   // Reported by Joseph Nahmias <joe@nahimas.net>
