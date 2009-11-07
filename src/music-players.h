@@ -694,7 +694,7 @@
   { "Thomson", 0x069b, "scenium E308", 0x3028, DEVICE_FLAG_NONE },
   // From XNJB user
   { "Thomson / RCA", 0x069b, "Lyra HC308A", 0x3035, DEVICE_FLAG_NONE },
-  
+
   /*
    * NTT DoCoMo
    */
@@ -886,6 +886,11 @@
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNIQUE_FILENAMES },
+  // Reported by Gregory Boddin <gregory@siwhine.net>
+  { "Sony", 0x054c, "Walkman NWZ-B142F", 0x03d8,
+      DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      DEVICE_FLAG_UNIQUE_FILENAMES  },
 
 
   /*
