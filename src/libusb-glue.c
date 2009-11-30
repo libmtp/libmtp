@@ -132,7 +132,10 @@ int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t ** const devices, in
 
 static struct usb_bus* init_usb()
 {
-  /* 
+  struct usb_bus* busses;
+  struct usb_bus* bus;
+
+  /*
    * Some additional libusb debugging please.
    * We use the same level debug between MTP and USB.
    */
@@ -142,13 +145,18 @@ static struct usb_bus* init_usb()
   usb_init();
   usb_find_busses();
   usb_find_devices();
-  return (usb_get_busses());
+  /* Workaround a libusb 0.1 bug : bus location is not initialised */
+  busses = usb_get_busses();
+  for (bus = busses; bus != NULL; bus = bus->next) {
+    bus->location = strtoul(bus->dirname, NULL, 10);
+  }
+  return (busses);
 }
 
 /**
  * Small recursive function to append a new usb_device to the linked list of
  * USB MTP devices
- * @param devlist dynamic linked list of pointers to usb devices with MTP 
+ * @param devlist dynamic linked list of pointers to usb devices with MTP
  *        properties, to be extended with new device.
  * @param newdevice the new device to add.
  * @param bus_location bus for this device.
@@ -159,7 +167,7 @@ static mtpdevice_list_t *append_to_mtpdevice_list(mtpdevice_list_t *devlist,
 						  uint32_t bus_location)
 {
   mtpdevice_list_t *new_list_entry;
-  
+
   new_list_entry = (mtpdevice_list_t *) malloc(sizeof(mtpdevice_list_t));
   if (new_list_entry == NULL) {
     return NULL;

@@ -1,3 +1,8 @@
+2009-11-30  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: bus detection fix for libusb -
+	  bus->location was not properly initialized.
+
 2009-10-10  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: move debugmacros to util.h
