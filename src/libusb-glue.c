@@ -380,7 +380,14 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
 
   /* After this point we are probably dealing with an MTP device */
 
-  /* Check if device responds to control message 2 or if there is an error*/
+  /*
+   * Check if device responds to control message 2, which is
+   * the extended device parameters. Most devices will just
+   * respond with a copy of the same message as for the first
+   * message, some respond with zero-length (which is OK)
+   * and some with pure garbage. We're not parsing the result
+   * so this is not very important.
+   */
   ret = usb_control_msg (devh,
 			 USB_ENDPOINT_IN | USB_RECIP_DEVICE | USB_TYPE_VENDOR,
 			 cmd,
@@ -405,22 +412,10 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
 	    "control message 2.\n"
 	    "Problems may arrise but continuing\n",
 	    dev->descriptor.idVendor, dev->descriptor.idProduct);
-  } else if (ret <= 0x15) {
-    /* TODO: Implement callback function to let managing program know there
-       was a problem, along with description of the problem */
-    LIBMTP_ERROR("Potential MTP Device with VendorID:%04x and "
-	    "ProductID:%04x responded to control message 2 with a "
-	    "response that was too short. Problems may arrise but "
-	    "continuing\n",
-	    dev->descriptor.idVendor, dev->descriptor.idProduct);
-  } else if ((buf[0x12] != 'M') || (buf[0x13] != 'T') || (buf[0x14] != 'P')) {
-    /* TODO: Implement callback function to let managing program know there
-       was a problem, along with description of the problem */
-    LIBMTP_ERROR("Potential MTP Device with VendorID:%04x and "
-	    "ProductID:%04x encountered an error responding to "
-	    "control message 2\n"
-	    "Problems may arrise but continuing\n",
-	    dev->descriptor.idVendor, dev->descriptor.idProduct);
+  } else if (dumpfile != NULL && ret == 0) {
+    fprintf(dumpfile, "Zero-length response to control message 2 (OK)\n");
+  } else if (dumpfile != NULL) {
+    fprintf(dumpfile, "Device responds to control message 2 with some data.\n");
   }
 
   /* Close the USB device handle */
