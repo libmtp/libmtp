@@ -1,3 +1,7 @@
+2010-01-01  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.h.in: we use time_t so include <time.h>
+
 2009-12-16  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: don't complain so much about the

@@ -55,6 +55,8 @@ typedef unsigned __int64 uint64_t;
 #include <stdio.h>
 #include <usb.h>
 #include <stdint.h>
+/* We use time_t */
+#include <time.h>
 
 /**
  * @defgroup types libmtp global type definitions
