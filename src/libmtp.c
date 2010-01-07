@@ -2405,22 +2405,27 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
 
     /* Is this the Music Folder */
     if (!strcasecmp(ob->oi.Filename, "My Music") ||
+	!strcasecmp(ob->oi.Filename, "My_Music") ||
 	!strcasecmp(ob->oi.Filename, "Music")) {
       device->default_music_folder = ob->oid;
     }
     else if (!strcasecmp(ob->oi.Filename, "My Playlists") ||
+	     !strcasecmp(ob->oi.Filename, "My_Playlists") ||
 	     !strcasecmp(ob->oi.Filename, "Playlists")) {
       device->default_playlist_folder = ob->oid;
     }
     else if (!strcasecmp(ob->oi.Filename, "My Pictures") ||
+	     !strcasecmp(ob->oi.Filename, "My_Pictures") ||
 	     !strcasecmp(ob->oi.Filename, "Pictures")) {
       device->default_picture_folder = ob->oid;
     }
     else if (!strcasecmp(ob->oi.Filename, "My Video") ||
+	     !strcasecmp(ob->oi.Filename, "My_Video") ||
 	     !strcasecmp(ob->oi.Filename, "Video")) {
 	device->default_video_folder = ob->oid;
     }
-    else if (!strcasecmp(ob->oi.Filename, "My Organizer")) {
+    else if (!strcasecmp(ob->oi.Filename, "My Organizer") ||
+	     !strcasecmp(ob->oi.Filename, "My_Organizer")) {
       device->default_organizer_folder = ob->oid;
     }
     else if (!strcasecmp(ob->oi.Filename, "ZENcast") ||
@@ -2428,6 +2433,7 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
       device->default_zencast_folder = ob->oid;
     }
     else if (!strcasecmp(ob->oi.Filename, "My Albums") ||
+	     !strcasecmp(ob->oi.Filename, "My_Albums") ||
 	     !strcasecmp(ob->oi.Filename, "Albums")) {
       device->default_album_folder = ob->oid;
     }

@@ -1,3 +1,8 @@
+2010-01-07  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: detect "My_Foo" default folders as well
+	  as "My Foo" (underscore) as well.
+
 2010-01-01  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: we use time_t so include <time.h>
