@@ -178,6 +178,9 @@
   { "Samsung", 0x04e8, "YP-Q1", 0x5115, DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_PLAYLIST_SPL_V1 },
+  // From HolgerK02@gmx.de
+  { "Samsung", 0x04e8, "YP-M1", 0x5118, DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_PLAYLIST_SPL_V2 },
   // From Anonymous SourceForge user
   // Guessing on .spl flag
   { "Samsung", 0x04e8, "YP-P3", 0x511a, DEVICE_FLAG_UNLOAD_DRIVER |
