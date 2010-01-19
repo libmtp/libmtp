@@ -663,6 +663,8 @@
   { "Nokia", 0x0421, "E63", 0x0179, DEVICE_FLAG_NONE },
   // From: FunkyPenguin <awafaa@users.sourceforge.net>
   { "Nokia", 0x0421, "N97", 0x01f5, DEVICE_FLAG_NONE },
+  // From: Anonymous SourceForge user
+  { "Nokia", 0x0421, "5130 XpressMusic", 0x0209, DEVICE_FLAG_NONE },
   // From: Alexander Kojevnikov <alex-kay@users.sourceforge.net>
   { "Nokia", 0x0421, "6600i", 0x0297, DEVICE_FLAG_NONE },
   // https://sourceforge.net/tracker/index.php?func=detail&aid=2692473&group_id=8874&atid=358874
@@ -1037,7 +1039,7 @@
   { "Perception Digital, Ltd", 0x0aa6, "Gigaware GX400", 0x9702, DEVICE_FLAG_NONE },
 
   /*
-   * RIM's BlackBerry 
+   * RIM's BlackBerry
    */
   // Reported by Nicolas VIVIEN <nicolas@vivien.fr>
   { "RIM", 0x0fca, "BlackBerry Storm", 0x8007, DEVICE_FLAG_UNLOAD_DRIVER |
