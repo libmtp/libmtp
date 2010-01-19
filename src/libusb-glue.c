@@ -1487,6 +1487,7 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
 {
   usb_dev_handle *device_handle;
   char buf[255];
+  int usbresult;
 
   params->sendreq_func=ptp_usb_sendreq;
   params->senddata_func=ptp_usb_senddata;
@@ -1533,18 +1534,24 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
       return -1;
     }
 #endif
-    if (usb_claim_interface(device_handle, (int) ptp_usb->interface)) {
-      perror("usb_claim_interface()");
-      return -1;
-    }
+    // It seems like on kernel 2.6.31 if we already have it open on another 
+    // pthread in our app, we'll get an error if we try to claim it again,
+    // but that error is harmless because our process already claimed the interface
+    usbresult = usb_claim_interface(device_handle, (int) ptp_usb->interface);
+
+    if (usbresult != 0)
+      fprintf(stderr, "ignoring usb_claim_interface = %d", usbresult);
+
     // FIXME : Discovered in the Barry project
     // kernels >= 2.6.28 don't set the interface the same way as
     // previous versions did, and the Blackberry gets confused
     // if it isn't explicitly set
-    if (usb_set_altinterface(device_handle, 0)) {
-      perror("usb_set_altinterface()");
-      return -1;
-    }
+    // See above, same issue with pthreads means that if this fails it is not
+    // fatal
+    usbresult = usb_set_altinterface(device_handle, 0);
+    if (usbresult)
+      fprintf(stderr, "ignoring usb_claim_interface = %d", usbresult);
+
     if (FLAG_SWITCH_MODE_BLACKBERRY(ptp_usb)) {
       int ret;
 

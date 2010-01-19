@@ -5,6 +5,8 @@
 	  is the root folder. Add some warnings.
 	* src/libmtp.c: patch from Kevin Hester to fix the erroneous
 	  setting of genre or release date to NULL on some devices.
+	* src/libusb-glue.c: fix a bug in some multithread contexts
+	  affecting e.g. Rhythmbox.
 
 2010-01-07  Linus Walleij <triad@df.lth.se>
 
