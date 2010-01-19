@@ -1859,15 +1859,15 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
     ptp_free_devicepropdesc(&dpd);
   }
 
-  /* Set all default folders to 0 (root directory) */
-  mtp_device->default_music_folder = 0;
-  mtp_device->default_playlist_folder = 0;
-  mtp_device->default_picture_folder = 0;
-  mtp_device->default_video_folder = 0;
-  mtp_device->default_organizer_folder = 0;
-  mtp_device->default_zencast_folder = 0;
-  mtp_device->default_album_folder = 0;
-  mtp_device->default_text_folder = 0;
+  /* Set all default folders to 0xffffffffU (root directory) */
+  mtp_device->default_music_folder = 0xffffffffU;
+  mtp_device->default_playlist_folder = 0xffffffffU;
+  mtp_device->default_picture_folder = 0xffffffffU;
+  mtp_device->default_video_folder = 0xffffffffU;
+  mtp_device->default_organizer_folder = 0xffffffffU;
+  mtp_device->default_zencast_folder = 0xffffffffU;
+  mtp_device->default_album_folder = 0xffffffffU;
+  mtp_device->default_text_folder = 0xffffffffU;
 
   /* Set initial storage information */
   mtp_device->storage = NULL;
@@ -2397,7 +2397,9 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
     if(ob->oi.ObjectFormat != PTP_OFC_Association)
       continue;
     /* Only look in the root folder */
-    if (ob->oi.ParentObject != 0x00000000U)
+    if (ob->oi.ParentObject == 0xffffffffU) {
+      LIBMTP_ERROR("object %x has parent 0xffffffff (-1) continuing anyway\n", ob->oid);
+    } else if (ob->oi.ParentObject != 0x00000000U)
       continue;
     /* Only look in the primary storage */
     if (device->storage != NULL && ob->oi.StorageID != device->storage->id)
@@ -2589,7 +2591,7 @@ static uint32_t get_writeable_storageid(LIBMTP_mtpdevice_t *device, uint64_t fit
       }
     }
     if (storage == NULL) {
-      add_error_to_errorstack(device, LIBMTP_ERROR_STORAGE_FULL, "LIBMTP_Send_File_From_File_Descriptor(): "
+      add_error_to_errorstack(device, LIBMTP_ERROR_STORAGE_FULL, "get_writeable_storageid(): "
 			      "all device storage is full or corrupt.");
       return -1;
     }
@@ -2623,7 +2625,7 @@ static int get_storage_freespace(LIBMTP_mtpdevice_t *device,
 
     ret = ptp_getstorageinfo(params, storage->id, &storageInfo);
     if (ret != PTP_RC_OK) {
-      add_ptp_error_to_errorstack(device, ret, "get_first_storage_freespace(): could not get storage info.");
+      add_ptp_error_to_errorstack(device, ret, "get_storage_freespace(): could not get storage info.");
       return -1;
     }
     if (storage->StorageDescription != NULL) {
@@ -5317,7 +5319,7 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   add_object_to_cache(device, filedata->item_id);
 
   /*
-   * Get the device-assined parent_id from the cache.
+   * Get the device-assigned parent_id from the cache.
    * The operation that adds it to the cache will
    * look it up from the device, so we get the new
    * parent_id from the cache.
@@ -6528,7 +6530,8 @@ LIBMTP_folder_t *LIBMTP_Find_Folder(LIBMTP_folder_t *folderlist, uint32_t id)
  */
 static LIBMTP_folder_t *get_subfolders_for_folder(LIBMTP_folder_t *list, uint32_t parent)
 {
-  LIBMTP_folder_t *retfolders = NULL, *children, *iter, *curr;
+  LIBMTP_folder_t *retfolders = NULL;
+  LIBMTP_folder_t *children, *iter, *curr;
 
   iter = list->sibling;
   while(iter != list) {
@@ -6570,7 +6573,7 @@ static LIBMTP_folder_t *get_subfolders_for_folder(LIBMTP_folder_t *list, uint32_
 LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
 {
   PTPParams *params = (PTPParams *) device->params;
-  LIBMTP_folder_t head, *rv;
+  LIBMTP_folder_t head, *folders, *rv;
   int i;
 
   // Get all the handles if we haven't already done that
@@ -6631,7 +6634,17 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
   }
 
   // We begin at the root folder and get them all recursively
-  rv = get_subfolders_for_folder(&head, 0x00000000);
+  rv = get_subfolders_for_folder(&head, 0x00000000U);
+
+  // Some buggy devices may have some files in the "root folder"
+  // 0xffffffff so if 0x00000000 didn't return any folders,
+  // look for children of the root 0xffffffffU
+  if (rv == NULL) {
+    rv = get_subfolders_for_folder(&head, 0xffffffffU);
+    if (rv != NULL)
+      LIBMTP_ERROR("Device have files in \"root folder\" 0xffffffffU - "
+		   "this is a firmware bug (but continuing)\n");
+  }
 
   // The temp list should be empty. Clean up any orphans just in case.
   while(head.sibling != &head) {
