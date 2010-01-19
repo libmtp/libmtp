@@ -3,6 +3,8 @@
 	* src/libmtp.c: handle a root folder with a number of
 	  0xffffffffU (-1), even if the spec says that 0x00000000
 	  is the root folder. Add some warnings.
+	* src/libmtp.c: patch from Kevin Hester to fix the erroneous
+	  setting of genre or release date to NULL on some devices.
 
 2010-01-07  Linus Walleij <triad@df.lth.se>
 

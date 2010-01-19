@@ -5971,11 +5971,13 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  }
 	  break;
 	case PTP_OPC_Genre:
-	  // Update genre
-	  ret = set_object_string(device, metadata->item_id, PTP_OPC_Genre, metadata->genre);
-	  if (ret != 0) {
-	    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
-				    "could not set track genre name.");
+	  // Update genre (but only if valid)
+	  if (metadata->genre) {
+	    ret = set_object_string(device, metadata->item_id, PTP_OPC_Genre, metadata->genre);
+	    if (ret != 0) {
+	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "update_abstract_list(): "
+				      "could not set genre.");
+	    }
 	  }
 	  break;
 	case PTP_OPC_Duration:
@@ -6000,10 +6002,14 @@ int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *device,
 	  break;
 	case PTP_OPC_OriginalReleaseDate:
 	  // Update creation datetime
-	  ret = set_object_string(device, metadata->item_id, PTP_OPC_OriginalReleaseDate, metadata->date);
-	  if (ret != 0) {
-	    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
-				    "could not set track release date.");
+	  // The date can be zero, but some devices do not support setting zero
+	  // dates (and it seems that a zero date should never be set anyway)
+	  if (metadata->date) {
+	    ret = set_object_string(device, metadata->item_id, PTP_OPC_OriginalReleaseDate, metadata->date);
+	    if (ret != 0) {
+	      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Update_Track_Metadata(): "
+				      "could not set track release date.");
+	    }
 	  }
 	  break;
 	  // These are, well not so important.
@@ -7422,12 +7428,14 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 	}
 	break;
       case PTP_OPC_Genre:
-	// Update genre
-	ret = set_object_string(device, objecthandle, PTP_OPC_Genre, genre);
-	if (ret != 0) {
-	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "update_abstract_list(): "
-				  "could not set genre.");
-	}
+	// Update genre (but only if valid)
+	if(genre) {
+	  ret = set_object_string(device, objecthandle, PTP_OPC_Genre, genre);
+	  if (ret != 0) {
+	    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "update_abstract_list(): "
+				    "could not set genre.");
+	  }
+        }
 	break;
       case PTP_OPC_DateModified:
 	// Update date modified
