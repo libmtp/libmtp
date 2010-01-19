@@ -7,6 +7,8 @@
 	  setting of genre or release date to NULL on some devices.
 	* src/libusb-glue.c: patch to fix a bug in some multithread
 	  contexts affecting e.g. Rhythmbox, also by Kevin Hester.
+	* examples/Makefile.am: fix the bad prefixing that came in
+	  as part of the Windows fixes. Keep $(EXEEXT).
 
 2010-01-07  Linus Walleij <triad@df.lth.se>
 
