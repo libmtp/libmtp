@@ -280,6 +280,9 @@
   // From Elie De Brauwer <elie@de-brauwer.be>
   { "Philips", 0x0471, "GoGear ViBE SA1VBE04", 0x2075,
     DEVICE_FLAG_UNLOAD_DRIVER },
+  // From Anonymous SourceForge user
+  { "Philips", 0x0471, "GoGear Muse", 0x2077,
+      DEVICE_FLAG_UNLOAD_DRIVER },
   // From Elie De Brauwer <elie@de-brauwer.be>
   { "Philips", 0x0471, "GoGear ViBE SA1VBE08", 0x207b,
     DEVICE_FLAG_UNLOAD_DRIVER },
@@ -608,6 +611,9 @@
      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   { "Canon", 0x04a9, "PowerShot A640 (PTP/MTP mode)", 0x3139,
      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  // From Peter <pjeremy@users.sourceforge.net>
+  { "Canon", 0x04a9, "PowerShot SX20IS (PTP/MTP mode)", 0x31e4,
+     DEVICE_FLAG_NONE },
 
   /*
    * Nokia
@@ -662,6 +668,8 @@
   // From an anonymous SourceForge user
   // Not verified to be MTP
   { "Nokia", 0x0421, "E63", 0x0179, DEVICE_FLAG_NONE },
+  // From: AxeL <axel__17@users.sourceforge.net>
+  { "Nokia", 0x0421, "N97-1", 0x01f4, DEVICE_FLAG_NONE },
   // From: FunkyPenguin <awafaa@users.sourceforge.net>
   { "Nokia", 0x0421, "N97", 0x01f5, DEVICE_FLAG_NONE },
   // From: Anonymous SourceForge user
@@ -927,6 +935,11 @@
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNIQUE_FILENAMES  },
+  // Reported by Anonymous SourceForge user
+  { "Sony", 0x054c, "Walkman NWZ-S545", 0x03fe,
+      DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      DEVICE_FLAG_UNIQUE_FILENAMES  },
 
 
   /*
@@ -1048,6 +1061,11 @@
   // Reported by Nicolas VIVIEN <nicolas@vivien.fr>
   { "RIM", 0x0fca, "BlackBerry Storm", 0x8007, DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_SWITCH_MODE_BLACKBERRY | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+
+  /*
+   * Nextar
+   */
+  { "Nextar", 0x0402, "MA715A-8R", 0x5668 },
 
   /*
    * Other strange stuff.
