@@ -844,6 +844,9 @@
   // Reported by Cyrille Potereau <cyrille.potereau@wanadoo.fr>
   { "LG Electronics Inc.", 0x1004, "KC910 Renoir Mobile Phone", 0x608f,
       DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by Aaron Slunt <tongle@users.sourceforge.net>
+  { "LG Electronics Inc.", 0x1004, "GR-500 Music Player", 0x611b,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
   // Reported by anonymous sourceforge user
   { "LG Electronics Inc.", 0x1004, "KM900", 0x6132,
       DEVICE_FLAG_UNLOAD_DRIVER },
