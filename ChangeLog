@@ -1,3 +1,8 @@
+2010-01-30  Linus Walleij <triad@df.lth.se>
+
+	* examples/connect.c: bad prototype for sendtrack_.
+	* examples/sentr.c: bad prototype.
+
 2010-01-19  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: handle a root folder with a number of

@@ -173,6 +173,10 @@
   // Guessing on .spl flag
   // This one supports OGG properly through the correct MTP type.
   { "Samsung", 0x04e8, "YP-U4", 0x5093, DEVICE_FLAG_UNLOAD_DRIVER },
+  // From Chris Le Sueur <thefishface@gmail.com>
+  // Guessing on .spl flag
+  // This one supports OGG properly through the correct MTP type.
+  { "Samsung", 0x04e8, "YP-R1", 0x510f, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Anonymous SourceForge user, NOT VERIFIED TO BE MTP
   // Guessing on .spl flag
   { "Samsung", 0x04e8, "YP-Q1", 0x5115, DEVICE_FLAG_UNLOAD_DRIVER |

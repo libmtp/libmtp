@@ -1,11 +1,11 @@
-/** 
+/**
  * \file sendtr.c
  * Example program to send a music track to a device.
  * This program is derived from the exact equivalent in libnjb.
- * based on Enrique Jorreto Ledesma's work on the original program by 
+ * based on Enrique Jorreto Ledesma's work on the original program by
  * Shaun Jackman and Linus Walleij.
  *
- * Copyright (C) 2003-2009 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2003-2010 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2003-2005 Shaun Jackman
  * Copyright (C) 2003-2005 Enrique Jorrete Ledesma
  * Copyright (C) 2006 Chris A. Debenham <chris@adebenham.com>
@@ -149,7 +149,7 @@ static int add_track_to_album(LIBMTP_album_t *albuminfo, LIBMTP_track_t *trackme
     ret = LIBMTP_Create_New_Album(device, albuminfo);
     /* albuminfo will be destroyed later by caller */
   }
-  
+
   if (ret != 0) {
     printf("Error creating or updating album.\n");
     printf("(This could be due to that your device does not support albums.)\n");

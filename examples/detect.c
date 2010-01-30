@@ -203,6 +203,13 @@ int main (int argc, char **argv)
     }
 
     // Device certificate XML fragment
+#if 0
+    /*
+     * This code is currently disabled: all devices say that
+     * they support getting a device certificate but a lot of
+     * them obviously doesn't, instead they crash when you try
+     * to obtain it.
+     */
     ret = LIBMTP_Get_Device_Certificate(device, &devcert);
     if (ret == 0 && devcert != NULL) {
       fprintf(stdout, "\nDevice Certificate:\n%s\n", devcert);
@@ -213,6 +220,7 @@ int main (int argc, char **argv)
       LIBMTP_Dump_Errorstack(device);
       LIBMTP_Clear_Errorstack(device);
     }
+#endif
 
     // Try to get Media player device info XML file...
     files = LIBMTP_Get_Filelisting_With_Callback(device, NULL, NULL);

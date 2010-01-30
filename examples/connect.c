@@ -1,4 +1,4 @@
-/** 
+/**
  * \file connect.c
  * Main programs implementing several utilities in one.
  *
@@ -37,7 +37,7 @@ void split_arg(char *,char **, char **);
 void delfile_function(char *);
 void delfile_command(int, char **);
 void delfile_usage(void);
-int sendtrack_function(char *, char *, char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t);
+int sendtrack_function (char *, char *, char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t, uint32_t, uint16_t);
 void sendtrack_command (int, char **);
 void sendtrack_usage(void);
 void sendfile_function(char *,char *);
@@ -101,7 +101,7 @@ int main (int argc, char **argv)
     sendfile_command(argc, argv);
   } else if ((strncmp(basename(argv[0]),"mtp-sendtr",10) == 0) || (strncmp(basename(argv[0]),"sendtr",6) == 0)) {
     sendtrack_command(argc, argv);
-  } else {  
+  } else {
     if ( argc < 2 ) {
       usage ();
       return 1;
@@ -117,43 +117,43 @@ int main (int argc, char **argv)
         {"sendtrack", 1, 0, 't'},
         {0, 0, 0, 0}
       };
-  
+
       int c = getopt_long (argc, argv, "d:f:g:n:t:", long_options, &option_index);
       if (c == -1)
         break;
-  
+
       char *arg1, *arg2;
       switch (c) {
       case 'd':
         printf("Delete %s\n",optarg);
         delfile_function(optarg);
         break;
-  
+
       case 'f':
         printf("Send file %s\n",optarg);
         split_arg(optarg,&arg1,&arg2);
         sendfile_function(arg1,arg2);
         break;
-  
+
       case 'g':
         printf("Get file %s\n",optarg);
         split_arg(optarg,&arg1,&arg2);
         getfile_function(arg1,arg2);
         break;
-  
+
       case 'n':
         printf("New folder %s\n",optarg);
         newfolder_function(optarg);
         break;
-  
+
       case 't':
         printf("Send track %s\n",optarg);
         split_arg(optarg,&arg1,&arg2);
-        sendtrack_function(arg1,arg2,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0);
+        sendtrack_function(arg1,arg2,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,0);
         break;
       }
     }
-  
+
     if (optind < argc) {
       printf("Unknown options: ");
       while (optind < argc)
@@ -161,7 +161,7 @@ int main (int argc, char **argv)
       printf("\n");
     }
   }
-  
+
   LIBMTP_Release_Device(device);
 
   exit (0);

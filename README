@@ -416,6 +416,15 @@ cannot test your solution.
   manufacturer and ask them to test their product with some libmtp
   program.
 
+* Generic certificate misbehaviour. All devices are actually
+  required to support a device certificate to be able to
+  encrypt Windows Media (WMA/WMV) files. However there are
+  obviously a lot of devices out there which doesn't support
+  this at all but instead crash. Typical printout:
+
+  Error 2: PTP Layer error 02ff: get_device_unicode_property(): failed
+  to get unicode property.
+
 * Generic USB misbehaviour: some devices behave badly under MTP
   and USB mass storage alike, even down to the lowest layers
   of USB. You can always discuss such issues at the linux-usb
