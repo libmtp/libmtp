@@ -104,6 +104,8 @@
   { "Samsung", 0x04e8, "YP-900", 0x0409, DEVICE_FLAG_NONE },
   // From MItch <dbaker@users.sourceforge.net>
   { "Samsung", 0x04e8, "I550W Phone", 0x04a4, DEVICE_FLAG_NONE },
+  // From Manfred Enning <menning@users.sourceforge.net>
+  { "Samsung", 0x04e8, "Jet S8000", 0x4f1f, DEVICE_FLAG_NONE },
   // From Gabriel Nunes <gabrielkm1@yahoo.com.br>
   { "Samsung", 0x04e8, "YH-920 (501d)", 0x501d, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Soren O'Neill
@@ -292,6 +294,9 @@
     DEVICE_FLAG_UNLOAD_DRIVER },
   // From josmtx <josmtx@users.sourceforge.net>
   { "Philips", 0x0471, "GoGear Aria", 0x207c,
+    DEVICE_FLAG_UNLOAD_DRIVER },
+  // From epklein
+  { "Philips", 0x0471, "GoGear SA1VBE08KX/78", 0x208e,
     DEVICE_FLAG_UNLOAD_DRIVER },
   // from XNJB user
   { "Philips", 0x0471, "PSA235", 0x7e01, DEVICE_FLAG_NONE },
@@ -939,6 +944,11 @@
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNIQUE_FILENAMES  },
+  // Reported by Jonathan Stowe <gellyfish@users.sourceforge.net>
+  { "Sony", 0x054c, "Walkman NWZ-E445", 0x03fd,
+      DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      DEVICE_FLAG_UNIQUE_FILENAMES  },
   // Reported by Anonymous SourceForge user
   { "Sony", 0x054c, "Walkman NWZ-S545", 0x03fe,
       DEVICE_FLAG_UNLOAD_DRIVER |
@@ -1026,12 +1036,14 @@
   { "Haier", 0x1302, "Ibiza Rhapsody", 0x1016, DEVICE_FLAG_NONE },
   // This is the 4/8 GiB model
   { "Haier", 0x1302, "Ibiza Rhapsody", 0x1017, DEVICE_FLAG_NONE },
-  
+
   /*
    * Panasonic
    */
   // Reported by dmizer
   { "Panasonic", 0x04da, "P905i", 0x2145, DEVICE_FLAG_NONE },
+  // Reported by Taku
+  { "Panasonic", 0x04da, "P906i", 0x2158, DEVICE_FLAG_NONE },
 
   /*
    * Polaroid
