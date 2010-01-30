@@ -4,6 +4,7 @@
  * Copyright (C) 2003-2009 Marcus Meissner <marcus@jet.franken.de>
  * Copyright (C) 2006-2008 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2007 Tero Saarni <tero.saarni@gmail.com>
+ * Copyright (C) 2009 Axel Waggershauser <awagger@web.de>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -138,11 +139,13 @@ ptp_transaction_new (PTPParams* params, PTPContainer* ptp,
 		uint16_t flags, unsigned int sendlen,
 		PTPDataHandler *handler
 ) {
-	int tries;
+	int 		tries;
+	uint16_t	cmd;
 
 	if ((params==NULL) || (ptp==NULL)) 
 		return PTP_ERROR_BADPARAM;
 
+	cmd = ptp->Code;
 	ptp->Transaction_ID=params->transaction_id++;
 	ptp->SessionID=params->session_id;
 	/* send request */
@@ -184,12 +187,29 @@ ptp_transaction_new (PTPParams* params, PTPContainer* ptp,
 		return PTP_ERROR_BADPARAM;
 	}
 	tries = 3;
-	while (1) {
+	while (tries--) {
+		uint16_t ret;
 		/* get response */
-		CHECK_PTP_RC(params->getresp_func(params, ptp));
+		ret = params->getresp_func(params, ptp);
+		if (ret == PTP_ERROR_RESP_EXPECTED) {
+			ptp_debug (params,"PTP: response expected but not got, retrying.");
+			tries++;
+			continue;
+		}
+		if (ret != PTP_RC_OK)
+			return ret;
+		
+		if (ptp->Transaction_ID < params->transaction_id-1) {
+			tries++;
+			ptp_debug (params,
+				"PTP: Sequence number mismatch %d vs expected %d, suspecting old reply.",
+				ptp->Transaction_ID, params->transaction_id-1
+			);
+			continue;
+		}
 		if (ptp->Transaction_ID != params->transaction_id-1) {
 			/* try to clean up potential left overs from previous session */
-			if ((ptp->Code == PTP_OC_OpenSession) && tries--)
+			if ((cmd == PTP_OC_OpenSession) && tries)
 				continue;
 			ptp_error (params,
 				"PTP: Sequence number mismatch %d vs expected %d.",
@@ -233,6 +253,8 @@ memory_putfunc(PTPParams* params, void* private,
 
 	if (priv->curoff + sendlen > priv->size) {
 		priv->data = realloc (priv->data, priv->curoff+sendlen);
+		if (!priv->data)
+			return PTP_RC_GeneralError;
 		priv->size = priv->curoff + sendlen;
 	}
 	memcpy (priv->data + priv->curoff, data, sendlen);
@@ -339,6 +361,8 @@ static uint16_t
 ptp_init_fd_handler(PTPDataHandler *handler, int fd) {
 	PTPFDHandlerPrivate* priv;
 	priv = malloc (sizeof(PTPFDHandlerPrivate));
+	if (!priv)
+		return PTP_RC_GeneralError;
 	handler->priv = priv;
 	handler->getfunc = fd_getfunc;
 	handler->putfunc = fd_putfunc;
@@ -1444,6 +1468,10 @@ ptp_canon_gettreesize (PTPParams* params,
 		return ret;
 	*cnt = dtoh32a(out);
 	*entries = malloc(sizeof(PTPCanon_directtransfer_entry)*(*cnt));
+	if (!*entries) {
+		free (out);
+		return PTP_RC_GeneralError;
+	}
 	cur = out+4;
 	for (i=0;i<*cnt;i++) {
 		unsigned char len;
@@ -1728,28 +1756,34 @@ ptp_canon_eos_setdevicepropvalue (PTPParams* params,
 		/* special handling of ImageFormat properties */
 		size = 8 + ptp_pack_EOS_ImageFormat( params, NULL, value->u16 );
 		data = malloc( size );
+		if (!data) return PTP_RC_GeneralError;
 		params->canon_props[i].dpd.CurrentValue.u16 = value->u16;
 		ptp_pack_EOS_ImageFormat( params, data + 8, value->u16 );
 		break;
 	default:
 		if (datatype != PTP_DTC_STR) {
 			data = calloc(sizeof(uint32_t),3);
+			if (!data) return PTP_RC_GeneralError;
 			size = sizeof(uint32_t)*3;
 		} else {
 			size = strlen(value->str) + 1 + 8;
 			data = calloc(sizeof(char),size);
+			if (!data) return PTP_RC_GeneralError;
 		}
 		switch (datatype) {
+		case PTP_DTC_INT8:
 		case PTP_DTC_UINT8:
 			/*fprintf (stderr, "%x -> %d\n", propcode, value->u8);*/
 			htod8a(&data[8], value->u8);
 			params->canon_props[i].dpd.CurrentValue.u8 = value->u8;
 			break;
 		case PTP_DTC_UINT16:
+		case PTP_DTC_INT16:
 			/*fprintf (stderr, "%x -> %d\n", propcode, value->u16);*/
 			htod16a(&data[8], value->u16);
 			params->canon_props[i].dpd.CurrentValue.u16 = value->u16;
 			break;
+		case PTP_DTC_INT32:
 		case PTP_DTC_UINT32:
 			/*fprintf (stderr, "%x -> %d\n", propcode, value->u32);*/
 			htod32a(&data[8], value->u32);
@@ -3464,6 +3498,19 @@ ptp_get_property_description(PTPParams* params, uint16_t dpc)
 		{PTP_DPC_MTP_PlaysForSureID,    N_("PlaysForSure ID")},		/* D131 (?) */
 		{0,NULL}
         };
+        struct {
+		uint16_t dpc;
+		const char *txt;
+        } ptp_device_properties_FUJI[] = {
+		{PTP_DPC_FUJI_ColorTemperature, N_("Color Temperature")},	/* 0xD017 */
+		{PTP_DPC_FUJI_Quality, N_("Quality")},				/* 0xD018 */
+		{PTP_DPC_FUJI_Quality, N_("Release Mode")},			/* 0xD201 */
+		{PTP_DPC_FUJI_Quality, N_("Focus Areas")},			/* 0xD206 */
+		{PTP_DPC_FUJI_Quality, N_("AE Lock")},				/* 0xD213 */
+		{PTP_DPC_FUJI_Quality, N_("Aperture")},				/* 0xD218 */
+		{PTP_DPC_FUJI_Quality, N_("Shutter Speed")},			/* 0xD219 */
+		{0,NULL}
+        };
 
 	for (i=0; ptp_device_properties[i].txt!=NULL; i++)
 		if (ptp_device_properties[i].dpc==dpc)
@@ -3489,6 +3536,11 @@ ptp_get_property_description(PTPParams* params, uint16_t dpc)
 		for (i=0; ptp_device_properties_Nikon[i].txt!=NULL; i++)
 			if (ptp_device_properties_Nikon[i].dpc==dpc)
 				return (ptp_device_properties_Nikon[i].txt);
+
+	if (params->deviceinfo.VendorExtensionID==PTP_VENDOR_FUJI)
+		for (i=0; ptp_device_properties_FUJI[i].txt!=NULL; i++)
+			if (ptp_device_properties_FUJI[i].dpc==dpc)
+				return (ptp_device_properties_FUJI[i].txt);
 
 	return NULL;
 }
@@ -3558,7 +3610,9 @@ ptp_render_property_value(PTPParams* params, uint16_t dpc,
 		{PTP_DPC_ExposureTime, 0, 0.00001, 0.0, "%.2g sec"},	/* 500D */
 		{PTP_DPC_ExposureIndex, 0, 1.0, 0.0, "ISO %.0f"},	/* 500F */
 		{PTP_DPC_ExposureBiasCompensation, 0, 0.001, 0.0, N_("%.1f stops")},/* 5010 */
+		{PTP_DPC_CaptureDelay, 0, 0.001, 0.0, "%.1fs"},		/* 5012 */
 		{PTP_DPC_DigitalZoom, 0, 0.1, 0.0, "%.1f"},		/* 5016 */
+		{PTP_DPC_BurstInterval, 0, 0.001, 0.0, "%.1fs"},	/* 5019 */
 
 		/* Nikon device properties */
 		{PTP_DPC_NIKON_LightMeter, PTP_VENDOR_NIKON, 0.08333, 0.0, N_("%.1f stops")},/* D10A */

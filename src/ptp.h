@@ -162,8 +162,10 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_VENDOR_STMICROELECTRONICS	0x00000009
 #define PTP_VENDOR_NIKON		0x0000000A
 #define PTP_VENDOR_CANON		0x0000000B
-  
-/* Vendor extension ID used for MTP */
+#define PTP_VENDOR_FOTONATION		0x0000000C
+#define PTP_VENDOR_PENTAX		0x0000000D
+#define PTP_VENDOR_FUJI			0x0000000E
+/* Vendor extension ID used for MTP (occasionaly, usualy 6 is used) */
 #define PTP_VENDOR_MTP			0xffffffff  
 
 /* Operation Codes */
@@ -1301,6 +1303,7 @@ typedef struct _PTPCanonEOSDeviceInfo {
 #define PTP_DPC_CANON_EOS_PTPExtensionVersion	0xD119
 #define PTP_DPC_CANON_EOS_DPOFVersion		0xD11A
 #define PTP_DPC_CANON_EOS_AvailableShots	0xD11B
+#define PTP_CANON_EOS_CAPTUREDEST_HD		4
 #define PTP_DPC_CANON_EOS_CaptureDestination	0xD11C
 #define PTP_DPC_CANON_EOS_BracketMode		0xD11D
 #define PTP_DPC_CANON_EOS_CurrentStorage	0xD11E
@@ -1627,6 +1630,15 @@ typedef struct _PTPCanonEOSDeviceInfo {
 #define PTP_DPC_NIKON_FlashCommandBValue		0xD1DC
 #define PTP_DPC_NIKON_ActivePicCtrlItem			0xD200
 #define PTP_DPC_NIKON_ChangePicCtrlItem			0xD201
+
+/* Fuji specific */
+#define PTP_DPC_FUJI_ColorTemperature			0xD017
+#define PTP_DPC_FUJI_Quality				0xD018
+#define PTP_DPC_FUJI_ReleaseMode			0xD201
+#define PTP_DPC_FUJI_FocusAreas				0xD206
+#define PTP_DPC_FUJI_AELock				0xD213
+#define PTP_DPC_FUJI_Aperture				0xD218
+#define PTP_DPC_FUJI_ShutterSpeed			0xD219
 
 /* Microsoft/MTP specific */
 #define PTP_DPC_MTP_SecureTime				0xD101
@@ -2453,9 +2465,20 @@ uint16_t ptp_nikon_writewifiprofile (PTPParams* params, PTPNIKONWifiProfile* pro
  **/
 #define ptp_nikon_afdrive(params) ptp_generic_no_data(params,PTP_OC_NIKON_AfDrive,0)
 /**
- * ptp_nikon_mfdrive:
+ * ptp_canon_eos_afdrive:
  *
  * This command runs (drives) the lens autofocus.
+ *  
+ * params:      PTPParams*
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+#define ptp_canon_eos_afdrive(params) ptp_generic_no_data(params,PTP_OC_CANON_EOS_DoAf,0)
+/**
+ * ptp_nikon_mfdrive:
+ *
+ * This command runs (drives) the lens focus manually.
  *  
  * params:      PTPParams*
  * flag:        0x1 for (no limit - closest), 0x2 for (closest - no limit)
@@ -2465,6 +2488,19 @@ uint16_t ptp_nikon_writewifiprofile (PTPParams* params, PTPNIKONWifiProfile* pro
  *
  **/
 #define ptp_nikon_mfdrive(params,flag,amount) ptp_generic_no_data(params,PTP_OC_NIKON_MfDrive,2,flag,amount)
+
+/**
+ * ptp_canon_eos_drivelens:
+ *
+ * This command runs (drives) the lens focus manually.
+ *  
+ * params:      PTPParams*
+ * amount:      0x1-0x3 for near range, 0x8001-0x8003 for far range.
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+#define ptp_canon_eos_drivelens(params,amount) ptp_generic_no_data(params,PTP_OC_CANON_EOS_DriveLens,1,amount)
 /**
  * ptp_nikon_capture:
  *

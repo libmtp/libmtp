@@ -2,6 +2,9 @@
 
 	* examples/connect.c: bad prototype for sendtrack_.
 	* examples/sentr.c: bad prototype.
+	* src/ptp.c: sync to upstream.
+	* src/ptp.h: dito.
+	* src/ptp-pack.c: dito.
 
 2010-01-19  Linus Walleij <triad@df.lth.se>
 
@@ -413,7 +416,7 @@
 
 	* configure.ac: bump to 0.3.6 and release.
 	* src/Makefile.am: interface bump to libmtp.so.8.2.1
-	
+
 2009-01-16  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp.c: sync to upstream.
@@ -514,7 +517,7 @@
 	* Release libmtp 0.3.4.
 	* configure.ac: let's release 0.3.4.
 	* src/Makefile.am: compatible API and ABI.
-	
+
 2008-11-05  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: fix the association type problem on
@@ -562,7 +565,7 @@
 	* configure.ac: bump to 0.3.3.
 	* src/Makefile.am: interface to .so.8.1.0
 	* Release as 0.3.3.
-	
+
 2008-09-24  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: add new filename setting functions, patch
@@ -587,7 +590,7 @@
 
 2008-09-20  Joe Nahmias <joe@nahmias.net>
 
-	* examples/sendtr.c: added option to specify which 
+	* examples/sendtr.c: added option to specify which
 	  storage_id the track should be copied.
 
 2008-09-20  Linus Walleij <triad@df.lth.se>
@@ -619,7 +622,7 @@
 
 2008-09-04  Linus Walleij <triad@df.lth.se>
 
-	* src/libmtp.c: look up the filename for playlists if the name is 
+	* src/libmtp.c: look up the filename for playlists if the name is
 	  missing or not properly set. Not doing the same for albums -
 	  these must have proper metadata.
 	* src/music-players.h: more players as usual.
@@ -711,7 +714,7 @@
 	  It's NOT compatible!
 	* RELEASE libmtp 0.3.0 and let the apps developers have
 	  their apps fixed!
-	
+
 2008-06-22  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: removed the parenthandle argument from
@@ -752,14 +755,14 @@
 	* src/libmtp.c: only look for default folders in the
 	  primary storage, and only try to put files there
 	  if they are targetting the primary storage.
-	
+
 2008-06-08  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: check for the langinfo.h header.
 	* examples/connect.c: check charset properly.
 	* examples/sendtr.c: dito.
 	* src/music-players.h: new devices galore.
-	
+
 2008-06-03  Linus Walleij <triad@df.lth.se>
 
 	* src/device-flags.h: new device flag for devices that
@@ -783,11 +786,11 @@
 	  switching on the device flags and increase the code
 	  readability.
 	* src/libmtp.c: use the new accessor functions.
-	
+
 2008-06-01  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: use LIBMTP_Detect_Raw_Devices() and
-	  LIBMTP_Open_Raw_Device() inside 
+	  LIBMTP_Open_Raw_Device() inside
 	  LIBMTP_Get_First_Device() refactoring. Move
 	  params creation into this file.
 	* src/libusb-glue.c: move params creation away
@@ -846,7 +849,7 @@
 2008-05-05  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: assign device name and flags to
-	  detected raw devices, slowly preparing to move to 
+	  detected raw devices, slowly preparing to move to
 	  using the raw device detection internally as well.
 
 2008-05-04  Linus Walleij <triad@df.lth.se>
@@ -876,14 +879,14 @@
 	  types and tidy up a bit.
 
 2008-04-24  Linus Walleij <triad@df.lth.se>
-	
+
 	* src/libmtp.h.in: added preliminary interface for getting
 	  raw devices.
 	* src/libusb-glue.c: the implementation is all here!
 	* src/libusb-glue.h: add some bus and device fields to the
 	  internal device list.
 	* examples/detect.c: exercise the raw device detection code.
-	
+
 2008-03-26  Linus Walleij <triad@df.lth.se>
 
 	* examples/pathutils.c: fix a folder identification bug,
@@ -912,12 +915,12 @@
 2008-03-02  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: prepare 0.2.6 release.
-	* src/Makefile.am: bump to compatible interface, 
+	* src/Makefile.am: bump to compatible interface,
 	* src/ptp.c: sync in upstream, a Sansa fix!
 	* src/ptp.h: sync in upstream.
 	* doc/Doxyfile.in: retire obsoleted parameters.
 	* Release this as 0.2.6!
-	
+
 2008-02-24  Richard Low <richard@wentnet.com>
 
 	* src/music-players.h: add DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL
@@ -949,7 +952,7 @@
 
 	* src/libmtp.c: LIBMTP_Get_Filemetadata() return metadata for
 	  folders (associations) too. There is really no reason why it
-	  shouldn't and it's good for use internally. 
+	  shouldn't and it's good for use internally.
 	  LIBMTP_Get_Filelisting_With_Callback() will still not return
 	  any associations however. We want to use the folder functions
 	  for that.
@@ -958,7 +961,7 @@
 
 	* src/libmtp.h.in: withdraw LIBMTP_Set_Object_Parent() function,
 	  no known devices will support this.
-	* src/libmtp.c: dito. Fix up some problems with the 
+	* src/libmtp.c: dito. Fix up some problems with the
 	  LIBMTP_Set_Object_Filename() function.
 
 2008-01-27  Linus Walleij <triad@df.lth.se>
@@ -991,7 +994,7 @@
 	* src/libmtp.h.in: ditto
 
 2008-01-14  Linus Walleij <triad@df.lth.se>
-	
+
 	* src/libmtp.c: add LIBMTP_Get_Manufacturername(). Remember
 	  to bump soname (compatible) in 0.2.6 (or whatever we name it).
 	  0.3.0 perhaps?
@@ -1004,7 +1007,7 @@
 	* examples/pathutils.c: recognize .bin files as firmware,
 	  used by e.g. RockBox developers. Doesn't cost anything to
 	  add.
-	
+
 2008-01-08  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bump to 0.2.5.
@@ -1120,7 +1123,7 @@
 	  RAZR2 V8 has this problem.
 	* src/libusb-glue.h: flag for broken set object proplist.
 	* libmtp.c: avoid broken set object proplist.
-	
+
 2007-10-09  Jeff Mitchell <kde-dev@emailgoeshere.com>
 
 	* src/libusb-glue.c: add separate vendor and product strings
@@ -1135,7 +1138,7 @@
 	* src/Makefile.am: interface to libmtp.so.6.0.2 (compatible)
 	* Release as 0.2.2. Now is as good time as ever. Release
 	  early and release often.
-	
+
 2007-10-03  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: tag the OLD Creative devices with
@@ -1149,11 +1152,11 @@
 	* src/libmtp.c: devices which represented file size with a
 	  32bit value (some Creative devices) would return a bananas
 	  file size. Fixed it up by...
-	* src/libmtp.h.in: recycling the uint8_t "interface" 
-	  field in the device struct as a holder of the object size 
-	  for the device. This will make the new library binary 
-	  compatible with version 0.2.1 since no-one should *ever* 
-	  dereference that value (which used to be the USB interface 
+	* src/libmtp.h.in: recycling the uint8_t "interface"
+	  field in the device struct as a holder of the object size
+	  for the device. This will make the new library binary
+	  compatible with version 0.2.1 since no-one should *ever*
+	  dereference that value (which used to be the USB interface
 	  number and is now the object size).
 	* examples/files.c: display 64bit file sizes in hex correctly.
 
@@ -1194,11 +1197,11 @@
 	* src/libusb-glue.c: flag the Samsung YH-820 with
 	  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL after tests by Stephan
 	  Fabel.
-	
+
 2007-09-18  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: stop the endpoint unhalting/unstalling when
-	  closing the USB device. It was AYBABTU the Samsungs 
+	  closing the USB device. It was AYBABTU the Samsungs
 	  (and others).
 
 2007-09-17  Linus Walleij <triad@df.lth.se>
@@ -1240,7 +1243,7 @@
 	* src/ptp.c: reflect changes.
 	* src/ptp.h: reflect changes.
 	* src/libmtp.c: reflect changes.
-	
+
 2007-09-06  Linus Walleij <triad@df.lth.se>
 
 	* examples/hotplug.c: edit up into a udev ruleset that is
@@ -1270,11 +1273,11 @@
 	  object ID.
 	* hotplug.sh.in: explicitly call BASH instead of just sh. Warn
 	  if script is not run as root.
-	
+
 2007-08-29  Linus Walleij <triad@df.lth.se>
 
 	* examples/Makefile.am: move include define from AM_CFLAGS to
-	  AM_CPPFLAGS (as it should be) bug found by Petar Petrov 
+	  AM_CPPFLAGS (as it should be) bug found by Petar Petrov
 	  <pesho.petrov@gmail.com>.
 	* src/libusb-glue.c: strange misleading message corrected. Fix
 	  up the horrid interface passing back-and-forward and confusing.
@@ -1289,7 +1292,7 @@
 	  size in advance. Add in some code to fall back on the recursive
 	  metadata retrieveal if getting the whole long list fails.
 	* src/libusb-glue.c: tag all Sansas as having broken GetObjectPropList
-	  when all tags for all objects are requested. Scan each INTERFACE 
+	  when all tags for all objects are requested. Scan each INTERFACE
 	  of the device for device descriptors.
 
 2007-08-24  Linus Walleij <triad@df.lth.se>
@@ -1308,7 +1311,7 @@
 	  are ranges or enums, rounding and twiddling if need be. This is
 	  needed because some new devices (like the TrekStor Sweez,
 	  has duration defined as a range: MIN 0, MAX 65535000, STEP 1
-	  and Sandisk Sansa c240 has duration as range: MIN 0, MAX 2147483000, 
+	  and Sandisk Sansa c240 has duration as range: MIN 0, MAX 2147483000,
 	  STEP 1000) whereas old devices would just accept any value.
 
 2007-08-16  Richard Low <richard@wentnet.com>
@@ -1432,8 +1435,8 @@
 
 2007-07-10  Linus Walleij <triad@df.lth.se>
 
-	* examples/hotplug.c: force HAL OGG support on iriver devices. 
-	  They all have it! Also force for two other devices that does 
+	* examples/hotplug.c: force HAL OGG support on iriver devices.
+	  They all have it! Also force for two other devices that does
 	  this.
 
 2007-07-07  Linus Walleij <triad@df.lth.se>
@@ -1531,7 +1534,7 @@
 
 	* src/ptp.c: sync to upstream gPhoto source.
 	* src/ptp.h: dito.
-	
+
 2007-04-17  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: new device
@@ -1548,7 +1551,7 @@
 
 	* examples/files.c: some WIN32 64bit prefix fixup.
 	* examples/tracks.c: dito.
-	
+
 2007-03-28  Ted Bullock <tbullock@canada.com>
 
 	* examples/*.c: Print library version number on execution of examples.
@@ -1568,15 +1571,15 @@
 
 	* src/libmtp.c: refactored MTP property list handling code to make
 	  things simple. Removed the flag for MTP enhanced: there are devices
-	  that will not work without MTP enhanced (for example the Samsung 
-	  YP-K5 will only support setting object property lists, not 
-	  individual object properties, leaving out parts of the MTP basic 
-	  subset), thus we are allowed to reverse-engineer and implement this 
-	  for interoperability. I also made the output from 
-	  LIBMTP_Dump_Device_Info() considerably more verbose, plotting out 
-	  the ranges and possible enumerated values of all object properties.
-	  For example you can see that the secret values associated with 
-	  Audible.com property 0xda01 is an enumerated value that can be 
+	  that will not work without MTP enhanced (for example the Samsung
+	  YP-K5 will only support setting object property lists, not
+	  individual object properties, leaving out parts of the MTP basic
+	  subset), thus we are allowed to reverse-engineer and implement this
+	  for interoperability. I also made the output from
+	  LIBMTP_Dump_Device_Info() considerably more verbose, plotting out
+	  the ranges and possible enumerated values of all object properties
+	  For example you can see that the secret values associated with
+	  Audible.com property 0xda01 is an enumerated value that can be
 	  2, 3 or 4 (etc).
 
 2007-03-22  Richard Low <richard@wentnet.com>
@@ -1604,10 +1607,10 @@
 2007-03-12  Linus Walleij <triad@df.lth.se>
 
 	* Makefile.am: cleanup patch from Rafael Laboissiere.
-	* src/libusb-glue.c: refactored device detection code to 
-	  immediately test if the device is in the known devices list if it 
-	  does not feature a MTP device descriptor. This fixes the problem 
-	  of not being able to mix devices with proper descriptors and 
+	* src/libusb-glue.c: refactored device detection code to
+	  immediately test if the device is in the known devices list if it
+	  does not feature a MTP device descriptor. This fixes the problem
+	  of not being able to mix devices with proper descriptors and
 	  non-detected devices.
 
 2007-03-07  Linus Walleij <triad@df.lth.se>
@@ -1615,7 +1618,7 @@
 	* src/libusb-glue.c: remove libgphoto2 functions that we
 	  don't use.
 	* src/libusb-glue.h: export the free_mtpdevice_list() function,
-	  new signature of find_usb_devices().	
+	  new signature of find_usb_devices().
 	* src/libmtp.c: shrink code, pass as list of devices instead of
 	  several huge arrays between libmtp.c and USB glue layer in
 	  libusb-glue.c using the nifty list struct defined in libusb-glue.h.
@@ -1623,10 +1626,10 @@
 
 2007-03-06  Linus Walleij <triad@df.lth.se>
 
-	* src/libusb-glue.c: rewrote one more function to be 
+	* src/libusb-glue.c: rewrote one more function to be
 	  non-recursive, perhaps I found the remaining bug, just
 	  cannot see that right now, will test tomorrow.
-	
+
 2007-03-05  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: rewrite recursive function to linear.
@@ -1637,13 +1640,13 @@
 	  linear, use wrapper objects, don't copy the libusb device
 	  struct, instead just store a pointer to it. This magically
 	  solved a bug...
-	
+
 2007-03-04  Linus Walleij <triad@df.lth.se>
 
 	* src/Makefile.am: bump library interface to libmtp.so.5.2.0
 	  backwards compatible with any libmtp.so.5 interface, for
 	  imminent libmtp 0.1.4 release.
-	
+
 2007-03-03  Ted Bullock  <tbullock@canada.com>
 
 	* src/libusb-glue.c: Don't echo warnings about reading a single
@@ -1659,7 +1662,7 @@
 2007-03-03  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.h: Tiresome ramblings to explain exactly what
-	  the (now renamed) device flag DEVICE_FLAG_NO_ZERO_READS really 
+	  the (now renamed) device flag DEVICE_FLAG_NO_ZERO_READS really
 	  means.
 	* src/libusb-glue.c: Renamed flag. Indent code :-) Reading the code
 	  and being impressed by our ability to iron out the root cause
@@ -1675,28 +1678,28 @@
 2007-02-28  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp.h: Upstream accepted our patch so synced it in.
-	
+
 2007-02-27  Linus Walleij <triad@df.lth.se>
 
-	* src/ptp.c: Synced in upstream version which removes the 
+	* src/ptp.c: Synced in upstream version which removes the
 	  offending line.
 	* src/libmtp.c: replaces strcmp() for strcasecmp() in folder
 	  detection since Windows and some devices (such as iRivers)
 	  ignore case and user capital letters for default folders.
-	
+
 2007-02-22  Ted Bullock  <tbullock@canada.com>
 
-	* src/ptp.c: Comment out line in ptp_exit_fd_handler that was 
-	  closing a file descriptor.  This is not the responsibility of 
+	* src/ptp.c: Comment out line in ptp_exit_fd_handler that was
+	  closing a file descriptor.  This is not the responsibility of
 	  the PTP Layer. Defect and solution found by Rob Reardon
 
 2007-02-26  Linus Walleij <triad@df.lth.se>
 
-	* src/libmtp.c: Implement a check for PTP_OC_MTP_SetObjectPropValue 
-	  in the LIBMTP_Update_Track_Metadata() function, there are 
-	  obviously devices that do not support this, but only 
-	  PTP_OC_MTP_SetObjPropList instead (such as the Samsung YH 925-GS), 
-	  but we haven't implemented that yet. Problems are 
+	* src/libmtp.c: Implement a check for PTP_OC_MTP_SetObjectPropValue
+	  in the LIBMTP_Update_Track_Metadata() function, there are
+	  obviously devices that do not support this, but only
+	  PTP_OC_MTP_SetObjPropList instead (such as the Samsung YH 925-GS),
+	  but we haven't implemented that yet. Problems are
 	  atleast reported correctly now.
 
 2007-02-24  Richard Low <richard@wentnet.com>
@@ -1707,7 +1710,7 @@
 2007-02-23  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: Undeprecate getting first device code.
-	
+
 2007-02-23  Richard Low <richard@wentnet.com>
 
 	* src/libmtp.c: Fix crash when no devices connected
@@ -1719,7 +1722,7 @@
 	* src/libusb-glue.h: Remove old uni-device cruft code
 	* Replace LIBMTP_ERROR_N0_DEVICE_ATTACHED with
 		LIBMTP_ERROR_NO_DEVICE_ATTACHED across entire project
-	
+
 2007-02-22  Ted Bullock  <tbullock@canada.com>
 
 	* examples/albums.c: Updated to use new multi device code
@@ -1759,21 +1762,21 @@
 
 	* examples/folders.c: Updated to use new multi device code
 	* src/libmtp.c: Fixed potential memory leaks
-	* src/libusb-glue.c: Fixed potential memory leaks and fixed device 
+	* src/libusb-glue.c: Fixed potential memory leaks and fixed device
 	  release segfault for multiple devices
 
 2007-02-14  Ted Bullock  <tbullock@canada.com>
 
-	* src/libusb-glue.c: Wrote three new recursive functions to avoid 
-	  extreme levels of multiple indirection and to clean the code up 
+	* src/libusb-glue.c: Wrote three new recursive functions to avoid
+	  extreme levels of multiple indirection and to clean the code up
 	  a bit for multiple devices.
-	* examples/detect.c: Adjusted function calls to use new multiple 
+	* examples/detect.c: Adjusted function calls to use new multiple
 	  device code.
 	* src/libmtp.h.in: Added prototype for LIBMTP_Release_Device_List
 
 2007-02-12  Ted Bullock  <tbullock@canada.com>
 
-	* src/libmtp.c: Two new functions (create_usb_mtp_devices and 
+	* src/libmtp.c: Two new functions (create_usb_mtp_devices and
 	  LIBMTP_Get_Connected_Devices) to add support for multiple devices
 	  to client applications
 	* src/libmtp.h: Added LIBMTP_Get_Connected_Devices as a publicly
@@ -1852,7 +1855,7 @@
 	  (but let's not do that renaming since it would break the API).
 	  For now let's understand this is a USB-only function by
 	  simply putting it in the libusb-glue.c file.
-	
+
 2007-01-22  Ted Bullock <tbullock@canada.com>
 
 	* src/libusb-glue.c: first hack at creating an interface
@@ -1871,7 +1874,7 @@
 	  errors and adjust examples to make use of the error
 	  stack.
 	* src/libmtp.c: dito.
-	
+
 2007-01-20  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: new device 'Philips PSA235'
@@ -1900,7 +1903,7 @@
 	  a little bit.
 	* src/libmtp.c: don't assign values to writes or reads, use the
 	  PTP transport intrinsics instead.
-	
+
 2007-01-07  Orson Teodoro <orsonteodoro@yahoo.com>
 
 	* src/ptp.h: Encoding profile.
@@ -1931,7 +1934,7 @@
 
 2007-01-02  Linus Walleij <triad@df.lth.se>
 
-	* src/libusb-glue.c: fix up comments, remove things 
+	* src/libusb-glue.c: fix up comments, remove things
 	  refering to stuff we don't have.
 
 2007-01-02  Richard Low <richard@wentnet.com>
@@ -1955,7 +1958,7 @@
 
 2007-01-01  Orson Teodoro <orsonteodoro@yahoo.com>
 
-	* src/ptp.h: changed some WMDRMND def codes to AAVT def codes. 
+	* src/ptp.h: changed some WMDRMND def codes to AAVT def codes.
 	  addition of AAVT error codes.
 	* src/ptp.c: changes to reflect modifications done in ptp.h
 
@@ -2028,7 +2031,7 @@
 	* src/ptp.c: sync to upstream.
 	* src/ptp.h: dito.
 	* src/ptp-pack.c: dito.
-	
+
 2006-12-15  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: make the format function take a storage as
@@ -2042,7 +2045,7 @@
 	* src/libmtp.c: make get_first_storage_freespace() always query
 	  the first storage when the space is requested. And some other
 	  janitorial stuff.
-	
+
 2006-12-13  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: one more device.
@@ -2123,10 +2126,10 @@
 
 2006-11-30  Matthew Wilcox <matthew@wil.cx>
 
-	* src/ptp.c: on some devices, surplus packet data is 
+	* src/ptp.c: on some devices, surplus packet data is
 	  sometimes returned during read, i.e. a header of the
-	  next package is typically attacked to the incoming 
-	  data, as if someone was sending several packets at 
+	  next package is typically attacked to the incoming
+	  data, as if someone was sending several packets at
 	  once. If this happens we buffer the surplus packet.
 	* src/libusb-glue.c: revert my own mistakes by making
 	  them Windows-only.
@@ -2139,7 +2142,7 @@
 	* src/libmtp.h.in: removed external object interface.
 	* src/libmtp.c: dito. Made all object manipulation functions
 	  static.
-	
+
 2006-11-29  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: added new devices
@@ -2151,7 +2154,7 @@
 	  Windows.
 	* src/libmtp.c: various fixups to enable use of Windows
 	  <io.h> include file.
-	* README.windows.txt: added a quick porting guide for 
+	* README.windows.txt: added a quick porting guide for
 	  MSVC by Farooq Zaman.
 
 2006-11-28  Linus Walleij <triad@df.lth.se>
@@ -2175,9 +2178,9 @@
 
 2006-11-25  Marcus Meissner <marcus@jet.franken.de>
 
-	* examples/hotplug.c: adding HAL style XML output for 
+	* examples/hotplug.c: adding HAL style XML output for
 	  the devices.
-	* examples/Makefile.am: fixing a bug in the automake 
+	* examples/Makefile.am: fixing a bug in the automake
 	  file (pathutils.h missing!)
 	* Makefile.am: fix the problem with re-making sources
 	  (you had to run ./autogen.sh before!)
@@ -2211,7 +2214,7 @@
 
 2006-11-20  Andy Kelk <andy@mopoke.co.uk>
 
-	* src/libmtp.h.in: add "parent_id" property to LIBMTP_track_struct. 
+	* src/libmtp.h.in: add "parent_id" property to LIBMTP_track_struct.
 	* src/libmtp.c: get "parent_id" property when reading tracks.
 	* examples/emptyfolders.c: new example program for pruning empty
 	  folders. (does a dummy run by default).
@@ -2226,7 +2229,7 @@
 2006-11-19  Daniel Williams <danielw@iinet.net.au>
 
 	* src/libusb-glue.c: fix error on reconnect.
-	
+
 2006-11-18  Richard Low <richard@wentnet.com>
 
 	* src/ptp.c: tidy up ptp_usb_getdata
@@ -2251,13 +2254,13 @@
 	* src/libmtp.c: use enhanced MTP commands to create albums and
 	  add detection of the default album folder.
 	* src/libmtp.h.in: add a holder for album default folder.
-	
+
 2006-11-15  Richard Low <richard@wentnet.com>
 
 	* src/ptp-pack.c: set string buffer to correct size.
 
 2006-11-14  Richard Low <richard@wentnet.com>
-	
+
 	* examples/tracks.c: really use undeprecated API entry.
 
 2006-11-13  Richard Low <richard@wentnet.com>, Linus Walleij <triad@df.lth.se>
@@ -2269,7 +2272,7 @@
 	* examples/tracks.c: use undeprecated API entry.
 	* examples/connect.c: ditto.
 	* examples/detect.c: ditto.
-	* examples/files.c: ditto.	
+	* examples/files.c: ditto.
 	* src/ptp.c: working on getting object prop lists.
 	* src/ptp.h: dito.
 
@@ -2297,7 +2300,7 @@
 2006-10-29  Andy Kelk <andy@mopoke.co.uk>
 
 	* examples/albumart.c: simple tool for adding album art.
-	* src/libmtp.c: graceful handling of players not supporting 
+	* src/libmtp.c: graceful handling of players not supporting
 	  abstract album objects.
 
 2006-10-27  Linus Walleij <triad@df.lth.se>
@@ -2321,7 +2324,7 @@
 2006-10-20  Linus Walleij <triad@df.lth.se>
 
 	* Release 0.0.21 to get all the new device support out.
-	
+
 2006-10-16  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bump to 0.0.21.
@@ -2331,14 +2334,14 @@
 
 2006-10-11  Linus Walleij <triad@df.lth.se>
 
-	* examples/delfile.c: patch from Chris Debenham 
+	* examples/delfile.c: patch from Chris Debenham
 	  straingtening out the command-line interface a bit
 	  more.
 
 2006-10-10  Linus Walleij <triad@df.lth.se>
 
-	* examples/delfile.c: patch from Chris Debenham to make 
-	  this command take an optional filename as parameter 
+	* examples/delfile.c: patch from Chris Debenham to make
+	  this command take an optional filename as parameter
 	  instead of file ID.
 
 2006-09-26  Linus Walleij <triad@df.lth.se>
@@ -2380,7 +2383,7 @@
 
 	* configure.ac: bump release. Released 0.0.18 yesterday.
 	* src/libmtp.c: do not try to read battery max level unless
-	  the device supports it. (Bug occurred on Toshiba Gigabeat 
+	  the device supports it. (Bug occurred on Toshiba Gigabeat
 	  P10.)
 
 2006-09-11  Linus Walleij <triad@df.lth.se>
@@ -2389,7 +2392,7 @@
 	  detection so as to bring closer to libgphoto2 detection algorithm.
 	  I've seen things that might be false positives, possibly USB mass
 	  storage devices with additional MSFT descriptors to indicate they
-	  have Janus DRM. 
+	  have Janus DRM.
 	* src/libmtp.c: use UCS-2-INTERNAL if we're not on glibc. glibc
 	  knows that UCS-2 is in machine endianness but Darwin and *BSD does
 	  not. Detect C library and switch accordingly.
@@ -2432,7 +2435,7 @@
 
 2006-09-02  Linus Walleij <triad@df.lth.se>
 
-	* src/libmtp.c: add some code to have 
+	* src/libmtp.c: add some code to have
 	  LIBMTP_Send_File_From_File_Descriptor() accept a stream
 	  if size is set to (uint64_t) -1, plus documentation fixes.
 	  I don't think the streaming code will work but whoever want
@@ -2498,10 +2501,10 @@
 2006-08-22  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bump to 0.0.13, also released 0.0.12 now.
-	
+
 2006-08-21  Linus Walleij <triad@df.lth.se>
 
-	* src/libmtp.c: fixup mmap() usage and add madvise() 
+	* src/libmtp.c: fixup mmap() usage and add madvise()
 	  as result of experiments by Gavin McCullagh. Upstream
 	  accept patch to get files directly to file descriptor.
 	  Move iconv() converters into device struct for thread
@@ -2520,7 +2523,7 @@
 	* src/libmtp.c: dito.
 	* examples/detect.c: reflect changes.
 	* src/Makefile.am: interface is incompatible so age it.
-	
+
 2006-08-19  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: add function to get syncronization
@@ -2539,7 +2542,7 @@
 	  to using iconv() instead.
 	* src/unicode.h: dito.
 	* src/libmtp.c: reflect changes.
-	
+
 2006-08-09  Linus Walleij <triad@df.lth.se>
 
 	* Release libmtp 0.0.11.
@@ -2548,12 +2551,12 @@
 
 	* src/libmtp.c: patch from Dan Aloni to make sendfile
 	  use mmap and avoid memory drainage.
-	* src/libusb-glue.c: patch from Andy Kelk to avoid 
+	* src/libusb-glue.c: patch from Andy Kelk to avoid
 	  exit():ing when the interface cannot be claimed.
 	* configure.ac: version bump.
 
 2006-07-27  Linus Walleij <triad@df.lth.se>
-	
+
 	* Release libmtp 0.0.10.
 
 2006-07-26  Linus Walleij <triad@df.lth.se>
@@ -2572,13 +2575,13 @@
 2006-06-21  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: added function to retrieve supported
-	  filetypes.	
+	  filetypes.
 	* src/libmtp.c: ditto.
 	* examples/detect.c: use that function.
 
 2006-06-19  Linus Walleij <triad@df.lth.se>
 
-	* src/unicode.c: support all endianness, detect 
+	* src/unicode.c: support all endianness, detect
 	  byte-order-mark
 	* src/unicode.h: ditto.
 	* src/libmtp.c: ditto.
@@ -2586,7 +2589,7 @@
 	* src/libmtp.h.in: add some more track properties.
 	* src/libmtp.c: ditto.
 	* examples/tracks.c: ditto.
-	
+
 2006-06-16  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.h.in: new interfaces for single metadata post
@@ -2615,7 +2618,7 @@
 	* examples/playlists.c: new example program.
 	* configure.ac: bump to 0.0.9
 	* src/Makefile.am: bump library interface.
-	
+
 2006-06-05  Linus Walleij <triad@df.lth.se>
 
 	* examples/sendtr.c: fixed annoying bug that made this
@@ -2644,7 +2647,7 @@
 	  bad use of return code.
 	* src/libusb-glue.c: fixed a loop exiting problem with
 	  good 'ol GOTO.
-	
+
 2006-05-29  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: one more device.
@@ -2668,7 +2671,7 @@
 	* src/libmtp.h.in: ditto
 	* examples/refactortest.c: Added simple example to use refactoring
 	* examples/getplaylist.c: Added example to extract playlist data
-	* src/ptp.c: Re-added ptp_get/set_objectreferences to allow 
+	* src/ptp.c: Re-added ptp_get/set_objectreferences to allow
 	  for playlist handling
 	* src/ptp.h: ditto
 
@@ -2677,7 +2680,7 @@
 	* src/libmtp.h.in: add simple detection function.
 	* src/libusb-glue.c: implement MTP "OS descriptor" for
 	  looking for MTP devices.
-	* examples/detect.c: make it possible to do very 
+	* examples/detect.c: make it possible to do very
 	  rudimentary detection with "detect -p".
 	* configure.ac: bump to 0.0.5.
 
@@ -2692,7 +2695,7 @@
 2006-05-04  Linus Walleij  <triad@df.lth.se>
 
 	* examples/sendfile.c: fixes some more filetypes.
-	* src/libmtp.c: respectfully rearranged to use a filetype mapping 
+	* src/libmtp.c: respectfully rearranged to use a filetype mapping
 	  table.
 	* src/ptp-pack.c: real nasty unicode packing bug.
 	* Release libmtp 0.0.4.
@@ -2719,7 +2722,7 @@
 	* examples/Makefile.am: new program, new entry.
 	* src/libmtp.c: reflect this new functionality.
 	* src/libmtp.h.in: dito.
-	
+
 2006-04-25  Linus Walleij  <triad@df.lth.se>
 
 	* Rebased the sources around libgphoto2 instead.
@@ -2752,7 +2755,7 @@
 	* examples/folders.c: dito.
 	* examples/newfolder.c: dito.
 	* examples/trexist.c: dito.
-	
+
 2006-03-28  Linus Walleij  <triad@df.lth.se>
 
 	* m4/*: updated macros to work with GCC 4.1.0.
@@ -2795,7 +2798,7 @@
 
 	* Deltr example program to delete tracks, plus corresponding
 	  interface call.
-	
+
 2006-02-23  Linus Walleij  <triad@df.lth.se>
 
 	* Fixed up sendtr program and metadata tagging function that is
@@ -2805,7 +2808,7 @@
 
 	* Untested gettr.c and sendtr.c programs to get and send tracks
 	  created.
-	
+
 2006-01-30  Linus Walleij  <triad@df.lth.se>
 
 	* Created the initial GNU source directory structure.
