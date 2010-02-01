@@ -1,0 +1,144 @@
+libmtp version: 1.0.1
+
+Listing raw device(s)
+Device 0 (VID=1004 and PID=611b) is a LG Electronics Inc. GR-500 Music Sync Player.
+   Found 1 device(s):
+   LG Electronics Inc.: GR-500 Music Sync Player (1004:611b) @ bus 2, dev 7
+Attempting to connect device(s)
+LIBMTP PANIC: could not inspect object property descriptions!
+LIBMTP PANIC: could not inspect object property descriptions!
+LIBMTP PANIC: could not inspect object property descriptions!
+LIBMTP PANIC: could not inspect object property descriptions!
+LIBMTP PANIC: could not inspect object property descriptions!
+LIBMTP PANIC: could not inspect object property descriptions!
+LIBMTP PANIC: could not inspect object property descriptions!
+LIBMTP PANIC: could not inspect object property descriptions!
+LIBMTP PANIC: could not inspect object property descriptions!
+LIBMTP PANIC: could not inspect object property descriptions!
+LIBMTP PANIC: could not inspect object property descriptions!
+LIBMTP PANIC: could not inspect object property descriptions!
+LIBMTP PANIC: could not inspect object property descriptions!
+Error 7: Unable to read Maximum Battery Level for this device even though the device supposedly supports this functionality
+Error 1: Get Storage information failed.
+Error 2: PTP Layer error 02fe: get_handles_recursively(): could not get object handles.
+Error 2: (Look this up in ptp.h for an explanation.)
+USB low-level info:
+   Using kernel interface "usbfs"
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 1004
+   idProduct: 611b
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Raw device info:
+      Bus location: 2
+      Device number: 7
+      Device entry info:
+         Vendor: LG Electronics Inc.
+         Vendor id: 0x1004
+         Product: GR-500 Music Sync Player
+         Vendor id: 0x611b
+         Device flags: 0x00000804
+Configuration 0, interface 0, altsetting 0:
+   Interface implements PTP class, no further probing.
+Device info:
+   Manufacturer: LGE
+   Model: GR500 Music Sync Player
+   Device version: 1.00
+   Serial number: 00000000000000000011793007979534
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0; microsoft.com/WMDRMPD: 10.1; microsoft.com/WMPPD: 11.0; microsoft.com/WMPPD: 10.0; vodafone.com/omadrmv2: 1.0;
+   Detected object size: 32 bits
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100a: Get thumbnail
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   100f: Format storage
+   1010: Reset device
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   1017: Reset device property value
+   101b: Get partial object
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9810: Get object references
+   9811: Set object references
+   9805: Get object property list
+   9806: Set object property list
+   9808: Send object property list
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Send WMDRM-PD Command
+   910b: Send WMDRM-PD Request
+   9201: Report Added/Deleted Items
+   9202: Report Acquired Items
+Events supported:
+   0x4004
+   0x4005
+   0x400a
+Device Properties Supported:
+   0x5001: Battery Level
+   0xd401: Synchronization Partner
+   0xd402: Friendly Device Name
+   0xd404: Unknown property
+   0xd102: Device Certificate
+Playable File (Object) Types and Object Properties Supported:
+   b984: 3GP
+   3000: Undefined Type
+   3001: Association/Directory
+   3008: MS Wave
+   3009: MP3
+   300c: ASF
+   3801: JPEG
+   b901: WMA
+   b902: OGG
+   b903: AAC
+   ba03: Abstract Audio Album
+   ba05: Abstract Audio Video Playlist
+   ba10: WPL Playlist
+Special directories:
+   Default music folder: 0x00000000
+   Default playlist folder: 0x00000000
+   Default picture folder: 0x00000000
+   Default video folder: 0x00000000
+   Default organizer folder: 0x00000000
+   Default zencast folder: 0x00000000
+   Default album folder: 0x00000000
+   Default text folder: 0x00000000
+MTP-specific device properties:
+   Friendly name: (NULL)
+   Synchronization partner: (NULL)
+libmtp supported (playable) filetypes:
+   RIFF WAVE file
+   ISO MPEG-1 Audio Layer 3
+   Microsoft Advanced Systems Format
+   JPEG file
+   Microsoft Windows Media Audio
+   Ogg container format
+   Advanced Audio Coding (AAC)/MPEG-2 Part 7/MPEG-4 Part 3
+   Abstract Album file
+   Abstract Playlist file
+Unable to acquire device certificate, perhaps this device does not support this
+Error 2: PTP Layer error 02fe: get_device_unicode_property(): failed to get unicode property.
+Error 2: (Look this up in ptp.h for an explanation.)
+OK.
