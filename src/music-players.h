@@ -3,7 +3,7 @@
  * List of music players as USB ids.
  *
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
- * Copyright (C) 2005-2009 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2010 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2007 Marcus Meissner
  * Copyright (C) 2007 Ted Bullock
  *
@@ -606,7 +606,8 @@
   // Obviously this company goes by many names.
   // This device is USB 2.0 only. Broken pipe on closing.
   // A later report indicates that this is also used by the iRiver E200
-  { "Memorex or iRiver", 0x10d6, "MMP 8585/8586 or iRiver E200", 0x2300, DEVICE_FLAG_UNLOAD_DRIVER |
+  { "Memorex or iRiver", 0x10d6, "MMP 8585/8586 or iRiver E200", 0x2300,
+      DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_NO_RELEASE_INTERFACE},
 
   /*
@@ -661,7 +662,8 @@
   // From: robin (AT) headbank D0Tco DOTuk
   { "Nokia", 0x0421, "N95 Mobile Phone 8GB", 0x006e, DEVICE_FLAG_NONE },
   // From Bastien Nocera <hadess@hadess.net>
-  { "Nokia", 0x0421, "N82 Mobile Phone", 0x0074, DEVICE_FLAG_NONE },
+  { "Nokia", 0x0421, "N82 Mobile Phone", 0x0074,
+      DEVICE_FLAG_UNLOAD_DRIVER },
   // From Martijn van de Streek <martijn@vandestreek.net>
   { "Nokia", 0x0421, "N78 Mobile Phone", 0x0079, DEVICE_FLAG_NONE },
   // From William Pettersson <the_enigma@users.sourceforge.net>
@@ -675,10 +677,12 @@
   // From: Pier <pierlucalino@users.sourceforge.net>
   { "Nokia", 0x0421, "5320 XpressMusic", 0x00ea, DEVICE_FLAG_NONE },
   // From: Gausie <innerdreams@users.sourceforge.net>
-  { "Nokia", 0x0421, "5800 XpressMusic", 0x0154, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  { "Nokia", 0x0421, "5800 XpressMusic", 0x0154,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // From: Willy Gardiol (web) <willy@gardiol.org>
   // Spurious errors for getting all objects, lead me to believe this flag atleast is needed
-  { "Nokia", 0x0421, "5800 XpressMusic v2", 0x0155, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  { "Nokia", 0x0421, "5800 XpressMusic v2", 0x0155,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // From an anonymous SourceForge user
   // Not verified to be MTP
   { "Nokia", 0x0421, "E63", 0x0179, DEVICE_FLAG_NONE },
