@@ -539,6 +539,9 @@ cannot test your solution.
 * The Samsung P2 assigns parent folder ID 0 to all unknown file
   types.(i.e. moves them to the root folder)
 
+* The Sandisk Sansa Clip+ needs a firmware upgrade in earlier
+  versions in order to work properly.
+
 Lost symbols
 ------------
 
