@@ -178,8 +178,9 @@
   // From Chris Le Sueur <thefishface@gmail.com>
   // Guessing on .spl flag
   // This one supports OGG properly through the correct MTP type.
-  { "Samsung", 0x04e8, "YP-R1", 0x510f, DEVICE_FLAG_UNLOAD_DRIVER },
-  // From Anonymous SourceForge user, NOT VERIFIED TO BE MTP
+  { "Samsung", 0x04e8, "YP-R1", 0x510f, DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_UNIQUE_FILENAMES | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // From Anonymous SourceForge user
   // Guessing on .spl flag
   { "Samsung", 0x04e8, "YP-Q1", 0x5115, DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
@@ -682,12 +683,15 @@
   { "Nokia", 0x0421, "5800 XpressMusic", 0x0154,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // From: Willy Gardiol (web) <willy@gardiol.org>
-  // Spurious errors for getting all objects, lead me to believe this flag atleast is needed
+  // Spurious errors for getting all objects, lead me to believe
+  // this flag atleast is needed
   { "Nokia", 0x0421, "5800 XpressMusic v2", 0x0155,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // From an anonymous SourceForge user
   // Not verified to be MTP
   { "Nokia", 0x0421, "E63", 0x0179, DEVICE_FLAG_NONE },
+  // From an anonymous SourceForge user
+  { "Nokia", 0x0421, "E71x", 0x01a1, DEVICE_FLAG_NONE },
   // From: AxeL <axel__17@users.sourceforge.net>
   { "Nokia", 0x0421, "N97-1", 0x01f4, DEVICE_FLAG_NONE },
   // From: FunkyPenguin <awafaa@users.sourceforge.net>
