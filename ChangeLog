@@ -1,3 +1,9 @@
+2010-04-05  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.c: sync to upstream.
+	* src/ptp.h: dito.
+	* src/ptp-pack.c: dito.
+
 2010-02-01  Linus Walleij <triad@df.lth.se>
 
 	* src/Makefile.am: interface libmtp.so.8.3.2

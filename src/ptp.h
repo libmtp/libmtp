@@ -1472,7 +1472,7 @@ typedef struct _PTPCanonEOSDeviceInfo {
 #define PTP_DPC_NIKON_AngleLevel			0xD067
 #define PTP_DPC_NIKON_D1ShootingSpeed			0xD068 /* continous speed low */
 #define PTP_DPC_NIKON_D2MaximumShots			0xD069
-#define PTP_DPC_NIKON_D3ExpDelayMode			0xD06A
+#define PTP_DPC_NIKON_ExposureDelayMode			0xD06A
 #define PTP_DPC_NIKON_LongExposureNoiseReduction	0xD06B
 #define PTP_DPC_NIKON_FileNumberSequence		0xD06C
 #define PTP_DPC_NIKON_ControlPanelFinderRearControl	0xD06D
@@ -2071,7 +2071,8 @@ uint16_t ptp_getobject		(PTPParams *params, uint32_t handle,
 uint16_t ptp_getobject_tofd     (PTPParams* params, uint32_t handle, int fd);
 uint16_t ptp_getobject_to_handler (PTPParams* params, uint32_t handle, PTPDataHandler*);
 uint16_t ptp_getpartialobject	(PTPParams* params, uint32_t handle, uint32_t offset,
-				uint32_t maxbytes, unsigned char** object);
+				uint32_t maxbytes, unsigned char** object,
+				uint32_t *len);
 uint16_t ptp_getthumb		(PTPParams *params, uint32_t handle,
 				unsigned char** object);
 
@@ -2398,7 +2399,7 @@ uint16_t ptp_canon_get_customize_data (PTPParams* params, uint32_t themenr,
 uint16_t ptp_canon_getpairinginfo (PTPParams* params, uint32_t nr, unsigned char**, unsigned int*);
 
 uint16_t ptp_canon_eos_getstorageids (PTPParams* params, PTPStorageIDs* storageids);
-uint16_t ptp_canon_eos_getstorageinfo (PTPParams* params, uint32_t p1);
+uint16_t ptp_canon_eos_getstorageinfo (PTPParams* params, uint32_t p1, unsigned char**, unsigned int*);
 uint16_t ptp_canon_eos_getpartialobject (PTPParams* params, uint32_t oid, uint32_t off, uint32_t xsize, unsigned char**data);
 uint16_t ptp_canon_eos_setdevicepropvalueex (PTPParams* params, unsigned char* data, unsigned int size);
 #define ptp_canon_eos_setremotemode(params,p1) ptp_generic_no_data(params,PTP_OC_CANON_EOS_SetRemoteMode,1,p1)
@@ -2417,8 +2418,8 @@ uint16_t ptp_canon_eos_setdevicepropvalueex (PTPParams* params, unsigned char* d
 #define ptp_canon_eos_transfercomplete(params,oid) ptp_generic_no_data(params,PTP_OC_CANON_EOS_TransferComplete,1,oid)
 /* inHDD = %d, inLength =%d, inReset = %d */
 #define ptp_canon_eos_pchddcapacity(params,p1,p2,p3) ptp_generic_no_data(params,PTP_OC_CANON_EOS_PCHDDCapacity,3,p1,p2,p3)
-#define ptp_canon_eos_bulbstart(params) ptp_generic_no_data(params,PTP_OC_CANON_EOS_BulbStart,1)
-#define ptp_canon_eos_bulbend(params) ptp_generic_no_data(params,PTP_OC_CANON_EOS_BulbEnd,1)
+uint16_t ptp_canon_eos_bulbstart (PTPParams* params);
+uint16_t ptp_canon_eos_bulbend (PTPParams* params);
 uint16_t ptp_canon_eos_getdevicepropdesc (PTPParams* params, uint16_t propcode,
 				PTPDevicePropDesc *devicepropertydesc);
 uint16_t ptp_canon_eos_setdevicepropvalue (PTPParams* params, uint16_t propcode,
@@ -2524,6 +2525,18 @@ uint16_t ptp_nikon_writewifiprofile (PTPParams* params, PTPNIKONWifiProfile* pro
  *
  **/
 #define ptp_nikon_capture_sdram(params) ptp_generic_no_data(params,PTP_OC_NIKON_AfCaptureSDRAM,0)
+/**
+ * ptp_nikon_delete_sdram_image:
+ *
+ * This command deletes the current SDRAM image
+ *  
+ * params:      PTPParams*
+ * uint32_t	oid
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+#define ptp_nikon_delete_sdram_image(params,oid) ptp_generic_no_data(params,PTP_OC_NIKON_DelImageSDRAM,1,oid)
 /**
  * ptp_nikon_start_liveview:
  *
