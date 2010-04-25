@@ -790,6 +790,10 @@
   // Reported by anonymous SourceForge user
   { "Maxfield", 0x066f, "G-Flash NG 1GB", 0x846c,
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by PaoloC <efmpsc@users.sourceforge.net>
+  // Apparently SigmaTel has an SDK for MTP players with this ID
+  { "SigmaTel Inc.", 0x066f, "MTPMSCN Audio Player", 0xa010,
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Cristi Magherusan <majeru@gentoo.ro>
   { "TrekStor", 0x0402, "i.Beat Sweez FM", 0x0611,
     DEVICE_FLAG_UNLOAD_DRIVER },
