@@ -2,8 +2,9 @@
 
 	* src/ptp.c: sync to upstream.
 	* src/ptp.h: dito.
-	* src/libmtp.c: fix an issue with Samsung playlists disappearing
+	* src/playlist-spl.c: fix an issue with Samsung playlists disappearing
 	  since they were using a custom MTP type.
+	* src/libmtp.c: moan about PTP devices without MTP extension
 
 2010-04-05  Linus Walleij <triad@df.lth.se>
 

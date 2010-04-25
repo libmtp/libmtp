@@ -666,7 +666,7 @@ const char *get_playlist_extension(PTP_USB *ptp_usb)
 
 static void
 libusb_glue_debug (PTPParams *params, const char *format, ...)
-{  
+{
         va_list args;
 
         va_start (args, format);
@@ -679,7 +679,7 @@ libusb_glue_debug (PTPParams *params, const char *format, ...)
 		fflush (stderr);
 	}
         va_end (args);
-}  
+}
 
 static void
 libusb_glue_error (PTPParams *params, const char *format, ...)
@@ -1091,7 +1091,7 @@ ptp_usb_senddata (PTPParams* params, PTPContainer* ptp,
 	usbdata.type	= htod16(PTP_USB_CONTAINER_DATA);
 	usbdata.code	= htod16(ptp->Code);
 	usbdata.trans_id= htod32(ptp->Transaction_ID);
-  
+
 	((PTP_USB*)params->data)->current_transfer_complete = 0;
 	((PTP_USB*)params->data)->current_transfer_total = size+PTP_USB_BULK_HDR_LEN;
 
@@ -1103,7 +1103,7 @@ ptp_usb_senddata (PTPParams* params, PTPContainer* ptp,
 		/* For all camera devices. */
 		datawlen = (size<PTP_USB_BULK_PAYLOAD_LEN_WRITE)?size:PTP_USB_BULK_PAYLOAD_LEN_WRITE;
 		wlen = PTP_USB_BULK_HDR_LEN + datawlen;
-    
+
 		ret = handler->getfunc(params, handler->priv, datawlen, usbdata.payload.data, &gotlen);
 		if (ret != PTP_RC_OK)
 			return ret;
@@ -1171,7 +1171,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 	PTPUSBBulkContainer usbdata;
 	unsigned long	written;
 	PTP_USB *ptp_usb = (PTP_USB *) params->data;
-
+	int putfunc_ret;
 
 	LIBMTP_USB_DEBUG("GET DATA PHASE\n");
 
@@ -1212,32 +1212,33 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 			}
 		}
 		if (usbdata.length == 0xffffffffU) {
-			/* Copy first part of data to 'data' */
-      int putfunc_ret = 
-			handler->putfunc(
-				params, handler->priv, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data,
-				&written
-			);
-      if (putfunc_ret != PTP_RC_OK)
-        return putfunc_ret;
-			/* stuff data directly to passed data handler */
-			while (1) {
-				unsigned long readdata;
-				uint16_t xret;
+		  /* Copy first part of data to 'data' */
+		  putfunc_ret =
+		    handler->putfunc(
+				     params, handler->priv, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data,
+				     &written
+				     );
+		  if (putfunc_ret != PTP_RC_OK)
+		    return putfunc_ret;
 
-				xret = ptp_read_func(
-					PTP_USB_BULK_HS_MAX_PACKET_LEN_READ,
-					handler,
-					params->data,
-					&readdata,
-					0
-				);
-				if (xret != PTP_RC_OK)
-					return xret;
-				if (readdata < PTP_USB_BULK_HS_MAX_PACKET_LEN_READ)
-					break;
-			}
-			return PTP_RC_OK;
+		  /* stuff data directly to passed data handler */
+		  while (1) {
+		    unsigned long readdata;
+		    uint16_t xret;
+
+		    xret = ptp_read_func(
+					 PTP_USB_BULK_HS_MAX_PACKET_LEN_READ,
+					 handler,
+					 params->data,
+					 &readdata,
+					 0
+					 );
+		    if (xret != PTP_RC_OK)
+		      return xret;
+		    if (readdata < PTP_USB_BULK_HS_MAX_PACKET_LEN_READ)
+		      break;
+		  }
+		  return PTP_RC_OK;
 		}
 		if (rlen > dtoh32(usbdata.length)) {
 			/*
@@ -1282,13 +1283,14 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 			params->split_header_data = 1;
 
 		/* Copy first part of data to 'data' */
-    int putfunc_ret = 
-		handler->putfunc(
-			params, handler->priv, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data,
-			&written
-		);
-    if (putfunc_ret != PTP_RC_OK)
-      return putfunc_ret;
+		putfunc_ret =
+		  handler->putfunc(
+				   params, handler->priv, rlen - PTP_USB_BULK_HDR_LEN,
+				   usbdata.payload.data,
+				   &written
+				   );
+		if (putfunc_ret != PTP_RC_OK)
+		  return putfunc_ret;
 
 		if (FLAG_NO_ZERO_READS(ptp_usb) &&
 		    len+PTP_USB_BULK_HDR_LEN == PTP_USB_BULK_HS_MAX_PACKET_LEN_READ) {
@@ -1309,7 +1311,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 
 		  LIBMTP_INFO("Reading in zero packet after header\n");
 
-          zeroresult = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, &zerobyte, 0, ptp_usb->timeout);
+		  zeroresult = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, &zerobyte, 0, ptp_usb->timeout);
 
 		  if (zeroresult != 0)
 		    LIBMTP_INFO("LIBMTP panic: unable to read in zero packet, response 0x%04x", zeroresult);

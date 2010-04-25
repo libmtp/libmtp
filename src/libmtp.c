@@ -1784,6 +1784,20 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
     return NULL;
   }
 
+  /* Check: if this is a PTP device, is it really tagged as MTP? */
+  if (current_params->deviceinfo.VendorExtensionID != 0x00000006) {
+    LIBMTP_ERROR("LIBMTP WARNING: no MTP vendor extension on device "
+		 "%d on bus %d",
+		 rawdevice->devnum, rawdevice->bus_location);
+    LIBMTP_ERROR("LIBMTP WARNING: VendorExtensionID: %08x",
+		 current_params->deviceinfo.VendorExtensionID);
+    LIBMTP_ERROR("LIBMTP WARNING: VendorExtensionDesc: %s",
+		 current_params->deviceinfo.VendorExtensionDesc);
+    LIBMTP_ERROR("LIBMTP WARNING: this typically means the device is PTP "
+		 "(i.e. a camera) but not an MTP device at all. "
+		 "Trying to continue anyway.");
+  }
+
   /* Determine if the object size supported is 32 or 64 bit wide */
   for (i=0;i<current_params->deviceinfo.ImageFormats_len;i++) {
     PTPObjectPropDesc opd;
