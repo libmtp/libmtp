@@ -90,9 +90,10 @@ static void append_text_t(text_t** t, char* s);
  */
 int is_spl_playlist(PTPObjectInfo *oi)
 {
-  return (oi->ObjectFormat == PTP_OFC_Undefined) &&
+  return ((oi->ObjectFormat == PTP_OFC_Undefined) ||
+         (oi->ObjectFormat == PTP_OFC_MTP_SamsungPlaylist)) &&
          (strlen(oi->Filename) > 4) &&
-         (strcmp((oi->Filename + strlen(oi->Filename) -4), ".spl") == 0);
+         (strcmp((oi->Filename + strlen(oi->Filename) - 4), ".spl") == 0);
 }
 
 #ifndef HAVE_MKSTEMP

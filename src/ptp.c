@@ -1683,6 +1683,51 @@ ptp_canon_eos_getevent (PTPParams* params, PTPCanon_changes_entry **entries, int
 }
 
 uint16_t
+ptp_check_eos_events (PTPParams *params) {
+	uint16_t		ret;
+	PTPCanon_changes_entry	*entries = NULL, *nentries;
+	int			nrofentries = 0;
+
+	ret = ptp_canon_eos_getevent (params, &entries, &nrofentries);
+	if (ret != PTP_RC_OK)
+		return ret;
+	if (!nrofentries)
+		return PTP_RC_OK;
+
+	if (params->nrofbacklogentries) {
+		nentries = realloc(params->backlogentries,sizeof(entries[0])*(params->nrofbacklogentries+nrofentries));
+		if (!nentries)
+			return PTP_RC_GeneralError;
+		params->backlogentries = nentries;
+		memcpy (nentries+params->nrofbacklogentries, entries, nrofentries*sizeof(entries[0]));
+		params->nrofbacklogentries += nrofentries;
+		free (entries);
+	} else {
+		params->backlogentries = entries;
+		params->nrofbacklogentries = nrofentries;
+	}
+	return PTP_RC_OK;
+}
+
+int
+ptp_get_one_eos_event (PTPParams *params, PTPCanon_changes_entry *entry) {
+	if (!params->nrofbacklogentries)
+		return 0;
+	memcpy (entry, params->backlogentries, sizeof(*entry));
+	if (params->nrofbacklogentries > 1) {
+		memmove (params->backlogentries,params->backlogentries+1,sizeof(*entry)*(params->nrofbacklogentries-1));
+		params->nrofbacklogentries--;
+	} else {
+		free (params->backlogentries);
+		params->backlogentries = NULL;
+		params->nrofbacklogentries = 0;
+	}
+	return 1;
+}
+
+
+
+uint16_t
 ptp_canon_eos_getdevicepropdesc (PTPParams* params, uint16_t propcode,
 	PTPDevicePropDesc *dpd)
 {
@@ -4344,6 +4389,7 @@ struct {
 	{PTP_OFC_MTP_AAC,"AAC"},
 	{PTP_OFC_MTP_AudibleCodec,N_("Audible.com Codec")},
 	{PTP_OFC_MTP_FLAC,"FLAC"},
+	{PTP_OFC_MTP_SamsungPlaylist,N_("Samsung Playlist")},
 	{PTP_OFC_MTP_UndefinedVideo,N_("Undefined Video")},
 	{PTP_OFC_MTP_WMV,"WMV"},
 	{PTP_OFC_MTP_MP4,"MP4"},
@@ -4941,8 +4987,11 @@ ptp_object_want (PTPParams *params, uint32_t handle, int want, PTPObject **retob
 			saveparent = ob->oi.ParentObject;
 
 		ret = ptp_getobjectinfo (params, handle, &ob->oi);
-		if (ret != PTP_RC_OK)
+		if (ret != PTP_RC_OK) {
+			/* kill it from the internal list ... */
+			ptp_remove_object_from_cache(params, handle);
 			return ret;
+		}
 		if (!ob->oi.Filename) ob->oi.Filename=strdup("<none>");
 		if (ob->flags & PTPOBJECT_PARENTOBJECT_LOADED)
 			ob->oi.ParentObject = saveparent;

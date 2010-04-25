@@ -1,3 +1,10 @@
+2010-04-25  Linus Walleij <triad@df.lth.se>
+
+	* src/ptp.c: sync to upstream.
+	* src/ptp.h: dito.
+	* src/libmtp.c: fix an issue with Samsung playlists disappearing
+	  since they were using a custom MTP type.
+
 2010-04-05  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp.c: sync to upstream.

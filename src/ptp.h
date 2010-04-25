@@ -817,6 +817,7 @@ typedef struct _PTPObjectInfo PTPObjectInfo;
 #define PTP_OFC_MTP_AAC				0xb903
 #define PTP_OFC_MTP_AudibleCodec		0xb904
 #define PTP_OFC_MTP_FLAC			0xb906
+#define PTP_OFC_MTP_SamsungPlaylist		0xb909
 #define PTP_OFC_MTP_UndefinedVideo		0xb980
 #define PTP_OFC_MTP_WMV				0xb981
 #define PTP_OFC_MTP_MP4				0xb982
@@ -2123,6 +2124,9 @@ uint16_t ptp_setdevicepropvalue (PTPParams* params, uint16_t propcode,
 
 uint16_t ptp_check_event (PTPParams *params);
 int ptp_get_one_event (PTPParams *params, PTPContainer *evt);
+uint16_t ptp_check_eos_events (PTPParams *params);
+int ptp_get_one_eos_event (PTPParams *params, PTPCanon_changes_entry *entry);
+
 
 /* Microsoft MTP extensions */
 uint16_t ptp_mtp_getobjectpropdesc (PTPParams* params, uint16_t opc, uint16_t ofc,
