@@ -293,7 +293,7 @@
   { "Philips", 0x0471, "GoGear Muse", 0x2077,
       DEVICE_FLAG_UNLOAD_DRIVER },
   // From Elie De Brauwer <elie@de-brauwer.be>
-  { "Philips", 0x0471, "GoGear ViBE SA1VBE08", 0x207b,
+  { "Philips", 0x0471, "GoGear ViBE SA1VBE04/08", 0x207b,
     DEVICE_FLAG_UNLOAD_DRIVER },
   // From josmtx <josmtx@users.sourceforge.net>
   { "Philips", 0x0471, "GoGear Aria", 0x207c,
