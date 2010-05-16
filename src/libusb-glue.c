@@ -148,7 +148,8 @@ static struct usb_bus* init_usb()
   /* Workaround a libusb 0.1 bug : bus location is not initialised */
   busses = usb_get_busses();
   for (bus = busses; bus != NULL; bus = bus->next) {
-    bus->location = strtoul(bus->dirname, NULL, 10);
+    if (!bus->location)
+      bus->location = strtoul(bus->dirname, NULL, 10);
   }
   return (busses);
 }
@@ -1550,9 +1551,12 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
     // if it isn't explicitly set
     // See above, same issue with pthreads means that if this fails it is not
     // fatal
+    // However, this causes problems on Macs so disable here
+    #ifndef __APPLE__
     usbresult = usb_set_altinterface(device_handle, 0);
     if (usbresult)
       fprintf(stderr, "ignoring usb_claim_interface = %d", usbresult);
+    #endif
 
     if (FLAG_SWITCH_MODE_BLACKBERRY(ptp_usb)) {
       int ret;

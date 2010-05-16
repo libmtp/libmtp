@@ -1,3 +1,8 @@
+2010-05-16  Richard Low <richard@wentnet.com>
+
+	* src/libusb-glue.c: usb bus location fix for Mac and disable
+	  usb_set_altinterface on Mac
+
 2010-04-25  Linus Walleij <triad@df.lth.se>
 
 	* src/ptp.c: sync to upstream.
