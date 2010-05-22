@@ -3,6 +3,9 @@
 	* src/libusb-glue.c: don't probe HID equipment for device
 	  descriptors, some Kensington mice don't like that and
 	  there generally is not point either
+	* src/Makefile.am: interface libmtp.so.8.3.3
+	* configure.ac: libmtp 1.0.3
+	* Release 1.0.3
 
 2010-05-16  Richard Low <richard@wentnet.com>
 
