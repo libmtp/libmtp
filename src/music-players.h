@@ -698,6 +698,10 @@
   { "Nokia", 0x0421, "N97", 0x01f5, DEVICE_FLAG_NONE },
   // From: Anonymous SourceForge user
   { "Nokia", 0x0421, "5130 XpressMusic", 0x0209, DEVICE_FLAG_NONE },
+  // From: Anonymous SourceForge user
+  { "Nokia", 0x0421, "E72", 0x0221, DEVICE_FLAG_NONE },
+  // From: Anonymous SourceForge user
+  { "Nokia", 0x0421, "5530", 0x0229, DEVICE_FLAG_NONE },
   // From: Alexander Kojevnikov <alex-kay@users.sourceforge.net>
   { "Nokia", 0x0421, "6600i", 0x0297, DEVICE_FLAG_NONE },
   // https://sourceforge.net/tracker/index.php?func=detail&aid=2692473&group_id=8874&atid=358874
