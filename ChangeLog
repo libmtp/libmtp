@@ -1,3 +1,9 @@
+2010-05-23  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: don't probe HID equipment for device
+	  descriptors, some Kensington mice don't like that and
+	  there generally is not point either
+
 2010-05-16  Richard Low <richard@wentnet.com>
 
 	* src/libusb-glue.c: usb bus location fix for Mac and disable

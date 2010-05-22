@@ -177,7 +177,7 @@ static mtpdevice_list_t *append_to_mtpdevice_list(mtpdevice_list_t *devlist,
   new_list_entry->libusb_device = newdevice;
   new_list_entry->bus_location = bus_location;
   new_list_entry->next = NULL;
-  
+
   if (devlist == NULL) {
     return new_list_entry;
   } else {
@@ -193,7 +193,7 @@ static mtpdevice_list_t *append_to_mtpdevice_list(mtpdevice_list_t *devlist,
 /**
  * Small recursive function to free dynamic memory allocated to the linked list
  * of USB MTP devices
- * @param devlist dynamic linked list of pointers to usb devices with MTP 
+ * @param devlist dynamic linked list of pointers to usb devices with MTP
  * properties.
  * @return nothing
  */
@@ -229,12 +229,16 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
   unsigned char buf[1024], cmd;
   int i;
   int ret;
-  
-  /* Don't examine hubs (no point in that) */
-  if (dev->descriptor.bDeviceClass == USB_CLASS_HUB) {
+
+  /*
+   * Don't examine hubs or HID devices, no point in that.
+   * (Some Kensington mice really don't like this.)
+   */
+  if (dev->descriptor.bDeviceClass == USB_CLASS_HUB ||
+      dev->descriptor.bDeviceClass == USB_CLASS_HID) {
     return 0;
   }
-  
+
   /* Attempt to open Device on this port */
   devh = usb_open(dev);
   if (devh == NULL) {
