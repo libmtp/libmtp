@@ -218,6 +218,8 @@
   // { "Samsung", 0x04e8, "Z170 Mobile Phone", 0x6601, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Santi Béjar <sbejar@gmail.com> - not sure this is MTP...
   // { "Samsung", 0x04e8, "E250 Mobile Phone", 0x663e, DEVICE_FLAG_UNLOAD_DRIVER },
+  // From an anonymous SF user
+  { "Samsung", 0x04e8, "M7600 Beat", 0x6642, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Lionel Bouton
   { "Samsung", 0x04e8, "X830 Mobile Phone", 0x6702, DEVICE_FLAG_UNLOAD_DRIVER },
   // From James <jamestech@gmail.com>
@@ -692,6 +694,8 @@
   { "Nokia", 0x0421, "E63", 0x0179, DEVICE_FLAG_NONE },
   // From an anonymous SourceForge user
   { "Nokia", 0x0421, "E71x", 0x01a1, DEVICE_FLAG_NONE },
+  // From Marcus Meissner
+  { "Nokia", 0x0421, "3710", 0x01ee, DEVICE_FLAG_NONE },
   // From: AxeL <axel__17@users.sourceforge.net>
   { "Nokia", 0x0421, "N97-1", 0x01f4, DEVICE_FLAG_NONE },
   // From: FunkyPenguin <awafaa@users.sourceforge.net>
