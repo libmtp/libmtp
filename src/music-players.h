@@ -99,6 +99,8 @@
    *  or DEVICE_FLAG_PLAYLIST_SPL_V2 to get playlists working.
    * YP-NEU, YP-NDU, YP-20, YP-800, YP-MF Series, YP-100, YP-30
    * YP-700 and YP-90 are NOT MTP, but use a Samsung custom protocol.
+   * See: http://wiki.xiph.org/index.php/PortablePlayers for Ogg
+   * status.
    */
   // From anonymous SourceForge user, not verified
   { "Samsung", 0x04e8, "YP-900", 0x0409, DEVICE_FLAG_NONE },
@@ -122,12 +124,15 @@
   { "Samsung", 0x04e8, "YH-J70J", 0x5033, DEVICE_FLAG_UNLOAD_DRIVER },
   // From XNJB user
   // Guessing on .spl flag
-  { "Samsung", 0x04e8, "YP-Z5", 0x503c, DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_PLAYLIST_SPL_V1 },
+  { "Samsung", 0x04e8, "YP-Z5", 0x503c, DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_PLAYLIST_SPL_V1 },
   // Don't add 0x5041 as this is YP-Z5 in USB mode
   // Contributed by anonymous person on SourceForge
-  { "Samsung", 0x04e8, "YP-T7J", 0x5047, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Samsung", 0x04e8, "YP-T7J", 0x5047, DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_OGG_IS_UNKNOWN },
   // Reported by cstrickler@gmail.com
-  { "Samsung", 0x04e8, "YP-U2J (YP-U2JXB/XAA)", 0x5054, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Samsung", 0x04e8, "YP-U2J (YP-U2JXB/XAA)", 0x5054,
+      DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_OGG_IS_UNKNOWN },
   // Reported by Andrew Benson
   { "Samsung", 0x04e8, "YP-F2J", 0x5057, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Patrick <skibler@gmail.com>
@@ -138,12 +143,14 @@
   // do not add that device.
   // From m.eik michalke
   // This device does NOT use the special SPL playlist according to sypqgjxu@gmx.de.
-  { "Samsung", 0x04e8, "YP-U3", 0x507d, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Samsung", 0x04e8, "YP-U3", 0x507d, DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_OGG_IS_UNKNOWN },
   // Reported by Matthew Wilcox <matthew@wil.cx>
   // Sergio <sfrdll@tiscali.it> reports this device need the BROKEN ALL flag.
   // Guessing on .spl flag
   { "Samsung", 0x04e8, "YP-T9", 0x507f, DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL | DEVICE_FLAG_PLAYLIST_SPL_V1 },
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+      DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_PLAYLIST_SPL_V1 },
   // From Paul Clinch
   // Just guessing but looks like .spl v1 http://www.anythingbutipod.com/forum/showthread.php?t=14160
   // Some versions of the firmware reportedly support OGG, reportedly only the
@@ -154,7 +161,8 @@
   // From Alistair Boyle, .spl v2 required for playlists
   // According to the device log it properly supports OGG
   { "Samsung", 0x04e8, "YP-P2", 0x5083, DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAG_PLAYLIST_SPL_V2 },
+      DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAG_OGG_IS_UNKNOWN |
+      DEVICE_FLAG_PLAYLIST_SPL_V2 },
   // From Paul Clinch
   // Guessing on .spl flag
   { "Samsung", 0x04e8, "YP-T10", 0x508a, DEVICE_FLAG_UNLOAD_DRIVER |
@@ -832,19 +840,24 @@
   /*
    * Cowon Systems, Inc.
    * The iAudio audiophile devices don't encourage the use of MTP.
+   * See: http://wiki.xiph.org/index.php/PortablePlayers for Ogg
+   * status
    */
   // Reported by Patrik Johansson <Patrik.Johansson@qivalue.com>
   { "Cowon", 0x0e21, "iAudio U3 (MTP mode)", 0x0701,
-   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+   DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_FLAC_IS_UNKNOWN },
   // Reported by Kevin Michael Smith <hai-etlik@users.sourceforge.net>
   { "Cowon", 0x0e21, "iAudio 6 (MTP mode)", 0x0711,
    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Roberth Karman
   { "Cowon", 0x0e21, "iAudio 7 (MTP mode)", 0x0751,
-   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+   DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_FLAC_IS_UNKNOWN },
   // Reported by an anonymous SourceForge user
   { "Cowon", 0x0e21, "iAudio U5 (MTP mode)", 0x0761,
-   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+   DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_FLAC_IS_UNKNOWN },
   // Reported by TJ Something <tjbk_tjb@users.sourceforge.net>
   { "Cowon", 0x0e21, "iAudio D2 (MTP mode)", 0x0801,
    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
