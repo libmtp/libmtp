@@ -1,3 +1,8 @@
+2010-06-19  Richard Low <richard@wentnet.com>
+
+	* src/music-players.h: add Apple devices as supported by
+	  PwnTunes
+
 2010-05-23  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: don't probe HID equipment for device

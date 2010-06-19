@@ -1010,7 +1010,7 @@
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNIQUE_FILENAMES },
   // Reported by Anonymous SourceForge user
-  { "Sony", 0x05ac, "DCR-SR75", 0x1294,
+  { "Sony", 0x054c, "DCR-SR75", 0x1294,
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNIQUE_FILENAMES },
@@ -1154,6 +1154,21 @@
    * Nextar
    */
   { "Nextar", 0x0402, "MA715A-8R", 0x5668 },
+  
+  /*
+   * Apple devices, which are not MTP natively but can be made to speak MTP
+   * using PwnTunes (http://www.pwntunes.net/)
+   */
+  { "Apple", 0x05ac, "iPhone", 0x1290 },
+  { "Apple", 0x05ac, "iPod Touch 1st Gen", 0x1291 },
+  { "Apple", 0x05ac, "iPhone 3G", 0x1292 },
+  { "Apple", 0x05ac, "iPod Touch 2nd Gen", 0x1293 },
+  { "Apple", 0x05ac, "iPhone 3GS", 0x1294 },
+  { "Apple", 0x05ac, "0x1296", 0x1296 },
+  { "Apple", 0x05ac, "0x1297", 0x1297 },
+  { "Apple", 0x05ac, "0x1298", 0x1298 },
+  { "Apple", 0x05ac, "iPod Touch 3rd Gen", 0x1299 },
+  { "Apple", 0x05ac, "iPad", 0x129a },
 
   /*
    * Other strange stuff.
