@@ -227,7 +227,8 @@
   // From Santi Béjar <sbejar@gmail.com> - not sure this is MTP...
   // { "Samsung", 0x04e8, "E250 Mobile Phone", 0x663e, DEVICE_FLAG_UNLOAD_DRIVER },
   // From an anonymous SF user
-  { "Samsung", 0x04e8, "M7600 Beat", 0x6642, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Samsung", 0x04e8, "M7600 Beat/GT-S8300T", 0x6642,
+      DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_BATTERY_LEVEL },
   // From Lionel Bouton
   { "Samsung", 0x04e8, "X830 Mobile Phone", 0x6702, DEVICE_FLAG_UNLOAD_DRIVER },
   // From James <jamestech@gmail.com>
