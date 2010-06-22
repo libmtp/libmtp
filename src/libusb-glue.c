@@ -1733,14 +1733,14 @@ static int find_interface_and_endpoints(struct usb_device *dev,
 	    found_inep = 1;
 	  }
 	  if ((ep[k].bEndpointAddress & USB_ENDPOINT_DIR_MASK) == 0) {
-	    *outep=ep[k].bEndpointAddress;
-	    *outep_maxpacket=ep[k].wMaxPacketSize;
+	    *outep = ep[k].bEndpointAddress;
+	    *outep_maxpacket = ep[k].wMaxPacketSize;
 	    found_outep = 1;
 	  }
 	} else if (ep[k].bmAttributes == USB_ENDPOINT_TYPE_INTERRUPT) {
 	  if ((ep[k].bEndpointAddress & USB_ENDPOINT_DIR_MASK) ==
 	      USB_ENDPOINT_DIR_MASK) {
-	    *intep=ep[k].bEndpointAddress;
+	    *intep = ep[k].bEndpointAddress;
 	    found_intep = 1;
 	  }
 	}
