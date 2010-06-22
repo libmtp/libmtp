@@ -3,7 +3,7 @@
  * Low-level USB interface glue towards libusb.
  *
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
- * Copyright (C) 2005-2008 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2010 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2007 Marcus Meissner
  * Copyright (C) 2007 Ted Bullock
  * Copyright (C) 2008 Chris Bagwell <chris@cnpbagwell.com>
@@ -431,14 +431,14 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
 /**
  * This function scans through the connected usb devices on a machine and
  * if they match known Vendor and Product identifiers appends them to the
- * dynamic array mtp_device_list. Be sure to call 
- * <code>free_mtpdevice_list(mtp_device_list)</code> when you are done 
+ * dynamic array mtp_device_list. Be sure to call
+ * <code>free_mtpdevice_list(mtp_device_list)</code> when you are done
  * with it, assuming it is not NULL.
- * @param mtp_device_list dynamic array of pointers to usb devices with MTP 
+ * @param mtp_device_list dynamic array of pointers to usb devices with MTP
  *        properties (if this list is not empty, new entries will be appended
  *        to the list).
  * @return LIBMTP_ERROR_NONE implies that devices have been found, scan the list
- *        appropriately. LIBMTP_ERROR_NO_DEVICE_ATTACHED implies that no 
+ *        appropriately. LIBMTP_ERROR_NO_DEVICE_ATTACHED implies that no
  *        devices have been found.
  */
 static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_device_list)
@@ -458,8 +458,8 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
           if(dev->descriptor.idVendor == mtp_device_table[i].vendor_id &&
             dev->descriptor.idProduct == mtp_device_table[i].product_id) {
             /* Append this usb device to the MTP device list */
-            *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, 
-							dev, 
+            *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list,
+							dev,
 							bus->location);
             found = 1;
             break;
@@ -469,7 +469,7 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
         if (!found) {
           if (probe_device_descriptor(dev, NULL)) {
             /* Append this usb device to the MTP USB Device List */
-            *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, 
+            *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list,
 							dev,
 							bus->location);
           }
@@ -489,7 +489,7 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
       }
     }
   }
-  
+
   /* If nothing was found we end up here. */
   if(*mtp_device_list == NULL) {
     return LIBMTP_ERROR_NO_DEVICE_ATTACHED;
@@ -500,19 +500,19 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
 /**
  * Detect the raw MTP device descriptors and return a list of
  * of the devices found.
- * 
+ *
  * @param devices a pointer to a variable that will hold
  *        the list of raw devices found. This may be NULL
  *        on return if the number of detected devices is zero.
  *        The user shall simply <code>free()</code> this
  *        variable when finished with the raw devices,
  *        in order to release memory.
- * @param numdevs a pointer to an integer that will hold 
+ * @param numdevs a pointer to an integer that will hold
  *        the number of devices in the list. This may
  *        be 0.
  * @return 0 if successful, any other value means failure.
  */
-LIBMTP_error_number_t LIBMTP_Detect_Raw_Devices(LIBMTP_raw_device_t ** devices, 
+LIBMTP_error_number_t LIBMTP_Detect_Raw_Devices(LIBMTP_raw_device_t ** devices,
 			      int * numdevs)
 {
   mtpdevice_list_t *devlist = NULL;
@@ -573,7 +573,7 @@ LIBMTP_error_number_t LIBMTP_Detect_Raw_Devices(LIBMTP_raw_device_t ** devices,
 	retdevs[i].device_entry.device_flags = mtp_device_table[j].device_flags;
 
 	// This device is known to the developers
-	LIBMTP_ERROR("Device %d (VID=%04x and PID=%04x) is a %s %s.\n", 
+	LIBMTP_ERROR("Device %d (VID=%04x and PID=%04x) is a %s %s.\n",
 		i,
 		dev->libusb_device->descriptor.idVendor,
 		dev->libusb_device->descriptor.idProduct,
@@ -584,7 +584,7 @@ LIBMTP_error_number_t LIBMTP_Detect_Raw_Devices(LIBMTP_raw_device_t ** devices,
     }
     if (!device_known) {
       // This device is unknown to the developers
-      LIBMTP_ERROR("Device %d (VID=%04x and PID=%04x) is UNKNOWN.\n", 
+      LIBMTP_ERROR("Device %d (VID=%04x and PID=%04x) is UNKNOWN.\n",
 	      i,
 	      dev->libusb_device->descriptor.idVendor,
 	      dev->libusb_device->descriptor.idProduct);
@@ -601,7 +601,7 @@ LIBMTP_error_number_t LIBMTP_Detect_Raw_Devices(LIBMTP_raw_device_t ** devices,
     retdevs[i].devnum = dev->libusb_device->devnum;
     i++;
     dev = dev->next;
-  }  
+  }
   *devices = retdevs;
   *numdevs = i;
   free_mtpdevice_list(devlist);
@@ -620,7 +620,7 @@ void dump_usbinfo(PTP_USB *ptp_usb)
 #ifdef LIBUSB_HAS_GET_DRIVER_NP
   char devname[0x10];
   int res;
-  
+
   devname[0] = '\0';
   res = usb_get_driver_np(ptp_usb->handle, (int) ptp_usb->interface, devname, sizeof(devname));
   if (devname[0] != '\0') {
@@ -688,7 +688,7 @@ libusb_glue_debug (PTPParams *params, const char *format, ...)
 
 static void
 libusb_glue_error (PTPParams *params, const char *format, ...)
-{  
+{
         va_list args;
 
         va_start (args, format);
@@ -711,7 +711,7 @@ libusb_glue_error (PTPParams *params, const char *format, ...)
  * reveals that WMP / Windows is probably using an algorithm like this
  * for large transfers:
  *
- * 1. Send the command (0x0c bytes) if headers are split, else, send 
+ * 1. Send the command (0x0c bytes) if headers are split, else, send
  *    command plus sizeof(endpoint) - 0x0c bytes.
  * 2. Send first packet, max size to be sizeof(endpoint) but only when using
  *    split headers. Else goto 3.
@@ -745,7 +745,6 @@ ptp_read_func (
   // This is the largest block we'll need to read in.
   bytes = malloc(CONTEXT_BLOCK_SIZE);
   while (curread < size) {
-    
 
     LIBMTP_USB_DEBUG("Remaining size to read: 0x%04lx bytes\n", size - curread);
 
@@ -776,7 +775,7 @@ ptp_read_func (
     result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, (char*)bytes, toread, ptp_usb->timeout);
 
     LIBMTP_USB_DEBUG("Result of read: 0x%04x\n", result);
-        
+
     if (result < 0) {
       return PTP_ERROR_IO;
     }
@@ -786,7 +785,7 @@ ptp_read_func (
       LIBMTP_USB_DEBUG("Zero Read\n");
     else
       LIBMTP_USB_DATA(bytes, result, 16);
-    
+
     // want to discard extra byte
     if (expect_terminator_byte && result == toread)
     {
@@ -794,11 +793,11 @@ ptp_read_func (
 
       result--;
     }
-    
+
     int putfunc_ret = handler->putfunc(NULL, handler->priv, result, bytes, &written);
     if (putfunc_ret != PTP_RC_OK)
       return putfunc_ret;
-    
+
     ptp_usb->current_transfer_complete += result;
     curread += result;
 
@@ -818,17 +817,17 @@ ptp_read_func (
 	  return PTP_ERROR_CANCEL;
 	}
       }
-    }  
+    }
 
     if (result < toread) /* short reads are common */
       break;
   }
   if (readbytes) *readbytes = curread;
   free (bytes);
-  
+
   // there might be a zero packet waiting for us...
-  if (readzero && 
-      !FLAG_NO_ZERO_READS(ptp_usb) && 
+  if (readzero &&
+      !FLAG_NO_ZERO_READS(ptp_usb) &&
       curread % ptp_usb->outep_maxpacket == 0) {
     char temp;
     int zeroresult = 0;
@@ -840,7 +839,7 @@ ptp_read_func (
     if (zeroresult != 0)
       LIBMTP_INFO("LIBMTP panic: unable to read in zero packet, response 0x%04x", zeroresult);
   }
-  
+
   return PTP_RC_OK;
 }
 
@@ -857,7 +856,7 @@ ptp_write_func (
   unsigned long curwrite = 0;
   unsigned char *bytes;
 
-  // This is the largest block we'll need to read in.  
+  // This is the largest block we'll need to read in.
   bytes = malloc(CONTEXT_BLOCK_SIZE);
   if (!bytes) {
     return PTP_ERROR_IO;
@@ -915,7 +914,6 @@ ptp_write_func (
   if (written) {
     *written = curwrite;
   }
-  
 
   // If this is the last transfer send a zero write if required
   if (ptp_usb->current_transfer_complete >= ptp_usb->current_transfer_total) {
@@ -927,7 +925,7 @@ ptp_write_func (
       result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)"x",0,ptp_usb->timeout);
     }
   }
-    
+
   if (result < 0)
     return PTP_ERROR_IO;
   return PTP_RC_OK;
@@ -1068,7 +1066,7 @@ ptp_usb_sendreq (PTPParams* params, PTPContainer* req)
 		ret = PTP_ERROR_IO;
 	}
 	if (written != towrite && ret != PTP_ERROR_CANCEL && ret != PTP_ERROR_IO) {
-		libusb_glue_error (params, 
+		libusb_glue_error (params,
 			"PTP: request code 0x%04x sending req wrote only %ld bytes instead of %d",
 			req->Code, written, towrite
 		);
@@ -1206,7 +1204,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 				ret = dtoh16(usbdata.code);
 				// This filters entirely insane garbage return codes, but still
 				// makes it possible to return error codes in the code field when
-				// getting data. It appears Windows ignores the contents of this 
+				// getting data. It appears Windows ignores the contents of this
 				// field entirely.
 				if (ret < PTP_RC_Undefined || ret > PTP_RC_SpecificationOfDestinationUnsupported) {
 					libusb_glue_debug (params, "ptp2/ptp_usb_getdata: detected a broken "
@@ -1270,7 +1268,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 			} else if(!FLAG_NO_ZERO_READS(ptp_usb) &&
 				  (rlen - dtoh32(usbdata.length) == 1)) {
 			  libusb_glue_debug (params, "ptp2/ptp_usb_getdata: read %d bytes "
-				     "too much, expect problems!", 
+				     "too much, expect problems!",
 				     rlen - dtoh32(usbdata.length));
 			}
 			rlen = packlen;
@@ -1541,7 +1539,7 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
       return -1;
     }
 #endif
-    // It seems like on kernel 2.6.31 if we already have it open on another 
+    // It seems like on kernel 2.6.31 if we already have it open on another
     // pthread in our app, we'll get an error if we try to claim it again,
     // but that error is harmless because our process already claimed the interface
     usbresult = usb_claim_interface(device_handle, (int) ptp_usb->interface);
@@ -1761,7 +1759,7 @@ static int find_interface_and_endpoints(struct usb_device *dev,
  * @param usbinfo a pointer to the new usbinfo.
  * @return an error code.
  */
-LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device, 
+LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
 					   PTPParams *params,
 					   void **usbinfo)
 {
