@@ -1692,6 +1692,73 @@ LIBMTP_ptp_error(void *data, const char *format, va_list args)
 }
 
 /**
+ * Parses the extension descriptor, there may be stuff in
+ * this that we want to know about.
+ */
+static void parse_extension_descriptor(LIBMTP_mtpdevice_t *mtpdevice,
+                                       char *desc)
+{
+  int start = 0;
+  int end = 0;
+
+  /* descriptors are divided by semicolons */
+  while (end < strlen(desc)) {
+    while (desc[end] != ';' && end < strlen(desc))
+      end++;
+    if (end < strlen(desc)) {
+      char *element = strndup(desc + start, end-start);
+      if (element) {
+        int i = 0;
+        // printf("  Element: \"%s\"\n", element);
+
+        /* Parse for an extension */
+        while (element[i] != ':' && i < strlen(element))
+          i++;
+        if (i < strlen(element)) {
+          char *name = strndup(element, i);
+          int majstart = i+1;
+          // printf("    Extension: \"%s\"\n", name);
+
+          /* Parse for minor/major punctuation mark for this extension */
+          while (element[i] != '.' && i < strlen(element))
+            i++;
+          if (i > majstart && i < strlen(element)) {
+            LIBMTP_device_extension_t *extension;
+            int major = 0;
+            int minor = 0;
+            char *majorstr = strndup(element + majstart, i - majstart);
+            char *minorstr = strndup(element + i + 1, strlen(element) - i - 1);
+            major = atoi(majorstr);
+            minor = atoi(minorstr);
+            extension = malloc(sizeof(LIBMTP_device_extension_t));
+            extension->name = name;
+            extension->major = major;
+            extension->minor = minor;
+            extension->next = NULL;
+            if (mtpdevice->extensions == NULL) {
+              mtpdevice->extensions = extension;
+            } else {
+              LIBMTP_device_extension_t *tmp = mtpdevice->extensions;
+              while (tmp->next != NULL)
+                tmp = tmp->next;
+              tmp->next = extension;
+            }
+            // printf("    Major: \"%s\" (parsed %d) Minor: \"%s\" (parsed %d)\n",
+            //      majorstr, major, minorstr, minor);
+          } else {
+            LIBMTP_ERROR("LIBMTP ERROR: couldnt parse extension %s\n",
+                         element);
+          }
+        }
+        free(element);
+      }
+    }
+    end++;
+    start = end;
+  }
+}
+
+/**
  * This function opens a device from a raw device. It is the
  * preferred way to access devices in the new interface where
  * several devices can come and go as the library is working
@@ -1797,6 +1864,9 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
 		 "(i.e. a camera) but not an MTP device at all. "
 		 "Trying to continue anyway.");
   }
+
+  parse_extension_descriptor(mtp_device,
+                             current_params->deviceinfo.VendorExtensionDesc);
 
   /* Determine if the object size supported is 32 or 64 bit wide */
   for (i=0;i<current_params->deviceinfo.ImageFormats_len;i++) {
@@ -2023,6 +2093,19 @@ void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
   free(ptp_usb);
   ptp_free_params(params);
   free_storage_list(device);
+  // Free extension list...
+  if (device->extensions != NULL) {
+    LIBMTP_device_extension_t *tmp = device->extensions;
+
+    while (tmp != NULL) {
+      LIBMTP_device_extension_t *next = tmp->next;
+
+      if (tmp->name)
+        free(tmp->name);
+      free(tmp);
+      tmp = next;
+    }
+  }
   free(device);
 }
 
@@ -2675,6 +2758,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   LIBMTP_devicestorage_t *storage = device->storage;
+  LIBMTP_device_extension_t *tmpext = device->extensions;
 
   printf("USB low-level info:\n");
   dump_usbinfo(ptp_usb);
@@ -2687,6 +2771,14 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
   printf("   Vendor extension ID: 0x%08x\n", params->deviceinfo.VendorExtensionID);
   printf("   Vendor extension description: %s\n", params->deviceinfo.VendorExtensionDesc);
   printf("   Detected object size: %d bits\n", device->object_bitsize);
+  printf("   Extensions:\n");
+  while (tmpext != NULL) {
+    printf("        %s: %d.%d\n",
+           tmpext->name,
+           tmpext->major,
+           tmpext->minor);
+    tmpext = tmpext->next;
+  }
   printf("Supported operations:\n");
   for (i=0;i<params->deviceinfo.OperationsSupported_len;i++) {
     char txt[256];
