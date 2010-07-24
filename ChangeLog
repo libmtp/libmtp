@@ -1,3 +1,9 @@
+2010-07-25  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: parse device extensions.
+	* src/libmtp.h.in: stack up device extensions in the
+	  device struct.
+
 2010-06-19  Richard Low <richard@wentnet.com>
 
 	* src/music-players.h: add Apple devices as supported by
