@@ -1,5 +1,8 @@
 2010-07-25  Linus Walleij <triad@df.lth.se>
 
+	* src/libmtp.c: if the Ogg or FLAC filetypes have been
+	  flagged as being stored as "unknown" and the device now
+	  indicates it supports them: remove the flag.
 	* src/libmtp.c: parse device extensions.
 	* src/libmtp.h.in: stack up device extensions in the
 	  device struct.

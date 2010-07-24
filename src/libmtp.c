@@ -1868,6 +1868,31 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
   parse_extension_descriptor(mtp_device,
                              current_params->deviceinfo.VendorExtensionDesc);
 
+  /*
+   * If the OGG or FLAC filetypes are flagged as "unknown", check
+   * if the firmware has been updated to actually support it.
+   */
+  if (FLAG_OGG_IS_UNKNOWN(ptp_usb)) {
+    for (i=0;i<current_params->deviceinfo.ImageFormats_len;i++) {
+      if (current_params->deviceinfo.ImageFormats[i] == PTP_OFC_MTP_OGG) {
+        /* This is not unknown anymore, unflag it */
+        ptp_usb->rawdevice.device_entry.device_flags &= 
+          ~DEVICE_FLAG_OGG_IS_UNKNOWN;
+        break;
+      }
+    }
+  }
+  if (FLAG_FLAC_IS_UNKNOWN(ptp_usb)) {
+    for (i=0;i<current_params->deviceinfo.ImageFormats_len;i++) {
+      if (current_params->deviceinfo.ImageFormats[i] == PTP_OFC_MTP_FLAC) {
+        /* This is not unknown anymore, unflag it */
+        ptp_usb->rawdevice.device_entry.device_flags &= 
+          ~DEVICE_FLAG_FLAC_IS_UNKNOWN;
+        break;
+      }
+    }
+  }
+
   /* Determine if the object size supported is 32 or 64 bit wide */
   for (i=0;i<current_params->deviceinfo.ImageFormats_len;i++) {
     PTPObjectPropDesc opd;
