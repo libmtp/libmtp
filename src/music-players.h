@@ -1053,6 +1053,9 @@
   { "SonyEricsson", 0x0fce, "W705/W715", 0x0105, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Håkan Kvist
   { "SonyEricsson", 0x0fce, "W995", 0x0112, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by anonymous SourceForge user
+  { "SonyEricsson", 0x0fce, "U5", 0x0133, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+
   // Reported by Jonas Nyrén <spectralmks@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "W302", 0x10c8, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
 
