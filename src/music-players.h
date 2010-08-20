@@ -1079,6 +1079,9 @@
   { "Motorola", 0x22b8, "V3m/V750 verizon", 0x2a65,
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  // Reported by Steven Roemen <sdroemen@users.sourceforge.net>
+  { "Motorola", 0x22b8, "Droid X", 0x41d6,
+      DEVICE_FLAG_NONE },
   // Reported by anonymous user
   { "Motorola", 0x22b8, "Milestone / Verizon Droid", 0x41dc,
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
@@ -1096,7 +1099,7 @@
   // Reported by anonymous user
   { "Motorola", 0x22b8, "RAZR2 V8/U9/Z6", 0x6415,
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
-  
+
 
   /*
    * Media Keg
