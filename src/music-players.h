@@ -1165,7 +1165,12 @@
    * Nextar
    */
   { "Nextar", 0x0402, "MA715A-8R", 0x5668 },
-  
+
+  /*
+   * Coby
+   */
+  { "Coby", 0x1e74, "COBY MP705", 0x6512 },
+
   /*
    * Apple devices, which are not MTP natively but can be made to speak MTP
    * using PwnTunes (http://www.pwntunes.net/)
