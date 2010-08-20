@@ -1171,27 +1171,27 @@
   /*
    * Nextar
    */
-  { "Nextar", 0x0402, "MA715A-8R", 0x5668 },
+  { "Nextar", 0x0402, "MA715A-8R", 0x5668, DEVICE_FLAG_NONE },
 
   /*
    * Coby
    */
-  { "Coby", 0x1e74, "COBY MP705", 0x6512 },
+  { "Coby", 0x1e74, "COBY MP705", 0x6512, DEVICE_FLAG_NONE },
 
   /*
    * Apple devices, which are not MTP natively but can be made to speak MTP
    * using PwnTunes (http://www.pwntunes.net/)
    */
-  { "Apple", 0x05ac, "iPhone", 0x1290 },
-  { "Apple", 0x05ac, "iPod Touch 1st Gen", 0x1291 },
-  { "Apple", 0x05ac, "iPhone 3G", 0x1292 },
-  { "Apple", 0x05ac, "iPod Touch 2nd Gen", 0x1293 },
-  { "Apple", 0x05ac, "iPhone 3GS", 0x1294 },
-  { "Apple", 0x05ac, "0x1296", 0x1296 },
-  { "Apple", 0x05ac, "0x1297", 0x1297 },
-  { "Apple", 0x05ac, "0x1298", 0x1298 },
-  { "Apple", 0x05ac, "iPod Touch 3rd Gen", 0x1299 },
-  { "Apple", 0x05ac, "iPad", 0x129a },
+  { "Apple", 0x05ac, "iPhone", 0x1290, DEVICE_FLAG_NONE },
+  { "Apple", 0x05ac, "iPod Touch 1st Gen", 0x1291, DEVICE_FLAG_NONE },
+  { "Apple", 0x05ac, "iPhone 3G", 0x1292, DEVICE_FLAG_NONE },
+  { "Apple", 0x05ac, "iPod Touch 2nd Gen", 0x1293, DEVICE_FLAG_NONE },
+  { "Apple", 0x05ac, "iPhone 3GS", 0x1294, DEVICE_FLAG_NONE },
+  { "Apple", 0x05ac, "0x1296", 0x1296, DEVICE_FLAG_NONE },
+  { "Apple", 0x05ac, "0x1297", 0x1297, DEVICE_FLAG_NONE },
+  { "Apple", 0x05ac, "0x1298", 0x1298, DEVICE_FLAG_NONE },
+  { "Apple", 0x05ac, "iPod Touch 3rd Gen", 0x1299, DEVICE_FLAG_NONE },
+  { "Apple", 0x05ac, "iPad", 0x129a, DEVICE_FLAG_NONE },
 
   /*
    * Other strange stuff.
