@@ -894,6 +894,10 @@
   { "Cowon", 0x0e21, "iAudio 9 (MTP mode)", 0x0911,
    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
    DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_FLAC_IS_UNKNOWN },
+  // Reported by Franck VDL <franckv@users.sourceforge.net>
+  { "Cowon", 0x0e21, "iAudio J3 (MTP mode)", 0x0921,
+   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+   DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_FLAC_IS_UNKNOWN },
 
   /*
    * Insignia, dual-mode.
