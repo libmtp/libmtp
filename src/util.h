@@ -25,6 +25,9 @@
 
 void data_dump(FILE *f, void *buf, uint32_t nbytes);
 void data_dump_ascii (FILE *f, void *buf, uint32_t n, uint32_t dump_boundry);
+#ifndef HAVE_STRNDUP
+char *strndup (const char *s, size_t n);
+#endif
 
 /**
  * Info macro

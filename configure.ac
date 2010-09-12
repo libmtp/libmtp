@@ -87,7 +87,7 @@ AC_STRUCT_ST_BLKSIZE
 AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
 AC_FUNC_STAT
-AC_CHECK_FUNCS(basename memset select strdup strerror strrchr strtoul usleep mkstemp)
+AC_CHECK_FUNCS(basename memset select strdup strerror strndup strrchr strtoul usleep mkstemp)
 
 # Switches.
 # Enable LFS (Large File Support)

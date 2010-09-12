@@ -33,6 +33,7 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <string.h>
 #include "libmtp.h"
 #include "util.h"
 
@@ -105,3 +106,20 @@ void data_dump_ascii (FILE *f, void *buf, uint32_t n, uint32_t dump_boundry)
     dump_boundry += ln;
   }
 }
+
+#ifndef HAVE_STRNDUP
+char *strndup (const char *s, size_t n)
+{
+  size_t len = strlen (s);
+  char *ret;
+
+  if (len <= n)
+    return strdup (s);
+
+  ret = malloc(n + 1);
+  strncpy(ret, s, n);
+  ret[n] = '\0';
+  return ret;
+}
+#endif
+
