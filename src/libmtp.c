@@ -6710,7 +6710,7 @@ static LIBMTP_folder_t *get_subfolders_for_folder(LIBMTP_folder_t *list, uint32_
 LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
 {
   PTPParams *params = (PTPParams *) device->params;
-  LIBMTP_folder_t head, *folders, *rv;
+  LIBMTP_folder_t head, *rv;
   int i;
 
   // Get all the handles if we haven't already done that
@@ -7112,6 +7112,12 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
   char fname[256];
   uint8_t data[2];
 
+  // NULL check
+  if (!name) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): list name was NULL, using default name \"Unknown\"");
+    return -1;
+  }
+
   if (storageid == 0) {
     // I'm just guessing that an abstract list may require 512 bytes
     store = get_writeable_storageid(device, 512);
@@ -7127,7 +7133,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
     }
   }
   if (!supported) {
-    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): player does not support this abstract type.");
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "create_new_abstract_list(): player does not support this abstract type");
     LIBMTP_ERROR("Unsupported abstract list type: %04x\n", objectformat);
     return -1;
   }

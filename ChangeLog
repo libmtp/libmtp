@@ -1,3 +1,8 @@
+2010-09-18  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: NULL check on abstract lists, drop unused
+	  folder variable.
+
 2010-07-25  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: if the Ogg or FLAC filetypes have been
