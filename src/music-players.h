@@ -505,6 +505,10 @@
   { "iRiver", 0x4102, "E50", 0x1151,
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS |
     DEVICE_FLAG_OGG_IS_UNKNOWN },
+   // Reported by Jakub Matraszek <jakub.matraszek@gmail.com>
+  { "iRiver", 0x4102, "T5", 0x1153,
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+    DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAG_OGG_IS_UNKNOWN },
   // Reported by pyalex@users.sourceforge.net
   // Guessing that this needs the FLAG_NO_ZERO_READS...
   { "iRiver", 0x4102, "E30", 0x1167,
