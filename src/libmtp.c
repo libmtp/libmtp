@@ -5010,9 +5010,9 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
   // Open file
 #ifdef __WIN32__
 #ifdef USE_WINDOWS_IO_H
-  if ( (fd = _open(path, O_RDONLY|O_BINARY) == -1) ) {
+  if ( (fd = _open(path, O_RDONLY|O_BINARY)) == -1 ) {
 #else
-  if ( (fd = open(path, O_RDONLY|O_BINARY) == -1) ) {
+  if ( (fd = open(path, O_RDONLY|O_BINARY)) == -1 ) {
 #endif
 #else
   if ( (fd = open(path, O_RDONLY)) == -1) {
@@ -5345,9 +5345,9 @@ int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *device,
   // Open file
 #ifdef __WIN32__
 #ifdef USE_WINDOWS_IO_H
-  if ( (fd = _open(path, O_RDONLY|O_BINARY) == -1) ) {
+  if ( (fd = _open(path, O_RDONLY|O_BINARY)) == -1 ) {
 #else
-  if ( (fd = open(path, O_RDONLY|O_BINARY) == -1) ) {
+  if ( (fd = open(path, O_RDONLY|O_BINARY)) == -1 ) {
 #endif
 #else
   if ( (fd = open(path, O_RDONLY)) == -1) {

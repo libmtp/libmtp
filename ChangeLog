@@ -1,3 +1,7 @@
+2010-10-17  Linus Walleij <triad@df.lth.se>
+
+	* src/libmtp.c: Windows file open fixes from Jelle Geerts.
+
 2010-09-18  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: NULL check on abstract lists, drop unused
