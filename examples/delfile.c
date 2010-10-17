@@ -20,15 +20,13 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#include "common.h"
-#include "string.h"
-#include "pathutils.h"
 #include <stdlib.h>
 #include <limits.h>
 
-void delfile_usage(void);
-void delfile_function(char *);
-void delfile_command(int, char **);
+#include "common.h"
+#include "string.h"
+#include "pathutils.h"
+#include "connect.h"
 
 extern LIBMTP_mtpdevice_t *device;
 extern LIBMTP_folder_t *folders;
@@ -39,7 +37,7 @@ void delfile_usage(void)
   printf("Usage: delfile [-n] <fileid/trackid> | -f <filename>\n");
 }
 
-void
+int
 delfile_function(char * path)
 {
   uint32_t id = parse_path (path,files,folders);
@@ -52,16 +50,19 @@ delfile_function(char * path)
       LIBMTP_Dump_Errorstack(device);
       LIBMTP_Clear_Errorstack(device);
       printf("Failed to remove file\n");
+      return 1;
     }
   }
+  return 0;
 }
 
-void delfile_command(int argc, char **argv)
+int delfile_command(int argc, char **argv)
 {
   int FILENAME = 1;
   int ITEMID = 2;
   int field_type = 0;
   int i;
+  int ret = 0;
 
   if ( argc > 2 ) {
     if (strncmp(argv[1],"-f",2) == 0) {
@@ -72,17 +73,16 @@ void delfile_command(int argc, char **argv)
       strcpy(argv[1],"0");
     } else {
       delfile_usage();
-      return;
+      return 0;
     }
   } else {
     delfile_usage();
-    return;
+    return 0;
   }
 
   for (i=1;i<argc;i++) {
     uint32_t id;
     char *endptr;
-    int ret = 0;
 
     if (field_type == ITEMID) {
       // Sanity check song ID
@@ -109,5 +109,6 @@ void delfile_command(int argc, char **argv)
       ret = 1;
     }
   }
+  return ret;
 }
 

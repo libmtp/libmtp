@@ -20,14 +20,12 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#include "common.h"
-#include "pathutils.h"
 #include <stdlib.h>
 #include <limits.h>
 
-void getfile_function(char *,char *);
-void getfile_command(int, char **);
-void getfile_usage(void);
+#include "common.h"
+#include "pathutils.h"
+#include "connect.h"
 
 extern LIBMTP_folder_t *folders;
 extern LIBMTP_file_t *files;
@@ -38,7 +36,7 @@ void getfile_usage (void)
   fprintf(stderr, "getfile <fileid/trackid> <filename>\n");
 }
 
-void
+int
 getfile_function(char * from_path,char * to_path)
 {
   int id = parse_path (from_path,files,folders);
@@ -48,31 +46,34 @@ getfile_function(char * from_path,char * to_path)
       printf("\nError getting file from MTP device.\n");
       LIBMTP_Dump_Errorstack(device);
       LIBMTP_Clear_Errorstack(device);
+      return 1;
     }
   }
+  return 0;
 }
 
 
-void getfile_command(int argc, char **argv)
+int getfile_command(int argc, char **argv)
 {
   uint32_t id;
   char *endptr;
   char *file;
+  int ret = 0;
 
   // We need file ID and filename
   if ( argc != 3 ) {
     getfile_usage();
-    return;
+    return 0;
   }
 
   // Sanity check song ID
   id = strtoul(argv[1], &endptr, 10);
   if ( *endptr != 0 ) {
     fprintf(stderr, "illegal value %s\n", argv[1]);
-    return;
+    return 1;
   } else if ( ! id ) {
     fprintf(stderr, "bad file/track id %u\n", id);
-    return;
+    return 1;
  }
 
   // Filename, e.g. "foo.mp3"
@@ -82,10 +83,10 @@ void getfile_command(int argc, char **argv)
   // This function will also work just as well for tracks.
   if (LIBMTP_Get_File_To_File(device, id, file, progress, NULL) != 0 ) {
     printf("\nError getting file from MTP device.\n");
+    ret = 1;
   }
   // Terminate progress bar.
   printf("\n");
-  
-  return;
-}
 
+  return ret;
+}

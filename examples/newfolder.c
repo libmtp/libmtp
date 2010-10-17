@@ -20,38 +20,39 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#include "common.h"
-#include "pathutils.h"
 #include <stdlib.h>
 #include <libgen.h>
 
-void newfolder_function(char *);
-void newfolder_command(int,char **);
+#include "common.h"
+#include "pathutils.h"
+#include "connect.h"
 
 extern LIBMTP_folder_t *folders;
 extern LIBMTP_file_t *files;
 extern LIBMTP_mtpdevice_t *device;
 
-void newfolder_command (int argc, char **argv)
+int newfolder_command (int argc, char **argv)
 {
   uint32_t newid;
-  
+
   if(argc != 4) {
     printf("Usage: newfolder name <parent> <storage>\n");
     printf("  parent = parent folder or 0 to create the new folder in the root dir\n");
     printf("  storage = storage id or 0 to create the new folder on the primary storage\n");
-    return;
+    return 0;
   }
-  
+
   newid = LIBMTP_Create_Folder(device, argv[1], atol(argv[2]), atol(argv[3]));
   if (newid == 0) {
     printf("Folder creation failed.\n");
+    return 1;
   } else {
     printf("New folder created with ID: %d\n", newid);
   }
+  return 0;
 }
 
-void
+int
 newfolder_function(char * path)
 {
   printf("Creating new folder %s\n",path);
@@ -63,8 +64,10 @@ newfolder_function(char * path)
     printf("Folder creation failed.\n");
     LIBMTP_Dump_Errorstack(device);
     LIBMTP_Clear_Errorstack(device);
+    return 1;
   } else {
     printf("New folder created with ID: %d\n", newid);
   }
+  return 0;
 }
 

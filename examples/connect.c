@@ -3,7 +3,7 @@
  * Main programs implementing several utilities in one.
  *
  * Copyright (C) 2006 Chris A. Debenham <chris@adebenham.com>
- * Copyright (C) 2008-2009 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2008-2010 Linus Walleij <triad@df.lth.se>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,33 +24,17 @@
 #include <libgen.h>
 #include <getopt.h>
 #include <string.h>
+
 #include "common.h"
 #include "util.h"
 #include "pathutils.h"
+#include "connect.h"
 
 LIBMTP_folder_t *folders;
 LIBMTP_file_t *files;
 LIBMTP_mtpdevice_t *device;
 
-void usage(void);
-void split_arg(char *,char **, char **);
-void delfile_function(char *);
-void delfile_command(int, char **);
-void delfile_usage(void);
-int sendtrack_function (char *, char *, char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t, uint32_t, uint16_t);
-void sendtrack_command (int, char **);
-void sendtrack_usage(void);
-void sendfile_function(char *,char *);
-void sendfile_command(int, char **);
-void sendfile_usage(void);
-void getfile_function(char *,char *);
-void getfile_command(int, char **);
-void getfile_usage(void);
-void newfolder_function(char *);
-void newfolder_command(int,char **);
-void newfolder_usage(void);
-
-void
+static void
 split_arg(char * argument, char ** part1, char ** part2)
 {
   char *sepp;
@@ -63,7 +47,7 @@ split_arg(char * argument, char ** part1, char ** part2)
   *part2 = sepp+1;
 }
 
-void
+static void
 usage(void)
 {
   printf("Usage: connect <command1> <command2>\n");
@@ -77,6 +61,8 @@ usage(void)
 
 int main (int argc, char **argv)
 {
+  int ret = 0;
+
   checklang();
 
   LIBMTP_Init();
@@ -92,15 +78,15 @@ int main (int argc, char **argv)
   folders = LIBMTP_Get_Folder_List (device);
 
   if ((strncmp(basename(argv[0]),"mtp-delfile",11) == 0) || (strncmp(basename(argv[0]),"delfile",7) == 0)) {
-    delfile_command(argc,argv);
+    ret = delfile_command(argc,argv);
   } else if ((strncmp(basename(argv[0]),"mtp-getfile",13) == 0) || (strncmp(basename(argv[0]),"getfile",9) == 0)) {
-    getfile_command(argc,argv);
+    ret = getfile_command(argc,argv);
   } else if ((strncmp(basename(argv[0]),"mtp-newfolder",13) == 0) || (strncmp(basename(argv[0]),"newfolder",9) == 0)) {
-    newfolder_command(argc,argv);
+    ret = newfolder_command(argc,argv);
   } else if ((strncmp(basename(argv[0]),"mtp-sendfile",11) == 0) || (strncmp(basename(argv[0]),"sendfile",7) == 0)) {
-    sendfile_command(argc, argv);
+    ret = sendfile_command(argc, argv);
   } else if ((strncmp(basename(argv[0]),"mtp-sendtr",10) == 0) || (strncmp(basename(argv[0]),"sendtr",6) == 0)) {
-    sendtrack_command(argc, argv);
+    ret = sendtrack_command(argc, argv);
   } else {
     if ( argc < 2 ) {
       usage ();
@@ -126,30 +112,30 @@ int main (int argc, char **argv)
       switch (c) {
       case 'd':
         printf("Delete %s\n",optarg);
-        delfile_function(optarg);
+        ret = delfile_function(optarg);
         break;
 
       case 'f':
         printf("Send file %s\n",optarg);
         split_arg(optarg,&arg1,&arg2);
-        sendfile_function(arg1,arg2);
+        ret = sendfile_function(arg1,arg2);
         break;
 
       case 'g':
         printf("Get file %s\n",optarg);
         split_arg(optarg,&arg1,&arg2);
-        getfile_function(arg1,arg2);
+        ret = getfile_function(arg1,arg2);
         break;
 
       case 'n':
         printf("New folder %s\n",optarg);
-        newfolder_function(optarg);
+        ret = newfolder_function(optarg);
         break;
 
       case 't':
         printf("Send track %s\n",optarg);
         split_arg(optarg,&arg1,&arg2);
-        sendtrack_function(arg1,arg2,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,0);
+        ret = sendtrack_function(arg1,arg2,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,0);
         break;
       }
     }
@@ -164,6 +150,5 @@ int main (int argc, char **argv)
 
   LIBMTP_Release_Device(device);
 
-  exit (0);
+  return ret;
 }
-

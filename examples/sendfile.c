@@ -32,14 +32,12 @@
 #include "common.h"
 #include "libmtp.h"
 #include "pathutils.h"
+#include "util.h"
+#include "connect.h"
 
 extern LIBMTP_folder_t *folders;
 extern LIBMTP_file_t *files;
 extern LIBMTP_mtpdevice_t *device;
-
-int sendfile_function(char *, char *);
-void sendfile_command(int, char **);
-void sendfile_usage(void);
 
 void sendfile_usage(void)
 {
@@ -59,7 +57,7 @@ int sendfile_function(char * from_path, char *to_path)
   if ( stat(from_path, &sb) == -1 ) {
     fprintf(stderr, "%s: ", from_path);
     perror("stat");
-    exit(1);
+    return 1;
   }
 
   filesize = sb.st_size;
@@ -94,10 +92,11 @@ int sendfile_function(char * from_path, char *to_path)
   return ret;
 }
 
-void sendfile_command (int argc, char **argv) {
+int sendfile_command (int argc, char **argv) {
   if (argc < 3) {
     sendfile_usage();
-    return;
+    return 0;
   }
-  sendfile_function(argv[1],argv[2]);
+  checklang();
+  return sendfile_function(argv[1],argv[2]);
 }
