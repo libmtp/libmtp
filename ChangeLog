@@ -1,6 +1,7 @@
 2010-10-17  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: Windows file open fixes from Jelle Geerts.
+	* examples/sendfile.c: exit with 1 on error.
 
 2010-09-18  Linus Walleij <triad@df.lth.se>
 

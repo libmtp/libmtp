@@ -1,8 +1,8 @@
-/** 
+/**
  * \file sendfile.c
  * Example program to send an arbitrary file to a device.
  *
- * Copyright (C) 2005-2009 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2010 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006 Chris A. Debenham <chris@adebenham.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -69,7 +69,7 @@ int sendfile_function(char * from_path, char *to_path)
     printf("Parent folder could not be found, skipping\n");
     return 0;
   }
-  
+
   genfile = LIBMTP_new_file_t();
   genfile->filesize = filesize;
   genfile->filename = strdup(filename);
@@ -84,13 +84,14 @@ int sendfile_function(char * from_path, char *to_path)
     printf("Error sending file.\n");
     LIBMTP_Dump_Errorstack(device);
     LIBMTP_Clear_Errorstack(device);
+    ret = 1;
   } else {
     printf("New file ID: %d\n", genfile->item_id);
   }
 
   LIBMTP_destroy_file_t(genfile);
 
-  return 0;
+  return ret;
 }
 
 void sendfile_command (int argc, char **argv) {
