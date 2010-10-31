@@ -839,7 +839,8 @@
   { "TrekStor", 0x0402, "i.Beat Sweez FM", 0x0611,
     DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Fox-ino <fox-ino@users.sourceforge.net>
-  { "ALi Corp.", 0x0402, "MPMAN 2GB", 0x5668,
+  // No confirmation that this is really MTP so commented it out.
+  // { "ALi Corp.", 0x0402, "MPMAN 2GB", 0x5668,
     DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Anonymous SourceForge user
   {"TrekStor", 0x1e68, "i.Beat Organix 2.0", 0x0002,
