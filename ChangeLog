@@ -1,3 +1,9 @@
+2010-10-31  Linus Walleij <triad@df.lth.se>
+
+	* src/libusb-glue.c: only reset the device if a connection
+	  fails, then retry. We were resetting the device on every
+	  close() - not good.
+
 2010-10-17  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: Windows file open fixes from Jelle Geerts.

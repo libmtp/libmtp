@@ -1679,9 +1679,6 @@ static void close_usb(PTP_USB* ptp_usb)
     usb_resetep(ptp_usb->handle, ptp_usb->outep);
     usb_release_interface(ptp_usb->handle, (int) ptp_usb->interface);
   }
-  // Brutally reset device
-  // TODO: is this good on the Mac too?
-  usb_reset(ptp_usb->handle);
   usb_close(ptp_usb->handle);
 }
 
@@ -1839,16 +1836,22 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
    * have not used LIBMTP_Release_Device on exit
    */
   if ((ret = ptp_opensession(params, 1)) == PTP_ERROR_IO) {
-    LIBMTP_ERROR("PTP_ERROR_IO: Trying again after re-initializing USB interface\n");
+    LIBMTP_ERROR("PTP_ERROR_IO: failed to open session, trying again after resetting USB interface\n");
     close_usb(ptp_usb);
 
+    LIBMTP_ERROR("LIBMTP libusb: Attempt to reset device\n");
+    usb_reset(ptp_usb->handle);
+
     if(init_ptp_usb(params, ptp_usb, libusb_device) <0) {
-      LIBMTP_ERROR("LIBMTP PANIC: Could not open session on device\n");
+      LIBMTP_ERROR("LIBMTP PANIC: Could not init USB on second attempt\n");
       return LIBMTP_ERROR_CONNECTING;
     }
 
     /* Device has been reset, try again */
-    ret = ptp_opensession(params, 1);
+    if ((ret = ptp_opensession(params, 1)) == PTP_ERROR_IO) {
+      LIBMTP_ERROR("LIBMTP PANIC: failed to open session on second attempt\n");
+      return LIBMTP_ERROR_CONNECTING;
+    }
   }
 
   /* Was the transaction id invalid? Try again */
