@@ -739,6 +739,8 @@
   { "Nokia", 0x0421, "6600i", 0x0297, DEVICE_FLAG_NONE },
   // From: Karthik Paithankar <whyagain2005@users.sourceforge.net>
   { "Nokia", 0x0421, "2710", 0x02c1, DEVICE_FLAG_NONE },
+  // From: Anonymous sourceforge user
+  { "Nokia", 0x0421, "5230", 0x02e2, DEVICE_FLAG_NONE },
   // From: Lan Liu at Nokia <lan.liu@nokia.com>
   { "Nokia", 0x0421, "N8", 0x02fe, DEVICE_FLAG_NONE },
   // From: Lan Liu at Nokia <lan.liu@nokia.com>
