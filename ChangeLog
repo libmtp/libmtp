@@ -1,3 +1,9 @@
+2010-11-24  Linus Walleij <triad@df.lth.se>
+
+	* examples/hotplug.c: set the music player environment
+	  variable for userspace programs watching udev output to
+	  determine what device is plugged in.
+
 2010-10-31  Linus Walleij <triad@df.lth.se>
 
 	* src/libusb-glue.c: only reset the device if a connection
