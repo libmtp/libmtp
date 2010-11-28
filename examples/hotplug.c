@@ -54,9 +54,9 @@ int main (int argc, char **argv)
   extern int optind;
   extern char *optarg;
   char *udev_action = NULL;
-  char default_udev_action[] = "SYMLINK+=\"libmtp-%k\", MODE=\"666\" ENV{ID_MEDIA_PLAYER}=\"1\"";
+  char default_udev_action[] = "SYMLINK+=\"libmtp-%k\", MODE=\"666\", ENV{ID_MTP_DEVICE}=\"1\", ENV{ID_MEDIA_PLAYER}=\"1\"";
   char *action; // To hold the action actually used.
-  uint16_t last_vendor = 0x0000U;  
+  uint16_t last_vendor = 0x0000U;
 
   while ( (opt = getopt(argc, argv, "uUiHa:")) != -1 ) {
     switch (opt) {
