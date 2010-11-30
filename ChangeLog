@@ -1,3 +1,7 @@
+2010-12-01  Linus Walleij <triad@df.lth.se>
+
+	* examples/hotplug.c: drop old udev style somewhat.
+
 2010-11-24  Linus Walleij <triad@df.lth.se>
 
 	* examples/hotplug.c: set the music player environment
