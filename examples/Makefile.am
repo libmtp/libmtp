@@ -1,4 +1,4 @@
-bin_PROGRAMS=connect detect tracks files hotplug \
+bin_PROGRAMS=connect detect tracks files \
 	folders trexist playlists getplaylist \
 	format albumart albums newplaylist emptyfolders \
 	thumb reset
@@ -9,7 +9,6 @@ connect_SOURCES=connect.c delfile.c getfile.c newfolder.c \
 detect_SOURCES=detect.c util.c util.h common.h
 tracks_SOURCES=tracks.c util.c util.h common.h
 files_SOURCES=files.c util.c util.h common.h
-hotplug_SOURCES=hotplug.c util.c util.h common.h
 folders_SOURCES=folders.c util.c util.h common.h
 trexist_SOURCES=trexist.c util.c util.h common.h
 playlists_SOURCES=playlists.c util.c util.h common.h

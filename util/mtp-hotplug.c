@@ -1,8 +1,8 @@
-/** 
- * \file hotplug.c
+/**
+ * \file mtp-hotplug.c
  * Example program to create hotplug scripts.
  *
- * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2010 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2008 Marcus Meissner <marcus@jet.franken.de>
  *
  * This library is free software; you can redistribute it and/or
@@ -20,7 +20,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-#include "common.h"
+#include <libmtp.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -192,6 +192,7 @@ int main (int argc, char **argv)
   case style_usbmap:
     break;
   case style_udev:
+  case style_udev_old:
     printf("LABEL=\"libmtp_rules_end\"\n");
     break;
   case style_hal:

@@ -1,6 +1,9 @@
 2010-12-01  Linus Walleij <triad@df.lth.se>
 
 	* examples/hotplug.c: drop old udev style somewhat.
+	* utils/: move out mtp-hotplug into its own subdir,
+	  intend to put programs to probe devices here too.
+	* utils/mtp-hotplug.c: moved the hotplug program here.
 
 2010-11-24  Linus Walleij <triad@df.lth.se>
 

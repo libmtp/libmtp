@@ -110,6 +110,6 @@ AX_NEED_STDINT_H([src/_stdint.h])
 AC_NEED_BYTEORDER_H(src/gphoto2-endian.h)
 
 AC_CONFIG_FILES([src/libmtp.h doc/Doxyfile Makefile doc/Makefile src/Makefile
-	examples/Makefile libmtp.sh hotplug.sh libmtp.pc])
+	examples/Makefile util/Makefile libmtp.sh hotplug.sh libmtp.pc])
 AC_OUTPUT
 chmod +x hotplug.sh
