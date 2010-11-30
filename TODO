@@ -47,18 +47,19 @@ FEATURE fixes:
   atleast a call to the cache update function.
 
 3. FEATURE: Mechanism to retrieve the device icon device property, else if not
-  present, look for DevIcon.fil (Windows ICO format) and 
+  present, look for DevIcon.fil (Windows ICO format) and
   DevLogo.fil (PNG Format) images from the device (if available).
 
 4. FEATURE: Shared device access so that multiple client applications can have
   an open connection to the device at the same time via a handle. For example,
-  it should be somehow possible to run mtp-detect at the same time as amarok or 
+  it should be somehow possible to run mtp-detect at the same time as amarok or
   mtpfs is connected to a device. This would require some form of resource
   sharing.
 
 5. FEATURE: Implement an OpenSync backend for devices which have
   calendaring, contact etc support. http://opensync.org/
 
+6. FEATURE: program to autoprobe device interfaces on connection.
 
 THOSE ARE ALREADY DONE:
 
