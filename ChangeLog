@@ -6,6 +6,8 @@
 	* utils/mtp-hotplug.c: moved the hotplug program here.
 	* utils/check_mtp_device.sh: tentative script for
 	  checking MTP devices.
+	* utils/mtp-probe.c: C program intended to check if
+	  devices are MTP.
 
 2010-11-24  Linus Walleij <triad@df.lth.se>
 

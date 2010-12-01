@@ -1,6 +1,6 @@
 /**
  * \file mtp-hotplug.c
- * Example program to create hotplug scripts.
+ * Program to create hotplug scripts.
  *
  * Copyright (C) 2005-2010 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2008 Marcus Meissner <marcus@jet.franken.de>
