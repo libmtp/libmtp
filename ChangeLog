@@ -14,13 +14,9 @@
 	* configure.ac: drop the default "mtp-*" prefixing of all
 	  programs, instead I have renamed the executables.
 	* Makefile.am: install the mtp-probe script in the
-	  libexecdir, notice that it's a good idea to pass the
-	  default udev dir as the libexecdir with:
-
-	  ./configure --libexecdir=/lib/udev
-
+	  libexecdir, and FORCE this to be /lib/udev.
 	  We now also install the udev rules to
-	  $libexecdir/rules.d, in the normal case thus will
+	  $libexecdir/rules.d, which is thus also forced to
 	  be /lib/udev/rules.d.
 
 2010-12-01  Linus Walleij <triad@df.lth.se>
