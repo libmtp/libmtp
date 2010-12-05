@@ -4,6 +4,10 @@
 	  and e.g. OS descriptor to probe new devices from
 	  udev.
 	* utils/mtp-hotplug.c: utilize mtp-probe.
+	* src/libmtp.h.in: add new interface used by the mtp-probe
+	  utility to probe a certain device in a certain bus.
+	* src/libusb-glue.c: introduce new function to probe a
+	  certain bus and device.
 
 2010-12-01  Linus Walleij <triad@df.lth.se>
 
