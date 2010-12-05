@@ -8,6 +8,20 @@
 	  utility to probe a certain device in a certain bus.
 	* src/libusb-glue.c: introduce new function to probe a
 	  certain bus and device.
+	* examples/Makefile.am: reform the way of making all
+	  executable examples prefixed with "mtp-*" just set this
+	  name in the make target!
+	* configure.ac: drop the default "mtp-*" prefixing of all
+	  programs, instead I have renamed the executables.
+	* Makefile.am: install the mtp-probe script in the
+	  libexecdir, notice that it's a good idea to pass the
+	  default udev dir as the libexecdir with:
+
+	  ./configure --libexecdir=/lib/udev
+
+	  We now also install the udev rules to
+	  $libexecdir/rules.d, in the normal case thus will
+	  be /lib/udev/rules.d.
 
 2010-12-01  Linus Walleij <triad@df.lth.se>
 

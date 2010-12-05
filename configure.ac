@@ -6,12 +6,6 @@ AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([src/libmtp.c])
 AM_CONFIG_HEADER(config.h)
 
-# This can be overridden by the command line switch
-if test "$program_prefix" = NONE; then
-   program_prefix=mtp-
-   program_transform_name="s,^,$program_prefix,;$program_transform_name"
-fi
-
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
