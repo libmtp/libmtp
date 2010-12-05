@@ -1,4 +1,5 @@
-bin_PROGRAMS=mtp-hotplug mtp-probe
+bin_PROGRAMS=mtp-hotplug
+libexec_PROGRAMS=mtp-probe
 
 mtp_hotplug_SOURCES=mtp-hotplug.c
 mtp_probe_SOURCES=mtp-probe.c

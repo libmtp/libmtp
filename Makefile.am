@@ -3,6 +3,10 @@ ACLOCAL_AMFLAGS=-I m4
 
 pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA=libmtp.pc
+
+udevrulesdir=$(libexecdir)/rules.d
+udevrules_DATA=libmtp.rules
+
 EXTRA_DIST=libmtp.pc libmtp.sh COPYING README.windows.txt
 noinst_DATA=libmtp.usermap libmtp.rules libmtp.fdi
 libmtp.usermap: util/mtp-hotplug
