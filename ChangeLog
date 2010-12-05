@@ -1,3 +1,10 @@
+2010-12-05  Linus Walleij <triad@df.lth.se>
+
+	* utils/mtp-probe.c: enhanced to use libmtp intrinsics
+	  and e.g. OS descriptor to probe new devices from
+	  udev.
+	* utils/mtp-hotplug.c: utilize mtp-probe.
+
 2010-12-01  Linus Walleij <triad@df.lth.se>
 
 	* examples/hotplug.c: drop old udev style somewhat.

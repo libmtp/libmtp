@@ -2,6 +2,7 @@ LIBMTP_Set_Debug
 LIBMTP_Init
 LIBMTP_Get_Supported_Devices_List
 LIBMTP_Detect_Raw_Devices
+LIBMTP_Check_Specific_Device
 LIBMTP_Open_Raw_Device
 LIBMTP_Get_First_Device
 LIBMTP_Get_Connected_Devices

@@ -193,6 +193,14 @@ int main (int argc, char **argv)
     break;
   case style_udev:
   case style_udev_old:
+    /*
+     * This is code that invokes the mtp-probe program on
+     * every USB device that is either PTP or vendor specific
+     */
+    printf("\n# Autoprobe PTP devices\n");
+    printf("ENV{ID_MTP_DEVICE}!=\"1\", ATTR{bDeviceClass}==\"06\", PROGRAM=\"/lib/udev/mtp-probe /sys$env{DEVPATH} $attr{busnum} $attr{devnum}\", RESULT==\"1\", %s\n", action);
+    printf("\n# Autoprobe vendor-specific devices\n");
+    printf("ENV{ID_MTP_DEVICE}!=\"1\", ATTR{bDeviceClass}==\"ff\", PROGRAM=\"/lib/udev/mtp-probe /sys$env{DEVPATH} $attr{busnum} $attr{devnum}\", RESULT==\"1\", %s\n\n", action);
     printf("LABEL=\"libmtp_rules_end\"\n");
     break;
   case style_hal:

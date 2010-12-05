@@ -87,7 +87,7 @@ int open_device (int busn, int devn, short force, PTP_USB *ptp_usb, PTPParams *p
 void dump_usbinfo(PTP_USB *ptp_usb);
 const char *get_playlist_extension(PTP_USB *ptp_usb);
 void close_device(PTP_USB *ptp_usb, PTPParams *params);
-LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device, 
+LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
 					   PTPParams *params,
 					   void **usbinfo);
 void set_usb_device_timeout(PTP_USB *ptp_usb, int timeout);

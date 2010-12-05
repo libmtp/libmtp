@@ -498,6 +498,34 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
 }
 
 /**
+ * Checks if a specific device with a certain bus and device
+ * number has an MTP type device descriptor.
+ *
+ * @param busno the bus number of the device to check
+ * @param deviceno the device number of the device to check
+ * @return 1 if the device is MTP else 0
+ */
+int LIBMTP_Check_Specific_Device(int busno, int devno)
+{
+  struct usb_bus *bus = init_usb();
+  for (; bus != NULL; bus = bus->next) {
+    struct usb_device *dev = bus->devices;
+    if (bus->location != busno)
+      continue;
+
+    for (; dev != NULL; dev = dev->next) {
+
+      if (dev->devnum != devno)
+	continue;
+
+      if (probe_device_descriptor(dev, NULL))
+	return 1;
+    }
+  }
+  return 0;
+}
+
+/**
  * Detect the raw MTP device descriptors and return a list of
  * of the devices found.
  *
