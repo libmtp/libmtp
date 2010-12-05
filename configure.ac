@@ -14,6 +14,11 @@ AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
 AM_ICONV
 
+# For this library the default libexecdir is the udev
+# dir, because it's only used for the udev probe program
+# nothing else makes sense for this.
+libexecdir=/lib/udev
+
 # Check for doxygen
 AC_CHECK_PROG(HAVE_DOXYGEN, doxygen, true, false)
 AM_CONDITIONAL(HAVE_DOXYGEN,$HAVE_DOXYGEN)

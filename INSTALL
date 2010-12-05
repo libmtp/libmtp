@@ -87,7 +87,7 @@ BASIC BUILD PROCEDURE
 
 To build the package:
 
-   % ./configure --libexecdir=/lib/udev
+   % ./configure
    % make
    % make install
 
@@ -97,11 +97,10 @@ makes libmtp sample programs avoid collision with other programs like
 sox' "play" program. If the default prefix for some reason fail,
 try to tag on "--program-prefix=mtp-" to the "configure" command.
 
-The "--libexecdir=/lib/udev" parameter is a Linux pecularity to
+The "libexedir" in the configure file is hardcoded to /lib/udev to
 make the mtp-probe (which is built for Linux only) install into
-that directory. Library executables are executables bound to the
-library and for udev programs this specific directory shall hold
-such executables.
+that directory. This is the only location that makes sens for this
+executable.
 
 if you want to install the documentation type:
 
