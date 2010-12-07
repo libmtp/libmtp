@@ -567,7 +567,13 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_RC_NIKON_AdvancedTransferCancel	0xA022
 
 /* Canon specific response codes */
-#define PTP_RC_CANON_A009		0xA009
+#define PTP_RC_CANON_UNKNOWN_COMMAND		0xA001
+#define PTP_RC_CANON_OPERATION_REFUSED		0xA005
+#define PTP_RC_CANON_LENS_COVER			0xA006
+#define PTP_RC_CANON_BATTERY_LOW		0xA101
+#define PTP_RC_CANON_NOT_READY			0xA102
+
+#define PTP_RC_CANON_A009			0xA009
 
 /* Microsoft/MTP specific codes */
 #define PTP_RC_MTP_Undefined			0xA800
@@ -802,6 +808,8 @@ typedef struct _PTPObjectInfo PTPObjectInfo;
 #define PTP_OFC_CANON_CRW			0xb101
 #define PTP_OFC_CANON_CRW3			0xb103
 #define PTP_OFC_CANON_MOV			0xb104
+/* CHDK specific raw mode */
+#define PTP_OFC_CANON_CHDK_CRW			0xb1ff
 /* MTP extensions */
 #define PTP_OFC_MTP_MediaCard			0xb211
 #define PTP_OFC_MTP_MediaCardGroup		0xb212
@@ -1057,7 +1065,7 @@ struct _PTPNIKONWifiProfile {
 	uint8_t   encryption; /* 0 - None, 1 - WEP 64bit, 2 - WEP 128bit (not supported: 3 - TKIP) */
 	uint8_t   key[64];
 	uint8_t   key_nr;
-//	char      guid[16];
+/*	char      guid[16]; */
 };
 
 typedef struct _PTPNIKONWifiProfile PTPNIKONWifiProfile;
@@ -1065,9 +1073,11 @@ typedef struct _PTPNIKONWifiProfile PTPNIKONWifiProfile;
 #define PTP_CANON_EOS_CHANGES_TYPE_UNKNOWN		0
 #define PTP_CANON_EOS_CHANGES_TYPE_OBJECTINFO		1
 #define PTP_CANON_EOS_CHANGES_TYPE_OBJECTTRANSFER	2
+#define PTP_CANON_EOS_CHANGES_TYPE_PROPERTY		3
+#define PTP_CANON_EOS_CHANGES_TYPE_CAMERASTATUS		4
 
 struct _PTPCanon_New_Object {
-	uint32_t		oid;
+	uint32_t	oid;
 	PTPObjectInfo	oi;
 };
 
@@ -1075,6 +1085,9 @@ struct _PTPCanon_changes_entry {
 	int	type;
 	union {
 		struct _PTPCanon_New_Object	object;	/* TYPE_OBJECTINFO */
+		char				*info;
+		uint16_t			propid;
+		int				status;
 	} u;
 };
 typedef struct _PTPCanon_changes_entry PTPCanon_changes_entry;
@@ -1963,6 +1976,7 @@ struct _PTPParams {
 	PTPCanon_changes_entry	*backlogentries;
 	int			nrofbacklogentries;
 	int			eos_captureenabled;
+	int			eos_viewfinderenabled;
 
 	/* PTP: Wifi profiles */
 	uint8_t 	wifi_profiles_version;
@@ -2312,19 +2326,7 @@ uint16_t ptp_canon_checkevent (PTPParams* params,
  *
  **/
 #define ptp_canon_eos_requestdevicepropvalue(params,prop) ptp_generic_no_data(params,PTP_OC_CANON_EOS_RequestDevicePropValue,1,prop)
-/**
- * ptp_canon_eos_capture:
- * 
- * This starts a EOS400D style capture. You have to use the
- * 0x9116 command to poll for its completion.
- * The image is saved on the CF Card currently.
- *
- * params:      PTPParams*
- *
- * Return values: Some PTP_RC_* code.
- *
- **/
-#define ptp_canon_eos_capture(params) ptp_generic_no_data(params,PTP_OC_CANON_EOS_RemoteRelease,0)
+uint16_t ptp_canon_eos_capture (PTPParams* params, uint32_t *result);
 uint16_t ptp_canon_eos_getevent (PTPParams* params, PTPCanon_changes_entry **entries, int *nrofentries);
 uint16_t ptp_canon_getpartialobject (PTPParams* params, uint32_t handle, 
 				uint32_t offset, uint32_t size,
@@ -2481,6 +2483,19 @@ uint16_t ptp_nikon_writewifiprofile (PTPParams* params, PTPNIKONWifiProfile* pro
  **/
 #define ptp_canon_eos_afdrive(params) ptp_generic_no_data(params,PTP_OC_CANON_EOS_DoAf,0)
 /**
+ * ptp_canon_eos_zoom:
+ *
+ * This command runs (drives) the lens autofocus.
+ *  
+ * params:      PTPParams*
+ * params:      arg1 unknown
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+#define ptp_canon_eos_zoom(params,x) ptp_generic_no_data(params,PTP_OC_CANON_EOS_Zoom,1,x)
+#define ptp_canon_eos_zoomposition(params,x,y) ptp_generic_no_data(params,PTP_OC_CANON_EOS_ZoomPosition,2,x,y)
+/**
  * ptp_nikon_mfdrive:
  *
  * This command runs (drives) the lens focus manually.
@@ -2583,7 +2598,18 @@ uint16_t ptp_nikon_getfileinfoinblock (PTPParams* params, uint32_t p1, uint32_t 
 uint16_t ptp_mtp_getobjectpropssupported (PTPParams* params, uint16_t ofc, uint32_t *propnum, uint16_t **props);
 
 /* Non PTP protocol functions */
-int ptp_operation_issupported	(PTPParams* params, uint16_t operation);
+static int
+ptp_operation_issupported(PTPParams* params, uint16_t operation)
+{
+	int i=0;
+
+	for (;i<params->deviceinfo.OperationsSupported_len;i++) {
+		if (params->deviceinfo.OperationsSupported[i]==operation)
+			return 1;
+	}
+	return 0;
+}
+
 int ptp_event_issupported	(PTPParams* params, uint16_t event);
 int ptp_property_issupported	(PTPParams* params, uint16_t property);
 

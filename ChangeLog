@@ -2,6 +2,9 @@
 
 	* configure.ac: make sure the prober only compiles for
 	  Linux.
+	* src/ptp.c: update to match upstream.
+	* src/ptp.h: dito.
+	* src/ptp-pack.c: dito.
 
 2010-12-05  Linus Walleij <triad@df.lth.se>
 

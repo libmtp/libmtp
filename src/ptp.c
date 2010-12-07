@@ -742,6 +742,33 @@ ptp_canon_eos_bulbstart (PTPParams* params)
 }
 
 /**
+ * ptp_eos_capture:
+ * params:	PTPParams*
+ *              uint32_t*	result
+ *
+ * This starts a EOS400D style capture. You have to use the
+ * get_eos_events to find out what resulted.
+ * The return value is "0" for all OK, and "1" for capture failed. (not fully confirmed)
+ *
+ * Return values: Some PTP_RC_* code.
+ **/
+uint16_t
+ptp_canon_eos_capture (PTPParams* params, uint32_t *result)
+{
+	uint16_t ret;
+	PTPContainer ptp;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code   = PTP_OC_CANON_EOS_RemoteRelease;
+	ptp.Nparam = 0;
+	*result = 0;
+	ret = ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
+	if ((ret == PTP_RC_OK) && (ptp.Nparam >= 1))
+		*result = ptp.Param1;
+	return ret;
+}
+
+/**
  * ptp_canon_eos_bulbend:
  * params:	PTPParams*
  *
@@ -1688,23 +1715,25 @@ ptp_check_eos_events (PTPParams *params) {
 	PTPCanon_changes_entry	*entries = NULL, *nentries;
 	int			nrofentries = 0;
 
-	ret = ptp_canon_eos_getevent (params, &entries, &nrofentries);
-	if (ret != PTP_RC_OK)
-		return ret;
-	if (!nrofentries)
-		return PTP_RC_OK;
+	while (1) { /* call it repeatedly until the camera does not report any */
+		ret = ptp_canon_eos_getevent (params, &entries, &nrofentries);
+		if (ret != PTP_RC_OK)
+			return ret;
+		if (!nrofentries)
+			return PTP_RC_OK;
 
-	if (params->nrofbacklogentries) {
-		nentries = realloc(params->backlogentries,sizeof(entries[0])*(params->nrofbacklogentries+nrofentries));
-		if (!nentries)
-			return PTP_RC_GeneralError;
-		params->backlogentries = nentries;
-		memcpy (nentries+params->nrofbacklogentries, entries, nrofentries*sizeof(entries[0]));
-		params->nrofbacklogentries += nrofentries;
-		free (entries);
-	} else {
-		params->backlogentries = entries;
-		params->nrofbacklogentries = nrofentries;
+		if (params->nrofbacklogentries) {
+			nentries = realloc(params->backlogentries,sizeof(entries[0])*(params->nrofbacklogentries+nrofentries));
+			if (!nentries)
+				return PTP_RC_GeneralError;
+			params->backlogentries = nentries;
+			memcpy (nentries+params->nrofbacklogentries, entries, nrofentries*sizeof(entries[0]));
+			params->nrofbacklogentries += nrofentries;
+			free (entries);
+		} else {
+			params->backlogentries = entries;
+			params->nrofbacklogentries = nrofentries;
+		}
 	}
 	return PTP_RC_OK;
 }
@@ -2783,19 +2812,6 @@ ptp_mtp_setobjectproplist (PTPParams* params, MTPProperties *props, int nrofprop
 
 /* Non PTP protocol functions */
 /* devinfo testing functions */
-
-int
-ptp_operation_issupported(PTPParams* params, uint16_t operation)
-{
-	int i=0;
-
-	for (;i<params->deviceinfo.OperationsSupported_len;i++) {
-		if (params->deviceinfo.OperationsSupported[i]==operation)
-			return 1;
-	}
-	return 0;
-}
-
 
 int
 ptp_event_issupported(PTPParams* params, uint16_t event)
@@ -4963,7 +4979,7 @@ uint16_t
 ptp_object_want (PTPParams *params, uint32_t handle, int want, PTPObject **retob) {
 	uint16_t	ret;
 	PTPObject	*ob;
-	//Camera 		*camera = ((PTPData *)params->data)->camera;
+	/*Camera 		*camera = ((PTPData *)params->data)->camera;*/
 
 	*retob = NULL;
 	if (!handle) {

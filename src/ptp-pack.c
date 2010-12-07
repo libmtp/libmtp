@@ -1300,6 +1300,7 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 		uint32_t	type = dtoh32a(&curdata[PTP_ece_Type]);
 
 		(*ce)[i].type = PTP_CANON_EOS_CHANGES_TYPE_UNKNOWN;
+		(*ce)[i].u.info = NULL;
 		switch (type) {
 		case  PTP_EC_CANON_EOS_ObjectAddedEx:
 			(*ce)[i].type = PTP_CANON_EOS_CHANGES_TYPE_OBJECTINFO;
@@ -1430,6 +1431,9 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 				}
 				dpd = &params->canon_props[j].dpd;
 
+				(*ce)[i].type = PTP_CANON_EOS_CHANGES_TYPE_PROPERTY;
+				(*ce)[i].u.propid = proptype;
+
 				/* fix GetSet value */
 				switch (proptype) {
 #define XX(x) case PTP_DPC_CANON_##x:
@@ -1546,16 +1550,6 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 					/* custom func entries look like this on the 400D: '5 0 0 0 ?' = 4 bytes size + 1 byte data */
 					data += 4;
 					break;
-				/* ImageFormat special handling */
-				case PTP_DPC_CANON_EOS_ImageFormat:
-				case PTP_DPC_CANON_EOS_ImageFormatCF:
-				case PTP_DPC_CANON_EOS_ImageFormatSD:
-				case PTP_DPC_CANON_EOS_ImageFormatExtHD:
-					dpd->DataType = PTP_DTC_UINT16;
-					dpd->FactoryDefaultValue.u16	= ptp_unpack_EOS_ImageFormat( params, &data );
-					dpd->CurrentValue.u16		= dpd->FactoryDefaultValue.u16;
-					ptp_debug (params,"event %d: decoded imageformat, currentvalue of %x is %x", i, proptype, dpd->CurrentValue.u16);
-					break;
 				/* yet unknown 32bit props */
 				case PTP_DPC_CANON_EOS_ColorTemperature:
 				case PTP_DPC_CANON_EOS_WftStatus:
@@ -1581,6 +1575,12 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 						ptp_debug (params, "event %d: Warning: datasize modulo sizeof(uint32) is not 0: ", i, (size-PTP_ece_Prop_Val_Data) % sizeof(uint32_t) );
 					for (j=0;j<(size-PTP_ece_Prop_Val_Data)/sizeof(uint32_t);j++)
 						ptp_debug (params, "    %d: 0x%8x", j, ((uint32_t*)data)[j]);
+					break;
+				/* ImageFormat properties have to be ignored here, see special handling below */
+				case PTP_DPC_CANON_EOS_ImageFormat:
+				case PTP_DPC_CANON_EOS_ImageFormatCF:
+				case PTP_DPC_CANON_EOS_ImageFormatSD:
+				case PTP_DPC_CANON_EOS_ImageFormatExtHD:
 					break;
 				default:
 					ptp_debug (params, "event %d: Unknown EOS property %04x, datasize is %d", i ,proptype, size-PTP_ece_Prop_Val_Data);
@@ -1624,8 +1624,26 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 					break;
 				}
 
+				/* ImageFormat special handling (WARNING: dont move this in front of the dpd->DataType switch!) */
+				switch (proptype) {
+				case PTP_DPC_CANON_EOS_ImageFormat:
+				case PTP_DPC_CANON_EOS_ImageFormatCF:
+				case PTP_DPC_CANON_EOS_ImageFormatSD:
+				case PTP_DPC_CANON_EOS_ImageFormatExtHD:
+					dpd->DataType = PTP_DTC_UINT16;
+					dpd->FactoryDefaultValue.u16	= ptp_unpack_EOS_ImageFormat( params, &data );
+					dpd->CurrentValue.u16		= dpd->FactoryDefaultValue.u16;
+					ptp_debug (params,"event %d: decoded imageformat, currentvalue of %x is %x", i, proptype, dpd->CurrentValue.u16);
+					break;
+				}
+
 				break;
 		}
+		case PTP_EC_CANON_EOS_CameraStatusChanged:
+			ptp_debug (params, "event %d: EOS event CameraStatusChanged (size %d)", i, size);
+			(*ce)[i].type = PTP_CANON_EOS_CHANGES_TYPE_CAMERASTATUS;
+			(*ce)[i].u.status =  dtoh32a(curdata+8);
+			break;
 		case 0: /* end marker */
 			if (size == 8) /* no output */
 				break;
@@ -1633,7 +1651,11 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 			break;
 		default:
 			switch (type) {
-#define XX(x)		case PTP_EC_CANON_EOS_##x: ptp_debug (params, "event %d: unhandled EOS event "#x" (size %d)", i, size);break;
+#define XX(x)		case PTP_EC_CANON_EOS_##x: 								\
+				ptp_debug (params, "event %d: unhandled EOS event "#x" (size %d)", i, size); 	\
+				(*ce)[i].u.info = malloc(strlen("unhandled EOS event "#x" (size 123456789)"));	\
+				sprintf ((*ce)[i].u.info, "unhandled EOS event "#x" (size %d)",  size);		\
+				break;
 			XX(RequestGetEvent)
 			XX(ObjectRemoved)
 			XX(RequestGetObjectInfoEx)
@@ -1641,7 +1663,6 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 			XX(StorageInfoChanged)
 			XX(ObjectInfoChangedEx)
 			XX(ObjectContentChanged)
-			XX(CameraStatusChanged)
 			XX(WillSoonShutdown)
 			XX(ShutdownTimerUpdated)
 			XX(RequestCancelTransfer)
