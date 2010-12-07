@@ -38,6 +38,19 @@ case "$host" in
 esac
 AC_SUBST(OSFLAGS)
 
+AC_MSG_CHECKING([if the host operating system is Linux])
+AC_TRY_COMPILE([#ifndef __linux__
+		#error "FAIL"
+		#endif
+		],
+		[int test;],
+		[ AC_MSG_RESULT(yes)
+		  AM_CONDITIONAL(USE_LINUX, true)
+		],
+		[ AC_MSG_RESULT(no)
+		  AM_CONDITIONAL(USE_LINUX, false)
+		])
+
 # Check for mingw compiler platform
 AC_MSG_CHECKING([For MinGW32])
 case "$host" in

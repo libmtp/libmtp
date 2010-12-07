@@ -1,3 +1,8 @@
+2010-12-07  Linus Walleij <triad@df.lth.se>
+
+	* configure.ac: make sure the prober only compiles for
+	  Linux.
+
 2010-12-05  Linus Walleij <triad@df.lth.se>
 
 	* utils/mtp-probe.c: enhanced to use libmtp intrinsics
