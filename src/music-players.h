@@ -322,7 +322,7 @@
   { "Philips", 0x0471, "GoGear SA1VBE08KX/78", 0x208e,
     DEVICE_FLAG_UNLOAD_DRIVER },
   // From Anonymous SourceForge User
-  { "Philips", 0x0471, "GoGear VIBE SA2VBE16K/02", 0x20b7,
+  { "Philips", 0x0471, "GoGear VIBE SA2VBE[08|16]K/02", 0x20b7,
     DEVICE_FLAG_UNLOAD_DRIVER },
   // from XNJB user
   { "Philips", 0x0471, "PSA235", 0x7e01, DEVICE_FLAG_NONE },
@@ -726,6 +726,8 @@
   { "Nokia", 0x0421, "E63", 0x0179, DEVICE_FLAG_NONE },
   // From an anonymous SourceForge user
   { "Nokia", 0x0421, "E71x", 0x01a1, DEVICE_FLAG_NONE },
+  // From Ser <ser@users.sourceforge.net>
+  { "Nokia", 0x0421, "E52", 0x01cf, DEVICE_FLAG_NONE },
   // From Marcus Meissner
   { "Nokia", 0x0421, "3710", 0x01ee, DEVICE_FLAG_NONE },
   // From: AxeL <axel__17@users.sourceforge.net>
