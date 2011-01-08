@@ -3,7 +3,7 @@ bin_PROGRAMS=mtp-connect mtp-detect mtp-tracks mtp-files \
 	mtp-format mtp-albumart mtp-albums mtp-newplaylist mtp-emptyfolders \
 	mtp-thumb mtp-reset
 
-mtp_connect_SOURCES=connect.c delfile.c getfile.c newfolder.c \
+mtp_connect_SOURCES=connect.c connect.h delfile.c getfile.c newfolder.c \
 	sendfile.c sendtr.c pathutils.c pathutils.h \
 	util.c util.h common.h
 mtp_detect_SOURCES=detect.c util.c util.h common.h
