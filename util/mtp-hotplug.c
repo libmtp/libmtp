@@ -56,7 +56,14 @@ int main (int argc, char **argv)
   extern int optind;
   extern char *optarg;
   char *udev_action = NULL;
-  char default_udev_action[] = "SYMLINK+=\"libmtp-%k\", MODE=\"666\", ENV{ID_MTP_DEVICE}=\"1\", ENV{ID_MEDIA_PLAYER}=\"1\"";
+  /*
+   * You could tag on MODE="0666" here to enfore writeable
+   * device nodes, use the command line argument for that.
+   * Current udev default rules will make any device tagged
+   * with ENV{ID_MEDIA_PLAYER}=1 writable for the console
+   * user.
+   */
+  char default_udev_action[] = "SYMLINK+=\"libmtp-%k\", ENV{ID_MTP_DEVICE}=\"1\", ENV{ID_MEDIA_PLAYER}=\"1\"";
   char *action; // To hold the action actually used.
   uint16_t last_vendor = 0x0000U;
 

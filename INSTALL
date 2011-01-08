@@ -149,20 +149,37 @@ example SANE backends use.
 
 The libmtp.rules file that comes with libmtp can be used as a starter.
 
-First you need a crazy rule that creates a device node in the
-/dev/bus/usb hierarchy whenever any USB device is connected. The
-script has this at the top, you can comment it in if your
-distribution does not already create these device nodes.
+This will set the environment variables ID_MEDIA_PLAYER and
+ID_MTP_DEVICE to "1" and the former one will be recognized by the
+scripts distributed by recent versions of udev to be a
+console-writable device that should be accessible for all
+users.
 
-Then libusb may need to be patched to recognize this hierarchy. 
+Ancient udev, HAL, libusb
+-------------------------
+
+The old script for udev used to set the device access to "666"
+which is rather nasty (not that big security issue, unless you
+think someone will break into your jukebox) some systems used
+to let PAM do this by placing a configuration file in
+/etc/security/ somewhere. Then it was replaced with simple
+udev rules.
+
+At one point HAL was used to take devices detected by udev and
+signal to userspace that they were available and provide some
+information about them. This was unnecessary middleware, it has
+been killed and most userspace applications now get their
+information directly from udev instead.
+
+In old libusb first you need a crazy rule that creates a device
+node in the /dev/bus/usb hierarchy whenever any USB device is
+connected. The script has this at the top, you can comment it
+in if your distribution does not already create these device
+nodes.
+
+Then libusb may need to be patched to recognize this hierarchy.
 The 0.1.12 version is the first which is properly fixed.
 
-The script sets the device access to "666" which is rather nasty
-(not that big security issue, unless you think someone will break
-into your jukebox) some systems prefer to let PAM do this by placing
-a configuration file in /etc/security/ somewhere. See the Fedora Extras
-SRPM source package in case you're interested in how it is handled
-there.
 
 
 If you cannot run hotplugging
