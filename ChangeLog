@@ -1,3 +1,7 @@
+2011-01-18  Denis Dupeyron <calchan@gentoo.org>
+
+	* configure.ac: make Doxygen doc generation optional.
+
 2011-01-09  Linus Walleij <triad@df.lth.se>
 
 	* configure.ac: bump to 1.0.4
