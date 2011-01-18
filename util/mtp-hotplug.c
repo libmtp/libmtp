@@ -205,7 +205,7 @@ int main (int argc, char **argv)
      * every USB device that is either PTP or vendor specific
      */
     printf("\n# Autoprobe vendor-specific and PTP devices\n");
-    printf("ENV{ID_MTP_DEVICE}!=\"1\", ATTR{bDeviceClass}==\"00|06|ff\", PROGRAM=\"/lib/udev/mtp-probe /sys$env{DEVPATH} $attr{busnum} $attr{devnum}\", RESULT==\"1\", %s\n", action);
+    printf("ENV{ID_MTP_DEVICE}!=\"1\", ATTR{bDeviceClass}==\"00|02|06|ff\", PROGRAM=\"/lib/udev/mtp-probe /sys$env{DEVPATH} $attr{busnum} $attr{devnum}\", RESULT==\"1\", %s\n", action);
     printf("\nLABEL=\"libmtp_rules_end\"\n");
     break;
   case style_hal:
