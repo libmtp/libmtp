@@ -17,7 +17,7 @@ AM_ICONV
 # For this library the default libexecdir is the udev
 # dir, because it's only used for the udev probe program
 # nothing else makes sense for this.
-libexecdir=/$(libdir)/udev
+libexecdir=/lib/udev
 
 # Check for doxygen
 AC_CHECK_PROG(HAVE_DOXYGEN, doxygen, true, false)
