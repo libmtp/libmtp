@@ -10,15 +10,15 @@ EXTRA_DIST=libmtp.pc libmtp.sh COPYING README.windows.txt
 # build and ship it on Linux.
 if USE_LINUX
 udevrulesdir=$(libexecdir)/rules.d
-udevrules_DATA=libmtp.rules
+udevrules_DATA=@UDEV_RULES_FILE@
 noinst_DATA=libmtp.usermap libmtp.fdi
 
 libmtp.usermap: util/mtp-hotplug
 	util/mtp-hotplug > libmtp.usermap
-libmtp.rules: util/mtp-hotplug
-	util/mtp-hotplug -u > libmtp.rules
+@UDEV_RULES_FILE@: util/mtp-hotplug
+	util/mtp-hotplug -u > @UDEV_RULES_FILE@
 libmtp.fdi: util/mtp-hotplug
 	util/mtp-hotplug -H > libmtp.fdi
 
-CLEANFILES = libmtp.usermap libmtp.rules libmtp.fdi
+CLEANFILES = libmtp.usermap @UDEV_RULES_FILE@ libmtp.fdi
 endif

@@ -1,6 +1,8 @@
 2011-01-18  Denis Dupeyron <calchan@gentoo.org>
 
-	* configure.ac: make Doxygen doc generation optional.
+	* configure.ac: make Doxygen doc generation optional, make
+	  it possible to pass a custom name for the udev rules file,
+	  use e.g. --with-udev-rules-file=70-libmtp.rules
 
 2011-01-09  Linus Walleij <triad@df.lth.se>
 
