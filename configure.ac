@@ -19,6 +19,13 @@ AM_ICONV
 # nothing else makes sense for this.
 libexecdir=/lib/udev
 
+# Optionally set udev rules file name
+UDEV_RULES_FILE=libmtp.rules
+AC_ARG_WITH(udev-rules-file,
+    AC_HELP_STRING([--with-udev-rules-file=NAME],
+    [udev rules file name [default=libmtp.rules]]), [UDEV_RULES_FILE="$withval"], [])
+AC_SUBST(UDEV_RULES_FILE)
+
 # Optionally enable and check for doxygen
 AC_ARG_ENABLE([doxygen],
     AS_HELP_STRING([--enable-doxygen], [Build API documentation using Doxygen]),
