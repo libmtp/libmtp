@@ -229,13 +229,18 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
   unsigned char buf[1024], cmd;
   int i;
   int ret;
+  /* This is to indicate if we find some vendor interface */
+  int found_vendor_spec_interface = 0;
 
   /*
-   * Don't examine hubs or HID devices, no point in that.
-   * (Some Kensington mice really don't like this.)
+   * Don't examine devices that are not likely to
+   * contain any MTP interface, update this the day
+   * you find some weird combination...
    */
-  if (dev->descriptor.bDeviceClass == USB_CLASS_HUB ||
-      dev->descriptor.bDeviceClass == USB_CLASS_HID) {
+  if (dev->descriptor.bDeviceClass != USB_CLASS_PER_INTERFACE &&
+      dev->descriptor.bDeviceClass != USB_CLASS_COMM &&
+      dev->descriptor.bDeviceClass != USB_CLASS_PTP &&
+      dev->descriptor.bDeviceClass != USB_CLASS_VENDOR_SPEC) {
     return 0;
   }
 
@@ -268,6 +273,15 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
 	  /* Current interface descriptor */
 	  struct usb_interface_descriptor *intf =
 	    &dev->config[i].interface[j].altsetting[k];
+
+	  /*
+	   * We only want to probe for the OS descriptor if the
+	   * device is USB_CLASS_VENDOR_SPEC or one of the interfaces
+	   * in it is, so flag if we find an interface like this.
+	   */
+	  if (intf->bInterfaceClass == USB_CLASS_VENDOR_SPEC) {
+	    found_vendor_spec_interface = 1;
+	  }
 
 	  /*
 	   * Check for Still Image Capture class with PIMA 15740 protocol,
@@ -329,98 +343,118 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
       LIBMTP_INFO("dev->config is NULL in probe_device_descriptor yet dev->descriptor.bNumConfigurations > 0\n");
   }
 
-  /* Read the special descriptor */
-  ret = usb_get_descriptor(devh, 0x03, 0xee, buf, sizeof(buf));
-
-  // Dump it, if requested
-  if (dumpfile != NULL && ret > 0) {
-    fprintf(dumpfile, "Microsoft device descriptor 0xee:\n");
-    data_dump_ascii(dumpfile, buf, ret, 16);
-  }
-
-  /* Check if descriptor length is at least 10 bytes */
-  if (ret < 10) {
-    usb_close(devh);
-    return 0;
-  }
-
-  /* Check if this device has a Microsoft Descriptor */
-  if (!((buf[2] == 'M') && (buf[4] == 'S') &&
-	(buf[6] == 'F') && (buf[8] == 'T'))) {
-    usb_close(devh);
-    return 0;
-  }
-
-  /* Check if device responds to control message 1 or if there is an error */
-  cmd = buf[16];
-  ret = usb_control_msg (devh,
-			 USB_ENDPOINT_IN | USB_RECIP_DEVICE | USB_TYPE_VENDOR,
-			 cmd,
-			 0,
-			 4,
-			 (char *) buf,
-			 sizeof(buf),
-                         USB_TIMEOUT_DEFAULT);
-
-  // Dump it, if requested
-  if (dumpfile != NULL && ret > 0) {
-    fprintf(dumpfile, "Microsoft device response to control message 1, CMD 0x%02x:\n", cmd);
-    data_dump_ascii(dumpfile, buf, ret, 16);
-  }
-
-  /* If this is true, the device either isn't MTP or there was an error */
-  if (ret <= 0x15) {
-    /* TODO: If there was an error, flag it and let the user know somehow */
-    /* if(ret == -1) {} */
-    usb_close(devh);
-    return 0;
-  }
-
-  /* Check if device is MTP or if it is something like a USB Mass Storage
-     device with Janus DRM support */
-  if ((buf[0x12] != 'M') || (buf[0x13] != 'T') || (buf[0x14] != 'P')) {
-    usb_close(devh);
-    return 0;
-  }
-
-  /* After this point we are probably dealing with an MTP device */
-
   /*
-   * Check if device responds to control message 2, which is
-   * the extended device parameters. Most devices will just
-   * respond with a copy of the same message as for the first
-   * message, some respond with zero-length (which is OK)
-   * and some with pure garbage. We're not parsing the result
-   * so this is not very important.
+   * Only probe for OS descriptor if the device is vendor specific
+   * or one of the interfaces found is.
    */
-  ret = usb_control_msg (devh,
-			 USB_ENDPOINT_IN | USB_RECIP_DEVICE | USB_TYPE_VENDOR,
-			 cmd,
-			 0,
-			 5,
-			 (char *) buf,
-			 sizeof(buf),
-                         USB_TIMEOUT_DEFAULT);
+  if (dev->descriptor.bDeviceClass == USB_CLASS_VENDOR_SPEC ||
+      found_vendor_spec_interface) {
 
-  // Dump it, if requested
-  if (dumpfile != NULL && ret > 0) {
-    fprintf(dumpfile, "Microsoft device response to control message 2, CMD 0x%02x:\n", cmd);
-    data_dump_ascii(dumpfile, buf, ret, 16);
-  }
+    /* Read the special descriptor */
+    ret = usb_get_descriptor(devh, 0x03, 0xee, buf, sizeof(buf));
 
-  /* If this is true, the device errored against control message 2 */
-  if (ret == -1) {
-    /* TODO: Implement callback function to let managing program know there
-       was a problem, along with description of the problem */
-    LIBMTP_ERROR("Potential MTP Device with VendorID:%04x and "
-	    "ProductID:%04x encountered an error responding to "
-	    "control message 2.\n"
-	    "Problems may arrise but continuing\n",
-	    dev->descriptor.idVendor, dev->descriptor.idProduct);
-  } else if (dumpfile != NULL && ret == 0) {
-    fprintf(dumpfile, "Zero-length response to control message 2 (OK)\n");
-  } else if (dumpfile != NULL) {
-    fprintf(dumpfile, "Device responds to control message 2 with some data.\n");
+    /*
+     * If something failed we're probably stalled to we need
+     * to clear the stall off the endpoint and say this is not
+     * MTP.
+     */
+    if (ret < 0) {
+      /* EP0 is the default control endpoint */
+      usb_clear_halt(devh, 0);
+      usb_close(devh);
+      return 0;
+    }
+
+    // Dump it, if requested
+    if (dumpfile != NULL && ret > 0) {
+      fprintf(dumpfile, "Microsoft device descriptor 0xee:\n");
+      data_dump_ascii(dumpfile, buf, ret, 16);
+    }
+
+    /* Check if descriptor length is at least 10 bytes */
+    if (ret < 10) {
+      usb_close(devh);
+      return 0;
+    }
+
+    /* Check if this device has a Microsoft Descriptor */
+    if (!((buf[2] == 'M') && (buf[4] == 'S') &&
+	  (buf[6] == 'F') && (buf[8] == 'T'))) {
+      usb_close(devh);
+      return 0;
+    }
+
+    /* Check if device responds to control message 1 or if there is an error */
+    cmd = buf[16];
+    ret = usb_control_msg (devh,
+			   USB_ENDPOINT_IN | USB_RECIP_DEVICE | USB_TYPE_VENDOR,
+			   cmd,
+			   0,
+			   4,
+			   (char *) buf,
+			   sizeof(buf),
+			   USB_TIMEOUT_DEFAULT);
+
+    // Dump it, if requested
+    if (dumpfile != NULL && ret > 0) {
+      fprintf(dumpfile, "Microsoft device response to control message 1, CMD 0x%02x:\n", cmd);
+      data_dump_ascii(dumpfile, buf, ret, 16);
+    }
+
+    /* If this is true, the device either isn't MTP or there was an error */
+    if (ret <= 0x15) {
+      /* TODO: If there was an error, flag it and let the user know somehow */
+      /* if(ret == -1) {} */
+      usb_close(devh);
+      return 0;
+    }
+
+    /* Check if device is MTP or if it is something like a USB Mass Storage
+       device with Janus DRM support */
+    if ((buf[0x12] != 'M') || (buf[0x13] != 'T') || (buf[0x14] != 'P')) {
+      usb_close(devh);
+      return 0;
+    }
+
+    /* After this point we are probably dealing with an MTP device */
+
+    /*
+     * Check if device responds to control message 2, which is
+     * the extended device parameters. Most devices will just
+     * respond with a copy of the same message as for the first
+     * message, some respond with zero-length (which is OK)
+     * and some with pure garbage. We're not parsing the result
+     * so this is not very important.
+     */
+    ret = usb_control_msg (devh,
+			   USB_ENDPOINT_IN | USB_RECIP_DEVICE | USB_TYPE_VENDOR,
+			   cmd,
+			   0,
+			   5,
+			   (char *) buf,
+			   sizeof(buf),
+			   USB_TIMEOUT_DEFAULT);
+
+    // Dump it, if requested
+    if (dumpfile != NULL && ret > 0) {
+      fprintf(dumpfile, "Microsoft device response to control message 2, CMD 0x%02x:\n", cmd);
+      data_dump_ascii(dumpfile, buf, ret, 16);
+    }
+
+    /* If this is true, the device errored against control message 2 */
+    if (ret == -1) {
+      /* TODO: Implement callback function to let managing program know there
+	 was a problem, along with description of the problem */
+      LIBMTP_ERROR("Potential MTP Device with VendorID:%04x and "
+		   "ProductID:%04x encountered an error responding to "
+		   "control message 2.\n"
+		   "Problems may arrise but continuing\n",
+		   dev->descriptor.idVendor, dev->descriptor.idProduct);
+    } else if (dumpfile != NULL && ret == 0) {
+      fprintf(dumpfile, "Zero-length response to control message 2 (OK)\n");
+    } else if (dumpfile != NULL) {
+      fprintf(dumpfile, "Device responds to control message 2 with some data.\n");
+    }
   }
 
   /* Close the USB device handle */
