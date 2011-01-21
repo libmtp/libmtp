@@ -19,12 +19,15 @@ AM_ICONV
 # nothing else makes sense for this.
 libexecdir=/lib/udev
 
-# Optionally set udev rules file name
-UDEV_RULES_FILE=libmtp.rules
+# Optionally set path to and name of udev rules file
+UDEV_RULES_PATH=/lib/udev/rules.d
+UDEV_RULES_NAME=libmtp.rules
 AC_ARG_WITH(udev-rules-file,
-    AC_HELP_STRING([--with-udev-rules-file=NAME],
-    [udev rules file name [default=libmtp.rules]]), [UDEV_RULES_FILE="$withval"], [])
-AC_SUBST(UDEV_RULES_FILE)
+    AC_HELP_STRING([--with-udev-rules-file=PATH],
+    [full path to udev rules file [default=/lib/udev/rules.d/libmtp.rules]]),
+    [UDEV_RULES_PATH="${withval%/*}"; UDEV_RULES_NAME="${withval##*/}"], [])
+AC_SUBST(UDEV_RULES_PATH)
+AC_SUBST(UDEV_RULES_NAME)
 
 # Optionally enable and check for doxygen
 AC_ARG_ENABLE([doxygen],
