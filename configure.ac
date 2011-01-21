@@ -28,9 +28,9 @@ AC_SUBST(UDEV_RULES_FILE)
 
 # Optionally enable and check for doxygen
 AC_ARG_ENABLE([doxygen],
-    AS_HELP_STRING([--enable-doxygen], [Build API documentation using Doxygen]),
+    AS_HELP_STRING([--enable-doxygen], [Build API documentation using Doxygen [default=no]]),
     [ac_enable_doxygen=$enableval], [ac_enable_doxygen=auto])
-if test "x$ac_enable_doxygen" != "xno"; then
+if test "x$ac_enable_doxygen" == "xyes"; then
     AC_CHECK_PROG(HAVE_DOXYGEN, doxygen, true, false)
     if test "x$HAVE_DOXYGEN" = "xfalse" -a "x$ac_enable_doxygen" = "xyes"; then
         AC_MSG_ERROR([*** API documentation explicitly requested but Doxygen not found])
