@@ -237,9 +237,9 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
    * contain any MTP interface, update this the day
    * you find some weird combination...
    */
-  if (dev->descriptor.bDeviceClass != USB_CLASS_PER_INTERFACE &&
-      dev->descriptor.bDeviceClass != USB_CLASS_COMM &&
-      dev->descriptor.bDeviceClass != USB_CLASS_PTP &&
+  if (dev->descriptor.bDeviceClass != USB_CLASS_PER_INTERFACE ||
+      dev->descriptor.bDeviceClass != USB_CLASS_COMM ||
+      dev->descriptor.bDeviceClass != USB_CLASS_PTP ||
       dev->descriptor.bDeviceClass != USB_CLASS_VENDOR_SPEC) {
     return 0;
   }
