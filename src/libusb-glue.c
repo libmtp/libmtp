@@ -287,17 +287,28 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
 	   * Check for Still Image Capture class with PIMA 15740 protocol,
 	   * also known as PTP
 	   */
+#if 0
 	  if (intf->bInterfaceClass == USB_CLASS_PTP
 	      && intf->bInterfaceSubClass == 0x01
 	      && intf->bInterfaceProtocol == 0x01) {
 	    if (dumpfile != NULL) {
-              fprintf(dumpfile, "Configuration %d, interface %d, altsetting %d:\n", i, j, k);
-	      fprintf(dumpfile, "   Interface implements PTP class,"
-		      " no further probing.\n");
+	      fprintf(dumpfile, "   Found PTP device, check vendor "
+		      "extension...\n");
 	    }
-            usb_close(devh);
-            return 1;
+	    // This is where we may insert code to open a PTP
+	    // session and query the vendor extension ID to see
+	    // if it is 1, i.e. MTP.
+	    if (was_mtp_extension) {
+	      usb_close(devh);
+	      return 1;
+	    }
 	  }
+#endif
+
+	  /*
+	   * Next we search for the MTP substring in the interface name.
+	   * For example : "RIM MS/MTP" should work.
+	   */
           buf[0] = '\0';
           ret = usb_get_string_simple(devh,
 				      dev->config[i].interface[j].altsetting[k].iInterface,
@@ -305,8 +316,6 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
 				      1024);
 	  if (ret < 3)
 	    continue;
-	  // We search for the MTP string.
-	  // For example : "RIM MS/MTP" should work.
           if (strstr((char *) buf, "MTP") != NULL) {
 	    if (dumpfile != NULL) {
               fprintf(dumpfile, "Configuration %d, interface %d, altsetting %d:\n", i, j, k);
