@@ -14,20 +14,21 @@ AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
 AM_ICONV
 
-# For this library the default libexecdir is the udev
-# dir, because it's only used for the udev probe program
-# nothing else makes sense for this.
-libexecdir=/lib/udev
+# Optionally set install location of udev
+UDEV=/lib/udev
+AC_ARG_WITH(udev,
+    AC_HELP_STRING([--with-udev=DIR],
+    [directory where udev is installed [default=/lib/udev]]),
+    [UDEV="${withval}"], [])
+AC_SUBST(UDEV)
 
-# Optionally set path to and name of udev rules file
-UDEV_RULES_PATH=/lib/udev/rules.d
-UDEV_RULES_NAME=libmtp.rules
-AC_ARG_WITH(udev-rules-file,
-    AC_HELP_STRING([--with-udev-rules-file=PATH],
-    [full path to udev rules file [default=/lib/udev/rules.d/libmtp.rules]]),
-    [UDEV_RULES_PATH="${withval%/*}"; UDEV_RULES_NAME="${withval##*/}"], [])
-AC_SUBST(UDEV_RULES_PATH)
-AC_SUBST(UDEV_RULES_NAME)
+# Optionally set name of udev rules file
+UDEV_RULES=libmtp.rules
+AC_ARG_WITH(udev-rules,
+    AC_HELP_STRING([--with-udev-rules=NAME],
+    [file name for udev rules [default=libmtp.rules]]),
+    [UDEV_RULES="${withval}"], [])
+AC_SUBST(UDEV_RULES)
 
 # Optionally enable and check for doxygen
 AC_ARG_ENABLE([doxygen],

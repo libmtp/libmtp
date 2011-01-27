@@ -34,6 +34,7 @@ static void usage(void)
   fprintf(stderr, "       -H:  use hal syntax\n");
   fprintf(stderr, "       -i:  use usb.ids simple list syntax\n");
   fprintf(stderr, "       -a\"ACTION\": perform udev action ACTION on attachment\n");
+  fprintf(stderr, "       -p\"DIR\": directory where mtp-probe will be installed\n");
   exit(1);
 }
 
@@ -66,11 +67,14 @@ int main (int argc, char **argv)
   char default_udev_action[] = "SYMLINK+=\"libmtp-%k\", ENV{ID_MTP_DEVICE}=\"1\", ENV{ID_MEDIA_PLAYER}=\"1\"";
   char *action; // To hold the action actually used.
   uint16_t last_vendor = 0x0000U;
+  char *mtp_probe_dir = NULL;
+  char default_mtp_probe_dir[] = "/lib/udev";
 
-  while ( (opt = getopt(argc, argv, "uoUiHa:")) != -1 ) {
+  while ( (opt = getopt(argc, argv, "uoiHa:p:")) != -1 ) {
     switch (opt) {
     case 'a':
       udev_action = strdup(optarg);
+      break;
     case 'u':
       style = style_udev;
       break;
@@ -83,6 +87,9 @@ int main (int argc, char **argv)
     case 'i':
       style = style_usbids;
       break;
+    case 'p':
+      mtp_probe_dir = strdup(optarg);
+      break;
     default:
       usage();
     }
@@ -93,6 +100,8 @@ int main (int argc, char **argv)
   } else {
     action = default_udev_action;
   }
+
+  if (mtp_probe_dir == NULL) mtp_probe_dir = default_mtp_probe_dir;
 
   LIBMTP_Init();
   ret = LIBMTP_Get_Supported_Devices_List(&entries, &numentries);
@@ -205,7 +214,7 @@ int main (int argc, char **argv)
      * every USB device that is either PTP or vendor specific
      */
     printf("\n# Autoprobe vendor-specific, communication and PTP devices\n");
-    printf("ENV{ID_MTP_DEVICE}!=\"1\", ATTR{bDeviceClass}==\"00|02|06|ff\", PROGRAM=\"/lib/udev/mtp-probe /sys$env{DEVPATH} $attr{busnum} $attr{devnum}\", RESULT==\"1\", %s\n", action);
+    printf("ENV{ID_MTP_DEVICE}!=\"1\", ATTR{bDeviceClass}==\"00|02|06|ff\", PROGRAM=\"%s/mtp-probe /sys$env{DEVPATH} $attr{busnum} $attr{devnum}\", RESULT==\"1\", %s\n", mtp_probe_dir, action);
     printf("\nLABEL=\"libmtp_rules_end\"\n");
     break;
   case style_hal:

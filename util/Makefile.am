@@ -2,7 +2,8 @@ if USE_LINUX
 bin_PROGRAMS=mtp-hotplug
 mtp_hotplug_SOURCES=mtp-hotplug.c
 
-libexec_PROGRAMS=mtp-probe
+mtp_probedir=$(prefix)/@UDEV@
+mtp_probe_PROGRAMS=mtp-probe
 mtp_probe_SOURCES=mtp-probe.c
 endif
 
