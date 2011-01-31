@@ -1,7 +1,7 @@
 lib_LTLIBRARIES=libmtp.la
 libmtp_la_SOURCES=libmtp.c unicode.c unicode.h util.c util.h playlist-spl.c \
 	libusb-glue.c libusb-glue.h \
-	gphoto2-endian.h libptp-stdint.h ptp.c ptp.h \
+	gphoto2-endian.h _stdint.h ptp.c ptp.h \
 	music-players.h device-flags.h playlist-spl.h
 include_HEADERS=libmtp.h
 EXTRA_DIST=libmtp.h.in libmtp.sym ptp-pack.c
@@ -58,4 +58,4 @@ libmtp_la_LDFLAGS=@LDFLAGS@ -no-undefined -export-symbols $(srcdir)/libmtp.sym -
 libmtp_la_LIBADD=$(W32_LIBS) $(LTLIBICONV)
 libmtp_la_DEPENDENCIES=$(srcdir)/libmtp.sym
 
-DISTCLEANFILES = _stdint.h
+DISTCLEANFILES = _stdint.h gphoto2-endian.h
