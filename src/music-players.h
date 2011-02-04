@@ -228,7 +228,7 @@
   // From Santi Béjar <sbejar@gmail.com> - not sure this is MTP...
   // { "Samsung", 0x04e8, "E250 Mobile Phone", 0x663e, DEVICE_FLAG_UNLOAD_DRIVER },
   // From an anonymous SF user
-  { "Samsung", 0x04e8, "M7600 Beat/GT-S8300T", 0x6642,
+  { "Samsung", 0x04e8, "M7600 Beat/GT-S8300T/SGH-F490", 0x6642,
       DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_BATTERY_LEVEL },
   // From Lionel Bouton
   { "Samsung", 0x04e8, "X830 Mobile Phone", 0x6702, DEVICE_FLAG_UNLOAD_DRIVER },
@@ -1132,6 +1132,12 @@
       DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by anonymous user
+  { "Motorola", 0x22b8, "DROID2", 0x42a7,
+      DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Marcus Meissner to libptp2
   { "Motorola", 0x22b8, "K1", 0x4811, DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
   // Reported by Hans-Joachim Baader <hjb@pro-linux.de> to libptp2
@@ -1199,6 +1205,8 @@
     DEVICE_FLAG_BROKEN_BATTERY_LEVEL | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
     DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST | DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
 
+  // Reported by anonymous user
+  { "Conceptronic", 0x1e53, "CMTD2", 0x0005, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Demadridsur <demadridsur@gmail.com>
   { "O2 Sistemas", 0x1e53, "ZoltarTV", 0x0006, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by da-beat <dabeat@gmail.com>
