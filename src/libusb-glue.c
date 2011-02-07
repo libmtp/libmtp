@@ -464,11 +464,14 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
     } else if (dumpfile != NULL) {
       fprintf(dumpfile, "Device responds to control message 2 with some data.\n");
     }
+    /* Close the USB device handle */
+    usb_close(devh);
+    return 1;
   }
 
   /* Close the USB device handle */
   usb_close(devh);
-  return 1;
+  return 0;
 }
 
 /**
