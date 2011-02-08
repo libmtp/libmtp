@@ -9,7 +9,7 @@ EXTRA_DIST=libmtp.pc libmtp.sh COPYING README.windows.txt
 # This stuff only makes sense on Linux so only
 # build and ship it on Linux.
 if USE_LINUX
-udevrulesdir=$(prefix)/@UDEV@/rules.d
+udevrulesdir=@UDEV@/rules.d
 udevrules_DATA=@UDEV_RULES@
 noinst_DATA=libmtp.usermap libmtp.fdi
 
