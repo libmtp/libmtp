@@ -28,13 +28,15 @@
 
 static void usage(void)
 {
-  fprintf(stderr, "usage: hotplug [-u -H -i -a\"ACTION\"]\n");
+  fprintf(stderr, "usage: hotplug [-u -H -i -a\"ACTION\"] -p\"DIR\" -g\"GROUP\" -m\"MODE\"\n");
   fprintf(stderr, "       -u:  use udev syntax\n");
   fprintf(stderr, "       -o:  use old udev syntax\n");
   fprintf(stderr, "       -H:  use hal syntax\n");
   fprintf(stderr, "       -i:  use usb.ids simple list syntax\n");
   fprintf(stderr, "       -a\"ACTION\": perform udev action ACTION on attachment\n");
   fprintf(stderr, "       -p\"DIR\": directory where mtp-probe will be installed\n");
+  fprintf(stderr, "       -g\"GROUP\": file group for device nodes\n");
+  fprintf(stderr, "       -m\"MODE\": file mode for device nodes\n");
   exit(1);
 }
 
@@ -69,8 +71,10 @@ int main (int argc, char **argv)
   uint16_t last_vendor = 0x0000U;
   char *mtp_probe_dir = NULL;
   char default_mtp_probe_dir[] = "/lib/udev";
+  char *udev_group= NULL;
+  char *udev_mode = NULL;
 
-  while ( (opt = getopt(argc, argv, "uoiHa:p:")) != -1 ) {
+  while ( (opt = getopt(argc, argv, "uoiHa:p:g:m:")) != -1 ) {
     switch (opt) {
     case 'a':
       udev_action = strdup(optarg);
@@ -90,7 +94,13 @@ int main (int argc, char **argv)
     case 'p':
       mtp_probe_dir = strdup(optarg);
       break;
-    default:
+    case 'g':
+      udev_group = strdup(optarg);
+      break;
+    case 'm':
+      udev_mode = strdup(optarg);
+      break;
+ default:
       usage();
     }
   }
@@ -148,7 +158,10 @@ int main (int argc, char **argv)
       case style_udev:
       case style_udev_old:
 	printf("# %s %s\n", entry->vendor, entry->product);
-	printf("ATTR{idVendor}==\"%04x\", ATTR{idProduct}==\"%04x\", %s\n", entry->vendor_id, entry->product_id, action);
+	printf("ATTR{idVendor}==\"%04x\", ATTR{idProduct}==\"%04x\", %s", entry->vendor_id, entry->product_id, action);
+	if (udev_group != NULL) printf(", GROUP=\"%s\"", udev_group);
+	if (udev_mode != NULL) printf(", MODE=\"%s\"", udev_mode);
+	printf("\n");
 	break;
       case style_usbmap:
           printf("# %s %s\n", entry->vendor, entry->product);
@@ -214,8 +227,11 @@ int main (int argc, char **argv)
      * every USB device that is either PTP or vendor specific
      */
     printf("\n# Autoprobe vendor-specific, communication and PTP devices\n");
-    printf("ENV{ID_MTP_DEVICE}!=\"1\", ATTR{bDeviceClass}==\"00|02|06|ff\", PROGRAM=\"%s/mtp-probe /sys$env{DEVPATH} $attr{busnum} $attr{devnum}\", RESULT==\"1\", %s\n", mtp_probe_dir, action);
-    printf("\nLABEL=\"libmtp_rules_end\"\n");
+    printf("ENV{ID_MTP_DEVICE}!=\"1\", ATTR{bDeviceClass}==\"00|02|06|ff\", PROGRAM=\"%s/mtp-probe /sys$env{DEVPATH} $attr{busnum} $attr{devnum}\", RESULT==\"1\", %s", mtp_probe_dir, action);
+    if (udev_group != NULL) printf(", GROUP=\"%s\"", udev_group);
+    if (udev_mode != NULL) printf(", MODE=\"%s\"", udev_mode);
+    printf("\n");
+   printf("\nLABEL=\"libmtp_rules_end\"\n");
     break;
   case style_hal:
     printf("    </match>\n");

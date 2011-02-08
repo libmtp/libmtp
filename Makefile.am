@@ -16,7 +16,7 @@ noinst_DATA=libmtp.usermap libmtp.fdi
 libmtp.usermap: util/mtp-hotplug
 	util/mtp-hotplug > libmtp.usermap
 @UDEV_RULES@: util/mtp-hotplug
-	util/mtp-hotplug -u -p"@UDEV@" > @UDEV_RULES@
+	util/mtp-hotplug -u -p"@UDEV@" @UDEV_GROUP@ @UDEV_MODE@ > @UDEV_RULES@
 libmtp.fdi: util/mtp-hotplug
 	util/mtp-hotplug -H > libmtp.fdi
 
