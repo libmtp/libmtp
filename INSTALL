@@ -214,3 +214,37 @@ function in your program, see the Autoconf texinfo documentation.
 
 See further:
 http://wiki.buici.com/wiki/Autoconf_and_RPL_MALLOC
+
+Compilation for Solaris/SunOS
+-----------------------------
+
+Darran <chewy509@lycos.com> compiles for Solaris like this:
+
+Configure:
+CFLAGS="I/usr/sfw/lib -L/usr/sfw/lib -R/usr/sfw/lib" MAKE=gmake \
+INSTALL=/usr/ucb/install CC=cc ./configure
+
+Make sure -R/usr/sfw/lib was set in CFLAGS to ensure that the tests
+run by ./configure will find and link libusb.so as needed. (This is a
+Solaris 10 thing - libusb.so lives in /ust/sfw/lib by default, and this
+path is not in the search path for ld, which would cause a whole slew
+of tests run by ./configure to fail).
+
+In ptp.c Line 63 change
+
+"static void ptp_debug (PTPParams *params, const char *format, ...)"
+
+to
+
+"void ptp_debug (PTPParams *params, const char *format, ...)"
+
+This fixes a linking error when building libmtp.so. (static on
+SunStudio causes the function to be local to object file only, and
+not global which breaks building shared objects).
+
+Comment out CFLAGS="$CFLAGS -Wall -Wmissing-prototypes" in
+configure.ac. "-W" flags are not valid for SunStudio. Maybe we
+add a which compiler check in configure.ac and only add them in
+if we are using gcc.
+
+Rebuild /configure due to these changes.
