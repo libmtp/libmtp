@@ -2,7 +2,7 @@
  * \file mtp-hotplug.c
  * Program to create hotplug scripts.
  *
- * Copyright (C) 2005-2010 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2011 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2008 Marcus Meissner <marcus@jet.franken.de>
  *
  * This library is free software; you can redistribute it and/or
@@ -69,8 +69,7 @@ int main (int argc, char **argv)
   char default_udev_action[] = "SYMLINK+=\"libmtp-%k\", ENV{ID_MTP_DEVICE}=\"1\", ENV{ID_MEDIA_PLAYER}=\"1\"";
   char *action; // To hold the action actually used.
   uint16_t last_vendor = 0x0000U;
-  char *mtp_probe_dir = NULL;
-  char default_mtp_probe_dir[] = "/lib/udev";
+  char mtp_probe_dir[256];
   char *udev_group= NULL;
   char *udev_mode = NULL;
 
@@ -92,7 +91,21 @@ int main (int argc, char **argv)
       style = style_usbids;
       break;
     case 'p':
-      mtp_probe_dir = strdup(optarg);
+      strncpy(mtp_probe_dir,optarg,sizeof(mtp_probe_dir));
+      mtp_probe_dir[sizeof(mtp_probe_dir)-1] = '\0';
+      if (strlen(mtp_probe_dir) <= 1) {
+	printf("Supply some sane mtp-probe dir\n");
+	exit(1);
+      }
+      /* Make sure the dir ends with '/' */
+      if (mtp_probe_dir[strlen(mtp_probe_dir)-1] != '/') {
+	int index = strlen(mtp_probe_dir);
+	if (index >= (sizeof(mtp_probe_dir)-1)) {
+	  exit(1);
+	}
+	mtp_probe_dir[index] = '/';
+	mtp_probe_dir[index+1] = '\0';
+      }
       break;
     case 'g':
       udev_group = strdup(optarg);
@@ -110,8 +123,6 @@ int main (int argc, char **argv)
   } else {
     action = default_udev_action;
   }
-
-  if (mtp_probe_dir == NULL) mtp_probe_dir = default_mtp_probe_dir;
 
   LIBMTP_Init();
   ret = LIBMTP_Get_Supported_Devices_List(&entries, &numentries);
@@ -227,7 +238,7 @@ int main (int argc, char **argv)
      * every USB device that is either PTP or vendor specific
      */
     printf("\n# Autoprobe vendor-specific, communication and PTP devices\n");
-    printf("ENV{ID_MTP_DEVICE}!=\"1\", ATTR{bDeviceClass}==\"00|02|06|ff\", PROGRAM=\"%s/mtp-probe /sys$env{DEVPATH} $attr{busnum} $attr{devnum}\", RESULT==\"1\", %s", mtp_probe_dir, action);
+    printf("ENV{ID_MTP_DEVICE}!=\"1\", ATTR{bDeviceClass}==\"00|02|06|ff\", PROGRAM=\"%smtp-probe /sys$env{DEVPATH} $attr{busnum} $attr{devnum}\", RESULT==\"1\", %s", mtp_probe_dir, action);
     if (udev_group != NULL) printf(", GROUP=\"%s\"", udev_group);
     if (udev_mode != NULL) printf(", MODE=\"%s\"", udev_mode);
     printf("\n");
