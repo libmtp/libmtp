@@ -106,6 +106,10 @@ int main (int argc, char **argv)
 	mtp_probe_dir[index] = '/';
 	mtp_probe_dir[index+1] = '\0';
       }
+      /* Don't add the standard udev path... */
+      if (!strcmp(mtp_probe_dir, "/lib/udev/")) {
+	mtp_probe_dir[0] = '\0';
+      }
       break;
     case 'g':
       udev_group = strdup(optarg);
