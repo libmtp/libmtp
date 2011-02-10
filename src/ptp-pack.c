@@ -4,9 +4,6 @@
 #include <iconv.h>
 #endif
 
-extern void
-ptp_debug (PTPParams *params, const char *format, ...);
-
 static inline uint16_t
 htod16p (PTPParams *params, uint16_t var)
 {
@@ -1643,6 +1640,7 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 			ptp_debug (params, "event %d: EOS event CameraStatusChanged (size %d)", i, size);
 			(*ce)[i].type = PTP_CANON_EOS_CHANGES_TYPE_CAMERASTATUS;
 			(*ce)[i].u.status =  dtoh32a(curdata+8);
+			params->eos_camerastatus = dtoh32a(curdata+8);
 			break;
 		case 0: /* end marker */
 			if (size == 8) /* no output */

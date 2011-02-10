@@ -1977,6 +1977,7 @@ struct _PTPParams {
 	int			nrofbacklogentries;
 	int			eos_captureenabled;
 	int			eos_viewfinderenabled;
+	int			eos_camerastatus;
 
 	/* PTP: Wifi profiles */
 	uint8_t 	wifi_profiles_version;
@@ -2495,6 +2496,9 @@ uint16_t ptp_nikon_writewifiprofile (PTPParams* params, PTPNIKONWifiProfile* pro
  **/
 #define ptp_canon_eos_zoom(params,x) ptp_generic_no_data(params,PTP_OC_CANON_EOS_Zoom,1,x)
 #define ptp_canon_eos_zoomposition(params,x,y) ptp_generic_no_data(params,PTP_OC_CANON_EOS_ZoomPosition,2,x,y)
+
+#define ptp_canon_eos_remotereleaseon(params,x) ptp_generic_no_data(params,PTP_OC_CANON_EOS_RemoteReleaseOn,1,x)
+#define ptp_canon_eos_remotereleaseoff(params,x) ptp_generic_no_data(params,PTP_OC_CANON_EOS_RemoteReleaseOff,1,x)
 /**
  * ptp_nikon_mfdrive:
  *
@@ -2621,6 +2625,9 @@ void ptp_free_objectinfo	(PTPObjectInfo *oi);
 void ptp_free_object		(PTPObject *oi);
 
 void ptp_perror			(PTPParams* params, uint16_t error);
+void ptp_debug			(PTPParams *params, const char *format, ...);
+void ptp_error			(PTPParams *params, const char *format, ...);
+
 
 const char*
 ptp_get_property_description(PTPParams* params, uint16_t dpc);
