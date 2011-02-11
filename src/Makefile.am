@@ -30,7 +30,7 @@ EXTRA_DIST=libmtp.h.in libmtp.sym ptp-pack.c
 # ---------------------------------------------------------------------------
 CURRENT=11
 AGE=3
-REVISION=5
+REVISION=6
 SOVERSION=$(CURRENT):$(REVISION):$(AGE)
 LT_CURRENT_MINUS_AGE=`expr $(CURRENT) - $(AGE)`
 
