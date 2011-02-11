@@ -3,7 +3,7 @@
  * List of music players as USB ids.
  *
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
- * Copyright (C) 2005-2010 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2011 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2007 Marcus Meissner
  * Copyright (C) 2007 Ted Bullock
  *
@@ -244,6 +244,10 @@
   // Added by Greg Fitzgerald <netzdamon@gmail.com>
   { "Samsung", 0x04e8, "SAMSUNG Trance", 0x6763, DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAG_PLAYLIST_SPL_V1 },
+  // From anonymous sourceforge user
+  // Guessing on .spl flag, maybe needs NO_ZERO_READS, whatdoIknow
+  { "Samsung", 0x04e8, "GT-S8500", 0x6819,
+      DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_PLAYLIST_SPL_V1 },
   // From: Erik Berglund <erikjber@users.sourceforge.net>
   // Logs indicate this needs DEVICE_FLAG_NO_ZERO_READS
   // https://sourceforge.net/tracker/?func=detail&atid=809061&aid=3026337&group_id=158745
@@ -267,8 +271,10 @@
   { "Microsoft", 0x045e, "Windows MTP Simulator", 0x0622, DEVICE_FLAG_NONE },
   // Reported by Edward Hutchins (used for Zune HDs)
   { "Microsoft", 0x045e, "Zune HD", 0x063e, DEVICE_FLAG_NONE },
+  // Reported by anonymous sourceforge user
+  { "Microsoft", 0x045e, "Kin 1", 0x0640, DEVICE_FLAG_NONE },
   // Reported by Farooq Zaman (used for all Zunes)
-  { "Microsoft", 0x045e, "Zune", 0x0710, DEVICE_FLAG_NONE }, 
+  { "Microsoft", 0x045e, "Zune", 0x0710, DEVICE_FLAG_NONE },
 
   /*
    * JVC
@@ -1246,6 +1252,10 @@
   { "Apple", 0x05ac, "0x1298", 0x1298, DEVICE_FLAG_NONE },
   { "Apple", 0x05ac, "iPod Touch 3rd Gen", 0x1299, DEVICE_FLAG_NONE },
   { "Apple", 0x05ac, "iPad", 0x129a, DEVICE_FLAG_NONE },
+
+  // Reported by anonymous SourceForge user
+  { "Curitel Communications, Inc.", 0x106c,
+      "Verizon Wireless Device", 0x3215, DEVICE_FLAG_NONE },
 
   /*
    * Other strange stuff.
