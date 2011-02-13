@@ -218,33 +218,39 @@ http://wiki.buici.com/wiki/Autoconf_and_RPL_MALLOC
 Compilation for Solaris/SunOS
 -----------------------------
 
-Darran <chewy509@lycos.com> compiles for Solaris like this:
+libmtp builds on Solaris/SunOS with either gcc or SunStudio 12. It does 
+require GNU Make (aka gmake) to be installed.
 
-Configure:
-CFLAGS="I/usr/sfw/lib -L/usr/sfw/lib -R/usr/sfw/lib" MAKE=gmake \
-INSTALL=/usr/ucb/install CC=cc ./configure
+To build using GCC:
+  % CFLAGS="I/usr/sfw/lib -L/usr/sfw/lib -R/usr/sfw/lib" MAKE=gmake \
+    INSTALL=/usr/ucb/install ./configure
+  % gmake
+  % gmake install
 
-Make sure -R/usr/sfw/lib was set in CFLAGS to ensure that the tests
-run by ./configure will find and link libusb.so as needed. (This is a
-Solaris 10 thing - libusb.so lives in /ust/sfw/lib by default, and this
-path is not in the search path for ld, which would cause a whole slew
-of tests run by ./configure to fail).
+Custom CLFAGS are required for libusb.so as it lives in /usr/sfw/lib, 
+and this path is not in the default search path for ld. If these 
+CFLAGS are not set, several components of ./configure will fail leading 
+to a failed build.
 
-In ptp.c Line 63 change
+To build using SunStudio 12:
 
-"static void ptp_debug (PTPParams *params, const char *format, ...)"
+Comment out CFLAGS="$CFLAGS -Wall -Wmissing-prototypes" in configure.ac 
+and rebuild ./configure using autoconf. Alternatively comment out line 
+  CFLAGS="$CFLAGS -Wall -Wmissing-prototypes"
+in ./configure if you want to save rebuilding ./configure. The -W 
+options are not valid for SunStudio and will cause some tests in ./configure 
+to fail and also create non-valid Makefiles which will cause building libmtp 
+to fail as well. Then:
 
-to
+  % CFLAGS="I/usr/sfw/lib -L/usr/sfw/lib -R/usr/sfw/lib" MAKE=gmake \
+    INSTALL=/usr/ucb/install CC=cc ./configure
+  % gmake
+  % gmake install
 
-"void ptp_debug (PTPParams *params, const char *format, ...)"
 
-This fixes a linking error when building libmtp.so. (static on
-SunStudio causes the function to be local to object file only, and
-not global which breaks building shared objects).
-
-Comment out CFLAGS="$CFLAGS -Wall -Wmissing-prototypes" in
-configure.ac. "-W" flags are not valid for SunStudio. Maybe we
-add a which compiler check in configure.ac and only add them in
-if we are using gcc.
-
-Rebuild /configure due to these changes.
+General Notes:
+All MTP devices on Solaris 10u2+ are driven by the usb_mid driver, which 
+will automatically export ugen device interfaces with the correct device 
+permissions. No special configuration is required. See the usb_mid(7D) 
+and ugen(7D) manpages and /usr/sfw/share/doc/libusb/libusb.txt for 
+more information.
