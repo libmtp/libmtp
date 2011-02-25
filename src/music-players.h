@@ -1155,7 +1155,9 @@
   // Reported by anonymous user
   { "Motorola", 0x22b8, "RAZR2 V8/U9/Z6", 0x6415,
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
-
+  // Reported by Google Inc's Yavor Goulishev <yavor@google.com>
+  { "Motorola", 0x22b8, "Xoom (ID 1)", 0x70a8, DEVICE_FLAG_NONE },
+  { "Motorola", 0x22b8, "Xoom (ID 2)", 0x70a9, DEVICE_FLAG_NONE },
 
   /*
    * Media Keg
