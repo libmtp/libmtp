@@ -1583,96 +1583,95 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
 
   ptp_usb->timeout = USB_TIMEOUT_DEFAULT;
 
-  if ((device_handle = usb_open(dev))){
-    if (!device_handle) {
-      perror("usb_open()");
-      return -1;
-    }
-    ptp_usb->handle = device_handle;
+  device_handle = usb_open(dev);
+  if (!device_handle) {
+    perror("usb_open()");
+    return -1;
+  }
+  ptp_usb->handle = device_handle;
 #ifdef LIBUSB_HAS_DETACH_KERNEL_DRIVER_NP
-    /*
-     * If this device is known to be wrongfully claimed by other kernel
-     * drivers (such as mass storage), then try to unload it to make it
-     * accessible from user space.
-     */
-    if (FLAG_UNLOAD_DRIVER(ptp_usb)) {
-      if (usb_get_driver_np(device_handle, (int) ptp_usb->interface,
-			    buf, sizeof(buf)) == 0) {
-	if (usb_detach_kernel_driver_np(device_handle,
-					(int) ptp_usb->interface)) {
-	  perror("usb_detach_kernel_driver_np()");
-	  return -1;
-        }
+  /*
+   * If this device is known to be wrongfully claimed by other kernel
+   * drivers (such as mass storage), then try to unload it to make it
+   * accessible from user space.
+   */
+  if (FLAG_UNLOAD_DRIVER(ptp_usb)) {
+    if (usb_get_driver_np(device_handle, (int) ptp_usb->interface,
+                          buf, sizeof(buf)) == 0) {
+      if (usb_detach_kernel_driver_np(device_handle,
+                                      (int) ptp_usb->interface)) {
+        perror("usb_detach_kernel_driver_np()");
+        return -1;
       }
     }
+  }
 #endif
 #ifdef __WIN32__
-    // Only needed on Windows, and cause problems on other platforms.
-    if (usb_set_configuration(device_handle, dev->config->bConfigurationValue)) {
-      perror("usb_set_configuration()");
-      return -1;
-    }
+  // Only needed on Windows, and cause problems on other platforms.
+  if (usb_set_configuration(device_handle, dev->config->bConfigurationValue)) {
+    perror("usb_set_configuration()");
+    return -1;
+  }
 #endif
-    // It seems like on kernel 2.6.31 if we already have it open on another
-    // pthread in our app, we'll get an error if we try to claim it again,
-    // but that error is harmless because our process already claimed the interface
-    usbresult = usb_claim_interface(device_handle, (int) ptp_usb->interface);
+  // It seems like on kernel 2.6.31 if we already have it open on another
+  // pthread in our app, we'll get an error if we try to claim it again,
+  // but that error is harmless because our process already claimed the interface
+  usbresult = usb_claim_interface(device_handle, (int) ptp_usb->interface);
 
-    if (usbresult != 0)
-      fprintf(stderr, "ignoring usb_claim_interface = %d", usbresult);
+  if (usbresult != 0)
+    fprintf(stderr, "ignoring usb_claim_interface = %d", usbresult);
 
-    // FIXME : Discovered in the Barry project
-    // kernels >= 2.6.28 don't set the interface the same way as
-    // previous versions did, and the Blackberry gets confused
-    // if it isn't explicitly set
-    // See above, same issue with pthreads means that if this fails it is not
-    // fatal
-    // However, this causes problems on Macs so disable here
-    #ifndef __APPLE__
-    usbresult = usb_set_altinterface(device_handle, 0);
-    if (usbresult)
-      fprintf(stderr, "ignoring usb_claim_interface = %d", usbresult);
-    #endif
+  // FIXME : Discovered in the Barry project
+  // kernels >= 2.6.28 don't set the interface the same way as
+  // previous versions did, and the Blackberry gets confused
+  // if it isn't explicitly set
+  // See above, same issue with pthreads means that if this fails it is not
+  // fatal
+  // However, this causes problems on Macs so disable here
+#ifndef __APPLE__
+  usbresult = usb_set_altinterface(device_handle, 0);
+  if (usbresult)
+    fprintf(stderr, "ignoring usb_claim_interface = %d", usbresult);
+#endif
 
-    if (FLAG_SWITCH_MODE_BLACKBERRY(ptp_usb)) {
-      int ret;
+  if (FLAG_SWITCH_MODE_BLACKBERRY(ptp_usb)) {
+    int ret;
 
-      // FIXME : Only for BlackBerry Storm
-      // What does it mean? Maybe switch mode...
-	  // This first control message is absolutely necessary
-      usleep(1000);
-      ret = usb_control_msg(device_handle,
-		      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
-		      0xaa, 0x00, 0x04, buf, 0x40, 1000);
-      LIBMTP_USB_DEBUG("BlackBerry magic part 1:\n");
-      LIBMTP_USB_DATA(buf, ret, 16);
+    // FIXME : Only for BlackBerry Storm
+    // What does it mean? Maybe switch mode...
+    // This first control message is absolutely necessary
+    usleep(1000);
+    ret = usb_control_msg(device_handle,
+                          USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
+                          0xaa, 0x00, 0x04, buf, 0x40, 1000);
+    LIBMTP_USB_DEBUG("BlackBerry magic part 1:\n");
+    LIBMTP_USB_DATA(buf, ret, 16);
 
-      usleep(1000);
-	  // This control message is unnecessary
-      ret = usb_control_msg(device_handle,
-		      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
-		      0xa5, 0x00, 0x01, buf, 0x02, 1000);
-      LIBMTP_USB_DEBUG("BlackBerry magic part 2:\n");
-      LIBMTP_USB_DATA(buf, ret, 16);
+    usleep(1000);
+    // This control message is unnecessary
+    ret = usb_control_msg(device_handle,
+                          USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
+                          0xa5, 0x00, 0x01, buf, 0x02, 1000);
+    LIBMTP_USB_DEBUG("BlackBerry magic part 2:\n");
+    LIBMTP_USB_DATA(buf, ret, 16);
 
-      usleep(1000);
-	  // This control message is unnecessary
-      ret = usb_control_msg(device_handle,
-		      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
-		      0xa8, 0x00, 0x01, buf, 0x05, 1000);
-      LIBMTP_USB_DEBUG("BlackBerry magic part 3:\n");
-      LIBMTP_USB_DATA(buf, ret, 16);
+    usleep(1000);
+    // This control message is unnecessary
+    ret = usb_control_msg(device_handle,
+                          USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
+                          0xa8, 0x00, 0x01, buf, 0x05, 1000);
+    LIBMTP_USB_DEBUG("BlackBerry magic part 3:\n");
+    LIBMTP_USB_DATA(buf, ret, 16);
 
-      usleep(1000);
-	  // This control message is unnecessary
-      ret = usb_control_msg(device_handle,
-		      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
-		      0xa8, 0x00, 0x01, buf, 0x11, 1000);
-      LIBMTP_USB_DEBUG("BlackBerry magic part 4:\n");
-      LIBMTP_USB_DATA(buf, ret, 16);
+    usleep(1000);
+    // This control message is unnecessary
+    ret = usb_control_msg(device_handle,
+                          USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
+                          0xa8, 0x00, 0x01, buf, 0x11, 1000);
+    LIBMTP_USB_DEBUG("BlackBerry magic part 4:\n");
+    LIBMTP_USB_DATA(buf, ret, 16);
 
-      usleep(1000);
-    }
+    usleep(1000);
   }
   return 0;
 }
