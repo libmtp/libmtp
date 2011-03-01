@@ -5602,12 +5602,16 @@ static int send_file_object_info(LIBMTP_mtpdevice_t *device, LIBMTP_file_t *file
   uint16_t ret;
   int i;
 
-  // Sanity check: no zerolength files.
+#if 0
+  // Sanity check: no zerolength files on some devices?
+  // If the zerolength files cause problems on some devices,
+  // then add a bug flag for this.
   if (filedata->filesize == 0) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "send_file_object_info(): "
 			    "File of zero size.");
     return -1;
   }
+#endif
 
   if (filedata->storage_id != 0) {
     store = filedata->storage_id;

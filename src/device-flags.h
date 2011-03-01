@@ -3,7 +3,7 @@
  * Special device flags to deal with bugs in specific devices.
  *
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
- * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2011 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2007 Marcus Meissner
  * Copyright (C) 2007 Ted Bullock
  *
