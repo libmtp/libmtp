@@ -55,8 +55,11 @@
  * not long enough for large file transfer.  Also, players can
  * spend a bit of time collecting data.  Higher values also
  * make connecting/disconnecting more reliable.
+ *
+ * In march 2011 we upped this from 10000 to 20000 since new
+ * large files of say 25 GB would not be completed else.
  */
-#define USB_TIMEOUT_DEFAULT     10000
+#define USB_TIMEOUT_DEFAULT     20000
 
 /* USB control message data phase direction */
 #ifndef USB_DP_HTD
