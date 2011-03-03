@@ -2,7 +2,7 @@
  * \file libmtp.h
  * Interface to the Media Transfer Protocol library.
  *
- * Copyright (C) 2005-2009 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2011 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2005-2008 Richard A. Low <richard@wentnet.com>
  * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  * Copyright (C) 2008 Florent Mertens <flomertens@gmail.com>
@@ -81,6 +81,7 @@ typedef unsigned __int64 uint64_t;
  * as PTP-defined enumerator types is something different.
  */
 typedef enum {
+  LIBMTP_FILETYPE_FOLDER,
   LIBMTP_FILETYPE_WAV,
   LIBMTP_FILETYPE_MP3,
   LIBMTP_FILETYPE_WMA,
@@ -608,8 +609,8 @@ struct LIBMTP_mtpdevice_struct {
    * \c (PTP_USB*) before internal use.
    */
   void *usbinfo;
-  /** 
-   * The storage for this device, do not use strings in here without 
+  /**
+   * The storage for this device, do not use strings in here without
    * copying them first, and beware that this list may be rebuilt at
    * any time.
    * @see LIBMTP_Get_Storage()
@@ -642,7 +643,9 @@ struct LIBMTP_mtpdevice_struct {
   void *cd;
   /** Extension list */
   LIBMTP_device_extension_t *extensions;
-  
+  /** Whether the device uses caching, only used internally */
+  int cached;
+
   /** Pointer to next device in linked list; NULL if this is the last device */
   LIBMTP_mtpdevice_t *next;
 };
@@ -759,7 +762,7 @@ struct LIBMTP_devicestorage_struct {
   LIBMTP_devicestorage_t *next; /**< Next storage, follow this link until NULL */
   LIBMTP_devicestorage_t *prev; /**< Previous storage */
 };
-  
+
 
 /** @} */
 
@@ -785,6 +788,7 @@ int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t ** const, int * cons
 LIBMTP_error_number_t LIBMTP_Detect_Raw_Devices(LIBMTP_raw_device_t **, int *);
 int LIBMTP_Check_Specific_Device(int busno, int devno);
 LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *);
+LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *);
 /* Begin old, legacy interface */
 LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void);
 LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **);
@@ -858,6 +862,8 @@ char const * LIBMTP_Get_Filetype_Description(LIBMTP_filetype_t);
 LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *);
 LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *,
       LIBMTP_progressfunc_t const, void const * const);
+LIBMTP_file_t * LIBMTP_Get_Files_And_Folders(LIBMTP_mtpdevice_t *,
+					     uint32_t);
 LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *, uint32_t const);
 int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t*, uint32_t, char const * const,
 			LIBMTP_progressfunc_t const, void const * const);
