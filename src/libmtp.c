@@ -4054,11 +4054,19 @@ static LIBMTP_file_t * get_files_uncached(LIBMTP_mtpdevice_t *device,
                         PTPParams *params,
                         uint32_t storageid,
                         uint32_t parentId,
-                        LIBMTP_file_t *retfiles)
+                        LIBMTP_file_t *filelist)
 {
   int i = 0;
-  LIBMTP_file_t *curfile = NULL;
+  LIBMTP_file_t *retfiles = filelist;
+  LIBMTP_file_t *curfile = filelist;
   PTPObjectHandles currentHandles;
+
+  // Make curfile point to the last file in the retfiles list
+  if( curfile != NULL ) {
+    while( curfile->next != NULL ) {
+      curfile = curfile->next;
+    }
+  }
 
   uint16_t ret = ptp_getobjecthandles(params,
                                       storageid,
@@ -4083,8 +4091,7 @@ static LIBMTP_file_t * get_files_uncached(LIBMTP_mtpdevice_t *device,
       continue;
 
     // Add track to a list that will be returned afterwards.
-    if (retfiles == NULL) {
-      retfiles = file;
+    if (curfile == NULL) {
       curfile = file;
     } else {
       curfile->next = file;
@@ -4094,11 +4101,13 @@ static LIBMTP_file_t * get_files_uncached(LIBMTP_mtpdevice_t *device,
 
   free(currentHandles.Handler);
 
+  // Return a pointer to the original first file
+  // in the big list.
   return retfiles;
 }
 
 /**
- * This function retrieves the content of a folder with id - parentId.
+ * This function retrieves the contents of a folder with id parent.
  * The result contains both files and folders.
  * The device used with this operations must have been opened with
  * LIBMTP_Open_Raw_Device_Uncached() or it will fail.
