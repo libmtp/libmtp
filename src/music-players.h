@@ -217,6 +217,11 @@
   { "Samsung", 0x04e8, "YP-R0", 0x5125,
       DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_PLAYLIST_SPL_V1 |
       DEVICE_FLAG_UNIQUE_FILENAMES | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // From Manuel Carro
+  // Copied from Q2
+ { "Samsung", 0x04e8, "YP-Q3", 0x5130, DEVICE_FLAG_UNLOAD_DRIVER |
+     DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+     DEVICE_FLAG_PLAYLIST_SPL_V1 },
   // From a rouge .INF file
   // this device ID seems to have been recycled for:
   // the Samsung SGH-A707 Cingular cellphone
