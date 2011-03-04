@@ -6908,7 +6908,7 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name,
   if (FLAG_ONLY_7BIT_FILENAMES(ptp_usb)) {
     strip_7bit_from_utf8(new_folder.Filename);
   }
-  new_folder.ObjectCompressedSize = 1;
+  new_folder.ObjectCompressedSize = 0;
   new_folder.ObjectFormat = PTP_OFC_Association;
   new_folder.ProtectionStatus = PTP_PS_NoProtection;
   new_folder.AssociationType = PTP_AT_GenericFolder;
@@ -7351,7 +7351,8 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
     if (FLAG_ONLY_7BIT_FILENAMES(ptp_usb)) {
       strip_7bit_from_utf8(new_object.Filename);
     }
-    new_object.ObjectCompressedSize = 1;
+    // At one point this had to be one
+    new_object.ObjectCompressedSize = 0;
     new_object.ObjectFormat = objectformat;
 
     // Create the object
@@ -7365,9 +7366,13 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
     }
     // NOTE: don't destroy new_object objectinfo afterwards - the strings it contains are
     // not copies.
+
+#if 0
     /*
-     * We have to send this one blank data byte.
-     * If we don't, the handle will not be created and thus there is no playlist.
+     * At one time we had to send this one blank data byte.
+     * If we didn't, the handle will not be created and thus there is
+     * no playlist. Possibly this was masking some bug, so removing it
+     * now.
      */
     data[0] = '\0';
     data[1] = '\0';
@@ -7376,6 +7381,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
       add_ptp_error_to_errorstack(device, ret, "create_new_abstract_list(): Could not send blank object data.");
       return -1;
     }
+#endif
 
     // set the properties one by one
     ret = ptp_mtp_getobjectpropssupported(params, objectformat, &propcnt, &properties);
