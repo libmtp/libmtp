@@ -73,6 +73,7 @@ LIBMTP_Track_Exists
 LIBMTP_new_folder_t
 LIBMTP_destroy_folder_t
 LIBMTP_Get_Folder_List
+LIBMTP_Get_Folder_List_For_Storage
 LIBMTP_Find_Folder
 LIBMTP_Create_Folder
 LIBMTP_new_playlist_t

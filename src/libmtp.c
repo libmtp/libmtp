@@ -4055,7 +4055,7 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
  * NOTE: the request will always perform I/O with the device.
  * @param device a pointer to the MTP device to report info from.
  * @param storage a storage on the device to report info from. If
- *        NULL is passed in, the files for the given parent will be
+ *        0 is passed in, the files for the given parent will be
  *        searched across all available storages.
  * @param parent the parent folder id.
  */
@@ -4079,7 +4079,7 @@ LIBMTP_file_t * LIBMTP_Get_Files_And_Folders(LIBMTP_mtpdevice_t *device,
     return NULL;
   }
 
-  if (storage == NULL)
+  if (storage == 0)
     storageid = PTP_GOH_ALL_STORAGE;
   else
     storageid = storage;
@@ -6760,9 +6760,11 @@ static LIBMTP_folder_t *get_subfolders_for_folder(LIBMTP_folder_t *list, uint32_
  * on the current MTP device.
  *
  * @param device a pointer to the device to get the folder listing for.
+ * @param storage a storage ID to get the folder list from
  * @return a list of folders
  */
-LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
+ LIBMTP_folder_t *LIBMTP_Get_Folder_List_For_Storage(LIBMTP_mtpdevice_t *device,
+						    uint32_t const storage)
 {
   PTPParams *params = (PTPParams *) device->params;
   LIBMTP_folder_t head, *rv;
@@ -6795,6 +6797,11 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
     if (ob->oi.ObjectFormat != PTP_OFC_Association) {
       continue;
     }
+
+    if (storage != PTP_GOH_ALL_STORAGE && storage != ob->oi.StorageID) {
+      continue;
+    }
+
     /*
      * Do we know how to handle these? They are part
      * of the MTP 1.0 specification paragraph 3.6.4.
@@ -6825,7 +6832,7 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
     head.sibling = folder;
   }
 
-  // We begin at the root folder and get them all recursively
+  // We begin at the given root folder and get them all recursively
   rv = get_subfolders_for_folder(&head, 0x00000000U);
 
   // Some buggy devices may have some files in the "root folder"
@@ -6853,6 +6860,18 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
   }
 
   return rv;
+}
+
+/**
+ * This returns a list of all folders available
+ * on the current MTP device.
+ *
+ * @param device a pointer to the device to get the folder listing for.
+ * @return a list of folders
+ */
+LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
+{
+  return LIBMTP_Get_Folder_List_For_Storage(device, PTP_GOH_ALL_STORAGE);
 }
 
 /**

@@ -140,7 +140,7 @@ int main (int argc, char **argv)
 
     /* Loop over storages */
     for (storage = device->storage; storage != 0; storage = storage->next) {
-      fprintf(stdout, "  Storage: %s\n", storage->StorageDescription);
+      fprintf(stdout, "Storage: %s\n", storage->StorageDescription);
       recursive_file_tree(device, storage, 0, 0);
     }
 

@@ -42,7 +42,6 @@ static void dump_folder_list(LIBMTP_folder_t *folderlist, int level)
 int main (int argc, char **argv)
 {
   LIBMTP_mtpdevice_t *device, *iter;
-  LIBMTP_folder_t *folders;
 
   LIBMTP_Init();
   printf("Attempting to connect device(s)\n");
@@ -50,7 +49,7 @@ int main (int argc, char **argv)
   switch(LIBMTP_Get_Connected_Devices(&device))
   {
   case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
-    printf("mtp-folders: No Devices have been found\n");
+    printf("mtp-folders: no devices found\n");
     return 0;
   case LIBMTP_ERROR_CONNECTING:
     fprintf(stderr, "mtp-folders: There has been an error connecting. Exit\n");
@@ -74,7 +73,9 @@ int main (int argc, char **argv)
   /* iterate through connected MTP devices */
   for(iter = device; iter != NULL; iter = iter->next)
   {
+    LIBMTP_devicestorage_t *storage;
     char *friendlyname;
+    int ret;
 
     /* Echo the friendly name so we know which device we are working with */
     friendlyname = LIBMTP_Get_Friendlyname(iter);
@@ -86,19 +87,33 @@ int main (int argc, char **argv)
     }
 
     LIBMTP_Dump_Errorstack(iter);
-    LIBMTP_Clear_Errorstack(iter);    /* Get folder listing */
+    LIBMTP_Clear_Errorstack(iter);
 
-    folders = LIBMTP_Get_Folder_List(iter);
-
-    if (folders == NULL) {
-      fprintf(stdout, "No folders found\n");
+    /* Get all storages for this device */
+    ret = LIBMTP_Get_Storage(device, LIBMTP_STORAGE_SORTBY_NOTSORTED);
+    if (ret != 0) {
+      perror("LIBMTP_Get_Storage()\n");
       LIBMTP_Dump_Errorstack(iter);
       LIBMTP_Clear_Errorstack(iter);
-    } else {
-      dump_folder_list(folders,0);
+      continue;
     }
 
-    LIBMTP_destroy_folder_t(folders);
+    /* Loop over storages, dump folder for each one */
+    for (storage = device->storage; storage != 0; storage = storage->next) {
+      LIBMTP_folder_t *folders;
+
+      printf("Storage: %s\n", storage->StorageDescription);
+      folders = LIBMTP_Get_Folder_List_For_Storage(iter, storage->id);
+
+      if (folders == NULL) {
+	fprintf(stdout, "No folders found\n");
+	LIBMTP_Dump_Errorstack(iter);
+	LIBMTP_Clear_Errorstack(iter);
+      } else {
+	dump_folder_list(folders,0);
+      }
+      LIBMTP_destroy_folder_t(folders);
+    }
   }
 
   LIBMTP_Release_Device_List(device);
