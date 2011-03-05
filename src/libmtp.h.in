@@ -940,7 +940,7 @@ int LIBMTP_Send_Track_From_Handler(LIBMTP_mtpdevice_t *,
 			 void const * const);
 int LIBMTP_Update_Track_Metadata(LIBMTP_mtpdevice_t *,
 			LIBMTP_track_t const * const);
-int LIBMTP_Track_Exists(LIBMTP_mtpdevice_t *, uint32_t);
+int LIBMTP_Track_Exists(LIBMTP_mtpdevice_t *, uint32_t const);
 int LIBMTP_Set_Track_Name(LIBMTP_mtpdevice_t *, LIBMTP_track_t *, const char *);
 /** @} */
 
