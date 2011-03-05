@@ -4,6 +4,7 @@ LIBMTP_Get_Supported_Devices_List
 LIBMTP_Detect_Raw_Devices
 LIBMTP_Check_Specific_Device
 LIBMTP_Open_Raw_Device
+LIBMTP_Open_Raw_Device_Uncached
 LIBMTP_Get_First_Device
 LIBMTP_Get_Connected_Devices
 LIBMTP_Number_Devices_In_List
@@ -46,6 +47,7 @@ LIBMTP_destroy_file_t
 LIBMTP_Get_Filetype_Description
 LIBMTP_Get_Filelisting
 LIBMTP_Get_Filelisting_With_Callback
+LIBMTP_Get_Files_And_Folders
 LIBMTP_Get_Filemetadata
 LIBMTP_Get_File_To_File
 LIBMTP_Get_File_To_File_Descriptor

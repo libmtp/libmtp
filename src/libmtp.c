@@ -4046,36 +4046,53 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
 }
 
 /**
- * This gets a file listing for a certain storage and parent ID
- * without inspecting the object cache at all, used for uncached
- * access.
+ * This function retrieves the contents of a certain folder
+ * with id parent on a certain storage on a certain device.
+ * The result contains both files and folders.
+ * The device used with this operations must have been opened with
+ * LIBMTP_Open_Raw_Device_Uncached() or it will fail.
+ *
+ * NOTE: the request will always perform I/O with the device.
+ * @param device a pointer to the MTP device to report info from.
+ * @param storage a storage on the device to report info from. If
+ *        NULL is passed in, the files for the given parent will be
+ *        searched across all available storages.
+ * @param parent the parent folder id.
  */
-static LIBMTP_file_t * get_files_uncached(LIBMTP_mtpdevice_t *device,
-                        PTPParams *params,
-                        uint32_t storageid,
-                        uint32_t parentId,
-                        LIBMTP_file_t *filelist)
+LIBMTP_file_t * LIBMTP_Get_Files_And_Folders(LIBMTP_mtpdevice_t *device,
+			     LIBMTP_devicestorage_t const * const storage,
+			     uint32_t const parent)
 {
-  int i = 0;
-  LIBMTP_file_t *retfiles = filelist;
-  LIBMTP_file_t *curfile = filelist;
+  PTPParams *params = (PTPParams *) device->params;
+  LIBMTP_file_t *retfiles = NULL;
+  LIBMTP_file_t *curfile = NULL;
   PTPObjectHandles currentHandles;
+  uint32_t storageid;
+  uint16_t ret;
+  int i = 0;
 
-  // Make curfile point to the last file in the retfiles list
-  if( curfile != NULL ) {
-    while( curfile->next != NULL ) {
-      curfile = curfile->next;
-    }
+  if (device->cached) {
+    // This function is only supposed to be used by devices
+    // opened as uncached!
+    LIBMTP_ERROR("tried to use %s on a cached device!\n",
+		 __func__);
+    return NULL;
   }
 
-  uint16_t ret = ptp_getobjecthandles(params,
-                                      storageid,
-                                      PTP_GOH_ALL_FORMATS,
-                                      parentId,
-                                      &currentHandles);
+  if (storage == NULL)
+    storageid = PTP_GOH_ALL_STORAGE;
+  else
+    storageid = storage->id;
+
+  ret = ptp_getobjecthandles(params,
+			     storageid,
+			     PTP_GOH_ALL_FORMATS,
+			     parent,
+			     &currentHandles);
 
   if (ret != PTP_RC_OK) {
-    add_ptp_error_to_errorstack(device, ret, "get_files_uncached(): could not get object handles.");
+    add_ptp_error_to_errorstack(device, ret,
+		"LIBMTP_Get_Files_And_Folders(): could not get object handles.");
     return NULL;
   }
 
@@ -4093,6 +4110,7 @@ static LIBMTP_file_t * get_files_uncached(LIBMTP_mtpdevice_t *device,
     // Add track to a list that will be returned afterwards.
     if (curfile == NULL) {
       curfile = file;
+      retfiles = file;
     } else {
       curfile->next = file;
       curfile = file;
@@ -4103,43 +4121,6 @@ static LIBMTP_file_t * get_files_uncached(LIBMTP_mtpdevice_t *device,
 
   // Return a pointer to the original first file
   // in the big list.
-  return retfiles;
-}
-
-/**
- * This function retrieves the contents of a folder with id parent.
- * The result contains both files and folders.
- * The device used with this operations must have been opened with
- * LIBMTP_Open_Raw_Device_Uncached() or it will fail.
- *
- * NOTE: the request will always perform I/O with the device.
- * @param device a pointer to the MTP device to report info from.
- * @param parent the parent folder id.
- */
-LIBMTP_file_t * LIBMTP_Get_Files_And_Folders(LIBMTP_mtpdevice_t *device, uint32_t parent)
-{
-  PTPParams *params = (PTPParams *) device->params;
-  LIBMTP_file_t *retfiles = NULL;
-
-  if (device->cached) {
-    // This function is only supposed to be used by devices
-    // opened as uncached!
-    LIBMTP_ERROR("tried to use %s on a cached device!\n",
-		 __func__);
-    return NULL;
-  }
-
-  if (device->storage == NULL) {
-    retfiles = get_files_uncached(device, params, PTP_GOH_ALL_STORAGE, parent, retfiles);
-  } else {
-    // Get handles for each storage in turn.
-    LIBMTP_devicestorage_t *storage = device->storage;
-    while(storage != NULL) {
-      retfiles = get_files_uncached(device, params, storage->id, parent, retfiles);
-      storage = storage->next;
-    }
-  }
-
   return retfiles;
 }
 
@@ -7184,7 +7165,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   char fname[256];
-  uint8_t data[2];
+  //uint8_t data[2];
 
   // NULL check
   if (!name) {

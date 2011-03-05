@@ -1,9 +1,9 @@
-/** 
+/**
  * \file common.h
  * These headers are used by absolutely all sample programs.
  * Special quirks that apply to all samples go here.
  *
- * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2011 Linus Walleij <triad@df.lth.se>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

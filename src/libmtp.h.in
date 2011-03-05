@@ -863,23 +863,40 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting(LIBMTP_mtpdevice_t *);
 LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *,
       LIBMTP_progressfunc_t const, void const * const);
 LIBMTP_file_t * LIBMTP_Get_Files_And_Folders(LIBMTP_mtpdevice_t *,
-					     uint32_t);
+					     LIBMTP_devicestorage_t const * const,
+					     uint32_t const);
 LIBMTP_file_t *LIBMTP_Get_Filemetadata(LIBMTP_mtpdevice_t *, uint32_t const);
 int LIBMTP_Get_File_To_File(LIBMTP_mtpdevice_t*, uint32_t, char const * const,
 			LIBMTP_progressfunc_t const, void const * const);
-int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t*, uint32_t const, int const,
-			LIBMTP_progressfunc_t const, void const * const);
-int LIBMTP_Get_File_To_Handler(LIBMTP_mtpdevice_t *, uint32_t const, MTPDataPutFunc, void *,
-                   LIBMTP_progressfunc_t const, void const * const);
-int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *, char const * const,
-	                 LIBMTP_file_t * const, LIBMTP_progressfunc_t const,
-			 void const * const);
-int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *, int const,
-	                LIBMTP_file_t * const, LIBMTP_progressfunc_t const,
-			void const * const);
-int LIBMTP_Send_File_From_Handler(LIBMTP_mtpdevice_t *, MTPDataGetFunc, void *,
-      LIBMTP_file_t * const, LIBMTP_progressfunc_t const, void const * const);
-int LIBMTP_Set_File_Name(LIBMTP_mtpdevice_t *, LIBMTP_file_t *, const char *);
+int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t*,
+				       uint32_t const,
+				       int const,
+				       LIBMTP_progressfunc_t const,
+				       void const * const);
+int LIBMTP_Get_File_To_Handler(LIBMTP_mtpdevice_t *,
+			       uint32_t const,
+			       MTPDataPutFunc,
+			       void *,
+			       LIBMTP_progressfunc_t const,
+			       void const * const);
+int LIBMTP_Send_File_From_File(LIBMTP_mtpdevice_t *,
+			       char const * const,
+			       LIBMTP_file_t * const,
+			       LIBMTP_progressfunc_t const,
+			       void const * const);
+int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *,
+					  int const,
+					  LIBMTP_file_t * const,
+					  LIBMTP_progressfunc_t const,
+					  void const * const);
+int LIBMTP_Send_File_From_Handler(LIBMTP_mtpdevice_t *,
+				  MTPDataGetFunc, void *,
+				  LIBMTP_file_t * const,
+				  LIBMTP_progressfunc_t const,
+				  void const * const);
+int LIBMTP_Set_File_Name(LIBMTP_mtpdevice_t *,
+			 LIBMTP_file_t *,
+			 const char *);
 LIBMTP_filesampledata_t *LIBMTP_new_filesampledata_t(void);
 void LIBMTP_destroy_filesampledata_t(LIBMTP_filesampledata_t *);
 int LIBMTP_Get_Representative_Sample_Format(LIBMTP_mtpdevice_t *,
