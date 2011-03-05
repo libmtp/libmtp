@@ -4060,7 +4060,7 @@ LIBMTP_file_t *LIBMTP_Get_Filelisting_With_Callback(LIBMTP_mtpdevice_t *device,
  * @param parent the parent folder id.
  */
 LIBMTP_file_t * LIBMTP_Get_Files_And_Folders(LIBMTP_mtpdevice_t *device,
-			     LIBMTP_devicestorage_t const * const storage,
+			     uint32_t const storage,
 			     uint32_t const parent)
 {
   PTPParams *params = (PTPParams *) device->params;
@@ -4082,7 +4082,7 @@ LIBMTP_file_t * LIBMTP_Get_Files_And_Folders(LIBMTP_mtpdevice_t *device,
   if (storage == NULL)
     storageid = PTP_GOH_ALL_STORAGE;
   else
-    storageid = storage->id;
+    storageid = storage;
 
   ret = ptp_getobjecthandles(params,
 			     storageid,

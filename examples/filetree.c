@@ -42,7 +42,7 @@ void recursive_file_tree(LIBMTP_mtpdevice_t *device,
   LIBMTP_file_t *file;
 
   files = LIBMTP_Get_Files_And_Folders(device,
-				      storage,
+				      storage->id,
 				      leaf);
   if (files == NULL) {
     return;

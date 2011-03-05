@@ -1,8 +1,8 @@
-/** 
+/**
  * \file folders.c
  * Example program that lists all folders on a device.
  *
- * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2011 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -45,12 +45,12 @@ int main (int argc, char **argv)
   LIBMTP_folder_t *folders;
 
   LIBMTP_Init();
-  fprintf(stdout, "Attempting to connect device(s)\n");
+  printf("Attempting to connect device(s)\n");
 
   switch(LIBMTP_Get_Connected_Devices(&device))
   {
   case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
-    fprintf(stdout, "mtp-folders: No Devices have been found\n");
+    printf("mtp-folders: No Devices have been found\n");
     return 0;
   case LIBMTP_ERROR_CONNECTING:
     fprintf(stderr, "mtp-folders: There has been an error connecting. Exit\n");
@@ -58,7 +58,7 @@ int main (int argc, char **argv)
   case LIBMTP_ERROR_MEMORY_ALLOCATION:
     fprintf(stderr, "mtp-folders: Memory Allocation Error. Exit\n");
     return 1;
- 
+
   /* Unknown general errors - This should never execute */
   case LIBMTP_ERROR_GENERAL:
   default:
@@ -68,14 +68,14 @@ int main (int argc, char **argv)
 
   /* Successfully connected at least one device, so continue */
   case LIBMTP_ERROR_NONE:
-    fprintf(stdout, "mtp-folders: Successfully connected\n");
-    fflush(stdout);
+    printf("mtp-folders: Successfully connected\n");
   }
-  
+
   /* iterate through connected MTP devices */
   for(iter = device; iter != NULL; iter = iter->next)
   {
-  	char *friendlyname;
+    char *friendlyname;
+
     /* Echo the friendly name so we know which device we are working with */
     friendlyname = LIBMTP_Get_Friendlyname(iter);
     if (friendlyname == NULL) {
@@ -84,12 +84,12 @@ int main (int argc, char **argv)
       printf("Friendly name: %s\n", friendlyname);
       free(friendlyname);
     }
-    
+
     LIBMTP_Dump_Errorstack(iter);
     LIBMTP_Clear_Errorstack(iter);    /* Get folder listing */
 
     folders = LIBMTP_Get_Folder_List(iter);
-    
+
     if (folders == NULL) {
       fprintf(stdout, "No folders found\n");
       LIBMTP_Dump_Errorstack(iter);
@@ -101,7 +101,6 @@ int main (int argc, char **argv)
     LIBMTP_destroy_folder_t(folders);
   }
 
-  
   LIBMTP_Release_Device_List(device);
   printf("OK.\n");
 
