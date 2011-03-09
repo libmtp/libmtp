@@ -3,7 +3,7 @@
  * Low-level USB interface glue towards libusb.
  *
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
- * Copyright (C) 2005-2007 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2011 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2007 Marcus Meissner
  * Copyright (C) 2007 Ted Bullock
  * Copyright (C) 2008 Chris Bagwell <chris@cnpbagwell.com>
@@ -72,9 +72,10 @@ struct _PTP_USB {
   int outep;
   int outep_maxpacket;
   int intep;
-  int timeout;
   /** File transfer callbacks and counters */
   int callback_active;
+  int timeout;
+  uint16_t bcdusb;
   uint64_t current_transfer_total;
   uint64_t current_transfer_complete;
   LIBMTP_progressfunc_t current_transfer_callback;
@@ -92,6 +93,7 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
 					   void **usbinfo);
 void set_usb_device_timeout(PTP_USB *ptp_usb, int timeout);
 void get_usb_device_timeout(PTP_USB *ptp_usb, int *timeout);
+int guess_usb_speed(PTP_USB *ptp_usb);
 
 /* Flag check macros */
 #define FLAG_BROKEN_MTPGETOBJPROPLIST_ALL(a) \
@@ -136,6 +138,8 @@ void get_usb_device_timeout(PTP_USB *ptp_usb, int *timeout);
   ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_UNIQUE_FILENAMES)
 #define FLAG_SWITCH_MODE_BLACKBERRY(a) \
   ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_SWITCH_MODE_BLACKBERRY)
+#define FLAG_LONG_TIMEOUT(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_LONG_TIMEOUT)
 
 /* connect_first_device return codes */
 #define PTP_CD_RC_CONNECTED	0

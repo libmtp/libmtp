@@ -49,17 +49,23 @@
 #define USB_CLASS_PTP 6
 #endif
 
-/* Default USB timeout length.  This can be overridden as needed
- * but should start with a reasonable value so most common 
+/*
+ * Default USB timeout length.  This can be overridden as needed
+ * but should start with a reasonable value so most common
  * requests can be completed.  The original value of 4000 was
  * not long enough for large file transfer.  Also, players can
  * spend a bit of time collecting data.  Higher values also
  * make connecting/disconnecting more reliable.
- *
- * In march 2011 we upped this from 10000 to 20000 since new
- * large files of say 25 GB would not be completed else.
  */
-#define USB_TIMEOUT_DEFAULT     20000
+#define USB_TIMEOUT_DEFAULT     10000
+#define USB_TIMEOUT_LONG        60000
+static inline int get_timeout(PTP_USB* ptp_usb)
+{
+  if (FLAG_LONG_TIMEOUT(ptp_usb)) {
+    return USB_TIMEOUT_LONG;
+  }
+  return USB_TIMEOUT_DEFAULT;
+}
 
 /* USB control message data phase direction */
 #ifndef USB_DP_HTD
@@ -849,7 +855,11 @@ ptp_read_func (
 
     LIBMTP_USB_DEBUG("Reading in 0x%04lx bytes\n", toread);
 
-    result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, (char*)bytes, toread, ptp_usb->timeout);
+    result = USB_BULK_READ(ptp_usb->handle,
+			   ptp_usb->inep,
+			   (char*) bytes,
+			   toread,
+			   ptp_usb->timeout);
 
     LIBMTP_USB_DEBUG("Result of read: 0x%04x\n", result);
 
@@ -912,7 +922,11 @@ ptp_read_func (
     LIBMTP_USB_DEBUG("<==USB IN\n");
     LIBMTP_USB_DEBUG("Zero Read\n");
 
-    zeroresult = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, &temp, 0, ptp_usb->timeout);
+    zeroresult = USB_BULK_READ(ptp_usb->handle,
+			       ptp_usb->inep,
+			       &temp,
+			       0,
+			       ptp_usb->timeout);
     if (zeroresult != 0)
       LIBMTP_INFO("LIBMTP panic: unable to read in zero packet, response 0x%04x", zeroresult);
   }
@@ -953,7 +967,11 @@ ptp_write_func (
     if (getfunc_ret != PTP_RC_OK)
       return getfunc_ret;
     while (usbwritten < towrite) {
-	    result = USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,((char*)bytes+usbwritten),towrite-usbwritten,ptp_usb->timeout);
+	    result = USB_BULK_WRITE(ptp_usb->handle,
+				    ptp_usb->outep,
+				    ((char*) bytes+usbwritten),
+				    towrite-usbwritten,
+				    ptp_usb->timeout);
 
 	    LIBMTP_USB_DEBUG("USB OUT==>\n");
 	    LIBMTP_USB_DATA(bytes+usbwritten, result, 16);
@@ -999,7 +1017,11 @@ ptp_write_func (
       LIBMTP_USB_DEBUG("USB OUT==>\n");
       LIBMTP_USB_DEBUG("Zero Write\n");
 
-      result=USB_BULK_WRITE(ptp_usb->handle,ptp_usb->outep,(char *)"x",0,ptp_usb->timeout);
+      result=USB_BULK_WRITE(ptp_usb->handle,
+			    ptp_usb->outep,
+			    (char *) "x",
+			    0,
+			    ptp_usb->timeout);
     }
   }
 
@@ -1380,7 +1402,11 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		  // need to read in extra byte and discard it
 		  int result = 0;
 		  char byte = 0;
-                  result = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, &byte, 1, ptp_usb->timeout);
+                  result = USB_BULK_READ(ptp_usb->handle,
+					 ptp_usb->inep,
+					 &byte,
+					 1,
+					 ptp_usb->timeout);
 
 		  if (result != 1)
 		    LIBMTP_INFO("Could not read in extra byte for PTP_USB_BULK_HS_MAX_PACKET_LEN_READ long file, return value 0x%04x\n", result);
@@ -1391,7 +1417,11 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 
 		  LIBMTP_INFO("Reading in zero packet after header\n");
 
-		  zeroresult = USB_BULK_READ(ptp_usb->handle, ptp_usb->inep, &zerobyte, 0, ptp_usb->timeout);
+		  zeroresult = USB_BULK_READ(ptp_usb->handle,
+					     ptp_usb->inep,
+					     &zerobyte,
+					     0,
+					     ptp_usb->timeout);
 
 		  if (zeroresult != 0)
 		    LIBMTP_INFO("LIBMTP panic: unable to read in zero packet, response 0x%04x", zeroresult);
@@ -1500,15 +1530,31 @@ ptp_usb_event (PTPParams* params, PTPContainer* event, int wait)
 	ret = PTP_RC_OK;
 	switch(wait) {
 	case PTP_EVENT_CHECK:
-                result=USB_BULK_READ(ptp_usb->handle, ptp_usb->intep,(char *)&usbevent,sizeof(usbevent),ptp_usb->timeout);
+                result=USB_BULK_READ(ptp_usb->handle,
+				     ptp_usb->intep,
+				     (char *) &usbevent,
+				     sizeof(usbevent),
+				     ptp_usb->timeout);
 		if (result==0)
-                        result = USB_BULK_READ(ptp_usb->handle, ptp_usb->intep,(char *) &usbevent, sizeof(usbevent), ptp_usb->timeout);
+		  result = USB_BULK_READ(ptp_usb->handle,
+					 ptp_usb->intep,
+					 (char *) &usbevent,
+					 sizeof(usbevent),
+					 ptp_usb->timeout);
 		if (result < 0) ret = PTP_ERROR_IO;
 		break;
 	case PTP_EVENT_CHECK_FAST:
-                result=USB_BULK_READ(ptp_usb->handle, ptp_usb->intep,(char *)&usbevent,sizeof(usbevent),ptp_usb->timeout);
+                result=USB_BULK_READ(ptp_usb->handle,
+				     ptp_usb->intep,
+				     (char *) &usbevent,
+				     sizeof(usbevent),
+				     ptp_usb->timeout);
 		if (result==0)
-                        result = USB_BULK_READ(ptp_usb->handle, ptp_usb->intep,(char *) &usbevent, sizeof(usbevent), ptp_usb->timeout);
+		  result = USB_BULK_READ(ptp_usb->handle,
+					 ptp_usb->intep,
+					 (char *) &usbevent,
+					 sizeof(usbevent),
+					 ptp_usb->timeout);
 		if (result < 0) ret = PTP_ERROR_IO;
 		break;
 	default:
@@ -1559,7 +1605,10 @@ ptp_usb_control_cancel_request (PTPParams *params, uint32_t transactionid) {
 	htod32a(&buffer[2],transactionid);
 	ret = usb_control_msg(ptp_usb->handle,
 			      USB_TYPE_CLASS | USB_RECIP_INTERFACE,
-                              0x64, 0x0000, 0x0000, (char *) buffer, sizeof(buffer), ptp_usb->timeout);
+                              0x64, 0x0000, 0x0000,
+			      (char *) buffer,
+			      sizeof(buffer),
+			      ptp_usb->timeout);
 	if (ret < sizeof(buffer))
 		return PTP_ERROR_IO;
 	return PTP_RC_OK;
@@ -1584,7 +1633,7 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, struct usb_device*
    */
   params->byteorder = PTP_DL_LE;
 
-  ptp_usb->timeout = USB_TIMEOUT_DEFAULT;
+  ptp_usb->timeout = get_timeout(ptp_usb);
 
   device_handle = usb_open(dev);
   if (!device_handle) {
@@ -1901,6 +1950,9 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
     return LIBMTP_ERROR_CONNECTING;
   }
 
+  /* Copy USB version number */
+  ptp_usb->bcdusb = libusb_device->descriptor.bcdUSB;
+
   /* Attempt to initialize this device */
   if (init_ptp_usb(params, ptp_usb, libusb_device) < 0) {
     LIBMTP_ERROR("LIBMTP PANIC: Unable to initialize device\n");
@@ -1961,24 +2013,63 @@ void close_device (PTP_USB *ptp_usb, PTPParams *params)
 
 void set_usb_device_timeout(PTP_USB *ptp_usb, int timeout)
 {
-    ptp_usb->timeout = timeout;
+  ptp_usb->timeout = timeout;
 }
 
 void get_usb_device_timeout(PTP_USB *ptp_usb, int *timeout)
 {
-    *timeout = ptp_usb->timeout;
+  *timeout = ptp_usb->timeout;
+}
+
+int guess_usb_speed(PTP_USB *ptp_usb)
+{
+  int bytes_per_second;
+
+  /*
+   * We don't know the actual speeds so these are rough guesses
+   * from the info you can find here:
+   * http://en.wikipedia.org/wiki/USB#Transfer_rates
+   * http://www.barefeats.com/usb2.html
+   */
+  switch (ptp_usb->bcdusb & 0xFF00) {
+  case 0x0100:
+    /* 1.x USB versions let's say 1MiB/s */
+    bytes_per_second = 1*1024*1024;
+    break;
+  case 0x0200:
+  case 0x0300:
+    /* USB 2.0 nominal speed 18MiB/s */
+    /* USB 3.0 won't be worse? */
+    bytes_per_second = 18*1024*1024;
+    break;
+  default:
+    /* Half-guess something? */
+    bytes_per_second = 1*1024*1024;
+    break;
+  }
+  return bytes_per_second;
 }
 
 static int usb_clear_stall_feature(PTP_USB* ptp_usb, int ep)
 {
   return (usb_control_msg(ptp_usb->handle,
-			  USB_RECIP_ENDPOINT, USB_REQ_CLEAR_FEATURE, USB_FEATURE_HALT,
-                          ep, NULL, 0, ptp_usb->timeout));
+			  USB_RECIP_ENDPOINT,
+			  USB_REQ_CLEAR_FEATURE,
+			  USB_FEATURE_HALT,
+                          ep,
+			  NULL,
+			  0,
+			  ptp_usb->timeout));
 }
 
 static int usb_get_endpoint_status(PTP_USB* ptp_usb, int ep, uint16_t* status)
 {
   return (usb_control_msg(ptp_usb->handle,
-			  USB_DP_DTH|USB_RECIP_ENDPOINT, USB_REQ_GET_STATUS,
-                          USB_FEATURE_HALT, ep, (char *)status, 2, ptp_usb->timeout));
+			  USB_DP_DTH|USB_RECIP_ENDPOINT,
+			  USB_REQ_GET_STATUS,
+                          USB_FEATURE_HALT,
+			  ep,
+			  (char *) status,
+			  2,
+			  ptp_usb->timeout));
 }

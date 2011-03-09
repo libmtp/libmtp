@@ -2299,8 +2299,9 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device,
   int            oldtimeout;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
 
-  /* The follow request causes the device to generate
-   * a list of very file on the device and return it
+  /*
+   * The follow request causes the device to generate
+   * a list of every file on the device and return it
    * in a single response.
    *
    * Some slow devices as well as devices with very
@@ -5466,6 +5467,8 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   LIBMTP_file_t *newfilemeta;
+  int oldtimeout;
+  int timeout;
 
   if (send_file_object_info(device, filedata))
   {
@@ -5482,11 +5485,22 @@ int LIBMTP_Send_File_From_File_Descriptor(LIBMTP_mtpdevice_t *device,
   ptp_usb->current_transfer_callback = callback;
   ptp_usb->current_transfer_callback_data = data;
 
+  /*
+   * We might need to increase the timeout here, files can be pretty
+   * large. Take the default timeout and add the calculated time for
+   * this transfer
+   */
+  get_usb_device_timeout(ptp_usb, &oldtimeout);
+  timeout = oldtimeout +
+    (ptp_usb->current_transfer_total / guess_usb_speed(ptp_usb)) * 1000;
+  set_usb_device_timeout(ptp_usb, timeout);
+
   ret = ptp_sendobject_fromfd(params, fd, filedata->filesize);
 
   ptp_usb->callback_active = 0;
   ptp_usb->current_transfer_callback = NULL;
   ptp_usb->current_transfer_callback_data = NULL;
+  set_usb_device_timeout(ptp_usb, oldtimeout);
 
   if (ret == PTP_ERROR_CANCEL) {
     add_error_to_errorstack(device, LIBMTP_ERROR_CANCELLED, "LIBMTP_Send_File_From_File_Descriptor(): Cancelled transfer.");
