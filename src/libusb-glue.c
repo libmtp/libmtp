@@ -57,7 +57,7 @@
  * spend a bit of time collecting data.  Higher values also
  * make connecting/disconnecting more reliable.
  */
-#define USB_TIMEOUT_DEFAULT     10000
+#define USB_TIMEOUT_DEFAULT     20000
 #define USB_TIMEOUT_LONG        60000
 static inline int get_timeout(PTP_USB* ptp_usb)
 {
