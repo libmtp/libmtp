@@ -140,6 +140,8 @@ int guess_usb_speed(PTP_USB *ptp_usb);
   ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_SWITCH_MODE_BLACKBERRY)
 #define FLAG_LONG_TIMEOUT(a) \
   ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_LONG_TIMEOUT)
+#define FLAG_FORCE_RESET_ON_CLOSE(a) \
+  ((a)->rawdevice.device_entry.device_flags & DEVICE_FLAG_FORCE_RESET_ON_CLOSE)
 
 /* connect_first_device return codes */
 #define PTP_CD_RC_CONNECTED	0

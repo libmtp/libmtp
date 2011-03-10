@@ -1782,8 +1782,6 @@ static void clear_halt(PTP_USB* ptp_usb)
 
 static void close_usb(PTP_USB* ptp_usb)
 {
-  // Commented out since it was confusing some
-  // devices to do these things.
   if (!FLAG_NO_RELEASE_INTERFACE(ptp_usb)) {
     /*
      * Clear any stalled endpoints
@@ -1803,6 +1801,16 @@ static void close_usb(PTP_USB* ptp_usb)
     // HINT: some devices may need that you comment these two out too.
     usb_resetep(ptp_usb->handle, ptp_usb->outep);
     usb_release_interface(ptp_usb->handle, (int) ptp_usb->interface);
+  }
+  if (FLAG_FORCE_RESET_ON_CLOSE(ptp_usb)) {
+    /*
+     * Some devices really love to get reset after being
+     * disconnected. Again, since Windows never disconnects
+     * a device closing behaviour is seldom or never exercised
+     * on devices when engineered and often error prone.
+     * Reset may help some.
+     */
+    usb_reset(ptp_usb->handle);
   }
   usb_close(ptp_usb->handle);
 }

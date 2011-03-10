@@ -260,3 +260,9 @@
  * timeout on some operations.
  */
 #define DEVICE_FLAG_LONG_TIMEOUT		0x08000000
+/**
+ * This flag indicates that the device need an explicit
+ * USB reset after each connection. Some devices don't
+ * like this, so it's not done by default.
+ */
+#define DEVICE_FLAG_FORCE_RESET_ON_CLOSE	0x10000000
