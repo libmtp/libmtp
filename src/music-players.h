@@ -770,6 +770,8 @@
   { "Nokia", 0x0421, "N8", 0x02fe, DEVICE_FLAG_NONE },
   // From: Lan Liu at Nokia <lan.liu@nokia.com>
   { "Nokia", 0x0421, "N8 (Ovi mode)", 0x0302, DEVICE_FLAG_NONE },
+  // From: Raul Metsma <raul@innovaatik.ee>
+  { "Nokia", 0x0421, "E7", 0x0335, DEVICE_FLAG_NONE },
   // https://sourceforge.net/tracker/index.php?func=detail&aid=2692473&group_id=8874&atid=358874
   { "Nokia", 0x0421, "5200", 0x0421, DEVICE_FLAG_NONE },
   // From: http://nds2.nokia.com/files/support/global/phones/software/Nokia_3250_WMP10_driver.inf
