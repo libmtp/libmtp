@@ -763,6 +763,14 @@ struct LIBMTP_devicestorage_struct {
   LIBMTP_devicestorage_t *prev; /**< Previous storage */
 };
 
+/**
+ * LIBMTP Event structure
+ * TODO: add all externally visible events here
+ */
+enum LIBMTP_event_enum {
+  LIBMTP_EVENT_NONE,
+};
+typedef enum LIBMTP_event_enum LIBMTP_event_t;
 
 /** @} */
 
@@ -994,6 +1002,14 @@ int LIBMTP_Set_Album_Name(LIBMTP_mtpdevice_t *, LIBMTP_album_t *, const char *);
  */
 int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *, uint32_t);
 int LIBMTP_Set_Object_Filename(LIBMTP_mtpdevice_t *, uint32_t , char *);
+
+/**
+ * @}
+ * @defgroup files The events API.
+ * @{
+ */
+int LIBMTP_Read_Event(LIBMTP_mtpdevice_t *, LIBMTP_event_t *);
+
 
 /** @} */
 
