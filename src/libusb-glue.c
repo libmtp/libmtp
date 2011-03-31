@@ -284,6 +284,13 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
 	    &dev->config[i].interface[j].altsetting[k];
 
 	  /*
+	   * MTP interfaces have three endpoints, two bulk and one
+	   * interrupt. Don't probe anything else.
+	   */
+	  if (intf->bNumEndpoints != 3)
+	    continue;
+
+	  /*
 	   * We only want to probe for the OS descriptor if the
 	   * device is USB_CLASS_VENDOR_SPEC or one of the interfaces
 	   * in it is, so flag if we find an interface like this.
@@ -334,7 +341,7 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
             usb_close(devh);
             return 1;
           }
-  #ifdef LIBUSB_HAS_GET_DRIVER_NP
+#ifdef LIBUSB_HAS_GET_DRIVER_NP
 	  {
 	    /*
 	     * Specifically avoid probing anything else than USB mass storage devices
@@ -352,7 +359,7 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
 	      return 0;
 	    }
 	  }
-  #endif
+#endif
         }
       }
     }
