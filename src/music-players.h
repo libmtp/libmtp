@@ -1149,7 +1149,7 @@
   // Reported by Jonas Salling <>
   // Erroneous MTP implementation seems to be from Aricent, returns
   // broken transaction ID.
-  { "SonyEricsson", 0x0fce, "T15i", 0x14f, DEVICE_FLAG_IGNORE_HEADER_ERRORS },
+  { "SonyEricsson", 0x0fce, "LT15i (Xperia arc)", 0x14f, DEVICE_FLAG_IGNORE_HEADER_ERRORS },
   // Reported by Jonas Nyrén <spectralmks@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "W302", 0x10c8, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
 
