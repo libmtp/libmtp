@@ -1541,13 +1541,13 @@ ptp_usb_event (PTPParams* params, PTPContainer* event, int wait)
 				     ptp_usb->intep,
 				     (char *) &usbevent,
 				     sizeof(usbevent),
-				     ptp_usb->timeout);
+				     0);
 		if (result==0)
 		  result = USB_BULK_READ(ptp_usb->handle,
 					 ptp_usb->intep,
 					 (char *) &usbevent,
 					 sizeof(usbevent),
-					 ptp_usb->timeout);
+					 0);
 		if (result < 0) ret = PTP_ERROR_IO;
 		break;
 	case PTP_EVENT_CHECK_FAST:
