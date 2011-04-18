@@ -1980,10 +1980,9 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
    */
   if ((ret = ptp_opensession(params, 1)) == PTP_ERROR_IO) {
     LIBMTP_ERROR("PTP_ERROR_IO: failed to open session, trying again after resetting USB interface\n");
-    close_usb(ptp_usb);
-
     LIBMTP_ERROR("LIBMTP libusb: Attempt to reset device\n");
     usb_reset(ptp_usb->handle);
+    close_usb(ptp_usb);
 
     if(init_ptp_usb(params, ptp_usb, libusb_device) <0) {
       LIBMTP_ERROR("LIBMTP PANIC: Could not init USB on second attempt\n");
