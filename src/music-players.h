@@ -1189,10 +1189,16 @@
   { "Motorola", 0x22b8, "RAZR2 V8/U9/Z6", 0x6415,
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
   // Reported by Google Inc's Yavor Goulishev <yavor@google.com>
+  // Android 3.0 MTP stack seems to announce that it supports the
+  // list operations, but they do not work?
   { "Motorola", 0x22b8, "Xoom (ID 1)", 0x70a8,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   { "Motorola", 0x22b8, "Xoom (ID 2)", 0x70a9,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
 
   /*
    * Media Keg
