@@ -249,6 +249,7 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
   if (!(dev->descriptor.bDeviceClass == USB_CLASS_PER_INTERFACE ||
 	dev->descriptor.bDeviceClass == USB_CLASS_COMM ||
 	dev->descriptor.bDeviceClass == USB_CLASS_PTP ||
+	dev->descriptor.bDeviceClass == 0xEF ||	/* Intf. Association Desc.*/
 	dev->descriptor.bDeviceClass == USB_CLASS_VENDOR_SPEC)) {
     return 0;
   }
