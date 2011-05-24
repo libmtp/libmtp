@@ -786,6 +786,8 @@
   { "Nokia", 0x0421, "5700 XpressMusic Mobile Phone", 0x04b4, DEVICE_FLAG_NONE },
   // From: Mitchell Hicks <mitchix@yahoo.com>
   { "Nokia", 0x0421, "5300 Mobile Phone", 0x04ba, DEVICE_FLAG_NONE },
+  // From: Anonymous SourceForge user
+  { "Nokia", 0x0421, "5200 Mobile Phone", 0x04be, DEVICE_FLAG_NONE },
   // From Christian Arnold <webmaster@arctic-media.de>
   { "Nokia", 0x0421, "N73 Mobile Phone", 0x04d1, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Swapan <swapan@yahoo.com>
@@ -943,6 +945,10 @@
   { "Cowon", 0x0e21, "iAudio J3 (MTP mode)", 0x0921,
    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
    DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_FLAC_IS_UNKNOWN },
+  // Reported by anonymous SourceForge user
+  { "Cowon", 0x0e21, "iAudio X7 (MTP mode)", 0x0931,
+   DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+   DEVICE_FLAG_OGG_IS_UNKNOWN | DEVICE_FLAG_FLAC_IS_UNKNOWN },
 
   /*
    * Insignia, dual-mode.
@@ -1098,13 +1104,17 @@
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNIQUE_FILENAMES |
       DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+  // Reported by Toni Burgarello
+  { "Sony", 0x054c, "Walkman NWZ-S754", 0x04cc,
+      DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+      DEVICE_FLAG_UNIQUE_FILENAMES },
   // Reported by Anonymous SourceForge user
   { "Sony", 0x054c, "DCR-SR75", 0x1294,
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNIQUE_FILENAMES |
       DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
-
 
   /*
    * SonyEricsson
@@ -1146,6 +1156,8 @@
   { "SonyEricsson", 0x0fce, "U5", 0x0133, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Flo <lhugsereg@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "U8i", 0x013a, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by xirotyu <xirotyu@users.sourceforge.net>
+  { "SonyEricsson", 0x0fce,  "j10i2 (Elm)", 0x0144, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Jonas Salling <>
   // Erroneous MTP implementation seems to be from Aricent, returns
   // broken transaction ID.
@@ -1163,7 +1175,7 @@
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Reported by Steven Roemen <sdroemen@users.sourceforge.net>
-  { "Motorola", 0x22b8, "Droid X", 0x41d6,
+  { "Motorola", 0x22b8, "Droid X/MB525 (Defy)", 0x41d6,
       DEVICE_FLAG_NONE },
   // Reported by anonymous user
   { "Motorola", 0x22b8, "Milestone / Verizon Droid", 0x41dc,
@@ -1296,7 +1308,11 @@
   { "Apple", 0x05ac, "iPod Touch 3rd Gen", 0x1299, DEVICE_FLAG_NONE },
   { "Apple", 0x05ac, "iPad", 0x129a, DEVICE_FLAG_NONE },
 
-  // Reported by anonymous SourceForge user
+  // Reported by anonymous SourceForge user, also reported as
+  // Pantech Crux, claming to be:
+  // Manufacturer: Qualcomm
+  // Model: Windows Simulator
+  // Device version: Qualcomm MTP1.0
   { "Curitel Communications, Inc.", 0x106c,
       "Verizon Wireless Device", 0x3215, DEVICE_FLAG_NONE },
 
