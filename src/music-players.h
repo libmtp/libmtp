@@ -335,9 +335,16 @@
     DEVICE_FLAG_UNLOAD_DRIVER },
   // From Anonymous SourceForge User
   { "Philips", 0x0471, "GoGear VIBE SA2VBE[08|16]K/02", 0x20b7,
-    DEVICE_FLAG_UNLOAD_DRIVER },
+      DEVICE_FLAG_UNLOAD_DRIVER },
   // from XNJB user
   { "Philips", 0x0471, "PSA235", 0x7e01, DEVICE_FLAG_NONE },
+
+
+  /*
+   * Acer
+   */
+  // Reported by: Franck VDL <franckv@users.sourceforge.net>
+  { "Acer", 0x0502, "Iconia TAB A500", 0x3341, DEVICE_FLAG_NONE },
 
 
   /*
@@ -970,16 +977,22 @@
   { "LG Electronics Inc.", 0x043e, "UP3", 0x70b1, DEVICE_FLAG_NONE },
   // Reported by Joseph Nahmias <joe@nahimas.net>
   { "LG Electronics Inc.", 0x1004, "VX8550 V CAST Mobile Phone", 0x6010,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
   // Reported by Cyrille Potereau <cyrille.potereau@wanadoo.fr>
   { "LG Electronics Inc.", 0x1004, "KC910 Renoir Mobile Phone", 0x608f,
       DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Aaron Slunt <tongle@users.sourceforge.net>
   { "LG Electronics Inc.", 0x1004, "GR-500 Music Player", 0x611b,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
   // Reported by anonymous sourceforge user
   { "LG Electronics Inc.", 0x1004, "KM900", 0x6132,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_UNLOAD_DRIVER },
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by anonymous sourceforge user
+  { "LG Electronics Inc.", 0x1004, "V909 G-Slate", 0x61f9,
+      DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
    * Sony
