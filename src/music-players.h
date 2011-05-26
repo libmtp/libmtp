@@ -254,13 +254,19 @@
   // Guessing on .spl flag, maybe needs NO_ZERO_READS, whatdoIknow
   { "Samsung", 0x04e8, "GT-S8500", 0x6819,
       DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_PLAYLIST_SPL_V1 },
+  // Reported by anonymous sourceforge user
+  { "Samsung", 0x04e8, "GT-P7510/Galaxy Tab 10.1", 0x6860,
+      DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_LONG_TIMEOUT },
   // From: Erik Berglund <erikjber@users.sourceforge.net>
   // Logs indicate this needs DEVICE_FLAG_NO_ZERO_READS
   // No Samsung platlists on this device.
   // https://sourceforge.net/tracker/?func=detail&atid=809061&aid=3026337&group_id=158745
-  { "Samsung", 0x04e8, "Galaxy S GT-I9000", 0x6877, DEVICE_FLAG_UNLOAD_DRIVER |
+  { "Samsung", 0x04e8, "Galaxy S GT-I9000", 0x6877,
+      DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT },
-  // From: John Gorkos <ab0oo@users.sourceforge.net> and Akos Maroy <darkeye@users.sourceforge.net>
+  // From: John Gorkos <ab0oo@users.sourceforge.net> and
+  // Akos Maroy <darkeye@users.sourceforge.net>
   { "Samsung", 0x04e8, "Vibrant SGH-T959", 0x68a9,
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_PLAYLIST_SPL_V1 },
