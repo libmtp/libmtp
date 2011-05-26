@@ -794,8 +794,6 @@
   { "Nokia", 0x0421, "N8 (Ovi mode)", 0x0302, DEVICE_FLAG_NONE },
   // From: Raul Metsma <raul@innovaatik.ee>
   { "Nokia", 0x0421, "E7", 0x0335, DEVICE_FLAG_NONE },
-  // https://sourceforge.net/tracker/index.php?func=detail&aid=2692473&group_id=8874&atid=358874
-  { "Nokia", 0x0421, "5200", 0x0421, DEVICE_FLAG_NONE },
   // From: http://nds2.nokia.com/files/support/global/phones/software/Nokia_3250_WMP10_driver.inf
   { "Nokia", 0x0421, "3250 Mobile Phone", 0x0462, DEVICE_FLAG_NONE },
   // From http://nds2.nokia.com/files/support/global/phones/software/Nokia_N93_WMP10_Driver.inf
@@ -808,8 +806,10 @@
   { "Nokia", 0x0421, "5700 XpressMusic Mobile Phone", 0x04b4, DEVICE_FLAG_NONE },
   // From: Mitchell Hicks <mitchix@yahoo.com>
   { "Nokia", 0x0421, "5300 Mobile Phone", 0x04ba, DEVICE_FLAG_NONE },
-  // From: Anonymous SourceForge user
-  { "Nokia", 0x0421, "5200 Mobile Phone", 0x04be, DEVICE_FLAG_NONE },
+  // https://sourceforge.net/tracker/index.php?func=detail&aid=2692473&group_id=8874&atid=358874
+  // From: Tiburce <tiburce@users.sourceforge.net>
+  { "Nokia", 0x0421, "5200 Mobile Phone", 0x04be,
+      DEVICE_FLAG_BROKEN_BATTERY_LEVEL },
   // From Christian Arnold <webmaster@arctic-media.de>
   { "Nokia", 0x0421, "N73 Mobile Phone", 0x04d1, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Swapan <swapan@yahoo.com>
