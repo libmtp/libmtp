@@ -344,8 +344,10 @@
   /*
    * Acer
    */
+  // Reported by anonymous sourceforge user
+  { "Acer", 0x0502, "Iconia TAB A500 v1", 0x3325, DEVICE_FLAG_NONE },
   // Reported by: Franck VDL <franckv@users.sourceforge.net>
-  { "Acer", 0x0502, "Iconia TAB A500", 0x3341, DEVICE_FLAG_NONE },
+  { "Acer", 0x0502, "Iconia TAB A500 v2", 0x3341, DEVICE_FLAG_NONE },
 
 
   /*
