@@ -227,7 +227,8 @@
   // the Samsung SGH-A707 Cingular cellphone
   // the Samsung L760-V cellphone
   // the Samsung SGH-U900 cellphone
-  { "Samsung", 0x04e8, "YH-999 Portable Media Center/SGH-A707/SGH-L760V/SGH-U900/Verizon Intensity", 0x5a0f, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  // the Samsung Fascinate player
+  { "Samsung", 0x04e8, "YH-999 Portable Media Center/SGH-A707/SGH-L760V/SGH-U900/Verizon Intensity/Fascinate", 0x5a0f, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // From Santi Béjar <sbejar@gmail.com> - not sure this is MTP...
   // { "Samsung", 0x04e8, "Z170 Mobile Phone", 0x6601, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Santi Béjar <sbejar@gmail.com> - not sure this is MTP...
@@ -349,7 +350,7 @@
 
   /*
    * SanDisk
-   * several devices (c150 for sure) are definately dual-mode and must 
+   * several devices (c150 for sure) are definately dual-mode and must
    * have the USB mass storage driver that hooks them unloaded first.
    * They all have problematic dual-mode making the device unload effect
    * uncertain on these devices.
@@ -358,8 +359,9 @@
    * Old chipsets: e200/c200 use PP5024 from Nvidia (formerly PortalPlayer).
    * m200 use TCC770 from Telechips.
    *
-   * The newer Sansa v2 chipset, AD3525 from Austriamicrosystems (AMS) found 
-   * in e280 v2 c200 v2, Clip, Fuze etc require DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST
+   * The newer Sansa v2 chipset, AD3525 from Austriamicrosystems (AMS) found
+   * in e280 v2 c200 v2, Clip, Fuze etc require
+   * DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST
    * and DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR to work properly.
    *
    * For more info see: http://daniel.haxx.se/sansa/v2.html
@@ -566,7 +568,7 @@
    * Dell
    */
   { "Dell, Inc", 0x413c, "DJ Itty", 0x4500, DEVICE_FLAG_NONE },
-  
+
   /*
    * Toshiba
    * Tentatively flagged all Toshiba devices with
@@ -771,7 +773,7 @@
   { "Nokia", 0x0421, "6600i", 0x0297, DEVICE_FLAG_NONE },
   // From: Karthik Paithankar <whyagain2005@users.sourceforge.net>
   { "Nokia", 0x0421, "2710", 0x02c1, DEVICE_FLAG_NONE },
-  // From: Anonymous sourceforge user
+  // From: Mick Stephenson <MickStep@users.sourceforge.net>
   { "Nokia", 0x0421, "5230", 0x02e2, DEVICE_FLAG_NONE },
   // From: Lan Liu at Nokia <lan.liu@nokia.com>
   { "Nokia", 0x0421, "N8", 0x02fe, DEVICE_FLAG_NONE },
@@ -891,7 +893,7 @@
    */
   // Reported by XNJB user
   { "Disney", 0x0aa6, "MixMax", 0x6021, DEVICE_FLAG_NONE },
-  // Reported by anonymous Sourceforge user 
+  // Reported by anonymous Sourceforge user
   { "Tevion", 0x0aa6, "MD 81488", 0x3011, DEVICE_FLAG_NONE },
   // Reported by Peter Hedlund <peter@peterandlinda.com>
   { "MyMusix", 0x0aa6, "PD-6070", 0x9601, DEVICE_FLAG_UNLOAD_DRIVER |
@@ -991,7 +993,12 @@
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by anonymous sourceforge user
+  { "LG Electronics Inc.", 0x1004, "LG8575", 0x619a,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by anonymous sourceforge user
   { "LG Electronics Inc.", 0x1004, "V909 G-Slate", 0x61f9,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER },
 
   /*
@@ -1328,6 +1335,14 @@
   // Device version: Qualcomm MTP1.0
   { "Curitel Communications, Inc.", 0x106c,
       "Verizon Wireless Device", 0x3215, DEVICE_FLAG_NONE },
+  // Reported by: Jim Hanrahan <goshawkjim@users.sourceforge.net>
+  { "Pantech", 0x106c, "Crux", 0xf003, DEVICE_FLAG_NONE },
+
+  /*
+   * Asus
+   */
+  { "Asus", 0x0b05, "TF101 Eeepad Transformer", 0x4e0f, DEVICE_FLAG_NONE },
+  { "Asus", 0x0b05, "FT101 Eeepad Transformer", 0x4e1f, DEVICE_FLAG_NONE },
 
   /*
    * Other strange stuff.
