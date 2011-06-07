@@ -1197,6 +1197,9 @@
   { "SonyEricsson", 0x0fce, "LT15i (Xperia arc)", 0x14f, DEVICE_FLAG_IGNORE_HEADER_ERRORS },
   // Reported by Jonas Nyrén <spectralmks@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "W302", 0x10c8, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by Anonymous Sourceforge user
+  { "SonyEricsson", 0x0fce,  "j10i (Elm)", 0xd144, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+
 
 
   /*
