@@ -8,18 +8,18 @@ COMPATIBILITY fixes:
   have always been problematic. We must find a way to get this to work,
   eventually. The problem is that the in-kernel mass storage driver hogs
   the device before the MTP mode gets a chance of being used, whereas
-  the Windows kernel driver apparently does it the other way around, 
+  the Windows kernel driver apparently does it the other way around,
   trying the MTP mode first and then not fall back on mass storage if
   MTP is available. (For some more explanations se src/libusb-glue.h.)
   This may involve kernel modifications. Perhaps it is only necessary
   to tweak the udev config not to load USB mass storage support for
   these devices. Dunno.
 
-2. COMPATIBILITY: several devices tend to "hang" after disconnect, 
-  needing to be unplugged and replugged before they can be used again. 
+2. COMPATIBILITY: several devices tend to "hang" after disconnect,
+  needing to be unplugged and replugged before they can be used again.
   We don't know why, it may be related to low-level USB behaviour that
   is not exposed in the logs we read. On some devices it appear that
-  avoiding to release the USB interface after closing the PTP/MTP 
+  avoiding to release the USB interface after closing the PTP/MTP
   session solves this, and might be a hint at how the Windows MTP stack
   works: perhaps the Windows MTP daemon grabs the interface once the
   device is plugged in, created a session and NEVER release it.
@@ -59,11 +59,10 @@ FEATURE fixes:
 5. FEATURE: Implement an OpenSync backend for devices which have
   calendaring, contact etc support. http://opensync.org/
 
-6. FEATURE: program to autoprobe device interfaces on connection.
 
 THOSE ARE ALREADY DONE:
 
-1. FEATURE: Make an API that can return several devices and let the user 
+1. FEATURE: Make an API that can return several devices and let the user
   choose which one to operate, not just connect to the first one...
 
 2. SPEED: Cache the object info for all items on the device.
@@ -87,21 +86,27 @@ THOSE ARE ALREADY DONE:
   then use the cache to check for supported props instead of calling
   out to PTP with ptp_mtp_getobjectpropssupported() every time.
   The cache would be an array of size params->deviceinfo.ImageFormats_len
-  with a list for each format of the properties it will support. Notice 
+  with a list for each format of the properties it will support. Notice
   that this needs to be updated whenever flush_handles() is called too.
-  THIS HAS BEEN DISCARDED, TERO IMPLEMENTED IT BUT IT DOESN'T SEEM TO 
+  THIS HAS BEEN DISCARDED, TERO IMPLEMENTED IT BUT IT DOESN'T SEEM TO
   YIELD MUCH.
 
-7. FEATURE: Make abstract playlists really become size -1 when created as 
+7. FEATURE: Make abstract playlists really become size -1 when created as
   the ones created on the device instead of the current 1 byte size.
   (Is this possible using enhanced commands? See TODO remarks in
   the create_abstract_entity() function)
 
 8. FEATURE: Integrate libmtp with HAL / D-Bus so applications can dynamically
-  know when a device has been plugged in or removed. Need a mechanism to 
+  know when a device has been plugged in or removed. Need a mechanism to
   connect a specific hal UDI.
 
 9. SPEEDUP: The recursive function that builds the folder tree is
   O(n^2)! Atleast remove all non-folders (PTP associations) from the
   list before we start sorting and building that tree. We walk the
   entire list for each group of siblings right now!
+
+10. FEATURE: program to autoprobe device interfaces on connection.
+
+11. FEATURE: accomodate Googles uncached device needs.
+
+12. FEATURE: rudimentary event interface.
