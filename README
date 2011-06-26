@@ -762,3 +762,82 @@ vendors: libmtp is being deployed in some embedded systems like
 set-top-boxes etc. It will be very irritating for customers if a device
 will not dock properly with some home entertainment equipment just because
 it is based on Linux and libmtp and not the Windows MTP stack.
+
+Autodetect with gudev
+---------------------
+
+Previously you would use HAL to detect devices being plugged in. Nowadays
+we use udev directly, or though the GNOME libgudev library. LIBMTPs
+default udev rules export the proper properties to detect any MTP device
+automatically, here is a verbose example derived from gnomad2:
+
+#define G_UDEV_API_IS_SUBJECT_TO_CHANGE
+#include <gudev/gudev.h>
+const char * const gudev_subsystems[] = { "usb", NULL };
+GUdevClient *gudev_client;
+guint uevent_id;
+guint uevent_bus_hooked = 0;
+guint uevent_device_hooked = 0;
+
+
+static void uevent_cb(GUdevClient *client, const char *action, GUdevDevice *device, void *data)
+{
+  guint64 devicenum;
+  guint vendor;
+  guint model;
+  guint busnum;
+  guint devnum;
+  guint mtpdevice;
+
+  devicenum = (guint64) g_udev_device_get_device_number(device);
+  g_print("%s event for %s (%"G_GINT64_MODIFIER"x)", action,
+          g_udev_device_get_sysfs_path (device), devicenum);
+
+  /* get device info */
+  vendor = get_property_as_int(device, "ID_VENDOR_ID", 16);
+  model = get_property_as_int(device, "ID_MODEL_ID", 16);
+  busnum = get_property_as_int(device, "BUSNUM", 10);
+  devnum = get_property_as_int(device, "DEVNUM", 10);
+  mtpdevice = get_property_as_int(device, "ID_MTP_DEVICE", 10);
+
+  if (vendor == 0 || model == 0) {
+    g_print("couldn't get vendor or model ID for device at (%x:%x)\n",
+            busnum, devnum);
+    return;
+  } else {
+    g_print("vendor = %x, model = %x, bus = %x, device = %x\n",
+            vendor, model, busnum, devnum);
+  }
+
+  if (mtpdevice) {
+    g_print("device is MTP compliant\n");
+
+    if (g_str_equal(action, "add") &&
+       uevent_bus_hooked == 0 &&
+       uevent_device_hooked == 0) {
+      g_print(MTP device plugged in!\n");
+      uevent_bus_hooked = busnum;
+      uevent_device_hooked = devnum;
+      scan_jukebox(NULL);
+    } else if (g_str_equal (action, "remove") &&
+       	   uevent_bus_hooked == busnum &&
+           uevent_device_hooked == devnum) {
+      g_print("MTP device removed!\n");
+      uevent_bus_hooked = 0;
+      uevent_device_hooked = 0;
+    }
+  }
+}
+
+
+
+(...)
+  /*
+   * Monitor udev device events - we're only really interested in events
+   * for USB devices.
+   */
+  gudev_client = g_udev_client_new(gudev_subsystems);
+  uevent_id = g_signal_connect_object(gudev_client,
+                                      "uevent",
+                                      G_CALLBACK(uevent_cb),
+                                      NULL, 0);
