@@ -254,8 +254,11 @@
   // Guessing on .spl flag, maybe needs NO_ZERO_READS, whatdoIknow
   { "Samsung", 0x04e8, "GT-S8500", 0x6819,
       DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_PLAYLIST_SPL_V1 },
-  // Reported by anonymous sourceforge user
-  { "Samsung", 0x04e8, "GT-P7510/Galaxy Tab 10.1", 0x6860,
+  // Reported by anonymous sourceforge user - this is an Android
+  // device. It seems to be hard to use this device under Linux,
+  // which may be because it seems to implement fairly strong
+  // Microsoft DRM stuff.
+  { "Samsung", 0x04e8, "GT-P7510/Galaxy Tab 10.1/S2", 0x6860,
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT },
   // From: Erik Berglund <erikjber@users.sourceforge.net>
@@ -678,6 +681,10 @@
    * so on older kernels special care is needed to remove the
    * USB mass storage driver that erroneously binds to the device
    * interface.
+   *
+   * More problematic, this manufacturer+device ID seems to be
+   * reused in a USB Mass Storage device named "Zipy Fox 8GB",
+   * which means libmtp may mistreat it.
    */
   { "Dunlop", 0x10d6, "MP3 player 1GB / EGOMAN MD223AFD", 0x2200, DEVICE_FLAG_UNLOAD_DRIVER},
   // Reported by Steven Black <stevenblack1956@users.sourceforge.net>
