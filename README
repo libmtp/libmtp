@@ -276,6 +276,67 @@ transaction. The bulk transactions contain all the PTP/MTP layer
 data, which is usually where the problems appear.
 
 
+Notes to assist with debugging new devices:
+-------------------------------------------
+
+In debugging new hardware, we highly recommend that you only 
+use the example mtp-* applications that come with libmtp, as other
+applications may have their own bugs that may interfere with your
+new device working correctly. Using another application instead of
+those that come with libmtp just adds another point of failure.
+
+For debugging, there are 3 main options:
+
+1. Use the env variable: LIBMTP_DEBUG to increase the 
+verboseness of the debugging output for any application using 
+libmtp. Relevant codes are:
+* 0x00 [0000 0000] : no debug (default)
+* 0x01 [0000 0001] : PTP debug
+* 0x02 [0000 0010] : Playlist debug
+* 0x04 [0000 0100] : USB debug
+* 0x08 [0000 1000] : USB data debug
+// Codes are hex and binary respectively. Simple add them togther
+// to get your desired level of output.
+
+(Assuming bash)
+eg: 
+$ export LIBMTP_DEBUG=12
+$ mtp-detect
+  // To get USB debug and USB data debug information.
+
+$ export LIBMTP_DEBUG=2
+$ mtp-detect
+    // To get Playlist debug information.
+  
+Also note, an application may also use the LIBMTP_debug() API
+function to achieve the same options as listed above.
+
+2. Use "strace" on the various mtp-* commands to see where/what 
+is falling over or getting stuck at.
+* On Solaris and FreeBSD, use "truss" or "dtrace" instead on "strace".
+* On Mac OS X, use "ktrace" or "dtrace" instead of "strace".
+* On OpenBSD and NetBSD, use "ktrace" instead of "strace".
+
+This will at least help pinpoint where the application is failing, or
+a device is reporting incorrect information. (This is extremely helpful 
+with devices that have odd disconnection requirements).
+
+The use of these tools may also pinpoint issues with libusb as 
+implemented by each OS vendor or issues with the MTP implementation
+on the new device as well, so please be prepared for either case.
+
+3. Use "gdb" or similar debugger to step through the code as it is
+run. This is time consuming, and not needed just to pinpoint where
+the fault is. 
+
+The use of gdb or another debugger may also miss or actually cause  
+command and data timing issues with some devices, leading to false 
+information. So please consider this a last resort option.
+
+Also please read the "It's Not Our Bug!" section below, as it does
+contain some useful information that may assist with your device.
+
+
 Dual-mode devices does not work - last resort:
 ----------------------------------------------
 
