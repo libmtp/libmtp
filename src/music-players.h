@@ -771,6 +771,9 @@
   // this flag atleast is needed
   { "Nokia", 0x0421, "5800 XpressMusic v2", 0x0155,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  // Yet another version... I think
+  { "Nokia", 0x0421, "5800 XpressMusic v3", 0x0159,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // From an anonymous SourceForge user
   // Not verified to be MTP
   { "Nokia", 0x0421, "E63", 0x0179, DEVICE_FLAG_NONE },
