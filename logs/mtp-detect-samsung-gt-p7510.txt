@@ -1,8 +1,9 @@
-libmtp version: 1.0.3
+libmtp version: 1.1.0
 
 Listing raw device(s)
+Device 0 (VID=04e8 and PID=6860) is a Samsung GT-P7510/Galaxy Tab 10.1.
    Found 1 device(s):
-   04e8:6860 @ bus 2, dev 28
+   Samsung: GT-P7510/Galaxy Tab 10.1 (04e8:6860) @ bus 2, dev 12
 Attempting to connect device(s)
 USB low-level info:
    Using kernel interface "usbfs"
@@ -16,25 +17,28 @@ USB low-level info:
    OUT endpoint maxpacket: 512 bytes
    Raw device info:
       Bus location: 2
-      Device number: 28
+      Device number: 12
       Device entry info:
-         Vendor: (null)
+         Vendor: Samsung
          Vendor id: 0x04e8
-         Product: (null)
+         Product: GT-P7510/Galaxy Tab 10.1
          Vendor id: 0x6860
-         Device flags: 0x00000000
+         Device flags: 0x08000002
 Configuration 0, interface 0, altsetting 0:
-   Interface implements PTP class, no further probing.
+   Interface description contains the string "MTP"
+   Device recognized as MTP, no further probing.
 Device info:
-   Manufacturer: SAMSUNG Electronics Co. Ltd. 
-   Model: GT-P7510
+   Manufacturer: SAMSUNG Electronics Co. Ltd.
+   Model: GT-I9100
    Device version: V1.0
-   Serial number: 
-000000000000000
-
+   Serial number: *****************
    Vendor extension ID: 0x00000006
-   Vendor extension description: microsoft.com: 1.0; microsoft.com/WMPPD: 11.0; microsoft.com/WMPPD: 10.0; 
+   Vendor extension description: microsoft.com: 1.0; microsoft.com/WMPPD: 11.0; microsoft.com/WMPPD: 10.0;
    Detected object size: 64 bits
+   Extensions:
+        microsoft.com: 1.0
+         microsoft.com/WMPPD: 11.0
+         microsoft.com/WMPPD: 10.0
 Supported operations:
    1001: get device info
    1002: Open session
@@ -94,7 +98,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc44: Name STRING data type GET/SET
       dc05: Association Type UINT16 data type enumeration: 0, 1,  GET/SET
       dc08: Date Created STRING data type DATETIME FORM GET/SET
-      dc46: Artist STRING data type GET/SET
+      dc9d: DRM Status UINT16 data type enumeration: 0, 1,  GET/SET
       dc89: Duration UINT32 data type range: MIN 0, MAX -1, STEP 1 GET/SET
       dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
       dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
@@ -130,7 +134,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc44: Name STRING data type GET/SET
       dc05: Association Type UINT16 data type enumeration: 0, 1,  GET/SET
       dc08: Date Created STRING data type DATETIME FORM GET/SET
-      dc46: Artist STRING data type GET/SET
+      dc9d: DRM Status UINT16 data type enumeration: 0, 1,  GET/SET
       dc89: Duration UINT32 data type range: MIN 0, MAX -1, STEP 1 GET/SET
       dc8a: Rating UINT16 data type range: MIN 0, MAX 100, STEP 1 GET/SET
       dc8b: Track UINT16 data type ANY 16BIT VALUE form GET/SET
@@ -202,7 +206,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc44: Name STRING data type GET/SET
       dc05: Association Type UINT16 data type enumeration: 0, 1,  GET/SET
       dc08: Date Created STRING data type DATETIME FORM GET/SET
-      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc87: Width UINT32 data type range: MIN 0, MAX 1280, STEP 1 GET/SET
       dc88: Height UINT32 data type range: MIN 0, MAX 720, STEP 1 GET/SET
       dc8c: Genre STRING data type GET/SET
       dc91: Use Count UINT32 data type ANY 32BIT VALUE form GET/SET
@@ -325,7 +329,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc44: Name STRING data type GET/SET
       dc05: Association Type UINT16 data type enumeration: 0, 1,  GET/SET
       dc08: Date Created STRING data type DATETIME FORM GET/SET
-      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc87: Width UINT32 data type range: MIN 0, MAX 1280, STEP 1 GET/SET
       dc88: Height UINT32 data type range: MIN 0, MAX 720, STEP 1 GET/SET
       dc8c: Genre STRING data type GET/SET
       dc91: Use Count UINT32 data type ANY 32BIT VALUE form GET/SET
@@ -354,7 +358,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc44: Name STRING data type GET/SET
       dc05: Association Type UINT16 data type enumeration: 0, 1,  GET/SET
       dc08: Date Created STRING data type DATETIME FORM GET/SET
-      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc87: Width UINT32 data type range: MIN 0, MAX 1280, STEP 1 GET/SET
       dc88: Height UINT32 data type range: MIN 0, MAX 720, STEP 1 GET/SET
       dc8c: Genre STRING data type GET/SET
       dc91: Use Count UINT32 data type ANY 32BIT VALUE form GET/SET
@@ -383,7 +387,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc44: Name STRING data type GET/SET
       dc05: Association Type UINT16 data type enumeration: 0, 1,  GET/SET
       dc08: Date Created STRING data type DATETIME FORM GET/SET
-      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc87: Width UINT32 data type range: MIN 0, MAX 1280, STEP 1 GET/SET
       dc88: Height UINT32 data type range: MIN 0, MAX 720, STEP 1 GET/SET
       dc8c: Genre STRING data type GET/SET
       dc91: Use Count UINT32 data type ANY 32BIT VALUE form GET/SET
@@ -412,7 +416,7 @@ Playable File (Object) Types and Object Properties Supported:
       dc44: Name STRING data type GET/SET
       dc05: Association Type UINT16 data type enumeration: 0, 1,  GET/SET
       dc08: Date Created STRING data type DATETIME FORM GET/SET
-      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc87: Width UINT32 data type range: MIN 0, MAX 1280, STEP 1 GET/SET
       dc88: Height UINT32 data type range: MIN 0, MAX 720, STEP 1 GET/SET
       dc8c: Genre STRING data type GET/SET
       dc91: Use Count UINT32 data type ANY 32BIT VALUE form GET/SET
@@ -486,29 +490,30 @@ Storage Devices:
       StorageType: 0x0003 fixed RAM storage
       FilesystemType: 0x0002 generic hierarchical
       AccessCapability: 0x0000 read/write
-      MaxCapacity: 29875142656
-      FreeSpaceInBytes: 29443829760
+      MaxCapacity: 12351995904
+      FreeSpaceInBytes: 9229139968
       FreeSpaceInObjects: 4294967295
       StorageDescription: Phone
       VolumeIdentifier: SECZ9519043CHOHB
 Special directories:
-   Default music folder: 0x00000001
+   Default music folder: 0xffffffff
    Default playlist folder: 0xffffffff
-   Default picture folder: 0x00000006
+   Default picture folder: 0xffffffff
    Default video folder: 0xffffffff
    Default organizer folder: 0xffffffff
    Default zencast folder: 0xffffffff
    Default album folder: 0xffffffff
    Default text folder: 0xffffffff
 MTP-specific device properties:
-   Friendly name: GT-P7510
+   Friendly name: GT-I9100
    Synchronization partner: Longhorn Sync Engine
-   Battery level 90 of 100 (89%)
+   Battery level 90 of 100 (90%)
 libmtp supported (playable) filetypes:
    ISO MPEG-1 Audio Layer 3
    Microsoft Windows Media Audio
    Microsoft Windows Media Video
    JPEG file
+   Folder
    Abstract Playlist file
    GIF bitmap file
    Audio Video Interleave
