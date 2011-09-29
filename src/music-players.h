@@ -805,8 +805,12 @@
   { "Nokia", 0x0421, "N8", 0x02fe, DEVICE_FLAG_NONE },
   // From: Lan Liu at Nokia <lan.liu@nokia.com>
   { "Nokia", 0x0421, "N8 (Ovi mode)", 0x0302, DEVICE_FLAG_NONE },
+  // From: Martijn Hoogendoorn <m.hoogendoorn@gmail.com>
+  { "Nokia", 0x0421, "E7", 0x0334, DEVICE_FLAG_NONE },
   // From: Raul Metsma <raul@innovaatik.ee>
-  { "Nokia", 0x0421, "E7", 0x0335, DEVICE_FLAG_NONE },
+  { "Nokia", 0x0421, "E7 (Ovi mode)", 0x0335, DEVICE_FLAG_NONE },
+  // Reported by Anonymous SourceForge user
+  { "Nokia", 0x0421, "N950", 0x03d2, DEVICE_FLAG_NONE },
   // From: http://nds2.nokia.com/files/support/global/phones/software/Nokia_3250_WMP10_driver.inf
   { "Nokia", 0x0421, "3250 Mobile Phone", 0x0462, DEVICE_FLAG_NONE },
   // From http://nds2.nokia.com/files/support/global/phones/software/Nokia_N93_WMP10_Driver.inf
@@ -1140,6 +1144,14 @@
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNIQUE_FILENAMES |
       DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+  // Reported by anonymous SourceForge user
+  { "Sony", 0x054c, "Walkman NWZ-W252B", 0x04bb,
+      DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      DEVICE_FLAG_UNIQUE_FILENAMES |
+      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+  // Suspect this device has strong DRM features
+  // See https://answers.launchpad.net/ubuntu/+source/libmtp/+question/149587
   { "Sony", 0x054c, "Walkman NWZ-B153F", 0x04be,
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
@@ -1256,13 +1268,24 @@
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
-  // WiFi-only version of Xoom
-  // See: http://bugzilla.gnome.org/show_bug.cgi?id=647506
-  { "Motorola", 0x18d1, "Xoom (MZ604)", 0x70a8,
+
+  /*
+   * Google
+   * These guys lend their Vendor ID to anyone who comes down the
+   * road to produce an Android tablet it seems... The Vendor ID
+   * was originally used for Nexus phones
+   */
+  { "Google Inc (for Sony)", 0x18d1, "S1", 0x05b3,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
-  { "Motorola", 0x22b8, "Xoom (ID 2)", 0x70a9,
+  // WiFi-only version of Xoom
+  // See: http://bugzilla.gnome.org/show_bug.cgi?id=647506
+  { "Google Inc (for Motorola)", 0x18d1, "Xoom (MZ604)", 0x70a8,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+  { "Google Inc (for Motorola)", 0x22b8, "Xoom (ID 2)", 0x70a9,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
