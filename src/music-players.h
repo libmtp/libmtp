@@ -1181,49 +1181,72 @@
    * for now.
    */
   // Reported by Thomas Schweitzer <thomas_-_s@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "K550i", 0xe000, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce, "K550i", 0xe000,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Øyvind Stegard <stegaro@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "K850i", 0x0075, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce, "K850i", 0x0075,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Michael Eriksson
-  { "SonyEricsson", 0x0fce, "W910", 0x0076, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce, "W910", 0x0076,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Zack <zackdvd@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "W890i", 0x00b3, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce, "W890i", 0x00b3,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by robert dot ahlskog at gmail
-  { "SonyEricsson", 0x0fce, "W760i", 0x00c6, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce, "W760i", 0x00c6,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Linus Åkesson <linusakesson@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "C902", 0x00d4, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce, "C902", 0x00d4,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by an anonymous SourceForge user
-  { "SonyEricsson", 0x0fce, "C702", 0x00d9, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce, "C702", 0x00d9,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Christian Zuckschwerdt <christian@zuckschwerdt.org>
-  { "SonyEricsson", 0x0fce, "W980", 0x00da, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce, "W980", 0x00da,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by David Taylor <davidt-libmtp@yadt.co.uk>
-  { "SonyEricsson", 0x0fce, "C905", 0x00ef, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce, "C905", 0x00ef,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by David House <dmhouse@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "W595", 0x00f3,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL | DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+      DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
   // Reported by Mattias Evensson <mevensson@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "W902", 0x00f5, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce, "W902", 0x00f5,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Sarunas <sarunas@users.sourceforge.net>
   // Doesn't need any flags according to reporter
-  { "SonyEricsson", 0x0fce, "T700", 0x00fb, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  { "SonyEricsson", 0x0fce, "T700", 0x00fb,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Reported by Stéphane Pontier <shadow_walker@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "W705/W715", 0x0105, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce, "W705/W715", 0x0105,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Håkan Kvist
-  { "SonyEricsson", 0x0fce, "W995", 0x0112, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce, "W995", 0x0112,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by anonymous SourceForge user
-  { "SonyEricsson", 0x0fce, "U5", 0x0133, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce, "U5", 0x0133,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Flo <lhugsereg@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "U8i", 0x013a, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce, "U8i", 0x013a,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by xirotyu <xirotyu@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce,  "j10i2 (Elm)", 0x0144, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce,  "j10i2 (Elm)", 0x0144,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Jonas Salling <>
   // Erroneous MTP implementation seems to be from Aricent, returns
   // broken transaction ID.
-  { "SonyEricsson", 0x0fce, "LT15i (Xperia arc)", 0x14f, DEVICE_FLAG_IGNORE_HEADER_ERRORS },
+  { "SonyEricsson", 0x0fce, "LT15i (Xperia arc)", 0x14f,
+      DEVICE_FLAG_IGNORE_HEADER_ERRORS },
+  // Reported by <wealas@users.sourceforge.net>
+  { "SonyEricsson", 0x0fce, "ST18a", 0x161,
+      DEVICE_FLAG_IGNORE_HEADER_ERRORS },
   // Reported by Jonas Nyrén <spectralmks@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "W302", 0x10c8, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce, "W302", 0x10c8,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Anonymous Sourceforge user
-  { "SonyEricsson", 0x0fce,  "j10i (Elm)", 0xd144, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce,  "j10i (Elm)", 0xd144,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
 
 
 
