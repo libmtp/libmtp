@@ -1402,6 +1402,17 @@
   { "Asus", 0x0b05, "TF101 Eeepad Transformer", 0x4e0f, DEVICE_FLAG_NONE },
   { "Asus", 0x0b05, "FT101 Eeepad Transformer", 0x4e1f, DEVICE_FLAG_NONE },
 
+
+  /*
+   * Lenovo
+   */
+  // Reported by anonymous sourceforge user
+  // Adding Android default bug flags since it appears to be an Android
+  { "Lenovo", 0x17ef, "Lenovo ThinkPad Tablet", 0x741c,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+
   /*
    * Other strange stuff.
    */
