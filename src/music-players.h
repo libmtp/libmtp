@@ -1243,6 +1243,10 @@
   // broken transaction ID.
   { "SonyEricsson", 0x0fce, "LT15i (Xperia arc)", 0x14f,
       DEVICE_FLAG_IGNORE_HEADER_ERRORS },
+  // Reported by Eamonn Webster <eweb@users.sourceforge.net>
+  // Guessing on the ignore errors flag
+  { "SonyEricsson", 0x0fce, "Xperia Neo", 0x0156,
+      DEVICE_FLAG_IGNORE_HEADER_ERRORS },
   // Reported by <wealas@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "ST18a", 0x161,
       DEVICE_FLAG_IGNORE_HEADER_ERRORS },
