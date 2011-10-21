@@ -354,6 +354,9 @@
   // From Anonymous SourceForge User
   { "Philips", 0x0471, "GoGear Ariaz", 0x20b9,
       DEVICE_FLAG_UNLOAD_DRIVER },
+  // From Anonymous SourceForge User
+  { "Philips", 0x0471, "GoGear Vibe/02", 0x20e5,
+      DEVICE_FLAG_UNLOAD_DRIVER },
   // from XNJB user
   { "Philips", 0x0471, "PSA235", 0x7e01, DEVICE_FLAG_NONE },
 
