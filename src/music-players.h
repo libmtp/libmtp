@@ -357,7 +357,6 @@
   // from XNJB user
   { "Philips", 0x0471, "PSA235", 0x7e01, DEVICE_FLAG_NONE },
 
-
   /*
    * Acer
    */
@@ -365,7 +364,8 @@
   { "Acer", 0x0502, "Iconia TAB A500 v1", 0x3325, DEVICE_FLAG_NONE },
   // Reported by: Franck VDL <franckv@users.sourceforge.net>
   { "Acer", 0x0502, "Iconia TAB A500 v2", 0x3341, DEVICE_FLAG_NONE },
-
+  // Reported by: Arvin Schnell <arvins@users.sourceforge.net>
+  { "Acer", 0x0502, "Iconia TAB A100", 0x3349, DEVICE_FLAG_NONE },
 
   /*
    * SanDisk
@@ -1287,10 +1287,7 @@
   // Reported by Google Inc's Yavor Goulishev <yavor@google.com>
   // Android 3.0 MTP stack seems to announce that it supports the
   // list operations, but they do not work?
-  { "Motorola", 0x22b8, "Xoom (ID 1)", 0x70a8,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
-      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+  { "Motorola", 0x22b8, "Xoom (ID 1)", 0x70a8, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Google
@@ -1299,20 +1296,13 @@
    * was originally used for Nexus phones
    */
   { "Google Inc (for Sony)", 0x18d1, "S1", 0x05b3,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
-      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+      DEVICE_FLAGS_ANDROID_BUGS },
   // WiFi-only version of Xoom
   // See: http://bugzilla.gnome.org/show_bug.cgi?id=647506
   { "Google Inc (for Motorola)", 0x18d1, "Xoom (MZ604)", 0x70a8,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
-      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc (for Motorola)", 0x22b8, "Xoom (ID 2)", 0x70a9,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
-      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
-
+      DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Media Keg
    */
@@ -1432,9 +1422,7 @@
   // Reported by anonymous sourceforge user
   // Adding Android default bug flags since it appears to be an Android
   { "Lenovo", 0x17ef, "Lenovo ThinkPad Tablet", 0x741c,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
-      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Other strange stuff.

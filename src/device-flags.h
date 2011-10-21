@@ -266,3 +266,13 @@
  * like this, so it's not done by default.
  */
 #define DEVICE_FLAG_FORCE_RESET_ON_CLOSE	0x10000000
+/**
+ * All these bug flags need to be set on Android devices,
+ * they claim to support MTP operations they actually
+ * cannot handle. These are auto-assigned to devices reporting
+ * "android.com" in their device extension descriptor.
+ */
+#define DEVICE_FLAGS_ANDROID_BUGS \
+  (DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | \
+   DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST | \
+   DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST)

@@ -1704,6 +1704,12 @@ static void parse_extension_descriptor(LIBMTP_mtpdevice_t *mtpdevice,
 
   /* descriptors are divided by semicolons */
   while (end < strlen(desc)) {
+    /* Skip past initial whitespace */
+    while (desc[start] == ' ' && end < strlen(desc)) {
+      start++;
+      end++;
+    }
+    /* Detect extension */
     while (desc[end] != ';' && end < strlen(desc))
       end++;
     if (end < strlen(desc)) {
@@ -1870,6 +1876,26 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *rawdevi
 
   parse_extension_descriptor(mtp_device,
                              current_params->deviceinfo.VendorExtensionDesc);
+
+  /*
+   * Android has a number of bugs, force-assign these bug flags
+   * if Android is encountered.
+   */
+  {
+    LIBMTP_device_extension_t *tmpext = mtp_device->extensions;
+
+    while (tmpext != NULL) {
+      /*
+       * If it is fixed in later versions, test on tmpext->major, tmpext->minor
+       */
+      if (!strcmp(tmpext->name, "android.com")) {
+	LIBMTP_INFO("Android device detected, assigning default bug flags\n");
+	ptp_usb->rawdevice.device_entry.device_flags |=
+	  DEVICE_FLAGS_ANDROID_BUGS;
+      }
+      tmpext = tmpext->next;
+    }
+  }
 
   /*
    * If the OGG or FLAC filetypes are flagged as "unknown", check
