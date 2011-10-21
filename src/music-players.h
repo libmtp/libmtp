@@ -1238,6 +1238,9 @@
   // Reported by xirotyu <xirotyu@users.sourceforge.net>
   { "SonyEricsson", 0x0fce,  "j10i2 (Elm)", 0x0144,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by Serge Chirik <schirik@users.sourceforge.net>
+  { "SonyEricsson", 0x0fce,  "j108i (Cedar)", 0x014e,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Jonas Salling <>
   // Erroneous MTP implementation seems to be from Aricent, returns
   // broken transaction ID.
