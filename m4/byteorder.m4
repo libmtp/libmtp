@@ -35,7 +35,7 @@ AC_DEFUN([AC_NEED_BYTEORDER_H],
 ac_dir=`AS_DIRNAME(["$1"])`
 if test "$ac_dir" != "$1" && test "$ac_dir" != .; then
   # The file is in a subdirectory.
-  test ! -d "$ac_dir" && AS_MKDIR_P(["$ac_dir"])
+  test ! -d "$ac_dir" && (AS_MKDIR_P(["$ac_dir"]))
 fi
 
 # We're only interested in the target CPU, but it's not always set
