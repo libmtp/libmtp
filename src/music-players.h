@@ -587,6 +587,8 @@
    * Dell
    */
   { "Dell, Inc", 0x413c, "DJ Itty", 0x4500, DEVICE_FLAG_NONE },
+  /* Reported by: JR */
+  { "Dell, Inc", 0x413c, "Dell Streak 7", 0xb10b, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Toshiba
