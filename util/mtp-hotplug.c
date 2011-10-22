@@ -140,6 +140,12 @@ int main (int argc, char **argv)
       printf("SUBSYSTEM==\"usb\", GOTO=\"libmtp_usb_rules\"\n"
 	     "GOTO=\"libmtp_rules_end\"\n\n"
 	     "LABEL=\"libmtp_usb_rules\"\n\n");
+      printf("# Some sensitive devices we surely don\'t wanna probe, color instruments\n");
+      printf("ATTR{idVendor}==\"0670\", GOTO=\"libmtp_rules_end\"\n");
+      printf("ATTR{idVendor}==\"0765\", GOTO=\"libmtp_rules_end\"\n");
+      printf("ATTR{idVendor}==\"085c\", GOTO=\"libmtp_rules_end\"\n");
+      printf("ATTR{idVendor}==\"0971\", GOTO=\"libmtp_rules_end\"\n");
+      printf("\n");
       break;
     case style_udev_old:
       printf("# UDEV-style hotplug map for libmtp\n");
