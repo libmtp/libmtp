@@ -1,6 +1,6 @@
 # Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.52)
-AC_INIT([libmtp], [1.1.0], [libmtp-discuss@lists.sourceforge.net])
+AC_INIT([libmtp], [1.1.1], [libmtp-discuss@lists.sourceforge.net])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([src/libmtp.c])
@@ -22,14 +22,17 @@ AC_ARG_WITH(udev,
     [UDEV="${withval}"], [])
 AC_SUBST(UDEV)
 
-# Optionally set name of udev rules file
-# priority is 60, to appear before 70-acl.rules which handles
-# access control to the devices.
+# Optionally set name of udev rules file, default
+# priority is 69, to appear before 70-acl.rules which handles
+# access control to the devices. We try to let all other userspace
+# libusb-based device handlers take precedence since libmtp may
+# attempt to autoprobe the devices.
+#
 # Later rules can then use the identifiers for its processing.
-UDEV_RULES=60-libmtp.rules
+UDEV_RULES=69-libmtp.rules
 AC_ARG_WITH(udev-rules,
     AC_HELP_STRING([--with-udev-rules=NAME],
-    [file name for udev rules [default=60-libmtp.rules]]),
+    [file name for udev rules [default=69-libmtp.rules]]),
     [UDEV_RULES="${withval}"], [])
 AC_SUBST(UDEV_RULES)
 
@@ -156,7 +159,7 @@ CFLAGS="$CFLAGS -Wall -Wmissing-prototypes"
 AX_NEED_STDINT_H([src/_stdint.h])
 
 # Create a header file containing NetBSD-style byte swapping macros.
-# This m4 macros has caused severe pain, I am considering creating a 
+# This m4 macros has caused severe pain, I am considering creating a
 # hard-coded byte swapper that will be eternally portable.
 AC_NEED_BYTEORDER_H(src/gphoto2-endian.h)
 
