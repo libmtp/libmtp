@@ -23,13 +23,13 @@ AC_ARG_WITH(udev,
 AC_SUBST(UDEV)
 
 # Optionally set name of udev rules file
-# priority is 39, so it will be loaded before libgphoto2 and the
-# manual list usb-media-players.rules.
+# priority is 60, to appear before 70-acl.rules which handles
+# access control to the devices.
 # Later rules can then use the identifiers for its processing.
-UDEV_RULES=39-libmtp.rules
+UDEV_RULES=60-libmtp.rules
 AC_ARG_WITH(udev-rules,
     AC_HELP_STRING([--with-udev-rules=NAME],
-    [file name for udev rules [default=39-libmtp.rules]]),
+    [file name for udev rules [default=60-libmtp.rules]]),
     [UDEV_RULES="${withval}"], [])
 AC_SUBST(UDEV_RULES)
 
