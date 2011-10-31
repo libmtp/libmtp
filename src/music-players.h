@@ -1438,9 +1438,12 @@
   /*
    * Lenovo
    */
+  // Reported by Richard Körber <shredzone@users.sourceforge.net>
+  { "Lenovo", 0x17ef, "K1", 0x740a,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous sourceforge user
   // Adding Android default bug flags since it appears to be an Android
-  { "Lenovo", 0x17ef, "Lenovo ThinkPad Tablet", 0x741c,
+  { "Lenovo", 0x17ef, "ThinkPad Tablet", 0x741c,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
