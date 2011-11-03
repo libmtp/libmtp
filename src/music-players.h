@@ -1453,6 +1453,14 @@
   { "Lenovo", 0x17ef, "ThinkPad Tablet", 0x741c,
       DEVICE_FLAGS_ANDROID_BUGS },
 
+
+  /*
+   * ZTE
+   * Android devices reported by junwang <lovewjlove@users.sourceforge.net>
+   */
+  { "ZTE", 0x19d2, "V55 ID 1", 0x0244, DEVICE_FLAGS_ANDROID_BUGS },
+  { "ZTE", 0x19d2, "V55 ID 2", 0x0245, DEVICE_FLAGS_ANDROID_BUGS },
+
   /*
    * Other strange stuff.
    */
