@@ -1438,8 +1438,10 @@
   /*
    * Asus
    */
-  { "Asus", 0x0b05, "TF101 Eeepad Transformer", 0x4e0f, DEVICE_FLAG_NONE },
-  { "Asus", 0x0b05, "FT101 Eeepad Transformer", 0x4e1f, DEVICE_FLAG_NONE },
+  { "Asus", 0x0b05, "TF101 Eeepad Transformer", 0x4e0f,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "TF101 Eeepad Transformer (debug mode)", 0x4e1f,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
 
   /*
