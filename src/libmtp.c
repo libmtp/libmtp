@@ -2059,10 +2059,10 @@ int LIBMTP_Read_Event(LIBMTP_mtpdevice_t *device, LIBMTP_event_t *event)
    */
   PTPParams *params = (PTPParams *) device->params;
   PTPContainer ptp_event;
-  uint16_t ret = ptp_usb_event_wait( params, &ptp_event );
+  uint16_t ret = ptp_usb_event_wait(params, &ptp_event);
   uint16_t code;
   uint32_t session_id;
-  uint32_t transation_id;
+  uint32_t transaction_id;
   uint32_t param1;
   uint32_t param2;
   uint32_t param3;
@@ -2077,7 +2077,7 @@ int LIBMTP_Read_Event(LIBMTP_mtpdevice_t *device, LIBMTP_event_t *event)
   /* Process the event */
   code = ptp_event.Code;
   session_id = ptp_event.SessionID;
-  transation_id = ptp_event.Transaction_ID;
+  transaction_id = ptp_event.Transaction_ID;
   param1 = ptp_event.Param1;
   param2 = ptp_event.Param2;
   param3 = ptp_event.Param3;
