@@ -2313,6 +2313,18 @@ ptp_canon_eos_get_viewfinder_image (PTPParams* params, unsigned char **data, uns
         return ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, data, size);
 }
 
+uint16_t
+ptp_canon_eos_get_viewfinder_image_handler (PTPParams* params, PTPDataHandler*handler)
+{
+        PTPContainer ptp;
+        
+        PTP_CNT_INIT(ptp);
+        ptp.Code=PTP_OC_CANON_EOS_GetViewFinderData;
+        ptp.Nparam=1;
+        ptp.Param1=0x00100000; /* from trace */
+        return ptp_transaction_new(params, &ptp, PTP_DP_GETDATA, 0, handler);
+}
+
 /**
  * ptp_nikon_check_event:
  *
@@ -3606,12 +3618,14 @@ ptp_get_property_description(PTPParams* params, uint16_t dpc)
 		 N_("Exposure Base Center")},
 		{PTP_DPC_NIKON_ExposureBaseSpot,		/* 0xD05C */
 		 N_("Exposure Base Spot")},
-		{PTP_DPC_NIKON_LiveViewAF,			/* 0xD05D */
-		 N_("Live View AF")},
+		{PTP_DPC_NIKON_LiveViewAFArea,			/* 0xD05D */
+		 N_("Live View AF Area")},
 		{PTP_DPC_NIKON_AELockMode,			/* 0xD05E */
 		 N_("Exposure Lock")},
 		{PTP_DPC_NIKON_AELAFLMode,			/* 0xD05F */
 		 N_("Focus Lock")},
+		{PTP_DPC_NIKON_LiveViewAFFocus,			/* 0xD061 */
+		 N_("Live View AF Focus")},
 		{PTP_DPC_NIKON_MeterOff,			/* 0xD062 */
 		 N_("Auto Meter Off Time")},
 		{PTP_DPC_NIKON_SelfTimer,			/* 0xD063 */
@@ -4125,8 +4139,8 @@ ptp_render_property_value(PTPParams* params, uint16_t dpc,
 		{PTP_DPC_FlashMode, 0, 4, N_("Automatic Red-eye Reduction")},
 		{PTP_DPC_FlashMode, 0, 5, N_("Red-eye fill flash")},
 		{PTP_DPC_FlashMode, 0, 6, N_("External sync")},
-		{PTP_DPC_FlashMode, PTP_VENDOR_NIKON, 32784, N_("Default")},
-		{PTP_DPC_FlashMode, PTP_VENDOR_NIKON, 32785, N_("Slow Sync")},
+		{PTP_DPC_FlashMode, PTP_VENDOR_NIKON, 32784, N_("Auto")},
+		{PTP_DPC_FlashMode, PTP_VENDOR_NIKON, 32785, N_("Auto Slow Sync")},
 		{PTP_DPC_FlashMode, PTP_VENDOR_NIKON, 32786, N_("Rear Curtain Sync + Slow Sync")},
 		{PTP_DPC_FlashMode, PTP_VENDOR_NIKON, 32787, N_("Red-eye Reduction + Slow Sync")},
 		{PTP_DPC_ExposureProgramMode, 0, 1, "M"},		/* 500E */
@@ -4278,6 +4292,7 @@ ptp_render_property_value(PTPParams* params, uint16_t dpc,
 
 		PTP_VENDOR_VAL_BOOL(PTP_DPC_NIKON_Bracketing,PTP_VENDOR_NIKON),		/* D0C0 */
 
+		/* http://www.rottmerhusen.com/objektives/lensid/nikkor.html is complete */
 		{PTP_DPC_NIKON_LensID, PTP_VENDOR_NIKON, 0, N_("Unknown")},		/* D0E0 */
 		{PTP_DPC_NIKON_LensID, PTP_VENDOR_NIKON, 38, "Sigma 70-300mm 1:4-5.6 D APO Macro"},
 		{PTP_DPC_NIKON_LensID, PTP_VENDOR_NIKON, 83, "AF Nikkor 80-200mm 1:2.8 D ED"},
@@ -4412,6 +4427,7 @@ ptp_render_property_value(PTPParams* params, uint16_t dpc,
 		{PTP_DPC_NIKON_ISOAutoHiLimit, PTP_VENDOR_NIKON, 2, "1600"},
 		{PTP_DPC_NIKON_ISOAutoHiLimit, PTP_VENDOR_NIKON, 3, "3200"},
 		{PTP_DPC_NIKON_ISOAutoHiLimit, PTP_VENDOR_NIKON, 4, "Hi 1"},
+		{PTP_DPC_NIKON_ISOAutoHiLimit, PTP_VENDOR_NIKON, 5, "Hi 2"},
 
 		{PTP_DPC_NIKON_InfoDispSetting, PTP_VENDOR_NIKON, 0, N_("Auto")},	/* 0xD187 */
 		{PTP_DPC_NIKON_InfoDispSetting, PTP_VENDOR_NIKON, 1, N_("Dark on light")},
