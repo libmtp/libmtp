@@ -36,7 +36,7 @@
 #include <string.h>
 
 #include "libmtp.h"
-#include "libusb-glue.h"
+#include "libusb1-glue.h"
 #include "ptp.h"
 #include "unicode.h"
 #include "util.h"
