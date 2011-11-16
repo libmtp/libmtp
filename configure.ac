@@ -111,15 +111,11 @@ fi
 AM_CONDITIONAL(MS_LIB_EXE, test x$ms_lib_exe = xyes)
 
 # Checks for libraries.
-AC_CHECK_LIB([usb-1.0], [libusb_init],,[
-	AC_CHECK_LIB([usb], [usb_control_msg],,
-		AC_MSG_ERROR([I can't find the libusb-1.0 library on your system. You
-		may need to set the LDFLAGS environment variable to include the
-		search path where you have libusb installed before running
-		configure (e.g. setenv LDFLAGS=-L/usr/local/lib)]),
-		"$OSFLAGS"
-	)
-],"$OSFLAGS")
+AC_CHECK_LIB([usb], [usb_control_msg],,
+	AC_MSG_ERROR([I can't find the libusb libraries on your system. You
+	may need to set the LDFLAGS environment variable to include the
+	search path where you have libusb installed before running
+	configure (e.g. setenv LDFLAGS=-L/usr/local/lib)]), "$OSFLAGS")
 
 # Checks for header files.
 AC_HEADER_STDC

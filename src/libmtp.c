@@ -38,7 +38,7 @@
 #include "libmtp.h"
 #include "unicode.h"
 #include "ptp.h"
-#include "libusb1-glue.h"
+#include "libusb-glue.h"
 #include "device-flags.h"
 #include "playlist-spl.h"
 #include "util.h"
@@ -55,6 +55,7 @@
 #define USE_WINDOWS_IO_H
 #include <io.h>
 #endif
+
 
 /**
  * Global debug level

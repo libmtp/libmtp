@@ -1,5 +1,5 @@
 /**
- * \file libusb1-glue.h
+ * \file libusb-glue.h
  * Low-level USB interface glue towards libusb.
  *
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
@@ -7,7 +7,6 @@
  * Copyright (C) 2006-2007 Marcus Meissner
  * Copyright (C) 2007 Ted Bullock
  * Copyright (C) 2008 Chris Bagwell <chris@cnpbagwell.com>
- * Copyright (C) 2011 Marcus Meissner
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,12 +27,11 @@
  * Modified by Linus Walleij
  *
  */
-#ifndef LIBUSB1_GLUE_H
-#define LIBUSB1_GLUE_H
+#ifndef LIBUSB_GLUE_H
+#define LIBUSB_GLUE_H
 
 #include "ptp.h"
-#include <libusb-1.0/libusb.h>
-
+#include <usb.h>
 #include "libmtp.h"
 #include "device-flags.h"
 
@@ -58,8 +56,8 @@ extern "C" {
   } while (0)
 
 
-#define USB_BULK_READ libusb_bulk_transfer
-#define USB_BULK_WRITE libusb_bulk_transfer
+#define USB_BULK_READ usb_bulk_read
+#define USB_BULK_WRITE usb_bulk_write
 
 /**
  * Internal USB struct.
@@ -67,7 +65,7 @@ extern "C" {
 typedef struct _PTP_USB PTP_USB;
 struct _PTP_USB {
   PTPParams *params;
-  libusb_device_handle* handle;
+  usb_dev_handle* handle;
   uint8_t interface;
   int inep;
   int inep_maxpacket;
@@ -86,6 +84,7 @@ struct _PTP_USB {
   LIBMTP_raw_device_t rawdevice;
 };
 
+int open_device (int busn, int devn, short force, PTP_USB *ptp_usb, PTPParams *params, struct usb_device **dev);
 void dump_usbinfo(PTP_USB *ptp_usb);
 const char *get_playlist_extension(PTP_USB *ptp_usb);
 void close_device(PTP_USB *ptp_usb, PTPParams *params);
@@ -153,4 +152,4 @@ int guess_usb_speed(PTP_USB *ptp_usb);
 }
 #endif /* __cplusplus */
 
-#endif //  LIBUSB1_GLUE_H
+#endif //  LIBUSB-GLUE_H
