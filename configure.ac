@@ -110,12 +110,29 @@ if test "$mingw_compiler" = "yes"; then
 fi
 AM_CONDITIONAL(MS_LIB_EXE, test x$ms_lib_exe = xyes)
 
-# Checks for libraries.
-AC_CHECK_LIB([usb], [usb_control_msg],,
-	AC_MSG_ERROR([I can't find the libusb libraries on your system. You
-	may need to set the LDFLAGS environment variable to include the
-	search path where you have libusb installed before running
-	configure (e.g. setenv LDFLAGS=-L/usr/local/lib)]), "$OSFLAGS")
+# Check for libusb-1.0
+PKG_CHECK_MODULES(LIBUSB, libusb-1.0 >= 1.0.0, found_libusb1_pkg=yes, found_libusb1_pkg=no)
+if test x"$found_libusb1_pkg" = "xyes" ; then
+   LIBUSB_VER=`pkg-config --modversion libusb-1.0`
+   AC_DEFINE(HAVE_LIBUSB1, [], [Have libusb 1.0])
+fi
+
+# Check for libusb 0.x
+if test x"$found_libusb1_pkg" = "xno" ; then
+   PKG_CHECK_MODULES(LIBUSB, libusb >= 0.1.8, found_libusb0_pkg=yes, found_libusb0_pkg=no)
+   if test x"$found_libusb0_pkg" = "xyes" ; then
+      LIBUSB_VER=`pkg-config --modversion libusb`
+      AC_DEFINE(HAVE_LIBUSB0, [], [Have libusb 0.x])
+   else
+      AC_MSG_ERROR([*** libusb not found! (missing -dev/-devel package?) ***\n*** prefer to install libusb-1 if you can! ***])
+   fi
+fi
+
+AC_SUBST(LIBUSB_CFLAGS)
+AC_SUBST(LIBUSB_LIBS)
+AM_CONDITIONAL(LIBUSB1_COMPILE, test x"$found_libusb1_pkg" = "xyes")
+AM_CONDITIONAL(LIBUSB0_COMPILE, test x"$found_libusb0_pkg" = "xyes")
+AC_MSG_NOTICE([*** using libusb $LIBUSB_VER ***])
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -124,11 +141,6 @@ AC_HEADER_TIME
 AC_CHECK_HEADERS([ctype.h errno.h fcntl.h getopt.h libgen.h \
 	limits.h stdio.h string.h sys/stat.h sys/time.h unistd.h \
 	langinfo.h locale.h arpa/inet.h byteswap.h sys/uio.h])
-AC_CHECK_HEADER([usb.h],,
-	AC_MSG_ERROR([I can't find the libusb header file on your system.
-	You may need to set the CPPFLAGS environment variable to include
-	the search path where you have libusb installed before running
-	configure (e.g. setenv CPPFLAGS=-I/usr/local/include)]))
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

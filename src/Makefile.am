@@ -1,8 +1,18 @@
-lib_LTLIBRARIES=libmtp.la
-libmtp_la_SOURCES=libmtp.c unicode.c unicode.h util.c util.h playlist-spl.c \
-	libusb-glue.c libusb-glue.h \
-	gphoto2-endian.h _stdint.h ptp.c ptp.h \
+lib_LTLIBRARIES = libmtp.la
+
+libmtp_la_CFLAGS = @LIBUSB_CFLAGS@
+libmtp_la_SOURCES = libmtp.c unicode.c unicode.h util.c util.h playlist-spl.c \
+	gphoto2-endian.h _stdint.h ptp.c ptp.h libusb-glue.h \
 	music-players.h device-flags.h playlist-spl.h
+
+if LIBUSB1_COMPILE
+libmtp_la_SOURCES += libusb1-glue.c
+endif
+
+if LIBUSB0_COMPILE
+libmtp_la_SOURCES += libusb-glue.c
+endif
+
 include_HEADERS=libmtp.h
 EXTRA_DIST=libmtp.h.in libmtp.sym ptp-pack.c
 
@@ -55,7 +65,7 @@ endif
 endif
 
 libmtp_la_LDFLAGS=@LDFLAGS@ -no-undefined -export-symbols $(srcdir)/libmtp.sym -version-info $(SOVERSION) $(W32_LDFLAGS)
-libmtp_la_LIBADD=$(W32_LIBS) $(LTLIBICONV)
+libmtp_la_LIBADD=$(W32_LIBS) $(LTLIBICONV) @LIBUSB_LIBS@
 libmtp_la_DEPENDENCIES=$(srcdir)/libmtp.sym
 
 DISTCLEANFILES = _stdint.h gphoto2-endian.h
