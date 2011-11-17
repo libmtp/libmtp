@@ -99,7 +99,6 @@ struct _PTP_USB {
   LIBMTP_raw_device_t rawdevice;
 };
 
-int open_device (int busn, int devn, short force, PTP_USB *ptp_usb, PTPParams *params, struct usb_device **dev);
 void dump_usbinfo(PTP_USB *ptp_usb);
 const char *get_playlist_extension(PTP_USB *ptp_usb);
 void close_device(PTP_USB *ptp_usb, PTPParams *params);

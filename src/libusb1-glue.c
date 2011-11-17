@@ -4,10 +4,9 @@
  *
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
  * Copyright (C) 2005-2011 Linus Walleij <triad@df.lth.se>
- * Copyright (C) 2006-2007 Marcus Meissner
+ * Copyright (C) 2006-2011 Marcus Meissner
  * Copyright (C) 2007 Ted Bullock
  * Copyright (C) 2008 Chris Bagwell <chris@cnpbagwell.com>
- * Copyright (C) 2011 Marcus Meissner
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,7 +31,7 @@
  */
 #include "config.h"
 #include "libmtp.h"
-#include "libusb1-glue.h"
+#include "libusb-glue.h"
 #include "device-flags.h"
 #include "util.h"
 #include "ptp.h"
@@ -41,7 +40,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <usb.h>
+#include <unistd.h>
 
 #include "ptp-pack.c"
 
@@ -230,11 +229,11 @@ static int probe_device_descriptor(libusb_device *dev, FILE *dumpfile)
    * contain any MTP interface, update this the day
    * you find some weird combination...
    */
-  if (!(desc.bDeviceClass == USB_CLASS_PER_INTERFACE ||
-	desc.bDeviceClass == USB_CLASS_COMM ||
-	desc.bDeviceClass == USB_CLASS_PTP ||
+  if (!(desc.bDeviceClass == LIBUSB_CLASS_PER_INTERFACE ||
+	desc.bDeviceClass == LIBUSB_CLASS_COMM ||
+	desc.bDeviceClass == LIBUSB_CLASS_PTP ||
 	desc.bDeviceClass == 0xEF ||	/* Intf. Association Desc.*/
-	desc.bDeviceClass == USB_CLASS_VENDOR_SPEC)) {
+	desc.bDeviceClass == LIBUSB_CLASS_VENDOR_SPEC)) {
     return 0;
   }
 
@@ -283,10 +282,10 @@ static int probe_device_descriptor(libusb_device *dev, FILE *dumpfile)
 
 	  /*
 	   * We only want to probe for the OS descriptor if the
-	   * device is USB_CLASS_VENDOR_SPEC or one of the interfaces
+	   * device is LIBUSB_CLASS_VENDOR_SPEC or one of the interfaces
 	   * in it is, so flag if we find an interface like this.
 	   */
-	  if (intf->bInterfaceClass == USB_CLASS_VENDOR_SPEC) {
+	  if (intf->bInterfaceClass == LIBUSB_CLASS_VENDOR_SPEC) {
 	    found_vendor_spec_interface = 1;
 	  }
 
@@ -295,7 +294,7 @@ static int probe_device_descriptor(libusb_device *dev, FILE *dumpfile)
 	   * also known as PTP
 	   */
 #if 0
-	  if (intf->bInterfaceClass == USB_CLASS_PTP
+	  if (intf->bInterfaceClass == LIBUSB_CLASS_PTP
 	      && intf->bInterfaceSubClass == 0x01
 	      && intf->bInterfaceProtocol == 0x01) {
 	    if (dumpfile != NULL) {
@@ -339,7 +338,8 @@ static int probe_device_descriptor(libusb_device *dev, FILE *dumpfile)
 	     * Specifically avoid probing anything else than USB mass storage devices
 	     * and non-associated drivers in Linux.
 	     */
-	    if (config->interface[j].altsetting[k].bInterfaceClass != LIBUSB_CLASS_MASS_STORAGE) {
+	    if (config->interface[j].altsetting[k].bInterfaceClass !=
+		LIBUSB_CLASS_MASS_STORAGE) {
 	      LIBMTP_INFO("avoid probing device using attached kernel interface\n");
               libusb_free_config_descriptor (config);
 	      return 0;
@@ -353,7 +353,7 @@ static int probe_device_descriptor(libusb_device *dev, FILE *dumpfile)
    * Only probe for OS descriptor if the device is vendor specific
    * or one of the interfaces found is.
    */
-  if (desc.bDeviceClass == USB_CLASS_VENDOR_SPEC ||
+  if (desc.bDeviceClass == LIBUSB_CLASS_VENDOR_SPEC ||
       found_vendor_spec_interface) {
 
     /* Read the special descriptor */
@@ -500,7 +500,7 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
       ret = libusb_get_device_descriptor(dev, &desc);
       if (ret != LIBUSB_SUCCESS) continue;
 
-      if (desc.bDeviceClass != USB_CLASS_HUB) {
+      if (desc.bDeviceClass != LIBUSB_CLASS_HUB) {
 	int i;
         int found = 0;
 
@@ -533,7 +533,7 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
 	  /*
 	  else {
 	    // Check whether the device is no USB hub but a PTP.
-	    if ( dev->config != NULL &&dev->config->interface->altsetting->bInterfaceClass == USB_CLASS_PTP && dev->descriptor.bDeviceClass != USB_CLASS_HUB ) {
+	    if ( dev->config != NULL &&dev->config->interface->altsetting->bInterfaceClass == LIBUSB_CLASS_PTP && dev->descriptor.bDeviceClass != LIBUSB_CLASS_HUB ) {
 	      *mtp_device_list = append_to_mtpdevice_list(*mtp_device_list, dev, bus->location);
 	    }
           }
@@ -1865,21 +1865,21 @@ static int find_interface_and_endpoints(libusb_device *dev,
       // Loop over the three endpoints to locate two bulk and
       // one interrupt endpoint and FAIL if we cannot, and continue.
       for (k = 0; k < no_ep; k++) {
-	if (ep[k].bmAttributes == USB_ENDPOINT_TYPE_BULK) {
-	  if ((ep[k].bEndpointAddress & USB_ENDPOINT_DIR_MASK) ==
-	      USB_ENDPOINT_DIR_MASK) {
+	if (ep[k].bmAttributes == LIBUSB_TRANSFER_TYPE_BULK) {
+	  if ((ep[k].bEndpointAddress & LIBUSB_ENDPOINT_DIR_MASK) ==
+	      LIBUSB_ENDPOINT_DIR_MASK) {
 	    *inep = ep[k].bEndpointAddress;
 	    *inep_maxpacket = ep[k].wMaxPacketSize;
 	    found_inep = 1;
 	  }
-	  if ((ep[k].bEndpointAddress & USB_ENDPOINT_DIR_MASK) == 0) {
+	  if ((ep[k].bEndpointAddress & LIBUSB_ENDPOINT_DIR_MASK) == 0) {
 	    *outep = ep[k].bEndpointAddress;
 	    *outep_maxpacket = ep[k].wMaxPacketSize;
 	    found_outep = 1;
 	  }
-	} else if (ep[k].bmAttributes == USB_ENDPOINT_TYPE_INTERRUPT) {
-	  if ((ep[k].bEndpointAddress & USB_ENDPOINT_DIR_MASK) ==
-	      USB_ENDPOINT_DIR_MASK) {
+	} else if (ep[k].bmAttributes == LIBUSB_TRANSFER_TYPE_INTERRUPT) {
+	  if ((ep[k].bEndpointAddress & LIBUSB_ENDPOINT_DIR_MASK) ==
+	      LIBUSB_ENDPOINT_DIR_MASK) {
 	    *intep = ep[k].bEndpointAddress;
 	    found_intep = 1;
 	  }
