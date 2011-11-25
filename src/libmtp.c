@@ -4196,6 +4196,7 @@ LIBMTP_file_t * LIBMTP_Get_Files_And_Folders(LIBMTP_mtpdevice_t *device,
 			     uint32_t const parent)
 {
   PTPParams *params = (PTPParams *) device->params;
+  PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   LIBMTP_file_t *retfiles = NULL;
   LIBMTP_file_t *curfile = NULL;
   PTPObjectHandles currentHandles;
@@ -4207,6 +4208,17 @@ LIBMTP_file_t * LIBMTP_Get_Files_And_Folders(LIBMTP_mtpdevice_t *device,
     // This function is only supposed to be used by devices
     // opened as uncached!
     LIBMTP_ERROR("tried to use %s on a cached device!\n",
+		 __func__);
+    return NULL;
+  }
+
+  if (FLAG_BROKEN_GET_OBJECT_PROPVAL(ptp_usb)) {
+    // These devices cannot handle the commands needed for
+    // Uncached access!
+    LIBMTP_ERROR("tried to use %s on an unsupported device, "
+		 "this command does not work on all devices "
+		 "due to missing low-level support to read "
+		 "information on individual tracks\n",
 		 __func__);
     return NULL;
   }
