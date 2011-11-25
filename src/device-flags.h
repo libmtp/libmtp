@@ -65,9 +65,10 @@
  */
 #define DEVICE_FLAG_UNLOAD_DRIVER 0x00000002
 /**
- * This means that the PTP_OC_MTP_GetObjPropList is broken and
- * won't properly return all object properties if parameter 3
- * is set to 0xFFFFFFFFU.
+ * This means that the PTP_OC_MTP_GetObjPropList (9805)
+ * is broken in some way, either it doesn't work at all
+ * (as for Android devices) or it won't properly return all
+ * object properties if parameter 3 is set to 0xFFFFFFFFU.
  */
 #define DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST 0x00000004
 /**
@@ -267,9 +268,16 @@
  */
 #define DEVICE_FLAG_FORCE_RESET_ON_CLOSE	0x10000000
 /**
+ * Early Creative Zen (etc) models actually only support
+ * command 9805 (Get object property list) and will hang
+ * if you try to get individual properties of an object.
+ */
+#define DEVICE_FLAG_BROKEN_GET_OBJECT_PROPVAL	0x20000000
+/**
  * All these bug flags need to be set on Android devices,
  * they claim to support MTP operations they actually
- * cannot handle. These are auto-assigned to devices reporting
+ * cannot handle, especially 9805 (Get object property list).
+ * These are auto-assigned to devices reporting
  * "android.com" in their device extension descriptor.
  */
 #define DEVICE_FLAGS_ANDROID_BUGS \
