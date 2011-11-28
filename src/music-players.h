@@ -888,7 +888,10 @@
   // From Anonymous Sourceforge User
   { "Nokia", 0x0421, "N95 Mobile Phone", 0x04ef, DEVICE_FLAG_NONE },
   // From: Pat Nicholls <pat@patandannie.co.uk>
-  { "Nokia", 0x0421, "N80 Internet Edition (Media Player)", 0x04f1, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Nokia", 0x0421, "N80 Internet Edition (Media Player)", 0x04f1,
+      DEVICE_FLAG_UNLOAD_DRIVER },
+  // From: Maxin B. John <maxin.john@gmail.com>
+  { "Nokia", 0x0421, "N9", 0x051a, DEVICE_FLAG_NONE },
   // Reported by Richard Wall <richard@the-moon.net>
   { "Nokia", 0x05c6, "5530 Xpressmusic", 0x0229, DEVICE_FLAG_NONE },
   // Reported by anonymous SourceForge user
