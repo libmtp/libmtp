@@ -160,7 +160,11 @@ AC_CHECK_FUNCS(basename memset select strdup strerror strndup strrchr strtoul us
 AC_SYS_LARGEFILE
 # Stick in "-Werror" if you want to be more aggressive.
 # (No need to use AC_SUBST on this default substituted environment variable.)
-CFLAGS="$CFLAGS -Wall -Wmissing-prototypes"
+# Only add these additional CFLAGS if we are using GCC. Other C compilers may
+# not support them.
+if test x"$GCC" == "xyes" ; then
+	CFLAGS="$CFLAGS -Wall -Wmissing-prototypes"
+fi
 
 # Output files
 
