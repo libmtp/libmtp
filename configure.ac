@@ -117,21 +117,43 @@ if test x"$found_libusb1_pkg" = "xyes" ; then
    AC_DEFINE(HAVE_LIBUSB1, [], [Have libusb 1.0])
 fi
 
-# Check for libusb 0.x
+# Check for libopenusb
+AC_CHECK_LIB([openusb], [openusb_init])
 if test x"$found_libusb1_pkg" = "xno" ; then
-   PKG_CHECK_MODULES(LIBUSB, libusb >= 0.1.8, found_libusb0_pkg=yes, found_libusb0_pkg=no)
-   if test x"$found_libusb0_pkg" = "xyes" ; then
-      LIBUSB_VER=`pkg-config --modversion libusb`
-      AC_DEFINE(HAVE_LIBUSB0, [], [Have libusb 0.x])
-   else
-      AC_MSG_ERROR([*** libusb not found! (missing -dev/-devel package?) ***\n*** prefer to install libusb-1 if you can! ***])
+   if test x"$ac_cv_lib_openusb_openusb_init" = "xyes" ; then
+      AC_DEFINE(HAVE_OPENUSB, [], [Have libopenusb 1.0])
+      LIBUSB_VER=1.0
    fi
 fi
+
+# Check for libusb 0.x
+if test x"$found_libusb1_pkg" = "xno" ; then
+   if test x"$ac_cv_lib_openusb_openusb_init" = "xno" ; then
+      PKG_CHECK_MODULES(LIBUSB, libusb >= 0.1.8, found_libusb0_pkg=yes, found_libusb0_pkg=no)
+      if test x"$found_libusb0_pkg" = "xyes" ; then
+         LIBUSB_VER=`pkg-config --modversion libusb`
+         AC_DEFINE(HAVE_LIBUSB0, [], [Have libusb 0.x])
+      else
+         # Some systems don't use pkg-config for libusb, so double check.
+         AC_CHECK_LIB([usb], [usb_open], found_libusb0_pkg=yes, found_libusb0_pkg=no)
+         if test x"$ac_cv_lib_usb_usb_open" = "xyes" ; then
+            LIBUSB_VER=0.1
+            AC_DEFINE(HAVE_LIBUSB0, [], [Have libusb 0.x])
+            found_libusb0_pkg=xyes
+         fi
+         if test x"$found_libusb0_pkg" = "xno" ; then
+            AC_MSG_ERROR([*** libusb not found! (missing -dev/-devel package?) ***\n*** prefer to install libusb-1 if you can! ***])
+         fi
+      fi
+   fi
+fi
+
 
 AC_SUBST(LIBUSB_CFLAGS)
 AC_SUBST(LIBUSB_LIBS)
 AM_CONDITIONAL(LIBUSB1_COMPILE, test x"$found_libusb1_pkg" = "xyes")
 AM_CONDITIONAL(LIBUSB0_COMPILE, test x"$found_libusb0_pkg" = "xyes")
+AM_CONDITIONAL(LIBOPENUSB_COMPILE, test x"$ac_cv_lib_openusb_openusb_init" = "xyes")
 AC_MSG_NOTICE([*** using libusb $LIBUSB_VER ***])
 
 # Checks for header files.

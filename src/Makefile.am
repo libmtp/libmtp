@@ -13,6 +13,10 @@ if LIBUSB0_COMPILE
 libmtp_la_SOURCES += libusb-glue.c
 endif
 
+if LIBOPENUSB_COMPILE
+libmtp_la_SOURCES += libopenusb1-glue.c
+endif
+
 include_HEADERS=libmtp.h
 EXTRA_DIST=libmtp.h.in libmtp.sym ptp-pack.c
 

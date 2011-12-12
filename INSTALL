@@ -218,29 +218,27 @@ http://wiki.buici.com/wiki/Autoconf_and_RPL_MALLOC
 Compilation for Solaris/SunOS
 -----------------------------
 
-libmtp builds on Solaris/SunOS with either gcc or SunStudio 12. It does 
-require GNU Make (aka gmake) to be installed.
+libmtp builds on Solaris/SunOS with either gcc or SunStudio 12. It does
+require GNU Make (aka gmake) to be installed. Building libmtp on Solaris
+10 and Solaris 11 differ slightly, so alternate instructions are provided
+for each Solaris version.
+
+For Solaris 10
+--------------
 
 To build using GCC:
+
   % CFLAGS="I/usr/sfw/lib -L/usr/sfw/lib -R/usr/sfw/lib" MAKE=gmake \
     INSTALL=/usr/ucb/install ./configure
   % gmake
   % gmake install
 
-Custom CLFAGS are required for libusb.so as it lives in /usr/sfw/lib, 
-and this path is not in the default search path for ld. If these 
-CFLAGS are not set, several components of ./configure will fail leading 
+Custom CLFAGS are required for libusb.so as it lives in /usr/sfw/lib,
+and this path is not in the default search path for ld. If these
+CFLAGS are not set, several components of ./configure will fail leading
 to a failed build.
 
 To build using SunStudio 12:
-
-Comment out CFLAGS="$CFLAGS -Wall -Wmissing-prototypes" in configure.ac 
-and rebuild ./configure using autoconf. Alternatively comment out line 
-  CFLAGS="$CFLAGS -Wall -Wmissing-prototypes"
-in ./configure if you want to save rebuilding ./configure. The -W 
-options are not valid for SunStudio and will cause some tests in ./configure 
-to fail and also create non-valid Makefiles which will cause building libmtp 
-to fail as well. Then:
 
   % CFLAGS="I/usr/sfw/lib -L/usr/sfw/lib -R/usr/sfw/lib" MAKE=gmake \
     INSTALL=/usr/ucb/install CC=cc ./configure
@@ -249,8 +247,43 @@ to fail as well. Then:
 
 
 General Notes:
-All MTP devices on Solaris 10u2+ are driven by the usb_mid driver, which 
-will automatically export ugen device interfaces with the correct device 
-permissions. No special configuration is required. See the usb_mid(7D) 
-and ugen(7D) manpages and /usr/sfw/share/doc/libusb/libusb.txt for 
+All MTP devices on Solaris 10u2+ are driven by the usb_mid driver, which
+will automatically export ugen device interfaces with the correct device
+permissions. No special configuration is required. See the usb_mid(7D)
+and ugen(7D) manpages and /usr/sfw/share/doc/libusb/libusb.txt for
 more information.
+
+For Solaris 11
+--------------
+
+Building libmtp on Solaris 11 is very similar to those instructions for
+Solaris 10, however libusb now lives in /usr/lib, and openusb is also
+available as an alternative USB library. Oracle does not provide a
+libusb v1.0 API compatible version of libusb, instead providing the older
+v0.1 API interface version of libusb. As mentioned, Oracle also provides
+the OpenUSB USB library as an alternate to libusb v1.0, however OpenUSB is
+not source or binary compatible with libusb.
+
+Before building/installing libmtp there are some components missing from
+the base Solaris 11 installation, and are required to be installed prior
+to building/installing libmtp. The 'libusbugen' package must be installed
+before libusb itself is usable on Solaris 11, alternatively the 'openusb'
+package may be used.
+
+To build using GCC:
+  % ./configure
+  % gmake
+  % sudo gmake install
+
+To build using SunStudio 12:
+  % CC=cc ./configure
+  % gmake
+  % sudo gmake install
+
+
+General Notes:
+All MTP devices on Solaris 11+ are driven by the usb_mid driver, which
+will automatically export ugen device interfaces with the correct device
+permissions. No special configuration is required. See the usb_mid(7D)
+and ugen(7D) manpages and /usr/share/doc/libusb/libusb.txt for more
+information.

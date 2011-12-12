@@ -37,6 +37,9 @@
 #ifdef HAVE_LIBUSB0
 #include <usb.h>
 #endif
+#ifdef HAVE_LIBOPENUSB
+#include <openusb.h>
+#endif
 #include "libmtp.h"
 #include "device-flags.h"
 
@@ -68,6 +71,10 @@ extern "C" {
 #define USB_BULK_READ usb_bulk_read
 #define USB_BULK_WRITE usb_bulk_write
 #endif
+#ifdef HAVE_LIBOPENUSB
+#define USB_BULK_READ openusb_bulk_xfer
+#define USB_BULK_WRITE openusb_bulk_xfer
+#endif
 
 /**
  * Internal USB struct.
@@ -80,6 +87,9 @@ struct _PTP_USB {
 #endif
 #ifdef HAVE_LIBUSB0
   usb_dev_handle* handle;
+#endif
+#ifdef HAVE_LIBOPENUSB
+  openusb_dev_handle_t* handle;
 #endif
   uint8_t interface;
   int inep;
