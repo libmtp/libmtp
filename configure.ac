@@ -40,7 +40,7 @@ AC_SUBST(UDEV_RULES)
 UDEV_GROUP=
 AC_ARG_WITH(udev-group,
     AC_HELP_STRING([--with-udev-group=GROUP],
-    [file group for device nodes [default: none specified]]]),
+    [file group for device nodes [default: none specified]]),
     [UDEV_GROUP="-g\"${withval}\""], [])
 AC_SUBST(UDEV_GROUP)
 
@@ -48,7 +48,7 @@ AC_SUBST(UDEV_GROUP)
 UDEV_MODE=
 AC_ARG_WITH(udev-mode,
     AC_HELP_STRING([--with-udev-mode=GROUP],
-    [file mode for device nodes [default: none specified]]]),
+    [file mode for device nodes [default: none specified]]),
     [UDEV_MODE="-m\"${withval}\""], [])
 AC_SUBST(UDEV_MODE)
 
