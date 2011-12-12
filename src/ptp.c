@@ -1643,6 +1643,10 @@ ptp_check_event (PTPParams *params) {
 			return ret;
 		if (isevent)
 			goto store_event;
+		/* Event Emulate Mode 0 (unset) and 1-5 get interrupt events. 6-7 does not. */
+		if (params->canon_event_mode > 5)
+			return ret;
+
 		/* FIXME: fallthrough or return? */
 #ifdef __APPLE__
 		/* the libusb 1 on darwin currently does not like polling
@@ -2771,7 +2775,7 @@ ptp_mtp_getobjectproplist (PTPParams* params, uint32_t handle, MTPProperties **p
 	ptp.Param2 = 0x00000000U;  /* 0x00000000U should be "all formats" */
 	ptp.Param3 = 0xFFFFFFFFU;  /* 0xFFFFFFFFU should be "all properties" */
 	ptp.Param4 = 0x00000000U;
-	ptp.Param5 = 0x00000000U;
+	ptp.Param5 = 0xFFFFFFFFU;  /* means - return full tree below the Param1 handle */
 	ptp.Nparam = 5;
 	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &opldata, &oplsize);  
 	if (ret == PTP_RC_OK) *nrofprops = ptp_unpack_OPL(params, opldata, props, oplsize);
