@@ -268,7 +268,9 @@
   // the Samsung L760-V cellphone
   // the Samsung SGH-U900 cellphone
   // the Samsung Fascinate player
-  { "Samsung", 0x04e8, "YH-999 Portable Media Center/SGH-A707/SGH-L760V/SGH-U900/Verizon Intensity/Fascinate", 0x5a0f, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  { "Samsung", 0x04e8,
+      "YH-999 Portable Media Center/SGH-A707/SGH-L760V/SGH-U900/Verizon Intensity/Fascinate",
+      0x5a0f, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // From Santi Béjar <sbejar@gmail.com> - not sure this is MTP...
   // { "Samsung", 0x04e8, "Z170 Mobile Phone", 0x6601, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Santi Béjar <sbejar@gmail.com> - not sure this is MTP...
@@ -294,6 +296,9 @@
   // Guessing on .spl flag, maybe needs NO_ZERO_READS, whatdoIknow
   { "Samsung", 0x04e8, "GT-S8500", 0x6819,
       DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_PLAYLIST_SPL_V1 },
+  // From Harrison Metzger <harrisonmetz@gmail.com>
+  { "Samsung", 0x04e8, "Galaxy Nexus", 0x685c,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous sourceforge user - this is an Android
   // device. It seems to be hard to use this device under Linux,
   // which may be because it seems to implement fairly strong
