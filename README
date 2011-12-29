@@ -131,6 +131,190 @@ That said, if you want to pick up and maintain the examples,
 please volunteer.
 
 
+FAQ: Common Problems
+--------------------
+
+Some MTP devices have strange pecularities. We try to work around
+these whenever we can, sometimes we cannot work around it or we
+cannot test your solution.
+
+* mtp-* tools doesn't work because someone else is already hogging
+  the device
+
+  This is a common problem, the most common case could be that
+  gphoto2 (which can also talk PTP/MTP) is taking over the device
+  as soon as it's plugged in. Some distributions are configured that
+  way. Counter it like this:
+
+  gvfs-mount -s gphoto2
+
+  Then re-attach the device.
+
+* Generic MTP/PTP disconnect misbehaviour: we have noticed that
+  Windows Media Player apparently never close the session to an MTP
+  device. There is a daemon in Windows that "hooks" the device
+  by opening a PTP session to any MTP device, whenever it is
+  plugged in. This daemon proxies any subsequent transactions
+  to/from the device and will never close the session, thus
+  Windows simply does not close sessions at all.
+
+  Typical sign of this illness: broken pipes on closing sessions,
+  on the main transfer pipes(s) or the interrupt pipe:
+
+    Closing session
+    usb_clear_halt() on INTERRUPT endpoint: Broken pipe
+    OK.
+
+  This means that device manufacturers doesn't notice any problems
+  with devices that do not correctly handle closing PTP/MTP
+  sessions, since Windows never do it. The proper way of closing
+  a session in Windows is to unplug the device, simply put.
+
+  Since libmtp actually tries to close sessions, some devices
+  may fail since the close session functionality has never been
+  properly tested, and "it works with Windows" is sort of the
+  testing criteria at some companies.
+
+  You can get Windows-like behaviour on Linux by running a HAL-aware
+  libmtp GUI client like Rhythmbox or Gnomad2, which will "hook"
+  the device when you plug it in, and "release" it if you unplug
+  it.
+
+  If this bug in your device annoys you, contact your device
+  manufacturer and ask them to test their product with some libmtp
+  program.
+
+* Generic USB misbehaviour: some devices behave badly under MTP
+  and USB mass storage alike, even down to the lowest layers
+  of USB. You can always discuss such issues at the linux-usb
+  mailing list if you're using Linux:
+  http://www.linux-usb.org/mailing.html
+
+  If you have a problem specific to USB mass storage mode, there
+  is a list of strange behaving devices in the Linux kernel:
+  http://lxr.linux.no/linux/drivers/usb/storage/unusual_devs.h
+  You can discuss this too on the mentioned list, for understanding
+  the quirks, see:
+  http://www2.one-eyed-alien.net/~mdharm/linux-usb/target_offenses.txt
+
+* Generic certificate misbehaviour. All devices are actually
+  required to support a device certificate to be able to
+  encrypt Windows Media (WMA/WMV) files. However there are
+  obviously a lot of devices out there which doesn't support
+  this at all but instead crash. Typical printout:
+
+  Error 2: PTP Layer error 02ff: get_device_unicode_property(): failed
+  to get unicode property.
+
+  This should only affect "mtp-detect", there is no other
+  application currently retrieveing the certificate (not that we
+  know anyway).
+
+* Kernel bug on Linux. Linux 2.6.16 is generally speaking required
+  to use any MTP device under USB 2.0. This is because the EHCI
+  driver previously did not support zero-length writes to endpoints.
+  It should work in most cases however, or if you connect it
+  to an UHCI/OHCI port instead (yielding lower speed). But
+  please just use a recent kernel.
+
+* Zen models AVI file seeking problem: the Zens cannot parse the
+  files for the runlength metadata. Do not transfer file with e.g.
+  mtp-sendfile, use mtp-sendtr and set the length of the track to
+  the apropriate number of seconds and it will work. In graphical
+  clients, use a "track transfer" function to send these AVI files,
+  the Zens need the metadata associated with tracks to play back
+  movies properly. Movies are considered "tracks" in the MTP world.
+
+* Some devices that disregard the metadata sent with the MTP
+  commands will parse the files for e.g. ID3 metadata. Some still
+  of these devices expect only ID3v2.3 metadata and will fail with
+  a modern ID3v2,4 tag writer, like many of those found in Linux
+  applications. Windows Media Player use ID3v2.3 only, so many
+  manufacturers only test this version.
+
+* The Zen Vision:M (possibly more Creative Zens) has a firmware bug
+  that makes it drop the last two characters off a playlist name.
+  It is fixed in later firmware.
+
+* For Creative Technology devices, there are hard limits on how
+  many files can be put onto the device. For a 30 GiB device (like
+  the Zen Xtra) the limit is 6000, for a 60 GiB device the limit
+  is 15000 files. For further Creative pecularities, see the
+  FAQ sections at www.nomadness.net.
+
+* Sandisk sansa c150 and probably several other Sandisk devices
+  (and possibly devices from other manufacturers) have a dual
+  mode with MTP and USB mass storage. The device will initially
+  claim to be mass storage so udev will capture is and make the
+  use of MTP mode impossible. One way of avoiding it could be to
+  be to blacklist the "usb-storage" module in
+  /etc/modprobe.c/blacklist with a row like this:
+  "blacklist usb-storage". Some have even removed the
+  "usb-storage.ko" (kernel module file) to avoid loading.
+
+* Sandisk Sansa Fuze has three modes: auto, MTP or mass storage
+  (MSC). Please set it to MTP to avoid problems with libmtp.
+
+* The iriver devices (possibly all of them) cannot handle the
+  enhanced GetObjectPropList MTP command (0x9805) properly. So
+  they have been banned from using it.
+
+* iriver devices have problems with older versions of libmtp and
+  with new devices libmtp does not know of as of yet, since it
+  has an oldstyle USB device controller that cannot handle zero
+  writes. (Register your device with us!) All their devices are
+  likely to need a special device flag in the src/libusb-glue.c
+  database.
+
+* The Samsung Yepp T9 has several strange characteristics, some
+  that we've managed to work around. (For example it will return
+  multiple PTP packages in a single transaction.)
+
+* The early firmware for Philips HDD players is known to be
+  problematic. Please upgrade to as new firmware as you can get.
+  (Yes this requires some kind of Windows Installation I think.)
+
+* Philips HDD 1630/16 or 1630/17 etc may lock themselves up,
+  turning inresponsive due to internal corruption. This typically
+  gives an error in opening the PTP session. Apparently you can
+  do a "repair" with the firmware utility (Windows only) which
+  will often fix this problem and make the device responsive
+  again.
+
+* Some devices that implement GetObjectPropList (0x9805) will
+  not return the entire object list if you request a list for object
+  0xffffffffu. (But they should.) So they may need the special
+  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL.
+
+* Some (smaller) subset of devices cannot even get all the
+  properties for a single object in one go, these need the
+  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST. Currently only the
+  iriver devices seem to have this bug.
+
+* The Toshiba Gigabeat S (and probably its sibling the
+  Microsoft Zune and other Toshiba devices) will only display
+  album information tags for a song in case there is also
+  an abstract album (created with the album interface) with
+  the exact same name.
+
+* The Zen Vision:M has an older firmware which is very corrupt,
+  it is incompatible with the Linux USB stack altogether. The
+  kernel dmesg will look something like this, and you have to
+  upgrade the firmware using Windows:
+  usb 4-5: new high speed USB device using ehci_hcd and address 5
+  usb 4-5: configuration #1 chosen from 1 choice
+  usb 4-5: can't set config #1, error -110
+
+* The Sirus Stiletto does not seem to allow you to copy any files
+  off the device. This may be someone's idea of copy protection.
+
+* The Samsung P2 assigns parent folder ID 0 to all unknown file
+  types.(i.e. moves them to the root folder)
+
+* The Sandisk Sansa Clip+ needs a firmware upgrade in earlier
+  versions in order to work properly.
+
+
 New Devices
 -----------
 
@@ -279,7 +463,7 @@ data, which is usually where the problems appear.
 Notes to assist with debugging new devices:
 -------------------------------------------
 
-In debugging new hardware, we highly recommend that you only 
+In debugging new hardware, we highly recommend that you only
 use the example mtp-* applications that come with libmtp, as other
 applications may have their own bugs that may interfere with your
 new device working correctly. Using another application instead of
@@ -287,8 +471,8 @@ those that come with libmtp just adds another point of failure.
 
 For debugging, there are 3 main options:
 
-1. Use the env variable: LIBMTP_DEBUG to increase the 
-verboseness of the debugging output for any application using 
+1. Use the env variable: LIBMTP_DEBUG to increase the
+verboseness of the debugging output for any application using
 libmtp. Relevant codes are:
 * 0x00 [0000 0000] : no debug (default)
 * 0x01 [0000 0001] : PTP debug
@@ -299,7 +483,7 @@ libmtp. Relevant codes are:
 // to get your desired level of output.
 
 (Assuming bash)
-eg: 
+eg:
 $ export LIBMTP_DEBUG=12
 $ mtp-detect
   // To get USB debug and USB data debug information.
@@ -307,30 +491,30 @@ $ mtp-detect
 $ export LIBMTP_DEBUG=2
 $ mtp-detect
     // To get Playlist debug information.
-  
+
 Also note, an application may also use the LIBMTP_debug() API
 function to achieve the same options as listed above.
 
-2. Use "strace" on the various mtp-* commands to see where/what 
+2. Use "strace" on the various mtp-* commands to see where/what
 is falling over or getting stuck at.
 * On Solaris and FreeBSD, use "truss" or "dtrace" instead on "strace".
 * On Mac OS X, use "ktrace" or "dtrace" instead of "strace".
 * On OpenBSD and NetBSD, use "ktrace" instead of "strace".
 
 This will at least help pinpoint where the application is failing, or
-a device is reporting incorrect information. (This is extremely helpful 
+a device is reporting incorrect information. (This is extremely helpful
 with devices that have odd disconnection requirements).
 
-The use of these tools may also pinpoint issues with libusb as 
+The use of these tools may also pinpoint issues with libusb as
 implemented by each OS vendor or issues with the MTP implementation
 on the new device as well, so please be prepared for either case.
 
 3. Use "gdb" or similar debugger to step through the code as it is
 run. This is time consuming, and not needed just to pinpoint where
-the fault is. 
+the fault is.
 
-The use of gdb or another debugger may also miss or actually cause  
-command and data timing issues with some devices, leading to false 
+The use of gdb or another debugger may also miss or actually cause
+command and data timing issues with some devices, leading to false
 information. So please consider this a last resort option.
 
 Also please read the "It's Not Our Bug!" section below, as it does
@@ -450,173 +634,6 @@ need some command-line hacking to get you stuff copied over in
 one direction host -> device. The examples/ directory contains a script
 created for the Creative Zen Microphoto by Nicolas Tetreault.
 
-
-It's Not Our Bug!
------------------
-
-Some MTP devices have strange pecularities. We try to work around
-these whenever we can, sometimes we cannot work around it or we
-cannot test your solution.
-
-* Generic MTP/PTP disconnect misbehaviour: we have noticed that
-  Windows Media Player apparently never close the session to an MTP
-  device. There is a daemon in Windows that "hooks" the device
-  by opening a PTP session to any MTP device, whenever it is
-  plugged in. This daemon proxies any subsequent transactions
-  to/from the device and will never close the session, thus
-  Windows simply does not close sessions at all.
-
-  Typical sign of this illness: broken pipes on closing sessions,
-  on the main transfer pipes(s) or the interrupt pipe:
-
-    Closing session
-    usb_clear_halt() on INTERRUPT endpoint: Broken pipe
-    OK.
-
-  This means that device manufacturers doesn't notice any problems
-  with devices that do not correctly handle closing PTP/MTP
-  sessions, since Windows never do it. The proper way of closing
-  a session in Windows is to unplug the device, simply put.
-
-  Since libmtp actually tries to close sessions, some devices
-  may fail since the close session functionality has never been
-  properly tested, and "it works with Windows" is sort of the
-  testing criteria at some companies.
-
-  You can get Windows-like behaviour on Linux by running a HAL-aware
-  libmtp GUI client like Rhythmbox or Gnomad2, which will "hook"
-  the device when you plug it in, and "release" it if you unplug
-  it.
-
-  If this bug in your device annoys you, contact your device
-  manufacturer and ask them to test their product with some libmtp
-  program.
-
-* Generic certificate misbehaviour. All devices are actually
-  required to support a device certificate to be able to
-  encrypt Windows Media (WMA/WMV) files. However there are
-  obviously a lot of devices out there which doesn't support
-  this at all but instead crash. Typical printout:
-
-  Error 2: PTP Layer error 02ff: get_device_unicode_property(): failed
-  to get unicode property.
-
-* Generic USB misbehaviour: some devices behave badly under MTP
-  and USB mass storage alike, even down to the lowest layers
-  of USB. You can always discuss such issues at the linux-usb
-  mailing list if you're using Linux:
-  http://www.linux-usb.org/mailing.html
-
-  If you have a problem specific to USB mass storage mode, there
-  is a list of strange behaving devices in the Linux kernel:
-  http://lxr.linux.no/linux/drivers/usb/storage/unusual_devs.h
-  You can discuss this too on the mentioned list, for understanding
-  the quirks, see:
-  http://www2.one-eyed-alien.net/~mdharm/linux-usb/target_offenses.txt
-
-* Kernel bug on Linux. Linux 2.6.16 is generally speaking required
-  to use any MTP device under USB 2.0. This is because the EHCI
-  driver previously did not support zero-length writes to endpoints.
-  It should work in most cases however, or if you connect it
-  to an UHCI/OHCI port instead (yielding lower speed). But
-  please just use a recent kernel.
-
-* Zen models AVI file seeking problem: the Zens cannot parse the
-  files for the runlength metadata. Do not transfer file with e.g.
-  mtp-sendfile, use mtp-sendtr and set the length of the track to
-  the apropriate number of seconds and it will work. In graphical
-  clients, use a "track transfer" function to send these AVI files,
-  the Zens need the metadata associated with tracks to play back
-  movies properly. Movies are considered "tracks" in the MTP world.
-
-* Some devices that disregard the metadata sent with the MTP
-  commands will parse the files for e.g. ID3 metadata. Some still
-  of these devices expect only ID3v2.3 metadata and will fail with
-  a modern ID3v2,4 tag writer, like many of those found in Linux
-  applications. Windows Media Player use ID3v2.3 only, so many
-  manufacturers only test this version.
-
-* The Zen Vision:M (possibly more Creative Zens) has a firmware bug
-  that makes it drop the last two characters off a playlist name.
-  It is fixed in later firmware.
-
-* For Creative Technology devices, there are hard limits on how
-  many files can be put onto the device. For a 30 GiB device (like
-  the Zen Xtra) the limit is 6000, for a 60 GiB device the limit
-  is 15000 files. For further Creative pecularities, see the
-  FAQ sections at www.nomadness.net.
-
-* Sandisk sansa c150 and probably several other Sandisk devices
-  (and possibly devices from other manufacturers) have a dual
-  mode with MTP and USB mass storage. The device will initially
-  claim to be mass storage so udev will capture is and make the
-  use of MTP mode impossible. One way of avoiding it could be to
-  be to blacklist the "usb-storage" module in
-  /etc/modprobe.c/blacklist with a row like this:
-  "blacklist usb-storage". Some have even removed the
-  "usb-storage.ko" (kernel module file) to avoid loading.
-
-* Sandisk Sansa Fuze has three modes: auto, MTP or mass storage
-  (MSC). Please set it to MTP to avoid problems with libmtp.
-
-* The iriver devices (possibly all of them) cannot handle the
-  enhanced GetObjectPropList MTP command (0x9805) properly. So
-  they have been banned from using it.
-
-* iriver devices have problems with older versions of libmtp and
-  with new devices libmtp does not know of as of yet, since it
-  has an oldstyle USB device controller that cannot handle zero
-  writes. (Register your device with us!) All their devices are
-  likely to need a special device flag in the src/libusb-glue.c
-  database.
-
-* The Samsung Yepp T9 has several strange characteristics, some
-  that we've managed to work around. (For example it will return
-  multiple PTP packages in a single transaction.)
-
-* The early firmware for Philips HDD players is known to be
-  problematic. Please upgrade to as new firmware as you can get.
-  (Yes this requires some kind of Windows Installation I think.)
-
-* Philips HDD 1630/16 or 1630/17 etc may lock themselves up,
-  turning inresponsive due to internal corruption. This typically
-  gives an error in opening the PTP session. Apparently you can
-  do a "repair" with the firmware utility (Windows only) which
-  will often fix this problem and make the device responsive
-  again.
-
-* Some devices that implement GetObjectPropList (0x9805) will
-  not return the entire object list if you request a list for object
-  0xffffffffu. (But they should.) So they may need the special
-  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL.
-
-* Some (smaller) subset of devices cannot even get all the
-  properties for a single object in one go, these need the
-  DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST. Currently only the
-  iriver devices seem to have this bug.
-
-* The Toshiba Gigabeat S (and probably its sibling the
-  Microsoft Zune and other Toshiba devices) will only display
-  album information tags for a song in case there is also
-  an abstract album (created with the album interface) with
-  the exact same name.
-
-* The Zen Vision:M has an older firmware which is very corrupt,
-  it is incompatible with the Linux USB stack altogether. The
-  kernel dmesg will look something like this, and you have to
-  upgrade the firmware using Windows:
-  usb 4-5: new high speed USB device using ehci_hcd and address 5
-  usb 4-5: configuration #1 chosen from 1 choice
-  usb 4-5: can't set config #1, error -110
-
-* The Sirus Stiletto does not seem to allow you to copy any files
-  off the device. This may be someone's idea of copy protection.
-
-* The Samsung P2 assigns parent folder ID 0 to all unknown file
-  types.(i.e. moves them to the root folder)
-
-* The Sandisk Sansa Clip+ needs a firmware upgrade in earlier
-  versions in order to work properly.
 
 Lost symbols
 ------------
