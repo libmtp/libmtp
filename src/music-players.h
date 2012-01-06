@@ -297,20 +297,24 @@
   { "Samsung", 0x04e8, "GT-S8500", 0x6819,
       DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_PLAYLIST_SPL_V1 },
   // From Harrison Metzger <harrisonmetz@gmail.com>
-  { "Samsung", 0x04e8, "Galaxy Nexus", 0x685c,
+  { "Samsung", 0x04e8,
+      "Galaxy Nexus/Galaxy S i9000, Android 4.0 updates", 0x685c,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous sourceforge user - this is an Android
   // device. It seems to be hard to use this device under Linux,
   // which may be because it seems to implement fairly strong
   // Microsoft DRM stuff.
-  { "Samsung", 0x04e8, "GT-P7510/Galaxy Tab 10.1/S2", 0x6860,
+  // Seems also to be used with Galaxy Nexus debug mode, weird.
+  { "Samsung", 0x04e8,
+      "GT-P7510/Galaxy Tab 10.1/S2/Galaxy Nexus debug mode", 0x6860,
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT },
   // From: Erik Berglund <erikjber@users.sourceforge.net>
   // Logs indicate this needs DEVICE_FLAG_NO_ZERO_READS
   // No Samsung platlists on this device.
   // https://sourceforge.net/tracker/?func=detail&atid=809061&aid=3026337&group_id=158745
-  { "Samsung", 0x04e8, "Galaxy S GT-I9000", 0x6877,
+  // i5800 duplicate reported by igel <igel-kun@users.sourceforge.net>
+  { "Samsung", 0x04e8, "Galaxy S GT-I9000/Galaxy 3 i5800", 0x6877,
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT },
   // From: John Gorkos <ab0oo@users.sourceforge.net> and
@@ -330,6 +334,8 @@
    * Microsoft & Intel
    */
   { "Intel", 0x045e, "Bandon Portable Media Center", 0x00c9, DEVICE_FLAG_NONE },
+  // Reported by anonymous sourceforge user
+  { "Microsoft", 0x045e, "Windows Phone", 0x04ec, DEVICE_FLAG_NONE },
   // Reported by Tadimarri Sarath <sarath.tadi@gmail.com>
   // No idea why this use an Intel PID, perhaps a leftover from
   // the early PMC development days when Intel and Microsoft were
@@ -866,6 +872,8 @@
   { "Nokia", 0x0421, "E7", 0x0334, DEVICE_FLAG_NONE },
   // From: Raul Metsma <raul@innovaatik.ee>
   { "Nokia", 0x0421, "E7 (Ovi mode)", 0x0335, DEVICE_FLAG_NONE },
+  // Reported by Serg <rd77@users.sourceforge.net>
+  { "Nokia", 0x0421, "C7", 0x03c1, DEVICE_FLAG_NONE },
   // Reported by Anonymous SourceForge user
   { "Nokia", 0x0421, "N950", 0x03d2, DEVICE_FLAG_NONE },
   // From: http://nds2.nokia.com/files/support/global/phones/software/Nokia_3250_WMP10_driver.inf
@@ -959,6 +967,11 @@
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by anonymous SourceForge user
   { "Medion", 0x066f, "MD8333", 0x8588,
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // The vendor ID is "Quanta Computer, Inc."
+  // same as Olivetti Olipad 110
+  // Guessing on device flags
+  { "Medion", 0x0408, "MD99000 (P9514)/Olivetti Olipad 110", 0xb009,
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by anonymous SourceForge user
   { "Maxfield", 0x066f, "G-Flash NG 1GB", 0x846c,
@@ -1227,6 +1240,13 @@
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
       DEVICE_FLAG_UNIQUE_FILENAMES },
+  // Reported by anonymous Sourceforge user
+  // guessing on device flags...
+  { "Sony", 0x054c, "Walkman NWZ-E464", 0x05a6,
+      DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+      DEVICE_FLAG_UNIQUE_FILENAMES |
+      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
   // Reported by Anonymous SourceForge user
   { "Sony", 0x054c, "DCR-SR75", 0x1294,
       DEVICE_FLAG_UNLOAD_DRIVER |
@@ -1356,6 +1376,9 @@
   // Android 3.0 MTP stack seems to announce that it supports the
   // list operations, but they do not work?
   { "Motorola", 0x22b8, "Xoom (ID 1)", 0x70a8, DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by anonymous Sourceforge user
+  // "carried by C Spire and other CDMA US carriers"
+  { "Motorola", 0x22b8, "Milestone X2", 0x70ca, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Google
@@ -1365,12 +1388,19 @@
    */
   { "Google Inc (for Sony)", 0x18d1, "S1", 0x05b3,
       DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by anonymous Sourceforge user
+  { "Google Inc (for Asus)", 0x18d1, "TF101 Transformer", 0x4e0f,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // WiFi-only version of Xoom
   // See: http://bugzilla.gnome.org/show_bug.cgi?id=647506
   { "Google Inc (for Motorola)", 0x18d1, "Xoom (MZ604)", 0x70a8,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc (for Motorola)", 0x22b8, "Xoom (ID 2)", 0x70a9,
       DEVICE_FLAGS_ANDROID_BUGS },
+  // Another OEM for Medion
+  { "Google Inc (for Medion)", 0x18d1, "MD99000 (P9514)", 0xb00a,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
   /*
    * Media Keg
    */
@@ -1497,6 +1527,11 @@
   { "Lenovo", 0x17ef, "ThinkPad Tablet", 0x741c,
       DEVICE_FLAGS_ANDROID_BUGS },
 
+  /*
+   * Huawei
+   */
+  // Reported by Bearsh <bearsh@users.sourceforge.net>
+  { "Huawei", 0x12d1, "Mediapad", 0x361f, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * ZTE
