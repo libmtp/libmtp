@@ -22,8 +22,8 @@ function inmap {
 		manid=`echo ${LINE} | awk '{ print $3 }'`
 		productid=`echo ${LINE} | awk '{ print $4 }'`
 		# Skip blank products...
-		if [ "x${script}" = "x$2" ]; then 
-		    if [ "x${manid}" = "x$3" ]; then 
+		if [ "x${script}" = "x$2" ]; then
+		    if [ "x${manid}" = "x$3" ]; then
 			if [ "x${productid}" = "x$4" ]; then
 			    echo "yes"
 			    return 0
@@ -115,14 +115,15 @@ then
     exit 1
 fi
 if [ "x${USER}" != "xroot" ];
+then
     echo "WARNING: this program should be run as root!"
 fi
 
 
 # This script locates the hotplug distribution on a certain host
-# and sets up userland hotplugging scripts according to rules. 
+# and sets up userland hotplugging scripts according to rules.
 # The in-parameters are the hotplug directory and the name of a
-# file of hotplug device entries and a script to be executed for 
+# file of hotplug device entries and a script to be executed for
 # these deviced.
 
 if test -d ${HOTPLUGPATH}
@@ -133,7 +134,7 @@ else
     exit 1
 fi
 
-if test -d ${HOTPLUGPATH}/usb 
+if test -d ${HOTPLUGPATH}/usb
 then
     echo "Has usb subdirectory."
 else
