@@ -304,9 +304,10 @@
   // device. It seems to be hard to use this device under Linux,
   // which may be because it seems to implement fairly strong
   // Microsoft DRM stuff.
-  // Seems also to be used with Galaxy Nexus debug mode, weird.
+  // Seems also to be used with Galaxy Nexus debug mode and on
+  // US markets for some weird reason.
   { "Samsung", 0x04e8,
-      "GT-P7510/Galaxy Tab 10.1/S2/Galaxy Nexus debug mode", 0x6860,
+      "GT-P7510/Galaxy Tab 10.1/S2/GT-N7000/Galaxy Nexus", 0x6860,
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT },
   // From: Erik Berglund <erikjber@users.sourceforge.net>
@@ -1510,6 +1511,11 @@
   /*
    * Asus
    */
+  // Reported by anonymous Sourceforge user
+  { "Asus", 0x0b05, "TF201 (keyboard dock)", 0x4d00,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "TF201 (tablet only)", 0x4d01,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TF101 Eeepad Transformer", 0x4e0f,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TF101 Eeepad Transformer (debug mode)", 0x4e1f,
