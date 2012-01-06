@@ -735,6 +735,8 @@
   { "Archos", 0x0e79, "SPOD (MTP mode)", 0x1341, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "5S IT (MTP mode)", 0x1351, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "5H IT (MTP mode)", 0x1357, DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by anonymous Sourceforge user
+  { "Archos", 0x0e79, "8o G9 (MTP mode)", 0x1508, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Till <Till@users.sourceforge.net>
   { "Archos", 0x0e79, "101 G9", 0x1528, DEVICE_FLAGS_ANDROID_BUGS },
 
@@ -1240,12 +1242,19 @@
   { "Sony", 0x054c, "Walkman NWZ-S754", 0x04cc,
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-      DEVICE_FLAG_UNIQUE_FILENAMES },
+      DEVICE_FLAG_UNIQUE_FILENAMES |
+      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
   // Reported by anonymous Sourceforge user
   // guessing on device flags...
   { "Sony", 0x054c, "Walkman NWZ-E464", 0x05a6,
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+      DEVICE_FLAG_UNIQUE_FILENAMES |
+      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+  // Reported by Jan Rheinlaender <jrheinlaender@users.sourceforge.net>
+  { "Sony", 0x054c, "NWZ-S765", 0x05a8,
+      DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNIQUE_FILENAMES |
       DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
   // Reported by Anonymous SourceForge user
@@ -1357,6 +1366,11 @@
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by anonymous user
   { "Motorola", 0x22b8, "DROID2", 0x42a7,
+      DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "Motorola", 0x22b8, "Xoom 2 Media Edition", 0x4311,
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
