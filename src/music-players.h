@@ -1115,154 +1115,79 @@
    */
   // Reported by Alessandro Radaelli <alessandro.radaelli@aruba.it>
   { "Sony", 0x054c, "Walkman NWZ-A815/NWZ-A818", 0x0325,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by anonymous Sourceforge user.
   { "Sony", 0x054c, "Walkman NWZ-S516", 0x0326,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Endre Oma <endre.88.oma@gmail.com>
   { "Sony", 0x054c, "Walkman NWZ-S615F/NWZ-S616F/NWZ-S618F", 0x0327,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Jean-Marc Bourguet <jm@bourguet.org>
   { "Sony", 0x054c, "Walkman NWZ-S716F", 0x035a,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Anon SF User / Anthon van der Neut <avanderneut@avid.com>
   { "Sony", 0x054c, "Walkman NWZ-A826/NWZ-A828/NWZ-A829", 0x035b,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Niek Klaverstijn <niekez@users.sourceforge.net>
   { "Sony", 0x054c, "Walkman NWZ-A726/NWZ-A728/NWZ-A768", 0x035c,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Mehdi AMINI <mehdi.amini - at - ulp.u-strasbg.fr>
   { "Sony", 0x054c, "Walkman NWZ-B135", 0x036e,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by <tiagoboldt@users.sourceforge.net>
   { "Sony", 0x054c, "Walkman NWZ-E436F", 0x0385,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Michael Wilkinson
   { "Sony", 0x054c, "Walkman NWZ-W202", 0x0388,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Ondrej Sury <ondrej@sury.org>
   { "Sony", 0x054c, "Walkman NWZ-S739F", 0x038c,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Marco Filipe Nunes Soares Abrantes Pereira <marcopereira@ua.pt>
   { "Sony", 0x054c, "Walkman NWZ-S638F", 0x038e,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Elliot <orwells@users.sourceforge.net>
   { "Sony", 0x054c, "Walkman NWZ-X1050B/NWZ-X1060B",
-    0x0397, DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+    0x0397, DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Silvio J. Gutierrez <silviogutierrez@users.sourceforge.net>
   { "Sony", 0x054c, "Walkman NWZ-X1051/NWZ-X1061", 0x0398,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Gregory Boddin <gregory@siwhine.net>
   { "Sony", 0x054c, "Walkman NWZ-B142F", 0x03d8,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Rick Warner <rick@reptileroom.net>
   { "Sony", 0x054c, "Walkman NWZ-E344", 0x03fc,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Jonathan Stowe <gellyfish@users.sourceforge.net>
   { "Sony", 0x054c, "Walkman NWZ-E445", 0x03fd,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Anonymous SourceForge user
   { "Sony", 0x054c, "Walkman NWZ-S545", 0x03fe,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   { "Sony", 0x054c, "Walkman NWZ-A845", 0x0404,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by anonymous SourceForge user
   { "Sony", 0x054c, "Walkman NWZ-W252B", 0x04bb,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Suspect this device has strong DRM features
   // See https://answers.launchpad.net/ubuntu/+source/libmtp/+question/149587
   { "Sony", 0x054c, "Walkman NWZ-B153F", 0x04be,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   { "Sony", 0x054c, "Walkman NWZ-E354", 0x04cb,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Toni Burgarello
   { "Sony", 0x054c, "Walkman NWZ-S754", 0x04cc,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by anonymous Sourceforge user
   // guessing on device flags...
   { "Sony", 0x054c, "Walkman NWZ-E464", 0x05a6,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Jan Rheinlaender <jrheinlaender@users.sourceforge.net>
   { "Sony", 0x054c, "NWZ-S765", 0x05a8,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Anonymous SourceForge user
   { "Sony", 0x054c, "DCR-SR75", 0x1294,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_FORCE_RESET_ON_CLOSE },
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
 
   /*
    * SonyEricsson

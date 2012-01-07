@@ -1879,7 +1879,9 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *rawdevi
 
   /*
    * Android has a number of bugs, force-assign these bug flags
-   * if Android is encountered.
+   * if Android is encountered. Same thing for devices we detect
+   * as SONY NWZ Walkmen. I have no clue what "sony.net/WMFU" means
+   * I just know only NWZs have it.
    */
   {
     LIBMTP_device_extension_t *tmpext = mtp_device->extensions;
@@ -1892,6 +1894,11 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *rawdevi
 	LIBMTP_INFO("Android device detected, assigning default bug flags\n");
 	ptp_usb->rawdevice.device_entry.device_flags |=
 	  DEVICE_FLAGS_ANDROID_BUGS;
+      }
+      if (!strcmp(tmpext->name, "sony.net/WMFU")) {
+	LIBMTP_INFO("SONY NWZ device detected, assigning default bug flags\n");
+	ptp_usb->rawdevice.device_entry.device_flags |=
+	  DEVICE_FLAGS_SONY_NWZ_BUGS;
       }
       tmpext = tmpext->next;
     }
