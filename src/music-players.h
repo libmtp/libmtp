@@ -3,7 +3,7 @@
  * List of music players as USB ids.
  *
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
- * Copyright (C) 2005-2011 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2012 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2007 Marcus Meissner
  * Copyright (C) 2007 Ted Bullock
  *
@@ -657,38 +657,54 @@
    * showed erroneous behaviour.
    */
   { "Toshiba", 0x0930, "Gigabeat MEGF-40", 0x0009,
-    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+      DEVICE_FLAG_NO_RELEASE_INTERFACE |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   { "Toshiba", 0x0930, "Gigabeat", 0x000c,
-    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+      DEVICE_FLAG_NO_RELEASE_INTERFACE |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by Nicholas Tripp
   { "Toshiba", 0x0930, "Gigabeat P20", 0x000f,
-    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+      DEVICE_FLAG_NO_RELEASE_INTERFACE |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // From libgphoto2
-  { "Toshiba", 0x0930, "Gigabeat S", 0x0010, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-      DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+  { "Toshiba", 0x0930, "Gigabeat S", 0x0010,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+      DEVICE_FLAG_NO_RELEASE_INTERFACE |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by Rob Brown
   { "Toshiba", 0x0930, "Gigabeat P10", 0x0011,
-    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+      DEVICE_FLAG_NO_RELEASE_INTERFACE |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by solanum@users.sourceforge.net
   { "Toshiba", 0x0930, "Gigabeat V30", 0x0014,
-    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+      DEVICE_FLAG_NO_RELEASE_INTERFACE |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by Michael Davis <slithy@yahoo.com>
   { "Toshiba", 0x0930, "Gigabeat U", 0x0016,
-    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+      DEVICE_FLAG_NO_RELEASE_INTERFACE |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by Devon Jacobs <devo@godevo.com>
   { "Toshiba", 0x0930, "Gigabeat MEU202", 0x0018,
-    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+      DEVICE_FLAG_NO_RELEASE_INTERFACE |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by Rolf <japan (at) dl3lar.de>
   { "Toshiba", 0x0930, "Gigabeat T", 0x0019,
-    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+      DEVICE_FLAG_NO_RELEASE_INTERFACE |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by Phil Ingram <ukpbert@users.sourceforge.net>
   // Tentatively added - no real reports of this device ID being MTP,
   // reports as USB Mass Storage currently.
   { "Toshiba", 0x0930, "Gigabeat MEU201", 0x001a,
-    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+      DEVICE_FLAG_NO_RELEASE_INTERFACE |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by anonymous SourceForge user
   { "Toshiba", 0x0930, "Gigabeat MET401", 0x001d,
-    DEVICE_FLAG_NO_RELEASE_INTERFACE |  DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+      DEVICE_FLAG_NO_RELEASE_INTERFACE |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+  // Reported by Nigel Cunningham <nigel@tuxonice.net>
+  // Guessing on Android bugs
+  { "Toshiba", 0x0930, "Thrive AT105", 0x7100,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Archos
@@ -1451,9 +1467,9 @@
    * Asus
    */
   // Reported by anonymous Sourceforge user
-  { "Asus", 0x0b05, "TF201 (keyboard dock)", 0x4d00,
+  { "Asus", 0x0b05, "TF201 Transformer Prime (keyboard dock)", 0x4d00,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Asus", 0x0b05, "TF201 (tablet only)", 0x4d01,
+  { "Asus", 0x0b05, "TF201 Transformer Prime (tablet only)", 0x4d01,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TF101 Eeepad Transformer", 0x4e0f,
       DEVICE_FLAGS_ANDROID_BUGS },
