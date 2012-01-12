@@ -2,7 +2,7 @@
  * \file files.c
  * Example program that lists all files on a device.
  *
- * Copyright (C) 2005-2011 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2012 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -48,7 +48,7 @@ static void dump_fileinfo(LIBMTP_file_t *file)
 
 int main (int argc, char **argv)
 {
-  LIBMTP_mtpdevice_t *device_list, *iter;
+  LIBMTP_mtpdevice_t *device_list, *device;
   LIBMTP_file_t *files;
 
   fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
@@ -81,12 +81,12 @@ int main (int argc, char **argv)
   }
 
   /* iterate through connected MTP devices */
-  for(iter = device_list; iter != NULL; iter = iter->next)
+  for(device = device_list; device != NULL; device = device->next)
   {
     char *friendlyname;
 
     /* Echo the friendly name so we know which device we are working with */
-    friendlyname = LIBMTP_Get_Friendlyname(iter);
+    friendlyname = LIBMTP_Get_Friendlyname(device);
     if (friendlyname == NULL) {
       printf("Listing File Information on Device with name: (NULL)\n");
     } else {
@@ -95,11 +95,11 @@ int main (int argc, char **argv)
     }
 
 	  /* Get track listing. */
-	  files = LIBMTP_Get_Filelisting_With_Callback(iter, NULL, NULL);
+	  files = LIBMTP_Get_Filelisting_With_Callback(device, NULL, NULL);
 	  if (files == NULL) {
 	    printf("No files.\n");
-	    LIBMTP_Dump_Errorstack(iter);
-	    LIBMTP_Clear_Errorstack(iter);
+	    LIBMTP_Dump_Errorstack(device);
+	    LIBMTP_Clear_Errorstack(device);
 	  } else {
 	    LIBMTP_file_t *file, *tmp;
 	    file = files;

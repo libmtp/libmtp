@@ -1,4 +1,4 @@
-/** 
+/**
  * \file albums.c
  * Example program that lists the albums on the device.
  *
@@ -35,7 +35,7 @@ static void dump_albuminfo(LIBMTP_album_t *album)
 }
 
 int main (int argc, char *argv[]) {
-  LIBMTP_mtpdevice_t *device_list, *iter;
+  LIBMTP_mtpdevice_t *device_list, *device;
 
   int opt;
   extern int optind;
@@ -53,7 +53,7 @@ int main (int argc, char *argv[]) {
   argv += optind;
 
   LIBMTP_Init();
-    
+
   fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
 
   switch(LIBMTP_Get_Connected_Devices(&device_list))
@@ -67,7 +67,7 @@ int main (int argc, char *argv[]) {
   case LIBMTP_ERROR_MEMORY_ALLOCATION:
     fprintf(stderr, "mtp-albums: Memory Allocation Error. Exit\n");
     return 1;
- 
+
   /* Unknown general errors - This should never execute */
   case LIBMTP_ERROR_GENERAL:
   default:
@@ -80,23 +80,23 @@ int main (int argc, char *argv[]) {
     fprintf(stdout, "mtp-albums: Successfully connected\n");
     fflush(stdout);
   }
-  
+
   /* iterate through connected MTP devices */
-  for(iter = device_list; iter != NULL; iter = iter->next)
+  for(device = device_list; device != NULL; device = device->next)
   {
     char *friendlyname;
     LIBMTP_album_t *album_list, *album, *tmp;
-    
+
     /* Echo the friendly name so we know which device we are working with */
-    friendlyname = LIBMTP_Get_Friendlyname(iter);
+    friendlyname = LIBMTP_Get_Friendlyname(device);
     if (friendlyname == NULL) {
       printf("Retrieving Albums on Device with name: (NULL)\n");
     } else {
       printf("Retrieving Albums on Device with name: %s\n", friendlyname);
       free(friendlyname);
     }
-    
-    album_list = LIBMTP_Get_Album_List(iter);
+
+    album_list = LIBMTP_Get_Album_List(device);
     album = album_list;
     while(album != NULL)
     {
@@ -106,7 +106,7 @@ int main (int argc, char *argv[]) {
       LIBMTP_destroy_album_t(tmp);
     }
   }
-  
+
   LIBMTP_Release_Device_List(device_list);
   printf("OK.\n");
   return 0;
