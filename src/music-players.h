@@ -416,11 +416,13 @@
    * Acer
    */
   // Reported by anonymous sourceforge user
-  { "Acer", 0x0502, "Iconia TAB A500 v1", 0x3325, DEVICE_FLAG_NONE },
+  { "Acer", 0x0502, "Iconia TAB A500 v1", 0x3325, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by: Franck VDL <franckv@users.sourceforge.net>
-  { "Acer", 0x0502, "Iconia TAB A500 v2", 0x3341, DEVICE_FLAG_NONE },
+  { "Acer", 0x0502, "Iconia TAB A500 v2", 0x3341, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by: Arvin Schnell <arvins@users.sourceforge.net>
-  { "Acer", 0x0502, "Iconia TAB A100", 0x3349, DEVICE_FLAG_NONE },
+  { "Acer", 0x0502, "Iconia TAB A100", 0x3349, DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by anonymous sourceforge user
+  { "Acer", 0x0502, "Iconia TAB A200", 0x337c, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * SanDisk
@@ -1211,9 +1213,6 @@
    * of the firmware seem to have broken it, so all are flagged as broken
    * for now.
    */
-  // Reported by Thomas Schweitzer <thomas_-_s@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "K550i", 0xe000,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Øyvind Stegard <stegaro@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "K850i", 0x0075,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
@@ -1270,7 +1269,7 @@
   // Reported by Jonas Salling <>
   // Erroneous MTP implementation seems to be from Aricent, returns
   // broken transaction ID.
-  { "SonyEricsson", 0x0fce, "LT15i (Xperia arc)", 0x14f,
+  { "SonyEricsson", 0x0fce, "LT15i (Xperia arc S)", 0x14f,
       DEVICE_FLAG_IGNORE_HEADER_ERRORS },
   // Reported by Eamonn Webster <eweb@users.sourceforge.net>
   // Guessing on the ignore errors flag
@@ -1285,7 +1284,9 @@
   // Reported by Anonymous Sourceforge user
   { "SonyEricsson", 0x0fce,  "j10i (Elm)", 0xd144,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
-
+  // Reported by Thomas Schweitzer <thomas_-_s@users.sourceforge.net>
+  { "SonyEricsson", 0x0fce, "K550i", 0xe000,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
 
 
   /*
