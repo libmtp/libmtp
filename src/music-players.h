@@ -336,6 +336,8 @@
    */
   { "Intel", 0x045e, "Bandon Portable Media Center", 0x00c9, DEVICE_FLAG_NONE },
   // Reported by anonymous sourceforge user
+  // HTC Mozart is using the PID
+  // May need MTPZ to work
   { "Microsoft", 0x045e, "Windows Phone", 0x04ec, DEVICE_FLAG_NONE },
   // Reported by Tadimarri Sarath <sarath.tadi@gmail.com>
   // No idea why this use an Intel PID, perhaps a leftover from
@@ -894,6 +896,7 @@
   // From: Raul Metsma <raul@innovaatik.ee>
   { "Nokia", 0x0421, "E7 (Ovi mode)", 0x0335, DEVICE_FLAG_NONE },
   // Reported by Serg <rd77@users.sourceforge.net>
+  // Symbian phone
   { "Nokia", 0x0421, "C7", 0x03c1, DEVICE_FLAG_NONE },
   // Reported by Anonymous SourceForge user
   { "Nokia", 0x0421, "N950", 0x03d2, DEVICE_FLAG_NONE },
@@ -1276,8 +1279,11 @@
   { "SonyEricsson", 0x0fce, "Xperia Neo", 0x0156,
       DEVICE_FLAG_IGNORE_HEADER_ERRORS },
   // Reported by <wealas@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "ST18a", 0x0161,
-      DEVICE_FLAG_IGNORE_HEADER_ERRORS },
+  // Android with homebrew MTP stack, possibly Aricent
+  { "SonyEricsson", 0x0fce, "ST18a Xperia Ray", 0x0161,
+      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Jonas Nyrén <spectralmks@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "W302", 0x10c8,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
