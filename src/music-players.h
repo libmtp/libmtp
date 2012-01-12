@@ -1276,7 +1276,7 @@
   { "SonyEricsson", 0x0fce, "Xperia Neo", 0x0156,
       DEVICE_FLAG_IGNORE_HEADER_ERRORS },
   // Reported by <wealas@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "ST18a", 0x161,
+  { "SonyEricsson", 0x0fce, "ST18a", 0x0161,
       DEVICE_FLAG_IGNORE_HEADER_ERRORS },
   // Reported by Jonas Nyrén <spectralmks@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "W302", 0x10c8,
