@@ -158,6 +158,10 @@ cannot test your solution.
   to/from the device and will never close the session, thus
   Windows simply does not close sessions at all.
 
+  For example this means that a device may work the first time
+  you run some command-line example like "mtp-detect" while
+  subsequent runs fail.
+
   Typical sign of this illness: broken pipes on closing sessions,
   on the main transfer pipes(s) or the interrupt pipe:
 
@@ -175,10 +179,19 @@ cannot test your solution.
   properly tested, and "it works with Windows" is sort of the
   testing criteria at some companies.
 
-  You can get Windows-like behaviour on Linux by running a HAL-aware
+  You can get Windows-like behaviour on Linux by running a udev-aware
   libmtp GUI client like Rhythmbox or Gnomad2, which will "hook"
   the device when you plug it in, and "release" it if you unplug
-  it.
+  it, and you start/end you transfer sessions by plugging/unplugging
+  the USB cable.
+
+  The "Unix way" of running small programs that open the device,
+  do something, then close the device, isn't really working with
+  such devices and you cannot expect to have command line tools
+  like the mtp examples work with them. You could implement new
+  example programs that just call to a mediating daemon like the
+  Windows MTP stack does. (And change all programs using libmtp
+  directly today.)
 
   If this bug in your device annoys you, contact your device
   manufacturer and ask them to test their product with some libmtp
