@@ -299,7 +299,8 @@
   // From Harrison Metzger <harrisonmetz@gmail.com>
   { "Samsung", 0x04e8,
       "Galaxy Nexus/Galaxy S i9000, Android 4.0 updates", 0x685c,
-      DEVICE_FLAGS_ANDROID_BUGS },
+      DEVICE_FLAGS_ANDROID_BUGS |
+      DEVICE_FLAG_PLAYLIST_SPL_V2 },
   // Reported by anonymous sourceforge user - this is an Android
   // device. It seems to be hard to use this device under Linux,
   // which may be because it seems to implement fairly strong
