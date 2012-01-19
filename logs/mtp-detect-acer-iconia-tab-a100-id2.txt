@@ -1,27 +1,27 @@
-libmtp version: 1.1.0
+libmtp version: 1.0.6
 
 Listing raw device(s)
    Found 1 device(s):
-   0502:3348 @ bus 2, dev 16
+   0502:3349 @ bus 1, dev 9
 Attempting to connect device(s)
 USB low-level info:
-   Using kernel interface "usbfs"
+   Using kernel interface "dummy"
    bcdUSB: 512
    bDeviceClass: 0
    bDeviceSubClass: 0
    bDeviceProtocol: 0
    idVendor: 0502
-   idProduct: 3348
+   idProduct: 3349
    IN endpoint maxpacket: 512 bytes
    OUT endpoint maxpacket: 512 bytes
    Raw device info:
-      Bus location: 2
-      Device number: 16
+      Bus location: 1
+      Device number: 9
       Device entry info:
          Vendor: (null)
          Vendor id: 0x0502
          Product: (null)
-         Vendor id: 0x3348
+         Vendor id: 0x3349
          Device flags: 0x00000000
 Configuration 0, interface 0, altsetting 0:
    Interface description contains the string "MTP"
@@ -30,7 +30,7 @@ Device info:
    Manufacturer: Acer
    Model: Acer ICONIA TAB A100
    Device version: 1.0
-   Serial number: 13217644215
+   Serial number: 137........
    Vendor extension ID: 0x00000006
    Vendor extension description: microsoft.com: 1.0; android.com: 1.0;
    Detected object size: 64 bits
@@ -415,19 +415,28 @@ Playable File (Object) Types and Object Properties Supported:
       dc44: Name STRING data type READ ONLY
       dc4e: Date Added STRING data type DATETIME FORM READ ONLY
 Storage Devices:
+   StorageID: 0x00020001
+      StorageType: 0x0004 removable RAM storage
+      FilesystemType: 0x0002 generic hierarchical
+      AccessCapability: 0x0000 read/write
+      MaxCapacity: 31902400512
+      FreeSpaceInBytes: 31902334976
+      FreeSpaceInObjects: 1073741824
+      StorageDescription: SD Card
+      VolumeIdentifier: (null)
    StorageID: 0x00010001
       StorageType: 0x0003 fixed RAM storage
       FilesystemType: 0x0002 generic hierarchical
       AccessCapability: 0x0000 read/write
       MaxCapacity: 5753618432
-      FreeSpaceInBytes: 5015011328
+      FreeSpaceInBytes: 4987346944
       FreeSpaceInObjects: 1073741824
       StorageDescription: Internal Storage
       VolumeIdentifier: (null)
 Special directories:
-   Default music folder: 0x00000001
+   Default music folder: 0xffffffff
    Default playlist folder: 0xffffffff
-   Default picture folder: 0x00000006
+   Default picture folder: 0xffffffff
    Default video folder: 0xffffffff
    Default organizer folder: 0xffffffff
    Default zencast folder: 0xffffffff
@@ -437,7 +446,6 @@ MTP-specific device properties:
    Friendly name: (NULL)
    Synchronization partner: (NULL)
 libmtp supported (playable) filetypes:
-   Folder
    Text file
    HTML file
    RIFF WAVE file
