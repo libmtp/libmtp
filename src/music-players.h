@@ -1510,6 +1510,15 @@
   { "ZTE", 0x19d2, "V55 ID 2", 0x0245, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
+   * Hewlett-Packard (HP)
+   */
+  // These identify themselves as "cm_tenderloin", fun...
+  { "Hewlett-Packard", 0x0bb4, "HP Touchpad", 0x685c,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Hewlett-Packard", 0x0bb4, "HP Touchpad (debug mode)",
+      0x6860, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
    * Other strange stuff.
    */
   { "Isabella", 0x0b20, "Her Prototype", 0xddee, DEVICE_FLAG_NONE }

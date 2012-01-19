@@ -1,0 +1,153 @@
+$ mtp-detect
+libmtp version: 1.0.2
+
+Listing raw device(s)
+Device 0 (VID=0bb4 and PID=685c) is UNKNOWN.
+Please report this VID/PID and the device model to the libmtp development team
+   Found 1 device(s):
+   0bb4:685c @ bus 1, dev 43
+Attempting to connect device(s)
+PTP_ERROR_IO: Trying again after re-initializing USB interface
+Error 2: PTP Layer error 02ff: get_all_metadata_fast(): could not get proplist of all objects.
+Error 2: (Look this up in ptp.h for an explanation.)
+Error 2: PTP Layer error 02ff: get_handles_recursively(): could not get object handles.
+Error 2: (Look this up in ptp.h for an explanation.)
+USB low-level info:
+   Using kernel interface &quot;usbfs&quot;
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 0bb4
+   idProduct: 685c
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Raw device info:
+      Bus location: 1
+      Device number: 43
+      Device entry info:
+         Vendor: (null)
+         Vendor id: 0x0bb4
+         Product: (null)
+         Vendor id: 0x685c
+         Device flags: 0x00000000
+Configuration 0, interface 0, altsetting 0:
+   Interface description contains the string &quot;MTP&quot;
+   Device recognized as MTP, no further probing.
+Device info:
+   Manufacturer: unknown
+   Model: cm_tenderloin
+   Device version: 1.0
+   Serial number: 04bb35a30455e13214a1fb449cd225a7b6fbcc0c
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0; android.com: 1.0;
+   Detected object size: 64 bits
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100a: Get thumbnail
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   1017: Reset device property value
+   101b: Get partial object
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9810: Get object references
+   9811: Set object references
+   95c1: Unknown (95c1)
+   95c2: Unknown (95c2)
+   95c3: Unknown (95c3)
+   95c4: Unknown (95c4)
+   95c5: Unknown (95c5)
+Events supported:
+   0x4002
+   0x4003
+   0x4004
+   0x4005
+Device Properties Supported:
+   0xd401: Synchronization Partner
+   0xd402: Friendly Device Name
+   0x5003: Image Size
+Playable File (Object) Types and Object Properties Supported:
+   3000: Undefined Type
+   3001: Association/Directory
+   3004: Text
+   3005: HTML
+   3008: MS Wave
+   3009: MP3
+   300b: MPEG
+   3801: JPEG
+   3802: TIFF EP
+   3807: GIF
+   3808: JFIF
+   380b: PNG
+   380d: TIFF
+   b901: WMA
+   b902: OGG
+   b903: AAC
+   b982: MP4
+   b983: MP2
+   b984: 3GP
+   ba05: Abstract Audio Video Playlist
+   ba10: WPL Playlist
+   ba11: M3U Playlist
+   ba14: PLS Playlist
+   ba82: XMLDocument
+   b906: FLAC
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0003 fixed RAM storage
+      FilesystemType: 0x0002 generic hierarchical
+      AccessCapability: 0x0000 read/write
+      MaxCapacity: 27392163840
+      FreeSpaceInBytes: 16716693504
+      FreeSpaceInObjects: 1073741824
+      StorageDescription: SD Card
+      VolumeIdentifier: (null)
+Special directories:
+   Default music folder: 0xffffffff
+   Default playlist folder: 0xffffffff
+   Default picture folder: 0xffffffff
+   Default video folder: 0xffffffff
+   Default organizer folder: 0xffffffff
+   Default zencast folder: 0xffffffff
+   Default album folder: 0xffffffff
+   Default text folder: 0xffffffff
+MTP-specific device properties:
+   Friendly name: (NULL)
+   Synchronization partner: (NULL)
+libmtp supported (playable) filetypes:
+   Text file
+   HTML file
+   RIFF WAVE file
+   ISO MPEG-1 Audio Layer 3
+   MPEG video stream
+   JPEG file
+   GIF bitmap file
+   JFIF file
+   Portable Network Graphics
+   TIFF bitmap file
+   Microsoft Windows Media Audio
+   Ogg container format
+   Advanced Audio Coding (AAC)/MPEG-2 Part 7/MPEG-4 Part 3
+   MPEG-4 Part 14 Container Format (Audio+Video Emphasis)
+   ISO MPEG-1 Audio Layer 2
+   Abstract Playlist file
+   XML file
+   Free Lossless Audio Codec (FLAC)
+ERROR: Could not close session!
+OK.
