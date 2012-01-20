@@ -567,12 +567,12 @@ int LIBMTP_Check_Specific_Device(int busno, int devno)
 
   nrofdevs = libusb_get_device_list (NULL, &devs);
   for (i = 0; i < nrofdevs ; i++ ) {
-/*
-    if (bus->location != busno)
+
+    if (libusb_get_bus_number(devs[i]) != busno)
       continue;
-    if (dev->devnum != devno)
+    if (libusb_get_device_address(devs[i]) != devno)
       continue;
-*/
+
       if (probe_device_descriptor(devs[i], NULL))
 	return 1;
   }
