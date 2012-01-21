@@ -1405,6 +1405,9 @@
   { "Google Inc (for Sony)", 0x18d1, "S1", 0x05b3,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous Sourceforge user
+  { "Google Inc (for Barnes & Noble)", 0x18d1, "Nook Color", 0x2d02,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by anonymous Sourceforge user
   { "Google Inc (for Asus)", 0x18d1, "TF101 Transformer", 0x4e0f,
       DEVICE_FLAGS_ANDROID_BUGS },
   // WiFi-only version of Xoom
