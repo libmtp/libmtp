@@ -1,11 +1,11 @@
-libmtp version: 1.0.0
+libmtp version: 1.1.2
 
 Listing raw device(s)
    Found 1 device(s):
-   Creative: ZEN Micro (MTP mode) (041e:4130) @ bus 0, dev 3
+   Creative: ZEN Micro (MTP mode) (041e:4130) @ bus 1, dev 5
 Attempting to connect device(s)
 USB low-level info:
-   Using kernel interface "usbfs"
+   Using kernel interface "dummy"
    bcdUSB: 512
    bDeviceClass: 255
    bDeviceSubClass: 0
@@ -15,25 +15,17 @@ USB low-level info:
    IN endpoint maxpacket: 512 bytes
    OUT endpoint maxpacket: 512 bytes
    Raw device info:
-      Bus location: 0
-      Device number: 3
+      Bus location: 1
+      Device number: 5
       Device entry info:
          Vendor: Creative
          Vendor id: 0x041e
          Product: ZEN Micro (MTP mode)
          Vendor id: 0x4130
-         Device flags: 0x00000001
-Microsoft device descriptor 0xee:
-	0000: 1203 4d00 5300 4600 5400 3100 3000 3000	..M.S.F.T.1.0.0.
-	0010: fe00                                   	..
-Microsoft device response to control message 1, CMD 0xfe:
-	0000: 2800 0000 0001 0400 0100 0000 0000 0000	(...............
-	0010: 0001 4d54 5000 0000 0000 0000 0000 0000	..MTP...........
-	0020: 0000 0000 0000 0000                    	........
-Microsoft device response to control message 2, CMD 0xfe:
-	0000: 2800 0000 0001 0400 0100 0000 0000 0000	(...............
-	0010: 0001 4d54 5000 0000 0000 0000 0000 0000	..MTP...........
-	0020: 0000 0000 0000 0000                    	........
+         Device flags: 0x20000001
+Configuration 0, interface 0, altsetting 0:
+   Interface description contains the string "MTP"
+   Device recognized as MTP, no further probing.
 Device info:
    Manufacturer: Creative Technology Ltd
    Model: Creative Zen Micro
@@ -42,6 +34,11 @@ Device info:
    Vendor extension ID: 0x00000006
    Vendor extension description: microsoft.com: 1.0;microsoft.com/WMPPD: 10.0;microsoft.com/WMDRMPD: 10.1;audible.com: 1.0;
    Detected object size: 32 bits
+   Extensions:
+        microsoft.com: 1.0
+        microsoft.com/WMPPD: 10.0
+        microsoft.com/WMDRMPD: 10.1
+        audible.com: 1.0
 Supported operations:
    1001: get device info
    1002: Open session
@@ -229,23 +226,23 @@ Storage Devices:
       FilesystemType: 0x0002 generic hierarchical
       AccessCapability: 0x0000 read/write
       MaxCapacity: 4979793920
-      FreeSpaceInBytes: 4129079296
+      FreeSpaceInBytes: 4278919168
       FreeSpaceInObjects: 4294967295
       StorageDescription: Storage Media
       VolumeIdentifier: 01052551C6038F82BC171936C6038F82
 Special directories:
    Default music folder: 0x0000008b
    Default playlist folder: 0x0000008f
-   Default picture folder: 0x00000000
-   Default video folder: 0x00000000
+   Default picture folder: 0xffffffff
+   Default video folder: 0xffffffff
    Default organizer folder: 0x00000097
-   Default zencast folder: 0x00000000
-   Default album folder: 0x00000000
-   Default text folder: 0x00000000
+   Default zencast folder: 0xffffffff
+   Default album folder: 0xffffffff
+   Default text folder: 0xffffffff
 MTP-specific device properties:
    Friendly name: Dokktor Lajban
    Synchronization partner: (NULL)
-   Battery level 255 of 255 (100%)
+   Battery level 145 of 255 (56%)
 libmtp supported (playable) filetypes:
    ISO MPEG-1 Audio Layer 3
    Microsoft Windows Media Audio
@@ -254,35 +251,9 @@ libmtp supported (playable) filetypes:
    Abstract Playlist file
    VCard version 3
    VCalendar version 2
+   Folder
    Firmware file
 
 Secure Time:
-<DRMCLOCK type="status"><VALUE>#20060802 10:50:22Z#</VALUE><FLAG>DRM_CLK_NOT_SET</FLAG></DRMCLOCK>
-
-Device Certificate:
-<DEVCERT version="1.0"><CERTIFICATE type="DEVICE"><DATA><UNIQUEID private="1">AQUlUcYDj4K8Fxk2xgOPggAAAAA=</UNIQUEID><PUBLICKEY private="1">k912GjDbPJaNV6m2b+Ao7I6gERKu9q/HknX/Xk6Eof7RGsti0t8vKg==</PUBLICKEY><KEYDATA>UUBc4Bwahh3pLnmKCYNybLhvvDo=</KEYDATA></DATA><MSDRM_SIGNATURE_VALUE>C1S5c4HGU1qbAVsuYaL93PSPXS/c27En5jtyJb7CdQmS0lFgA08pBg==</MSDRM_SIGNATURE_VALUE><SYMSIGNATURE>YghjWMJr8V1Uo4n+quT/C7TNMWk=</SYMSIGNATURE></CERTIFICATE><FALLBACK><SECURITYVERSION>2.4.101.71</SECURITYVERSION><CERTIFICATE private="1">k912GjDbPJaNV6m2b+Ao7I6gERKu9q/HknX/Xk6Eof7RGsti0t8vKgIEZUfAbNZ0RU3logPBMUDW1Nwms7RvhZXdHSetXBT5t7zEnMSty5/eDVJV</CERTIFICATE></FALLBACK><CERTIFICATE type="GROUP"><DATA><NAME>Creative Zen Micro</NAME>
-  <MANUFACTURER>CL Direct Pte Ltd.</MANUFACTURER>
-  <MODEL>DAP-MD0004</MODEL>
-  <SECURITYLEVEL>2000</SECURITYLEVEL>
-  <HARDWARE_VER_MAJOR>1</HARDWARE_VER_MAJOR>
-  <HARDWARE_VER_MINOR>0</HARDWARE_VER_MINOR>
-  <FIRMWARE_VER_MAJOR>2</FIRMWARE_VER_MAJOR>
-  <FIRMWARE_VER_MINOR>10</FIRMWARE_VER_MINOR>
-  <FEATURES>
-    <CLOCK>2</CLOCK>
-    <SECURECLOCK>
-      <URL>http://go.microsoft.com/fwlink/?LinkId=25817</URL>
-      <PUBLICKEY>!CNhvvz1WaNV1AFUmetxkvm9iD4UrE9cnGUi!qcqdxMiXmD1*ikYGA==</PUBLICKEY>
-    </SECURECLOCK>
-    <METERING>1</METERING>
-    <LICENSE_ACQ>0</LICENSE_ACQ>
-    <LICENSE_SYNC>1</LICENSE_SYNC>
-    <ENCRYPTION>0</ENCRYPTION>
-    <SYMMETRIC_OPT>1</SYMMETRIC_OPT>
-  </FEATURES>
-  <LIMITS>
-    <MAXCHAINDEPTH>2</MAXCHAINDEPTH>
-    <MAXLICENSESIZE>10240</MAXLICENSESIZE>
-    <MAXHEADERSIZE>5120</MAXHEADERSIZE>
-  </LIMITS><PUBLICKEY>/jJLKJbGuP2rKvXxgUXD5RiwSl6kZBtlE6dpZQJOkyHXVjJYP0ZaWQ==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>JFCrHlYa9i+gf35AzJUBwaiKWkHLPIGsC1UIDcfpr+lca+u/a3gxPQ==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION"><DATA><SECURITYLEVEL>2000</SECURITYLEVEL><AUTH_ID>171</AUTH_ID><PUBLICKEY>wSdKzyFHUEP/ZH6n+XWM9QNUkmxAjSozkDnwvfq8JAFs+rMjryeXCw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>lbcFC77eUPJxJeL/OPc/4GQakgUeeaNtA4iZAyYaymOgIDrLFKNCMA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE><CERTIFICATE type="AUTHORIZATION_ROOT"><DATA><AUTH_ID>1</AUTH_ID><PUBLICKEY>a1t3hxrg!qbOgktnbYaEEi4teCse!gz6RvTPuC!zizKJlpU7xoduSw==</PUBLICKEY></DATA><MSDRM_SIGNATURE_VALUE>3wxl5dz2o0IeP1OYxjxB+wdmXl0QcRk9/ZxpHHOX4uE58knkNZoqQA==</MSDRM_SIGNATURE_VALUE></CERTIFICATE></DEVCERT>
+<DRMCLOCK type="status"><VALUE>#20061122 21:57:47Z#</VALUE><FLAG>DRM_CLK_NOT_SET</FLAG></DRMCLOCK>
 OK.
