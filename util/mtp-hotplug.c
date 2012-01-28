@@ -2,7 +2,7 @@
  * \file mtp-hotplug.c
  * Program to create hotplug scripts.
  *
- * Copyright (C) 2005-2011 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2012 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2008 Marcus Meissner <marcus@jet.franken.de>
  *
  * This library is free software; you can redistribute it and/or
@@ -140,11 +140,14 @@ int main (int argc, char **argv)
       printf("SUBSYSTEM==\"usb\", GOTO=\"libmtp_usb_rules\"\n"
 	     "GOTO=\"libmtp_rules_end\"\n\n"
 	     "LABEL=\"libmtp_usb_rules\"\n\n");
-      printf("# Some sensitive devices we surely don\'t wanna probe, color instruments\n");
+      printf("# Some sensitive devices we surely don\'t wanna probe\n");
+      printf("# Color instruments\n");
       printf("ATTR{idVendor}==\"0670\", GOTO=\"libmtp_rules_end\"\n");
       printf("ATTR{idVendor}==\"0765\", GOTO=\"libmtp_rules_end\"\n");
       printf("ATTR{idVendor}==\"085c\", GOTO=\"libmtp_rules_end\"\n");
       printf("ATTR{idVendor}==\"0971\", GOTO=\"libmtp_rules_end\"\n");
+      printf("# Canon scanners that look like MTP devices (PID 0x22nn)\n");
+      printf("ATTR{idVendor}==\"04a9\", ATTR{idProduct}==\"22*\", GOTO=\"libmtp_rules_end\"\n");
       printf("\n");
       break;
     case style_udev_old:
