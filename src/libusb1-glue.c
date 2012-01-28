@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
  * Copyright (C) 2005-2012 Linus Walleij <triad@df.lth.se>
- * Copyright (C) 2006-2011 Marcus Meissner
+ * Copyright (C) 2006-2012 Marcus Meissner
  * Copyright (C) 2007 Ted Bullock
  * Copyright (C) 2008 Chris Bagwell <chris@cnpbagwell.com>
  *
@@ -237,19 +237,20 @@ static int probe_device_descriptor(libusb_device *dev, FILE *dumpfile)
     return 0;
   }
 
-  /* Attempt to open Device on this port */
+  /*
+   * Attempt to open Device on this port
+   *
+   * TODO: is there a way to check the number of endpoints etc WITHOUT
+   * opening the device? Some color calibration devices are REALLY
+   * sensitive to this, and I found a Canon custom scanner that doesn't
+   * like it at all either :-(
+   */
   ret = libusb_open(dev, &devh);
   if (ret != LIBUSB_SUCCESS) {
     /* Could not open this device */
     return 0;
   }
 
-  /*
-   * This sometimes crashes on the j for loop below
-   * I think it is because config is NULL yet
-   * dev->descriptor.bNumConfigurations > 0
-   * this check should stop this
-   */
   /*
    * Loop over the device configurations and interfaces. Nokia MTP-capable
    * handsets (possibly others) typically have the string "MTP" in their
@@ -301,9 +302,11 @@ static int probe_device_descriptor(libusb_device *dev, FILE *dumpfile)
 	      fprintf(dumpfile, "   Found PTP device, check vendor "
 		      "extension...\n");
 	    }
-	    // This is where we may insert code to open a PTP
-	    // session and query the vendor extension ID to see
-	    // if it is 0xffffffff, i.e. MTP according to the spec.
+	    /*
+	     * This is where we may insert code to open a PTP
+	     * session and query the vendor extension ID to see
+	     * if it is 0xffffffff, i.e. MTP according to the spec.
+	     */
 	    if (was_mtp_extension) {
 	      libusb_close(devh);
 	      return 1;
