@@ -1259,6 +1259,9 @@
   // Reported by Jan Rheinlaender <jrheinlaender@users.sourceforge.net>
   { "Sony", 0x054c, "NWZ-S765", 0x05a8,
       DEVICE_FLAGS_SONY_NWZ_BUGS },
+  // Reported by ghalambaz <ghalambaz@users.sourceforge.net>
+  { "Sony", 0x054c, "Sony Tablet S1", 0x05b4,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Anonymous SourceForge user
   { "Sony", 0x054c, "DCR-SR75", 0x1294,
       DEVICE_FLAGS_SONY_NWZ_BUGS },
