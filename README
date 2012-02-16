@@ -818,6 +818,37 @@ since the device rolls back all failed transactions.
 So this is an inherent limitation of the PTP/MTP protocol.
 
 
+I want to remote control my device!
+-----------------------------------
+
+I have both good and bad news for you.
+
+The good news is that the MTP protocol has well-defined commands to play
+back content on a device. Operation 0xD411 (PTP_DPC_MTP_PlaybackObject)
+will start playing back a file on the device (whatever that may mean if
+this is not a music or video file), and operation 0xD403 can set the
+playback volume to save your ears. Then there are operations to
+determine how far into the current file you currently are, so as to
+support say progress bars.
+
+Since these commands have been around since the dawn of the MTP protocol
+and since it was developed in cooperation with Creative Technology, this
+is probably a requested feature from the Creative people who already had
+support for playback on their devices using the PDE protocol back then.
+
+Anyway, here are the bad news:
+[logs]$ grep d411 *
+mtp-detect-trekstor-vibez.txt:   0xd411: Playback Object
+
+Aha there is only one known device in the world which actually supports
+playback on the device. So either you go buy the Trekstor Vibez, or you
+can forget about this. You could always try asking your hardware vendor
+of choice to go implement this.
+
+Since none of the core developers of libmtp has the Trekstor device, this
+is not yet implemented in libmtp.
+
+
 I make MTP devices!
 -------------------
 
