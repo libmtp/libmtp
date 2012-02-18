@@ -34,6 +34,9 @@ To build libmtp you should only need development files for libusb.
 (Often named libusb-devel or similar.) For working with CVS versions
 you may need autoconf, automake, libtool, gettext(-devel).
 
+To enable the optional MTPZ support using libgcrypt you need the
+libgcrypt library installed as well.
+
 
 Shared Library Support
 ----------------------
