@@ -148,6 +148,26 @@ if test x"$found_libusb1_pkg" = "xno" ; then
    fi
 fi
 
+# Optionally disable MTPZ functionality.
+AC_ARG_ENABLE([mtpz],
+	AC_HELP_STRING([--disable-mtpz], [Disable functionality to connect to MTPZ devices (e.g. Zune)]),
+	[use_mtpz=$enableval],
+	[use_mtpz="yes"])
+
+# Include MTPZ if not disabled.
+if test x"$use_mtpz" = "xyes" ; then
+	# Check for libgcrypt.
+	AC_MSG_CHECKING([for libgcrypt])
+	AC_CHECK_LIB([gcrypt], [gcry_check_version], , [AC_MSG_NOTICE([*** libgcrypt not found - disabling MTPZ support ***]) ; use_mtpz="no"])
+fi
+
+if test x"$use_mtpz" = "xyes" ; then
+	AC_DEFINE(USE_MTPZ, [], [Enable MTPZ functionality])
+	AC_MSG_NOTICE([MTPZ functionality enabled]);
+else
+	AC_MSG_NOTICE([MTPZ functionality disable]);
+fi
+
 
 AC_SUBST(LIBUSB_CFLAGS)
 AC_SUBST(LIBUSB_LIBS)
