@@ -387,7 +387,7 @@
    */
   { "Intel", 0x045e, "Bandon Portable Media Center", 0x00c9, DEVICE_FLAG_NONE },
   // Reported by anonymous sourceforge user
-  // HTC Mozart is using the PID
+  // HTC Mozart is using the PID, as is Nokia Lumia 800
   // May need MTPZ to work
   { "Microsoft", 0x045e, "Windows Phone", 0x04ec, DEVICE_FLAG_NONE },
   // Reported by Tadimarri Sarath <sarath.tadi@gmail.com>
