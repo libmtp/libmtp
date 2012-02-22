@@ -358,7 +358,7 @@
   // Seems also to be used with Galaxy Nexus debug mode and on
   // US markets for some weird reason.
   { "Samsung", 0x04e8,
-      "GT-P7510/Galaxy Tab 10.1/S2/GT-N7000/Galaxy Nexus", 0x6860,
+      "GT-P7510/Galaxy Tab 7.7/10.1/S2/GT-N7000/Galaxy Nexus", 0x6860,
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT },
   // From: Erik Berglund <erikjber@users.sourceforge.net>
@@ -1420,6 +1420,8 @@
   { "Google Inc (for Motorola)", 0x18d1, "Xoom (MZ604)", 0x70a8,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc (for Motorola)", 0x22b8, "Xoom (ID 2)", 0x70a9,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Google Inc (for Toshiba)", 0x18d1, "Thrive 7", 0x7102,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Another OEM for Medion
   { "Google Inc (for Medion)", 0x18d1, "MD99000 (P9514)", 0xb00a,
