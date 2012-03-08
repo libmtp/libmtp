@@ -1581,6 +1581,11 @@
       0x6860, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
+   * NEC
+   */
+  { "NEC", 0x0409, "FOMA N01A", 0x0242, DEVICE_FLAG_NONE },
+
+  /*
    * Other strange stuff.
    */
   { "Isabella", 0x0b20, "Her Prototype", 0xddee, DEVICE_FLAG_NONE }
