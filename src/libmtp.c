@@ -7139,8 +7139,25 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name,
   new_folder.StorageID = store;
 
   // Create the object
-  // FIXME: use send list here if available.
-  ret = ptp_sendobjectinfo(params, &store, &parenthandle, &new_id, &new_folder);
+  if (!(params->device_flags & DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST) &&
+	ptp_operation_issupported(params,PTP_OC_MTP_SendObjectPropList)) {
+	MTPProperties *props = (MTPProperties*)calloc(2,sizeof(MTPProperties));
+
+	props[0].property = PTP_OPC_ObjectFileName;
+	props[0].datatype = PTP_DTC_STR;
+	props[0].propval.str = name;
+
+	props[1].property = PTP_OPC_Name;
+	props[1].datatype = PTP_DTC_STR;
+	props[1].propval.str = name;
+
+	ret = ptp_mtp_sendobjectproplist(params, &store, &parenthandle, &new_id, PTP_OFC_Association,
+			0, props, 1);
+	free(props);
+  } else {
+	ret = ptp_sendobjectinfo(params, &store, &parenthandle, &new_id, &new_folder);
+  }
+
   if (ret != PTP_RC_OK) {
     add_ptp_error_to_errorstack(device, ret, "LIBMTP_Create_Folder: Could not send object info.");
     if (ret == PTP_RC_AccessDenied) {
