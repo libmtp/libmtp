@@ -359,7 +359,7 @@
   // Seems also to be used with Galaxy Nexus debug mode and on
   // US markets for some weird reason.
   { "Samsung", 0x04e8,
-      "GT-P7510/Galaxy Tab 7.7/10.1/S2/GT-N7000/Galaxy Nexus", 0x6860,
+      "GT-P7510/Galaxy Tab 7.7/10.1/S2/GT-N7000/Nexus/Note", 0x6860,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT |
