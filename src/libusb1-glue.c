@@ -44,11 +44,6 @@
 
 #include "ptp-pack.c"
 
-/* Aha, older libusb does not have USB_CLASS_PTP */
-#ifndef USB_CLASS_PTP
-#define USB_CLASS_PTP 6
-#endif
-
 /*
  * Default USB timeout length.  This can be overridden as needed
  * but should start with a reasonable value so most common
