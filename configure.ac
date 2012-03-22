@@ -117,15 +117,6 @@ if test x"$found_libusb1_pkg" = "xyes" ; then
    AC_DEFINE(HAVE_LIBUSB1, [], [Have libusb 1.0])
 fi
 
-# Check for libopenusb
-AC_CHECK_LIB([openusb], [openusb_init])
-if test x"$found_libusb1_pkg" = "xno" ; then
-   if test x"$ac_cv_lib_openusb_openusb_init" = "xyes" ; then
-      AC_DEFINE(HAVE_OPENUSB, [], [Have libopenusb 1.0])
-      LIBUSB_VER=1.0
-   fi
-fi
-
 # Check for libusb 0.x
 if test x"$found_libusb1_pkg" = "xno" ; then
    if test x"$ac_cv_lib_openusb_openusb_init" = "xno" ; then
@@ -144,6 +135,17 @@ if test x"$found_libusb1_pkg" = "xno" ; then
          if test x"$found_libusb0_pkg" = "xno" ; then
             AC_MSG_ERROR([*** libusb not found! (missing -dev/-devel package?) ***\n*** prefer to install libusb-1 if you can! ***])
          fi
+      fi
+   fi
+fi
+
+# Check for libopenusb
+if test x"$found_libusb1_pkg" = "xno" ; then
+   AC_CHECK_LIB([openusb], [openusb_init])
+   if test x"$found_libusb1_pkg" = "xno" ; then
+      if test x"$ac_cv_lib_openusb_openusb_init" = "xyes" ; then
+        AC_DEFINE(HAVE_OPENUSB, [], [Have libopenusb 1.0])
+        LIBUSB_VER=1.0
       fi
    fi
 fi
