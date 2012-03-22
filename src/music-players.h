@@ -351,16 +351,19 @@
       "Galaxy Nexus/Galaxy S i9000, Android 4.0 updates", 0x685c,
       DEVICE_FLAGS_ANDROID_BUGS |
       DEVICE_FLAG_PLAYLIST_SPL_V2 },
-  // Reported by anonymous sourceforge user - this is an Android
-  // device. It seems to be hard to use this device under Linux,
-  // which may be because it seems to implement fairly strong
-  // Microsoft DRM stuff.
+  // From: Ignacio Martínez <ignacio.martinezrivera@yahoo.es>
+  // It seems that some PTP commands are broken.
+  // Galaxy S2 has a connection timeout, the session must be
+  // open in about 3 seconds since the device is plugged in, after
+  // that time it will not respond.
   // Seems also to be used with Galaxy Nexus debug mode and on
   // US markets for some weird reason.
   { "Samsung", 0x04e8,
       "GT-P7510/Galaxy Tab 7.7/10.1/S2/GT-N7000/Galaxy Nexus", 0x6860,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
       DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_LONG_TIMEOUT },
+      DEVICE_FLAG_LONG_TIMEOUT |
+      DEVICE_FLAG_BROKEN_GET_OBJECT_INFO },
   // From: Erik Berglund <erikjber@users.sourceforge.net>
   // Logs indicate this needs DEVICE_FLAG_NO_ZERO_READS
   // No Samsung platlists on this device.
