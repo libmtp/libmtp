@@ -1257,6 +1257,9 @@
   // Reported by Toni Burgarello
   { "Sony", 0x054c, "Walkman NWZ-S754", 0x04cc,
       DEVICE_FLAGS_SONY_NWZ_BUGS },
+  // Reported by dmiceman
+  { "Sony", 0x054c, "NWZ-B163F", 0x059a,
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by anonymous Sourceforge user
   // guessing on device flags...
   { "Sony", 0x054c, "Walkman NWZ-E464", 0x05a6,
