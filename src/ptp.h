@@ -1,7 +1,7 @@
 /* ptp.h
  *
  * Copyright (C) 2001 Mariusz Woloszyn <emsi@ipartners.pl>
- * Copyright (C) 2003-2009 Marcus Meissner <marcus@jet.franken.de>
+ * Copyright (C) 2003-2012 Marcus Meissner <marcus@jet.franken.de>
  * Copyright (C) 2006-2008 Linus Walleij <triad@df.lth.se>
  *
  * This library is free software; you can redistribute it and/or
@@ -1044,6 +1044,8 @@ struct _PTPCANONFolderEntry {
 	uint32_t	ObjectSize;
 	time_t		Time;
 	char		Filename[PTP_CANON_FilenameBufferLen];
+
+	uint32_t	StorageID;
 };
 typedef struct _PTPCANONFolderEntry PTPCANONFolderEntry;
 
@@ -2161,6 +2163,11 @@ struct _PTPParams {
 	uint32_t	eventpipeid;
 	char		*cameraname;
 
+	/* Olympus UMS wrapping related data */
+	PTPDeviceInfo	outer_deviceinfo;
+	char		*olympus_cmd;
+	char		*olympus_reply;
+
 #ifdef HAVE_ICONV
 	/* PTP: iconv converters */
 	iconv_t	cd_locale_to_ucs2;
@@ -2327,6 +2334,14 @@ uint16_t ptp_mtp_getobjectproplist (PTPParams* params, uint32_t handle, MTPPrope
 uint16_t ptp_mtp_sendobjectproplist (PTPParams* params, uint32_t* store, uint32_t* parenthandle, uint32_t* handle,
 				     uint16_t objecttype, uint64_t objectsize, MTPProperties *props, int nrofprops);
 uint16_t ptp_mtp_setobjectproplist (PTPParams* params, MTPProperties *props, int nrofprops);
+
+/* Microsoft MTPZ (Zune) extensions */
+uint16_t ptp_mtpz_sendwmdrmpdapprequest (PTPParams*, unsigned char *, uint32_t);
+#define  ptp_mtpz_resethandshake(params) ptp_generic_no_data(params, PTP_OC_MTP_WMDRMPD_EndTrustedAppSession, 0)
+uint16_t ptp_mtpz_getwmdrmpdappresponse (PTPParams*, unsigned char **, uint32_t*);
+#define  ptp_mtpz_wmdrmpd_enabletrustedfilesoperations(params,hash1,hash2,hash3,hash4) \
+	 ptp_generic_no_data(params, PTP_OC_MTP_WMDRMPD_EnableTrustedFilesOperations, 4,\
+		hash1, hash2, hash3, hash4)
 
 /* Eastman Kodak extensions */
 uint16_t ptp_ek_9007 (PTPParams* params, unsigned char **serial, unsigned int *size);
@@ -2580,6 +2595,8 @@ uint16_t ptp_canon_getpairinginfo (PTPParams* params, uint32_t nr, unsigned char
 uint16_t ptp_canon_eos_getstorageids (PTPParams* params, PTPStorageIDs* storageids);
 uint16_t ptp_canon_eos_getstorageinfo (PTPParams* params, uint32_t p1, unsigned char**, unsigned int*);
 uint16_t ptp_canon_eos_getpartialobject (PTPParams* params, uint32_t oid, uint32_t off, uint32_t xsize, unsigned char**data);
+uint16_t ptp_canon_eos_getobjectinfoex (PTPParams* params, uint32_t storageid, uint32_t objectid, uint32_t unk,
+        PTPCANONFolderEntry **entries, unsigned int *nrofentries);
 uint16_t ptp_canon_eos_setdevicepropvalueex (PTPParams* params, unsigned char* data, unsigned int size);
 #define ptp_canon_eos_setremotemode(params,p1) ptp_generic_no_data(params,PTP_OC_CANON_EOS_SetRemoteMode,1,p1)
 #define ptp_canon_eos_seteventmode(params,p1) ptp_generic_no_data(params,PTP_OC_CANON_EOS_SetEventMode,1,p1)

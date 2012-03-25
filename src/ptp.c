@@ -1,7 +1,7 @@
 /* ptp.c
  *
  * Copyright (C) 2001-2004 Mariusz Woloszyn <emsi@ipartners.pl>
- * Copyright (C) 2003-2009 Marcus Meissner <marcus@jet.franken.de>
+ * Copyright (C) 2003-2012 Marcus Meissner <marcus@jet.franken.de>
  * Copyright (C) 2006-2008 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2007 Tero Saarni <tero.saarni@gmail.com>
  * Copyright (C) 2009 Axel Waggershauser <awagger@web.de>
@@ -699,7 +699,6 @@ ptp_getnumobjects (PTPParams* params, uint32_t storage,
 {
 	uint16_t ret;
 	PTPContainer ptp;
-	int len;
 
 	PTP_CNT_INIT(ptp);
 	ptp.Code=PTP_OC_GetNumObjects;
@@ -707,7 +706,6 @@ ptp_getnumobjects (PTPParams* params, uint32_t storage,
 	ptp.Param2=objectformatcode;
 	ptp.Param3=associationOH;
 	ptp.Nparam=3;
-	len=0;
 	ret=ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
 	if (ret == PTP_RC_OK) {
 		if (ptp.Nparam >= 1)
@@ -1829,6 +1827,40 @@ ptp_canon_eos_getstorageinfo (PTPParams* params, uint32_t p1, unsigned char **da
 	return ret;
 }
 
+uint16_t
+ptp_canon_eos_getobjectinfoex (
+	PTPParams* params, uint32_t storageid, uint32_t oid, uint32_t unk,
+	PTPCANONFolderEntry **entries, unsigned int *nrofentries
+) {
+	PTPContainer	ptp;
+	unsigned int	i, size = 0;
+	unsigned char	*data, *xdata;
+	uint16_t	ret;
+
+	data = NULL;
+	PTP_CNT_INIT(ptp);
+	ptp.Code 	= PTP_OC_CANON_EOS_GetObjectInfoEx;
+	ptp.Nparam	= 3;
+	ptp.Param1	= storageid;
+	ptp.Param2	= oid;
+	ptp.Param3	= unk;
+	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, &size);
+	if (ret != PTP_RC_OK)
+		return ret;
+
+	*nrofentries = dtoh32a(data);
+	*entries = malloc(*nrofentries * sizeof(PTPCANONFolderEntry));
+	if (!*entries)
+		return PTP_RC_GeneralError;
+
+	xdata = data+sizeof(uint32_t);
+	for (i=0;i<*nrofentries;i++) {
+		ptp_unpack_Canon_EOS_FE (params, &xdata[4], &((*entries)[i]));
+		xdata += dtoh32a(xdata);
+	}
+	return PTP_RC_OK;
+}
+
 /**
  * ptp_canon_eos_getpartialobject:
  * 
@@ -2830,6 +2862,28 @@ ptp_mtp_setobjectproplist (PTPParams* params, MTPProperties *props, int nrofprop
 	free(opldata);
 
 	return ret;
+}
+
+uint16_t
+ptp_mtpz_sendwmdrmpdapprequest (PTPParams* params, unsigned char *appcertmsg, uint32_t size)
+{
+	PTPContainer ptp;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code=PTP_OC_MTP_WMDRMPD_SendWMDRMPDAppRequest;
+	return ptp_transaction (params, &ptp, PTP_DP_SENDDATA, size, &appcertmsg, NULL);
+}
+
+uint16_t
+ptp_mtpz_getwmdrmpdappresponse (PTPParams* params, unsigned char **response, uint32_t *size)
+{
+	PTPContainer ptp;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code = PTP_OC_MTP_WMDRMPD_GetWMDRMPDAppResponse;
+	*size = 0;
+	*response = NULL;
+	return ptp_transaction (params, &ptp, PTP_DP_GETDATA, 0, response, size);
 }
 
 /****** CHDK interface ******/
@@ -5413,51 +5467,51 @@ ptp_object_want (PTPParams *params, uint32_t handle, int want, PTPObject **retob
 			for (i=0;i<ob->nrofmtpprops;i++,prop++) {
 				switch (prop->property) {
 				case PTP_OPC_StorageID:
-				  ob->oi.StorageID = prop->propval.u32;
-				  break;
+					ob->oi.StorageID = prop->propval.u32;
+					break;
 				case PTP_OPC_ObjectFormat:
-				  ob->oi.ObjectFormat = prop->propval.u16;
-				  break;
+					ob->oi.ObjectFormat = prop->propval.u16;
+					break;
 				case PTP_OPC_ProtectionStatus:
-				  ob->oi.ProtectionStatus = prop->propval.u16;
-				  break;
+					ob->oi.ProtectionStatus = prop->propval.u16;
+					break;
 				case PTP_OPC_ObjectSize:
-				  if (prop->datatype == PTP_DTC_UINT64) {
-					if (prop->propval.u64 > 0xFFFFFFFFU)
-						ob->oi.ObjectCompressedSize = 0xFFFFFFFFU;
-					else
-						ob->oi.ObjectCompressedSize = (uint32_t)prop->propval.u64;
-				  } else if (prop->datatype == PTP_DTC_UINT32) {
-					ob->oi.ObjectCompressedSize = prop->propval.u32;
-				  }
-				  break;
+					if (prop->datatype == PTP_DTC_UINT64) {
+						if (prop->propval.u64 > 0xFFFFFFFFU)
+							ob->oi.ObjectCompressedSize = 0xFFFFFFFFU;
+						else
+							ob->oi.ObjectCompressedSize = (uint32_t)prop->propval.u64;
+					} else if (prop->datatype == PTP_DTC_UINT32) {
+						ob->oi.ObjectCompressedSize = prop->propval.u32;
+					}
+					break;
 				case PTP_OPC_AssociationType:
-				  ob->oi.AssociationType = prop->propval.u16;
-				  break;
+					ob->oi.AssociationType = prop->propval.u16;
+					break;
 				case PTP_OPC_AssociationDesc:
-				  ob->oi.AssociationDesc = prop->propval.u32;
-				  break;
+					ob->oi.AssociationDesc = prop->propval.u32;
+					break;
 				case PTP_OPC_ObjectFileName:
-				  if (prop->propval.str) {
-					  free(ob->oi.Filename);
-					  ob->oi.Filename = strdup(prop->propval.str);
-				  }
-				  break;
+					if (prop->propval.str) {
+						free(ob->oi.Filename);
+						ob->oi.Filename = strdup(prop->propval.str);
+					}
+					break;
 				case PTP_OPC_DateCreated:
-				  ob->oi.CaptureDate = ptp_unpack_PTPTIME(prop->propval.str);
-				  break;
+					ob->oi.CaptureDate = ptp_unpack_PTPTIME(prop->propval.str);
+					break;
 				case PTP_OPC_DateModified:
-				  ob->oi.ModificationDate = ptp_unpack_PTPTIME(prop->propval.str);
-				  break;
+					ob->oi.ModificationDate = ptp_unpack_PTPTIME(prop->propval.str);
+					break;
 				case PTP_OPC_Keywords:
-				  if (prop->propval.str) {
-					  free(ob->oi.Keywords);
-					  ob->oi.Keywords = strdup(prop->propval.str);
-				  }
-				  break;
+					if (prop->propval.str) {
+						free(ob->oi.Keywords);
+						ob->oi.Keywords = strdup(prop->propval.str);
+					}
+					break;
 				case PTP_OPC_ParentObject:
-				  ob->oi.ParentObject = prop->propval.u32;
-				  break;
+					ob->oi.ParentObject = prop->propval.u32;
+					break;
 				}
 			}
 		}
