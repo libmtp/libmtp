@@ -1339,14 +1339,24 @@
   // Erroneous MTP implementation seems to be from Aricent, returns
   // broken transaction ID.
   { "SonyEricsson", 0x0fce, "LT15i (Xperia arc S)", 0x14f,
-      DEVICE_FLAG_IGNORE_HEADER_ERRORS },
+      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Eamonn Webster <eweb@users.sourceforge.net>
   // Guessing on the ignore errors flag
   { "SonyEricsson", 0x0fce, "Xperia Neo", 0x0156,
-      DEVICE_FLAG_IGNORE_HEADER_ERRORS },
+      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by <wealas@users.sourceforge.net>
   // Android with homebrew MTP stack, possibly Aricent
   { "SonyEricsson", 0x0fce, "ST18a Xperia Ray", 0x0161,
+      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by hdhoang <hdhoang@users.sourceforge.net>
+  // Android with homebrew MTP stack, possibly Aricent
+  { "SonyEricsson", 0x0fce, "ST15i Xperia Mini", 0x0161,
       DEVICE_FLAG_IGNORE_HEADER_ERRORS |
       DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
