@@ -1559,6 +1559,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TF201 Transformer Prime (tablet only)", 0x4d01,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "TFXXX Transformer Prime (unknown version)", 0x4d04,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TF101 Eeepad Transformer", 0x4e0f,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TF101 Eeepad Transformer (debug mode)", 0x4e1f,
