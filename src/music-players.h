@@ -1358,7 +1358,7 @@
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by hdhoang <hdhoang@users.sourceforge.net>
   // Android with homebrew MTP stack, possibly Aricent
-  { "SonyEricsson", 0x0fce, "ST15i Xperia Mini", 0x0161,
+  { "SonyEricsson", 0x0fce, "ST15i Xperia Mini", 0x0167,
       DEVICE_FLAG_IGNORE_HEADER_ERRORS |
       DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
