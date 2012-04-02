@@ -1452,6 +1452,9 @@
   // Another OEM for Medion
   { "Google Inc (for Medion)", 0x18d1, "MD99000 (P9514)", 0xb00a,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Google Inc (for LG Electronics)", 0x18d1, "P990/Optimus", 0xd10a,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
 
   /*
    * Media Keg
