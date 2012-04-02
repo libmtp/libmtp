@@ -394,9 +394,11 @@
 
 
   /*
-   * Microsoft & Intel
+   * Microsoft
+   * All except the first probably need MTPZ to work
    */
-  { "Intel", 0x045e, "Bandon Portable Media Center", 0x00c9, DEVICE_FLAG_NONE },
+  { "Microsoft/Intel", 0x045e, "Bandon Portable Media Center", 0x00c9,
+      DEVICE_FLAG_NONE },
   // Reported by anonymous sourceforge user
   // HTC Mozart is using the PID, as is Nokia Lumia 800
   // May need MTPZ to work
@@ -410,6 +412,8 @@
   { "Microsoft", 0x045e, "Zune HD", 0x063e, DEVICE_FLAG_NONE },
   // Reported by anonymous sourceforge user
   { "Microsoft", 0x045e, "Kin 1", 0x0640, DEVICE_FLAG_NONE },
+  // Reported by anonymous sourceforge user
+  { "Microsoft/Sharp/nVidia", 0x045e, "Kin TwoM", 0x0641, DEVICE_FLAG_NONE },
   // Reported by Farooq Zaman (used for all Zunes)
   { "Microsoft", 0x045e, "Zune", 0x0710, DEVICE_FLAG_NONE },
 
@@ -773,7 +777,7 @@
       DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
   // Reported by Nigel Cunningham <nigel@tuxonice.net>
   // Guessing on Android bugs
-  { "Toshiba", 0x0930, "Thrive AT105", 0x7100,
+  { "Toshiba", 0x0930, "Thrive AT100/AT105", 0x7100,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
