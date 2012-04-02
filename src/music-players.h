@@ -359,7 +359,7 @@
   // Seems also to be used with Galaxy Nexus debug mode and on
   // US markets for some weird reason.
   { "Samsung", 0x04e8,
-      "GT-P7510/N7000/I9100/Galaxy Tab 7.7/10.1/S2/Nexus/Note", 0x6860,
+      "GT-P7310/P7510/N7000/I9100/Galaxy Tab 7.7/10.1/S2/Nexus/Note", 0x6860,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT |
@@ -1625,6 +1625,12 @@
    * NEC
    */
   { "NEC", 0x0409, "FOMA N01A", 0x0242, DEVICE_FLAG_NONE },
+
+  /*
+   * nVidia
+   */
+  // Found on Internet forum
+  { "nVidia", 0x0955, "CM9-Adam", 0x70a9, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Other strange stuff.
