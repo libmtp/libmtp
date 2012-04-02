@@ -8,7 +8,7 @@ includedir=@includedir@
 Name: libmtp
 Description: libmtp is a library for accessing Media Transfer Protocol devices
 Version: @VERSION@
-Requires: libusb
+Requires: @LIBUSB_REQUIRES@
 Conflicts:
 Libs: -L${libdir} -lmtp
 Libs.private: @LIBS@

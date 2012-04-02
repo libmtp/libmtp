@@ -114,6 +114,7 @@ AM_CONDITIONAL(MS_LIB_EXE, test x$ms_lib_exe = xyes)
 PKG_CHECK_MODULES(LIBUSB, libusb-1.0 >= 1.0.0, found_libusb1_pkg=yes, found_libusb1_pkg=no)
 if test x"$found_libusb1_pkg" = "xyes" ; then
    LIBUSB_VER=`pkg-config --modversion libusb-1.0`
+   LIBUSB_REQUIRES='libusb-1.0'
    AC_DEFINE(HAVE_LIBUSB1, [], [Have libusb 1.0])
 fi
 
@@ -123,6 +124,7 @@ if test x"$found_libusb1_pkg" = "xno" ; then
       PKG_CHECK_MODULES(LIBUSB, libusb >= 0.1.8, found_libusb0_pkg=yes, found_libusb0_pkg=no)
       if test x"$found_libusb0_pkg" = "xyes" ; then
          LIBUSB_VER=`pkg-config --modversion libusb`
+         LIBUSB_REQUIRES='libusb'
          AC_DEFINE(HAVE_LIBUSB0, [], [Have libusb 0.x])
       else
          # Some systems don't use pkg-config for libusb, so double check.
@@ -173,6 +175,7 @@ fi
 
 AC_SUBST(LIBUSB_CFLAGS)
 AC_SUBST(LIBUSB_LIBS)
+AC_SUBST(LIBUSB_REQUIRES)
 AM_CONDITIONAL(LIBUSB1_COMPILE, test x"$found_libusb1_pkg" = "xyes")
 AM_CONDITIONAL(LIBUSB0_COMPILE, test x"$found_libusb0_pkg" = "xyes")
 AM_CONDITIONAL(LIBOPENUSB_COMPILE, test x"$ac_cv_lib_openusb_openusb_init" = "xyes")
