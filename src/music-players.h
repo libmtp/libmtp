@@ -1455,6 +1455,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc (for Toshiba)", 0x18d1, "Thrive 7/AT105", 0x7102,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Google Inc (for Lenovo)", 0x18d1, "Ideapad K1", 0x740a,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Another OEM for Medion
   { "Google Inc (for Medion)", 0x18d1, "MD99000 (P9514)", 0xb00a,
       DEVICE_FLAGS_ANDROID_BUGS },
