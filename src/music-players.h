@@ -348,7 +348,7 @@
       DEVICE_FLAG_PLAYLIST_SPL_V1 },
   // From Harrison Metzger <harrisonmetz@gmail.com>
   { "Samsung", 0x04e8,
-      "Galaxy Nexus/Galaxy S i9000, Android 4.0 updates", 0x685c,
+      "Galaxy Nexus/Galaxy S i9000/i9250, Android 4.0 updates", 0x685c,
       DEVICE_FLAGS_ANDROID_BUGS |
       DEVICE_FLAG_PLAYLIST_SPL_V2 },
   // From: Ignacio Martínez <ignacio.martinezrivera@yahoo.es>
@@ -359,7 +359,7 @@
   // Seems also to be used with Galaxy Nexus debug mode and on
   // US markets for some weird reason.
   { "Samsung", 0x04e8,
-      "GT-P7510/Galaxy Tab 7.7/10.1/S2/GT-N7000/Nexus/Note", 0x6860,
+      "GT-P7510/N7000/I9100/Galaxy Tab 7.7/10.1/S2/Nexus/Note", 0x6860,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT |
@@ -369,9 +369,13 @@
   // No Samsung platlists on this device.
   // https://sourceforge.net/tracker/?func=detail&atid=809061&aid=3026337&group_id=158745
   // i5800 duplicate reported by igel <igel-kun@users.sourceforge.net>
+  // Guessing this has the same problematic MTP stack as the device
+  // above.
   { "Samsung", 0x04e8, "Galaxy S GT-I9000/Galaxy 3 i5800/Kies mode", 0x6877,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
       DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_LONG_TIMEOUT },
+      DEVICE_FLAG_LONG_TIMEOUT |
+      DEVICE_FLAG_BROKEN_GET_OBJECT_INFO },
   // From: John Gorkos <ab0oo@users.sourceforge.net> and
   // Akos Maroy <darkeye@users.sourceforge.net>
   { "Samsung", 0x04e8, "Vibrant SGH-T959/Captivate/Media player mode", 0x68a9,
