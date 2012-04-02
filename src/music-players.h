@@ -936,6 +936,7 @@
   // Not verified to be MTP
   { "Nokia", 0x0421, "E63", 0x0179, DEVICE_FLAG_NONE },
   // Reported by: max g <exactt@users.sourceforge.net>
+  // Reported by: oswillios <loswillios@users.sourceforge.net>
   { "Nokia", 0x0421, "N79", 0x0186, DEVICE_FLAG_NONE },
   // From an anonymous SourceForge user
   { "Nokia", 0x0421, "E71x", 0x01a1, DEVICE_FLAG_NONE },
