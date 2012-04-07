@@ -343,7 +343,7 @@
   // Added by Greg Fitzgerald <netzdamon@gmail.com>
   { "Samsung", 0x04e8, "SAMSUNG Trance", 0x6763,
       DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_NO_ZERO_READS |
+     DEVICE_FLAG_NO_ZERO_READS |
       DEVICE_FLAG_PLAYLIST_SPL_V1 },
   // From anonymous sourceforge user
   // Guessing on .spl flag, maybe needs NO_ZERO_READS, whatdoIknow
@@ -1482,6 +1482,9 @@
   // Another OEM for Medion
   { "Google Inc (for Medion)", 0x18d1, "MD99000 (P9514)", 0xb00a,
       DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by Frederik Himpe <fhimpe@telenet.be>
+  { "Google Inc (for LG Electronics)", 0x18d1, "P990/Optimus (Cyanogen)",
+      0xd109, DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc (for LG Electronics)", 0x18d1, "P990/Optimus", 0xd10a,
       DEVICE_FLAGS_ANDROID_BUGS },
 
