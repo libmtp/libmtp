@@ -275,7 +275,13 @@
 #define DEVICE_FLAG_BROKEN_GET_OBJECT_PROPVAL	0x20000000
 /**
  * It seems that some devices return an bad data when
- * using the GetObjectInfo operation.
+ * using the GetObjectInfo operation. So in these cases
+ * we prefer to override the PTP-compatible object infos
+ * with the MTP property list.
+ *
+ * For example Some Samsung Galaxy S devices contain an MTP
+ * stack that present the ObjectInfo in 64 bit instead of
+ * 32 bit.
  */
 #define DEVICE_FLAG_BROKEN_GET_OBJECT_INFO	0x40000000
 
