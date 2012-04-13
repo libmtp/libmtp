@@ -111,46 +111,34 @@ fi
 AM_CONDITIONAL(MS_LIB_EXE, test x$ms_lib_exe = xyes)
 
 # Check for libusb-1.0
-PKG_CHECK_MODULES(LIBUSB, libusb-1.0 >= 1.0.0, found_libusb1_pkg=yes, found_libusb1_pkg=no)
-if test x"$found_libusb1_pkg" = "xyes" ; then
+PKG_CHECK_MODULES(LIBUSB, libusb-1.0 >= 1.0.0,[
    LIBUSB_VER=`pkg-config --modversion libusb-1.0`
    LIBUSB_REQUIRES='libusb-1.0'
    AC_DEFINE(HAVE_LIBUSB1, [], [Have libusb 1.0])
-fi
-
-# Check for libusb 0.x
-if test x"$found_libusb1_pkg" = "xno" ; then
-   if test x"$ac_cv_lib_openusb_openusb_init" = "xno" ; then
-      PKG_CHECK_MODULES(LIBUSB, libusb >= 0.1.8, found_libusb0_pkg=yes, found_libusb0_pkg=no)
-      if test x"$found_libusb0_pkg" = "xyes" ; then
+   found_libusb1_pkg=yes
+],[
+   # Check for libopenusb second
+   AC_CHECK_LIB([openusb], [openusb_init],[
+	AC_DEFINE(HAVE_OPENUSB, [], [Have libopenusb 1.0])
+        LIBUSB_VER=1.0
+   ],[
+      PKG_CHECK_MODULES(LIBUSB, libusb >= 0.1.8, [
          LIBUSB_VER=`pkg-config --modversion libusb`
          LIBUSB_REQUIRES='libusb'
          AC_DEFINE(HAVE_LIBUSB0, [], [Have libusb 0.x])
-      else
+         found_libusb0_pkg=yes
+      ],[
          # Some systems don't use pkg-config for libusb, so double check.
-         AC_CHECK_LIB([usb], [usb_open], found_libusb0_pkg=yes, found_libusb0_pkg=no)
-         if test x"$ac_cv_lib_usb_usb_open" = "xyes" ; then
+         AC_CHECK_LIB([usb], [usb_open],[
             LIBUSB_VER=0.1
             AC_DEFINE(HAVE_LIBUSB0, [], [Have libusb 0.x])
-            found_libusb0_pkg=xyes
-         fi
-         if test x"$found_libusb0_pkg" = "xno" ; then
+            found_libusb0_pkg=yes
+         ],[
             AC_MSG_ERROR([*** libusb not found! (missing -dev/-devel package?) ***\n*** prefer to install libusb-1 if you can! ***])
-         fi
-      fi
-   fi
-fi
-
-# Check for libopenusb
-if test x"$found_libusb1_pkg" = "xno" ; then
-   AC_CHECK_LIB([openusb], [openusb_init])
-   if test x"$found_libusb1_pkg" = "xno" ; then
-      if test x"$ac_cv_lib_openusb_openusb_init" = "xyes" ; then
-        AC_DEFINE(HAVE_OPENUSB, [], [Have libopenusb 1.0])
-        LIBUSB_VER=1.0
-      fi
-   fi
-fi
+         ])
+      ])
+   ])
+])
 
 # Optionally disable MTPZ functionality.
 AC_ARG_ENABLE([mtpz],
