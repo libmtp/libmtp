@@ -963,3 +963,23 @@ static void uevent_cb(GUdevClient *client, const char *action, GUdevDevice *devi
                                       "uevent",
                                       G_CALLBACK(uevent_cb),
                                       NULL, 0);
+
+SKETCH OF AN OVERVIEW
+---------------------
+
+Draft agenda for a talk on MTP devices submitted for the Android
+builders summit, might come to recycle this:
+
+- Protocol overview
+- libmtp interface
+- relation to libgphoto2
+- Device sins
+  - Android bugs
+  - Samsungs special Android MTP stack
+  - SonyEricsson Aricent stack for Xperia Androids pre 4.0, broken headers!
+- Detecting from vendor extension, can fix in newer extensions!
+- Autoprobing on Linux
+  - Color devices do not like autoprobing
+- Ideas??
+- Mode switch devices?
+- MTPZ
