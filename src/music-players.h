@@ -983,6 +983,8 @@
   // Symbian phone
   { "Nokia", 0x0421, "C7", 0x03c1, DEVICE_FLAG_NONE },
   // Reported by Anonymous SourceForge user
+  { "Nokia", 0x0421, "C7 (ID2)", 0x03cd, DEVICE_FLAG_NONE },
+  // Reported by Anonymous SourceForge user
   { "Nokia", 0x0421, "N950", 0x03d2, DEVICE_FLAG_NONE },
   // From: http://nds2.nokia.com/files/support/global/phones/software/Nokia_3250_WMP10_driver.inf
   { "Nokia", 0x0421, "3250 Mobile Phone", 0x0462, DEVICE_FLAG_NONE },
