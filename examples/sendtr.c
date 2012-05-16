@@ -90,11 +90,13 @@ static char *prompt (const char *prompt, char *buffer, size_t bufsz, int require
 static int add_track_to_album(LIBMTP_album_t *albuminfo, LIBMTP_track_t *trackmeta)
 {
   LIBMTP_album_t *album;
+  LIBMTP_album_t *album_orig;
   LIBMTP_album_t *found_album = NULL;
   int ret;
 
   /* Look for the album */
   album = LIBMTP_Get_Album_List(device);
+  album_orig = album;
   while(album != NULL) {
     if ((album->name != NULL &&
 	album->artist != NULL &&
@@ -109,11 +111,23 @@ static int add_track_to_album(LIBMTP_album_t *albuminfo, LIBMTP_track_t *trackme
       album = album->next;
       found_album->next = NULL;
     } else {
-      LIBMTP_album_t *tmp;
-
-      tmp = album;
       album = album->next;
-      LIBMTP_destroy_album_t(tmp);
+    }
+  }
+
+  if (found_album == NULL) {
+    printf("Could not find Album. Retrying with only Album name\n");
+    album = album_orig;
+    while(album != NULL) {
+      if ((album->name != NULL) &&
+          !strcmp(album->name, albuminfo->name) ){
+        /* Disconnect this album for later use */
+        found_album = album;
+        album = album->next;
+        found_album->next = NULL;
+      } else {
+        album = album->next;
+      }
     }
   }
 
@@ -134,7 +148,6 @@ static int add_track_to_album(LIBMTP_album_t *albuminfo, LIBMTP_track_t *trackme
     tracks[found_album->no_tracks-1] = trackmeta->item_id;
     found_album->tracks = tracks;
     ret = LIBMTP_Update_Album(device, found_album);
-    LIBMTP_destroy_album_t(found_album);
   } else {
     uint32_t *trackid;
 
@@ -146,6 +159,16 @@ static int add_track_to_album(LIBMTP_album_t *albuminfo, LIBMTP_track_t *trackme
     printf("Album doesn't exist: creating...\n");
     ret = LIBMTP_Create_New_Album(device, albuminfo);
     /* albuminfo will be destroyed later by caller */
+  }
+
+  /* Delete the earlier retrieved Album list */
+  album=album_orig;
+  while(album!=NULL){
+    LIBMTP_album_t *tmp;
+
+    tmp = album;
+    album = album->next;
+    LIBMTP_destroy_album_t(tmp);
   }
 
   if (ret != 0) {
