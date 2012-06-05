@@ -1381,6 +1381,11 @@
       DEVICE_FLAG_IGNORE_HEADER_ERRORS |
       DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by Alejandro DC <Alejandro_DC@users.sourceforge.ne>
+  { "SonyEricsson", 0x0fce, "Xperia MK16i", 0x015a,
+      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by <wealas@users.sourceforge.net>
   // Android with homebrew MTP stack, possibly Aricent
   { "SonyEricsson", 0x0fce, "ST18a Xperia Ray", 0x0161,
