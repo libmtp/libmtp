@@ -355,13 +355,20 @@
       "Galaxy Nexus/Galaxy S i9000/i9250, Android 4.0 updates", 0x685c,
       DEVICE_FLAGS_ANDROID_BUGS |
       DEVICE_FLAG_PLAYLIST_SPL_V2 },
-  // From: Ignacio Martínez <ignacio.martinezrivera@yahoo.es>
-  // It seems that some PTP commands are broken.
-  // Galaxy S2 has a connection timeout, the session must be
-  // open in about 3 seconds since the device is plugged in, after
-  // that time it will not respond.
-  // Seems also to be used with Galaxy Nexus debug mode and on
-  // US markets for some weird reason.
+  /*
+   * This entry (device 0x6860) seems to be used on a *lot* of Samsung
+   * Android (gingerbread, 2.3) phones. It is *not* the Android MTP stack
+   * but an internal Samsung stack.
+   *
+   * - It seems that some PTP commands are broken.
+   * - Devices seem to have a connection timeout, the session must be
+   *   open in about 3 seconds since the device is plugged in, after
+   *   that time it will not respond. Thus GUI programs work fine.
+   * - Seems also to be used with Galaxy Nexus debug mode and on
+   *   US markets for some weird reason.
+   *
+   * From: Ignacio Martínez <ignacio.martinezrivera@yahoo.es> and others
+   */
   { "Samsung", 0x04e8,
       "GT P7310/P7510/N7000/I9070/I9100/Galaxy Tab 7.7/10.1/S2/Nexus/Note/Y", 0x6860,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |

@@ -197,6 +197,14 @@ cannot test your solution.
   manufacturer and ask them to test their product with some libmtp
   program.
 
+* Samsung Android 2.3.x devices: these have a special MTP stack
+  with some specific bugs that we have maybe nailed down now.
+  It suffers from an "immediate connect" syndrome, i.e. you have
+  to connect to the device within 7 seconds of plugging in, or it
+  will go numb. This also goes for command-line activity with
+  the example programs, so this device is better used with a
+  GUI tool like Rhythmbox, gnomad2...
+
 * Generic USB misbehaviour: some devices behave badly under MTP
   and USB mass storage alike, even down to the lowest layers
   of USB. You can always discuss such issues at the linux-usb
