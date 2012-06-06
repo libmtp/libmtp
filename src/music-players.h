@@ -1614,6 +1614,9 @@
   /*
    * Asus
    */
+  // Reported by Glen Overby
+  { "Asus", 0x0b05, "TF300 Transformer", 0x4c80,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous Sourceforge user
   { "Asus", 0x0b05, "TF201 Transformer Prime (keyboard dock)", 0x4d00,
       DEVICE_FLAGS_ANDROID_BUGS },
