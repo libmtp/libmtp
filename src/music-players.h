@@ -1413,6 +1413,12 @@
       DEVICE_FLAG_IGNORE_HEADER_ERRORS |
       DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by Eduard Bloch <blade@debian.org>
+  // Xperia Ray (2012), SE Android 2.3.4, flags from ST18a
+  { "SonyEricsson", 0x0fce, "ST18i Xperia Ray", 0x5161,
+      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Anonymous Sourceforge user
   { "SonyEricsson", 0x0fce,  "j10i (Elm)", 0xd144,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
