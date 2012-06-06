@@ -1401,6 +1401,9 @@
   // Reported by Paul Taylor
   { "SONY", 0x0fce, "Xperia S", 0x0169,
       DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by Ondra Lengal (blindly copied from Xperia S)
+  { "SONY", 0x0fce, "Xperia P", 0x0172,
+      DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Jonas Nyrén <spectralmks@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "W302", 0x10c8,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
