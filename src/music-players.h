@@ -355,10 +355,19 @@
       "Galaxy Nexus/Galaxy S i9000/i9250, Android 4.0 updates", 0x685c,
       DEVICE_FLAGS_ANDROID_BUGS |
       DEVICE_FLAG_PLAYLIST_SPL_V2 },
+  // Reported by David Goodenough <dfgdga@users.sourceforge.net>
+  // Guessing on flags.
+  { "Samsung", 0x04e8, "Galaxy Y", 0x685e,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+      DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_LONG_TIMEOUT |
+      DEVICE_FLAG_PROPLIST_OVERRIDES_OI	},
   /*
    * This entry (device 0x6860) seems to be used on a *lot* of Samsung
    * Android (gingerbread, 2.3) phones. It is *not* the Android MTP stack
    * but an internal Samsung stack.
+   *
+   * Popular devices: Galaxy S2 and S3.
    *
    * - It seems that some PTP commands are broken.
    * - Devices seem to have a connection timeout, the session must be
@@ -370,7 +379,7 @@
    * From: Ignacio Martínez <ignacio.martinezrivera@yahoo.es> and others
    */
   { "Samsung", 0x04e8,
-      "GT P7310/P7510/N7000/I9070/I9100/Galaxy Tab 7.7/10.1/S2/Nexus/Note/Y", 0x6860,
+      "GT P7310/P7510/N7000/I9070/I9100/I9300 Galaxy Tab 7.7/10.1/S2/S3/Nexus/Note/Y", 0x6860,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT |

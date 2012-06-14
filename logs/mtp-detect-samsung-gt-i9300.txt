@@ -1,0 +1,232 @@
+My mtp-detect output on Ubuntu 12.04 is the following:
+http://pastebin.com/CN3LGNaZ
+
+The interesting part is probably this:
+
+USB low-level info:
+   Interface has a kernel driver attached.
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 04e8
+   idProduct: 6860
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Raw device info:
+      Bus location: 2
+      Device number: 9
+      Device entry info:
+         Vendor: Samsung
+         Vendor id: 0x04e8
+         Product: GT-P7310/P7510/N7000/I9100/Galaxy Tab 7.7/10.1/S2/Nexus/Note
+         Vendor id: 0x6860
+         Device flags: 0x48000003
+Configuration 0, interface 0, altsetting 0:
+   Interface description contains the string "MTP"
+   Device recognized as MTP, no further probing.
+Device info:
+   Manufacturer: SAMSUNG Electronics Co. Ltd.
+   Model: GT-I9300
+   Device version: V1.0
+   Serial number: 353166051261677
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0; microsoft.com/WMPPD: 11.0; microsoft.com/WMPPD: 10.0; microsoft.com/WMDRMPD:10.1; microsoft.com/playready:1.10;
+   Detected object size: 64 bits
+   Extensions:
+        microsoft.com: 1.0
+        microsoft.com/WMPPD: 11.0
+        microsoft.com/WMPPD: 10.0
+        microsoft.com/WMDRMPD: 10.1
+        microsoft.com/playready: 1.10
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   100f: Format storage
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   101b: Get partial object
+   9810: Get object references
+   9811: Set object references
+   9802: Get object property description
+   9801: Get object properties supported
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9806: Set object property list
+   9201: Report Added/Deleted Items
+   9202: Report Acquired Items
+   1011: Self test device
+   1012: Set object protection
+   1017: Reset device property value
+   9807: Get interdependent property description
+   9808: Send object property list
+   9100: Unknown (9100)
+   9101: Get secure time challenge
+   9102: Get secure time response
+   9103: Set license response
+   9104: Get sync list
+   9105: Send meter challenge query
+   9106: Get meter challenge
+   9107: Get meter response
+   9108: Clean data store
+   9109: Get license state
+   910a: Send WMDRM-PD Command
+   910b: Send WMDRM-PD Request
+   910c: Unknown (910c)
+   910d: Unknown (910d)
+   910e: Unknown (910e)
+   910f: Unknown (910f)
+   9110: Unknown (9110)
+   9111: Unknown (9111)
+   9112: Unknown (9112)
+   9113: Unknown (9113)
+   9114: Unknown (9114)
+   9115: Unknown (9115)
+   9116: Unknown (9116)
+Events supported:
+   0x4002
+   0x4003
+   0x4004
+   0x4005
+Device Properties Supported:
+   0x5001: Battery Level
+   0xd401: Synchronization Partner
+   0xd402: Friendly Device Name
+   0xd404: Unknown property
+   0xd407: Perceived Device Type
+   0xd101: Secure Time
+   0xd102: Device Certificate
+   0xd103: Revocation Info
+   0xd104: Unknown property
+   0xd105: Unknown property
+Playable File (Object) Types and Object Properties Supported:
+   b984: 3GP
+   3009: MP3
+   b901: WMA
+   b981: WMV
+   3801: JPEG
+   3001: Association/Directory
+   ba05: Abstract Audio Video Playlist
+   3000: Undefined Type
+   3807: GIF
+   300a: MS AVI
+   300b: MPEG
+   300c: ASF
+   b982: MP4
+   ba10: WPL Playlist
+   ba11: M3U Playlist
+   ba03: Abstract Audio Album
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0003 fixed RAM storage
+      FilesystemType: 0x0002 generic hierarchical
+      AccessCapability: 0x0000 read/write
+      MaxCapacity: 12082356224
+      FreeSpaceInBytes: 4802228224
+      FreeSpaceInObjects: 4294967295
+      StorageDescription: Phone
+      VolumeIdentifier: SECZ9519043CHOHB
+   StorageID: 0x00020002
+      StorageType: 0x0004 removable RAM storage
+      FilesystemType: 0x0002 generic hierarchical
+      AccessCapability: 0x0000 read/write
+      MaxCapacity: 7945191424
+      FreeSpaceInBytes: 2462679040
+      FreeSpaceInObjects: 4294967295
+      StorageDescription: Card
+      VolumeIdentifier: SECZ9519043CHOHB01
+Special directories:
+   Default music folder: 0x00000002
+   Default playlist folder: 0xffffffff
+   Default picture folder: 0x00000007
+   Default video folder: 0xffffffff
+   Default organizer folder: 0xffffffff
+   Default zencast folder: 0xffffffff
+   Default album folder: 0xffffffff
+   Default text folder: 0xffffffff
+MTP-specific device properties:
+   Friendly name: (NULL)
+   Synchronization partner: (NULL)
+libmtp supported (playable) filetypes:
+   ISO MPEG-1 Audio Layer 3
+   Microsoft Windows Media Audio
+   Microsoft Windows Media Video
+   JPEG file
+   Folder
+   Abstract Playlist file
+   GIF bitmap file
+   Audio Video Interleave
+   MPEG video stream
+   Microsoft Advanced Systems Format
+   MPEG-4 Part 14 Container Format (Audio+Video Emphasis)
+   Abstract Album file
+ERROR: Could not close session!
+inep: usb_get_endpoint_status(): Device or resource busy
+outep: usb_get_endpoint_status(): Device or resource busy
+usb_clear_halt() on IN endpoint: Device or resource busy
+usb_clear_halt() on OUT endpoint: Device or resource busy
+usb_clear_halt() on INTERRUPT endpoint: Device or resource busy
+OK.
+
+
+$ mtp-detect
+libmtp version: 1.1.3
+
+Listing raw device(s)
+Device 0 (VID=04e8 and PID=6860) is a Samsung
+GT-P7310/P7510/N7000/I9100/Galaxy Tab 7.7/10.1/S2/Nexus/Note.
+   Found 1 device(s):
+   Samsung: GT-P7310/P7510/N7000/I9100/Galaxy Tab 7.7/10.1/S2/Nexus/Note
+(04e8:6860) @ bus 1, dev 17
+Attempting to connect device(s)
+USB low-level info:
+   Interface has a kernel driver attached.
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 04e8
+   idProduct: 6860
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Raw device info:
+      Bus location: 1
+      Device number: 17
+      Device entry info:
+         Vendor: Samsung
+         Vendor id: 0x04e8
+         Product: GT-P7310/P7510/N7000/I9100/Galaxy Tab
+7.7/10.1/S2/Nexus/Note
+         Vendor id: 0x6860
+         Device flags: 0x58000003
+Configuration 0, interface 0, altsetting 0:
+   Interface description contains the string "MTP"
+   Device recognized as MTP, no further probing.
+Device info:
+   Manufacturer: SAMSUNG Electronics Co. Ltd.
+   Model: GT-I9300
+   Device version: V1.0
+   Serial number: 351869051576851
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0; microsoft.com/WMPPD:
+11.0; microsoft.com/WMPPD: 10.0; microsoft.com/WMDRMPD:10.1; microsof
+t.com/playready:1.10;
+   Detected object size: 64 bits
+   Extensions:
+        microsoft.com: 1.0
+        microsoft.com/WMPPD: 11.0
+        microsoft.com/WMPPD: 10.0
+        microsoft.com/WMDRMPD: 10.1
+        microsoft.com/playready: 1.10
