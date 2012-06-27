@@ -3,7 +3,7 @@
  * Special device flags to deal with bugs in specific devices.
  *
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
- * Copyright (C) 2005-2011 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2012 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2007 Marcus Meissner
  * Copyright (C) 2007 Ted Bullock
  *
@@ -129,7 +129,8 @@
  * on Windows anyway, probably because the Windows implementation
  * does not check that these bytes are valid. To interoperate
  * with devices like this, we need this flag to emulate the
- * Windows bug.
+ * Windows bug. Broken headers has also been found in the
+ * Aricent MTP stack.
  */
 #define DEVICE_FLAG_IGNORE_HEADER_ERRORS 0x00000080
 /**
@@ -308,3 +309,17 @@
    DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST | \
    DEVICE_FLAG_UNLOAD_DRIVER | \
    DEVICE_FLAG_LONG_TIMEOUT )
+/**
+ * All these bug flags appear on a number of SonyEricsson
+ * devices including Android devices not using the stock
+ * Android 4.0+ (Ice Cream Sandwich) MTP stack. It is highly
+ * supected that these bugs comes from an MTP implementation
+ * from Aricent, so it is called the Aricent bug flags as a
+ * shorthand. Especially the header errors that need to be
+ * ignored is typical for this stack. It would be good if we
+ * could auto-detect this.
+ */
+#define DEVICE_FLAGS_ARICENT_BUGS \
+  (DEVICE_FLAG_IGNORE_HEADER_ERRORS | \
+   DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST | \
+   DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST )

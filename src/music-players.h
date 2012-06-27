@@ -1390,38 +1390,26 @@
   // Erroneous MTP implementation seems to be from Aricent, returns
   // broken transaction ID.
   { "SonyEricsson", 0x0fce, "LT15i (Xperia arc S)", 0x014f,
-      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
-      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+      DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by Eamonn Webster <eweb@users.sourceforge.net>
   // Guessing on the ignore errors flag
   { "SonyEricsson", 0x0fce, "Xperia Neo", 0x0156,
-      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
-      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+      DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by Alejandro DC <Alejandro_DC@users.sourceforge.ne>
   { "SonyEricsson", 0x0fce, "Xperia MK16i", 0x015a,
-      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
-      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+      DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by <wealas@users.sourceforge.net>
   // Android with homebrew MTP stack, possibly Aricent
   { "SonyEricsson", 0x0fce, "ST18a Xperia Ray", 0x0161,
-      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
-      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+      DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by StehpanKa <stehp@users.sourceforge.net>
   // Android with homebrew MTP stack, possibly Aricent
   { "SonyEricsson", 0x0fce, "SK17i Xperia mini pro", 0x0166,
-      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
-      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+      DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by hdhoang <hdhoang@users.sourceforge.net>
   // Android with homebrew MTP stack, possibly Aricent
   { "SonyEricsson", 0x0fce, "ST15i Xperia Mini", 0x0167,
-      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
-      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+      DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by Paul Taylor
   { "SONY", 0x0fce, "Xperia S", 0x0169,
       DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAGS_ANDROID_BUGS },
@@ -1437,37 +1425,26 @@
   // Reported by anonymous sourceforge user
   // Suspect Aricent stack, guessing on these bug flags
   { "SonyEricsson", 0x0fce, "Xperia Arc LT15i (debug mode)", 0x514f,
-      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
-      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+      DEVICE_FLAGS_ARICENT_BUGS },
   { "SonyEricsson", 0x0fce, "Xperia MK16i (debug mode)", 0x515a,
-      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
-      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+      DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by Eduard Bloch <blade@debian.org>
   // Xperia Ray (2012), SE Android 2.3.4, flags from ST18a
   { "SonyEricsson", 0x0fce, "ST18i Xperia Ray (debug mode)", 0x5161,
-      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
-      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+      DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by StehpanKa <stehp@users.sourceforge.net>
   // Android with homebrew MTP stack, possibly Aricent
   { "SonyEricsson", 0x0fce, "SK17i Xperia mini pro (debug mode)", 0x5166,
-      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
-      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+      DEVICE_FLAGS_ARICENT_BUGS },
   // Android with homebrew MTP stack, possibly Aricent
   { "SonyEricsson", 0x0fce, "ST15i Xperia Mini (debug mode)", 0x5167,
-      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
-      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+      DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by Anonymous Sourceforge user
   { "SonyEricsson", 0x0fce,  "j10i (Elm)", 0xd144,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Thomas Schweitzer <thomas_-_s@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "K550i", 0xe000,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
-
 
   /*
    * Motorola
