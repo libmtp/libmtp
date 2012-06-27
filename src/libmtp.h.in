@@ -2,7 +2,7 @@
  * \file libmtp.h
  * Interface to the Media Transfer Protocol library.
  *
- * Copyright (C) 2005-2011 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2012 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2005-2008 Richard A. Low <richard@wentnet.com>
  * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  * Copyright (C) 2008 Florent Mertens <flomertens@gmail.com>
@@ -201,7 +201,7 @@ a == LIBMTP_FILETYPE_WINDOWSIMAGEFORMAT)
  */
 #define LIBMTP_FILETYPE_IS_ADDRESSBOOK(a)\
 (a == LIBMTP_FILETYPE_VCARD2 ||\
-a == LIBMTP_FILETYPE_VCARD2)
+a == LIBMTP_FILETYPE_VCARD3)
 
 /**
  *  \def LIBMTP_FILETYPE_IS_CALENDAR

@@ -197,6 +197,13 @@ cannot test your solution.
   manufacturer and ask them to test their product with some libmtp
   program.
 
+* Android locked screen: some devices just report zero files
+  and no storages when the device is locked, probably so as not
+  to allow the MTP access to be used as a "backdoor" into the
+  device. Unlock the device before listing files, set the autolock
+  to some large value or disabled if it disturbs you, you are
+  causing this to yourself.
+
 * Samsung Android 2.3.x devices: these have a special MTP stack
   with some specific bugs that we have maybe nailed down now.
   It suffers from an "immediate connect" syndrome, i.e. you have
