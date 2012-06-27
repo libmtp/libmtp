@@ -1389,7 +1389,7 @@
   // Reported by Jonas Salling <>
   // Erroneous MTP implementation seems to be from Aricent, returns
   // broken transaction ID.
-  { "SonyEricsson", 0x0fce, "LT15i (Xperia arc S)", 0x14f,
+  { "SonyEricsson", 0x0fce, "LT15i (Xperia arc S)", 0x014f,
       DEVICE_FLAG_IGNORE_HEADER_ERRORS |
       DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
@@ -1410,6 +1410,12 @@
       DEVICE_FLAG_IGNORE_HEADER_ERRORS |
       DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by StehpanKa <stehp@users.sourceforge.net>
+  // Android with homebrew MTP stack, possibly Aricent
+  { "SonyEricsson", 0x0fce, "SK17i Xperia mini pro", 0x0166,
+      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by hdhoang <hdhoang@users.sourceforge.net>
   // Android with homebrew MTP stack, possibly Aricent
   { "SonyEricsson", 0x0fce, "ST15i Xperia Mini", 0x0167,
@@ -1421,19 +1427,37 @@
       DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Ondra Lengal (blindly copied from Xperia S)
   { "SONY", 0x0fce, "Xperia P", 0x0172,
-      DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAGS_ANDROID_BUGS },
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Jonas Nyrén <spectralmks@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "W302", 0x10c8,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by equaeghe <equaeghe@users.sourceforge.net>
+  { "SONY", 0x0fce, "Xperia U", 0x4171,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous sourceforge user
   // Suspect Aricent stack, guessing on these bug flags
-  { "SonyEricsson", 0x0fce, "Xperia Arc LT15i", 0x514f,
+  { "SonyEricsson", 0x0fce, "Xperia Arc LT15i (debug mode)", 0x514f,
+      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  { "SonyEricsson", 0x0fce, "Xperia MK16i (debug mode)", 0x515a,
       DEVICE_FLAG_IGNORE_HEADER_ERRORS |
       DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by Eduard Bloch <blade@debian.org>
   // Xperia Ray (2012), SE Android 2.3.4, flags from ST18a
-  { "SonyEricsson", 0x0fce, "ST18i Xperia Ray", 0x5161,
+  { "SonyEricsson", 0x0fce, "ST18i Xperia Ray (debug mode)", 0x5161,
+      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by StehpanKa <stehp@users.sourceforge.net>
+  // Android with homebrew MTP stack, possibly Aricent
+  { "SonyEricsson", 0x0fce, "SK17i Xperia mini pro (debug mode)", 0x5166,
+      DEVICE_FLAG_IGNORE_HEADER_ERRORS |
+      DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Android with homebrew MTP stack, possibly Aricent
+  { "SonyEricsson", 0x0fce, "ST15i Xperia Mini (debug mode)", 0x5167,
       DEVICE_FLAG_IGNORE_HEADER_ERRORS |
       DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
@@ -1697,6 +1721,11 @@
    */
   // Reported by Michael Gurski <gurski@users.sourceforge.net>
   { "Vizio", 0x0489, "VTAB1008", 0xe040, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
+   * Viewpia
+   */
+  { "Viewpia", 0x2207, "DR", 0x0001, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Other strange stuff.
