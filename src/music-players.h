@@ -852,6 +852,8 @@
   // Reported by Till <Till@users.sourceforge.net>
   { "Archos", 0x0e79, "101 G9", 0x1528, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous sourceforge user
+  { "Archos", 0x0e79, "101 G9 (v2)", 0x1529, DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by anonymous sourceforge user
   { "Archos", 0x0e79, "101 G9 Turbo 250 HD", 0x1538,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous sourceforge user
@@ -1634,6 +1636,9 @@
   // Reported by Glen Overby
   { "Asus", 0x0b05, "TF300 Transformer", 0x4c80,
       DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by jaile <jaile@users.sourceforge.net>
+  { "Asus", 0x0b05, "TF300 Transformer (USB debug mode)", 0x4c81,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous Sourceforge user
   { "Asus", 0x0b05, "TF201 Transformer Prime (keyboard dock)", 0x4d00,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -1674,9 +1679,12 @@
   { "ZTE", 0x19d2, "V55 ID 2", 0x0245, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
-   * Hewlett-Packard (HP)
+   * HTC (High Tech Computer Corp)
    */
+  { "HTC", 0x0bb4, "Zopo ZP100", 0x0c02,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // These identify themselves as "cm_tenderloin", fun...
+  // Done by HTC for HP I guess.
   { "Hewlett-Packard", 0x0bb4, "HP Touchpad", 0x685c,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Hewlett-Packard", 0x0bb4, "HP Touchpad (debug mode)",
