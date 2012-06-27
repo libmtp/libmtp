@@ -150,7 +150,8 @@ int main (int argc, char **argv)
       printf("ATTR{idVendor}==\"04a9\", ATTR{idProduct}==\"22*\", GOTO=\"libmtp_rules_end\"\n");
       printf("# Sensitive Atheros devices that look like MTP devices\n");
       printf("ATTR{idVendor}==\"0cf3\", GOTO=\"libmtp_rules_end\"\n");
-      printf("\n");
+      printf("# Sensitive Atmel JTAG programmers\n");
+      printf("ATTR{idVendor}==\"03eb\", GOTO=\"libmtp_rules_end\"\n");
       break;
     case style_udev_old:
       printf("# UDEV-style hotplug map for libmtp\n");
