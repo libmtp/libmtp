@@ -19,7 +19,7 @@
  * Exits with status code 1 if the device is an MTP device,
  * else exits with 0.
  *
- * Copyright (C) 2011 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2011-2012 Linus Walleij <triad@df.lth.se>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

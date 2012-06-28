@@ -1395,10 +1395,10 @@
       DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by Eamonn Webster <eweb@users.sourceforge.net>
   // Guessing on the ignore errors flag
-  { "SonyEricsson", 0x0fce, "Xperia Neo", 0x0156,
+  { "SonyEricsson", 0x0fce, "MT11i Xperia Neo", 0x0156,
       DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by Alejandro DC <Alejandro_DC@users.sourceforge.ne>
-  { "SonyEricsson", 0x0fce, "Xperia MK16i", 0x015a,
+  { "SonyEricsson", 0x0fce, "MK16i Xperia", 0x015a,
       DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by <wealas@users.sourceforge.net>
   // Android with homebrew MTP stack, possibly Aricent
@@ -1416,7 +1416,7 @@
   { "SONY", 0x0fce, "Xperia S", 0x0169,
       DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
-  { "SONY", 0x0fce, "Xperia U ST25i", 0x0171,
+  { "SONY", 0x0fce, "ST15i Xperia U", 0x0171,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Ondra Lengal
   { "SONY", 0x0fce, "Xperia P", 0x0172,
@@ -1425,16 +1425,18 @@
   { "SonyEricsson", 0x0fce, "W302", 0x10c8,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
-  { "SONY", 0x0fce, "Xperia U ST25i (x mode)", 0x4171,
+  { "SONY", 0x0fce, "ST25i Xperia U (x mode)", 0x4171,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Guessing on this one
   { "SONY", 0x0fce, "Xperia P (x mode)", 0x4172,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous sourceforge user
   // Suspect Aricent stack, guessing on these bug flags
-  { "SonyEricsson", 0x0fce, "Xperia Arc LT15i (debug mode)", 0x514f,
+  { "SonyEricsson", 0x0fce, "LT15i Xperia Arc (debug mode)", 0x514f,
       DEVICE_FLAGS_ARICENT_BUGS },
-  { "SonyEricsson", 0x0fce, "Xperia MK16i (debug mode)", 0x515a,
+  { "SonyEricsson", 0x0fce, "MT11i Xperia Neo (debug mode)", 0x5156,
+      DEVICE_FLAGS_ARICENT_BUGS },
+  { "SonyEricsson", 0x0fce, "MK16i Xperia (debug mode)", 0x515a,
       DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by Eduard Bloch <blade@debian.org>
   // Xperia Ray (2012), SE Android 2.3.4, flags from ST18a
@@ -1655,6 +1657,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TFXXX Transformer Prime (unknown version)", 0x4d04,
       DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by anonymous Sourceforge user
+  { "Asus", 0x0b05, "TF101 Eeepad Slider", 0x4e01,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TF101 Eeepad Transformer", 0x4e0f,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TF101 Eeepad Transformer (debug mode)", 0x4e1f,
@@ -1692,6 +1697,7 @@
    */
   { "HTC", 0x0bb4, "Zopo ZP100", 0x0c02,
       DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by Steven Eastland <grassmonk@users.sourceforge.net>
   { "HTC", 0x0bb4, "EVO 4G LTE", 0x0ca8,
       DEVICE_FLAGS_ANDROID_BUGS },
   // These identify themselves as "cm_tenderloin", fun...
