@@ -1103,6 +1103,9 @@
   // Guessing on device flags
   { "Medion", 0x0408, "MD99000 (P9514)/Olivetti Olipad 110", 0xb009,
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by Richard Eigenmann <richieigenmann@users.sourceforge.net>
+  { "Medion", 0x0408, "Lifetab P9514", 0xb00a,
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous SourceForge user
   { "Maxfield", 0x066f, "G-Flash NG 1GB", 0x846c,
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
@@ -1434,6 +1437,7 @@
   // Suspect Aricent stack, guessing on these bug flags
   { "SonyEricsson", 0x0fce, "LT15i Xperia Arc (debug mode)", 0x514f,
       DEVICE_FLAGS_ARICENT_BUGS },
+  // Reported by Michael K. <kmike@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "MT11i Xperia Neo (debug mode)", 0x5156,
       DEVICE_FLAGS_ARICENT_BUGS },
   { "SonyEricsson", 0x0fce, "MK16i Xperia (debug mode)", 0x515a,
