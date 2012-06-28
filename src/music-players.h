@@ -1391,6 +1391,16 @@
   // Reported by Serge Chirik <schirik@users.sourceforge.net>
   { "SonyEricsson", 0x0fce,  "j108i (Cedar)", 0x014e,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  /*
+   * SonyEricsson/SONY Android devices usually have three personalities due to
+   * using composite descriptors and the fact that Windows cannot distinguish
+   * the device unless each composite descriptor is unique.
+   *
+   * 0x0nnn = MTP
+   * 0x4nnn = MTP + mass storage (for CD-ROM)
+   * 0x5nnn = MTP + ADB (Android debug bridge)
+   *
+   */
   // Reported by Jonas Salling <>
   // Erroneous MTP implementation seems to be from Aricent, returns
   // broken transaction ID.
@@ -1427,34 +1437,40 @@
   // Reported by Jonas Nyrén <spectralmks@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "W302", 0x10c8,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  /*
+   * MTP+MSC personalities of MTP devices (see above)
+   */
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
-  { "SONY", 0x0fce, "ST25i Xperia U (x mode)", 0x4171,
+  { "SONY", 0x0fce, "ST25i Xperia U (MTP+MSC mode)", 0x4171,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Guessing on this one
-  { "SONY", 0x0fce, "Xperia P (x mode)", 0x4172,
+  { "SONY", 0x0fce, "Xperia P (MTP+MSC mode)", 0x4172,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /*
+   * MTP+ADB personalities of MTP devices (see above)
+   */
   // Reported by anonymous sourceforge user
   // Suspect Aricent stack, guessing on these bug flags
-  { "SonyEricsson", 0x0fce, "LT15i Xperia Arc (debug mode)", 0x514f,
+  { "SonyEricsson", 0x0fce, "LT15i Xperia Arc (MTP+ADB mode)", 0x514f,
       DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by Michael K. <kmike@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "MT11i Xperia Neo (debug mode)", 0x5156,
+  { "SonyEricsson", 0x0fce, "MT11i Xperia Neo (MTP+ADB mode)", 0x5156,
       DEVICE_FLAGS_ARICENT_BUGS },
-  { "SonyEricsson", 0x0fce, "MK16i Xperia (debug mode)", 0x515a,
+  { "SonyEricsson", 0x0fce, "MK16i Xperia (MTP+ADB mode)", 0x515a,
       DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by Eduard Bloch <blade@debian.org>
   // Xperia Ray (2012), SE Android 2.3.4, flags from ST18a
-  { "SonyEricsson", 0x0fce, "ST18i Xperia Ray (debug mode)", 0x5161,
+  { "SonyEricsson", 0x0fce, "ST18i Xperia Ray (MTP+ADB mode)", 0x5161,
       DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by StehpanKa <stehp@users.sourceforge.net>
   // Android with homebrew MTP stack, possibly Aricent
-  { "SonyEricsson", 0x0fce, "SK17i Xperia mini pro (debug mode)", 0x5166,
+  { "SonyEricsson", 0x0fce, "SK17i Xperia mini pro (MTP+ADB mode)", 0x5166,
       DEVICE_FLAGS_ARICENT_BUGS },
   // Android with homebrew MTP stack, possibly Aricent
-  { "SonyEricsson", 0x0fce, "ST15i Xperia Mini (debug mode)", 0x5167,
+  { "SonyEricsson", 0x0fce, "ST15i Xperia Mini (MTP+ADB mode)", 0x5167,
       DEVICE_FLAGS_ARICENT_BUGS },
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
-  { "SONY", 0x0fce, "Xperia U ST25i (debug mode)", 0x5171,
+  { "SONY", 0x0fce, "Xperia U ST25i (MTP+ADB mode)", 0x5171,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Anonymous Sourceforge user
   { "SonyEricsson", 0x0fce,  "j10i (Elm)", 0xd144,
