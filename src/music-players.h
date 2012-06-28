@@ -1416,7 +1416,7 @@
   { "SONY", 0x0fce, "Xperia S", 0x0169,
       DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
-  { "SONY", 0x0fce, "Xperia U", 0x0171,
+  { "SONY", 0x0fce, "Xperia U ST25i", 0x0171,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Ondra Lengal
   { "SONY", 0x0fce, "Xperia P", 0x0172,
@@ -1425,10 +1425,10 @@
   { "SonyEricsson", 0x0fce, "W302", 0x10c8,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
-  { "SONY", 0x0fce, "Xperia U (debug mode)", 0x4171,
+  { "SONY", 0x0fce, "Xperia U ST25i (x mode)", 0x4171,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Guessing on this one
-  { "SONY", 0x0fce, "Xperia P (debug mode)", 0x4172,
+  { "SONY", 0x0fce, "Xperia P (x mode)", 0x4172,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous sourceforge user
   // Suspect Aricent stack, guessing on these bug flags
@@ -1447,6 +1447,9 @@
   // Android with homebrew MTP stack, possibly Aricent
   { "SonyEricsson", 0x0fce, "ST15i Xperia Mini (debug mode)", 0x5167,
       DEVICE_FLAGS_ARICENT_BUGS },
+  // Reported by equaeghe <equaeghe@users.sourceforge.net>
+  { "SONY", 0x0fce, "Xperia U ST25i (debug mode)", 0x5171,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Anonymous Sourceforge user
   { "SonyEricsson", 0x0fce,  "j10i (Elm)", 0xd144,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
@@ -1688,6 +1691,8 @@
    * HTC (High Tech Computer Corp)
    */
   { "HTC", 0x0bb4, "Zopo ZP100", 0x0c02,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "EVO 4G LTE", 0x0ca8,
       DEVICE_FLAGS_ANDROID_BUGS },
   // These identify themselves as "cm_tenderloin", fun...
   // Done by HTC for HP I guess.
