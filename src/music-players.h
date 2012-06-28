@@ -1415,14 +1415,20 @@
   // Reported by Paul Taylor
   { "SONY", 0x0fce, "Xperia S", 0x0169,
       DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by Ondra Lengal (blindly copied from Xperia S)
+  // Reported by equaeghe <equaeghe@users.sourceforge.net>
+  { "SONY", 0x0fce, "Xperia U", 0x0171,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by Ondra Lengal
   { "SONY", 0x0fce, "Xperia P", 0x0172,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Jonas Nyrén <spectralmks@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "W302", 0x10c8,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
-  { "SONY", 0x0fce, "Xperia U", 0x4171,
+  { "SONY", 0x0fce, "Xperia U (debug mode)", 0x4171,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  // Guessing on this one
+  { "SONY", 0x0fce, "Xperia P (debug mode)", 0x4172,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous sourceforge user
   // Suspect Aricent stack, guessing on these bug flags
