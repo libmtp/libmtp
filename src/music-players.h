@@ -1718,7 +1718,10 @@
   { "HTC", 0x0bb4, "Zopo ZP100", 0x0c02,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Steven Eastland <grassmonk@users.sourceforge.net>
-  { "HTC", 0x0bb4, "EVO 4G LTE", 0x0ca8,
+  { "HTC", 0x0bb4, "EVO 4G LTE", 0x0c93,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by Steven Eastland <grassmonk@users.sourceforge.net>
+  { "HTC", 0x0bb4, "EVO 4G LTE (second ID)", 0x0ca8,
       DEVICE_FLAGS_ANDROID_BUGS },
   // These identify themselves as "cm_tenderloin", fun...
   // Done by HTC for HP I guess.
