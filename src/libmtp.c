@@ -2356,7 +2356,10 @@ static void add_ptp_error_to_errorstack(LIBMTP_mtpdevice_t *device,
     snprintf(outstr, sizeof(outstr), "PTP Layer error %04x: %s", ptp_error, error_text);
     outstr[sizeof(outstr)-1] = '\0';
     add_error_to_errorstack(device, LIBMTP_ERROR_PTP_LAYER, outstr);
-    add_error_to_errorstack(device, LIBMTP_ERROR_PTP_LAYER, "(Look this up in ptp.h for an explanation.)");
+
+    snprintf(outstr, sizeof(outstr), "Error %04x: %s", ptp_error, ptp_strerror(ptp_error));
+    outstr[sizeof(outstr)-1] = '\0';
+    add_error_to_errorstack(device, LIBMTP_ERROR_PTP_LAYER, outstr);
   }
 }
 
