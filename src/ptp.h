@@ -790,7 +790,11 @@ struct _PTPObjectInfo {
 	uint32_t StorageID;
 	uint16_t ObjectFormat;
 	uint16_t ProtectionStatus;
-	uint32_t ObjectCompressedSize;
+	/* In the regular objectinfo this is 32bit,
+	 * but we keep the general object size here
+	 * that also arrives via other methods and so
+	 * use 64bit */
+	uint64_t ObjectCompressedSize;
 	uint16_t ThumbFormat;
 	uint32_t ThumbCompressedSize;
 	uint32_t ThumbPixWidth;
@@ -1632,6 +1636,9 @@ typedef struct _PTPCanonEOSDeviceInfo {
 #define PTP_DPC_NIKON_ExternalFlashCompensation		0xD124
 #define PTP_DPC_NIKON_NewExternalFlashMode		0xD125
 #define PTP_DPC_NIKON_FlashExposureCompensation		0xD126
+#define PTP_DPC_NIKON_HDRMode				0xD130
+#define PTP_DPC_NIKON_HDRHighDynamic			0xD131
+#define PTP_DPC_NIKON_HDRSmoothing			0xD132
 #define PTP_DPC_NIKON_OptimizeImage			0xD140
 #define PTP_DPC_NIKON_Saturation			0xD142
 #define PTP_DPC_NIKON_BW_FillerEffect			0xD143
@@ -2253,6 +2260,7 @@ uint16_t ptp_getobjecthandles 	(PTPParams* params, uint32_t storage,
 				uint32_t associationOH,
 				PTPObjectHandles* objecthandles);
 
+
 uint16_t ptp_getnumobjects 	(PTPParams* params, uint32_t storage,
 				uint32_t objectformatcode,
 				uint32_t associationOH,
@@ -2269,7 +2277,7 @@ uint16_t ptp_getpartialobject	(PTPParams* params, uint32_t handle, uint32_t offs
 				uint32_t maxbytes, unsigned char** object,
 				uint32_t *len);
 uint16_t ptp_getthumb		(PTPParams *params, uint32_t handle,
-				unsigned char** object);
+				unsigned char** object, unsigned int *len);
 
 uint16_t ptp_deleteobject	(PTPParams* params, uint32_t handle,
 				uint32_t ofc);
@@ -2314,6 +2322,10 @@ uint16_t ptp_getdevicepropvalue	(PTPParams* params, uint16_t propcode,
 				PTPPropertyValue* value, uint16_t datatype);
 uint16_t ptp_setdevicepropvalue (PTPParams* params, uint16_t propcode,
                         	PTPPropertyValue* value, uint16_t datatype);
+uint16_t ptp_getfilesystemmanifest (PTPParams* params, uint32_t storage,
+                        uint32_t objectformatcode, uint32_t associationOH,
+                        unsigned char** data);
+
 
 
 uint16_t ptp_check_event (PTPParams *params);
@@ -2815,6 +2827,7 @@ void ptp_free_params		(PTPParams *params);
 void ptp_free_objectinfo	(PTPObjectInfo *oi);
 void ptp_free_object		(PTPObject *oi);
 
+const char *ptp_strerror(uint16_t error);
 void ptp_perror			(PTPParams* params, uint16_t error);
 void ptp_debug			(PTPParams *params, const char *format, ...);
 void ptp_error			(PTPParams *params, const char *format, ...);
