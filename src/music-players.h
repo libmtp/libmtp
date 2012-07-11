@@ -792,6 +792,9 @@
   { "Toshiba", 0x0930, "Gigabeat MET401", 0x001d,
       DEVICE_FLAG_NO_RELEASE_INTERFACE |
       DEVICE_FLAG_BROKEN_SEND_OBJECT_PROPLIST },
+  // Reported by Andree Jacobson <nmcandree@users.sourceforge.net>
+  { "Toshiba", 0x0930, "Excite AT300", 0x0963,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Nigel Cunningham <nigel@tuxonice.net>
   // Guessing on Android bugs
   { "Toshiba", 0x0930, "Thrive AT100/AT105", 0x7100,
@@ -1472,6 +1475,8 @@
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
   { "SONY", 0x0fce, "Xperia U ST25i (MTP+ADB mode)", 0x5171,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "SONY", 0x0fce, "Xperia Sola MT27i (MTP+MSC+? mode)", 0xa173,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Anonymous Sourceforge user
   { "SonyEricsson", 0x0fce,  "j10i (Elm)", 0xd144,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
@@ -1748,9 +1753,10 @@
   { "Vizio", 0x0489, "VTAB1008", 0xe040, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
-   * Viewpia
+   * Viewpia, bq...
+   * Seems like some multi-branded OEM product.
    */
-  { "Viewpia", 0x2207, "DR", 0x0001, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Various", 0x2207, "Viewpia DR/bq Kepler", 0x0001, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Other strange stuff.
