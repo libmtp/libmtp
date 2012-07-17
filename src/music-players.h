@@ -1483,6 +1483,9 @@
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
   { "SONY", 0x0fce, "ST25i Xperia U (MTP+ADB mode)", 0x5171,
       DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by Ondra Lengál
+  { "SONY", 0x0fce, "Xperia P (MTP+ADB mode)", 0x5172,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "SONY", 0x0fce, "MT27i Xperia Sola (MTP+MSC+? mode)", 0xa173,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Anonymous Sourceforge user
