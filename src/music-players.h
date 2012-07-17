@@ -1517,6 +1517,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Xoom 2 Media Edition", 0x4311,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Motorola", 0x22b8, "XT912", 0x4362,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Marcus Meissner to libptp2
   { "Motorola", 0x22b8, "IdeaPad K1", 0x4811,
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
@@ -1550,6 +1552,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous Sourceforge user
   { "Google Inc (for Asus)", 0x18d1, "TF101 Transformer", 0x4e0f,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by Laurent Artaud <laurenta@users.sourceforge.net>
+  { "Google Inc (for Samsung)", 0x18d1, "Nexus S", 0x4e21,
       DEVICE_FLAGS_ANDROID_BUGS },
   // WiFi-only version of Xoom
   // See: http://bugzilla.gnome.org/show_bug.cgi?id=647506
