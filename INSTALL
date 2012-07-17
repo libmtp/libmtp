@@ -59,6 +59,20 @@ you run your program, for example:
   % export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
   % my_program
 
+To check whether you need to do something this:
+
+  % ldd /usr/lib/rhytmbox/plugins/mtpdevice/libmtpdevice.so | grep mtp
+  % ldd /usr/bin/gnomad2 | grep mtp
+
+If the program is linking to a packaged version of libmtp
+it will likely say something like this:
+
+  libmtp.so.N => /usr/lib/libmtp.so.N (0xb4e4b000)
+
+In this case you may have your freshly compiled library in
+/usr/local/lib or something like that, and you need to do the
+LD_LIBRARY_PATH trick. Verify by using "ldd" again.
+
 This way of enabling the library to link is a workaround hack.
 Note that the LD_LIBRARY_PATH is actually supposed to be used for
 testing, not production systems or distributions. It is commonly
