@@ -316,8 +316,12 @@
  * supected that these bugs comes from an MTP implementation
  * from Aricent, so it is called the Aricent bug flags as a
  * shorthand. Especially the header errors that need to be
- * ignored is typical for this stack. It would be good if we
- * could auto-detect this.
+ * ignored is typical for this stack.
+ *
+ * After some guesswork we auto-assign these bug flags to
+ * devices that present the "microsoft.com/WPDNA", and
+ * "sonyericsson.com/SE" but NOT the "android.com"
+ * descriptor.
  */
 #define DEVICE_FLAGS_ARICENT_BUGS \
   (DEVICE_FLAG_IGNORE_HEADER_ERRORS | \

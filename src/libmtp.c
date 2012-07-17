@@ -1885,22 +1885,43 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *rawdevi
    */
   {
     LIBMTP_device_extension_t *tmpext = mtp_device->extensions;
+    int is_microsoft_com_wpdna = 0;
+    int is_android = 0;
+    int is_sony_net_wmfu = 0;
+    int is_sonyericsson_com_se = 0;
 
+    /* Loop over extensions and set flags */
     while (tmpext != NULL) {
-      /*
-       * If it is fixed in later versions, test on tmpext->major, tmpext->minor
-       */
-      if (!strcmp(tmpext->name, "android.com")) {
-	LIBMTP_INFO("Android device detected, assigning default bug flags\n");
-	ptp_usb->rawdevice.device_entry.device_flags |=
-	  DEVICE_FLAGS_ANDROID_BUGS;
-      }
-      if (!strcmp(tmpext->name, "sony.net/WMFU")) {
-	LIBMTP_INFO("SONY NWZ device detected, assigning default bug flags\n");
-	ptp_usb->rawdevice.device_entry.device_flags |=
-	  DEVICE_FLAGS_SONY_NWZ_BUGS;
-      }
+      if (!strcmp(tmpext->name, "microsoft.com/WPDNA"))
+	is_microsoft_com_wpdna = 1;
+      if (!strcmp(tmpext->name, "android.com"))
+	is_android = 1;
+      if (!strcmp(tmpext->name, "sony.net/WMFU"))
+	is_sony_net_wmfu = 1;
+      if (!strcmp(tmpext->name, "sonyericsson.com/SE"))
+	is_sonyericsson_com_se = 1;
       tmpext = tmpext->next;
+    }
+
+    /* Check for specific stacks */
+    if (is_microsoft_com_wpdna && is_sonyericsson_com_se && !is_android) {
+      /*
+       * The Aricent stack seems to be detected by providing WPDNA, the SonyEricsson
+       * extension and NO Android extension.
+       */
+      ptp_usb->rawdevice.device_entry.device_flags |= DEVICE_FLAGS_ARICENT_BUGS;
+      LIBMTP_INFO("Aricent MTP stack device detected, assigning default bug flags\n");
+    }
+    else if (is_android) {
+      /*
+       * If bugs are fixed in later versions, test on tmpext->major, tmpext->minor
+       */
+      ptp_usb->rawdevice.device_entry.device_flags |= DEVICE_FLAGS_ANDROID_BUGS;
+      LIBMTP_INFO("Android device detected, assigning default bug flags\n");
+    }
+    else if (is_sony_net_wmfu) {
+      ptp_usb->rawdevice.device_entry.device_flags |= DEVICE_FLAGS_SONY_NWZ_BUGS;
+      LIBMTP_INFO("SONY NWZ device detected, assigning default bug flags\n");
     }
   }
 
