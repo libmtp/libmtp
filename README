@@ -150,6 +150,13 @@ cannot test your solution.
 
   Then re-attach the device.
 
+  Sometimes the "gvfs-gphoto2-volume-monitor" is running on the
+  system and hogging the device, try something like:
+
+  pkill gfvs-gphoto2-volume-monitor && mtp-detect
+
+  to figure out if this may be the case.
+
 * Generic MTP/PTP disconnect misbehaviour: we have noticed that
   Windows Media Player apparently never close the session to an MTP
   device. There is a daemon in Windows that "hooks" the device
