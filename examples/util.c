@@ -20,6 +20,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+#include "config.h"
 #include "util.h"
 #ifdef HAVE_LANGINFO_H
 #include <langinfo.h>
@@ -30,11 +31,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <strings.h>
 
 void checklang(void)
 {
-  char *langsuff = NULL;
-  char *lang = getenv("LANG");
+  const char *langsuff = NULL;
+  const char *lang = getenv("LANG");
 
 #ifdef HAVE_LOCALE_H
   // Set the locale in accordance with environment
@@ -48,14 +50,17 @@ void checklang(void)
    * to see if we want to support UTF-8 unicode
    */
   if (lang != NULL) {
-    if (strlen(lang) > 5) {
-      langsuff = &lang[strlen(lang)-5];
+    const char *sep = strrchr(lang, '.');
+    if (sep != NULL) {
+      langsuff = sep + 1;
+    } else {
+      langsuff = lang;
     }
   }
 #endif
   if (langsuff == NULL) {
     printf("Could not determine language suffix for your system. Please check your setup!\n");
-  } else if (strcmp(langsuff, "UTF-8")) {
+  } else if (strcasecmp(langsuff, "UTF-8") && strcasecmp(langsuff, "UTF8")) {
     printf("Your system does not appear to have UTF-8 enabled ($LANG=\"%s\")\n", lang);
     printf("If you want to have support for diacritics and Unicode characters,\n");
     printf("please switch your locale to an UTF-8 locale, e.g. \"en_US.UTF-8\".\n");
