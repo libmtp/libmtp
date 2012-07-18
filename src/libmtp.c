@@ -2448,8 +2448,7 @@ void LIBMTP_Dump_Errorstack(LIBMTP_mtpdevice_t *device)
  * problems getting the metadata.
  * @return 0 if all was OK, -1 on failure.
  */
-static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device,
-				 uint32_t storage)
+static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
 {
   PTPParams      *params = (PTPParams *) device->params;
   int		 cnt = 0;
@@ -2661,7 +2660,7 @@ static void flush_handles(LIBMTP_mtpdevice_t *device)
       && !FLAG_BROKEN_MTPGETOBJPROPLIST(ptp_usb)
       && !FLAG_BROKEN_MTPGETOBJPROPLIST_ALL(ptp_usb)) {
     // Use the fast method. Ignore return value for now.
-    ret = get_all_metadata_fast(device, PTP_GOH_ALL_STORAGE);
+    ret = get_all_metadata_fast(device);
   }
 
   // If the previous failed or returned no objects, use classic
