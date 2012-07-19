@@ -77,7 +77,7 @@ int main (int argc, char **argv)
   while ((opt = getopt(argc, argv, "d")) != -1 ) {
     switch (opt) {
     case 'd':
-      LIBMTP_Set_Debug(9);
+      LIBMTP_Set_Debug(LIBMTP_DEBUG_ALL);
       break;
     }
   }
@@ -134,7 +134,7 @@ int main (int argc, char **argv)
     /* Get all storages for this device */
     ret = LIBMTP_Get_Storage(device, LIBMTP_STORAGE_SORTBY_NOTSORTED);
     if (ret != 0) {
-      perror("LIBMTP_Get_Storage()\n");
+      perror("LIBMTP_Get_Storage()");
       goto bailout;
     }
 

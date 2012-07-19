@@ -44,6 +44,7 @@
 #include "util.h"
 
 #include <stdlib.h>
+#include <limits.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
@@ -60,8 +61,18 @@
 /**
  * Global debug level
  * We use a flag system to enable a part of logs.
- * To choose a particular flag, you have to use LIBMTP_DEBUG env variable.
- * Indeed, the option '-d' enables all logs.
+ *
+ * The LIBMTP_DEBUG environment variable sets the debug flags for any binary
+ * that uses libmtp and calls LIBMTP_Init. The value can be given in decimal
+ * (must not start with "0" or it will be interpreted in octal), or in
+ * hexadecimal (must start with "0x").
+ *
+ * The value "-1" enables all debug flags.
+ *
+ * Some of the utilities in examples/ also take a command-line flag "-d" that
+ * enables all debug flags, as if you had set LIBMTP_DEBUG=-1.
+ *
+ * Flags (combine by adding the hex values):
  *  0x00 [0000 0000] : no debug (default)
  *  0x01 [0000 0001] : PTP debug
  *  0x02 [0000 0010] : Playlist debug
@@ -726,8 +737,8 @@ static LIBMTP_property_t map_ptp_property_to_libmtp_property(uint16_t inproperty
 void LIBMTP_Set_Debug(int level)
 {
   if (LIBMTP_debug || level)
-    LIBMTP_ERROR("LIBMTP_Set_Debug: Setting debugging level to %d (%s)\n",
-    level, level ? "on" : "off");
+    LIBMTP_ERROR("LIBMTP_Set_Debug: Setting debugging level to %d (0x%02x) "
+                 "(%s)\n", level, level, level ? "on" : "off");
 
   LIBMTP_debug = level;
 }
@@ -743,8 +754,17 @@ void LIBMTP_Set_Debug(int level)
  */
 void LIBMTP_Init(void)
 {
-  if (getenv("LIBMTP_DEBUG"))
-    LIBMTP_Set_Debug(atoi(getenv("LIBMTP_DEBUG")));
+  const char *env_debug = getenv("LIBMTP_DEBUG");
+  if (env_debug) {
+    const long debug_flags = strtol(env_debug, NULL, 0);
+    if (debug_flags != LONG_MIN && debug_flags != LONG_MAX &&
+        INT_MIN <= debug_flags && debug_flags <= INT_MAX) {
+      LIBMTP_Set_Debug(debug_flags);
+    } else {
+      fprintf(stderr, "LIBMTP_Init: error setting debug flags from environment "
+                      "value \"%s\"\n", env_debug);
+    }
+  }
 
   init_filemap();
   init_propertymap();
@@ -1660,6 +1680,7 @@ LIBMTP_ptp_debug(void *data, const char *format, va_list args)
 {
   if ((LIBMTP_debug & LIBMTP_DEBUG_PTP) != 0) {
     vfprintf (stderr, format, args);
+    fprintf (stderr, "\n");
     fflush (stderr);
   }
 }

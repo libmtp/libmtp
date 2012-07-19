@@ -63,7 +63,7 @@ int main (int argc, char **argv) {
     case 'h':
       usage();
     case 'd':
-      LIBMTP_Set_Debug(9);
+      LIBMTP_Set_Debug(LIBMTP_DEBUG_ALL);
       break;
     case 'i':
       idcount++;
