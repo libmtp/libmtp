@@ -70,14 +70,17 @@
  * The value "-1" enables all debug flags.
  *
  * Some of the utilities in examples/ also take a command-line flag "-d" that
- * enables all debug flags, as if you had set LIBMTP_DEBUG=-1.
+ * enables LIBMTP_DEBUG_PTP and LIBMTP_DEBUG_DATA (same as setting
+ * LIBMTP_DEBUG=9).
  *
  * Flags (combine by adding the hex values):
- *  0x00 [0000 0000] : no debug (default)
- *  0x01 [0000 0001] : PTP debug
- *  0x02 [0000 0010] : Playlist debug
- *  0x04 [0000 0100] : USB debug
- *  0x08 [0000 1000] : USB data debug
+ *  0x00 [0000 0000] : LIBMTP_DEBUG_NONE  : no debug (default)
+ *  0x01 [0000 0001] : LIBMTP_DEBUG_PTP   : PTP debug
+ *  0x02 [0000 0010] : LIBMTP_DEBUG_PLST  : Playlist debug
+ *  0x04 [0000 0100] : LIBMTP_DEBUG_USB   : USB debug
+ *  0x08 [0000 1000] : LIBMTP_DEBUG_DATA  : USB data debug
+ *
+ * (Please keep this list in sync with libmtp.h.)
  */
 int LIBMTP_debug = LIBMTP_DEBUG_NONE;
 

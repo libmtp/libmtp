@@ -65,6 +65,8 @@ typedef unsigned __int64 uint64_t;
 /**
  * The debug flags defined here are the external flags used
  * by the libmtp library interface.
+ *
+ * Please keep this list in sync with libmtp.c.
  */
 #define LIBMTP_DEBUG_NONE		0x00
 #define LIBMTP_DEBUG_PTP		0x01
