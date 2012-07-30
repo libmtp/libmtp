@@ -988,6 +988,8 @@
   { "Nokia", 0x0421, "5530", 0x0229, DEVICE_FLAG_NONE },
   // From: Anonymous SourceForge user
   { "Nokia", 0x0421, "N97 mini", 0x026b, DEVICE_FLAG_NONE },
+  // From: Anonymous SourceForge user
+  { "Nokia", 0x0421, "X6", 0x0274, DEVICE_FLAG_NONE },
   // From: Alexander Kojevnikov <alex-kay@users.sourceforge.net>
   { "Nokia", 0x0421, "6600i", 0x0297, DEVICE_FLAG_NONE },
   // From: Karthik Paithankar <whyagain2005@users.sourceforge.net>
@@ -1559,7 +1561,10 @@
   { "Google Inc (for Samsung)", 0x18d1, "Nexus S", 0x4e21,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Chris Smith <tcgsmythe@users.sourceforge.net>
-  { "Google Inc (for Asus)", 0x18d1, "Nexus 7", 0x4e41,
+  { "Google Inc (for Asus)", 0x18d1, "Nexus 7 (mode 1)", 0x4e41,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by Michael Hess <mhess126@gmail.com>
+  { "Google Inc (for Asus)", 0x18d1, "Nexus 7 (mode 2)", 0x4e42,
       DEVICE_FLAGS_ANDROID_BUGS },
   // WiFi-only version of Xoom
   // See: http://bugzilla.gnome.org/show_bug.cgi?id=647506
