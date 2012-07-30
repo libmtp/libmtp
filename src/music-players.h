@@ -989,7 +989,7 @@
   // From: Anonymous SourceForge user
   { "Nokia", 0x0421, "N97 mini", 0x026b, DEVICE_FLAG_NONE },
   // From: Anonymous SourceForge user
-  { "Nokia", 0x0421, "X6", 0x0274, DEVICE_FLAG_NONE },
+  { "Nokia", 0x0421, "X6", 0x0274, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // From: Alexander Kojevnikov <alex-kay@users.sourceforge.net>
   { "Nokia", 0x0421, "6600i", 0x0297, DEVICE_FLAG_NONE },
   // From: Karthik Paithankar <whyagain2005@users.sourceforge.net>
