@@ -1443,6 +1443,9 @@
   // Reported by Paul Taylor
   { "SONY", 0x0fce, "Xperia S", 0x0169,
       DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by Bruno Basilio <bbasilio@users.sourceforge.net>
+  { "SONY", 0x0fce, "WT19i Live Walkman", 0x016d,
+      DEVICE_FLAG_NONE },
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
   { "SONY", 0x0fce, "ST15i Xperia U", 0x0171,
       DEVICE_FLAGS_ANDROID_BUGS },
