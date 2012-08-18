@@ -502,17 +502,19 @@
    * Acer
    */
   // Reported by anonymous sourceforge user
-  { "Acer", 0x0502, "Iconia TAB A500 v1", 0x3325, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A500 (ID1)", 0x3325, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by: Franck VDL <franckv@users.sourceforge.net>
-  { "Acer", 0x0502, "Iconia TAB A500 v2", 0x3341, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A500 (ID2)", 0x3341, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by: Matthias Arndt <simonsunnyboy@users.sourceforge.net>
   { "Acer", 0x0502, "Iconia TAB A501", 0x3344, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by: anonymous sourceforge user
-  { "Acer", 0x0502, "Iconia TAB A100", 0x3348, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A100 (ID1)", 0x3348, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by: Arvin Schnell <arvins@users.sourceforge.net>
-  { "Acer", 0x0502, "Iconia TAB A100 ID2", 0x3349, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A100 (ID2)", 0x3349, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous sourceforge user
-  { "Acer", 0x0502, "Iconia TAB A200", 0x337c, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A200 (ID1)", 0x337c, DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by anonymous sourceforge user
+  { "Acer", 0x0502, "Iconia TAB A200 (ID2)", 0x337d, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by nE0sIghT <ne0sight@users.sourceforge.net>
   { "Acer", 0x0502, "Iconia TAB A510", 0x338a, DEVICE_FLAGS_ANDROID_BUGS },
 
@@ -1446,6 +1448,9 @@
   // Reported by Bruno Basilio <bbasilio@users.sourceforge.net>
   { "SONY", 0x0fce, "WT19i Live Walkman", 0x016d,
       DEVICE_FLAG_NONE },
+  // Reported by Christoffer Holmstedt <christofferh@users.sourceforge.net>
+  { "SONY", 0x0fce, "ST21i Xperia Tipo", 0x0170,
+      DEVICE_FLAG_NONE },
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
   { "SONY", 0x0fce, "ST15i Xperia U", 0x0171,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -1458,6 +1463,9 @@
   /*
    * MTP+MSC personalities of MTP devices (see above)
    */
+  // Guessing on this one
+  { "SONY", 0x0fce, "ST21i Xperia Tipo (MTP+MSC mode)", 0x4170,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
   { "SONY", 0x0fce, "ST25i Xperia U (MTP+MSC mode)", 0x4171,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -1486,12 +1494,17 @@
   // Reported by StehpanKa <stehp@users.sourceforge.net>
   // Android with homebrew MTP stack, possibly Aricent
   // Runtime detect the Aricent or Android stack
-  { "SonyEricsson", 0x0fce, "SK17i Xperia mini pro (MTP+ADB mode)", 0x5166,
+  { "SonyEricsson", 0x0fce, "SK17i Xperia Mini Pro (MTP+ADB mode)", 0x5166,
       DEVICE_FLAG_NONE },
   // Android with homebrew MTP stack, possibly Aricent
   // Runtime detect the Aricent or Android stack
   { "SonyEricsson", 0x0fce, "ST15i Xperia Mini (MTP+ADB mode)", 0x5167,
       DEVICE_FLAG_NONE },
+  { "SonyEricsson", 0x0fce, "SK17i Xperia Mini Pro (MTP+? mode)", 0x516d,
+      DEVICE_FLAG_NONE },
+  // Guessing on this one
+  { "SONY", 0x0fce, "ST21i Xperia Tipo (MTP+ADB mode)", 0x5170,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
   { "SONY", 0x0fce, "ST25i Xperia U (MTP+ADB mode)", 0x5171,
       DEVICE_FLAGS_ANDROID_BUGS },
