@@ -8773,6 +8773,24 @@ int LIBMTP_Get_Representative_Sample(LIBMTP_mtpdevice_t *device,
 }
 
 /**
+ * Retrieve the thumbnail for a file.
+ * @param device a pointer to the device to get the thumbnail from.
+ * @param id the object ID of the file to retrieve the thumbnail for.
+ * @return 0 on success, any other value means failure.
+ */
+int LIBMTP_Get_Thumbnail(LIBMTP_mtpdevice_t *device, uint32_t const id,
+                         unsigned char **data, unsigned int *size)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  uint16_t ret;
+
+  ret = ptp_getthumb(params, id, data, size);
+  if (ret == PTP_RC_OK)
+      return 0;
+  return -1;
+}
+
+/**
  * This routine updates an album based on the metadata
  * supplied. If the <code>tracks</code> field of the metadata
  * contains a track listing, these tracks will be added to the

@@ -100,3 +100,4 @@ LIBMTP_Set_Track_Name
 LIBMTP_Set_Playlist_Name
 LIBMTP_Set_Album_Name
 LIBMTP_Set_Object_Filename
+LIBMTP_Get_Thumbnail
