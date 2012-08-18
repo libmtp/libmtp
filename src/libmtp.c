@@ -43,6 +43,8 @@
 #include "playlist-spl.h"
 #include "util.h"
 
+#include "mtpz.h"
+
 #include <stdlib.h>
 #include <limits.h>
 #include <unistd.h>
@@ -753,7 +755,7 @@ void LIBMTP_Set_Debug(int level)
  * Never re-initialize libmtp!
  *
  * The only thing this does at the moment is to initialise the
- * filetype mapping table.
+ * filetype mapping table, as well as load MTPZ data if necessary.
  */
 void LIBMTP_Init(void)
 {
@@ -771,6 +773,12 @@ void LIBMTP_Init(void)
 
   init_filemap();
   init_propertymap();
+
+  if (mtpz_loaddata() == -1)
+    use_mtpz = 0;
+  else
+    use_mtpz = 1;
+
   return;
 }
 
@@ -2078,6 +2086,24 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
 
   if (mtp_device == NULL)
     return NULL;
+
+  /* Check for MTPZ devices. */
+  if (use_mtpz) {
+    LIBMTP_device_extension_t *tmpext = mtp_device->extensions;
+
+    while (tmpext != NULL) {
+      if (!strcmp(tmpext->name, "microsoft.com/MTPZ")) {
+	LIBMTP_INFO("MTPZ device detected. Authenticating...\n");
+        if (PTP_RC_OK == ptp_mtpz_handshake(mtp_device->params)) {
+	  LIBMTP_INFO ("(MTPZ) Successfully authenticated with device.\n");
+        } else {
+          LIBMTP_INFO ("(MTPZ) Failure - could not authenticate with device.\n");
+        }
+	break;
+      }
+      tmpext = tmpext->next;
+    }
+  }
 
   // Set up this device as cached
   mtp_device->cached = 1;
