@@ -359,6 +359,7 @@
   // Guessing on flags.
   { "Samsung", 0x04e8, "Galaxy Y", 0x685e,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT |
       DEVICE_FLAG_PROPLIST_OVERRIDES_OI	},
@@ -380,6 +381,8 @@
    */
   { "Samsung", 0x04e8,
       "GT P7310/P7510/N7000/I9070/I9100/I9300 Galaxy Tab 7.7/10.1/S2/S3/Nexus/Note/Y", 0x6860,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT |
       DEVICE_FLAG_PROPLIST_OVERRIDES_OI	},
@@ -510,6 +513,8 @@
   { "Acer", 0x0502, "Iconia TAB A100 ID2", 0x3349, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous sourceforge user
   { "Acer", 0x0502, "Iconia TAB A200", 0x337c, DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by nE0sIghT <ne0sight@users.sourceforge.net>
+  { "Acer", 0x0502, "Iconia TAB A510", 0x338a, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * SanDisk
