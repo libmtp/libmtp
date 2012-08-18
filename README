@@ -1003,6 +1003,8 @@ builders summit, might come to recycle this:
 - Detecting from vendor extension, can fix in newer extensions!
 - Autoprobing on Linux
   - Color devices do not like autoprobing
+  - Devices need different PIDs for every alternative interface due to
+    the Windows USB stack.
 - Ideas??
 - Mode switch devices?
 - MTPZ

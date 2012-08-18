@@ -292,6 +292,13 @@
       DEVICE_FLAG_PLAYLIST_SPL_V1 |
       DEVICE_FLAG_UNIQUE_FILENAMES |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // From qnub <qnub@users.sourceforge.net>
+  // Guessing on .spl flag
+  { "Samsung", 0x04e8, "YP-R2", 0x512d,
+      DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_PLAYLIST_SPL_V1 |
+      DEVICE_FLAG_UNIQUE_FILENAMES |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   // From Manuel Carro
   // Copied from Q2
  { "Samsung", 0x04e8, "YP-Q3", 0x5130,
@@ -511,6 +518,8 @@
   { "Acer", 0x0502, "Iconia TAB A100 (ID1)", 0x3348, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by: Arvin Schnell <arvins@users.sourceforge.net>
   { "Acer", 0x0502, "Iconia TAB A100 (ID2)", 0x3349, DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by Philippe Marzouk <philm@users.sourceforge.net>
+  { "Acer", 0x0502, "Iconia TAB A700", 0x3378, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous sourceforge user
   { "Acer", 0x0502, "Iconia TAB A200 (ID1)", 0x337c, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous sourceforge user
@@ -1453,10 +1462,13 @@
       DEVICE_FLAG_NONE },
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
   { "SONY", 0x0fce, "ST15i Xperia U", 0x0171,
-      DEVICE_FLAGS_ANDROID_BUGS },
+      DEVICE_FLAG_NONE },
   // Reported by Ondra Lengal
   { "SONY", 0x0fce, "Xperia P", 0x0172,
-      DEVICE_FLAGS_ANDROID_BUGS },
+      DEVICE_FLAG_NONE },
+  // Guessing on this one
+  { "SONY", 0x0fce, "LT26w Xperia Acro S", 0x0176,
+      DEVICE_FLAG_NONE },
   // Reported by Jonas Nyrén <spectralmks@users.sourceforge.net>
   { "SonyEricsson", 0x0fce, "W302", 0x10c8,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
@@ -1465,20 +1477,24 @@
    */
   // Guessing on this one
   { "SONY", 0x0fce, "ST21i Xperia Tipo (MTP+MSC mode)", 0x4170,
-      DEVICE_FLAGS_ANDROID_BUGS },
+      DEVICE_FLAG_NONE },
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
   { "SONY", 0x0fce, "ST25i Xperia U (MTP+MSC mode)", 0x4171,
-      DEVICE_FLAGS_ANDROID_BUGS },
+      DEVICE_FLAG_NONE },
   // Guessing on this one
   { "SONY", 0x0fce, "Xperia P (MTP+MSC mode)", 0x4172,
-      DEVICE_FLAGS_ANDROID_BUGS },
+      DEVICE_FLAG_NONE },
+  // Guessing on this one
+  { "SONY", 0x0fce, "LT26w Xperia Acro S (MTP+MSC mode)", 0x4176,
+      DEVICE_FLAG_NONE },
+
   /*
    * MTP+ADB personalities of MTP devices (see above)
    */
   // Reported by anonymous sourceforge user
   // Suspect Aricent stack, guessing on these bug flags
   { "SonyEricsson", 0x0fce, "LT15i Xperia Arc (MTP+ADB mode)", 0x514f,
-      DEVICE_FLAGS_ARICENT_BUGS },
+      DEVICE_FLAG_NONE },
   // Reported by Michael K. <kmike@users.sourceforge.net>
   // Runtime detect the Aricent or Android stack
   { "SonyEricsson", 0x0fce, "MT11i Xperia Neo (MTP+ADB mode)", 0x5156,
@@ -1504,15 +1520,18 @@
       DEVICE_FLAG_NONE },
   // Guessing on this one
   { "SONY", 0x0fce, "ST21i Xperia Tipo (MTP+ADB mode)", 0x5170,
-      DEVICE_FLAGS_ANDROID_BUGS },
+      DEVICE_FLAG_NONE },
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
   { "SONY", 0x0fce, "ST25i Xperia U (MTP+ADB mode)", 0x5171,
-      DEVICE_FLAGS_ANDROID_BUGS },
+      DEVICE_FLAG_NONE },
   // Reported by Ondra Lengál
   { "SONY", 0x0fce, "Xperia P (MTP+ADB mode)", 0x5172,
-      DEVICE_FLAGS_ANDROID_BUGS },
+      DEVICE_FLAG_NONE },
+  // Reported by Ah Hong <hongster@users.sourceforge.net>
+  { "SONY", 0x0fce, "LT26w Xperia Acro S (MTP+ADB mode)", 0x5176,
+      DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "MT27i Xperia Sola (MTP+MSC+? mode)", 0xa173,
-      DEVICE_FLAGS_ANDROID_BUGS },
+      DEVICE_FLAG_NONE },
   // Reported by Anonymous Sourceforge user
   { "SonyEricsson", 0x0fce,  "j10i (Elm)", 0xd144,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
@@ -1542,7 +1561,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Xoom 2 Media Edition", 0x4311,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Motorola", 0x22b8, "XT912", 0x4362,
+  // Reported by  B,H,Kissinger <mrkissinger@users.sourceforge.net>
+  { "Motorola", 0x22b8, "XT912/XT928", 0x4362,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Marcus Meissner to libptp2
   { "Motorola", 0x22b8, "IdeaPad K1", 0x4811,
