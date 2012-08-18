@@ -1476,6 +1476,9 @@
    * MTP+MSC personalities of MTP devices (see above)
    */
   // Guessing on this one
+  { "SONY", 0x0fce, "Xperia S (MTP+ADB mode)", 0x4169,
+      DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAGS_ANDROID_BUGS },
+  // Guessing on this one
   { "SONY", 0x0fce, "ST21i Xperia Tipo (MTP+MSC mode)", 0x4170,
       DEVICE_FLAG_NONE },
   // Reported by equaeghe <equaeghe@users.sourceforge.net>
@@ -1499,6 +1502,9 @@
   // Runtime detect the Aricent or Android stack
   { "SonyEricsson", 0x0fce, "MT11i Xperia Neo (MTP+ADB mode)", 0x5156,
       DEVICE_FLAG_NONE },
+  // Reported by Jean-François  B. <changi67@users.sourceforge.net>
+  { "SONY", 0x0fce, "Xperia S (MTP+ADB mode)", 0x5169,
+      DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAGS_ANDROID_BUGS },
   // Runtime detect the Aricent or Android stack
   { "SonyEricsson", 0x0fce, "MK16i Xperia (MTP+ADB mode)", 0x515a,
       DEVICE_FLAG_NONE },
