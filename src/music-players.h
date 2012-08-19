@@ -1442,6 +1442,14 @@
    * 0xannn = MTP + UMS + ?
    * 0xennn = UMS only
    *
+   * The SonyEricsson and SONY devices have (at least)two deployed MTP
+   * stacks: Aricent and Android. These have different bug flags, and
+   * sometimes the same device has firmware upgrades moving it from
+   * the Aricent to Android MTP stack without changing the device
+   * VID+PID (first observed on the SK17i Xperia Mini Pro), so the
+   * detection has to be more elaborate. The code in libmtp.c will do
+   * this and assign the proper bug flags (hopefully).
+   * That is why DEVICE_FLAG_NONE is used for these devices.
    */
   // Reported by Jonas Salling <>
   // Erroneous MTP implementation seems to be from Aricent, returns
@@ -1466,7 +1474,7 @@
    * Android with Android stack in another one, so let the run-time
    * detector look up the device bug flags, set to NONE initially.
    */
-  { "SonyEricsson", 0x0fce, "SK17i Xperia mini pro", 0x0166,
+  { "SonyEricsson", 0x0fce, "SK17i Xperia Mini Pro", 0x0166,
       DEVICE_FLAG_NONE },
   // Reported by hdhoang <hdhoang@users.sourceforge.net>
   // Runtime detect the Aricent or Android stack
