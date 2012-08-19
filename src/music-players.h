@@ -1412,21 +1412,42 @@
   // Reported by Serge Chirik <schirik@users.sourceforge.net>
   { "SonyEricsson", 0x0fce,  "j108i (Cedar)", 0x014e,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by Jonas Nyrén <spectralmks@users.sourceforge.net>
+  { "SonyEricsson", 0x0fce, "W302", 0x10c8,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by Anonymous Sourceforge user
+  { "SonyEricsson", 0x0fce,  "j10i (Elm)", 0xd144,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // Reported by Thomas Schweitzer <thomas_-_s@users.sourceforge.net>
+  { "SonyEricsson", 0x0fce, "K550i", 0xe000,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+
   /*
    * SonyEricsson/SONY Android devices usually have three personalities due to
    * using composite descriptors and the fact that Windows cannot distinguish
    * the device unless each composite descriptor is unique.
    *
+   * Legend:
+   * MTP = Media Transfer Protocol
+   * UMS = USB Mass Storage Protocol
+   * ADB = Android Debug Bridhe Protocol
+   * CDC = Communications Device Class, Internet Sharing
+   *
    * 0x0nnn = MTP
-   * 0x4nnn = MTP + mass storage (for CD-ROM)
-   * 0x5nnn = MTP + ADB (Android debug bridge)
+   * 0x4nnn = MTP + UMS (for CD-ROM)
+   * 0x5nnn = MTP + ADB
+   * 0x6nnn = UMS + ADB
+   * 0x7nnn = MTP + CDC
+   * 0x8nnn = MTP + CDC + ADB
+   * 0xannn = MTP + UMS + ?
+   * 0xennn = UMS only
    *
    */
   // Reported by Jonas Salling <>
   // Erroneous MTP implementation seems to be from Aricent, returns
   // broken transaction ID.
   { "SonyEricsson", 0x0fce, "LT15i (Xperia arc S)", 0x014f,
-      DEVICE_FLAGS_ARICENT_BUGS },
+      DEVICE_FLAG_NONE },
   // Reported by Eamonn Webster <eweb@users.sourceforge.net>
   // Runtime detect the Aricent or Android stack
   { "SonyEricsson", 0x0fce, "MT11i Xperia Neo", 0x0156,
@@ -1453,7 +1474,7 @@
       DEVICE_FLAG_NONE },
   // Reported by Paul Taylor
   { "SONY", 0x0fce, "Xperia S", 0x0169,
-      DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAGS_ANDROID_BUGS },
+      DEVICE_FLAG_NO_ZERO_READS },
   // Reported by Bruno Basilio <bbasilio@users.sourceforge.net>
   { "SONY", 0x0fce, "WT19i Live Walkman", 0x016d,
       DEVICE_FLAG_NONE },
@@ -1469,15 +1490,13 @@
   // Guessing on this one
   { "SONY", 0x0fce, "LT26w Xperia Acro S", 0x0176,
       DEVICE_FLAG_NONE },
-  // Reported by Jonas Nyrén <spectralmks@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "W302", 0x10c8,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+
   /*
    * MTP+MSC personalities of MTP devices (see above)
    */
   // Guessing on this one
   { "SONY", 0x0fce, "Xperia S (MTP+ADB mode)", 0x4169,
-      DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAGS_ANDROID_BUGS },
+      DEVICE_FLAG_NO_ZERO_READS },
   // Guessing on this one
   { "SONY", 0x0fce, "ST21i Xperia Tipo (MTP+MSC mode)", 0x4170,
       DEVICE_FLAG_NONE },
@@ -1504,7 +1523,7 @@
       DEVICE_FLAG_NONE },
   // Reported by Jean-François  B. <changi67@users.sourceforge.net>
   { "SONY", 0x0fce, "Xperia S (MTP+ADB mode)", 0x5169,
-      DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAGS_ANDROID_BUGS },
+      DEVICE_FLAG_NO_ZERO_READS },
   // Runtime detect the Aricent or Android stack
   { "SonyEricsson", 0x0fce, "MK16i Xperia (MTP+ADB mode)", 0x515a,
       DEVICE_FLAG_NONE },
@@ -1538,12 +1557,6 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "MT27i Xperia Sola (MTP+MSC+? mode)", 0xa173,
       DEVICE_FLAG_NONE },
-  // Reported by Anonymous Sourceforge user
-  { "SonyEricsson", 0x0fce,  "j10i (Elm)", 0xd144,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
-  // Reported by Thomas Schweitzer <thomas_-_s@users.sourceforge.net>
-  { "SonyEricsson", 0x0fce, "K550i", 0xe000,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
 
   /*
    * Motorola
