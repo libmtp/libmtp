@@ -87,7 +87,9 @@ static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMT
 static void init_usb();
 static void close_usb(PTP_USB* ptp_usb);
 static int find_interface_and_endpoints(libusb_device *dev,
+					uint8_t *conf,
 					uint8_t *interface,
+					uint8_t *altsetting,
 					int* inep,
 					int* inep_maxpacket,
 					int* outep,
@@ -294,6 +296,7 @@ static int probe_device_descriptor(libusb_device *dev, FILE *dumpfile)
 	      && intf->bInterfaceSubClass == 0x01
 	      && intf->bInterfaceProtocol == 0x01) {
 	    if (dumpfile != NULL) {
+              fprintf(dumpfile, "Configuration %d, interface %d, altsetting %d:\n", i, j, k);
 	      fprintf(dumpfile, "   Found PTP device, check vendor "
 		      "extension...\n");
 	    }
@@ -326,7 +329,7 @@ static int probe_device_descriptor(libusb_device *dev, FILE *dumpfile)
 	      fprintf(dumpfile, "   Interface description contains the string \"MTP\"\n");
 	      fprintf(dumpfile, "   Device recognized as MTP, no further probing.\n");
 	    }
-            libusb_free_config_descriptor (config);
+            libusb_free_config_descriptor(config);
             libusb_close(devh);
             return 1;
           }
@@ -339,13 +342,14 @@ static int probe_device_descriptor(libusb_device *dev, FILE *dumpfile)
 	    if (config->interface[j].altsetting[k].bInterfaceClass !=
 		LIBUSB_CLASS_MASS_STORAGE) {
 	      LIBMTP_INFO("avoid probing device using attached kernel interface\n");
-              libusb_free_config_descriptor (config);
+              libusb_free_config_descriptor(config);
 	      return 0;
 	    }
 	  }
         }
-      }
-    }
+     }
+     libusb_free_config_descriptor(config);
+  }
 
   /*
    * Only probe for OS descriptor if the device is vendor specific
@@ -1622,11 +1626,12 @@ ptp_usb_control_cancel_request (PTPParams *params, uint32_t transactionid) {
 	return PTP_RC_OK;
 }
 
-static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, libusb_device* dev)
+static int init_ptp_usb(PTPParams* params, PTP_USB* ptp_usb, libusb_device* dev)
 {
   libusb_device_handle *device_handle;
   unsigned char buf[255];
   int ret, usbresult;
+  struct libusb_config_descriptor *config;
 
   params->sendreq_func=ptp_usb_sendreq;
   params->senddata_func=ptp_usb_senddata;
@@ -1645,49 +1650,80 @@ static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, libusb_device* dev
 
   ret = libusb_open(dev, &device_handle);
   if (ret != LIBUSB_SUCCESS) {
-    perror("usb_open()");
+    perror("libusb_open() failed!");
     return -1;
   }
   ptp_usb->handle = device_handle;
+
   /*
    * If this device is known to be wrongfully claimed by other kernel
    * drivers (such as mass storage), then try to unload it to make it
    * accessible from user space.
    */
   if (FLAG_UNLOAD_DRIVER(ptp_usb) &&
-      libusb_kernel_driver_active (device_handle, ptp_usb->interface)
+      libusb_kernel_driver_active(device_handle, ptp_usb->interface)
   ) {
-      if (LIBUSB_SUCCESS != libusb_detach_kernel_driver (device_handle, ptp_usb->interface)) {
-        return -1;
+      if (LIBUSB_SUCCESS != libusb_detach_kernel_driver(device_handle, ptp_usb->interface)) {
+	perror("libusb_detach_kernel_driver() failed, continuing anyway...");
       }
   }
-#ifdef __WIN32__
-  // Only needed on Windows, and cause problems on other platforms.
-  if (libusb_set_configuration(device_handle, dev->config->bConfigurationValue)) {
-    perror("usb_set_configuration()");
+
+  /*
+   * Check if the config is set to something else than what we want
+   * to use. Only set the configuration if we absolutely have to.
+   * Also do not bail out if we fail.
+   */
+  ret = libusb_get_active_config_descriptor(dev, &config);
+  if (ret != LIBUSB_SUCCESS) {
+    perror("libusb_get_active_config_descriptor(1) failed");
     return -1;
   }
-#endif
-  // It seems like on kernel 2.6.31 if we already have it open on another
-  // pthread in our app, we'll get an error if we try to claim it again,
-  // but that error is harmless because our process already claimed the interface
+  if (config->bConfigurationValue != ptp_usb->config) {
+    fprintf(stderr, "desired configuration different from current, trying to set configuration\n");
+    if (libusb_set_configuration(device_handle, ptp_usb->config)) {
+      perror("libusb_set_configuration() failed, continuing anyway...");
+    }
+    /* Re-fetch the config descriptor if we changed */
+    libusb_free_config_descriptor(config);
+    ret = libusb_get_active_config_descriptor(dev, &config);
+    if (ret != LIBUSB_SUCCESS) {
+      perror("libusb_get_active_config_descriptor(2) failed");
+      return -1;
+    }
+  }
+
+  /*
+   * It seems like on kernel 2.6.31 if we already have it open on another
+   * pthread in our app, we'll get an error if we try to claim it again,
+   * but that error is harmless because our process already claimed the interface
+   */
   usbresult = libusb_claim_interface(device_handle, ptp_usb->interface);
 
   if (usbresult != 0)
-    fprintf(stderr, "ignoring usb_claim_interface = %d", usbresult);
+    fprintf(stderr, "ignoring libusb_claim_interface() = %d", usbresult);
 
-  // FIXME : Discovered in the Barry project
-  // kernels >= 2.6.28 don't set the interface the same way as
-  // previous versions did, and the Blackberry gets confused
-  // if it isn't explicitly set
-  // See above, same issue with pthreads means that if this fails it is not
-  // fatal
-  // However, this causes problems on Macs so disable here
+  /*
+   * If the altsetting is set to something different than we want, switch
+   * it.
+   *
+   * FIXME: this seems to cause trouble on the Mac:s so disable it. Retry
+   * this on the Mac now that it only sets this when the altsetting differs.
+   */
 #ifndef __APPLE__
-  usbresult = libusb_set_interface_alt_setting(device_handle, ptp_usb->interface, 0);
-  if (usbresult)
-    fprintf(stderr, "ignoring usb_claim_interface = %d", usbresult);
+#if 0 /* Disable this always, no idea on how to handle it */
+  if (config->interface[].altsetting[].bAlternateSetting !=
+      ptp_usb->altsetting) {
+    fprintf(stderr, "desired altsetting different from current, trying to set altsetting\n");
+    usbresult = libusb_set_interface_alt_setting(device_handle,
+						 ptp_usb->interface,
+						 ptp_usb->altsetting);
+    if (usbresult != 0)
+      fprintf(stderr, "ignoring libusb_set_interface_alt_setting() = %d\n", usbresult);
+  }
 #endif
+#endif
+
+  libusb_free_config_descriptor(config);
 
   if (FLAG_SWITCH_MODE_BLACKBERRY(ptp_usb)) {
     int ret;
@@ -1822,76 +1858,88 @@ static void close_usb(PTP_USB* ptp_usb)
  * Self-explanatory?
  */
 static int find_interface_and_endpoints(libusb_device *dev,
+					uint8_t *conf,
 					uint8_t *interface,
+					uint8_t *altsetting,
 					int* inep,
 					int* inep_maxpacket,
 					int* outep,
 					int *outep_maxpacket,
 					int* intep)
 {
-  int i, ret;
+  uint8_t i, ret;
   struct libusb_device_descriptor desc;
 
-  ret = libusb_get_device_descriptor (dev, &desc);
-  if (ret != LIBUSB_SUCCESS) return -1;
+  ret = libusb_get_device_descriptor(dev, &desc);
+  if (ret != LIBUSB_SUCCESS)
+    return -1;
 
   // Loop over the device configurations
   for (i = 0; i < desc.bNumConfigurations; i++) {
     uint8_t j;
     struct libusb_config_descriptor *config;
 
-    ret = libusb_get_config_descriptor (dev, i, &config);
+    ret = libusb_get_config_descriptor(dev, i, &config);
+    if (ret != 0)
+      continue;
+
+    *conf = config->bConfigurationValue;
+
     if (ret != LIBUSB_SUCCESS) continue;
     // Loop over each configurations interfaces
     for (j = 0; j < config->bNumInterfaces; j++) {
-      uint8_t k;
+      uint8_t k, l;
       uint8_t no_ep;
       int found_inep = 0;
       int found_outep = 0;
       int found_intep = 0;
       const struct libusb_endpoint_descriptor *ep;
 
-      // MTP devices shall have 3 endpoints, ignore those interfaces
-      // that haven't.
-      no_ep = config->interface[j].altsetting->bNumEndpoints;
-      if (no_ep != 3)
-	continue;
+      // Inspect the altsettings of this interface...
+      for (k = 0; k < config->interface[j].num_altsetting; k++) {
 
-      *interface = config->interface[j].altsetting->bInterfaceNumber;
-      ep = config->interface[j].altsetting->endpoint;
+	// MTP devices shall have 3 endpoints, ignore those interfaces
+	// that haven't.
+	no_ep = config->interface[j].altsetting[k].bNumEndpoints;
+	if (no_ep != 3)
+	  continue;
 
-      // Loop over the three endpoints to locate two bulk and
-      // one interrupt endpoint and FAIL if we cannot, and continue.
-      for (k = 0; k < no_ep; k++) {
-	if (ep[k].bmAttributes == LIBUSB_TRANSFER_TYPE_BULK) {
-	  if ((ep[k].bEndpointAddress & LIBUSB_ENDPOINT_DIR_MASK) ==
-	      LIBUSB_ENDPOINT_DIR_MASK) {
-	    *inep = ep[k].bEndpointAddress;
-	    *inep_maxpacket = ep[k].wMaxPacketSize;
-	    found_inep = 1;
-	  }
-	  if ((ep[k].bEndpointAddress & LIBUSB_ENDPOINT_DIR_MASK) == 0) {
-	    *outep = ep[k].bEndpointAddress;
-	    *outep_maxpacket = ep[k].wMaxPacketSize;
-	    found_outep = 1;
-	  }
-	} else if (ep[k].bmAttributes == LIBUSB_TRANSFER_TYPE_INTERRUPT) {
-	  if ((ep[k].bEndpointAddress & LIBUSB_ENDPOINT_DIR_MASK) ==
-	      LIBUSB_ENDPOINT_DIR_MASK) {
-	    *intep = ep[k].bEndpointAddress;
-	    found_intep = 1;
+	*interface = config->interface[j].altsetting[k].bInterfaceNumber;
+	*altsetting = config->interface[j].altsetting[k].bAlternateSetting;
+	ep = config->interface[j].altsetting[k].endpoint;
+
+	// Loop over the three endpoints to locate two bulk and
+	// one interrupt endpoint and FAIL if we cannot, and continue.
+	for (l = 0; l < no_ep; l++) {
+	  if (ep[l].bmAttributes == LIBUSB_TRANSFER_TYPE_BULK) {
+	    if ((ep[l].bEndpointAddress & LIBUSB_ENDPOINT_DIR_MASK) ==
+		LIBUSB_ENDPOINT_DIR_MASK) {
+	      *inep = ep[l].bEndpointAddress;
+	      *inep_maxpacket = ep[l].wMaxPacketSize;
+	      found_inep = 1;
+	    }
+	    if ((ep[l].bEndpointAddress & LIBUSB_ENDPOINT_DIR_MASK) == 0) {
+	      *outep = ep[l].bEndpointAddress;
+	      *outep_maxpacket = ep[l].wMaxPacketSize;
+	      found_outep = 1;
+	    }
+	  } else if (ep[l].bmAttributes == LIBUSB_TRANSFER_TYPE_INTERRUPT) {
+	    if ((ep[l].bEndpointAddress & LIBUSB_ENDPOINT_DIR_MASK) ==
+		LIBUSB_ENDPOINT_DIR_MASK) {
+	      *intep = ep[l].bEndpointAddress;
+	      found_intep = 1;
+	    }
 	  }
 	}
-      }
-      if (found_inep && found_outep && found_intep) {
-        libusb_free_config_descriptor (config);
-	// We assigned the endpoints so return here.
-	return 0;
-      }
-      // Else loop to next interface/config
-    }
-    libusb_free_config_descriptor (config);
-  }
+	if (found_inep && found_outep && found_intep) {
+	  libusb_free_config_descriptor(config);
+	  // We assigned the endpoints so return here.
+	  return 0;
+	}
+      } // Next altsetting
+    } // Next interface
+    libusb_free_config_descriptor(config);
+  } // Next config
   return -1;
 }
 
@@ -1917,14 +1965,14 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
   /* See if we can find this raw device again... */
   init_usb();
 
-  nrofdevs = libusb_get_device_list (NULL, &devs);
+  nrofdevs = libusb_get_device_list(NULL, &devs);
   for (i = 0; i < nrofdevs ; i++) {
-    if (libusb_get_bus_number (devs[i]) != device->bus_location)
+    if (libusb_get_bus_number(devs[i]) != device->bus_location)
       continue;
-    if (libusb_get_device_address (devs[i]) != device->devnum)
+    if (libusb_get_device_address(devs[i]) != device->devnum)
       continue;
 
-    ret = libusb_get_device_descriptor (devs[i], &desc);
+    ret = libusb_get_device_descriptor(devs[i], &desc);
     if (ret != LIBUSB_SUCCESS) continue;
 
     if(desc.idVendor  == device->device_entry.vendor_id &&
@@ -1963,7 +2011,9 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
 
   /* Assign interface and endpoints to usbinfo... */
   err = find_interface_and_endpoints(ldevice,
+				     &ptp_usb->config,
 				     &ptp_usb->interface,
+				     &ptp_usb->altsetting,
 				     &ptp_usb->inep,
 				     &ptp_usb->inep_maxpacket,
 				     &ptp_usb->outep,

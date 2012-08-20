@@ -3,7 +3,7 @@
  * Low-level USB interface glue towards libusb.
  *
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
- * Copyright (C) 2005-2011 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2012 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2011 Marcus Meissner
  * Copyright (C) 2007 Ted Bullock
  * Copyright (C) 2008 Chris Bagwell <chris@cnpbagwell.com>
@@ -93,7 +93,9 @@ static const int mtp_device_table_size = sizeof (mtp_device_table) / sizeof (LIB
 static void init_usb();
 static void close_usb(PTP_USB* ptp_usb);
 static int find_interface_and_endpoints(openusb_dev_handle_t *dev,
+        uint8_t *conf,
         uint8_t *interface,
+        uint8_t *altsetting,
         int* inep,
         int* inep_maxpacket,
         int* outep,
@@ -1948,13 +1950,16 @@ static void close_usb(PTP_USB* ptp_usb) {
  * Self-explanatory?
  */
 static int find_interface_and_endpoints(openusb_dev_handle_t *dev,
+	uint8_t *conf,
         uint8_t *interface,
+        uint8_t *altsetting,
         int* inep,
         int* inep_maxpacket,
         int* outep,
         int *outep_maxpacket,
         int* intep) {
-    int i, ret;
+    uint8_t i;
+    int ret;
     struct usb_device_desc desc;
 
     ret = openusb_parse_device_desc(libmtp_openusb_handle, *dev, NULL, 0, &desc);
@@ -1967,6 +1972,7 @@ static int find_interface_and_endpoints(openusb_dev_handle_t *dev,
 
         ret = openusb_parse_config_desc(libmtp_openusb_handle, *dev, NULL, 0, i, &config);
         if (ret != OPENUSB_SUCCESS) continue;
+	*conf = desc.bConfigurationValue;
         // Loop over each configurations interfaces
         for (j = 0; j < config.bNumInterfaces; j++) {
             uint8_t k;
@@ -1983,6 +1989,7 @@ static int find_interface_and_endpoints(openusb_dev_handle_t *dev,
             if (no_ep != 3)
                 continue;
             *interface = ifcdesc.bInterfaceNumber;
+	    *altsetting = ifcdesc.bAlternateSetting;
             // Loop over the three endpoints to locate two bulk and
             // one interrupt endpoint and FAIL if we cannot, and continue.
             for (k = 0; k < no_ep; k++) {
@@ -2087,7 +2094,9 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
 
     /* Assign interface and endpoints to usbinfo... */
     err = find_interface_and_endpoints(ldevice,
+            &ptp_usb->conf,
             &ptp_usb->interface,
+            &ptp_usb->altsetting,
             &ptp_usb->inep,
             &ptp_usb->inep_maxpacket,
             &ptp_usb->outep,

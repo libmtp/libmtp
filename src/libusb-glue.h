@@ -3,7 +3,7 @@
  * Low-level USB interface glue towards libusb.
  *
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
- * Copyright (C) 2005-2011 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2012 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2011 Marcus Meissner
  * Copyright (C) 2007 Ted Bullock
  * Copyright (C) 2008 Chris Bagwell <chris@cnpbagwell.com>
@@ -91,7 +91,9 @@ struct _PTP_USB {
 #ifdef HAVE_LIBOPENUSB
   openusb_dev_handle_t* handle;
 #endif
+  uint8_t config;
   uint8_t interface;
+  uint8_t altsetting;
   int inep;
   int inep_maxpacket;
   int outep;
