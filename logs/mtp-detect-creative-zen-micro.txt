@@ -1,11 +1,12 @@
-libmtp version: 1.1.2
+Device 0 (VID=041e and PID=4130) is a Creative ZEN Micro (MTP mode).
+libmtp version: 1.1.4
 
 Listing raw device(s)
    Found 1 device(s):
-   Creative: ZEN Micro (MTP mode) (041e:4130) @ bus 1, dev 5
+   Creative: ZEN Micro (MTP mode) (041e:4130) @ bus 2, dev 12
 Attempting to connect device(s)
 USB low-level info:
-   Using kernel interface "dummy"
+   Interface has a kernel driver attached.
    bcdUSB: 512
    bDeviceClass: 255
    bDeviceSubClass: 0
@@ -15,8 +16,8 @@ USB low-level info:
    IN endpoint maxpacket: 512 bytes
    OUT endpoint maxpacket: 512 bytes
    Raw device info:
-      Bus location: 1
-      Device number: 5
+      Bus location: 2
+      Device number: 12
       Device entry info:
          Vendor: Creative
          Vendor id: 0x041e
@@ -242,7 +243,7 @@ Special directories:
 MTP-specific device properties:
    Friendly name: Dokktor Lajban
    Synchronization partner: (NULL)
-   Battery level 145 of 255 (56%)
+   Battery level 255 of 255 (100%)
 libmtp supported (playable) filetypes:
    ISO MPEG-1 Audio Layer 3
    Microsoft Windows Media Audio
@@ -255,5 +256,5 @@ libmtp supported (playable) filetypes:
    Firmware file
 
 Secure Time:
-<DRMCLOCK type="status"><VALUE>#20061122 21:57:47Z#</VALUE><FLAG>DRM_CLK_NOT_SET</FLAG></DRMCLOCK>
+<DRMCLOCK type="status"><VALUE>#20061123 10:13:27Z#</VALUE><FLAG>DRM_CLK_NOT_SET</FLAG></DRMCLOCK>
 OK.
