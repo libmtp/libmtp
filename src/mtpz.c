@@ -19,6 +19,17 @@
  * Boston, MA 02111-1307, USA.
  *
  * This file provides mtp zune cryptographic setup interfaces.
+ *
+ * DISCLAIMER:
+ *
+ * The intention of this implementation is for users to be able
+ * to interoperate with their devices, i.e. copy music to them in
+ * operating systems other than Microsoft Windows, so it can be
+ * played back on the device. We do not provide encryption keys
+ * and constants in libmtp, we never will. You have to have these
+ * on file in your home directory in $HOME/.mtpz-data, and we suggest
+ * that you talk to Microsoft about providing the proper numbers if
+ * you want to use this facility.
  */
 #include "config.h"
 #include "libmtp.h"
@@ -43,8 +54,10 @@
 
 /* Microsoft MTPZ extensions */
 
-/* The ~/.mtpz-data file contains all four necessary pieces of data:
+/*
+ * The ~/.mtpz-data file contains all four necessary pieces of data:
  *
+ *   encryption key
  *   public exponent
  *   modulus
  *   private key
@@ -52,7 +65,12 @@
  *
  * These four pieces of data are each stored in hex representation,
  * separated by newline characters.
-*/
+ *
+ * If you know of a published, public reference for one of these
+ * arrays of data, please inform us, so we can include it here and
+ * drop it from the external file. Even better is if you convince
+ * Microsoft to officially provide keys to this project.
+ */
 
 static unsigned char *MTPZ_ENCRYPTION_KEY;
 static unsigned char *MTPZ_PUBLIC_EXPONENT;
@@ -130,7 +148,7 @@ int mtpz_loaddata()
 		return -1;
 	}
 	MTPZ_ENCRYPTION_KEY = hex_to_bytes(hexenckey, strlen(hexenckey));
-	if (!MTPZ_ENCRYPTION_KEY) 
+	if (!MTPZ_ENCRYPTION_KEY)
 	{
 		LIBMTP_INFO("Error: Unable to read MTPZ encryption key from ~/.mtpz-data\n");
 	}
