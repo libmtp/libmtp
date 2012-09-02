@@ -761,7 +761,7 @@ Folders/directories aren't really such entities: they are just
 objects too, albeit objects that can act as parent to other
 objects. They are called "associations" and are created in atomic
 fashion and even though there is an MTP command to get all the
-associations of a certain association, this command is optional
+associations of a certain object, this command is optional
 so it is perfectly possible (and most common, actually) to create
 devices where the "folders" (which are actually associations) have
 no idea whatsoever of what files they are associated as parents to
@@ -772,11 +772,14 @@ Initiator / host computer.
 
 Moving a file to a new folder is for example very simple in a
 "real" file system. In PTP/MTP devices it is often not even possible,
-some devices *may* be able to do that. But actually the only
-reliable way of doing that is to upload the file to the host,
-download it with the new parent, then delete the old file.
-We have played with the idea of implementing this time consuming
-function, perhaps we will.
+some devices *may* be able to do that, if they support command
+0x1019 "Move Object", but actually the only reliable way of executing
+file movement is to upload the file to the host, download it with
+the new parent, then delete the old file. We have played with the
+idea of implementing this time consuming function as a fallback
+in case the device does not support command 0x1019, perhaps one day
+we will do that. (Some devices also support command 0x101a
+"Copy Object".)
 
 Then the issue that in PTP/MTP it is legal for two files to have
 exactly the same path as long as their object IDs differ. A
