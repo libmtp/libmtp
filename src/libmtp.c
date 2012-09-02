@@ -2123,10 +2123,11 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
  * @param device a pointer to the MTP device to poll for events.
  * @param event contains a pointer to be filled in with the event retrieved if the call
  * is successful.
+ * @param out1 contains the param1 value from the raw event.
  * @return 0 on success, any other value means the polling loop shall be
  * terminated immediately for this session.
  */
-int LIBMTP_Read_Event(LIBMTP_mtpdevice_t *device, LIBMTP_event_t *event)
+int LIBMTP_Read_Event(LIBMTP_mtpdevice_t *device, LIBMTP_event_t *event, uint32_t *out1)
 {
   /*
    * FIXME: Potential race-condition here, if client deallocs device
@@ -2177,6 +2178,8 @@ int LIBMTP_Read_Event(LIBMTP_mtpdevice_t *device, LIBMTP_event_t *event)
     case PTP_EC_StoreAdded:
       LIBMTP_INFO("Received event PTP_EC_StoreAdded in session %u\n", session_id);
       /* TODO: rescan storages */
+      *event = LIBMTP_EVENT_STORE_ADDED;
+      *out1 = param1;
       break;
     case PTP_EC_StoreRemoved:
       LIBMTP_INFO("Received event PTP_EC_StoreRemoved in session %u\n", session_id);

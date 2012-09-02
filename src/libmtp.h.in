@@ -770,6 +770,7 @@ struct LIBMTP_devicestorage_struct {
  */
 enum LIBMTP_event_enum {
   LIBMTP_EVENT_NONE,
+  LIBMTP_EVENT_STORE_ADDED,
 };
 typedef enum LIBMTP_event_enum LIBMTP_event_t;
 
@@ -1011,7 +1012,7 @@ int LIBMTP_Set_Object_Filename(LIBMTP_mtpdevice_t *, uint32_t , char *);
  * @defgroup files The events API.
  * @{
  */
-int LIBMTP_Read_Event(LIBMTP_mtpdevice_t *, LIBMTP_event_t *);
+int LIBMTP_Read_Event(LIBMTP_mtpdevice_t *, LIBMTP_event_t *, uint32_t *);
 
 
 /** @} */
