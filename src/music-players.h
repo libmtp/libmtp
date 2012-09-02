@@ -1609,7 +1609,12 @@
   // Reported by Google Inc's Yavor Goulishev <yavor@google.com>
   // Android 3.0 MTP stack seems to announce that it supports the
   // list operations, but they do not work?
-  { "Motorola", 0x22b8, "Xoom (ID 1)", 0x70a8, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Motorola", 0x22b8, "Xoom (ID 1)", 0x70a3,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Motorola", 0x22b8, "Xoom (ID 2)", 0x70a8,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Motorola", 0x22b8, "Xoom (ID 3)", 0x70ae,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous Sourceforge user
   // "carried by C Spire and other CDMA US carriers"
   { "Motorola", 0x22b8, "Milestone X2", 0x70ca, DEVICE_FLAGS_ANDROID_BUGS },
