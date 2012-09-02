@@ -1798,6 +1798,10 @@
   // Adding Android default bug flags since it appears to be an Android
   { "Lenovo", 0x17ef, "ThinkPad Tablet", 0x741c,
       DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by: XChesser <XChesser@users.sourceforge.net>
+  { "Lenovo", 0x17ef, "P700", 0x7497,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
 
   /*
    * Huawei
