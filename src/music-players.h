@@ -1267,6 +1267,9 @@
   { "LG Electronics Inc.", 0x1004, "V909 G-Slate", 0x61f9,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by Brian J. Murrell
+  { "LG Electronics Inc.", 0x1004, "LG-E617G", 0x631c,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Sony
