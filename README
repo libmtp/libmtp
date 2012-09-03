@@ -997,8 +997,13 @@ Draft agenda for a talk on MTP devices submitted for the Android
 builders summit, might come to recycle this:
 
 - Protocol overview
+  - Transactional filesystem - no corruption due to unplugged cables!
 - libmtp interface
 - relation to libgphoto2
+- User expectations fall short:
+  - Not really a mountable filesystem.
+  - Streaming does not work. (Size needs to be known beforehand due to
+    transactional nature.)
 - Device sins
   - Android bugs
   - Samsungs special Android MTP stack
@@ -1010,6 +1015,10 @@ builders summit, might come to recycle this:
   - Color devices do not like autoprobing
   - Devices need different PIDs for every alternative interface due to
     the Windows USB stack.
-- Ideas??
-- Mode switch devices?
+  - Multimode USB - one PID for each mode due to Windows limitations not
+    applicable to Linux, SONY devices have ~5 different PIDs for a single
+    device.
+  - Mode switch devices?
 - MTPZ
+- Ideas??
+
