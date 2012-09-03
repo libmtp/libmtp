@@ -292,13 +292,7 @@
       DEVICE_FLAG_PLAYLIST_SPL_V1 |
       DEVICE_FLAG_UNIQUE_FILENAMES |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
-  // From qnub <qnub@users.sourceforge.net>
-  // Guessing on .spl flag
-  { "Samsung", 0x04e8, "YP-R2", 0x512d,
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_PLAYLIST_SPL_V1 |
-      DEVICE_FLAG_UNIQUE_FILENAMES |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  // The "YP-R2" (0x04e8/0x512d) is NOT MTP, it is UMS only.
   // From Manuel Carro
   // Copied from Q2
  { "Samsung", 0x04e8, "YP-Q3", 0x5130,
