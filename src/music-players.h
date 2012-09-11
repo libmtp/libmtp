@@ -876,6 +876,7 @@
   { "Archos", 0x0e79, "SPOD (MTP mode)", 0x1341, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "5S IT (MTP mode)", 0x1351, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "5H IT (MTP mode)", 0x1357, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Archos", 0x0e79, "Arnova Childpad", 0x1458, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by anonymous Sourceforge user
   { "Archos", 0x0e79, "8o G9 (MTP mode)", 0x1508, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Clément <clemvangelis@users.sourceforge.net>
@@ -1820,6 +1821,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by jaile <jaile@users.sourceforge.net>
   { "Asus", 0x0b05, "TF300 Transformer (USB debug mode)", 0x4c81,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "TF700 Transformer", 0x4c90,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous Sourceforge user
   { "Asus", 0x0b05, "TF201 Transformer Prime (keyboard dock)", 0x4d00,
