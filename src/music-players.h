@@ -351,25 +351,30 @@
   { "Samsung", 0x04e8, "GT-S8500", 0x6819,
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_PLAYLIST_SPL_V1 },
-  // From Harrison Metzger <harrisonmetz@gmail.com>
-  { "Samsung", 0x04e8,
-      "Galaxy Nexus/Galaxy S i9000/i9250, Android 4.0 updates", 0x685c,
-      DEVICE_FLAGS_ANDROID_BUGS |
-      DEVICE_FLAG_PLAYLIST_SPL_V2 },
-  // Reported by David Goodenough <dfgdga@users.sourceforge.net>
-  // Guessing on flags.
-  { "Samsung", 0x04e8, "Galaxy Y", 0x685e,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_LONG_TIMEOUT |
-      DEVICE_FLAG_PROPLIST_OVERRIDES_OI	},
   /*
-   * This entry (device 0x6860) seems to be used on a *lot* of Samsung
-   * Android (gingerbread, 2.3) phones. It is *not* the Android MTP stack
-   * but an internal Samsung stack.
+   * These entries seems to be used on a *lot* of Samsung
+   * Android phones. It is *not* the Android MTP stack but an internal
+   * Samsung stack. The devices present a few different product IDs
+   * depending on mode:
    *
-   * Popular devices: Galaxy S2 and S3.
+   * 0x685b - UMS
+   * 0x685c - MTP + ADB
+   * 0x685e - UMS + CDC
+   * 0x6860 - MTP mode (default)
+   * 0x6863 - USB CDC RNDIS (not MTP)
+   * 0x6865 - PTP mode (not MTP)
+   * 0x6877 - Kies mode? Does it have MTP?
+   *
+   * Used on these samsung devices:
+   * GT P7310/P7510/N7000/I9100/I9250/I9300
+   * Galaxy Nexus
+   * Galaxy Tab 7.7/10.1
+   * Galaxy S GT-I9000
+   * Galaxy S Advance GT-I9070
+   * Galaxy S2
+   * Galaxy S3
+   * Galaxy Note
+   * Galaxy Y
    *
    * - It seems that some PTP commands are broken.
    * - Devices seem to have a connection timeout, the session must be
@@ -379,15 +384,30 @@
    *   US markets for some weird reason.
    *
    * From: Ignacio Martínez <ignacio.martinezrivera@yahoo.es> and others
+   * From Harrison Metzger <harrisonmetz@gmail.com>
    */
   { "Samsung", 0x04e8,
-      "GT P7310/P7510/N7000/I9070/I9100/I9300 Galaxy Tab 7.7/10.1/S2/S3/Nexus/Note/Y", 0x6860,
+      "Galaxy models (MTP+ADB)", 0x685c,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT |
       DEVICE_FLAG_PROPLIST_OVERRIDES_OI	},
-  // Note: ID 0x6865 is some PTP mode! Don't add it.
+  // Reported by David Goodenough <dfgdga@users.sourceforge.net>
+  // Guessing on flags.
+  { "Samsung", 0x04e8, "Galaxy Y", 0x685e,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_LONG_TIMEOUT |
+      DEVICE_FLAG_PROPLIST_OVERRIDES_OI	},
+  { "Samsung", 0x04e8,
+      "Galaxy models (MTP)", 0x6860,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      DEVICE_FLAG_UNLOAD_DRIVER |
+      DEVICE_FLAG_LONG_TIMEOUT |
+      DEVICE_FLAG_PROPLIST_OVERRIDES_OI	},
   // From: Erik Berglund <erikjber@users.sourceforge.net>
   // Logs indicate this needs DEVICE_FLAG_NO_ZERO_READS
   // No Samsung platlists on this device.
@@ -395,7 +415,7 @@
   // i5800 duplicate reported by igel <igel-kun@users.sourceforge.net>
   // Guessing this has the same problematic MTP stack as the device
   // above.
-  { "Samsung", 0x04e8, "Galaxy S GT-I9000/Galaxy 3 i5800/Kies mode", 0x6877,
+  { "Samsung", 0x04e8, "Galaxy models Kies mode", 0x6877,
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT |
       DEVICE_FLAG_PROPLIST_OVERRIDES_OI	},
@@ -1262,7 +1282,7 @@
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Brian J. Murrell
-  { "LG Electronics Inc.", 0x1004, "LG-E617G", 0x631c,
+  { "LG Electronics Inc.", 0x1004, "LG-E617G/P700", 0x631c,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
@@ -1433,7 +1453,7 @@
    * Legend:
    * MTP = Media Transfer Protocol
    * UMS = USB Mass Storage Protocol
-   * ADB = Android Debug Bridhe Protocol
+   * ADB = Android Debug Bridge Protocol
    * CDC = Communications Device Class, Internet Sharing
    *
    * 0x0nnn = MTP
@@ -1615,14 +1635,31 @@
   // Reported by anonymous user
   { "Motorola", 0x22b8, "RAZR2 V8/U9/Z6", 0x6415,
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
-  // Reported by Google Inc's Yavor Goulishev <yavor@google.com>
-  // Android 3.0 MTP stack seems to announce that it supports the
-  // list operations, but they do not work?
-  { "Motorola", 0x22b8, "Xoom (ID 1)", 0x70a3,
+  /*
+   * Motorola Xoom (Wingray) variants
+   *
+   * These devices seem to use these product IDs simulatenously
+   * https://code.google.com/p/android-source-browsing/source/browse/init.stingray.usb.rc?repo=device--moto--wingray
+   *
+   * 0x70a3 - Factory test - reported as early MTP ID
+   * 0x70a8 - MTP
+   * 0x70a9 - MTP+ADB
+   * 0x70ae - RNDIS
+   * 0x70af - RNDIS+ADB
+   * 0x70b0 - ACM
+   * 0x70b1 - ACM+ADB
+   * 0x70b2 - ACM+RNDIS
+   * 0x70b3 - ACM+RNDIS+ADB
+   * 0x70b4 - PTP
+   * 0x70b5 - PTP+ADB
+   *
+   * Reported by Google Inc's Yavor Goulishev <yavor@google.com>
+   */
+  { "Motorola", 0x22b8, "Xoom (Factory test)", 0x70a3,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Motorola", 0x22b8, "Xoom (ID 2)", 0x70a8,
+  { "Motorola", 0x22b8, "Xoom (MTP)", 0x70a8,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Motorola", 0x22b8, "Xoom (ID 3)", 0x70ae,
+  { "Motorola", 0x22b8, "Xoom (MTP+ADB)", 0x70a9,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous Sourceforge user
   // "carried by C Spire and other CDMA US carriers"
@@ -1646,16 +1683,14 @@
   { "Google Inc (for Samsung)", 0x18d1, "Nexus S", 0x4e21,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Chris Smith <tcgsmythe@users.sourceforge.net>
-  { "Google Inc (for Asus)", 0x18d1, "Nexus 7 (mode 1)", 0x4e41,
+  { "Google Inc (for Asus)", 0x18d1, "Nexus 7 (MTP)", 0x4e41,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Michael Hess <mhess126@gmail.com>
-  { "Google Inc (for Asus)", 0x18d1, "Nexus 7 (mode 2)", 0x4e42,
+  { "Google Inc (for Asus)", 0x18d1, "Nexus 7 (MTP+ADB)", 0x4e42,
       DEVICE_FLAGS_ANDROID_BUGS },
   // WiFi-only version of Xoom
   // See: http://bugzilla.gnome.org/show_bug.cgi?id=647506
   { "Google Inc (for Motorola)", 0x18d1, "Xoom (MZ604)", 0x70a8,
-      DEVICE_FLAGS_ANDROID_BUGS },
-  { "Google Inc (for Motorola)", 0x22b8, "Xoom (ID 2)", 0x70a9,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc (for Toshiba)", 0x18d1, "Thrive 7/AT105", 0x7102,
       DEVICE_FLAGS_ANDROID_BUGS },
