@@ -1815,6 +1815,9 @@
   // Reported by: XChesser <XChesser@users.sourceforge.net>
   { "Lenovo", 0x17ef, "P700", 0x7497,
       DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by: anonymous sourceforge user
+  { "Lenovo", 0x17ef, "Lifetab S9512", 0x74cc,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
 
   /*
