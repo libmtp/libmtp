@@ -1474,129 +1474,103 @@
    * detection has to be more elaborate. The code in libmtp.c will do
    * this and assign the proper bug flags (hopefully).
    * That is why DEVICE_FLAG_NONE is used for these devices.
+   *
+   * Devices reported by:
+   * Jonas Salling
+   * Eamonn Webster <eweb@users.sourceforge.net>
+   * Alejandro DC <Alejandro_DC@users.sourceforge.ne>
+   * StehpanKa <stehp@users.sourceforge.net>
+   * hdhoang <hdhoang@users.sourceforge.net>
+   * Paul Taylor
+   * Bruno Basilio <bbasilio@users.sourceforge.net>
+   * Christoffer Holmstedt <christofferh@users.sourceforge.net>
+   * equaeghe <equaeghe@users.sourceforge.net>
+   * Ondra Lengal
+   * Michael K. <kmike@users.sourceforge.net>
+   * Jean-François  B. <changi67@users.sourceforge.net>
+   * Eduard Bloch <blade@debian.org>
+   * Ah Hong <hongster@users.sourceforge.net>
    */
-  // Reported by Jonas Salling <>
-  // Erroneous MTP implementation seems to be from Aricent, returns
-  // broken transaction ID.
   { "SonyEricsson", 0x0fce, "LT15i (Xperia arc S)", 0x014f,
       DEVICE_FLAG_NONE },
-  // Reported by Eamonn Webster <eweb@users.sourceforge.net>
-  // Runtime detect the Aricent or Android stack
   { "SonyEricsson", 0x0fce, "MT11i Xperia Neo", 0x0156,
       DEVICE_FLAG_NONE },
-  // Reported by Alejandro DC <Alejandro_DC@users.sourceforge.ne>
-  // Runtime detect the Aricent or Android stack
   { "SonyEricsson", 0x0fce, "MK16i Xperia", 0x015a,
       DEVICE_FLAG_NONE },
-  // Reported by <wealas@users.sourceforge.net>
-  // Runtime detect the Aricent or Android stack
   { "SonyEricsson", 0x0fce, "ST18a Xperia Ray", 0x0161,
       DEVICE_FLAG_NONE },
-  /*
-   * Reported by StehpanKa <stehp@users.sourceforge.net>
-   * Android with homebrew MTP stack in one firmware, possibly Aricent
-   * Android with Android stack in another one, so let the run-time
-   * detector look up the device bug flags, set to NONE initially.
-   */
   { "SonyEricsson", 0x0fce, "SK17i Xperia Mini Pro", 0x0166,
       DEVICE_FLAG_NONE },
-  // Reported by hdhoang <hdhoang@users.sourceforge.net>
-  // Runtime detect the Aricent or Android stack
   { "SonyEricsson", 0x0fce, "ST15i Xperia Mini", 0x0167,
       DEVICE_FLAG_NONE },
-  // Reported by anonymous SourceForge user
   { "SonyEricsson", 0x0fce, "ST17i Xperia Active", 0x0168,
       DEVICE_FLAG_NONE },
-  // Reported by Paul Taylor
-  { "SONY", 0x0fce, "Xperia S", 0x0169,
+  { "SONY", 0x0fce, "LT26i Xperia S", 0x0169,
       DEVICE_FLAG_NO_ZERO_READS },
-  // Reported by Bruno Basilio <bbasilio@users.sourceforge.net>
   { "SONY", 0x0fce, "WT19i Live Walkman", 0x016d,
       DEVICE_FLAG_NONE },
-  // Reported by Christoffer Holmstedt <christofferh@users.sourceforge.net>
   { "SONY", 0x0fce, "ST21i Xperia Tipo", 0x0170,
       DEVICE_FLAG_NONE },
-  // Reported by equaeghe <equaeghe@users.sourceforge.net>
   { "SONY", 0x0fce, "ST15i Xperia U", 0x0171,
       DEVICE_FLAG_NONE },
-  // Reported by Ondra Lengal
-  { "SONY", 0x0fce, "Xperia P", 0x0172,
+  { "SONY", 0x0fce, "LT22i Xperia P", 0x0172,
       DEVICE_FLAG_NONE },
-  // Guessing on this one
   { "SONY", 0x0fce, "LT26w Xperia Acro S", 0x0176,
       DEVICE_FLAG_NONE },
 
   /*
-   * MTP+MSC personalities of MTP devices (see above)
+   * MTP+UMS personalities of MTP devices (see above)
    */
-  // Guessing on this one
-  { "SonyEricsson", 0x0fce, "ST17i Xperia Active (MTP+MSC mode)", 0x4168,
+  { "SonyEricsson", 0x0fce, "ST17i Xperia Active (MTP+UMS mode)", 0x4168,
       DEVICE_FLAG_NONE },
-  // Guessing on this one
-  { "SONY", 0x0fce, "Xperia S (MTP+MSC mode)", 0x4169,
+  { "SONY", 0x0fce, "LT26i Xperia S (MTP+UMS mode)", 0x4169,
       DEVICE_FLAG_NO_ZERO_READS },
-  // Guessing on this one
-  { "SONY", 0x0fce, "ST21i Xperia Tipo (MTP+MSC mode)", 0x4170,
+  { "SONY", 0x0fce, "ST21i Xperia Tipo (MTP+UMS mode)", 0x4170,
       DEVICE_FLAG_NONE },
-  // Reported by equaeghe <equaeghe@users.sourceforge.net>
-  { "SONY", 0x0fce, "ST25i Xperia U (MTP+MSC mode)", 0x4171,
+  { "SONY", 0x0fce, "ST25i Xperia U (MTP+UMS mode)", 0x4171,
       DEVICE_FLAG_NONE },
-  // Guessing on this one
-  { "SONY", 0x0fce, "Xperia P (MTP+MSC mode)", 0x4172,
+  { "SONY", 0x0fce, "LT22i Xperia P (MTP+UMS mode)", 0x4172,
       DEVICE_FLAG_NONE },
-  // Guessing on this one
-  { "SONY", 0x0fce, "LT26w Xperia Acro S (MTP+MSC mode)", 0x4176,
+  { "SONY", 0x0fce, "LT26w Xperia Acro S (MTP+UMS mode)", 0x4176,
       DEVICE_FLAG_NONE },
 
   /*
    * MTP+ADB personalities of MTP devices (see above)
    */
-  // Reported by anonymous sourceforge user
-  // Suspect Aricent stack, guessing on these bug flags
   { "SonyEricsson", 0x0fce, "LT15i Xperia Arc (MTP+ADB mode)", 0x514f,
       DEVICE_FLAG_NONE },
-  // Reported by Michael K. <kmike@users.sourceforge.net>
-  // Runtime detect the Aricent or Android stack
   { "SonyEricsson", 0x0fce, "MT11i Xperia Neo (MTP+ADB mode)", 0x5156,
       DEVICE_FLAG_NONE },
-  // Guessing on this one
   { "SonyEricsson", 0x0fce, "ST17i Xperia Active (MTP+ADB mode)", 0x5168,
       DEVICE_FLAG_NONE },
-  // Reported by Jean-François  B. <changi67@users.sourceforge.net>
-  { "SONY", 0x0fce, "Xperia S (MTP+ADB mode)", 0x5169,
+  { "SONY", 0x0fce, "LT26i Xperia S (MTP+ADB mode)", 0x5169,
       DEVICE_FLAG_NO_ZERO_READS },
-  // Runtime detect the Aricent or Android stack
   { "SonyEricsson", 0x0fce, "MK16i Xperia (MTP+ADB mode)", 0x515a,
       DEVICE_FLAG_NONE },
-  // Reported by Eduard Bloch <blade@debian.org>
-  // Xperia Ray (2012), SE Android 2.3.4, flags from ST18a
-  // Runtime detect the Aricent or Android stack
   { "SonyEricsson", 0x0fce, "ST18i Xperia Ray (MTP+ADB mode)", 0x5161,
       DEVICE_FLAG_NONE },
-  // Reported by StehpanKa <stehp@users.sourceforge.net>
-  // Android with homebrew MTP stack, possibly Aricent
-  // Runtime detect the Aricent or Android stack
   { "SonyEricsson", 0x0fce, "SK17i Xperia Mini Pro (MTP+ADB mode)", 0x5166,
       DEVICE_FLAG_NONE },
-  // Android with homebrew MTP stack, possibly Aricent
-  // Runtime detect the Aricent or Android stack
   { "SonyEricsson", 0x0fce, "ST15i Xperia Mini (MTP+ADB mode)", 0x5167,
       DEVICE_FLAG_NONE },
-  { "SonyEricsson", 0x0fce, "SK17i Xperia Mini Pro (MTP+? mode)", 0x516d,
+  { "SonyEricsson", 0x0fce, "SK17i Xperia Mini Pro (MTP+ADB mode)", 0x516d,
       DEVICE_FLAG_NONE },
-  // Guessing on this one
   { "SONY", 0x0fce, "ST21i Xperia Tipo (MTP+ADB mode)", 0x5170,
       DEVICE_FLAG_NONE },
-  // Reported by equaeghe <equaeghe@users.sourceforge.net>
   { "SONY", 0x0fce, "ST25i Xperia U (MTP+ADB mode)", 0x5171,
       DEVICE_FLAG_NONE },
-  // Reported by Ondra Lengál
-  { "SONY", 0x0fce, "Xperia P (MTP+ADB mode)", 0x5172,
+  { "SONY", 0x0fce, "LT22i Xperia P (MTP+ADB mode)", 0x5172,
       DEVICE_FLAG_NONE },
-  // Reported by Ah Hong <hongster@users.sourceforge.net>
   { "SONY", 0x0fce, "LT26w Xperia Acro S (MTP+ADB mode)", 0x5176,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "MT27i Xperia Sola (MTP+MSC+? mode)", 0xa173,
+
+  /*
+   * MTP+UMS+? modes
+   * No reports on other personalities on these devices.
+   */
+  { "SONY", 0x0fce, "MT27i Xperia Sola (MTP+UMS+? mode)", 0xa173,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "ST27i Xperia Go (MTP+UMS+? mode)", 0xa17e,
       DEVICE_FLAG_NONE },
 
   /*
@@ -1623,6 +1597,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by  B,H,Kissinger <mrkissinger@users.sourceforge.net>
   { "Motorola", 0x22b8, "XT912/XT928", 0x4362,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by Lundgren <alundgren@users.sourceforge.net>
+  { "Motorola", 0x22b8, "DROID4", 0x437f,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Marcus Meissner to libptp2
   { "Motorola", 0x22b8, "IdeaPad K1", 0x4811,
@@ -1822,6 +1799,7 @@
   // Reported by jaile <jaile@users.sourceforge.net>
   { "Asus", 0x0b05, "TF300 Transformer (USB debug mode)", 0x4c81,
       DEVICE_FLAGS_ANDROID_BUGS },
+  // Repored by Florian Apolloner <f-apolloner@users.sourceforge.net>
   { "Asus", 0x0b05, "TF700 Transformer", 0x4c90,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous Sourceforge user
