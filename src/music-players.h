@@ -1357,6 +1357,9 @@
   // Reported by Toni Burgarello
   { "Sony", 0x054c, "Walkman NWZ-S754", 0x04cc,
       DEVICE_FLAGS_SONY_NWZ_BUGS },
+  // Reported by Hideki Yamane <henrich@debian.org>
+  { "Sony", 0x054c, "Sony Tablet P1", 0x04d1,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by dmiceman
   { "Sony", 0x054c, "NWZ-B163F", 0x059a,
       DEVICE_FLAGS_SONY_NWZ_BUGS },
