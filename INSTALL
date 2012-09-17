@@ -87,16 +87,26 @@ the same system. When you compile your programs they will typically
 bind to the latest version of the shared library. A link to the
 latest version is always provided as $PREFIX/lib/libmtp.so.
 
-libusb Support
+libusb support
 --------------
 
-This package depends on libusb.  Get libusb from sourceforge at:
+This package depends on libusb. Get libusb from sourceforge at:
 
    http://www.sourceforge.net/projects/libusb/
 
-On Linux, please use the very latest version you can get, between
-0.1.8 and 0.1.12 a lot of things happened which pertains to
-the udev hotplugging support, see below.
+libusb 1.0 and later is preferred for libmtp, but currently also
+older 0.1.x versions of libusb are supported.
+
+
+libgcrypt support
+-----------------
+
+The MTPZ extension to libmtp requires libgcrypt to be installed.
+
+   http://www.gnu.org/software/libgcrypt/
+
+MTPZ support will not be built unless the configure script finds
+libgcrypt.
 
 
 BASIC BUILD PROCEDURE
@@ -204,13 +214,17 @@ If you cannot run hotplugging
 
 If you have a distro without hotplugging enabled try this as root:
 
+  % chmod -R a+w /dev/bus/usb
+
+Or if it's *really* ancient you could try:
+
   % chmod -R a+w /proc/bus/usb
 
 You have to do this again every time you unplug/replug your USB cable
 or restart the jukebox, every time you quit libnjb and restart it,
 etc etc etc an alternative is to run libmtp as root which works just fine.
 The problem is to somehow assure that you (ie the current user) always
-has write access on  /proc/bus/usb/*
+has write access to these files.
 
 You can find the Linux hotplug project at:
 http://linux-hotplug.sourceforge.net/
