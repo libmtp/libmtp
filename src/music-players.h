@@ -1503,6 +1503,8 @@
       DEVICE_FLAG_NONE },
   { "SonyEricsson", 0x0fce, "MK16i Xperia MTP", 0x015a,
       DEVICE_FLAG_NONE },
+  { "SonyEricsson", 0x0fce, "R800/R88i Xperia Play MTP", 0x015d,
+      DEVICE_FLAG_NONE },
   { "SonyEricsson", 0x0fce, "ST18a Xperia Ray MTP", 0x0161,
       DEVICE_FLAG_NONE },
   { "SonyEricsson", 0x0fce, "SK17i Xperia Mini Pro MTP", 0x0166,
