@@ -1972,6 +1972,12 @@
   { "Vizio", 0x0489, "VTAB1008", 0xe040, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
+   * Amazon
+   */
+  { "Amazon", 0x1949, "Kindle Fire HD", 0x0007,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
    * Viewpia, bq...
    * Seems like some multi-branded OEM product.
    */
