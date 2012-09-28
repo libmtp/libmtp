@@ -1924,6 +1924,8 @@
   // Reported by anonymous SourceForge user
   { "Huawei", 0x12d1, "Honor U8860", 0x1051, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous SourceForge user
+  { "Huawei", 0x12d1, "U8815", 0x1052, DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by anonymous SourceForge user
   { "Huawei", 0x12d1, "Mediapad (mode 0)", 0x360f, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Bearsh <bearsh@users.sourceforge.net>
   { "Huawei", 0x12d1, "Mediapad (mode 1)", 0x361f, DEVICE_FLAGS_ANDROID_BUGS },
