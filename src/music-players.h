@@ -1988,6 +1988,12 @@
   { "Various", 0x2207, "Viewpia DR/bq Kepler", 0x0001, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
+   * Kobo
+   */
+  // Reported by George Talusan
+  { "Kobo", 0x2237, "Arc", 0xd108, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
    * Other strange stuff.
    */
   { "Isabella", 0x0b20, "Her Prototype", 0xddee, DEVICE_FLAG_NONE }
