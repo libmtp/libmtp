@@ -1,8 +1,8 @@
-libmtp version: 1.1.3
+libmtp version: 1.1.5
 
 Listing raw device(s)
    Found 1 device(s):
-   18d1:4e41 @ bus 2, dev 7
+   Google Inc (for Asus): Nexus 7 (MTP) (18d1:4e41) @ bus 5, dev 9
 Attempting to connect device(s)
 Android device detected, assigning default bug flags
 USB low-level info:
@@ -16,12 +16,12 @@ USB low-level info:
    IN endpoint maxpacket: 512 bytes
    OUT endpoint maxpacket: 512 bytes
    Raw device info:
-      Bus location: 2
-      Device number: 7
+      Bus location: 5
+      Device number: 9
       Device entry info:
-         Vendor: (null)
+         Vendor: Google Inc (for Asus)
          Vendor id: 0x18d1
-         Product: (null)
+         Product: Nexus 7 (MTP)
          Vendor id: 0x4e41
          Device flags: 0x08008106
 Configuration 0, interface 0, altsetting 0:
@@ -31,7 +31,7 @@ Device info:
    Manufacturer: asus
    Model: Nexus 7
    Device version: 1.0
-   Serial number: 015d2109ce180a00
+   Serial number: 015d2ea4d0441811
    Vendor extension ID: 0x00000006
    Vendor extension description: microsoft.com: 1.0; android.com: 1.0;
    Detected object size: 64 bits
@@ -420,10 +420,10 @@ Storage Devices:
       StorageType: 0x0003 fixed RAM storage
       FilesystemType: 0x0002 generic hierarchical
       AccessCapability: 0x0000 read/write
-      MaxCapacity: 14215020544
-      FreeSpaceInBytes: 10835169180
+      MaxCapacity: 14341292032
+      FreeSpaceInBytes: 14058856348
       FreeSpaceInObjects: 1073741824
-      StorageDescription: Internal storage
+      StorageDescription: Mémoire de stockage interne
       VolumeIdentifier: (null)
 Special directories:
    Default music folder: 0x00000001
