@@ -1940,7 +1940,7 @@
   /*
    * HTC (High Tech Computer Corp)
    */
-  { "HTC", 0x0bb4, "Zopo ZP100 (ID1)", 0x0c02,
+  { "HTC", 0x0bb4, "Android Device ID1 (Zopo, HD2...)", 0x0c02,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Steven Eastland <grassmonk@users.sourceforge.net>
   { "HTC", 0x0bb4, "EVO 4G LTE", 0x0c93,
@@ -1955,7 +1955,7 @@
   { "Hewlett-Packard", 0x0bb4, "HP Touchpad (debug mode)",
       0x6860, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous SourceForge user
-  { "HTC", 0x0bb4, "Zopo ZP100 (ID2)", 0x2008,
+  { "HTC", 0x0bb4, "Android Device ID2 (Zopo, HD2...)", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
