@@ -1940,8 +1940,15 @@
   /*
    * HTC (High Tech Computer Corp)
    */
+#if 0
+  /*
+   * This had to be commented out - the same VID+PID is used also for
+   * other modes than MTP, so we need to let mtp-detect do its job on this
+   * device instead of adding it to the database.
+   */
   { "HTC", 0x0bb4, "Android Device ID1 (Zopo, HD2...)", 0x0c02,
       DEVICE_FLAGS_ANDROID_BUGS },
+#endif
   // Reported by Steven Eastland <grassmonk@users.sourceforge.net>
   { "HTC", 0x0bb4, "EVO 4G LTE", 0x0c93,
       DEVICE_FLAGS_ANDROID_BUGS },
