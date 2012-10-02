@@ -1946,7 +1946,7 @@
    * other modes than MTP, so we need to let mtp-detect do its job on this
    * device instead of adding it to the database.
    */
-  { "HTC", 0x0bb4, "Android Device ID1 (Zopo, HD2...)", 0x0c02,
+  { "HTC", 0x0bb4, "Android Device ID1 (Zopo, HD2, Bird...)", 0x0c02,
       DEVICE_FLAGS_ANDROID_BUGS },
 #endif
   // Reported by Steven Eastland <grassmonk@users.sourceforge.net>
@@ -1961,9 +1961,11 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Hewlett-Packard", 0x0bb4, "HP Touchpad (debug mode)",
       0x6860, DEVICE_FLAGS_ANDROID_BUGS },
+#if 0
   // Reported by anonymous SourceForge user
   { "HTC", 0x0bb4, "Android Device ID2 (Zopo, HD2...)", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
+#endif
 
   /*
    * NEC
