@@ -540,7 +540,9 @@
   // Reported by anonymous sourceforge user
   { "Acer", 0x0502, "Iconia TAB A200 (ID2)", 0x337d, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by nE0sIghT <ne0sight@users.sourceforge.net>
-  { "Acer", 0x0502, "Iconia TAB A510", 0x338a, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A510 (ID1)", 0x3389, DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by nE0sIghT <ne0sight@users.sourceforge.net>
+  { "Acer", 0x0502, "Iconia TAB A510 (ID2)", 0x338a, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Maxime de Roucy <maxime1986@users.sourceforge.net>
   { "Acer", 0x0502, "E350 Liquid Gallant Duo", 0x33c3,
       DEVICE_FLAGS_ANDROID_BUGS },
