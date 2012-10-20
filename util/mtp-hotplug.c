@@ -154,6 +154,8 @@ int main (int argc, char **argv)
       printf("ATTR{idVendor}==\"0cf3\", GOTO=\"libmtp_rules_end\"\n");
       printf("# Sensitive Atmel JTAG programmers\n");
       printf("ATTR{idVendor}==\"03eb\", GOTO=\"libmtp_rules_end\"\n");
+      printf("# Sensitive Philips device\n");
+      printf("ATTR{idVendor}==\"0471\", ATTR{idProduct}==\"083f\", GOTO=\"libmtp_rules_end\"\n");
       break;
     case style_udev_old:
       printf("# UDEV-style hotplug map for libmtp\n");
