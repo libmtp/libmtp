@@ -1286,7 +1286,7 @@
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Brian J. Murrell
-  { "LG Electronics Inc.", 0x1004, "LG-E617G/P700", 0x631c,
+  { "LG Electronics Inc.", 0x1004, "LG-E610/E617G/P700", 0x631c,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
