@@ -309,6 +309,7 @@
      DEVICE_FLAG_OGG_IS_UNKNOWN |
      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
      DEVICE_FLAG_PLAYLIST_SPL_V1 },
+  // YP-F3 is NOT MTP - USB mass storage
   // From a rouge .INF file
   // this device ID seems to have been recycled for:
   // the Samsung SGH-A707 Cingular cellphone
