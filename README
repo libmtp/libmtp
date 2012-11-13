@@ -138,6 +138,25 @@ Some MTP devices have strange pecularities. We try to work around
 these whenever we can, sometimes we cannot work around it or we
 cannot test your solution.
 
+* Android locked screen: some devices just report zero files
+  and no storages when the device screen is locked, it looks like
+  so:
+
+  mtp-detect
+  Device 0 (VID=04e8 and PID=6860) is a Samsung Galaxy models (MTP).
+  Attempting to connect device(s)
+  Error 1: Get Storage information failed.
+  Device: SHV-E210K
+  LIBMTP_Get_Storage(): No data available
+  OK.
+
+  This is probably so as not to allow the MTP access to be used
+  as a "backdoor" into the device. Unlock the device before listing
+  files, set the autolock to some large value or disabled if it
+  disturbs you, you are causing this to yourself, or should we say
+  that your vendor is prioritizing security and privacy over
+  ease-of-use. (You may talk to your vendor about this.)
+
 * mtp-* tools doesn't work because someone else is already hogging
   the device
 
@@ -204,13 +223,6 @@ cannot test your solution.
   If this bug in your device annoys you, contact your device
   manufacturer and ask them to test their product with some libmtp
   program.
-
-* Android locked screen: some devices just report zero files
-  and no storages when the device is locked, probably so as not
-  to allow the MTP access to be used as a "backdoor" into the
-  device. Unlock the device before listing files, set the autolock
-  to some large value or disabled if it disturbs you, you are
-  causing this to yourself.
 
 * Samsung Android 2.3.x devices: these have a special MTP stack
   with some specific bugs that we have maybe nailed down now.
