@@ -746,7 +746,11 @@
   { "iRiver", 0x4102, "E50", 0x1151,
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS |
     DEVICE_FLAG_OGG_IS_UNKNOWN },
-   // Reported by Jakub Matraszek <jakub.matraszek@gmail.com>
+  // Reported by anonymous SourceForge user, guessing on flags
+  { "iRiver", 0x4102, "E150", 0x1152,
+    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS |
+    DEVICE_FLAG_OGG_IS_UNKNOWN },
+  // Reported by Jakub Matraszek <jakub.matraszek@gmail.com>
   { "iRiver", 0x4102, "T5", 0x1153,
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
     DEVICE_FLAG_NO_ZERO_READS | DEVICE_FLAG_OGG_IS_UNKNOWN },
@@ -880,8 +884,8 @@
   { "Archos", 0x0e79, "SPOD (MTP mode)", 0x1341, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "5S IT (MTP mode)", 0x1351, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "5H IT (MTP mode)", 0x1357, DEVICE_FLAG_UNLOAD_DRIVER },
-  { "Archos", 0x0e79, "Arnova Childpad", 0x1458, DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by anonymous Sourceforge user
+  { "Archos", 0x0e79, "Arnova Childpad", 0x1458, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Archos", 0x0e79, "Arnova 10bG3 Tablet", 0x146b, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "8o G9 (MTP mode)", 0x1508, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Clément <clemvangelis@users.sourceforge.net>
   { "Archos", 0x0e79, "8o G9 Turbo (MTP mode)", 0x1509,
@@ -890,14 +894,10 @@
   { "Archos", 0x0e79, "80G9", 0x1518, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Till <Till@users.sourceforge.net>
   { "Archos", 0x0e79, "101 G9", 0x1528, DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by anonymous sourceforge user
   { "Archos", 0x0e79, "101 G9 (v2)", 0x1529, DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by anonymous sourceforge user
   { "Archos", 0x0e79, "101 G9 Turbo 250 HD", 0x1538,
       DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by anonymous sourceforge user
   { "Archos", 0x0e79, "101 G9 Turbo", 0x1539, DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by anonymous sourceforge user
   { "Archos", 0x0e79, "70it2 (mode 1)", 0x1568, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Sebastien ROHAUT
   { "Archos", 0x0e79, "70it2 (mode 2)", 0x1569, DEVICE_FLAGS_ANDROID_BUGS },
@@ -1678,11 +1678,11 @@
   // Reported by Steven Roemen <sdroemen@users.sourceforge.net>
   { "Motorola", 0x22b8, "Droid X/MB525 (Defy)", 0x41d6,
       DEVICE_FLAG_NONE },
-  // Reported by anonymous user
+  { "Motorola", 0x22b8, "DROID2 (ID1)", 0x41da,
+      DEVICE_FLAG_NONE },
   { "Motorola", 0x22b8, "Milestone / Verizon Droid", 0x41dc,
       DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by anonymous user
-  { "Motorola", 0x22b8, "DROID2", 0x42a7,
+  { "Motorola", 0x22b8, "DROID2 (ID2)", 0x42a7,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Xoom 2 Media Edition", 0x4311,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -1890,29 +1890,40 @@
 
   /*
    * Asus
+   * Pattern of PIDs on Android devices seem to be:
+   * n+0 = MTP
+   * n+1 = MTP+ADB
+   * n+2 = ?
+   * n+3 = ?
+   * n+4 = PTP
    */
   // Reported by Glen Overby
-  { "Asus", 0x0b05, "TF300 Transformer", 0x4c80,
+  { "Asus", 0x0b05, "TF300 Transformer (MTP)", 0x4c80,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by jaile <jaile@users.sourceforge.net>
-  { "Asus", 0x0b05, "TF300 Transformer (USB debug mode)", 0x4c81,
+  { "Asus", 0x0b05, "TF300 Transformer (MTP+ADB)", 0x4c81,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Repored by Florian Apolloner <f-apolloner@users.sourceforge.net>
-  { "Asus", 0x0b05, "TF700 Transformer", 0x4c90,
+  { "Asus", 0x0b05, "TF700 Transformer (MTP)", 0x4c90,
       DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by anonymous Sourceforge user
+  { "Asus", 0x0b05, "TF700 Transformer (MTP+ADB)", 0x4c91,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TF201 Transformer Prime (keyboard dock)", 0x4d00,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TF201 Transformer Prime (tablet only)", 0x4d01,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Asus", 0x0b05, "TFXXX Transformer Prime (unknown version)", 0x4d04,
+  // 4d04 is the PTP mode, don't add it
+  { "Asus", 0x0b05, "SL101 (MTP)", 0x4e00,
       DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by anonymous Sourceforge user
-  { "Asus", 0x0b05, "TF101 Eeepad Slider", 0x4e01,
+  { "Asus", 0x0b05, "SL101 (MTP+ADB)", 0x4e01,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Asus", 0x0b05, "TF101 Eeepad Transformer", 0x4e0f,
+  { "Asus", 0x0b05, "TF101 Eeepad Transformer (MTP)", 0x4e0f,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Asus", 0x0b05, "TF101 Eeepad Transformer (debug mode)", 0x4e1f,
+  { "Asus", 0x0b05, "TF101 Eeepad Transformer (MTP+ADB)", 0x4e1f,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "PadFone (MTP)", 0x5200,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "PadFone (MTP+ADB)", 0x5201,
       DEVICE_FLAGS_ANDROID_BUGS },
 
 
@@ -1959,7 +1970,7 @@
 #if 0
   /*
    * This had to be commented out - the same VID+PID is used also for
-   * other modes than MTP, so we need to let mtp-detect do its job on this
+   * other modes than MTP, so we need to let mtp-probe do its job on this
    * device instead of adding it to the database.
    */
   { "HTC", 0x0bb4, "Android Device ID1 (Zopo, HD2, Bird...)", 0x0c02,
@@ -1970,6 +1981,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Steven Eastland <grassmonk@users.sourceforge.net>
   { "HTC", 0x0bb4, "EVO 4G LTE (second ID)", 0x0ca8,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC One X", 0x0dfb,
       DEVICE_FLAGS_ANDROID_BUGS },
   // These identify themselves as "cm_tenderloin", fun...
   // Done by HTC for HP I guess.
