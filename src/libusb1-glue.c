@@ -343,6 +343,7 @@ static int probe_device_descriptor(libusb_device *dev, FILE *dumpfile)
 		LIBUSB_CLASS_MASS_STORAGE) {
 	      LIBMTP_INFO("avoid probing device using attached kernel interface\n");
               libusb_free_config_descriptor(config);
+	      libusb_close(devh);
 	      return 0;
 	    }
 	  }
