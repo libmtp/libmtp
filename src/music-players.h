@@ -1112,9 +1112,12 @@
   { "Thomson / RCA", 0x069b, "Lyra HC308A", 0x3035, DEVICE_FLAG_NONE },
 
   /*
-   * NTT DoCoMo
+   * Fujitsu devices
    */
-  { "FOMA", 0x04c5, "F903iX HIGH-SPEED", 0x1140, DEVICE_FLAG_NONE },
+  { "Fujitsu, Ltd", 0x04c5, "F903iX HIGH-SPEED", 0x1140, DEVICE_FLAG_NONE },
+  // Reported by Thomas Bretthauer
+  { "Fujitsu, Ltd", 0x04c5, "STYLISTIC M532", 0x133b,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Palm device userland program named Pocket Tunes
@@ -1339,7 +1342,7 @@
   { "Sony", 0x054c, "Walkman NWZ-B142F", 0x03d8,
       DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Rick Warner <rick@reptileroom.net>
-  { "Sony", 0x054c, "Walkman NWZ-E344", 0x03fc,
+  { "Sony", 0x054c, "Walkman NWZ-E344/E345", 0x03fc,
       DEVICE_FLAGS_SONY_NWZ_BUGS },
   // Reported by Jonathan Stowe <gellyfish@users.sourceforge.net>
   { "Sony", 0x054c, "Walkman NWZ-E445", 0x03fd,
@@ -1584,10 +1587,6 @@
       DEVICE_FLAG_NONE },
   { "SonyEricsson", 0x0fce, "MT11i Xperia Neo MTP+ADB", 0x5156,
       DEVICE_FLAG_NONE },
-  { "SonyEricsson", 0x0fce, "ST17i Xperia Active MTP+ADB", 0x5168,
-      DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "LT26i Xperia S MTP+ADB", 0x5169,
-      DEVICE_FLAG_NO_ZERO_READS },
   { "SonyEricsson", 0x0fce, "MK16i Xperia MTP+ADB", 0x515a,
       DEVICE_FLAG_NONE },
   { "SonyEricsson", 0x0fce, "ST18i Xperia Ray MTP+ADB", 0x5161,
@@ -1596,8 +1595,10 @@
       DEVICE_FLAG_NONE },
   { "SonyEricsson", 0x0fce, "ST15i Xperia Mini MTP+ADB", 0x5167,
       DEVICE_FLAG_NONE },
-  { "SonyEricsson", 0x0fce, "LT26i Xperia S MTP+ADB", 0x5169,
+  { "SonyEricsson", 0x0fce, "ST17i Xperia Active MTP+ADB", 0x5168,
       DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "LT26i Xperia S MTP+ADB", 0x5169,
+      DEVICE_FLAG_NO_ZERO_READS },
   { "SonyEricsson", 0x0fce, "SK17i Xperia Mini Pro MTP+ADB", 0x516d,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "ST21i Xperia Tipo MTP+ADB", 0x5170,
@@ -1669,6 +1670,8 @@
   // Reported by anonymous sourceforge user
   { "Motorola", 0x22b8, "Atrix HD (GDB mode)", 0x2e33,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Motorola", 0x22b8, "RAZR M (XT907)", 0x2e51,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Jader Rodrigues Simoes <jadersimoes@users.sourceforge.net>
   { "Motorola", 0x22b8, "Xoom 2 Media Edition (ID2)", 0x41cf,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -1729,7 +1732,11 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous Sourceforge user
   // "carried by C Spire and other CDMA US carriers"
-  { "Motorola", 0x22b8, "Milestone X2", 0x70ca, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Motorola", 0x22b8, "Milestone X2", 0x70ca,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by anonymous Sourceforge user
+  { "Motorola", 0x22b8, "XT890 (MTP)", 0x710d,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Google
@@ -1741,6 +1748,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous Sourceforge user
   { "Google Inc (for Barnes & Noble)", 0x18d1, "Nook Color", 0x2d02,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by anonymous Sourceforge user
+  { "Google Inc (for Asus)", 0x18d1, "TF201 Transformer", 0x4d00,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous Sourceforge user
   { "Google Inc (for Asus)", 0x18d1, "TF101 Transformer", 0x4e0f,
@@ -2007,6 +2017,12 @@
    */
   // Reported by George Talusan
   { "Kobo", 0x2237, "Arc", 0xd108, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
+   * Hisense
+   */
+  // Reported by Anonymous SourceForge user
+  { "Hisense", 0x109b, "E860", 0x9109, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Other strange stuff.
