@@ -2025,10 +2025,13 @@
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
-   * Viewpia, bq...
-   * Seems like some multi-branded OEM product.
+   * Viewpia, bq, YiFang
+   * Seems like some multi-branded OEM product line.
    */
-  { "Various", 0x2207, "Viewpia DR/bq Kepler", 0x0001, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Various", 0x2207, "Viewpia DR/bq Kepler", 0x0001,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "YiFang", 0x2207, "BQ Tesla", 0x0006,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Kobo
