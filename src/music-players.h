@@ -523,28 +523,36 @@
 
   /*
    * Acer
+   * Reporters:
+   * Franck VDL <franckv@users.sourceforge.net>
+   * Matthias Arndt <simonsunnyboy@users.sourceforge.net>
+   * Arvin Schnell <arvins@users.sourceforge.net>
+   * Philippe Marzouk <philm@users.sourceforge.net>
+   * nE0sIghT <ne0sight@users.sourceforge.net>
+   * Maxime de Roucy <maxime1986@users.sourceforge.net>
    */
-  // Reported by anonymous sourceforge user
-  { "Acer", 0x0502, "Iconia TAB A500 (ID1)", 0x3325, DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by: Franck VDL <franckv@users.sourceforge.net>
-  { "Acer", 0x0502, "Iconia TAB A500 (ID2)", 0x3341, DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by: Matthias Arndt <simonsunnyboy@users.sourceforge.net>
-  { "Acer", 0x0502, "Iconia TAB A501", 0x3344, DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by: anonymous sourceforge user
-  { "Acer", 0x0502, "Iconia TAB A100 (ID1)", 0x3348, DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by: Arvin Schnell <arvins@users.sourceforge.net>
-  { "Acer", 0x0502, "Iconia TAB A100 (ID2)", 0x3349, DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by Philippe Marzouk <philm@users.sourceforge.net>
-  { "Acer", 0x0502, "Iconia TAB A700", 0x3378, DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by anonymous sourceforge user
-  { "Acer", 0x0502, "Iconia TAB A200 (ID1)", 0x337c, DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by anonymous sourceforge user
-  { "Acer", 0x0502, "Iconia TAB A200 (ID2)", 0x337d, DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by nE0sIghT <ne0sight@users.sourceforge.net>
-  { "Acer", 0x0502, "Iconia TAB A510 (ID1)", 0x3389, DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by nE0sIghT <ne0sight@users.sourceforge.net>
-  { "Acer", 0x0502, "Iconia TAB A510 (ID2)", 0x338a, DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by Maxime de Roucy <maxime1986@users.sourceforge.net>
+  { "Acer", 0x0502, "Iconia TAB A500 (ID1)", 0x3325,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A500 (ID2)", 0x3341,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A501 (ID1)", 0x3344,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A501 (ID2)", 0x3345,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A100 (ID1)", 0x3348,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A100 (ID2)", 0x3349,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A700", 0x3378,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A200 (ID1)", 0x337c,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A200 (ID2)", 0x337d,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A510 (ID1)", 0x3389,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A510 (ID2)", 0x338a,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "E350 Liquid Gallant Duo", 0x33c3,
       DEVICE_FLAGS_ANDROID_BUGS },
 
