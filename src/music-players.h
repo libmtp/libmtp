@@ -1767,6 +1767,8 @@
   // Reported by Michael Hess <mhess126@gmail.com>
   { "Google Inc (for Asus)", 0x18d1, "Nexus 7 (MTP+ADB)", 0x4e42,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Google Inc (for LG Electronics)", 0x18d1, "Nexus 4 (MTP+ADB)", 0x4ee2,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // WiFi-only version of Xoom
   // See: http://bugzilla.gnome.org/show_bug.cgi?id=647506
   { "Google Inc (for Motorola)", 0x18d1, "Xoom (MZ604)", 0x70a8,
