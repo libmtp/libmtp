@@ -1502,6 +1502,7 @@
    * Jean-François  B. <changi67@users.sourceforge.net>
    * Eduard Bloch <blade@debian.org>
    * Ah Hong <hongster@users.sourceforge.net>
+   * Eowyn Carter
    */
   { "SonyEricsson", 0x0fce, "LT15i Xperia arc S MTP", 0x014f,
       DEVICE_FLAG_NONE },
@@ -1632,6 +1633,8 @@
    * and using UMS (Mass Storage Device Class) on the external
    * SD card
    */
+  { "SONY", 0x0fce, "MT27i Xperia Sola MTP+UMS (Android 4)", 0x6173,
+      DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "MT27i Xperia Sola MTP+UMS", 0xa173,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "IS12S Xperia Acro HD MTP+UMS", 0xa175,
