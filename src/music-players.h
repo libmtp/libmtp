@@ -2019,7 +2019,9 @@
   /*
    * Amazon
    */
-  { "Amazon", 0x1949, "Kindle Fire HD", 0x0007,
+  { "Amazon", 0x1949, "Kindle Fire (ID1)", 0x0007,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Amazon", 0x1949, "Kindle Fire (ID2)", 0x000a,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
