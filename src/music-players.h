@@ -1548,6 +1548,10 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "LT25i Xperia V MTP", 0x0186,
       DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "LT25i Xperia J MTP", 0x0188,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "LT25i Xperia E MTP", 0x018c,
+      DEVICE_FLAG_NONE },
 
   /*
    * MTP+UMS personalities of MTP devices (see above)
@@ -1579,6 +1583,10 @@
   { "SONY", 0x0fce, "LT30p Xperia T MTP+CDROM", 0x4182,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "LT25i Xperia V MTP+CDROM", 0x4186,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "LT25i Xperia J MTP+CDROM", 0x4188,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "LT25i Xperia E MTP+CDROM", 0x418c,
       DEVICE_FLAG_NONE },
 
   /*
@@ -1625,6 +1633,10 @@
   { "SONY", 0x0fce, "LT30p Xperia T MTP+ADB", 0x5182,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "LT25i Xperia V MTP+ADB", 0x5186,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "LT25i Xperia J MTP+ADB", 0x5188,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "LT25i Xperia E MTP+ADB", 0x518c,
       DEVICE_FLAG_NONE },
 
   /*
