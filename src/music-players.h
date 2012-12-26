@@ -2038,6 +2038,11 @@
   { "Hisense", 0x109b, "E860", 0x9109, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
+   * Intel
+   */
+  { "Intel", 0x8087, "Xolo 900", 0x09fb, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
    * Other strange stuff.
    */
   { "Isabella", 0x0b20, "Her Prototype", 0xddee, DEVICE_FLAG_NONE }
