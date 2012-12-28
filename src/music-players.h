@@ -1993,6 +1993,7 @@
    * HTC (High Tech Computer Corp)
    * Reporters:
    * Steven Eastland <grassmonk@users.sourceforge.net>
+   * Kevin Cheng <kache@users.sf.net>
    */
 #if 0
   /*
@@ -2008,6 +2009,10 @@
   { "HTC", 0x0bb4, "EVO 4G LTE (ID2)", 0x0ca8,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One X (ID1)", 0x0dfb,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "Droid DNA (MTP+UMS+ADB)", 0x0dff,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "Droid DNA (MTP+UMS)", 0x0ebd,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One X (ID2)", 0x0f91,
       DEVICE_FLAGS_ANDROID_BUGS },
