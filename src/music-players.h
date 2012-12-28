@@ -1991,6 +1991,8 @@
 
   /*
    * HTC (High Tech Computer Corp)
+   * Reporters:
+   * Steven Eastland <grassmonk@users.sourceforge.net>
    */
 #if 0
   /*
@@ -2001,13 +2003,13 @@
   { "HTC", 0x0bb4, "Android Device ID1 (Zopo, HD2, Bird...)", 0x0c02,
       DEVICE_FLAGS_ANDROID_BUGS },
 #endif
-  // Reported by Steven Eastland <grassmonk@users.sourceforge.net>
-  { "HTC", 0x0bb4, "EVO 4G LTE", 0x0c93,
+  { "HTC", 0x0bb4, "EVO 4G LTE (ID1)", 0x0c93,
       DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by Steven Eastland <grassmonk@users.sourceforge.net>
-  { "HTC", 0x0bb4, "EVO 4G LTE (second ID)", 0x0ca8,
+  { "HTC", 0x0bb4, "EVO 4G LTE (ID2)", 0x0ca8,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "HTC", 0x0bb4, "HTC One X", 0x0dfb,
+  { "HTC", 0x0bb4, "HTC One X (ID1)", 0x0dfb,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC One X (ID2)", 0x0f91,
       DEVICE_FLAGS_ANDROID_BUGS },
   // These identify themselves as "cm_tenderloin", fun...
   // Done by HTC for HP I guess.
@@ -2016,7 +2018,6 @@
   { "Hewlett-Packard", 0x0bb4, "HP Touchpad (debug mode)",
       0x6860, DEVICE_FLAGS_ANDROID_BUGS },
 #if 0
-  // Reported by anonymous SourceForge user
   { "HTC", 0x0bb4, "Android Device ID2 (Zopo, HD2...)", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
 #endif
