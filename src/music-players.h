@@ -902,6 +902,7 @@
   { "Archos", 0x0e79, "5S IT (MTP mode)", 0x1351, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "5H IT (MTP mode)", 0x1357, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "Arnova Childpad", 0x1458, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Archos", 0x0e79, "Arnova 8c G3", 0x145e, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "Arnova 10bG3 Tablet", 0x146b, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "97 Xenon", 0x149a, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "8o G9 (MTP mode)", 0x1508, DEVICE_FLAG_UNLOAD_DRIVER },
@@ -1702,7 +1703,7 @@
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   // Reported by anonymous sourceforge user
-  { "Motorola", 0x22b8, "Atrix HD (GDB mode)", 0x2e33,
+  { "Motorola", 0x22b8, "Atrix HD (ADB mode)", 0x2e33,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "RAZR M (XT907)", 0x2e51,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2025,9 +2026,9 @@
   { "HTC", 0x0bb4, "Android Device ID1 (Zopo, HD2, Bird...)", 0x0c02,
       DEVICE_FLAGS_ANDROID_BUGS },
 #endif
-  { "HTC", 0x0bb4, "EVO 4G LTE (ID1)", 0x0c93,
+  { "HTC", 0x0bb4, "EVO 4G LTE/One V (ID1)", 0x0c93,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "HTC", 0x0bb4, "EVO 4G LTE (ID2)", 0x0ca8,
+  { "HTC", 0x0bb4, "EVO 4G LTE/One V (ID2)", 0x0ca8,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One X (ID1)", 0x0dfb,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2070,7 +2071,9 @@
    */
   { "Amazon", 0x1949, "Kindle Fire (ID1)", 0x0007,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Amazon", 0x1949, "Kindle Fire (ID2)", 0x000a,
+  { "Amazon", 0x1949, "Kindle Fire (ID2)", 0x0008,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Amazon", 0x1949, "Kindle Fire (ID3)", 0x000a,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
@@ -2098,6 +2101,11 @@
    * Intel
    */
   { "Intel", 0x8087, "Xolo 900", 0x09fb, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
+   * Xiaomi
+   */
+  { "Xiaomi", 0x2717, "Mi-2", 0x9039, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Other strange stuff.
