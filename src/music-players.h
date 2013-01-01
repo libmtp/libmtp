@@ -560,6 +560,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "Iconia TAB A210", 0x33cb,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A110", 0x33d8,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
 
 
   /*
@@ -1775,6 +1778,8 @@
    * road to produce an Android tablet it seems... The Vendor ID
    * was originally used for Nexus phones
    */
+  { "Google Inc (for Ainol Novo)", 0x18d1, "Fire/Flame", 0x0007,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc (for Sony)", 0x18d1, "S1", 0x05b3,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous Sourceforge user
