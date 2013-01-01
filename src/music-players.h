@@ -518,6 +518,9 @@
   // From Anonymous SourceForge User
   { "Philips", 0x0471, "GoGear Vibe/02", 0x20e5,
       DEVICE_FLAG_UNLOAD_DRIVER },
+  // Reported by Philip Rhoades
+  { "Philips", 0x0471, "GoGear Ariaz/97", 0x2138,
+      DEVICE_FLAG_UNLOAD_DRIVER },
   // from XNJB user
   { "Philips", 0x0471, "PSA235", 0x7e01, DEVICE_FLAG_NONE },
 
