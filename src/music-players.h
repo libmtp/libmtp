@@ -897,6 +897,7 @@
   { "Archos", 0x0e79, "5H IT (MTP mode)", 0x1357, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "Arnova Childpad", 0x1458, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "Arnova 10bG3 Tablet", 0x146b, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Archos", 0x0e79, "97 Xenon", 0x149a, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "8o G9 (MTP mode)", 0x1508, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Clément <clemvangelis@users.sourceforge.net>
   { "Archos", 0x0e79, "8o G9 Turbo (MTP mode)", 0x1509,
@@ -1953,6 +1954,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "PadFone (MTP+ADB)", 0x5201,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "PadFone 2 (MTP)", 0x5211,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
 
 
   /*
@@ -1991,6 +1995,7 @@
    */
   { "ZTE", 0x19d2, "V55 ID 1", 0x0244, DEVICE_FLAGS_ANDROID_BUGS },
   { "ZTE", 0x19d2, "V55 ID 2", 0x0245, DEVICE_FLAGS_ANDROID_BUGS },
+  { "ZTE", 0x19d2, "Blade 3", 0x0306, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * HTC (High Tech Computer Corp)
