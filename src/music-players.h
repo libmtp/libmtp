@@ -1574,7 +1574,11 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "LT25i Xperia J MTP", 0x0188,
       DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "LT25i Xperia ZL MTP", 0x0189,
+      DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "LT25i Xperia E MTP", 0x018c,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "LT25i Xperia Z MTP", 0x0193,
       DEVICE_FLAG_NONE },
 
   /*
@@ -1612,7 +1616,11 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "LT25i Xperia J MTP+CDROM", 0x4188,
       DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "LT25i Xperia ZL MTP", 0x4189,
+      DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "LT25i Xperia E MTP+CDROM", 0x418c,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "LT25i Xperia Z MTP", 0x4193,
       DEVICE_FLAG_NONE },
 
   /*
@@ -1664,7 +1672,11 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "LT25i Xperia J MTP+ADB", 0x5188,
       DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "LT25i Xperia ZL MTP", 0x5189,
+      DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "LT25i Xperia E MTP+ADB", 0x518c,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "LT25i Xperia Z MTP", 0x5193,
       DEVICE_FLAG_NONE },
 
   /*
