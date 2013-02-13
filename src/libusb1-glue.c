@@ -551,6 +551,7 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
         }
       }
     }
+    libusb_free_device_list (devs, 0);
 
   /* If nothing was found we end up here. */
   if(*mtp_device_list == NULL) {
@@ -979,8 +980,10 @@ ptp_write_func (
       }
     }
     int getfunc_ret = handler->getfunc(NULL, handler->priv,towrite,bytes,&towrite);
-    if (getfunc_ret != PTP_RC_OK)
+    if (getfunc_ret != PTP_RC_OK) {
+      free(bytes);
       return getfunc_ret;
+    }
     while (usbwritten < towrite) {
 	    ret = USB_BULK_WRITE(ptp_usb->handle,
 				    ptp_usb->outep,
@@ -992,6 +995,7 @@ ptp_write_func (
 	    LIBMTP_USB_DEBUG("USB OUT==>\n");
 
 	    if (ret != LIBUSB_SUCCESS) {
+              free(bytes);
 	      return PTP_ERROR_IO;
 	    }
 	    LIBMTP_USB_DATA(bytes+usbwritten, xwritten, 16);
@@ -1014,6 +1018,7 @@ ptp_write_func (
 						 ptp_usb->current_transfer_total,
 						 ptp_usb->current_transfer_callback_data);
 	if (ret != 0) {
+          free(bytes);
 	  return PTP_ERROR_CANCEL;
 	}
       }
@@ -2057,6 +2062,7 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
   /* Attempt to initialize this device */
   if (init_ptp_usb(params, ptp_usb, ldevice) < 0) {
     LIBMTP_ERROR("LIBMTP PANIC: Unable to initialize device\n");
+    libusb_free_device_list (devs, 0);
     return LIBMTP_ERROR_CONNECTING;
   }
 
@@ -2072,12 +2078,14 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
 
     if(init_ptp_usb(params, ptp_usb, ldevice) <0) {
       LIBMTP_ERROR("LIBMTP PANIC: Could not init USB on second attempt\n");
+      libusb_free_device_list (devs, 0);
       return LIBMTP_ERROR_CONNECTING;
     }
 
     /* Device has been reset, try again */
     if ((ret = ptp_opensession(params, 1)) == PTP_ERROR_IO) {
       LIBMTP_ERROR("LIBMTP PANIC: failed to open session on second attempt\n");
+      libusb_free_device_list (devs, 0);
       return LIBMTP_ERROR_CONNECTING;
     }
   }
@@ -2094,11 +2102,13 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
 	    "(Return code %d)\n  Try to reset the device.\n",
 	    ret);
     libusb_release_interface(ptp_usb->handle, ptp_usb->interface);
+    libusb_free_device_list (devs, 0);
     return LIBMTP_ERROR_CONNECTING;
   }
 
   /* OK configured properly */
   *usbinfo = (void *) ptp_usb;
+  libusb_free_device_list (devs, 0);
   return LIBMTP_ERROR_NONE;
 }
 
