@@ -1828,9 +1828,7 @@
   // Reported by anonymous Sourceforge user
   { "Google Inc (for Asus)", 0x18d1, "TF101 Transformer", 0x4e0f,
       DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by Laurent Artaud <laurenta@users.sourceforge.net>
-  { "Google Inc (for Samsung)", 0x18d1, "Nexus S", 0x4e21,
-      DEVICE_FLAGS_ANDROID_BUGS },
+  // 0x4e21 (Nexus S) is a USB Mass Storage device.
   // Reported by Chris Smith <tcgsmythe@users.sourceforge.net>
   { "Google Inc (for Asus)", 0x18d1, "Nexus 7 (MTP)", 0x4e41,
       DEVICE_FLAGS_ANDROID_BUGS },
