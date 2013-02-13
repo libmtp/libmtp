@@ -1737,6 +1737,10 @@ static void parse_extension_descriptor(LIBMTP_mtpdevice_t *mtpdevice,
   int start = 0;
   int end = 0;
 
+  /* NULL on Canon A70 */
+  if (!desc)
+    return;
+
   /* descriptors are divided by semicolons */
   while (end < strlen(desc)) {
     /* Skip past initial whitespace */
