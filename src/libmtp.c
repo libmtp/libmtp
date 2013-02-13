@@ -2361,6 +2361,7 @@ void LIBMTP_Release_Device(LIBMTP_mtpdevice_t *device)
   iconv_close(params->cd_ucs2_to_locale);
   free(ptp_usb);
   ptp_free_params(params);
+  free(params);
   free_storage_list(device);
   // Free extension list...
   if (device->extensions != NULL) {
