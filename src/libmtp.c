@@ -1153,6 +1153,9 @@ int LIBMTP_Is_Property_Supported(LIBMTP_mtpdevice_t *device, LIBMTP_property_t c
   int supported = 0;
   uint16_t ptp_prop = map_libmtp_property_to_ptp_property(property);
 
+  if (!ptp_operation_issupported(device->params, PTP_OC_MTP_GetObjectPropsSupported))
+    return 0;
+
   ret = ptp_mtp_getobjectpropssupported(device->params, map_libmtp_type_to_ptp_type(filetype), &propcnt, &props);
   if (ret != PTP_RC_OK) {
     add_ptp_error_to_errorstack(device, ret, "LIBMTP_Is_Property_Supported(): could not get properties supported.");
@@ -1983,40 +1986,42 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *rawdevi
   }
 
   /* Determine if the object size supported is 32 or 64 bit wide */
-  for (i=0;i<current_params->deviceinfo.ImageFormats_len;i++) {
-    PTPObjectPropDesc opd;
+  if (ptp_operation_issupported(current_params,PTP_OC_MTP_GetObjectPropsSupported)) {
+    for (i=0;i<current_params->deviceinfo.ImageFormats_len;i++) {
+      PTPObjectPropDesc opd;
 
-    if (ptp_mtp_getobjectpropdesc(current_params,
-				  PTP_OPC_ObjectSize,
-				  current_params->deviceinfo.ImageFormats[i],
-				  &opd) != PTP_RC_OK) {
-      LIBMTP_ERROR("LIBMTP PANIC: "
-	     "could not inspect object property descriptions!\n");
-    } else {
-      if (opd.DataType == PTP_DTC_UINT32) {
-	if (bs == 0) {
-	  bs = 32;
-	} else if (bs != 32) {
-	  LIBMTP_ERROR("LIBMTP PANIC: "
-		 "different objects support different object sizes!\n");
-	  bs = 0;
-	  break;
-	}
-      } else if (opd.DataType == PTP_DTC_UINT64) {
-	if (bs == 0) {
-	  bs = 64;
-	} else if (bs != 64) {
-	  LIBMTP_ERROR("LIBMTP PANIC: "
-		 "different objects support different object sizes!\n");
-	  bs = 0;
-	  break;
-	}
+      if (ptp_mtp_getobjectpropdesc(current_params,
+                                    PTP_OPC_ObjectSize,
+                                    current_params->deviceinfo.ImageFormats[i],
+                                    &opd) != PTP_RC_OK) {
+        LIBMTP_ERROR("LIBMTP PANIC: "
+                     "could not inspect object property descriptions!\n");
       } else {
-	// Ignore if other size.
-	LIBMTP_ERROR("LIBMTP PANIC: "
-	       "awkward object size data type: %04x\n", opd.DataType);
-	bs = 0;
-	break;
+        if (opd.DataType == PTP_DTC_UINT32) {
+          if (bs == 0) {
+            bs = 32;
+          } else if (bs != 32) {
+            LIBMTP_ERROR("LIBMTP PANIC: "
+                         "different objects support different object sizes!\n");
+            bs = 0;
+            break;
+          }
+        } else if (opd.DataType == PTP_DTC_UINT64) {
+          if (bs == 0) {
+            bs = 64;
+          } else if (bs != 64) {
+            LIBMTP_ERROR("LIBMTP PANIC: "
+                         "different objects support different object sizes!\n");
+            bs = 0;
+            break;
+          }
+        } else {
+          // Ignore if other size.
+          LIBMTP_ERROR("LIBMTP PANIC: "
+                       "awkward object size data type: %04x\n", opd.DataType);
+          bs = 0;
+          break;
+        }
       }
     }
   }
@@ -4143,7 +4148,7 @@ static LIBMTP_file_t *obj2file(LIBMTP_mtpdevice_t *device, PTPObject *ob)
 	break;
       }
     }
-  } else {
+  } else if (ptp_operation_issupported(params,PTP_OC_MTP_GetObjectPropsSupported)) {
     uint16_t *props = NULL;
     uint32_t propcnt = 0;
     int ret;
