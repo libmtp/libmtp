@@ -1774,12 +1774,14 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Xoom (MTP+ADB)", 0x70a9,
       DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by anonymous Sourceforge user
   // "carried by C Spire and other CDMA US carriers"
   { "Motorola", 0x22b8, "Milestone X2", 0x70ca,
       DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by anonymous Sourceforge user
-  { "Motorola", 0x22b8, "XT890 (MTP)", 0x710d,
+  { "Motorola", 0x22b8, "XT890/907 (MTP)", 0x710d,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Motorola", 0x22b8, "XT890/907 (MTP+ADB)", 0x710e,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Motorola", 0x22b8, "XT890/907 (MTP+?)", 0x710f,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
@@ -2045,6 +2047,8 @@
   { "HTC", 0x0bb4, "HTC One S", 0x0df9,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One X (ID1)", 0x0dfb,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC Butterfly (ID1)", 0x0dfe,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "Droid DNA (MTP+UMS+ADB)", 0x0dff,
       DEVICE_FLAGS_ANDROID_BUGS },
