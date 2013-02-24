@@ -1745,6 +1745,9 @@
   // Reported by anonymous user
   { "Motorola", 0x22b8, "RAZR2 V8/U9/Z6", 0x6415,
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
+  // Reported by Brian Dolbec <dol-sen@users.sourceforge.net>
+  { "Motorola", 0x22b8, "Atrix MB860 (MTP)", 0x7088,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Motorola Xoom (Wingray) variants
    *
