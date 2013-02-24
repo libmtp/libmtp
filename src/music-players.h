@@ -1098,8 +1098,8 @@
   // From: Maxin B. John <maxin.john@gmail.com>
   { "Nokia", 0x0421, "N9", 0x051a, DEVICE_FLAG_NONE },
   // Reported by Sampo Savola
-  // MTPZ?
-  { "Nokia", 0x0421, "Nokia Lumia 920", 0x0661, DEVICE_FLAG_NONE },
+  // Covers Lumia 920, 820 and probably any WP8 device.
+  { "Nokia", 0x0421, "Nokia Lumia WP8", 0x0661, DEVICE_FLAG_NONE },
   // Reported by Richard Wall <richard@the-moon.net>
   { "Nokia", 0x05c6, "5530 Xpressmusic", 0x0229, DEVICE_FLAG_NONE },
   // Reported by anonymous SourceForge user

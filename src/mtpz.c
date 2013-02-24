@@ -19,6 +19,8 @@
  * Boston, MA 02111-1307, USA.
  *
  * This file provides mtp zune cryptographic setup interfaces.
+ * It is also used with Windows Phone 7, but Microsoft/Nokiad seem
+ * to have discontinued MTPZ on Windows Phone 8.
  *
  * DISCLAIMER:
  *
