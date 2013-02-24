@@ -1995,6 +1995,9 @@
   // Reported by: anonymous sourceforge user
   { "Lenovo", 0x17ef, "Lifetab S9512", 0x74cc,
       DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by Brian J. Murrell
+  { "Lenovo", 0x17ef, "IdeaTab A2109A", 0x7542,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
 
   /*
