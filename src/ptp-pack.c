@@ -1,3 +1,27 @@
+/* ptp-pack.c
+ *
+ * Copyright (C) 2001-2004 Mariusz Woloszyn <emsi@ipartners.pl>
+ * Copyright (C) 2003-2012 Marcus Meissner <marcus@jet.franken.de>
+ * Copyright (C) 2006-2008 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2007 Tero Saarni <tero.saarni@gmail.com>
+ * Copyright (C) 2009 Axel Waggershauser <awagger@web.de>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
 /* currently this file is included into ptp.c */
 
 #ifdef HAVE_ICONV
@@ -533,7 +557,7 @@ static time_t
 ptp_unpack_PTPTIME (const char *str) {
 	char ptpdate[40];
 	char tmp[5];
-	int  ptpdatelen;
+	size_t  ptpdatelen;
 	struct tm tm;
 
 	if (!str)
@@ -543,11 +567,12 @@ ptp_unpack_PTPTIME (const char *str) {
 		/*ptp_debug (params ,"datelen is larger then size of buffer", ptpdatelen, (int)sizeof(ptpdate));*/
 		return 0;
 	}
-	strcpy (ptpdate, str);
 	if (ptpdatelen<15) {
 		/*ptp_debug (params ,"datelen is less than 15 (%d)", ptpdatelen);*/
 		return 0;
 	}
+	strncpy (ptpdate, str, sizeof(ptpdate));
+	ptpdate[sizeof(ptpdate) - 1] = '\0';
 
 	memset(&tm,0,sizeof(tm));
 	strncpy (tmp, ptpdate, 4);
@@ -1352,7 +1377,7 @@ ptp_unpack_EOS_CustomFuncEx (PTPParams* params, unsigned char** data )
 {
 	uint32_t s = dtoh32a( *data );
 	uint32_t n = s/4, i;
-	char* str = (char*)malloc( s ); // n is size in uint32, average len(itoa(i)) < 4 -> alloc n chars
+	char* str = (char*)malloc( s ); /* n is size in uint32, average len(itoa(i)) < 4 -> alloc n chars */
 	if (!str)
 		return str;
 	char* p = str;
@@ -1375,7 +1400,7 @@ ptp_pack_EOS_CustomFuncEx (PTPParams* params, unsigned char* data, char* str)
 	for (i=0; i<n; i++)
 	{
 		v = strtoul(str, &str, 16);
-		str++; // skip the ',' delimiter
+		str++; /* skip the ',' delimiter */
 		htod32a(data + i*4, v);
 	}
 
@@ -1639,6 +1664,7 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 				case PTP_DPC_CANON_EOS_QuickReviewTime:
 				case PTP_DPC_CANON_EOS_EVFMode:
 				case PTP_DPC_CANON_EOS_EVFOutputDevice:
+				case PTP_DPC_CANON_EOS_AutoPowerOff:
 					dpd->DataType = PTP_DTC_UINT16;
 					break;
 				case PTP_DPC_CANON_EOS_PictureStyle:
@@ -1659,7 +1685,6 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 					dpd->DataType = PTP_DTC_INT16;
 					break;
 				/* unknown props, listed from dump.... all 16 bit, but vals might be smaller */
-				case 0xd114:
 				case PTP_DPC_CANON_EOS_DPOFVersion:
 					dpd->DataType = PTP_DTC_UINT16;
 					ptp_debug (params, "event %d: Unknown EOS property %04x, datasize is %d, using uint16", i ,proptype, size-PTP_ece_Prop_Val_Data);

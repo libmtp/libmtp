@@ -548,6 +548,13 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_OC_OLYMPUS_SetCameraID			0x9501
 #define PTP_OC_OLYMPUS_GetCameraID			0x9581
 
+/* Android Random I/O Extensions Codes */
+#define PTP_OC_ANDROID_GetPartialObject64		0x95C1
+#define PTP_OC_ANDROID_SendPartialObject		0x95C2
+#define PTP_OC_ANDROID_TruncateObject			0x95C3
+#define PTP_OC_ANDROID_BeginEditObject			0x95C4
+#define PTP_OC_ANDROID_EndEditObject			0x95C5
+
 /* Proprietary vendor extension operations mask */
 #define PTP_OC_EXTENSION_MASK           0xF000
 #define PTP_OC_EXTENSION                0x9000
@@ -716,6 +723,10 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_EC_Nikon_AdvancedTransfer		0xC103
 #define PTP_EC_Nikon_PreviewImageAdded		0xC104
 
+/* Olympus E series */
+#define PTP_EC_Olympus_PropertyChanged		0xC102
+#define PTP_EC_Olympus_CaptureComplete		0xC103
+
 /* MTP Event codes */
 #define PTP_EC_MTP_ObjectPropChanged		0xC801
 #define PTP_EC_MTP_ObjectPropDescChanged	0xC802
@@ -861,6 +872,7 @@ typedef struct _PTPObjectInfo PTPObjectInfo;
 #define PTP_OFC_CANON_CRW			0xb101
 #define PTP_OFC_CANON_CRW3			0xb103
 #define PTP_OFC_CANON_MOV			0xb104
+#define PTP_OFC_CANON_MOV2			0xb105
 /* CHDK specific raw mode */
 #define PTP_OFC_CANON_CHDK_CRW			0xb1ff
 /* MTP extensions */
@@ -1367,6 +1379,7 @@ typedef struct _PTPCanonEOSDeviceInfo {
 #define PTP_DPC_CANON_EOS_BatteryPower		0xD111
 #define PTP_DPC_CANON_EOS_BatterySelect		0xD112
 #define PTP_DPC_CANON_EOS_CameraTime		0xD113
+#define PTP_DPC_CANON_EOS_AutoPowerOff		0xD114
 #define PTP_DPC_CANON_EOS_Owner			0xD115
 #define PTP_DPC_CANON_EOS_ModelID		0xD116
 #define PTP_DPC_CANON_EOS_PTPExtensionVersion	0xD119
@@ -2074,7 +2087,7 @@ typedef struct _PTPDataHandler {
  */
 typedef uint16_t (* PTPIOSendReq)	(PTPParams* params, PTPContainer* req);
 typedef uint16_t (* PTPIOSendData)	(PTPParams* params, PTPContainer* ptp,
-					 unsigned long size, PTPDataHandler*getter);
+					 uint64_t size, PTPDataHandler*getter);
 
 typedef uint16_t (* PTPIOGetResp)	(PTPParams* params, PTPContainer* resp);
 typedef uint16_t (* PTPIOGetData)	(PTPParams* params, PTPContainer* ptp,
@@ -2181,6 +2194,7 @@ struct _PTPParams {
 	PTPDeviceInfo	outer_deviceinfo;
 	char		*olympus_cmd;
 	char		*olympus_reply;
+	struct _PTPParams *outer_params;
 
 #ifdef HAVE_ICONV
 	/* PTP: iconv converters */
@@ -2198,7 +2212,7 @@ struct _PTPParams {
 /* last, but not least - ptp functions */
 uint16_t ptp_usb_sendreq	(PTPParams* params, PTPContainer* req);
 uint16_t ptp_usb_senddata	(PTPParams* params, PTPContainer* ptp,
-				 unsigned long size, PTPDataHandler *handler);
+				 uint64_t size, PTPDataHandler *handler);
 uint16_t ptp_usb_getresp	(PTPParams* params, PTPContainer* resp);
 uint16_t ptp_usb_getdata	(PTPParams* params, PTPContainer* ptp, 
 	                         PTPDataHandler *handler);
@@ -2214,7 +2228,7 @@ uint16_t ptp_usb_control_cancel_request (PTPParams *params, uint32_t transid);
 int      ptp_ptpip_connect	(PTPParams* params, const char *port);
 uint16_t ptp_ptpip_sendreq	(PTPParams* params, PTPContainer* req);
 uint16_t ptp_ptpip_senddata	(PTPParams* params, PTPContainer* ptp,
-				unsigned long size, PTPDataHandler *handler);
+				uint64_t size, PTPDataHandler *handler);
 uint16_t ptp_ptpip_getresp	(PTPParams* params, PTPContainer* resp);
 uint16_t ptp_ptpip_getdata	(PTPParams* params, PTPContainer* ptp, 
 	                         PTPDataHandler *handler);
@@ -2228,11 +2242,11 @@ uint16_t ptp_generic_no_data	(PTPParams* params, uint16_t opcode, unsigned int c
 uint16_t ptp_opensession	(PTPParams *params, uint32_t session);
 
 uint16_t ptp_transaction_new (PTPParams* params, PTPContainer* ptp, 
-                uint16_t flags, unsigned int sendlen,
+                uint16_t flags, uint64_t sendlen,
                 PTPDataHandler *handler
 );
 uint16_t ptp_transaction (PTPParams* params, PTPContainer* ptp,
-                uint16_t flags, unsigned int sendlen,
+                uint16_t flags, uint64_t sendlen,
                 unsigned char **data, unsigned int *recvlen
 );
 
@@ -2312,9 +2326,9 @@ uint16_t ptp_sendobjectinfo	(PTPParams* params, uint32_t* store,
  */
 #define ptp_setobjectprotection(params,oid,newprot) ptp_generic_no_data(params,PTP_OC_SetObjectProtection,2,oid,newprot)
 uint16_t ptp_sendobject		(PTPParams* params, unsigned char* object,
-				 uint32_t size);
-uint16_t ptp_sendobject_fromfd  (PTPParams* params, int fd, uint32_t size);
-uint16_t ptp_sendobject_from_handler  (PTPParams* params, PTPDataHandler*, uint32_t size);
+				 uint64_t size);
+uint16_t ptp_sendobject_fromfd  (PTPParams* params, int fd, uint64_t size);
+uint16_t ptp_sendobject_from_handler  (PTPParams* params, PTPDataHandler*, uint64_t size);
 /**
  * ptp_initiatecapture:
  * params:      PTPParams*
@@ -2715,7 +2729,7 @@ uint16_t ptp_nikon_writewifiprofile (PTPParams* params, PTPNIKONWifiProfile* pro
 #define ptp_canon_eos_zoom(params,x) ptp_generic_no_data(params,PTP_OC_CANON_EOS_Zoom,1,x)
 #define ptp_canon_eos_zoomposition(params,x,y) ptp_generic_no_data(params,PTP_OC_CANON_EOS_ZoomPosition,2,x,y)
 
-#define ptp_canon_eos_remotereleaseon(params,x) ptp_generic_no_data(params,PTP_OC_CANON_EOS_RemoteReleaseOn,1,x)
+#define ptp_canon_eos_remotereleaseon(params,x) ptp_generic_no_data(params,PTP_OC_CANON_EOS_RemoteReleaseOn,2,x,1)
 #define ptp_canon_eos_remotereleaseoff(params,x) ptp_generic_no_data(params,PTP_OC_CANON_EOS_RemoteReleaseOff,1,x)
 /**
  * ptp_nikon_mfdrive:
@@ -2819,11 +2833,22 @@ uint16_t ptp_nikon_getfileinfoinblock (PTPParams* params, uint32_t p1, uint32_t 
 #define ptp_nikon_device_ready(params) ptp_generic_no_data (params, PTP_OC_NIKON_DeviceReady, 0)
 uint16_t ptp_mtp_getobjectpropssupported (PTPParams* params, uint16_t ofc, uint32_t *propnum, uint16_t **props);
 
+
+/* Android MTP Extensions */
+uint16_t ptp_android_getpartialobject64	(PTPParams* params, uint32_t handle, uint64_t offset,
+					uint32_t maxbytes, unsigned char** object,
+					uint32_t *len);
+#define ptp_android_begineditobject(params,handle) ptp_generic_no_data (params, PTP_OC_ANDROID_BeginEditObject, 1, handle);
+#define ptp_android_truncate(params,handle,offset) ptp_generic_no_data (params, PTP_OC_ANDROID_TruncateObject, 3, handle, (offset & 0xFFFFFFFF), (offset >> 32));
+uint16_t ptp_android_sendpartialobject (PTPParams *params, uint32_t handle,
+					uint64_t offset, unsigned char *object, uint32_t len);
+#define ptp_android_endeditobject(params,handle) ptp_generic_no_data (params, PTP_OC_ANDROID_EndEditObject, 1, handle);
+
 /* Non PTP protocol functions */
 static inline int
 ptp_operation_issupported(PTPParams* params, uint16_t operation)
 {
-	int i=0;
+	unsigned int i=0;
 
 	for (;i<params->deviceinfo.OperationsSupported_len;i++) {
 		if (params->deviceinfo.OperationsSupported[i]==operation)
