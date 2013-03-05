@@ -1312,7 +1312,7 @@
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Brian J. Murrell
-  { "LG Electronics Inc.", 0x1004, "LG-E610/E617G/P700", 0x631c,
+  { "LG Electronics Inc.", 0x1004, "LG-E610/E612/E617G/P700", 0x631c,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
@@ -1720,8 +1720,9 @@
   { "Motorola", 0x22b8, "V3m/V750 verizon", 0x2a65,
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
-  // Reported by anonymous sourceforge user
-  { "Motorola", 0x22b8, "Atrix HD (ADB mode)", 0x2e33,
+  { "Motorola", 0x22b8, "Atrix/Razr HD (MTP)", 0x2e32,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Motorola", 0x22b8, "Atrix/Razr HD (MTP+ADB)", 0x2e33,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "RAZR M (XT907)", 0x2e51,
       DEVICE_FLAGS_ANDROID_BUGS },
