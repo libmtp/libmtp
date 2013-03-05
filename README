@@ -1010,18 +1010,33 @@ builders summit, might come to recycle this:
 
 - Protocol overview
   - Transactional filesystem - no corruption due to unplugged cables!
+  - The host and the device can access the files simultaneously, the
+    device will always "own" the physical file system and proxy the
+    host (MTP initiator).
 - libmtp interface
 - relation to libgphoto2
 - User expectations fall short:
   - Not really a mountable filesystem.
   - Streaming does not work. (Size needs to be known beforehand due to
     transactional nature.)
+  - GVFS MTP backend to the rescue.
 - Device sins
   - Android bugs
   - Samsungs special Android MTP stack
   - SonyEricsson Aricent stack for Xperia Androids pre 4.0, broken headers!
   - Flat access model vs hierarchical, how Android uses MTP as an hierachical
     file system while it was previously a flat database.
+  - Old paradigm: scan the entire non-hierarchical storage for all content,
+    build a cache to speed up the (USB 1.1!) link. Usually all files were
+    stored in the root folder or a single folder named "/Music" or similar.
+  - Android introduced deeply nested folder hierarchies, not seen before
+    on MTP devices.
+  - Microsoft not using the complete metadata dump feature of the MTP
+    protocol (once introduced by creative) instead they walk directories
+    separately.
+  - So caching a big device will take long time and/or timeout.
+  - Go-MTPFS (FUSE) and GVFS MTP - doing the partial directory walk rather
+    than caching all files.
 - Detecting from vendor extension, can fix in newer extensions!
 - Autoprobing on Linux
   - Color devices do not like autoprobing
@@ -1030,7 +1045,8 @@ builders summit, might come to recycle this:
   - Multimode USB - one PID for each mode due to Windows limitations not
     applicable to Linux, SONY devices have ~5 different PIDs for a single
     device.
-  - Mode switch devices?
-- MTPZ
+  - Mode switch devices? Maybe we do this wrong.
+- MTPZ, came and went. Apparently deprecated by Microsoft with Windows
+  Phone 8.
 - Ideas??
 
