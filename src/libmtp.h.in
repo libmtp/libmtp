@@ -1014,6 +1014,14 @@ int LIBMTP_Set_Object_Filename(LIBMTP_mtpdevice_t *, uint32_t , char *);
  */
 int LIBMTP_Read_Event(LIBMTP_mtpdevice_t *, LIBMTP_event_t *, uint32_t *);
 
+int LIBMTP_GetPartialObject(LIBMTP_mtpdevice_t *, uint32_t const,
+                            uint64_t, uint32_t,
+                            unsigned char **, unsigned int *);
+int LIBMTP_SendPartialObject(LIBMTP_mtpdevice_t *, uint32_t const,
+                             uint64_t, unsigned char *, unsigned int);
+int LIBMTP_BeginEditObject(LIBMTP_mtpdevice_t *, uint32_t const);
+int LIBMTP_EndEditObject(LIBMTP_mtpdevice_t *, uint32_t const);
+int LIBMTP_TruncateObject(LIBMTP_mtpdevice_t *, uint32_t const, uint64_t);
 
 /** @} */
 

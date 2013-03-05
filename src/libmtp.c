@@ -8819,6 +8819,114 @@ int LIBMTP_Get_Thumbnail(LIBMTP_mtpdevice_t *device, uint32_t const id,
   return -1;
 }
 
+
+int LIBMTP_GetPartialObject(LIBMTP_mtpdevice_t *device, uint32_t const id,
+                            uint64_t offset, uint32_t maxbytes,
+                            unsigned char **data, unsigned int *size)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  uint16_t ret;
+
+  if (!ptp_operation_issupported(params, PTP_OC_ANDROID_GetPartialObject64)) {
+    if  (!ptp_operation_issupported(params, PTP_OC_GetPartialObject)) {
+      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL,
+        "LIBMTP_GetPartialObject: PTP_OC_GetPartialObject not supported");
+      return -1;
+    }
+
+    if (offset >> 32 != 0) {
+      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL,
+        "LIBMTP_GetPartialObject: PTP_OC_GetPartialObject only supports 32bit offsets");
+      return -1;
+    }
+
+    ret = ptp_getpartialobject(params, id, (uint32_t)offset, maxbytes, data, size);
+  } else {
+    ret = ptp_android_getpartialobject64(params, id, offset, maxbytes, data, size);
+  }
+  if (ret == PTP_RC_OK)
+      return 0;
+  return -1;
+}
+
+
+int LIBMTP_SendPartialObject(LIBMTP_mtpdevice_t *device, uint32_t const id,
+                             uint64_t offset, unsigned char *data, unsigned int size)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  uint16_t ret;
+
+  if (!ptp_operation_issupported(params, PTP_OC_ANDROID_SendPartialObject)) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL,
+      "LIBMTP_SendPartialObject: PTP_OC_ANDROID_SendPartialObject not supported");
+    return -1;
+  }
+
+  ret = ptp_android_sendpartialobject(params, id, offset, data, size);
+  if (ret == PTP_RC_OK)
+      return 0;
+  return -1;
+}
+
+
+int LIBMTP_BeginEditObject(LIBMTP_mtpdevice_t *device, uint32_t const id)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  uint16_t ret;
+
+  if (!ptp_operation_issupported(params, PTP_OC_ANDROID_BeginEditObject)) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL,
+      "LIBMTP_BeginEditObject: PTP_OC_ANDROID_BeginEditObject not supported");
+    return -1;
+  }
+
+  ret = ptp_android_begineditobject(params, id);
+  if (ret == PTP_RC_OK)
+      return 0;
+  return -1;
+}
+
+
+int LIBMTP_EndEditObject(LIBMTP_mtpdevice_t *device, uint32_t const id)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  uint16_t ret;
+
+  if (!ptp_operation_issupported(params, PTP_OC_ANDROID_EndEditObject)) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL,
+      "LIBMTP_EndEditObject: PTP_OC_ANDROID_EndEditObject not supported");
+    return -1;
+  }
+
+  ret = ptp_android_endeditobject(params, id);
+  if (ret == PTP_RC_OK) {
+      // update cached object properties if metadata cache exists
+      update_metadata_cache(device, id);
+      return 0;
+  }
+  return -1;
+}
+
+
+int LIBMTP_TruncateObject(LIBMTP_mtpdevice_t *device, uint32_t const id,
+                          uint64_t offset)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  uint16_t ret;
+
+  if (!ptp_operation_issupported(params, PTP_OC_ANDROID_TruncateObject)) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL,
+      "LIBMTP_TruncateObject: PTP_OC_ANDROID_TruncateObject not supported");
+    return -1;
+  }
+
+  ret = ptp_android_truncate(params, id, offset);
+  if (ret == PTP_RC_OK)
+      return 0;
+  return -1;
+}
+
+
 /**
  * This routine updates an album based on the metadata
  * supplied. If the <code>tracks</code> field of the metadata

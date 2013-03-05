@@ -102,3 +102,8 @@ LIBMTP_Set_Album_Name
 LIBMTP_Set_Object_Filename
 LIBMTP_Get_Thumbnail
 LIBMTP_Read_Event
+LIBMTP_GetPartialObject
+LIBMTP_SendPartialObject
+LIBMTP_BeginEditObject
+LIBMTP_EndEditObject
+LIBMTP_TruncateObject
