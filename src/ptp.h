@@ -675,8 +675,9 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_EC_CANON_ExtendedErrorcode		0xC005	/* ? */
 #define PTP_EC_CANON_ObjectInfoChanged		0xC008
 #define PTP_EC_CANON_RequestObjectTransfer	0xC009
+#define PTP_EC_CANON_ShutterButtonPressed0	0xC00B
 #define PTP_EC_CANON_CameraModeChanged		0xC00C
-#define PTP_EC_CANON_ShutterButtonPressed	0xC00E
+#define PTP_EC_CANON_ShutterButtonPressed1	0xC00E
 
 #define PTP_EC_CANON_StartDirectTransfer	0xC011
 #define PTP_EC_CANON_StopDirectTransfer		0xC013
@@ -1503,6 +1504,8 @@ typedef struct _PTPCanonEOSDeviceInfo {
 #define PTP_DPC_NIKON_JPEG_Compression_Policy		0xD031
 #define PTP_DPC_NIKON_ColorSpace			0xD032
 #define PTP_DPC_NIKON_AutoDXCrop			0xD033
+#define PTP_DPC_NIKON_FlickerReduction			0xD034
+#define PTP_DPC_NIKON_RemoteMode			0xD035
 #define PTP_DPC_NIKON_VideoMode				0xD036
 #define PTP_DPC_NIKON_EffectMode			0xD037
 #define PTP_DPC_NIKON_CSMMenuBankSelect			0xD040
@@ -1586,6 +1589,9 @@ typedef struct _PTPCanonEOSDeviceInfo {
 #define PTP_DPC_NIKON_MovScreenSize			0xD0A0
 #define PTP_DPC_NIKON_MovVoice				0xD0A1
 #define PTP_DPC_NIKON_MovMicrophone			0xD0A2
+#define PTP_DPC_NIKON_MovFileSlot			0xD0A3
+#define PTP_DPC_NIKON_ManualMovieSetting		0xD0A6
+#define PTP_DPC_NIKON_MonitorOffDelay			0xD0B3
 #define PTP_DPC_NIKON_Bracketing			0xD0C0
 #define PTP_DPC_NIKON_AutoExposureBracketStep		0xD0C1
 #define PTP_DPC_NIKON_AutoExposureBracketProgram	0xD0C2
@@ -2220,6 +2226,15 @@ uint16_t ptp_getdeviceinfo	(PTPParams* params, PTPDeviceInfo* deviceinfo);
 uint16_t ptp_generic_no_data	(PTPParams* params, uint16_t opcode, unsigned int cnt, ...);
 
 uint16_t ptp_opensession	(PTPParams *params, uint32_t session);
+
+uint16_t ptp_transaction_new (PTPParams* params, PTPContainer* ptp, 
+                uint16_t flags, unsigned int sendlen,
+                PTPDataHandler *handler
+);
+uint16_t ptp_transaction (PTPParams* params, PTPContainer* ptp,
+                uint16_t flags, unsigned int sendlen,
+                unsigned char **data, unsigned int *recvlen
+);
 
 /**
  * ptp_closesession:
