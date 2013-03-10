@@ -2171,9 +2171,13 @@ int LIBMTP_Read_Event(LIBMTP_mtpdevice_t *device, LIBMTP_event_t *event, uint32_
       break;
     case PTP_EC_ObjectAdded:
       LIBMTP_INFO("Received event PTP_EC_ObjectAdded in session %u\n", session_id);
+      *event = LIBMTP_EVENT_OBJECT_ADDED;
+      *out1 = param1;
       break;
     case PTP_EC_ObjectRemoved:
       LIBMTP_INFO("Received event PTP_EC_ObjectRemoved in session %u\n", session_id);
+      *event = LIBMTP_EVENT_OBJECT_REMOVED;
+      *out1 = param1;
       break;
     case PTP_EC_StoreAdded:
       LIBMTP_INFO("Received event PTP_EC_StoreAdded in session %u\n", session_id);
@@ -2184,6 +2188,8 @@ int LIBMTP_Read_Event(LIBMTP_mtpdevice_t *device, LIBMTP_event_t *event, uint32_
     case PTP_EC_StoreRemoved:
       LIBMTP_INFO("Received event PTP_EC_StoreRemoved in session %u\n", session_id);
       /* TODO: rescan storages */
+      *event = LIBMTP_EVENT_STORE_REMOVED;
+      *out1 = param1;
       break;
     case PTP_EC_DevicePropChanged:
       LIBMTP_INFO("Received event PTP_EC_DevicePropChanged in session %u\n", session_id);
