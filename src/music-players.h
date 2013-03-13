@@ -2100,6 +2100,7 @@
    */
   // Found on Internet forum
   { "nVidia", 0x0955, "CM9-Adam", 0x70a9, DEVICE_FLAGS_ANDROID_BUGS },
+  { "nVidia", 0x0955, "Nabi2 Tablet", 0x7100, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Vizio
