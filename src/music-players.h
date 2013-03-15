@@ -1940,9 +1940,16 @@
    */
   { "Coby", 0x1e74, "COBY MP705", 0x6512, DEVICE_FLAG_NONE },
 
+#if 0
   /*
    * Apple devices, which are not MTP natively but can be made to speak MTP
    * using PwnTunes (http://www.pwntunes.net/)
+   * CURRENTLY COMMENTED OUT:
+   * These will make the UDEV rules flag these as MTP devices even if
+   * PwnTunes is NOT installed. That is unacceptable, so a better solution
+   * that actually inspects if the device has PwnTunes/MTP support needs
+   * to be found, see:
+   * https://sourceforge.net/p/libmtp/bugs/759/
    */
   { "Apple", 0x05ac, "iPhone", 0x1290, DEVICE_FLAG_NONE },
   { "Apple", 0x05ac, "iPod Touch 1st Gen", 0x1291, DEVICE_FLAG_NONE },
@@ -1954,6 +1961,7 @@
   { "Apple", 0x05ac, "0x1298", 0x1298, DEVICE_FLAG_NONE },
   { "Apple", 0x05ac, "iPod Touch 3rd Gen", 0x1299, DEVICE_FLAG_NONE },
   { "Apple", 0x05ac, "iPad", 0x129a, DEVICE_FLAG_NONE },
+#endif
 
   // Reported by anonymous SourceForge user, also reported as
   // Pantech Crux, claming to be:
@@ -2032,13 +2040,17 @@
    * Huawei
    */
   // Reported by anonymous SourceForge user
-  { "Huawei", 0x12d1, "Honor U8860", 0x1051, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Huawei", 0x12d1, "Honor U8860", 0x1051,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous SourceForge user
-  { "Huawei", 0x12d1, "U8815", 0x1052, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Huawei", 0x12d1, "U8815/U9200", 0x1052,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous SourceForge user
-  { "Huawei", 0x12d1, "Mediapad (mode 0)", 0x360f, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Huawei", 0x12d1, "Mediapad (mode 0)", 0x360f,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Bearsh <bearsh@users.sourceforge.net>
-  { "Huawei", 0x12d1, "Mediapad (mode 1)", 0x361f, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Huawei", 0x12d1, "Mediapad (mode 1)", 0x361f,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * ZTE
@@ -2046,7 +2058,7 @@
    */
   { "ZTE", 0x19d2, "V55 ID 1", 0x0244, DEVICE_FLAGS_ANDROID_BUGS },
   { "ZTE", 0x19d2, "V55 ID 2", 0x0245, DEVICE_FLAGS_ANDROID_BUGS },
-  { "ZTE", 0x19d2, "Blade 3", 0x0306, DEVICE_FLAGS_ANDROID_BUGS },
+  { "ZTE", 0x19d2, "v790/Blade 3", 0x0306, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * HTC (High Tech Computer Corp)
@@ -2067,9 +2079,13 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "EVO 4G LTE/One V (ID2)", 0x0ca8,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "HTC", 0x0bb4, "HTC One S", 0x0df9,
+  { "HTC", 0x0bb4, "HTC One S (ID1)", 0x0cec,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC One S (ID2)", 0x0df9,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One X (ID1)", 0x0dfb,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC One X (ID2)", 0x0dfc,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC Butterfly (ID1)", 0x0dfe,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2081,10 +2097,10 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   // These identify themselves as "cm_tenderloin", fun...
   // Done by HTC for HP I guess.
-  { "Hewlett-Packard", 0x0bb4, "HP Touchpad", 0x685c,
+  { "Hewlett-Packard", 0x0bb4, "HP Touchpad (MTP)", 0x685c,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Hewlett-Packard", 0x0bb4, "HP Touchpad (debug mode)",
-      0x6860, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Hewlett-Packard", 0x0bb4, "HP Touchpad (MTP+ADB)", 0x6860,
+      DEVICE_FLAGS_ANDROID_BUGS },
 #if 0
   { "HTC", 0x0bb4, "Android Device ID2 (Zopo, HD2...)", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2116,6 +2132,12 @@
   { "Amazon", 0x1949, "Kindle Fire (ID2)", 0x0008,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Amazon", 0x1949, "Kindle Fire (ID3)", 0x000a,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
+   * Barnes&Noble
+   */
+  { "Barnes&Noble", 0x2080, "Nook HD+", 0x0005,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
