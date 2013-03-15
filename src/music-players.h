@@ -394,7 +394,9 @@
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT |
-      DEVICE_FLAG_PROPLIST_OVERRIDES_OI	},
+      DEVICE_FLAG_PROPLIST_OVERRIDES_OI	|
+      DEVICE_FLAG_OGG_IS_UNKNOWN |
+      DEVICE_FLAG_FLAC_IS_UNKNOWN },
   // Reported by David Goodenough <dfgdga@users.sourceforge.net>
   // Guessing on flags.
   { "Samsung", 0x04e8, "Galaxy Y", 0x685e,
@@ -402,7 +404,9 @@
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT |
-      DEVICE_FLAG_PROPLIST_OVERRIDES_OI	},
+      DEVICE_FLAG_PROPLIST_OVERRIDES_OI |
+      DEVICE_FLAG_OGG_IS_UNKNOWN |
+      DEVICE_FLAG_FLAC_IS_UNKNOWN },
   { "Samsung", 0x04e8,
       "Galaxy models (MTP)", 0x6860,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
@@ -422,7 +426,9 @@
   { "Samsung", 0x04e8, "Galaxy models Kies mode", 0x6877,
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT |
-      DEVICE_FLAG_PROPLIST_OVERRIDES_OI	},
+      DEVICE_FLAG_PROPLIST_OVERRIDES_OI	|
+      DEVICE_FLAG_OGG_IS_UNKNOWN |
+      DEVICE_FLAG_FLAC_IS_UNKNOWN },
   // From: John Gorkos <ab0oo@users.sourceforge.net> and
   // Akos Maroy <darkeye@users.sourceforge.net>
   { "Samsung", 0x04e8, "Vibrant SGH-T959/Captivate/Media player mode", 0x68a9,
