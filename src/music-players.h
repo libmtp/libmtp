@@ -1297,7 +1297,6 @@
   /*
    * LG Electronics
    */
-  // From anonymous SourceForge user
   // Uncertain if this is really the MTP mode device ID...
   { "LG Electronics Inc.", 0x043e, "T54", 0x7040,
       DEVICE_FLAG_UNLOAD_DRIVER },
@@ -1314,16 +1313,16 @@
   { "LG Electronics Inc.", 0x1004, "GR-500 Music Player", 0x611b,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_ALWAYS_PROBE_DESCRIPTOR },
-  // Reported by anonymous sourceforge user
   { "LG Electronics Inc.", 0x1004, "KM900", 0x6132,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by anonymous sourceforge user
   { "LG Electronics Inc.", 0x1004, "LG8575", 0x619a,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by anonymous sourceforge user
   { "LG Electronics Inc.", 0x1004, "V909 G-Slate", 0x61f9,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      DEVICE_FLAG_UNLOAD_DRIVER },
+  { "LG Electronics Inc.", 0x1004, "LG2 Optimus", 0x6225,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Brian J. Murrell
