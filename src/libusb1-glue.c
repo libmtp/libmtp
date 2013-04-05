@@ -1205,7 +1205,7 @@ ptp_usb_senddata (PTPParams* params, PTPContainer* ptp,
 	int wlen, datawlen;
 	unsigned long written;
 	PTPUSBBulkContainer usbdata;
-	uint32_t bytes_left_to_transfer;
+	uint64_t bytes_left_to_transfer;
 	PTPDataHandler memhandler;
 
 
