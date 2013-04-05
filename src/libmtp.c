@@ -6191,8 +6191,12 @@ static int send_file_object_info(LIBMTP_mtpdevice_t *device, LIBMTP_file_t *file
     if (FLAG_ONLY_7BIT_FILENAMES(ptp_usb)) {
       strip_7bit_from_utf8(new_file.Filename);
     }
-    // We lose precision here.
-    new_file.ObjectCompressedSize = (uint32_t) filedata->filesize;
+    if (filedata->filesize > 0xFFFFFFFFL) {
+      // This is a kludge in the MTP standard for large files.
+      new_file.ObjectCompressedSize = (uint32_t) 0xFFFFFFFF;
+    } else {
+      new_file.ObjectCompressedSize = (uint32_t) filedata->filesize;
+    }
     new_file.ObjectFormat = of;
     new_file.StorageID = store;
     new_file.ParentObject = localph;
