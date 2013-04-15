@@ -1323,7 +1323,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 				break;
 			}
 		}
-		if (usbdata.length == 0xffffffffU) {
+		if (rlen == PTP_USB_BULK_HS_MAX_PACKET_LEN_READ) {
 		  /* Copy first part of data to 'data' */
 		  putfunc_ret =
 		    handler->putfunc(
@@ -1339,7 +1339,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		    uint16_t xret;
 
 		    xret = ptp_read_func(
-					 PTP_USB_BULK_HS_MAX_PACKET_LEN_READ,
+					 0x20000000,
 					 handler,
 					 params->data,
 					 &readdata,
@@ -1347,7 +1347,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 					 );
 		    if (xret != PTP_RC_OK)
 		      return xret;
-		    if (readdata < PTP_USB_BULK_HS_MAX_PACKET_LEN_READ)
+		    if (readdata < 0x20000000)
 		      break;
 		  }
 		  return PTP_RC_OK;
