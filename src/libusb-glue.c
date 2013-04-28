@@ -1818,11 +1818,14 @@ static void close_usb(PTP_USB* ptp_usb)
      * STALL is persistant or not).
      */
     clear_stall(ptp_usb);
+#if 0
+    // causes troubles due to a kernel bug in 3.x kernels before/around 3.8
     // Clear halts on any endpoints
     clear_halt(ptp_usb);
     // Added to clear some stuff on the OUT endpoint
     // TODO: is this good on the Mac too?
     // HINT: some devices may need that you comment these two out too.
+#endif
     usb_resetep(ptp_usb->handle, ptp_usb->outep);
     usb_release_interface(ptp_usb->handle, (int) ptp_usb->interface);
   }

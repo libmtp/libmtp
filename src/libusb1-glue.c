@@ -1860,12 +1860,15 @@ static void close_usb(PTP_USB* ptp_usb)
      * STALL is persistant or not).
      */
     clear_stall(ptp_usb);
+#if 0
+    // causes hangs on Linux 3.x at least up to 3.8
     // Clear halts on any endpoints
     clear_halt(ptp_usb);
     // Added to clear some stuff on the OUT endpoint
     // TODO: is this good on the Mac too?
     // HINT: some devices may need that you comment these two out too.
     libusb_clear_halt(ptp_usb->handle, ptp_usb->outep);
+#endif
     libusb_release_interface(ptp_usb->handle, (int) ptp_usb->interface);
   }
   if (FLAG_FORCE_RESET_ON_CLOSE(ptp_usb)) {
