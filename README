@@ -1037,6 +1037,15 @@ builders summit, might come to recycle this:
   - So caching a big device will take long time and/or timeout.
   - Go-MTPFS (FUSE) and GVFS MTP - doing the partial directory walk rather
     than caching all files.
+  - Especially Android devices nowadays assume that
+    you want to index a folder at the time, whereas older MTP devices (such
+    as those from Creative) would assume that you wanted to index the entire
+    device as it was plugged in, and device firmware is now ever more tailored
+    toward per-folder filetree walking. This makes it harder for the library
+    to provide the right abstractions: do we provide an API for indexing the
+    whole device which is unacceptably slow on new devices, or do we provide
+    an API for indexing a directory at the time which will somehow work on
+    older devices too? Shall we deprecate the older API?
 - Detecting from vendor extension, can fix in newer extensions!
 - Autoprobing on Linux
   - Color devices do not like autoprobing
