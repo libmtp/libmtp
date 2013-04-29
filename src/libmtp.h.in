@@ -2,7 +2,7 @@
  * \file libmtp.h
  * Interface to the Media Transfer Protocol library.
  *
- * Copyright (C) 2005-2012 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2013 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2005-2008 Richard A. Low <richard@wentnet.com>
  * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  * Copyright (C) 2008 Florent Mertens <flomertens@gmail.com>
@@ -401,6 +401,30 @@ typedef enum {
   LIBMTP_DATATYPE_INT64,
   LIBMTP_DATATYPE_UINT64,
 } LIBMTP_datatype_t;
+
+/**
+ * These are device capabilities
+ */
+typedef enum {
+  /**
+   * This capability tells whether you can call the funcion getting
+   * partial objects, @see LIBMTP_GetPartialObject()
+   */
+  LIBMTP_DEVICECAP_GetPartialObject,
+  /**
+   * This capability tells whether you can call the function sending
+   * partial objects. @see LIBMTP_SendPartialObject()
+   */
+  LIBMTP_DEVICECAP_SendPartialObject,
+  /**
+   * This capability tells whether you can call the functions editing
+   * objects in-place on a device.
+   * @see LIBMTP_BeginEditObject()
+   * @see LIBMTP_EndEditObject()
+   * @see LIBMTP_TruncateObject()
+   */
+  LIBMTP_DEVICECAP_EditObjects,
+} LIBMTP_devicecap_t;
 
 /**
  * These are the numbered error codes. You can also
@@ -825,6 +849,7 @@ int LIBMTP_Get_Batterylevel(LIBMTP_mtpdevice_t *,
 int LIBMTP_Get_Secure_Time(LIBMTP_mtpdevice_t *, char ** const);
 int LIBMTP_Get_Device_Certificate(LIBMTP_mtpdevice_t *, char ** const);
 int LIBMTP_Get_Supported_Filetypes(LIBMTP_mtpdevice_t *, uint16_t ** const, uint16_t * const);
+int LIBMTP_Check_Capability(LIBMTP_mtpdevice_t *, LIBMTP_devicecap_t);
 LIBMTP_error_t *LIBMTP_Get_Errorstack(LIBMTP_mtpdevice_t*);
 void LIBMTP_Clear_Errorstack(LIBMTP_mtpdevice_t*);
 void LIBMTP_Dump_Errorstack(LIBMTP_mtpdevice_t*);
