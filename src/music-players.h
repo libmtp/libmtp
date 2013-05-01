@@ -1543,6 +1543,8 @@
       DEVICE_FLAG_NONE },
   { "SonyEricsson", 0x0fce, "MT11i Xperia Neo MTP", 0x0156,
       DEVICE_FLAG_NONE },
+  { "SonyEricsson", 0x0fce, "IS12S Xperia Acro MTP", 0x0157,
+      DEVICE_FLAG_NONE },
   { "SonyEricsson", 0x0fce, "MK16i Xperia MTP", 0x015a,
       DEVICE_FLAG_NONE },
   { "SonyEricsson", 0x0fce, "R800/R88i Xperia Play MTP", 0x015d,
@@ -1591,7 +1593,7 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia E MTP", 0x018c,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "Xperia Tablet Z MTP", 0x018D,
+  { "SONY", 0x0fce, "Xperia Tablet Z MTP", 0x018d,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z MTP", 0x0193,
       DEVICE_FLAG_NONE },
@@ -1601,6 +1603,8 @@
   /*
    * MTP+UMS personalities of MTP devices (see above)
    */
+  { "SonyEricsson", 0x0fce, "IS12S Xperia Acro MTP+CDROM", 0x4157,
+      DEVICE_FLAG_NONE },
   { "SonyEricsson", 0x0fce, "ST17i Xperia Active MTP+CDROM", 0x4168,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "LT26i Xperia S MTP+CDROM", 0x4169,
@@ -1650,6 +1654,8 @@
   { "SonyEricsson", 0x0fce, "LT15i Xperia Arc MTP+ADB", 0x514f,
       DEVICE_FLAG_NONE },
   { "SonyEricsson", 0x0fce, "MT11i Xperia Neo MTP+ADB", 0x5156,
+      DEVICE_FLAG_NONE },
+  { "SonyEricsson", 0x0fce, "IS12S Xperia Acro MTP+ADB", 0x5157,
       DEVICE_FLAG_NONE },
   { "SonyEricsson", 0x0fce, "MK16i Xperia MTP+ADB", 0x515a,
       DEVICE_FLAG_NONE },
