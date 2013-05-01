@@ -2212,6 +2212,14 @@
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
+   * XO Learning Tablet
+   */
+  { "Acromag Inc.", 0x16d5, "XO Learning Tablet (MTP+ADB)", 0x8005,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acromag Inc.", 0x16d5, "XO Learning Tablet (MTP)", 0x8006,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
    * Other strange stuff.
    */
   { "Isabella", 0x0b20, "Her Prototype", 0xddee, DEVICE_FLAG_NONE }
