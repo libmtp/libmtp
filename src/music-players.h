@@ -1673,7 +1673,7 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "LT26i Xperia S MTP+ADB", 0x5169,
       DEVICE_FLAG_NO_ZERO_READS },
-  { "SonyEricsson", 0x0fce, "SK17i Xperia Mini Pro MTP+ADB", 0x516d,
+  { "SonyEricsson", 0x0fce, "WT19i Live Walkman MTP+ADB", 0x516d,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "ST21i Xperia Tipo MTP+ADB", 0x5170,
       DEVICE_FLAG_NONE },
@@ -1852,6 +1852,10 @@
   { "Google Inc (for Asus)", 0x18d1, "TF101 Transformer", 0x4e0f,
       DEVICE_FLAGS_ANDROID_BUGS },
   // 0x4e21 (Nexus S) is a USB Mass Storage device.
+  { "Google Inc (for Samsung)", 0x18d1, "Nexus S (MTP)", 0x4e25,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Google Inc (for Samsung)", 0x18d1, "Nexus S (MTP+ADB)", 0x4e26,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Chris Smith <tcgsmythe@users.sourceforge.net>
   { "Google Inc (for Asus)", 0x18d1, "Nexus 7 (MTP)", 0x4e41,
       DEVICE_FLAGS_ANDROID_BUGS },
