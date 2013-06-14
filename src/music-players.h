@@ -578,6 +578,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "Iconia TAB A110", 0x33d8,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Liquid Z120 MT65xx Android Phone", 0x3473,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * SanDisk
@@ -1114,6 +1116,7 @@
   // From: Maxin B. John <maxin.john@gmail.com>
   { "Nokia", 0x0421, "N9", 0x051a, DEVICE_FLAG_NONE },
   { "Nokia", 0x0421, "C5-00", 0x0592, DEVICE_FLAG_NONE },
+  { "Nokia", 0x0421, "808 PureView", 0x05d3, DEVICE_FLAG_NONE },
   // Reported by Sampo Savola
   // Covers Lumia 920, 820 and probably any WP8 device.
   { "Nokia", 0x0421, "Nokia Lumia WP8", 0x0661, DEVICE_FLAG_NONE },
@@ -1595,11 +1598,13 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia E MTP", 0x018c,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "Xperia Tablet Z MTP", 0x018d,
+  { "SONY", 0x0fce, "Xperia Tablet Z MTP 1", 0x018d,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z MTP", 0x0193,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "Xperia Tablet Z MTP", 0x0194,
+  { "SONY", 0x0fce, "Xperia Tablet Z MTP 2", 0x0194,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia SP MTP", 0x0195,
       DEVICE_FLAG_NONE },
 
   /*
@@ -1639,15 +1644,17 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia J MTP+CDROM", 0x4188,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "Xperia ZL MTP", 0x4189,
+  { "SONY", 0x0fce, "Xperia ZL MTP+CDROM", 0x4189,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia E MTP+CDROM", 0x418c,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "Xperia Tablet Z MTP", 0x418d,
+  { "SONY", 0x0fce, "Xperia Tablet Z MTP+CDROM 1", 0x418d,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "Xperia Z MTP", 0x4193,
+  { "SONY", 0x0fce, "Xperia Z MTP+CDROM", 0x4193,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "Xperia Tablet Z MTP", 0x4194,
+  { "SONY", 0x0fce, "Xperia Tablet Z MTP+CDROM 2", 0x4194,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia SP MTP+CDROM", 0x4195,
       DEVICE_FLAG_NONE },
 
   /*
@@ -1703,15 +1710,17 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia J MTP+ADB", 0x5188,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "Xperia ZL MTP", 0x5189,
+  { "SONY", 0x0fce, "Xperia ZL MTP+ADB", 0x5189,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia E MTP+ADB", 0x518c,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "Xperia Tablet Z MTP", 0x518d,
+  { "SONY", 0x0fce, "Xperia Tablet Z MTP+ADB 1", 0x518d,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "Xperia Z MTP", 0x5193,
+  { "SONY", 0x0fce, "Xperia Z MTP+ADB", 0x5193,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "Xperia Tablet Z MTP", 0x5194,
+  { "SONY", 0x0fce, "Xperia Tablet Z MTP+ADB 2", 0x5194,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia SP MTP+ADB", 0x5195,
       DEVICE_FLAG_NONE },
 
   /*
@@ -2035,6 +2044,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TF101 Eeepad Transformer (MTP+ADB)", 0x4e1f,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "Fonepad", 0x514f,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "PadFone (MTP)", 0x5200,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "PadFone (MTP+ADB)", 0x5201,
@@ -2118,7 +2129,7 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One (ID1)", 0x0dda,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "HTC", 0x0bb4, "HTC One (ID2)", 0x0dea,
+  { "HTC", 0x0bb4, "HTC One (MTP+UMS+ADB)", 0x0dea,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC Evo 4G LTE (ID1)", 0x0df5,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2139,6 +2150,8 @@
   { "HTC", 0x0bb4, "HTC Droid Incredible 4G LTE (MTP+ADB)", 0x0e32,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "Droid DNA (MTP+UMS)", 0x0ebd,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC One (MTP+ADB)", 0x0f87,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One (ID3)", 0x0f91,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2178,6 +2191,7 @@
   // Reported by Michael Gurski <gurski@users.sourceforge.net>
   { "Vizio", 0x0489, "VTAB1008", 0xe040, DEVICE_FLAGS_ANDROID_BUGS },
 
+
   /*
    * Amazon
    */
@@ -2194,6 +2208,8 @@
    * Barnes&Noble
    */
   { "Barnes&Noble", 0x2080, "Nook HD+", 0x0005,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Barnes&Noble", 0x2080, "Nook HD", 0x0006,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
@@ -2240,6 +2256,20 @@
   { "Acromag Inc.", 0x16d5, "XO Learning Tablet (MTP+ADB)", 0x8005,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Acromag Inc.", 0x16d5, "XO Learning Tablet (MTP)", 0x8006,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
+   * SHARP Corporation
+   */
+  { "SHARP Corporation", 0x0489, "SH930W", 0xc025,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "SHARP Corporation", 0x04dd, "SBM203SH", 0x9661,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
+   * Alcatel
+   */
+  { "Alcatel", 0x1bbb, "One Touch 997D", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
