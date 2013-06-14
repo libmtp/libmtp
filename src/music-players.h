@@ -3,7 +3,7 @@
  * List of music players as USB ids.
  *
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
- * Copyright (C) 2005-2012 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2013 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2006-2007 Marcus Meissner
  * Copyright (C) 2007 Ted Bullock
  * Copyright (C) 2012 Sony Mobile Communications AB
@@ -570,14 +570,14 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "Iconia TAB A510 (ID2)", 0x338a,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "S500 CloudMobile", 0x33aa,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "E350 Liquid Gallant Duo", 0x33c3,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "Iconia TAB A210", 0x33cb,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "Iconia TAB A110", 0x33d8,
       DEVICE_FLAGS_ANDROID_BUGS },
-
-
 
   /*
    * SanDisk
@@ -1057,6 +1057,8 @@
   { "Nokia", 0x0421, "E72", 0x0221, DEVICE_FLAG_NONE },
   // From: Anonymous SourceForge user
   { "Nokia", 0x0421, "5530", 0x0229, DEVICE_FLAG_NONE },
+  /* Grzegorz Woźniak <wozniakg@gmail.com> */
+  { "Nokia", 0x0421, "E6", 0x032f, DEVICE_FLAG_NONE },
   // From: Anonymous SourceForge user
   { "Nokia", 0x0421, "N97 mini", 0x026b, DEVICE_FLAG_NONE },
   // From: Anonymous SourceForge user
@@ -2083,7 +2085,9 @@
    */
   { "ZTE", 0x19d2, "V55 ID 1", 0x0244, DEVICE_FLAGS_ANDROID_BUGS },
   { "ZTE", 0x19d2, "V55 ID 2", 0x0245, DEVICE_FLAGS_ANDROID_BUGS },
-  { "ZTE", 0x19d2, "v790/Blade 3", 0x0306, DEVICE_FLAGS_ANDROID_BUGS },
+  { "ZTE", 0x19d2, "V790/Blade 3", 0x0306, DEVICE_FLAGS_ANDROID_BUGS },
+  { "ZTE", 0x19d2, "V880E", 0x0307, DEVICE_FLAGS_ANDROID_BUGS },
+  { "ZTE", 0x19d2, "V985", 0x0383, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * HTC (High Tech Computer Corp)
@@ -2106,6 +2110,12 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One S (ID1)", 0x0cec,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC Desire X", 0x0dd5,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC One (ID1)", 0x0dda,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC One (ID2)", 0x0dea,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC Evo 4G LTE (ID1)", 0x0df5,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One S (ID2)", 0x0df9,
@@ -2126,7 +2136,7 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "Droid DNA (MTP+UMS)", 0x0ebd,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "HTC", 0x0bb4, "HTC One X (ID2)", 0x0f91,
+  { "HTC", 0x0bb4, "HTC One (ID3)", 0x0f91,
       DEVICE_FLAGS_ANDROID_BUGS },
   // These identify themselves as "cm_tenderloin", fun...
   // Done by HTC for HP I guess.
@@ -2135,6 +2145,9 @@
   { "Hewlett-Packard", 0x0bb4, "HP Touchpad (MTP+ADB)", 0x6860,
       DEVICE_FLAGS_ANDROID_BUGS },
 #if 0
+  // Apparently also used by a clone called Jiayu G2S
+  // with the MTK6577T chipset
+  // http://www.ejiayu.com/en/Product-19.html with
   { "HTC", 0x0bb4, "Android Device ID2 (Zopo, HD2...)", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
 #endif
