@@ -591,19 +591,30 @@ Here is what some people do:
  6. Once mtp-detect gives you an "Ok", open either Rhythmbox or Gnomad2,
     everything should work.
 
-Linux: Try this, if you have a recent 2.6.x Linux kernel,
-run (as root) something like:
+Linux: Try this, if you have a recent Linux kernel,
+add the file (as root):
+
+/etc/modprobe.d/no-usb-storage.conf
+
+With the contents:
+
+options usb-storage quirks=1234:4321:i
+
+This will tell usb-storage to ignore this device when it's inserted
+so it is not hogged by the mass storage interfaces. Remove and re-insert
+the device and see if it works. Usually this does the trick.
+
+For older systems, or as a bigger hammer, run (as root) something
+like:
 
 > rmmod usb_storage ; mtp-detect
 
 You can run most any command or a client like gnomad2 or
 Amarok immediately after the rmmod command. This works
-sometimes. Another way:
+sometimes. Another even more brutal approach is this:
 
 * Edit /etc/modprobe.d/blacklist
-
 * Add the line "blacklist usb-storage"
-
 * Reboot.
 
 Now none of you USB disks, flash memory sticks etc will be
