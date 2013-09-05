@@ -116,9 +116,9 @@ typedef struct propertymap_struct {
 
 // Global variables
 // This holds the global filetype mapping table
-static filemap_t *filemap = NULL;
+static filemap_t *g_filemap = NULL;
 // This holds the global property mapping table
-static propertymap_t *propertymap = NULL;
+static propertymap_t *g_propertymap = NULL;
 
 /*
  * Forward declarations of local (static) functions.
@@ -303,7 +303,7 @@ static int register_filetype(char const * const description, LIBMTP_filetype_t c
   filemap_t *new = NULL, *current;
 
   // Has this LIBMTP filetype been registered before ?
-  current = filemap;
+  current = g_filemap;
   while (current != NULL) {
     if(current->id == id) {
       break;
@@ -325,10 +325,10 @@ static int register_filetype(char const * const description, LIBMTP_filetype_t c
     new->ptp_id = ptp_id;
 
     // Add the entry to the list
-    if(filemap == NULL) {
-      filemap = new;
+    if(g_filemap == NULL) {
+      g_filemap = new;
     } else {
-      current = filemap;
+      current = g_filemap;
       while (current->next != NULL ) current=current->next;
       current->next = new;
     }
@@ -405,7 +405,7 @@ static uint16_t map_libmtp_type_to_ptp_type(LIBMTP_filetype_t intype)
 {
   filemap_t *current;
 
-  current = filemap;
+  current = g_filemap;
 
   while (current != NULL) {
     if(current->id == intype) {
@@ -428,7 +428,7 @@ static LIBMTP_filetype_t map_ptp_type_to_libmtp_type(uint16_t intype)
 {
   filemap_t *current;
 
-  current = filemap;
+  current = g_filemap;
 
   while (current != NULL) {
     if(current->ptp_id == intype) {
@@ -474,7 +474,7 @@ static int register_property(char const * const description, LIBMTP_property_t c
   propertymap_t *new = NULL, *current;
 
   // Has this LIBMTP propety been registered before ?
-  current = propertymap;
+  current = g_propertymap;
   while (current != NULL) {
     if(current->id == id) {
       break;
@@ -496,10 +496,10 @@ static int register_property(char const * const description, LIBMTP_property_t c
     new->ptp_id = ptp_id;
 
     // Add the entry to the list
-    if(propertymap == NULL) {
-      propertymap = new;
+    if(g_propertymap == NULL) {
+      g_propertymap = new;
     } else {
-      current = propertymap;
+      current = g_propertymap;
       while (current->next != NULL ) current=current->next;
       current->next = new;
     }
@@ -699,7 +699,7 @@ static uint16_t map_libmtp_property_to_ptp_property(LIBMTP_property_t inproperty
 {
   propertymap_t *current;
 
-  current = propertymap;
+  current = g_propertymap;
 
   while (current != NULL) {
     if(current->id == inproperty) {
@@ -721,7 +721,7 @@ static LIBMTP_property_t map_ptp_property_to_libmtp_property(uint16_t inproperty
 {
   propertymap_t *current;
 
-  current = propertymap;
+  current = g_propertymap;
 
   while (current != NULL) {
     if(current->ptp_id == inproperty) {
@@ -794,7 +794,7 @@ char const * LIBMTP_Get_Filetype_Description(LIBMTP_filetype_t intype)
 {
   filemap_t *current;
 
-  current = filemap;
+  current = g_filemap;
 
   while (current != NULL) {
     if(current->id == intype) {
@@ -817,7 +817,7 @@ char const * LIBMTP_Get_Property_Description(LIBMTP_property_t inproperty)
 {
   propertymap_t *current;
 
-  current = propertymap;
+  current = g_propertymap;
 
   while (current != NULL) {
     if(current->id == inproperty) {
