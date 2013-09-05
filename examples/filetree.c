@@ -49,8 +49,10 @@ void recursive_file_tree(LIBMTP_mtpdevice_t *device,
   }
 
   /* Iterate over the filelisting */
-  for (file = files; file != NULL; file = file->next) {
+  file = files;
+  while (file != NULL) {
     int i;
+    LIBMTP_file_t *oldfile;
 
     /* Indent */
     for (i = 0; i < depth; i++) {
@@ -60,6 +62,10 @@ void recursive_file_tree(LIBMTP_mtpdevice_t *device,
     if (file->filetype == LIBMTP_FILETYPE_FOLDER) {
       recursive_file_tree(device, storage, file->item_id, depth+2);
     }
+
+    oldfile = file;
+    file = file->next;
+    LIBMTP_destroy_file_t(oldfile);
   }
 }
 
