@@ -41,13 +41,14 @@ static void dump_folder_list(LIBMTP_folder_t *folderlist, int level)
 
 int main (int argc, char **argv)
 {
-  LIBMTP_mtpdevice_t *device_list, *device;
+  LIBMTP_raw_device_t *rawdevices;
+  int numrawdevices;
+  int i;
 
   LIBMTP_Init();
   printf("Attempting to connect device(s)\n");
 
-  switch(LIBMTP_Get_Connected_Devices(&device_list))
-  {
+  switch (LIBMTP_Detect_Raw_Devices(&rawdevices, &numrawdevices)) {
   case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
     printf("mtp-folders: no devices found\n");
     return 0;
@@ -63,7 +64,7 @@ int main (int argc, char **argv)
   default:
     fprintf(stderr, "mtp-folders: Unknown error, please report "
                     "this to the libmtp developers\n");
-  return 1;
+    return 1;
 
   /* Successfully connected at least one device, so continue */
   case LIBMTP_ERROR_NONE:
@@ -71,11 +72,17 @@ int main (int argc, char **argv)
   }
 
   /* iterate through connected MTP devices */
-  for(device = device_list; device != NULL; device = device->next)
-  {
+  for (i = 0; i < numrawdevices; i++) {
+    LIBMTP_mtpdevice_t *device;
     LIBMTP_devicestorage_t *storage;
     char *friendlyname;
     int ret;
+
+    device = LIBMTP_Open_Raw_Device(&rawdevices[i]);
+    if (device == NULL) {
+      fprintf(stderr, "Unable to open raw device %d\n", i);
+      continue;
+    }
 
     /* Echo the friendly name so we know which device we are working with */
     friendlyname = LIBMTP_Get_Friendlyname(device);
@@ -114,9 +121,10 @@ int main (int argc, char **argv)
       }
       LIBMTP_destroy_folder_t(folders);
     }
+    LIBMTP_Release_Device(device);
   }
 
-  LIBMTP_Release_Device_List(device_list);
+  free(rawdevices);
   printf("OK.\n");
 
   return 0;
