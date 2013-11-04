@@ -368,7 +368,7 @@
    *
    * 0x685b - UMS
    * 0x685c - MTP + ADB
-   * 0x685e - UMS + CDC
+   * 0x685e - UMS + CDC (not MTP)
    * 0x6860 - MTP mode (default)
    * 0x6863 - USB CDC RNDIS (not MTP)
    * 0x6865 - PTP mode (not MTP)
@@ -403,16 +403,6 @@
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT |
       DEVICE_FLAG_PROPLIST_OVERRIDES_OI	|
-      DEVICE_FLAG_OGG_IS_UNKNOWN |
-      DEVICE_FLAG_FLAC_IS_UNKNOWN },
-  // Reported by David Goodenough <dfgdga@users.sourceforge.net>
-  // Guessing on flags.
-  { "Samsung", 0x04e8, "Galaxy Y", 0x685e,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNLOAD_DRIVER |
-      DEVICE_FLAG_LONG_TIMEOUT |
-      DEVICE_FLAG_PROPLIST_OVERRIDES_OI |
       DEVICE_FLAG_OGG_IS_UNKNOWN |
       DEVICE_FLAG_FLAC_IS_UNKNOWN },
   { "Samsung", 0x04e8,
@@ -1869,6 +1859,8 @@
    * road to produce an Android tablet it seems... The Vendor ID
    * was originally used for Nexus phones
    */
+  { "Google Inc (for Unknown)", 0x18d1, "Unknown", 0x0006,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc (for Ainol Novo)", 0x18d1, "Fire/Flame", 0x0007,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc (for Sony)", 0x18d1, "S1", 0x05b3,
