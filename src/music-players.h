@@ -383,6 +383,7 @@
    * Galaxy S2
    * Galaxy S3
    * Galaxy Note
+   * Gakaxy Xcover
    * Galaxy Y
    *
    * - It seems that some PTP commands are broken.
@@ -559,6 +560,8 @@
   { "Acer", 0x0502, "Iconia TAB A100 (ID1)", 0x3348,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "Iconia TAB A100 (ID2)", 0x3349,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia TAB A101 (ID1)", 0x334a,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "Iconia TAB A700", 0x3378,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -921,6 +924,7 @@
   { "Archos", 0x0e79, "Arnova 8c G3", 0x145e, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "Arnova 10bG3 Tablet", 0x146b, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "97 Xenon", 0x149a, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Archos", 0x0e79, "97 Titanium", 0x14ad, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "8o G9 (MTP mode)", 0x1508, DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Clément <clemvangelis@users.sourceforge.net>
   { "Archos", 0x0e79, "8o G9 Turbo (MTP mode)", 0x1509,
@@ -1330,8 +1334,17 @@
   { "LG Electronics Inc.", 0x1004, "LG2 Optimus", 0x6225,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by Brian J. Murrell
-  { "LG Electronics Inc.", 0x1004, "LG-E610/E612/E617G/E970/P700", 0x631c,
+  /*
+   * This VID+PID is used by a lot of LG models:
+   * E430
+   * E460
+   * E610
+   * E612
+   * E617G
+   * E970
+   * P700
+   */
+  { "LG Electronics Inc.", 0x1004, "Various E and P models", 0x631c,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
@@ -1600,6 +1613,8 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Tablet Z MTP 1", 0x018d,
       DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia L MTP", 0x0192,
+      DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z MTP", 0x0193,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Tablet Z MTP 2", 0x0194,
@@ -1649,6 +1664,8 @@
   { "SONY", 0x0fce, "Xperia E MTP+CDROM", 0x418c,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Tablet Z MTP+CDROM 1", 0x418d,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia L MTP+CDROM", 0x4192,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z MTP+CDROM", 0x4193,
       DEVICE_FLAG_NONE },
@@ -1715,6 +1732,8 @@
   { "SONY", 0x0fce, "Xperia E MTP+ADB", 0x518c,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Tablet Z MTP+ADB 1", 0x518d,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia L MTP+ADB", 0x5192,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z MTP+ADB", 0x5193,
       DEVICE_FLAG_NONE },
@@ -1802,6 +1821,9 @@
   // Reported by anonymous user
   { "Motorola", 0x22b8, "RAZR2 V8/U9/Z6", 0x6415,
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
+  // Reported by Rodrigo Ângelo Rafael
+  { "Motorola", 0x22b8, "Rarz D1 XT918 (MTP)", 0x64b5,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Brian Dolbec <dol-sen@users.sourceforge.net>
   { "Motorola", 0x22b8, "Atrix MB860 (MTP)", 0x7088,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2067,6 +2089,9 @@
   // Adding Android default bug flags since it appears to be an Android
   { "Lenovo", 0x17ef, "ThinkPad Tablet", 0x741c,
       DEVICE_FLAGS_ANDROID_BUGS },
+  // Medion is using Lenovos manufacturer ID it seems.
+  { "Medion", 0x17ef, "Lifetab P9516", 0x7483,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by: XChesser <XChesser@users.sourceforge.net>
   { "Lenovo", 0x17ef, "P700", 0x7497,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2110,6 +2135,12 @@
    * Steven Eastland <grassmonk@users.sourceforge.net>
    * Kevin Cheng <kache@users.sf.net>
    */
+  // Reported by Markus Heberling
+  { "HTC", 0x0bb4, "Windows Phone 8X ID1", 0x0ba1,
+      DEVICE_FLAG_NONE },
+  { "HTC", 0x0bb4, "Windows Phone 8X ID2", 0x0ba2,
+      DEVICE_FLAG_NONE },
+
 #if 0
   /*
    * This had to be commented out - the same VID+PID is used also for
@@ -2135,11 +2166,13 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One S (ID2)", 0x0df9,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "HTC", 0x0bb4, "HTC One X (ID1)", 0x0dfb,
+  { "HTC", 0x0bb4, "HTC One X (ID1)", 0x0dfa,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "HTC", 0x0bb4, "HTC One X (ID2)", 0x0dfc,
+  { "HTC", 0x0bb4, "HTC One X (ID2)", 0x0dfb,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "HTC", 0x0bb4, "HTC One X (ID3)", 0x0dfd,
+  { "HTC", 0x0bb4, "HTC One X (ID3)", 0x0dfc,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC One X (ID4)", 0x0dfd,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC Butterfly (ID1)", 0x0dfe,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2271,6 +2304,12 @@
    * Alcatel
    */
   { "Alcatel", 0x1bbb, "One Touch 997D", 0x2008,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
+   * Kyocera
+   */
+  { "Kyocera", 0x0482, "Rise", 0x0571,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
