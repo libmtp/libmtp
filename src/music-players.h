@@ -2173,6 +2173,7 @@
    * NEC
    */
   { "NEC", 0x0409, "FOMA N01A", 0x0242, DEVICE_FLAG_NONE },
+  { "NEC", 0x0409, "Casio C811", 0x0326, DEVICE_FLAG_NONE },
 
   /*
    * nVidia
