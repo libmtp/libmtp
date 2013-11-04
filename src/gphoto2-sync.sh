@@ -23,5 +23,6 @@ cd ..
 cp ptp2/ptp.c ptp.c
 cp ptp2/ptp.h ptp.h
 cp ptp2/ptp-pack.c ptp-pack.c
+diff -ur ptp2/device-flags.h device-flags.h
 
 echo "Finished!"
