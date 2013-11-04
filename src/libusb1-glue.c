@@ -837,6 +837,19 @@ ptp_read_func (
   unsigned long written;
   unsigned char *bytes;
   int expect_terminator_byte = 0;
+  unsigned long usb_inep_maxpacket_size;
+  unsigned long context_block_size_1;
+  unsigned long context_block_size_2;
+
+  usb_inep_maxpacket_size = ptp_usb->inep_maxpacket;
+  if (usb_inep_maxpacket_size == 0x400) {
+	  context_block_size_1 = CONTEXT_BLOCK_SIZE_1 - 0x200;
+	  context_block_size_2 = CONTEXT_BLOCK_SIZE_2 + 0x200;
+  }
+  else {
+	  context_block_size_1 = CONTEXT_BLOCK_SIZE_1;
+	  context_block_size_2 = CONTEXT_BLOCK_SIZE_2;
+  }
 
   // This is the largest block we'll need to read in.
   bytes = malloc(CONTEXT_BLOCK_SIZE);
@@ -857,11 +870,11 @@ ptp_read_func (
     }
     else if (curread == 0)
       // we are first packet, but not last packet
-      toread = CONTEXT_BLOCK_SIZE_1;
-    else if (toread == CONTEXT_BLOCK_SIZE_1)
-      toread = CONTEXT_BLOCK_SIZE_2;
-    else if (toread == CONTEXT_BLOCK_SIZE_2)
-      toread = CONTEXT_BLOCK_SIZE_1;
+      toread = context_block_size_1;
+    else if (toread == context_block_size_1)
+      toread = context_block_size_2;
+    else if (toread == context_block_size_2)
+      toread = context_block_size_1;
     else
       LIBMTP_INFO("unexpected toread size 0x%04x, 0x%04x remaining bytes\n", 
 	     (unsigned int) toread, (unsigned int) (size-curread));
@@ -1267,6 +1280,10 @@ static uint16_t ptp_usb_getpacket(PTPParams *params,
 	PTPDataHandler	memhandler;
 	uint16_t	ret;
 	unsigned char	*x = NULL;
+	unsigned long packet_size;
+	PTP_USB *ptp_usb = (PTP_USB *) params->data;
+
+	packet_size = ptp_usb->inep_maxpacket;
 
 	/* read the header and potentially the first data */
 	if (params->response_packet_size > 0) {
@@ -1280,7 +1297,7 @@ static uint16_t ptp_usb_getpacket(PTPParams *params,
 		return PTP_RC_OK;
 	}
 	ptp_init_recv_memory_handler (&memhandler);
-	ret = ptp_read_func(PTP_USB_BULK_HS_MAX_PACKET_LEN_READ, &memhandler, params->data, rlen, 0);
+	ret = ptp_read_func(packet_size, &memhandler, params->data, rlen, 0);
 	ptp_exit_recv_memory_handler (&memhandler, &x, rlen);
 	if (x) {
 		memcpy (packet, x, *rlen);
