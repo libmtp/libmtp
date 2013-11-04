@@ -954,7 +954,7 @@ ptp_generic_no_data (PTPParams* params, uint16_t code, unsigned int n_param, ...
 {
 	PTPContainer ptp;
 	va_list args;
-	int i;
+	unsigned int i;
 
 	if( n_param > 5 )
 		return PTP_RC_InvalidParameter;
@@ -1102,7 +1102,7 @@ ptp_free_objectpropdesc(PTPObjectPropDesc* opd)
  **/
 void
 ptp_free_params (PTPParams *params) {
-	int i;
+	unsigned int i;
 
 	if (params->cameraname) free (params->cameraname);
 	if (params->wifi_profiles) free (params->wifi_profiles);
@@ -1723,8 +1723,7 @@ ptp_getdevicepropvalue (PTPParams* params, uint16_t propcode,
 {
 	PTPContainer ptp;
 	uint16_t ret;
-	unsigned int len;
-	int offset;
+	unsigned int len, offset;
 	unsigned char* dpv=NULL;
 
 
@@ -2135,9 +2134,8 @@ ptp_canon_gettreesize (PTPParams* params,
 	PTPContainer ptp;
 	uint16_t ret;
 	unsigned char *out = NULL, *cur;
-	int i;
-	unsigned int size;
-	
+	unsigned int i, size;
+
 	PTP_CNT_INIT(ptp);
 	ptp.Code   = PTP_OC_CANON_GetTreeSize;
 	ptp.Nparam = 0;
@@ -2223,7 +2221,7 @@ ptp_check_event (PTPParams *params) {
 	if (	(params->deviceinfo.VendorExtensionID == PTP_VENDOR_NIKON) &&
 		ptp_operation_issupported(params, PTP_OC_NIKON_CheckEvent)
 	) {
-		int evtcnt;
+		unsigned int evtcnt;
 		PTPContainer	*xevent = NULL;
 
 		ret = ptp_nikon_check_event(params, &xevent, &evtcnt);
@@ -2380,7 +2378,7 @@ uint16_t
 ptp_canon_eos_getdevicepropdesc (PTPParams* params, uint16_t propcode,
 	PTPDevicePropDesc *dpd)
 {
-	int i;
+	unsigned int i;
 
 	for (i=0;i<params->nrofcanon_props;i++)
 		if (params->canon_props[i].proptype == propcode)
@@ -2527,9 +2525,8 @@ ptp_canon_eos_setdevicepropvalue (PTPParams* params,
 ) {
 	PTPContainer	ptp;
 	uint16_t	ret;
-	int 		i;
+	unsigned int	i, size;
 	unsigned char	*data;
-	unsigned int	size;
 
 	PTP_CNT_INIT(ptp);
 	ptp.Code 	= PTP_OC_CANON_EOS_SetDevicePropValueEx;
@@ -2761,7 +2758,7 @@ ptp_canon_getobjectinfo (PTPParams* params, uint32_t store, uint32_t p2,
 	len=0;
 	ret=ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, &len);
 	if (ret == PTP_RC_OK) {
-		int i;
+		unsigned int i;
 		*entnum=ptp.Param1;
 		*entries=calloc(*entnum, sizeof(PTPCANONFolderEntry));
 		if (*entries!=NULL) {
@@ -3004,7 +3001,7 @@ ptp_canon_eos_get_viewfinder_image_handler (PTPParams* params, PTPDataHandler*ha
  *
  **/
 uint16_t
-ptp_nikon_check_event (PTPParams* params, PTPContainer** event, int* evtcnt)
+ptp_nikon_check_event (PTPParams* params, PTPContainer** event, unsigned int* evtcnt)
 {
         PTPContainer ptp;
 	uint16_t ret;
@@ -3333,7 +3330,7 @@ ptp_mtp_getobjectpropvalue (
 	uint16_t ret;
 	unsigned char *data = NULL;
 	unsigned int size = 0;
-	int offset = 0;
+	unsigned int offset = 0;
         
         PTP_CNT_INIT(ptp);
         ptp.Code=PTP_OC_MTP_GetObjectPropValue;
@@ -3944,7 +3941,7 @@ ptp_android_sendpartialobject (PTPParams* params, uint32_t handle, uint64_t offs
 int
 ptp_event_issupported(PTPParams* params, uint16_t event)
 {
-	int i=0;
+	unsigned int i=0;
 
 	for (;i<params->deviceinfo.EventsSupported_len;i++) {
 		if (params->deviceinfo.EventsSupported[i]==event)
@@ -3957,7 +3954,7 @@ ptp_event_issupported(PTPParams* params, uint16_t event)
 int
 ptp_property_issupported(PTPParams* params, uint16_t property)
 {
-	int i;
+	unsigned int i;
 
 	for (i=0;i<params->deviceinfo.DevicePropertiesSupported_len;i++)
 		if (params->deviceinfo.DevicePropertiesSupported[i]==property)
@@ -3976,7 +3973,7 @@ ptp_free_objectinfo (PTPObjectInfo *oi)
 void
 ptp_free_object (PTPObject *ob)
 {
-	int i;
+	unsigned int i;
 	if (!ob) return;
 
 	ptp_free_objectinfo (&ob->oi);
@@ -4558,8 +4555,8 @@ ptp_get_property_description(PTPParams* params, uint16_t dpc)
 		 N_("Slot 2 Save Mode")},
 		{PTP_DPC_NIKON_RawBitMode,			/* 0xD149 */
 		 N_("Raw Bit Mode")},
-		{PTP_DPC_NIKON_ISOAutoTime,			/* 0xD14E */
-		 N_("ISO Auto Time")},
+		{PTP_DPC_NIKON_ActiveDLighting,			/* 0xD14E */
+		 N_("Active D-Lighting")},
 		{PTP_DPC_NIKON_FlourescentType,			/* 0xD14F */
 		 N_("Flourescent Type")},
 		{PTP_DPC_NIKON_TuneColourTemperature,		/* 0xD150 */
@@ -4800,9 +4797,9 @@ _value_to_num(PTPPropertyValue *data, uint16_t dt) {
 
 int
 ptp_render_property_value(PTPParams* params, uint16_t dpc,
-			  PTPDevicePropDesc *dpd, int length, char *out)
+			  PTPDevicePropDesc *dpd, unsigned int length, char *out)
 {
-	int i;
+	unsigned int i;
 	int64_t	kval;
 
 	struct {
@@ -5563,8 +5560,8 @@ struct {
 int
 ptp_render_ofc(PTPParams* params, uint16_t ofc, int spaceleft, char *txt)
 {
-	int i;
-	
+	unsigned int i;
+
 	if (!(ofc & 0x8000)) {
 		for (i=0;i<sizeof(ptp_ofc_trans)/sizeof(ptp_ofc_trans[0]);i++)
 			if (ofc == ptp_ofc_trans[i].ofc)
@@ -5704,7 +5701,7 @@ struct {
 int
 ptp_render_opcode(PTPParams* params, uint16_t opcode, int spaceleft, char *txt)
 {
-	int i;
+	unsigned int i;
 
 	if (!(opcode & 0x8000)) {
 		for (i=0;i<sizeof(ptp_opcode_trans)/sizeof(ptp_opcode_trans[0]);i++)
@@ -5901,7 +5898,7 @@ struct {
 
 int
 ptp_render_mtp_propname(uint16_t propid, int spaceleft, char *txt) {
-	int i;
+	unsigned int i;
 	for (i=0;i<sizeof(ptp_opc_trans)/sizeof(ptp_opc_trans[0]);i++)
 		if (propid == ptp_opc_trans[i].id)
 			return snprintf(txt, spaceleft, "%s", ptp_opc_trans[i].name);
@@ -5968,7 +5965,7 @@ ptp_destroy_object_prop_list(MTPProperties *props, int nrofprops)
 MTPProperties *
 ptp_find_object_prop_in_cache(PTPParams *params, uint32_t const handle, uint32_t const attribute_id)
 {
-	int	i;
+	unsigned int	i;
 	MTPProperties	*prop;
 	PTPObject	*ob;
 	uint16_t	ret;
@@ -5988,7 +5985,7 @@ ptp_find_object_prop_in_cache(PTPParams *params, uint32_t const handle, uint32_t
 void
 ptp_remove_object_from_cache(PTPParams *params, uint32_t handle)
 {
-	int i;
+	unsigned int i;
 	PTPObject	*ob;
 	uint16_t	ret;
 
@@ -6033,8 +6030,8 @@ ptp_object_find (PTPParams *params, uint32_t handle, PTPObject **retob) {
 /* Binary search in objects + insert of not found. Needs "objects" to be a sorted by objectid list!  */
 uint16_t
 ptp_object_find_or_insert (PTPParams *params, uint32_t handle, PTPObject **retob) {
-	int 		begin, end, cursor;
-	int		insertat;
+	unsigned int 	begin, end, cursor;
+	unsigned int	insertat;
 	PTPObject	*newobs;
 
 	if (!handle) return PTP_RC_GeneralError;
@@ -6083,7 +6080,7 @@ ptp_object_find_or_insert (PTPParams *params, uint32_t handle, PTPObject **retob
 	newobs = realloc (params->objects, sizeof(PTPObject)*(params->nrofobjects+1));
 	if (!newobs) return PTP_RC_GeneralError;
 	params->objects = newobs;
-	if (insertat<=params->nrofobjects)
+	if (insertat<params->nrofobjects)
 		memmove (&params->objects[insertat+1],&params->objects[insertat],(params->nrofobjects-insertat)*sizeof(PTPObject));
 	memset(&params->objects[insertat],0,sizeof(PTPObject));
 	params->objects[insertat].oid = handle;
@@ -6093,7 +6090,7 @@ ptp_object_find_or_insert (PTPParams *params, uint32_t handle, PTPObject **retob
 }
 
 uint16_t
-ptp_object_want (PTPParams *params, uint32_t handle, int want, PTPObject **retob) {
+ptp_object_want (PTPParams *params, uint32_t handle, unsigned int want, PTPObject **retob) {
 	uint16_t	ret;
 	PTPObject	*ob;
 	/*Camera 		*camera = ((PTPData *)params->data)->camera;*/
@@ -6182,7 +6179,7 @@ ptp_object_want (PTPParams *params, uint32_t handle, int want, PTPObject **retob
 
 		/* Override the ObjectInfo data with data from properties */
 		if (params->device_flags & DEVICE_FLAG_PROPLIST_OVERRIDES_OI) {
-			int i;
+			unsigned int i;
 			MTPProperties *prop = ob->mtpprops;
 
 			for (i=0;i<ob->nrofmtpprops;i++,prop++) {
