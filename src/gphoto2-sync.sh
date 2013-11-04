@@ -16,6 +16,8 @@ if [ "x$WGET" != "x" ]; then
     mv tmpfile ptp-pack.c.gphoto2
     wget -O tmpfile tmpfile $BASEURL/library.c?format=raw
     mv tmpfile library.c.gphoto2
+    wget -O tmpfile tmpfile $BASEURL/device-flags.h?format=raw
+    mv tmpfile device-flags.h.gphoto2
     wget -O tmpfile tmpfile $BASEURL/music-players.h?format=raw
     mv tmpfile music-players.h.gphoto2
 else
