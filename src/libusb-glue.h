@@ -33,6 +33,7 @@
 #include "ptp.h"
 #ifdef HAVE_LIBUSB1
 #include <libusb-1.0/libusb.h>
+#include <pthread.h>
 #endif
 #ifdef HAVE_LIBUSB0
 #include <usb.h>
@@ -76,6 +77,20 @@ extern "C" {
 #define USB_BULK_WRITE openusb_bulk_xfer
 #endif
 
+#ifdef HAVE_LIBUSB1
+/*
+ * With libusb1 we use a threaded read/write handler
+ * to speed up transfers.
+ */
+struct ptp_write_td {
+	struct libusb_transfer *transfer;
+	struct ptp_write_td *next;
+	unsigned char *buffer;
+};
+/* Number of async transfer buffers */
+#define WRITE_TRANSFER_NUM 4
+#endif
+
 /**
  * Internal USB struct.
  */
@@ -83,7 +98,24 @@ typedef struct _PTP_USB PTP_USB;
 struct _PTP_USB {
   PTPParams *params;
 #ifdef HAVE_LIBUSB1
+  /*
+   * With libusb1 we use a threaded read/write handler
+   * to speed up transfers.
+   */
   libusb_device_handle* handle;
+  int event_thread_run;
+  pthread_t ptp_event_thread_tid;
+  int ptp_read_transfer_done_flag;
+  pthread_cond_t ptp_read_transfer_done_cv;
+  pthread_mutex_t ptp_read_transfer_done_mutex;
+
+  int ptp_write_transfer_done_flag;
+  pthread_cond_t ptp_write_transfer_cv;
+  pthread_mutex_t ptp_write_transfer_mutex;
+
+  unsigned char *bytes[WRITE_TRANSFER_NUM];
+  struct ptp_write_td write_td_array[WRITE_TRANSFER_NUM];
+  struct ptp_write_td *p_write_head_td, *p_write_tail_td;
 #endif
 #ifdef HAVE_LIBUSB0
   usb_dev_handle* handle;
