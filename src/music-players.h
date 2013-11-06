@@ -872,42 +872,42 @@
    * These devices have some dual-mode interfaces which will really
    * respect the driver unloading, so DEVICE_FLAG_UNLOAD_DRIVER
    * really work on these devices!
+   *
+   * Devices reported by:
+   * Archos
+   * Alexander Haertig <AlexanderHaertig@gmx.de>
+   * Jan Binder
+   * gudul1@users.sourceforge.net
+   * Etienne Chauchot <chauchot.etienne@free.fr>
+   * Kay McCormick <kaym@modsystems.com>
+   * Joe Rabinoff
+   * Jim Krehl <jimmuhk@users.sourceforge.net>
+   * Adrien Guichard <tmor@users.sourceforge.net>
+   * Clément <clemvangelis@users.sourceforge.net>
+   * Thackert <hackertenator@users.sourceforge.net>
+   * Till <Till@users.sourceforge.net>
+   * Sebastien ROHAUT
    */
-  // Reported by Alexander Haertig <AlexanderHaertig@gmx.de>
   { "Archos", 0x0e79, "Gmini XS100", 0x1207, DEVICE_FLAG_UNLOAD_DRIVER },
-  // Added by Jan Binder
   { "Archos", 0x0e79, "XS202 (MTP mode)", 0x1208, DEVICE_FLAG_NONE },
-  // Reported by gudul1@users.sourceforge.net
   { "Archos", 0x0e79, "104 (MTP mode)", 0x120a, DEVICE_FLAG_NONE },
-  // Reported by Archos
   { "Archos", 0x0e79, "204 (MTP mode)", 0x120c, DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by anonymous Sourceforge user.
   { "Archos", 0x0e79, "404 (MTP mode)", 0x1301, DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by Archos
   { "Archos", 0x0e79, "404CAM (MTP mode)", 0x1303, DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by Etienne Chauchot <chauchot.etienne@free.fr>
   { "Archos", 0x0e79, "504 (MTP mode)", 0x1307, DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by Archos
   { "Archos", 0x0e79, "604 (MTP mode)", 0x1309, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "604WIFI (MTP mode)", 0x130b, DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by Kay McCormick <kaym@modsystems.com>
   { "Archos", 0x0e79, "704 mobile dvr", 0x130d, DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by Archos
   { "Archos", 0x0e79, "704TV (MTP mode)", 0x130f, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "405 (MTP mode)", 0x1311, DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by Joe Rabinoff
   { "Archos", 0x0e79, "605 (MTP mode)", 0x1313, DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by Archos
   { "Archos", 0x0e79, "605F (MTP mode)", 0x1315, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "705 (MTP mode)", 0x1319, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "TV+ (MTP mode)", 0x131b, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "105 (MTP mode)", 0x131d, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "405HDD (MTP mode)", 0x1321, DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by Jim Krehl <jimmuhk@users.sourceforge.net>
   { "Archos", 0x0e79, "5 (MTP mode)", 0x1331, DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by Adrien Guichard <tmor@users.sourceforge.net>
   { "Archos", 0x0e79, "5 (MTP mode)", 0x1333, DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by Archos
   { "Archos", 0x0e79, "7 (MTP mode)", 0x1335, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "SPOD (MTP mode)", 0x1341, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "5S IT (MTP mode)", 0x1351, DEVICE_FLAG_UNLOAD_DRIVER },
@@ -918,20 +918,15 @@
   { "Archos", 0x0e79, "97 Xenon", 0x149a, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "97 Titanium", 0x14ad, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "8o G9 (MTP mode)", 0x1508, DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by Clément <clemvangelis@users.sourceforge.net>
-  { "Archos", 0x0e79, "8o G9 Turbo (MTP mode)", 0x1509,
-      DEVICE_FLAG_UNLOAD_DRIVER },
-  // Reported by Thackert <hackertenator@users.sourceforge.net>
+  { "Archos", 0x0e79, "8o G9 Turbo (MTP mode)", 0x1509, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "80G9", 0x1518, DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by Till <Till@users.sourceforge.net>
-  { "Archos", 0x0e79, "101 G9", 0x1528, DEVICE_FLAGS_ANDROID_BUGS },
-  { "Archos", 0x0e79, "101 G9 (v2)", 0x1529, DEVICE_FLAGS_ANDROID_BUGS },
-  { "Archos", 0x0e79, "101 G9 Turbo 250 HD", 0x1538,
-      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Archos", 0x0e79, "101 G9 (ID1)", 0x1528, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Archos", 0x0e79, "101 G9 (ID2)", 0x1529, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Archos", 0x0e79, "101 G9 Turbo 250 HD", 0x1538, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "101 G9 Turbo", 0x1539, DEVICE_FLAGS_ANDROID_BUGS },
-  { "Archos", 0x0e79, "70it2 (mode 1)", 0x1568, DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by Sebastien ROHAUT
-  { "Archos", 0x0e79, "70it2 (mode 2)", 0x1569, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Archos", 0x0e79, "70it2 (ID 1)", 0x1568, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Archos", 0x0e79, "70it2 (ID 2)", 0x1569, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Archos", 0x0e79, "101 G4", 0x4002, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Dunlop (OEM of EGOMAN ltd?) reported by Nanomad
@@ -2081,6 +2076,8 @@
   { "Asus", 0x0b05, "PadFone 2 (MTP+?)", 0x5210,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "PadFone 2 (MTP)", 0x5211,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "Memo ME172V (MTP)", 0x5400,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "Memo ME173X (MTP)", 0x5410,
       DEVICE_FLAGS_ANDROID_BUGS },
