@@ -81,7 +81,8 @@ static const LIBMTP_device_entry_t mtp_device_table[] = {
 /* We include an .h file which is shared between us and libgphoto2 */
 #include "music-players.h"
 };
-static const int mtp_device_table_size = sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
+static const int mtp_device_table_size =
+  sizeof(mtp_device_table) / sizeof(LIBMTP_device_entry_t);
 
 // Local functions
 static LIBMTP_error_number_t init_usb();
@@ -96,10 +97,14 @@ static int find_interface_and_endpoints(libusb_device *dev,
 					int* outep_maxpacket,
 					int* intep);
 static void clear_stall(PTP_USB* ptp_usb);
-static int init_ptp_usb (PTPParams* params, PTP_USB* ptp_usb, libusb_device* dev);
-static short ptp_write_func (unsigned long,PTPDataHandler*,void *data,unsigned long*);
-static short ptp_read_func (unsigned long,PTPDataHandler*,void *data,unsigned long*,int);
-static int usb_get_endpoint_status(PTP_USB* ptp_usb, int ep, uint16_t* status);
+static int init_ptp_usb(PTPParams* params,
+		PTP_USB* ptp_usb, libusb_device* dev);
+static short ptp_write_func(unsigned long,
+		PTPDataHandler*, void *data, unsigned long*);
+static short ptp_read_func (unsigned long,
+		PTPDataHandler*, void *data, unsigned long*, int);
+static int usb_get_endpoint_status(PTP_USB* ptp_usb,
+		int ep, uint16_t* status);
 
 /**
  * Get a list of the supported USB devices.
@@ -119,7 +124,8 @@ static int usb_get_endpoint_status(PTP_USB* ptp_usb, int ep, uint16_t* status);
  * @return 0 if the list was successfull retrieved, any other
  *        value means failure.
  */
-int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t ** const devices, int * const numdevs)
+int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t ** const devices,
+				      int * const numdevs)
 {
   *devices = (LIBMTP_device_entry_t *) &mtp_device_table;
   *numdevs = mtp_device_table_size;
@@ -144,17 +150,16 @@ static LIBMTP_error_number_t init_usb()
 }
 
 /**
- * Small recursive function to append a new usb_device to the linked list of
- * USB MTP devices
- * @param devlist dynamic linked list of pointers to usb devices with MTP
- *        properties, to be extended with new device.
+ * Small recursive function to append a new usb_device to the linked
+ * list of USB MTP devices
+ * @param devlist dynamic linked list of pointers to usb devices with
+ *        MTP properties, to be extended with new device.
  * @param newdevice the new device to add.
  * @param bus_location bus for this device.
  * @return an extended array or NULL on failure.
  */
 static mtpdevice_list_t *append_to_mtpdevice_list(mtpdevice_list_t *devlist,
 						  libusb_device *newdevice,
-
 						  uint32_t bus_location)
 {
   mtpdevice_list_t *new_list_entry;
@@ -292,8 +297,8 @@ static int probe_device_descriptor(libusb_device *dev, FILE *dumpfile)
 	  }
 
 	  /*
-	   * Check for Still Image Capture class with PIMA 15740 protocol,
-	   * also known as PTP
+	   * TODO: Check for Still Image Capture class with PIMA 15740
+	   * protocol, also known as PTP
 	   */
 #if 0
 	  if (intf->bInterfaceClass == LIBUSB_CLASS_PTP
