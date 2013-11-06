@@ -1032,6 +1032,9 @@ builders summit, might come to recycle this:
     transactional nature.)
   - GVFS MTP backend to the rescue.
 - Device sins
+  - Using the same VID/PID for several modes, some of which are not MTP.
+    HTC Zopo, HD2, Bird (0x0bb4/0x0c02). Thanks for that, now we cannot
+    detect the protocol from just VID+PID but have to examine the interfaces.
   - Android bugs
   - Samsungs special Android MTP stack
   - SonyEricsson Aricent stack for Xperia Androids pre 4.0, broken headers!

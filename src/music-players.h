@@ -2161,6 +2161,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One S (ID1)", 0x0cec,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "One Mini (ID1)", 0x0dcd,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC Desire X", 0x0dd5,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One (ID1)", 0x0dda,
@@ -2308,15 +2310,29 @@
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
-   * Alcatel
+   * T & A Mobile phones Alcatel and TCT
    */
   { "Alcatel", 0x1bbb, "One Touch 997D", 0x2008,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "TCT", 0x1bbb, "TCL S950", 0x0167,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Kyocera
    */
   { "Kyocera", 0x0482, "Rise", 0x0571,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
+   * HiSense
+   */
+  { "HiSense", 0x109b, "Sero 7 Pro", 0x9105,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
+   * Hewlett-Packard
+   */
+  { "Hewlett-Packard", 0x03f0, "Slate 7 4600", 0x5c1d,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
