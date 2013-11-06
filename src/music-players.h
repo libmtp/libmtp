@@ -2083,6 +2083,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "PadFone (MTP+ADB)", 0x5201,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "ME302C MemoPad (MTP+?)", 0x520f,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "PadFone 2 (MTP+?)", 0x5210,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "PadFone 2 (MTP)", 0x5211,
