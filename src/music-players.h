@@ -565,7 +565,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "S500 CloudMobile", 0x33aa,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Acer", 0x0502, "E350 Liquid Gallant Duo", 0x33c3,
+  { "Acer", 0x0502, "E350 Liquid Gallant Duo (ID1)", 0x33c3,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "E350 Liquid Gallant Duo (ID2)", 0x33c4,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "Iconia TAB A210", 0x33cb,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -917,6 +919,7 @@
   { "Archos", 0x0e79, "Arnova 10bG3 Tablet", 0x146b, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "97 Xenon", 0x149a, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "97 Titanium", 0x14ad, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Archos", 0x0e79, "101 Titanium", 0x14b9, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "8o G9 (MTP mode)", 0x1508, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "8o G9 Turbo (MTP mode)", 0x1509, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "80G9", 0x1518, DEVICE_FLAGS_ANDROID_BUGS },
@@ -1619,6 +1622,8 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia SP MTP", 0x0195,
       DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia M MTP", 0x019b,
+      DEVICE_FLAG_NONE },
 
   /*
    * MTP+UMS personalities of MTP devices (see above)
@@ -1670,6 +1675,8 @@
   { "SONY", 0x0fce, "Xperia Tablet Z MTP+CDROM 2", 0x4194,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia SP MTP+CDROM", 0x4195,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia M MTP+CDROM", 0x419b,
       DEVICE_FLAG_NONE },
 
   /*
@@ -1738,6 +1745,8 @@
   { "SONY", 0x0fce, "Xperia Tablet Z MTP+ADB 2", 0x5194,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia SP MTP+ADB", 0x5195,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia M MTP+ADB", 0x519b,
       DEVICE_FLAG_NONE },
 
   /*
@@ -1819,8 +1828,9 @@
   // Reported by anonymous user
   { "Motorola", 0x22b8, "RAZR2 V8/U9/Z6", 0x6415,
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST },
-  // Reported by Rodrigo Ângelo Rafael
-  { "Motorola", 0x22b8, "Rarz D1 XT918 (MTP)", 0x64b5,
+  // Reported by Rodrigo Angelo Rafael
+  // Razr D1, D3
+  { "Motorola", 0x22b8, "Rarz D1/D3 (MTP)", 0x64b5,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Brian Dolbec <dol-sen@users.sourceforge.net>
   { "Motorola", 0x22b8, "Atrix MB860 (MTP)", 0x7088,
@@ -2052,7 +2062,7 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TF700 Transformer (MTP+ADB)", 0x4c91,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Asus", 0x0b05, "MeMo Pad Smart 10", 0x4cd0,
+  { "Asus", 0x0b05, "ME301T MeMo Pad Smart 10", 0x4cd0,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TF201 Transformer Prime (keyboard dock)", 0x4d00,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2076,6 +2086,8 @@
   { "Asus", 0x0b05, "PadFone 2 (MTP+?)", 0x5210,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "PadFone 2 (MTP)", 0x5211,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "ME302C MemoPad (MTP)", 0x521f,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "Memo ME172V (MTP)", 0x5400,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2105,6 +2117,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Brian J. Murrell
   { "Lenovo", 0x17ef, "IdeaTab A2109A", 0x7542,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by rvelev@mail.bg
+  { "Lenovo", 0x17ef, "IdeaPad A3000", 0x75be,
       DEVICE_FLAGS_ANDROID_BUGS },
 
 
@@ -2167,11 +2182,15 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One (ID1)", 0x0dda,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC Butterfly X290d", 0x0de4,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One (MTP+UMS+ADB)", 0x0dea,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC Evo 4G LTE (ID1)", 0x0df5,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "HTC", 0x0bb4, "HTC One S (ID2)", 0x0df9,
+  { "HTC", 0x0bb4, "HTC One S (ID2)", 0x0df8,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC One S (ID3)", 0x0df9,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One X (ID1)", 0x0dfa,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2208,6 +2227,9 @@
   { "HTC", 0x0bb4, "Android Device ID2 (Zopo, HD2...)", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
 #endif
+  { "HTC", 0x0bb4, "Windows Phone 8s ID1", 0xf0ca,
+      DEVICE_FLAG_NONE },
+
 
   /*
    * NEC
@@ -2221,9 +2243,12 @@
   // Found on Internet forum
   { "nVidia", 0x0955, "CM9-Adam", 0x70a9,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "nVidia", 0x0955, "Nabi2 Tablet (ID1)", 0x7100,
+  // Various pads such as Nabi2, Notion Ink Adam, Viewsonic G-Tablet
+  { "nVidia", 0x0955, "Various tablets (ID1)", 0x7100,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "nVidia", 0x0955, "Nabi2 Tablet (ID2)", 0x7102,
+  { "nVidia", 0x0955, "Various tablets (ID2)", 0x7102,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "nVidia", 0x0955, "Shield (ID1)", 0xb400,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
@@ -2308,6 +2333,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "SHARP Corporation", 0x04dd, "SBM203SH", 0x9661,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "SHARP Corporation", 0x04dd, "SH-06E", 0x96ca,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * T & A Mobile phones Alcatel and TCT
@@ -2315,6 +2342,8 @@
   { "Alcatel", 0x1bbb, "One Touch 997D", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "TCT", 0x1bbb, "TCL S950", 0x0167,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Alcatel", 0x1bbb, "6030a", 0x0168,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
@@ -2333,6 +2362,12 @@
    * Hewlett-Packard
    */
   { "Hewlett-Packard", 0x03f0, "Slate 7 4600", 0x5c1d,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
+   * MediaTek Inc.
+   */
+  { "MediaTek Inc", 0x0e8d, "MT510R", 0x0050,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
