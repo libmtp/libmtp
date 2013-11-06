@@ -1329,9 +1329,15 @@
   { "LG Electronics Inc.", 0x1004, "LG8575", 0x619a,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER },
-  { "LG Electronics Inc.", 0x1004, "V909 G-Slate", 0x61f9,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNLOAD_DRIVER },
+  /*
+   * These two are LG Android phones:
+   * LG-F6
+   * V909 G-Slate
+   */
+  { "LG Electronics Inc.", 0x1004, "Android phone (ID1)", 0x61f1,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "LG Electronics Inc.", 0x1004, "Android phone (ID2)", 0x61f9,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "LG Electronics Inc.", 0x1004, "LG2 Optimus", 0x6225,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER },
@@ -1796,6 +1802,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "RAZR M (XT907)", 0x2e51,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Motorola", 0x22b8, "Moto X (XT1058)", 0x2e63,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Jader Rodrigues Simoes <jadersimoes@users.sourceforge.net>
   { "Motorola", 0x22b8, "Xoom 2 Media Edition (ID2)", 0x41cf,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2256,6 +2264,7 @@
   /*
    * Vizio
    */
+  { "Vizio", 0x0489, "Unknown 1", 0xc026, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Michael Gurski <gurski@users.sourceforge.net>
   { "Vizio", 0x0489, "VTAB1008", 0xe040, DEVICE_FLAGS_ANDROID_BUGS },
 
@@ -2364,6 +2373,8 @@
    * Hewlett-Packard
    */
   { "Hewlett-Packard", 0x03f0, "Slate 7 4600", 0x5c1d,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Hewlett-Packard", 0x03f0, "Slate 7 2800", 0x5d1d,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
