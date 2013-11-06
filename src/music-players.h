@@ -573,6 +573,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "Liquid Z120 MT65xx Android Phone", 0x3473,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia A1-810", 0x353c,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * SanDisk
@@ -1114,11 +1116,22 @@
   // Reported by Sampo Savola
   // Covers Lumia 920, 820 and probably any WP8 device.
   { "Nokia", 0x0421, "Nokia Lumia WP8", 0x0661, DEVICE_FLAG_NONE },
+
+  /*
+   * Qualcomm
+   * This vendor ID seems to be used a bit by others.
+   */
+
   // Reported by Richard Wall <richard@the-moon.net>
-  { "Nokia", 0x05c6, "5530 Xpressmusic", 0x0229, DEVICE_FLAG_NONE },
+  { "Qualcomm (for Nokia)", 0x05c6, "5530 Xpressmusic", 0x0229,
+      DEVICE_FLAG_NONE },
   // Reported by anonymous SourceForge user
   // One thing stated by reporter (Nokia model) another by the detect log...
-  { "Nokia/Verizon", 0x05c6, "6205 Balboa/Verizon Music Phone", 0x3196, DEVICE_FLAG_NONE },
+  { "Qualcomm (for Nokia/Verizon)", 0x05c6, "6205 Balboa/Verizon Music Phone",
+      0x3196, DEVICE_FLAG_NONE },
+  // Reported by anonymous SourceForge user
+  { "Qualcomm (for Smartfren)", 0x05c6, "Andromax U",
+      0x9025, DEVICE_FLAG_NONE },
 
 
   /*
@@ -1877,6 +1890,7 @@
   // 0x4e21 (Nexus S) is a USB Mass Storage device.
   { "Google Inc (for Samsung)", 0x18d1, "Nexus S (MTP)", 0x4e25,
       DEVICE_FLAGS_ANDROID_BUGS },
+  // 0x4e26 is also used by "Ramos W30HD Pro Quad Core"
   { "Google Inc (for Samsung)", 0x18d1, "Nexus S (MTP+ADB)", 0x4e26,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Chris Smith <tcgsmythe@users.sourceforge.net>
@@ -2068,7 +2082,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "PadFone 2 (MTP)", 0x5211,
       DEVICE_FLAGS_ANDROID_BUGS },
-
+  { "Asus", 0x0b05, "Memo ME173X (MTP)", 0x5410,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
 
   /*
@@ -2082,6 +2097,7 @@
   { "Lenovo", 0x17ef, "ThinkPad Tablet", 0x741c,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Medion is using Lenovos manufacturer ID it seems.
+  // Reported by Thomas Goss <thomas.goss@linux.com>
   { "Medion", 0x17ef, "Lifetab P9516", 0x7483,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by: XChesser <XChesser@users.sourceforge.net>
@@ -2259,8 +2275,9 @@
   /*
    * Hisense
    */
-  // Reported by Anonymous SourceForge user
-  { "Hisense", 0x109b, "E860", 0x9109, DEVICE_FLAGS_ANDROID_BUGS },
+  // Reported by Anonymous SourceForge users
+  { "Hisense", 0x109b, "E860 (ID1)", 0x9106, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Hisense", 0x109b, "E860 (ID2)", 0x9109, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Intel
@@ -2278,6 +2295,7 @@
 
   /*
    * XO Learning Tablet
+   * Also Trio Stealth G2 tablet it seems
    */
   { "Acromag Inc.", 0x16d5, "XO Learning Tablet (MTP+ADB)", 0x8005,
       DEVICE_FLAGS_ANDROID_BUGS },
