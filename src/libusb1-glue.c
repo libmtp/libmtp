@@ -2338,31 +2338,13 @@ static void clear_stall(PTP_USB* ptp_usb)
     perror("outep: usb_get_endpoint_status()");
   } else if (status) {
     LIBMTP_INFO("Clearing stall on OUT endpoint\n");
-    ret = libusb_clear_halt (ptp_usb->handle, ptp_usb->outep);
+    ret = libusb_clear_halt(ptp_usb->handle, ptp_usb->outep);
     if (ret != LIBUSB_SUCCESS) {
       perror("usb_clear_stall_feature()");
     }
   }
 
   /* TODO: do we need this for INTERRUPT (ptp_usb->intep) too? */
-}
-
-static void clear_halt(PTP_USB* ptp_usb)
-{
-  int ret;
-
-  ret = libusb_clear_halt(ptp_usb->handle,ptp_usb->inep);
-  if (ret<0) {
-    perror("usb_clear_halt() on IN endpoint");
-  }
-  ret = libusb_clear_halt(ptp_usb->handle,ptp_usb->outep);
-  if (ret<0) {
-    perror("usb_clear_halt() on OUT endpoint");
-  }
-  ret = libusb_clear_halt(ptp_usb->handle,ptp_usb->intep);
-  if (ret<0) {
-    perror("usb_clear_halt() on INTERRUPT endpoint");
-  }
 }
 
 static void close_usb(PTP_USB* ptp_usb)
@@ -2379,15 +2361,6 @@ static void close_usb(PTP_USB* ptp_usb)
      * STALL is persistant or not).
      */
     clear_stall(ptp_usb);
-#if 0
-    // causes hangs on Linux 3.x at least up to 3.8
-    // Clear halts on any endpoints
-    clear_halt(ptp_usb);
-    // Added to clear some stuff on the OUT endpoint
-    // TODO: is this good on the Mac too?
-    // HINT: some devices may need that you comment these two out too.
-    libusb_clear_halt(ptp_usb->handle, ptp_usb->outep);
-#endif
     libusb_release_interface(ptp_usb->handle, (int) ptp_usb->interface);
   }
   if (FLAG_FORCE_RESET_ON_CLOSE(ptp_usb)) {
