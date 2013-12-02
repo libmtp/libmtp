@@ -577,6 +577,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "Iconia A1-810", 0x353c,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Liquid Z130 MT65xx Android Phone", 0x355f,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * SanDisk
@@ -1810,7 +1812,11 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "RAZR M (XT907)", 0x2e51,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Motorola", 0x22b8, "Moto X (XT1053)", 0x2e62,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Moto X (XT1058)", 0x2e63,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Motorola", 0x22b8, "Droid Maxx (XT1080)", 0x2e67,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Jader Rodrigues Simoes <jadersimoes@users.sourceforge.net>
   { "Motorola", 0x22b8, "Xoom 2 Media Edition (ID2)", 0x41cf,
@@ -1921,10 +1927,10 @@
   { "Google Inc (for Asus)", 0x18d1, "Nexus 7 (MTP+ADB)", 0x4e42,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc (for LG Electronics/Samsung)", 0x18d1,
-      "Nexus 4/10 (MTP)", 0x4ee1,
+      "Nexus 4/5/7/10 (MTP)", 0x4ee1,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc (for LG Electronics/Samsung)", 0x18d1,
-      "Nexus 4/10 (MTP+ADB)", 0x4ee2,
+      "Nexus 4/5/7/10 (MTP+ADB)", 0x4ee2,
       DEVICE_FLAGS_ANDROID_BUGS },
   // WiFi-only version of Xoom
   // See: http://bugzilla.gnome.org/show_bug.cgi?id=647506
@@ -2078,7 +2084,13 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TF700 Transformer (MTP+ADB)", 0x4c91,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Asus", 0x0b05, "ME301T MeMo Pad Smart 10", 0x4cd0,
+  { "Asus", 0x0b05, "ME301T MeMo Pad Smart 10 (MTP)", 0x4cd0,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "ME301T MeMo Pad Smart 10 (MTP+ADB)", 0x4cd1,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "Asus Fonepad Note 6 (MTP)", 0x4ce0,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "Asus Fonepad Note 6 (MTP+ADB)", 0x4ce1,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TF201 Transformer Prime (keyboard dock)", 0x4d00,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2239,9 +2251,16 @@
   { "Hewlett-Packard", 0x0bb4, "HP Touchpad (MTP+ADB)", 0x6860,
       DEVICE_FLAGS_ANDROID_BUGS },
 #if 0
-  // Apparently also used by a clone called Jiayu G2S
-  // with the MTK6577T chipset
-  // http://www.ejiayu.com/en/Product-19.html with
+  /*
+   * This had to be commented out - the same VID+PID is used also for
+   * other modes than MTP, so we need to let mtp-probe do its job on this
+   * device instead of adding it to the database.
+   *
+   * Apparently also used by a clone called Jiayu G2S
+   * with the MTK6577T chipset
+   * http://www.ejiayu.com/en/Product-19.html
+   * Wiko Cink Peax 2
+   */
   { "HTC", 0x0bb4, "Android Device ID2 (Zopo, HD2...)", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
 #endif
@@ -2254,6 +2273,7 @@
    */
   { "NEC", 0x0409, "FOMA N01A", 0x0242, DEVICE_FLAG_NONE },
   { "NEC", 0x0409, "Casio C811", 0x0326, DEVICE_FLAG_NONE },
+  { "NEC", 0x0409, "Casio CA-201L", 0x0432, DEVICE_FLAG_NONE },
 
   /*
    * nVidia
