@@ -808,9 +808,13 @@
   /*
    * Dell
    */
-  { "Dell, Inc", 0x413c, "DJ Itty", 0x4500, DEVICE_FLAG_NONE },
+  { "Dell Inc", 0x413c, "DJ Itty", 0x4500,
+      DEVICE_FLAG_NONE },
   /* Reported by: JR */
-  { "Dell, Inc", 0x413c, "Dell Streak 7", 0xb10b, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Dell Inc", 0x413c, "Dell Streak 7", 0xb10b,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Dell Inc", 0x413c, "Dell Venue 7 inch", 0xb11a,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Toshiba
@@ -1810,13 +1814,17 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Atrix/Razr HD (MTP+ADB)", 0x2e33,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Motorola", 0x22b8, "RAZR M (XT907)", 0x2e51,
+  { "Motorola", 0x22b8, "RAZR M XT907 (MTP)", 0x2e50,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Motorola", 0x22b8, "RAZR M XT907 (MTP+ADB)", 0x2e51,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Moto X (XT1053)", 0x2e62,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Moto X (XT1058)", 0x2e63,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Droid Maxx (XT1080)", 0x2e67,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Motorola", 0x22b8, "Moto G", 0x2e82,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Jader Rodrigues Simoes <jadersimoes@users.sourceforge.net>
   { "Motorola", 0x22b8, "Xoom 2 Media Edition (ID2)", 0x41cf,
@@ -1890,8 +1898,10 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "XT890/907/Razr (MTP+ADB)", 0x710e,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Motorola", 0x22b8, "XT890/907/Razr (MTP+?)", 0x710f,
-      DEVICE_FLAGS_ANDROID_BUGS },
+  /*
+   * XT890/907/Razr
+   * 710f is USB mass storage
+   */
 
   /*
    * Google
@@ -2240,15 +2250,11 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "Droid DNA (MTP+UMS)", 0x0ebd,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC One (ID2)", 0x0f63,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One (MTP+ADB)", 0x0f87,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One (ID3)", 0x0f91,
-      DEVICE_FLAGS_ANDROID_BUGS },
-  // These identify themselves as "cm_tenderloin", fun...
-  // Done by HTC for HP I guess.
-  { "Hewlett-Packard", 0x0bb4, "HP Touchpad (MTP)", 0x685c,
-      DEVICE_FLAGS_ANDROID_BUGS },
-  { "Hewlett-Packard", 0x0bb4, "HP Touchpad (MTP+ADB)", 0x6860,
       DEVICE_FLAGS_ANDROID_BUGS },
 #if 0
   /*
@@ -2264,6 +2270,12 @@
   { "HTC", 0x0bb4, "Android Device ID2 (Zopo, HD2...)", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
 #endif
+  // These identify themselves as "cm_tenderloin", fun...
+  // Done by HTC for HP I guess.
+  { "HTC (for Hewlett-Packard)", 0x0bb4, "HP Touchpad (MTP)", 0x685c,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC (for Hewlett-Packard)", 0x0bb4, "HP Touchpad (MTP+ADB)", 0x6860,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "Windows Phone 8s ID1", 0xf0ca,
       DEVICE_FLAG_NONE },
 
@@ -2291,10 +2303,15 @@
 
   /*
    * Vizio
+   * Reported by:
+   * Michael Gurski <gurski@users.sourceforge.net>
    */
-  { "Vizio", 0x0489, "Unknown 1", 0xc026, DEVICE_FLAGS_ANDROID_BUGS },
-  // Reported by Michael Gurski <gurski@users.sourceforge.net>
-  { "Vizio", 0x0489, "VTAB1008", 0xe040, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Vizio", 0x0489, "Unknown 1", 0xc026,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Vizio", 0x0489, "VTAB1008", 0xe040,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Vizio (for Lenovo)", 0x0489, "LIFETAB S9714", 0xe111,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
 
   /*
@@ -2413,6 +2430,12 @@
    * MediaTek Inc.
    */
   { "MediaTek Inc", 0x0e8d, "MT510R", 0x0050,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
+   * Jolla
+   */
+  { "Jolla", 0x2931, "Sailfish", 0x0a01,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
