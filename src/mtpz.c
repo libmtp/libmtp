@@ -119,7 +119,7 @@ int mtpz_loaddata()
 	char *home = getenv("HOME");
 	if (!home)
 	{
-		LIBMTP_ERROR("Unable to determine user's home directory, MTPZ disabled");
+		LIBMTP_ERROR("Unable to determine user's home directory, MTPZ disabled.\n");
 		return -1;
 	}
 
@@ -130,7 +130,7 @@ int mtpz_loaddata()
 	FILE *fdata = fopen(path, "r");
 	if (!fdata)
 	{
-		LIBMTP_ERROR("Unable to open ~/.mtpz-data for reading, MTPZ disabled.");
+		LIBMTP_ERROR("Unable to open ~/.mtpz-data for reading, MTPZ disabled.\n");
 		return -1;
 	}
 
@@ -138,7 +138,7 @@ int mtpz_loaddata()
 	MTPZ_PUBLIC_EXPONENT = (unsigned char *)fgets_strip((char *)malloc(8), 8, fdata);
 	if (!MTPZ_PUBLIC_EXPONENT)
 	{
-		LIBMTP_ERROR("Unable to read MTPZ public exponent from ~/.mtpz-data, MTPZ disabled");
+		LIBMTP_ERROR("Unable to read MTPZ public exponent from ~/.mtpz-data, MTPZ disabled.\n");
 		return -1;
 	}
 
@@ -146,20 +146,20 @@ int mtpz_loaddata()
 	char *hexenckey = (unsigned char *)fgets_strip((char *)malloc(35), 35, fdata);
 	if (!hexenckey)
 	{
-		LIBMTP_ERROR("Unable to read MTPZ encryption key from ~/.mtpz-data, MTPZ disabled");
+		LIBMTP_ERROR("Unable to read MTPZ encryption key from ~/.mtpz-data, MTPZ disabled.\n");
 		return -1;
 	}
 	MTPZ_ENCRYPTION_KEY = hex_to_bytes(hexenckey, strlen(hexenckey));
 	if (!MTPZ_ENCRYPTION_KEY)
 	{
-		LIBMTP_ERROR("Unable to read MTPZ encryption key from ~/.mtpz-data, MTPZ disabled");
+		LIBMTP_ERROR("Unable to read MTPZ encryption key from ~/.mtpz-data, MTPZ disabled.\n");
 	}
 
 	// Should only be 256 characters in length, but fgets will encounter a newline and stop.
 	MTPZ_MODULUS = (unsigned char *)fgets_strip((char *)malloc(260), 260, fdata);
 	if (!MTPZ_MODULUS)
 	{
-		LIBMTP_ERROR("Unable to read MTPZ modulus from ~/.mtpz-data, MTPZ disabled");
+		LIBMTP_ERROR("Unable to read MTPZ modulus from ~/.mtpz-data, MTPZ disabled.\n");
 		return -1;
 	}
 
@@ -167,7 +167,7 @@ int mtpz_loaddata()
 	MTPZ_PRIVATE_KEY = (unsigned char *)fgets_strip((char *)malloc(260), 260, fdata);
 	if (!MTPZ_PRIVATE_KEY)
 	{
-		LIBMTP_ERROR("Unable to read MTPZ private key from ~/.mtpz-data, MTPZ disabled");
+		LIBMTP_ERROR("Unable to read MTPZ private key from ~/.mtpz-data, MTPZ disabled.\n");
 		return -1;
 	}
 
@@ -175,13 +175,13 @@ int mtpz_loaddata()
 	char *hexcerts = fgets_strip((char *)malloc(1260), 1260, fdata);
 	if (!hexcerts)
 	{
-		LIBMTP_ERROR("Unable to read MTPZ certificates from ~/.mtpz-data, MTPZ disabled");
+		LIBMTP_ERROR("Unable to read MTPZ certificates from ~/.mtpz-data, MTPZ disabled.\n");
 		return -1;
 	}
 	MTPZ_CERTIFICATES = hex_to_bytes(hexcerts, strlen(hexcerts));
 	if (!MTPZ_CERTIFICATES)
 	{
-		LIBMTP_ERROR("Unable to parse MTPZ certificates from ~/.mtpz-data, MTPZ disabled");
+		LIBMTP_ERROR("Unable to parse MTPZ certificates from ~/.mtpz-data, MTPZ disabled.\n");
 		return -1;
 	}
 
