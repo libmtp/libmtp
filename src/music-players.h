@@ -967,19 +967,6 @@
   { "Sirius", 0x18f6, "Stiletto 2", 0x0110, DEVICE_FLAG_NONE },
 
   /*
-   * Canon
-   * These are actually cameras, but they have a Microsoft device descriptor
-   * and reports themselves as supporting the MTP extension.
-   */
-  { "Canon", 0x04a9, "Ixus Digital 700 (PTP/MTP mode)", 0x30f2,
-     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
-  { "Canon", 0x04a9, "PowerShot A640 (PTP/MTP mode)", 0x3139,
-     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
-  // From Peter <pjeremy@users.sourceforge.net>
-  { "Canon", 0x04a9, "PowerShot SX20IS (PTP/MTP mode)", 0x31e4,
-     DEVICE_FLAG_NONE },
-
-  /*
    * Nokia
    * Please verify the low device IDs here, I suspect these might be for
    * things like USB storage or modem mode actually, whereas the higher
