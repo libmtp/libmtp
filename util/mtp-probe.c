@@ -246,7 +246,7 @@ static int check_sysfs(char *sysfspath)
   dirbuf[len++] = '/';
 
   /* Check for dirs that identify interfaces */
-  ret = regcomp(&r, "^[0-9]+-[0-9]+\\:[0-9]+\\.[0-9]+$", REG_EXTENDED | REG_NOSUB);
+  ret = regcomp(&r, "^[0-9]+-[0-9]+(.[0-9])?\\:[0-9]+\\.[0-9]+$", REG_EXTENDED | REG_NOSUB);
   if (ret)
     return -1;
 
