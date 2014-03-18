@@ -2489,6 +2489,12 @@
   { "Kurio", 0x1f3a, "7S", 0x1006,
       DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* In update 4 the order of devices was changed for
+     better OS X / Windows suport and another device-id
+     got assigned for the MTP */
+  { "Jolla", 0x2931, "Sailfish", 0x0a05,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
   /*
    * Other strange stuff.
    */
