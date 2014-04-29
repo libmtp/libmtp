@@ -18,9 +18,8 @@ MP3 players, mobile phones etc, look into MeeGo:s Buteo Sync:
 http://wiki.meego.com/Buteo - these guys are creating a fully
 open source MTP responder.
 
-Android has an MTP responder implementation called MediaProvider:
-https://android.googlesource.com/platform/packages/providers/MediaProvider/+/master/src/com/android/providers/media
-
+Android has an MTP responder implementation:
+https://android.googlesource.com/platform/frameworks/base/+/master/media/jni/
 
 Heritage
 --------
