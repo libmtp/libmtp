@@ -18,8 +18,8 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA  02110-1301  USA
  */
 
 #define _BSD_SOURCE
@@ -489,7 +489,7 @@ traverse_tree (PTPParams *params, int depth, xmlNodePtr node) {
 
 
 	if (!node) return 0;
-	xx = malloc(depth * 4 + 1);
+	xx = malloc (depth * 4 + 1);
 	memset (xx, ' ', depth*4);
 	xx[depth*4] = 0;
 
@@ -503,6 +503,7 @@ traverse_tree (PTPParams *params, int depth, xmlNodePtr node) {
 		fprintf(stderr,"%scontent %s\n", xx,xchar);
 		traverse_tree (params, depth+1,xmlFirstElementChild (next));
 	} while ((next = xmlNextElementSibling (next)));
+	free (xx);
 	return PTP_RC_OK;
 }
 
@@ -720,8 +721,9 @@ parse_9301_propdesc (PTPParams *params, xmlNodePtr next, PTPDevicePropDesc *dpd)
 
 static int
 parse_9301_prop_tree (PTPParams *params, xmlNodePtr node, PTPDeviceInfo *di) {
-	xmlNodePtr next;
-	int	cnt;
+	xmlNodePtr	next;
+	int		cnt;
+	unsigned int	i;
 
 	cnt = 0;
 	next = xmlFirstElementChild (node);
@@ -741,7 +743,28 @@ parse_9301_prop_tree (PTPParams *params, xmlNodePtr node, PTPDeviceInfo *di) {
 		sscanf((char*)next->name, "p%04x", &p);
 		ptp_debug( params, "prop %s / 0x%04x", next->name, p);
 		parse_9301_propdesc (params, xmlFirstElementChild (next), &dpd);
+		dpd.DevicePropertyCode = p;
 		di->DevicePropertiesSupported[cnt++] = p;
+
+		/* add to cache of device propdesc */
+		for (i=0;i<params->nrofdeviceproperties;i++)
+			if (params->deviceproperties[i].desc.DevicePropertyCode == p)
+				break;
+		if (i == params->nrofdeviceproperties) {
+			if (!i)
+				params->deviceproperties = malloc(sizeof(params->deviceproperties[0]));
+			else
+				params->deviceproperties = realloc(params->deviceproperties,(i+1)*sizeof(params->deviceproperties[0]));
+			memset(&params->deviceproperties[i],0,sizeof(params->deviceproperties[0]));
+			params->nrofdeviceproperties++;
+		} else {
+			ptp_free_devicepropdesc (&params->deviceproperties[i].desc);
+		}
+		/* FIXME: free old entry */
+		/* we are not using dpd, so copy it directly to the cache */
+		time( &params->deviceproperties[i].timestamp);
+		params->deviceproperties[i].desc = dpd;
+
 		next = xmlNextElementSibling (next);
 	}
 	return PTP_RC_OK;
@@ -1054,6 +1077,8 @@ ptp_free_devicepropdesc(PTPDevicePropDesc* dpd)
 			free (dpd->FORM.Enum.SupportedValue);
 		}
 	}
+	dpd->DataType = PTP_DTC_UNDEF;
+	dpd->FormFlag = PTP_DPFF_None;
 }
 
 
@@ -1116,6 +1141,11 @@ ptp_free_params (PTPParams *params) {
 	}
 	free (params->canon_props);
 	free (params->backlogentries);
+
+	for (i=0;i<params->nrofdeviceproperties;i++)
+		ptp_free_devicepropdesc (&params->deviceproperties[i].desc);
+	free (params->deviceproperties);
+
 	ptp_free_DI (&params->deviceinfo);
 }
 
@@ -1733,7 +1763,13 @@ ptp_getdevicepropvalue (PTPParams* params, uint16_t propcode,
 	ptp.Nparam=1;
 	len=offset=0;
 	ret=ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &dpv, &len);
-	if (ret == PTP_RC_OK) ptp_unpack_DPV(params, dpv, &offset, len, value, datatype);
+	if (ret == PTP_RC_OK) {
+		int ret2 = ptp_unpack_DPV(params, dpv, &offset, len, value, datatype);
+		if (!ret2) {
+			ptp_debug (params, "ptp_getdevicepropvalue: unpacking DPV failed");
+			ret = PTP_RC_GeneralError;
+		}
+	}
 	free(dpv);
 	return ret;
 }
@@ -2465,14 +2501,17 @@ ptp_canon_eos_getobjectinfoex (
 
 	*nrofentries = dtoh32a(data);
 	*entries = malloc(*nrofentries * sizeof(PTPCANONFolderEntry));
-	if (!*entries)
+	if (!*entries) {
+		free (data);
 		return PTP_RC_GeneralError;
+	}
 
 	xdata = data+sizeof(uint32_t);
 	for (i=0;i<*nrofentries;i++) {
 		ptp_unpack_Canon_EOS_FE (params, &xdata[4], &((*entries)[i]));
 		xdata += dtoh32a(xdata);
 	}
+	free (data);
 	return PTP_RC_OK;
 }
 
@@ -2854,7 +2893,312 @@ ptp_nikon_curve_download (PTPParams* params, unsigned char **data, unsigned int 
 }
 
 /**
- * ptp_canon_get_vendorpropcodes:
+ * ptp_sony_sdioconnect:
+ *
+ * This changes modes of the camera
+ *  
+ * params:	PTPParams*
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+uint16_t
+ptp_sony_sdioconnect (PTPParams* params, uint32_t p1, uint32_t p2, uint32_t p3) {
+	PTPContainer	ptp;
+	uint16_t	ret;
+	unsigned char	*xdata = NULL;
+	unsigned int 	xsize;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code	= PTP_OC_SONY_SDIOConnect;
+	ptp.Nparam	= 3;
+	ptp.Param1	= p1;
+	ptp.Param2	= p2;
+	ptp.Param3	= p3;
+	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &xdata, &xsize); 
+	free (xdata);
+	return ret;
+}
+/**
+ * ptp_sony_get_vendorpropcodes:
+ *
+ * This command downloads the vendor specific property codes.
+ *  
+ * params:	PTPParams*
+ *
+ * Return values: Some PTP_RC_* code.
+ *      unsigned char **data - pointer to data pointer
+ *      unsigned int  *size - size of data returned
+ *
+ **/
+uint16_t
+ptp_sony_get_vendorpropcodes (PTPParams* params, uint16_t **props, unsigned int *size) {
+	PTPContainer	ptp;
+	uint16_t	ret;
+	unsigned char	*xdata = NULL;
+	unsigned int 	xsize;
+
+	*props = NULL;
+	*size = 0;
+	PTP_CNT_INIT(ptp);
+	ptp.Code	= PTP_OC_SONY_GetSDIOGetExtDeviceInfo;
+	ptp.Nparam	= 1;
+	ptp.Param1	= 0xc8; /* unclear */
+	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &xdata, &xsize); 
+	/* first 16 bit is 0xc8 0x00, then an array of 16 bit PTP ids */
+	if (ret == PTP_RC_OK)
+        	*size = ptp_unpack_uint16_t_array(params,xdata+2,0,props);
+	free (xdata);
+	return ret;
+}
+
+uint16_t
+ptp_sony_getdevicepropdesc (PTPParams* params, uint16_t propcode, PTPDevicePropDesc *dpd) {
+	PTPContainer	ptp;
+	uint16_t	ret;
+	unsigned char	*xdata = NULL;
+	unsigned int 	xsize,len = 0;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code	= PTP_OC_SONY_GetDevicePropdesc;
+	ptp.Nparam	= 1;
+	ptp.Param1	= propcode;
+	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &xdata, &xsize); 
+	/* first 16 bit is 0xc8 0x00, then an array of 16 bit PTP ids */
+	if (ret == PTP_RC_OK)
+        	ret = ptp_unpack_Sony_DPD(params,xdata,dpd,xsize,&len)?PTP_RC_OK:PTP_RC_GeneralError;
+	free (xdata);
+	return ret;
+}
+
+uint16_t
+ptp_sony_getalldevicepropdesc (PTPParams* params)
+{
+	PTPContainer		ptp;
+	uint16_t		ret;
+	unsigned char		*data = NULL , *dpddata;
+	uint32_t		size = 0, readlen;
+	PTPDevicePropDesc	dpd;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code   = PTP_OC_SONY_GetAllDevicePropData;
+	ptp.Nparam = 0;
+	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, &size);
+	if (ret != PTP_RC_OK)
+		return ret;
+	dpddata = data+8; /* nr of entries 32bit, 0 32bit */
+	size -= 8;
+	while (size>0) {
+		unsigned int	i;
+		uint16_t	propcode;
+
+		if (!ptp_unpack_Sony_DPD (params, dpddata, &dpd, size, &readlen))
+			break;
+
+		propcode = dpd.DevicePropertyCode;
+
+		for (i=0;i<params->nrofdeviceproperties;i++)
+			if (params->deviceproperties[i].desc.DevicePropertyCode == propcode)
+				break;
+
+		if (i == params->nrofdeviceproperties) {
+			if (!i)
+				params->deviceproperties = malloc(sizeof(params->deviceproperties[0]));
+			else
+				params->deviceproperties = realloc(params->deviceproperties,(i+1)*sizeof(params->deviceproperties[0]));
+			memset(&params->deviceproperties[i],0,sizeof(params->deviceproperties[0]));
+			params->nrofdeviceproperties++;
+		} else {
+			ptp_free_devicepropdesc (&params->deviceproperties[i].desc);
+		}
+		params->deviceproperties[i].desc = dpd;
+#if 0
+		ptp_debug (params, "dpd.DevicePropertyCode %04x, readlen %d, getset %d", dpd.DevicePropertyCode, readlen, dpd.GetSet);
+		switch (dpd.DataType) {
+		case PTP_DTC_INT8:
+			ptp_debug (params, "value %d/%x", dpd.CurrentValue.i8, dpd.CurrentValue.i8);
+			break;
+		case PTP_DTC_UINT8:
+			ptp_debug (params, "value %d/%x", dpd.CurrentValue.u8, dpd.CurrentValue.u8);
+			break;
+		case PTP_DTC_UINT16:
+			ptp_debug (params, "value %d/%x", dpd.CurrentValue.u16, dpd.CurrentValue.u16);
+			break;
+		case PTP_DTC_INT16:
+			ptp_debug (params, "value %d/%x", dpd.CurrentValue.i16, dpd.CurrentValue.i16);
+			break;
+		case PTP_DTC_INT32:
+			ptp_debug (params, "value %d/%x", dpd.CurrentValue.i32, dpd.CurrentValue.i32);
+			break;
+		case PTP_DTC_UINT32:
+			ptp_debug (params, "value %d/%x", dpd.CurrentValue.u32, dpd.CurrentValue.u32);
+			break;
+		default:
+			ptp_debug (params, "unknown type %x", dpd.DataType);
+			break;
+		}
+#endif
+		dpddata += readlen;
+		size -= readlen;
+	}
+	free(data);
+	return ret;
+}
+
+uint16_t
+ptp_sony_setdevicecontrolvaluea (PTPParams* params, uint16_t propcode,
+			PTPPropertyValue *value, uint16_t datatype)
+{
+	PTPContainer ptp;
+	uint16_t ret;
+	uint32_t size;
+	unsigned char* dpv=NULL;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code   = PTP_OC_SONY_SetControlDeviceA;
+	ptp.Param1 = propcode;
+	ptp.Nparam = 1;
+	size = ptp_pack_DPV(params, value, &dpv, datatype);
+	ret = ptp_transaction(params, &ptp, PTP_DP_SENDDATA, size, &dpv, NULL);
+	free(dpv);
+	return ret;
+}
+
+uint16_t
+ptp_sony_setdevicecontrolvalueb (PTPParams* params, uint16_t propcode,
+			PTPPropertyValue *value, uint16_t datatype)
+{
+	PTPContainer ptp;
+	uint16_t ret;
+	uint32_t size;
+	unsigned char* dpv=NULL;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code   = PTP_OC_SONY_SetControlDeviceB;
+	ptp.Param1 = propcode;
+	ptp.Nparam = 1;
+	size = ptp_pack_DPV(params, value, &dpv, datatype);
+	ret = ptp_transaction(params, &ptp, PTP_DP_SENDDATA, size, &dpv, NULL);
+	free(dpv);
+	return ret;
+}
+
+/**
+ * ptp_generic_getdevicepropdesc:
+ *
+ * This command gets a propertydesc.
+ * If a vendor specific property desc query is available, it uses that.
+ * If not, it falls back to the generic PTP getdevicepropdesc.
+ *  
+ * params:	PTPParams*
+ *      uint16_t propcode 
+ *      PTPDevicePropDesc *dpd
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+/* Cache time in seconds. Should perhaps be more granular... */
+#define CACHETIME 2
+
+uint16_t
+ptp_generic_getdevicepropdesc (PTPParams *params, uint16_t propcode, PTPDevicePropDesc *dpd)
+{
+	unsigned int	i;
+	uint16_t	ret;
+	time_t		now;
+
+	for (i=0;i<params->nrofdeviceproperties;i++)
+		if (params->deviceproperties[i].desc.DevicePropertyCode == propcode)
+			break;
+	if (i == params->nrofdeviceproperties) {
+		if (!i)
+			params->deviceproperties = malloc(sizeof(params->deviceproperties[0]));
+		else
+			params->deviceproperties = realloc(params->deviceproperties,(i+1)*sizeof(params->deviceproperties[0]));
+		memset(&params->deviceproperties[i],0,sizeof(params->deviceproperties[0]));
+		params->nrofdeviceproperties++;
+	}
+
+	if (params->deviceproperties[i].desc.DataType != PTP_DTC_UNDEF) {
+		time(&now);
+		if ((now - params->deviceproperties[i].timestamp) <= CACHETIME) {
+			duplicate_DevicePropDesc(&params->deviceproperties[i].desc, dpd);
+			return PTP_RC_OK;
+		}
+		/* free cached entry as we will refetch it. */
+		ptp_free_devicepropdesc (&params->deviceproperties[i].desc);
+	}
+
+	if (	(params->deviceinfo.VendorExtensionID == PTP_VENDOR_SONY) &&
+		ptp_operation_issupported(params, PTP_OC_SONY_GetAllDevicePropData)
+	) {
+		ret = ptp_sony_getalldevicepropdesc (params);
+		if (ret != PTP_RC_OK)
+			return ret;
+
+		for (i=0;i<params->nrofdeviceproperties;i++)
+			if (params->deviceproperties[i].desc.DevicePropertyCode == propcode)
+				break;
+		time(&now);
+		params->deviceproperties[i].timestamp = now;
+		duplicate_DevicePropDesc(&params->deviceproperties[i].desc, dpd);
+		return PTP_RC_OK;
+	}
+	if (	(params->deviceinfo.VendorExtensionID == PTP_VENDOR_SONY) &&
+		ptp_operation_issupported(params, PTP_OC_SONY_GetDevicePropdesc)
+	) {
+		ret = ptp_sony_getdevicepropdesc (params, propcode, &params->deviceproperties[i].desc);
+		if (ret != PTP_RC_OK)
+			return ret;
+
+		time(&now);
+		params->deviceproperties[i].timestamp = now;
+		duplicate_DevicePropDesc(&params->deviceproperties[i].desc, dpd);
+		return PTP_RC_OK;
+	}
+
+
+	if (ptp_operation_issupported(params, PTP_OC_GetDevicePropDesc)) {
+		ret = ptp_getdevicepropdesc (params, propcode, &params->deviceproperties[i].desc);
+		if (ret != PTP_RC_OK)
+			return ret;
+
+		time(&now);
+		params->deviceproperties[i].timestamp = now;
+		duplicate_DevicePropDesc(&params->deviceproperties[i].desc, dpd);
+		return PTP_RC_OK;
+	}
+
+	return PTP_RC_OK;
+}
+
+/**
+ * ptp_generic_setdevicepropvalue:
+ *
+ * This command sets a property value, device specific.
+ *  
+ * params:	PTPParams*
+ *      uint16_t propcode 
+ *      PTPDevicePropertyValue *value
+ *      uint16_t datatype
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+uint16_t
+ptp_generic_setdevicepropvalue (PTPParams* params, uint16_t propcode,
+	PTPPropertyValue *value, uint16_t datatype)
+{
+	/* FIXME: change the cache? hmm */
+	if (	(params->deviceinfo.VendorExtensionID == PTP_VENDOR_SONY) &&
+		ptp_operation_issupported(params, PTP_OC_SONY_SetControlDeviceB)
+	)
+		return ptp_sony_setdevicecontrolvaluea (params, propcode, value, datatype);
+	return ptp_setdevicepropvalue (params, propcode, value, datatype);
+}
+
+/**
+ * ptp_nikon_get_vendorpropcodes:
  *
  * This command downloads the vendor specific property codes.
  *  
@@ -3338,8 +3682,13 @@ ptp_mtp_getobjectpropvalue (
         ptp.Param1 = oid;
         ptp.Param2 = opc;
         ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, &size);
-	if (ret == PTP_RC_OK)
-		ptp_unpack_DPV(params, data, &offset, size, value, datatype);
+	if (ret == PTP_RC_OK) {
+		int ret2 = ptp_unpack_DPV(params, data, &offset, size, value, datatype);
+		if (!ret2) {
+			ptp_debug (params, "ptp_mtp_getobjectpropvalue: unpacking DPV failed");
+			ret = PTP_RC_GeneralError;
+		}
+	}
 	free(data);
 	return ret;
 }
@@ -3541,7 +3890,7 @@ ptp_mtpz_getwmdrmpdappresponse (PTPParams* params, unsigned char **response, uin
 /****** CHDK interface ******/
 
 uint16_t
-ptp_chdk_get_memory(PTPParams* params, int start, int num, unsigned char **buf )
+ptp_chdk_get_memory(PTPParams* params, int start, int num, unsigned char **buf)
 {
 	PTPContainer ptp;
 
@@ -3554,72 +3903,34 @@ ptp_chdk_get_memory(PTPParams* params, int start, int num, unsigned char **buf )
 	return ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, buf, NULL);
 }
 
-
 uint16_t
-ptp_chdk_call(PTPParams* params, int *args, int size, int *ret)
-{
-	uint16_t r;
-	PTPContainer ptp;
-
-	PTP_CNT_INIT(ptp);
-	ptp.Code=PTP_OC_CHDK;
-	ptp.Nparam=1;
-	ptp.Param1=PTP_CHDK_CallFunction;
-
-	/* FIXME: check int packing */
-	r=ptp_transaction(params, &ptp, PTP_DP_SENDDATA, size*sizeof(int), (unsigned char **) &args, NULL);
-	if ( r == PTP_RC_OK )
-		return r;
-	if ( ret )
-		*ret = ptp.Param1;
-	return r;
-}
-
-uint16_t
-ptp_chdk_get_propcase(PTPParams* params, int start, int num, int* ints)
+ptp_chdk_set_memory_long(PTPParams* params, int addr, int val)
 {
 	PTPContainer ptp;
+	unsigned char *buf = (unsigned char *) &val; /* FIXME ... endianness? */
 
 	PTP_CNT_INIT(ptp);
 	ptp.Code=PTP_OC_CHDK;
 	ptp.Nparam=3;
-	ptp.Param1=PTP_CHDK_GetPropCase;
-	ptp.Param2=start;
-	ptp.Param3=num;
-	/* FIXME: unpack ints correctly */
-	return ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, (unsigned char**)ints, NULL);
-}
-
-uint16_t
-ptp_chdk_get_paramdata(PTPParams* params, int start, int num, unsigned char **buf)
-{
-	PTPContainer ptp;
-
-	PTP_CNT_INIT(ptp);
-	ptp.Code=PTP_OC_CHDK;
-	ptp.Nparam=3;
-	ptp.Param1=PTP_CHDK_GetParamData;
-	ptp.Param2=start;
-	ptp.Param3=num;
-	return ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, buf, NULL);
+	ptp.Param1=PTP_CHDK_SetMemory;
+	ptp.Param2=addr;
+	ptp.Param3=4;
+	return ptp_transaction(params, &ptp, PTP_DP_SENDDATA, 4, &buf, NULL);
 }
 
 #if 0
-int ptp_chdk_upload(char *local_fn, char *remote_fn, PTPParams* params, PTPDeviceInfo* deviceinfo)
+int ptp_chdk_upload(PTPParams* params, char *local_fn, char *remote_fn)
 {
   uint16_t ret;
   PTPContainer ptp;
   char *buf = NULL;
   FILE *f;
-  int s,l;
-  struct stat st_buf;
+  unsigned file_len,data_len,file_name_len;
 
   PTP_CNT_INIT(ptp);
   ptp.Code=PTP_OC_CHDK;
-  ptp.Nparam=2;
+  ptp.Nparam=1;
   ptp.Param1=PTP_CHDK_UploadFile;
-
-  if (stat(local_fn, &st_buf)==0) ptp.Param2=st_buf.st_mtime-_timezone-_daylight; else ptp.Param2=0;
 
   f = fopen(local_fn,"rb");
   if ( f == NULL )
@@ -3628,24 +3939,24 @@ int ptp_chdk_upload(char *local_fn, char *remote_fn, PTPParams* params, PTPDevic
     return 0;
   }
 
-
   fseek(f,0,SEEK_END);
-  s = ftell(f);
+  file_len = ftell(f);
   fseek(f,0,SEEK_SET);
 
-  l = strlen(remote_fn);
-  buf = malloc(4+l+s);
-  memcpy(buf,&l,4);
-  memcpy(buf+4,remote_fn,l);
-  fread(buf+4+l,1,s,f);
+  file_name_len = strlen(remote_fn);
+  data_len = 4 + file_name_len + file_len;
+  buf = malloc(data_len);
+  memcpy(buf,&file_name_len,4);
+  memcpy(buf+4,remote_fn,file_name_len);
+  fread(buf+4+file_name_len,1,file_len,f);
 
   fclose(f);
 
-  ret=ptp_transaction(params, &ptp, PTP_DP_SENDDATA, 4+l+s, &buf);
+  ret=ptp_transaction(params, &ptp, PTP_DP_SENDDATA, data_len, &buf, NULL);
 
   free(buf);
 
-  if ( ret != 0x2001 )
+  if ( ret != PTP_RC_OK )
   {
     ptp_error(params,"unexpected return code 0x%x",ret);
     return 0;
@@ -3653,21 +3964,39 @@ int ptp_chdk_upload(char *local_fn, char *remote_fn, PTPParams* params, PTPDevic
   return 1;
 }
 
-int ptp_chdk_download(char *remote_fn, char *local_fn, PTPParams* params, PTPDeviceInfo* deviceinfo)
+static uint16_t gd_to_file(PTPParams* params, PTPGetdataParams *gdparams, unsigned len, unsigned char *bytes) {
+	FILE *f = (FILE *)gdparams->handler_data;
+	size_t count=fwrite(bytes,1,len,f);
+	if(count != len) {
+		return PTP_ERROR_IO;
+	}
+	return PTP_RC_OK;
+}
+
+int ptp_chdk_download(PTPParams* params, char *remote_fn, char *local_fn)
 {
   uint16_t ret;
   PTPContainer ptp;
-  char *buf = NULL;
+  PTPGetdataParams gdparams;
   FILE *f;
+
+  f = fopen(local_fn,"wb");
+  if ( f == NULL )
+  {
+    ptp_error(params,"could not open file \'%s\'",local_fn);
+    return 0;
+  }
 
   PTP_CNT_INIT(ptp);
   ptp.Code=PTP_OC_CHDK;
-  ptp.Nparam=1;
+  ptp.Nparam=2;
   ptp.Param1=PTP_CHDK_TempData;
-  ret=ptp_transaction(params, &ptp, PTP_DP_SENDDATA, strlen(remote_fn), &remote_fn);
-  if ( ret != 0x2001 )
+  ptp.Param2=0;
+  ret=ptp_transaction(params, &ptp, PTP_DP_SENDDATA, strlen(remote_fn), &remote_fn, NULL);
+  if ( ret != PTP_RC_OK )
   {
     ptp_error(params,"unexpected return code 0x%x",ret);
+	fclose(f);
     return 0;
   }
 
@@ -3676,32 +4005,107 @@ int ptp_chdk_download(char *remote_fn, char *local_fn, PTPParams* params, PTPDev
   ptp.Nparam=1;
   ptp.Param1=PTP_CHDK_DownloadFile;
 
-  ret=ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &buf);
-  if ( ret != 0x2001 )
+  PTP_CNT_INIT(gdparams);
+
+  gdparams.handler = gd_to_file;
+  gdparams.block_size = 0; // default
+  gdparams.handler_data = f;
+  ret=ptp_getdata_transaction(params, &ptp, &gdparams);
+  fclose(f);
+  if ( ret != PTP_RC_OK )
   {
     ptp_error(params,"unexpected return code 0x%x",ret);
     return 0;
   }
-
-  f = fopen(local_fn,"wb");
-  if ( f == NULL )
-  {
-    ptp_error(params,"could not open file \'%s\'",local_fn);
-    free(buf);
-    return 0;
-  }
-
-  fwrite(buf,1,ptp.Param1,f);
-  fclose(f);
-
-  free(buf);
-
+  
   return 1;
 }
 #endif
 
+/*
+ * Preliminary remote capture over USB code. Corresponding CHDK code is in the ptp-remote-capture-test
+ * This is under development and should not be included in builds for general distribution
+ */
+/*
+ * isready: 0: not ready, lowest 2 bits: available image formats, 0x10000000: error
+ */
 uint16_t
-ptp_chdk_exec_lua(PTPParams* params, char *script, uint32_t *ret)
+ptp_chdk_rcisready(PTPParams* params, int *isready, int *imgnum)
+{
+	uint16_t ret;
+	PTPContainer ptp;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code=PTP_OC_CHDK;
+	ptp.Nparam=1;
+	ptp.Param1=PTP_CHDK_RemoteCaptureIsReady;
+
+	ret=ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
+	if ( ret != PTP_RC_OK )
+		return ret;
+	*isready=ptp.Param1;
+	*imgnum=ptp.Param2;
+	return ret;
+}
+
+uint16_t
+ptp_chdk_rcgetchunk(PTPParams* params, int fmt, ptp_chdk_rc_chunk *chunk)
+{
+	uint16_t ret;
+	PTPContainer ptp;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code=PTP_OC_CHDK;
+	ptp.Nparam=2;
+	ptp.Param1=PTP_CHDK_RemoteCaptureGetData;
+	ptp.Param2=fmt; //get chunk
+
+	chunk->data = NULL;
+	chunk->size = 0;
+	chunk->offset = 0;
+	chunk->last = 0;
+
+	// TODO should allow ptp_getdata_transaction to send chunks directly to file, or to mem
+	ret=ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &chunk->data, NULL);
+	if ( ret != PTP_RC_OK )
+	  return ret;
+	chunk->size = ptp.Param1;
+	chunk->last = (ptp.Param2 == 0);
+  	chunk->offset = ptp.Param3; //-1 for none
+	return ret;
+}
+
+uint16_t
+ptp_chdk_exec_lua(PTPParams* params, char *script, int flags, int *script_id, int *status)
+{
+	uint16_t r;
+	PTPContainer ptp;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code=PTP_OC_CHDK;
+	ptp.Nparam=2;
+	ptp.Param1=PTP_CHDK_ExecuteScript;
+	ptp.Param2=PTP_CHDK_SL_LUA | flags;
+
+	r = ptp_transaction(params, &ptp, PTP_DP_SENDDATA, strlen(script)+1, (unsigned char**)&script, NULL);
+
+	if ( r != PTP_RC_OK ) {
+		*script_id = 0;
+		*status = 0;
+		return r;
+	} else {
+		*script_id = ptp.Param1;
+		*status = ptp.Param2;
+		//return (*status == PTP_CHDK_S_ERRTYPE_NONE);
+		if (*status == PTP_CHDK_S_ERRTYPE_NONE)
+			return PTP_RC_OK;
+		else
+			return r;
+	}
+}
+
+uint16_t
+ptp_chdk_get_version(PTPParams* params, int *major, int *minor)
 {
 	uint16_t r;
 	PTPContainer ptp;
@@ -3709,164 +4113,147 @@ ptp_chdk_exec_lua(PTPParams* params, char *script, uint32_t *ret)
 	PTP_CNT_INIT(ptp);
 	ptp.Code=PTP_OC_CHDK;
 	ptp.Nparam=1;
-	ptp.Param1=PTP_CHDK_ExecuteLUA;
-	r=ptp_transaction(params, &ptp, PTP_DP_SENDDATA, strlen(script)+1, (unsigned char**)&script, NULL);
+	ptp.Param1=PTP_CHDK_Version;
+	r=ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
 	if ( r != PTP_RC_OK )
 		return r;
-	*ret = ptp.Param1;
+	*major = ptp.Param1;
+	*minor = ptp.Param2;
 	return r;
 }
 
 uint16_t
-ptp_chdk_get_script_output(PTPParams* params, char** scriptoutput) {
+ptp_chdk_get_script_status(PTPParams* params, unsigned *status)
+{
+	uint16_t r;
 	PTPContainer ptp;
 
 	PTP_CNT_INIT(ptp);
 	ptp.Code=PTP_OC_CHDK;
 	ptp.Nparam=1;
-	ptp.Param1=PTP_CHDK_GetScriptOutput;
-	return ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, (unsigned char **)scriptoutput, NULL);
+	ptp.Param1=PTP_CHDK_ScriptStatus;
+	r=ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
+	if ( r != PTP_RC_OK )
+		return r;
+	*status = ptp.Param1;
+	return r;
 }
-
-#if 0
-void ptp_chdk_opendir(char *dir, PTPParams* params, PTPDeviceInfo* deviceinfo){
-  uint16_t ret;
-  PTPContainer ptp;
-
-  PTP_CNT_INIT(ptp);
-  ptp.Code=PTP_OC_CHDK;
-  ptp.Nparam=1;
-  ptp.Param1=PTP_CHDK_OpenDir;
-  ret=ptp_transaction(params, &ptp, PTP_DP_SENDDATA, strlen(dir)+1, (char*)&dir);
-  if ( ret != 0x2001 )
-  {
-    ptp_error(params,"unexpected return code 0x%x",ret);
-    return;
-  }
-}
-
-void ptp_chdk_closedir(PTPParams* params, PTPDeviceInfo* deviceinfo){
-  uint16_t ret;
-  PTPContainer ptp;
-
-  PTP_CNT_INIT(ptp);
-  ptp.Code=PTP_OC_CHDK;
-  ptp.Nparam=1;
-  ptp.Param1=PTP_CHDK_CloseDir;
-  ret=ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL);
-  if ( ret != 0x2001 )
-  {
-    ptp_error(params,"unexpected return code 0x%x",ret);
-    return;
-  }
-}
-
-struct fileinfo* ptp_chdk_readdir(PTPParams* params, PTPDeviceInfo* deviceinfo){
-  uint16_t ret;
-  PTPContainer ptp;
-  char* buf=NULL;
-  static struct fileinfo fi;
-
-  PTP_CNT_INIT(ptp);
-  ptp.Code=PTP_OC_CHDK;
-  ptp.Nparam=1;
-  ptp.Param1=PTP_CHDK_ReadDir;
-  ret=ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &buf);
-  if ( ret != 0x2001 )
-  {
-    ptp_error(params,"unexpected return code 0x%x",ret);
-    return NULL;
-  }
-  if (buf){
-   memcpy(&fi, buf, sizeof(fi));
-   free(buf);
-  }
-
-  return &fi;
-
-}
-
-void ptp_chdk_download_alt_end(PTPParams* params, PTPDeviceInfo* deviceinfo){ // internal use
-  uint16_t ret;
-  PTPContainer ptp;
-  PTP_CNT_INIT(ptp);
-  ptp.Code=PTP_OC_CHDK;
-  ptp.Nparam=1;
-  ptp.Param1=PTP_CHDK_EndDownloadFile;
-  ret=ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL);
-  if ( ret != 0x2001 ) ptp_error(params,"unexpected return code 0x%x",ret);
-}
-
-int ptp_chdk_download_alt(char *remote_fn, char *local_fn, PTPParams* params, PTPDeviceInfo* deviceinfo)
+uint16_t
+ptp_chdk_get_script_support(PTPParams* params, unsigned *status)
 {
-  uint16_t ret;
-  PTPContainer ptp;
-  char *buf = NULL;
-  FILE *f;
+	uint16_t r;
+	PTPContainer ptp;
 
-  PTP_CNT_INIT(ptp);
-  ptp.Code=PTP_OC_CHDK;
-  ptp.Nparam=1;
-  ptp.Param1=PTP_CHDK_StartDownloadFile;
-  ret=ptp_transaction(params, &ptp, PTP_DP_SENDDATA, strlen(remote_fn)+1, &remote_fn);
-  if ( ret != 0x2001 )
-  {
-    ptp_error(params,"unexpected return code 0x%x",ret);
-    return 0;
-  }
-  f = fopen(local_fn,"wb");
-  if ( f == NULL )
-  {
-    ptp_error(params,"could not open file \'%s\'",local_fn);
-    return 0;
-  }
-
-  while(1) {
-   PTP_CNT_INIT(ptp);
-   ptp.Code=PTP_OC_CHDK;
-   ptp.Nparam=1;
-   ptp.Param1=PTP_CHDK_ResumeDownloadFile;
-   buf=NULL;
-   ret=ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &buf);
-   if ( ret != 0x2001 )
-   {
-     ptp_error(params,"unexpected return code 0x%x",ret);
-     ptp_chdk_download_alt_end(params, deviceinfo);
-     fclose(f);
-     return 0;
-   }
-
-   if (ptp.Param1<=0){free(buf); break;}
-   fwrite(buf, 1, ptp.Param1, f);
-   free(buf);
-  }
-  fclose(f);
-  ptp_chdk_download_alt_end(params, deviceinfo);
-  return 1;
+	PTP_CNT_INIT(ptp);
+	ptp.Code=PTP_OC_CHDK;
+	ptp.Nparam=1;
+	ptp.Param1=PTP_CHDK_ScriptSupport;
+	r=ptp_transaction(params, &ptp, PTP_DP_NODATA, 0, NULL, NULL);
+	if ( r != PTP_RC_OK )
+		return r;
+	*status = ptp.Param1;
+	return r;
 }
-#endif
 
 uint16_t
-ptp_chdk_get_video_settings(PTPParams* params, ptp_chdk_videosettings* vsettings)
+ptp_chdk_write_script_msg(PTPParams* params, char *data, unsigned size, int target_script_id, int *status)
 {
-	uint16_t ret;
+	uint16_t r;
 	PTPContainer ptp;
-	unsigned char* buf=NULL;
+
+	// a zero length data phase appears to do bad things, camera stops responding to PTP
+	if(!size) {
+		ptp_error(params,"zero length message not allowed");
+		*status = 0;
+		return 0;
+	}
+	PTP_CNT_INIT(ptp);
+	ptp.Code=PTP_OC_CHDK;
+	ptp.Nparam=2;
+	ptp.Param1=PTP_CHDK_WriteScriptMsg;
+	ptp.Param2=target_script_id;
+
+	r=ptp_transaction(params, &ptp, PTP_DP_SENDDATA, size, (unsigned char**)&data, NULL);
+	if ( r != PTP_RC_OK ) {
+		*status = 0;
+		return r;
+	}
+	*status = ptp.Param1;
+	return r;
+}
+uint16_t
+ptp_chdk_read_script_msg(PTPParams* params, ptp_chdk_script_msg **msg)
+{
+	uint16_t r;
+	PTPContainer ptp;
+	unsigned char *data = NULL;
 
 	PTP_CNT_INIT(ptp);
 	ptp.Code=PTP_OC_CHDK;
 	ptp.Nparam=1;
-	ptp.Param1=PTP_CHDK_GetVideoSettings;
-	ret=ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &buf, NULL);
-	if ( ret != PTP_RC_OK )
-		return ret;
-	if (buf) {
-		/* FIXME: endian convert */
-		memcpy(vsettings, buf, sizeof(ptp_chdk_videosettings));
-		free(buf);
-	}
-	return ret;
+	ptp.Param1=PTP_CHDK_ReadScriptMsg;
+
+	*msg = NULL;
+
+	/* camera will always send data, otherwise getdata will cause problems */
+	r=ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, NULL);
+	if ( r != PTP_RC_OK )
+		return r;
+
+	/* for convenience, always allocate an extra byte and null it*/
+	*msg = malloc(sizeof(ptp_chdk_script_msg) + ptp.Param4 + 1);
+	(*msg)->type = ptp.Param1;
+	(*msg)->subtype = ptp.Param2;
+	(*msg)->script_id = ptp.Param3;
+	(*msg)->size = ptp.Param4;
+	memcpy((*msg)->data,data,(*msg)->size);
+	(*msg)->data[(*msg)->size] = 0;
+	free(data);
+	return r;
 }
+
+uint16_t
+ptp_chdk_get_live_data(PTPParams* params, unsigned flags, unsigned char **data, unsigned int *data_size) {
+	uint16_t r;
+	PTPContainer ptp;
+	unsigned int real_size = 0;
+
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code=PTP_OC_CHDK;
+	ptp.Nparam=2;
+	ptp.Param1=PTP_CHDK_GetDisplayData;
+	ptp.Param2=flags;
+
+	*data = NULL;
+	*data_size = 0;
+
+	r = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, data, &real_size);
+	if ( r != PTP_RC_OK )
+		return r;
+	*data_size = ptp.Param1;
+	return r;
+}
+
+uint16_t
+ptp_chdk_call_function(PTPParams* params, int *args, int size, int *ret)
+{
+	uint16_t r;
+	PTPContainer ptp;
+
+	PTP_CNT_INIT(ptp);
+	ptp.Code=PTP_OC_CHDK;
+	ptp.Nparam=1;
+	ptp.Param1=PTP_CHDK_CallFunction;
+	r=ptp_transaction(params, &ptp, PTP_DP_SENDDATA, size*sizeof(int), (unsigned char **) &args, NULL);
+	if ( r != PTP_RC_OK )
+		return r;
+	if ( ret )
+		*ret = ptp.Param1;
+	return r;
+}
+
+
 
 
 /**
