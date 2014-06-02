@@ -142,7 +142,8 @@ static void get_handles_recursively(LIBMTP_mtpdevice_t *device,
 				    uint32_t parent);
 static void free_storage_list(LIBMTP_mtpdevice_t *device);
 static int sort_storage_by(LIBMTP_mtpdevice_t *device, int const sortby);
-static uint32_t get_writeable_storageid(LIBMTP_mtpdevice_t *device, uint64_t fitsize);
+static uint32_t get_writeable_storageid(LIBMTP_mtpdevice_t *device,
+					uint64_t fitsize);
 static int get_storage_freespace(LIBMTP_mtpdevice_t *device,
 				 LIBMTP_devicestorage_t *storage,
 				 uint64_t *freespace);
@@ -2933,7 +2934,8 @@ static int sort_storage_by(LIBMTP_mtpdevice_t *device,int const sortby)
  *        storage for.
  * @param fitsize a file of this file must fit on the device.
  */
-static uint32_t get_writeable_storageid(LIBMTP_mtpdevice_t *device, uint64_t fitsize)
+static uint32_t get_writeable_storageid(LIBMTP_mtpdevice_t *device,
+					uint64_t fitsize)
 {
   LIBMTP_devicestorage_t *storage;
   uint32_t store = 0x00000000; //Should this be 0xffffffffu instead?
@@ -2983,6 +2985,33 @@ static uint32_t get_writeable_storageid(LIBMTP_mtpdevice_t *device, uint64_t fit
   }
 
   return store;
+}
+
+/**
+ * Tries to suggest a storage_id of a given ID when we have a parent
+ * @param device a pointer to the device where to search for the storage ID
+ * @param fitsize a file of this file must fit on the device.
+ * @param parent_id look for this ID
+ * @ret storageID
+ */
+static int get_suggested_storage_id(LIBMTP_mtpdevice_t *device,
+				    uint64_t fitsize,
+				    uint32_t parent_id)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  PTPObject *ob;
+  uint16_t ret;
+  int subcall_ret;
+
+  ret = ptp_object_want(params, parent_id, PTPOBJECT_MTPPROPLIST_LOADED, &ob);
+  if ((ret != PTP_RC_OK) || (ob->oi.StorageID == 0)) {
+    add_ptp_error_to_errorstack(device, ret, "get_suggested_storage_id(): "
+				"could not get storage id from parent id.");
+    return get_writeable_storageid(device, fitsize);
+  } else {
+    /* OK we know the parent storage, then use that */
+    return ob->oi.StorageID;
+  }
 }
 
 /**
@@ -6010,12 +6039,12 @@ static int send_file_object_info(LIBMTP_mtpdevice_t *device, LIBMTP_file_t *file
     return -1;
   }
 #endif
-
   if (filedata->storage_id != 0) {
     store = filedata->storage_id;
   } else {
-    store = get_writeable_storageid(device, filedata->filesize);
+    store = get_suggested_storage_id(device, filedata->filesize, localph);
   }
+
   // Detect if something non-primary is in use.
   storage = device->storage;
   if (storage != NULL && store != storage->id) {
@@ -7257,7 +7286,7 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name,
 
   if (storage_id == 0) {
     // I'm just guessing that a folder may require 512 bytes
-    store = get_writeable_storageid(device, 512);
+    store = get_suggested_storage_id(device, 512, parent_id);
   } else {
     store = storage_id;
   }
@@ -7562,7 +7591,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 
   if (storageid == 0) {
     // I'm just guessing that an abstract list may require 512 bytes
-    store = get_writeable_storageid(device, 512);
+    store = get_suggested_storage_id(device, 512, localph);
   } else {
     store = storageid;
   }
