@@ -1137,7 +1137,11 @@
       0x8800, DEVICE_FLAG_NONE },
   { "Qualcomm (for Smartfren)", 0x05c6, "Andromax U",
       0x9025, DEVICE_FLAG_NONE },
-
+  // New Android phone of the OnePlus brand : the One model
+  { "Qualcomm (for OnePlus)", 0x05c6, "One (MTP)",
+      0x6764, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Qualcomm (for OnePlus)", 0x05c6, "One (MTP+ADB)",
+      0x6765, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Vendor ID 0x13d1 is some offshoring company in China,
