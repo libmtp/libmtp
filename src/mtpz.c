@@ -268,8 +268,9 @@ static inline uint32_t mtpz_bswap32(uint32_t x)
 /* MTPZ RSA implementation */
 mtpz_rsa_t *mtpz_rsa_init(const unsigned char *str_modulus, const unsigned char *str_privkey, const unsigned char *str_pubexp)
 {
-	mtpz_rsa_t *rsa = (mtpz_rsa_t *)malloc(sizeof(mtpz_rsa_t));
-	memset(rsa, 0, sizeof(rsa));
+	mtpz_rsa_t *rsa = calloc(1, sizeof(mtpz_rsa_t));
+	if (rsa == NULL)
+		return NULL;
 
 	gcry_mpi_t mpi_modulus, mpi_privkey, mpi_pubexp;
 
