@@ -74,8 +74,6 @@
  * Microsoft to officially provide keys to this project.
  */
 
-int use_mtpz;
-
 static unsigned char *MTPZ_ENCRYPTION_KEY;
 static unsigned char *MTPZ_PUBLIC_EXPONENT;
 static unsigned char *MTPZ_MODULUS;
