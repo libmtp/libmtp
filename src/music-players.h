@@ -2464,7 +2464,7 @@
   /*
    * MediaTek Inc.
    */
-  { "MediaTek Inc", 0x0e8d, "MT510R", 0x0050,
+  { "MediaTek Inc", 0x0e8d, "MT5xx and MT6xx SoCs", 0x0050,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
