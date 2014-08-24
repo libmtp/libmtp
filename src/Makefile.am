@@ -3,7 +3,8 @@ lib_LTLIBRARIES = libmtp.la
 libmtp_la_CFLAGS = @LIBUSB_CFLAGS@
 libmtp_la_SOURCES = libmtp.c unicode.c unicode.h util.c util.h playlist-spl.c \
 	gphoto2-endian.h _stdint.h ptp.c ptp.h libusb-glue.h \
-	music-players.h device-flags.h playlist-spl.h mtpz.h
+	music-players.h device-flags.h playlist-spl.h mtpz.h \
+	chdk_live_view.h chdk_ptp.h
 
 if MTPZ_COMPILE
 libmtp_la_SOURCES += mtpz.c
