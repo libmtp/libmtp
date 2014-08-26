@@ -22,6 +22,7 @@
 
 #ifndef __MTP__UTIL__H
 #define __MTP__UTIL__H
+#include "config.h" // To get HAVE_STRNDUP
 
 void data_dump(FILE *f, void *buf, uint32_t nbytes);
 void data_dump_ascii (FILE *f, void *buf, uint32_t n, uint32_t dump_boundry);
