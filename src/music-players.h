@@ -2294,6 +2294,14 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One (ID3)", 0x0f91,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC One M8 (MTP)", 0x0f25,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC One M8 (MTP+ADB)", 0x061a,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC One M8 (MTP+UMS)", 0x0fb5,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "HTC", 0x0bb4, "HTC One M8 (MTP+ADB+UMS)", 0x0fb4,
+      DEVICE_FLAGS_ANDROID_BUGS },
 #if 0
   /*
    * This had to be commented out - the same VID+PID is used also for
