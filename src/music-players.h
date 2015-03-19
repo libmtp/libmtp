@@ -1130,6 +1130,9 @@
   { "Qualcomm (for OnePlus)", 0x05c6, "One (MTP+ADB)",
       0x6765, DEVICE_FLAGS_ANDROID_BUGS },
 
+  { "PhiComm", 0x05c6, "C230w (MTP)",
+      0x9039, DEVICE_FLAGS_ANDROID_BUGS },
+
   /*
    * Vendor ID 0x13d1 is some offshoring company in China,
    * in one source named "A-Max Technology Macao Commercial
