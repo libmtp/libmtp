@@ -2399,6 +2399,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Xiaomi", 0x2717, "Hongmi (MTP)", 0x1240,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1295/ */
+  { "Redmi", 0x2717, "1S (MTP)", 0x1260,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Xiaomi", 0x2717, "Mi-2 (MTP+ADB)", 0x9039,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Xiaomi", 0x2717, "Mi-2 (MTP)", 0xf003,
