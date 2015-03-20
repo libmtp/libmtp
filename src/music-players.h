@@ -2235,6 +2235,8 @@
   { "ZTE", 0x19d2, "V55 ID 2", 0x0245, DEVICE_FLAGS_ANDROID_BUGS },
   { "ZTE", 0x19d2, "V790/Blade 3", 0x0306, DEVICE_FLAGS_ANDROID_BUGS },
   { "ZTE", 0x19d2, "V880E", 0x0307, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/672/ */
+  { "ZTE", 0x19d2, "Grand X In", 0x0343, DEVICE_FLAGS_ANDROID_BUGS },
   { "ZTE", 0x19d2, "V985", 0x0383, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
