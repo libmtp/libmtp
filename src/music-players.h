@@ -2543,6 +2543,7 @@
 
   /*
    * bq
+   * https://sourceforge.net/p/libmtp/feature-requests/128/
    */
   { "bq", 0x2a47, "Krillin (MTP)", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
