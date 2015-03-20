@@ -134,12 +134,14 @@ int mtpz_loaddata()
 		return -1;
 	}
 
+	int fail = 1;
+
 	// Should only be six characters in length, but fgets will encounter a newline and stop.
 	MTPZ_PUBLIC_EXPONENT = (unsigned char *)fgets_strip((char *)malloc(8), 8, fdata);
 	if (!MTPZ_PUBLIC_EXPONENT)
 	{
 		LIBMTP_ERROR("Unable to read MTPZ public exponent from ~/.mtpz-data, MTPZ disabled.\n");
-		return -1;
+		goto cleanup;
 	}
 
 	// Should only be 33 characters in length, but fgets will encounter a newline and stop.
@@ -147,12 +149,14 @@ int mtpz_loaddata()
 	if (!hexenckey)
 	{
 		LIBMTP_ERROR("Unable to read MTPZ encryption key from ~/.mtpz-data, MTPZ disabled.\n");
-		return -1;
+		goto cleanup;
 	}
+
 	MTPZ_ENCRYPTION_KEY = hex_to_bytes(hexenckey, strlen(hexenckey));
 	if (!MTPZ_ENCRYPTION_KEY)
 	{
 		LIBMTP_ERROR("Unable to read MTPZ encryption key from ~/.mtpz-data, MTPZ disabled.\n");
+		goto cleanup;
 	}
 
 	// Should only be 256 characters in length, but fgets will encounter a newline and stop.
@@ -160,7 +164,7 @@ int mtpz_loaddata()
 	if (!MTPZ_MODULUS)
 	{
 		LIBMTP_ERROR("Unable to read MTPZ modulus from ~/.mtpz-data, MTPZ disabled.\n");
-		return -1;
+		goto cleanup;
 	}
 
 	// Should only be 256 characters in length, but fgets will encounter a newline and stop.
@@ -168,7 +172,7 @@ int mtpz_loaddata()
 	if (!MTPZ_PRIVATE_KEY)
 	{
 		LIBMTP_ERROR("Unable to read MTPZ private key from ~/.mtpz-data, MTPZ disabled.\n");
-		return -1;
+		goto cleanup;
 	}
 
 	// Should only be 1258 characters in length, but fgets will encounter the end of the file and stop.
@@ -176,16 +180,22 @@ int mtpz_loaddata()
 	if (!hexcerts)
 	{
 		LIBMTP_ERROR("Unable to read MTPZ certificates from ~/.mtpz-data, MTPZ disabled.\n");
-		return -1;
+		goto cleanup;
 	}
+
 	MTPZ_CERTIFICATES = hex_to_bytes(hexcerts, strlen(hexcerts));
 	if (!MTPZ_CERTIFICATES)
 	{
 		LIBMTP_ERROR("Unable to parse MTPZ certificates from ~/.mtpz-data, MTPZ disabled.\n");
-		return -1;
+		goto cleanup;
 	}
 
-	return 0;
+	// If all done without errors, drop the fail
+	fail = 0;
+
+cleanup:
+	fclose(fdata);
+	return fail ? -1 : 0;
 }
 /* MTPZ RSA */
 
