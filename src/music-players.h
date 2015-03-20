@@ -2269,6 +2269,8 @@
    * This had to be commented out - the same VID+PID is used also for
    * other modes than MTP, so we need to let mtp-probe do its job on this
    * device instead of adding it to the database.
+   * used by various devices, like Fairphone, Elephone P5000, etc
+   * https://sourceforge.net/p/libmtp/bugs/1290/
    */
   { "HTC", 0x0bb4, "Android Device ID1 (Zopo, HD2, Bird...)", 0x0c02,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2355,11 +2357,6 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "Windows Phone 8s ID1", 0xf0ca,
       DEVICE_FLAG_NONE },
-
-  /* https://sourceforge.net/p/libmtp/bugs/1290/ */
-  { "HTC (for Elephone)", 0x0bb4, "Elephone P5000", 0x0c02,
-      DEVICE_FLAGS_ANDROID_BUGS },
-
 
   /*
    * NEC
