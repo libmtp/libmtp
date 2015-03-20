@@ -2459,6 +2459,9 @@
   /*
    * Xiaomi
    */
+  /* https://sourceforge.net/p/libmtp/bugs/1269/ */
+  { "Xiaomi", 0x2717, "Mi-3w (MTP)", 0x0360,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Xiaomi", 0x2717, "Mi-3 (MTP)", 0x0368,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Xiaomi", 0x2717, "Hongmi (MTP)", 0x1240,
