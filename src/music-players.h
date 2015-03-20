@@ -2144,6 +2144,11 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TF701T Transformer Pad (MTP+ADB)", 0x4ca1,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/135/ */
+  { "Asus", 0x0b05, "MeMo Pad FHD10 (MTP)", 0x4cc0,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "MeMo Pad FHD10 (MTP)", 0x4cc1,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "ME301T MeMo Pad Smart 10 (MTP)", 0x4cd0,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "ME301T MeMo Pad Smart 10 (MTP+ADB)", 0x4cd1,
