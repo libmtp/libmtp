@@ -2415,6 +2415,9 @@
    * Reported by:
    * Michael Gurski <gurski@users.sourceforge.net>
    */
+  /* https://sourceforge.net/p/libmtp/support-requests/138/ */
+  { "InFocus", 0x0489, "M810", 0xc025,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Vizio", 0x0489, "Unknown 1", 0xc026,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Vizio", 0x0489, "VTAB1008", 0xe040,
