@@ -1366,6 +1366,9 @@
       DEVICE_FLAG_UNLOAD_DRIVER },
   { "LG Electronics Inc.", 0x1004, "VK810", 0x6265,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/134/ */
+  { "LG Electronics Inc.", 0x1004, "G3 (VS985)", 0x626e,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * This VID+PID is used by a lot of LG models:
    * E430
