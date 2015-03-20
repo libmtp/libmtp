@@ -1134,8 +1134,12 @@
   { "Qualcomm (for OnePlus)", 0x05c6, "One (MTP+ADB)",
       0x6765, DEVICE_FLAGS_ANDROID_BUGS },
 
-  { "PhiComm", 0x05c6, "C230w (MTP)",
+  { "Qualcomm (for PhiComm)", 0x05c6, "C230w (MTP)",
       0x9039, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /* https://sourceforge.net/p/libmtp/bugs/1284/ */
+  { "Qualcomm (for Highscreen)", 0x05c6, "Omega Prime S",
+      0xf003, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Vendor ID 0x13d1 is some offshoring company in China,
