@@ -929,6 +929,7 @@
   { "Archos", 0x0e79, "Arnova 10bG3 Tablet", 0x146b, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "97 Xenon", 0x149a, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "97 Titanium", 0x14ad, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Archos", 0x0e79, "80 Titanium", 0x14bf, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "101 Titanium", 0x14b9, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "8o G9 (MTP mode)", 0x1508, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "8o G9 Turbo (MTP mode)", 0x1509, DEVICE_FLAG_UNLOAD_DRIVER },
