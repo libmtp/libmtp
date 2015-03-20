@@ -2200,6 +2200,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1271/ */
   { "Asus", 0x0b05, "ZenFone 4 (MTP)", 0x580f,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1247/ */
+  { "Asus", 0x0b05, "ZenFone 5 A500KL (MTP+ADB)", 0x7781,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
 
   /*
