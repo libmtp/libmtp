@@ -2284,6 +2284,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/153/ */
   { "HTC", 0x0bb4, "HTC6515LVW/One Remix", 0x07d8,
       DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/support-requests/141/ */
+  { "HTC", 0x0bb4, "HTC One (HTC6500LVW)", 0x07ae,
+      DEVICE_FLAG_NONE },
   // Reported by Markus Heberling
   { "HTC", 0x0bb4, "Windows Phone 8X ID1", 0x0ba1,
       DEVICE_FLAG_NONE },
