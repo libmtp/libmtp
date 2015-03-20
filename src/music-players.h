@@ -2520,6 +2520,14 @@
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
+   * bq
+   */
+  { "bq", 0x2a47, "Krillin (MTP)", 0x2008,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "bq", 0x2a47, "Krillin (MTP+ADB)", 0x0c02,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*
    * Other strange stuff.
    */
   { "Isabella", 0x0b20, "Her Prototype", 0xddee, DEVICE_FLAG_NONE }
