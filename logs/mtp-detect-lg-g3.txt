@@ -1,0 +1,38 @@
+Listing raw device(s)
+Device 0 (VID=1004 and PID=633e) is UNKNOWN.
+Please report this VID/PID and the device model to the libmtp development team
+   Found 1 device(s):
+   1004:633e @ bus 2, dev 4
+Attempting to connect device(s)
+Android device detected, assigning default bug flags
+USB low-level info:
+   bcdUSB: 528
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 1004
+   idProduct: 633e
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Raw device info:
+      Bus location: 2
+      Device number: 4
+      Device entry info:
+         Vendor: (null)
+         Vendor id: 0x1004
+         Product: (null)
+         Vendor id: 0x633e
+         Device flags: 0x08008106
+Configuration 0, interface 0, altsetting 0:
+   Interface description contains the string "MTP"
+   Device recognized as MTP, no further probing.
+Device info:
+   Manufacturer: LGE
+   Model: G3
+   Device version: 1.0
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0; android.com: 1.0;
+   Detected object size: 64 bits
+   Extensions:
+        microsoft.com: 1.0
+        android.com: 1.0
