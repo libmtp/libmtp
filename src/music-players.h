@@ -2527,7 +2527,11 @@
   { "bq", 0x2a47, "Krillin (MTP+ADB)", 0x0c02,
       DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/bugs/1292/ */
+  { "Prestigio", 0x29e4, "5505 DUO ", 0x1103, DEVICE_FLAGS_ANDROID_BUGS },
+
   /*
    * Other strange stuff.
    */
   { "Isabella", 0x0b20, "Her Prototype", 0xddee, DEVICE_FLAG_NONE }
+
