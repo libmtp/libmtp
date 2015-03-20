@@ -579,6 +579,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "Liquid Z130 MT65xx Android Phone", 0x355f,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Acer", 0x0502, "Iconia A1-840FHD", 0x362d,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * SanDisk
