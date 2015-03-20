@@ -1785,6 +1785,8 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z1 MTP+ADB", 0x519e,
       DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia Z1 Compact MTP+ADB", 0x51a7,
+      DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z3 MTP+ADB", 0x01ba,
       DEVICE_FLAG_NONE },
 
