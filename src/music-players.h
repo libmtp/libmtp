@@ -1338,6 +1338,10 @@
   { "LG Electronics Inc.", 0x1004, "LG8575", 0x619a,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER },
+  /* https://sourceforge.net/p/libmtp/support-requests/167/ */
+  { "LG Electronics Inc.", 0x1004, "G2 Sprint", 0x631c,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      DEVICE_FLAG_UNLOAD_DRIVER },
   /* https://sourceforge.net/p/libmtp/bugs/1294/ */
   { "LG Electronics Inc.", 0x1004, "LG G Flex 2", 0x633e,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
