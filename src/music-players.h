@@ -2639,6 +2639,8 @@
 
   /* https://sourceforge.net/p/libmtp/bugs/1277/ */
   { "Oppo", 0x22d9, "X9006", 0x2773, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/129/ */
+  { "Oppo", 0x22d9, "Find 7", 0x2774, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* https://sourceforge.net/p/libmtp/bugs/1273/ */
   { "Gigabyte", 0x0414, "RCT6773W22 (MTP+ADB)", 0x0c02, DEVICE_FLAGS_ANDROID_BUGS },
