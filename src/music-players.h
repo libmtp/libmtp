@@ -2578,6 +2578,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1277/ */
   { "Oppo", 0x22d9, "X9006", 0x2773, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/bugs/1273/ */
+  { "Gigabyte", 0x0414, "RCT6773W22", 0x2008, DEVICE_FLAGS_ANDROID_BUGS },
+
   /*
    * Other strange stuff.
    */
