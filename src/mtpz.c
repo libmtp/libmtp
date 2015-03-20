@@ -117,6 +117,7 @@ static char *hex_to_bytes(char *hex, size_t len)
 int mtpz_loaddata()
 {
 	char *home = getenv("HOME");
+	int ret = -1;
 	if (!home)
 	{
 		LIBMTP_ERROR("Unable to determine user's home directory, MTPZ disabled.\n");
@@ -131,10 +132,9 @@ int mtpz_loaddata()
 	if (!fdata)
 	{
 		LIBMTP_ERROR("Unable to open ~/.mtpz-data for reading, MTPZ disabled.\n");
-		return -1;
+		return ret;
 	}
 
-	int fail = 1;
 
 	// Should only be six characters in length, but fgets will encounter a newline and stop.
 	MTPZ_PUBLIC_EXPONENT = (unsigned char *)fgets_strip((char *)malloc(8), 8, fdata);
@@ -145,7 +145,7 @@ int mtpz_loaddata()
 	}
 
 	// Should only be 33 characters in length, but fgets will encounter a newline and stop.
-	char *hexenckey = (unsigned char *)fgets_strip((char *)malloc(35), 35, fdata);
+	char *hexenckey = fgets_strip((char *)malloc(35), 35, fdata);
 	if (!hexenckey)
 	{
 		LIBMTP_ERROR("Unable to read MTPZ encryption key from ~/.mtpz-data, MTPZ disabled.\n");
@@ -189,13 +189,11 @@ int mtpz_loaddata()
 		LIBMTP_ERROR("Unable to parse MTPZ certificates from ~/.mtpz-data, MTPZ disabled.\n");
 		goto cleanup;
 	}
-
 	// If all done without errors, drop the fail
-	fail = 0;
-
+	ret = 0;
 cleanup:
 	fclose(fdata);
-	return fail ? -1 : 0;
+	return ret;
 }
 /* MTPZ RSA */
 
