@@ -2265,6 +2265,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Lenovo", 0x17ef, "LifeTab E733X", 0x775a,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Lenovo", 0x17ef, "IdeaTab S5000", 0x76e8,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/168/ */
   { "Lenovo", 0x17ef, "Yoga Tablet 2 Pro", 0x77b1,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2306,6 +2308,9 @@
       DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/support-requests/141/ */
   { "HTC", 0x0bb4, "HTC One (HTC6500LVW)", 0x07ae,
+      DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/support-requests/128/ */
+  { "HTC", 0x0bb4, "HTC One M8 (HTC6525LVW)", 0x07ca,
       DEVICE_FLAG_NONE },
   // Reported by Markus Heberling
   { "HTC", 0x0bb4, "Windows Phone 8X ID1", 0x0ba1,
