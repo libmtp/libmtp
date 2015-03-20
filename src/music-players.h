@@ -1981,6 +1981,9 @@
   { "Google Inc (for LG Electronics/Samsung)", 0x18d1,
       "Nexus 4/5/7/10 (MTP+ADB)", 0x4ee2,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1255/ */
+  { "Google", 0x18d1, "Nexus 5 (MTP)", 0x4ee5,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // WiFi-only version of Xoom
   // See: http://bugzilla.gnome.org/show_bug.cgi?id=647506
   { "Google Inc (for Motorola)", 0x18d1, "Xoom (MZ604)", 0x70a8,
