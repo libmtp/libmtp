@@ -1108,7 +1108,8 @@
   // Reported by Sampo Savola
   // Covers Lumia 920, 820 and probably any WP8 device.
   { "Nokia", 0x0421, "Nokia Lumia WP8", 0x0661, DEVICE_FLAG_NONE },
-  /* https://sourceforge.net/p/libmtp/patches/69/ */
+  /* https://sourceforge.net/p/libmtp/patches/69/
+     https://sourceforge.net/p/libmtp/bugs/1285/ */
   { "Nokia", 0x0421, "Nokia Lumia 635 (RM-975)", 0x06fc, DEVICE_FLAG_NONE },
 
 
