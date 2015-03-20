@@ -2325,6 +2325,10 @@
   { "HTC", 0x0bb4, "Windows Phone 8s ID1", 0xf0ca,
       DEVICE_FLAG_NONE },
 
+  /* https://sourceforge.net/p/libmtp/bugs/1290/ */
+  { "HTC (for Elephone)", 0x0bb4, "Elephone P5000", 0x0c02,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
 
   /*
    * NEC
