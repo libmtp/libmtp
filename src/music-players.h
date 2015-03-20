@@ -2211,6 +2211,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "Memo K00F (MTP)", 0x5460,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "Memo Pad 8 (MTP)", 0x5466,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "Memo K00F (MTP+ADB)", 0x5468,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/158/ */
