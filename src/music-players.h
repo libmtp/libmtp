@@ -1111,10 +1111,12 @@
   { "Nokia", 0x0421, "808 PureView", 0x05d3, DEVICE_FLAG_NONE },
   // Reported by Sampo Savola
   // Covers Lumia 920, 820 and probably any WP8 device.
-  { "Nokia", 0x0421, "Nokia Lumia WP8", 0x0661, DEVICE_FLAG_NONE },
+  { "Nokia", 0x0421, "Lumia WP8", 0x0661, DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/support-requests/146/ */
+  { "Nokia", 0x0421, "XL", 0x06e8, DEVICE_FLAG_UNLOAD_DRIVER },
   /* https://sourceforge.net/p/libmtp/patches/69/
      https://sourceforge.net/p/libmtp/bugs/1285/ */
-  { "Nokia", 0x0421, "Nokia Lumia 635 (RM-975)", 0x06fc, DEVICE_FLAG_NONE },
+  { "Nokia", 0x0421, "Lumia 635 (RM-975)", 0x06fc, DEVICE_FLAG_NONE },
 
 
   /*
