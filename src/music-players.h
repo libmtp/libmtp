@@ -2545,6 +2545,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Alcatel", 0x1bbb, "6030a", 0x0168,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Alcatel/Bouygues", 0x1bbb, "BS472", 0x904d,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Kyocera
