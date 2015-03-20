@@ -1642,6 +1642,9 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z1 MTP", 0x019e,
       DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/bugs/1288/ */
+  { "SONY", 0x0fce, "Xperia Z1 Compact D5503", 0x01a7,
+      DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z3 MTP", 0x01ba,
       DEVICE_FLAG_NONE },
 
