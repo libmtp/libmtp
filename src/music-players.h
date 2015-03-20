@@ -1647,10 +1647,12 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z1 MTP", 0x019e,
       DEVICE_FLAG_NONE },
-  /* https://sourceforge.net/p/libmtp/bugs/1288/ */
   { "SONY", 0x0fce, "Xperia Z1 Compact D5503", 0x01a7,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z3 MTP", 0x01ba,
+      DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/bugs/1280/ */
+  { "SONY", 0x0fce, "Xperia Z3 Compact MTP", 0x01bb,
       DEVICE_FLAG_NONE },
 
 
@@ -1709,7 +1711,9 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z1 MTP+CDROM", 0x419e,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "Xperia Z3 MTP+CDROM", 0x01ba,
+  { "SONY", 0x0fce, "Xperia Z1 Compact D5503 MTP+CDROM", 0x41a7,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia Z3 MTP+CDROM", 0x41ba,
       DEVICE_FLAG_NONE },
 
   /*
@@ -1787,7 +1791,9 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z1 Compact MTP+ADB", 0x51a7,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "Xperia Z3 MTP+ADB", 0x01ba,
+  { "SONY", 0x0fce, "Xperia Z3 MTP+ADB", 0x51ba,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia Z3 Compact MTP+ADB", 0x51bb,
       DEVICE_FLAG_NONE },
 
   /*
