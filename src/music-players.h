@@ -1362,6 +1362,8 @@
   { "LG Electronics Inc.", 0x1004, "LG2 Optimus", 0x6225,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER },
+  { "LG Electronics Inc.", 0x1004, "VK810", 0x6265,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * This VID+PID is used by a lot of LG models:
    * E430
