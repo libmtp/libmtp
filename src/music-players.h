@@ -2209,6 +2209,9 @@
   // Reported by Brian J. Murrell
   { "Lenovo", 0x17ef, "IdeaTab A2109A", 0x7542,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/166/ */
+  { "Lenovo", 0x17ef, "IdeaTab S2210a", 0x757d,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by rvelev@mail.bg
   { "Lenovo", 0x17ef, "IdeaPad A3000 (ID1)", 0x75bc,
       DEVICE_FLAGS_ANDROID_BUGS },
