@@ -2209,6 +2209,9 @@
   // Reported by: anonymous sourceforge user
   { "Lenovo", 0x17ef, "Lifetab S9512", 0x74cc,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/170/ */
+  { "Lenovo", 0x17ef, "S660", 0x74f8,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Brian J. Murrell
   { "Lenovo", 0x17ef, "IdeaTab A2109A", 0x7542,
       DEVICE_FLAGS_ANDROID_BUGS },
