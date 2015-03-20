@@ -2184,6 +2184,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "Memo K00F (MTP+ADB)", 0x5468,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/158/ */
+  { "Asus", 0x0b05, "ZenFone 5 (MTP)", 0x5480,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
 
   /*
