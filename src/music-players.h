@@ -2546,7 +2546,9 @@
   /*
    * T & A Mobile phones Alcatel and TCT
    */
-  { "Alcatel", 0x1bbb, "One Touch 997D", 0x2008,
+  { "Alcatel", 0x1bbb, "One Touch 997D (MTP+ADB)", 0x0c02,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Alcatel", 0x1bbb, "One Touch 997D (MTP)", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Alcatel/TCT", 0x1bbb, "6010D/TCL S950", 0x0167,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2639,7 +2641,8 @@
   { "Oppo", 0x22d9, "X9006", 0x2773, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* https://sourceforge.net/p/libmtp/bugs/1273/ */
-  { "Gigabyte", 0x0414, "RCT6773W22", 0x2008, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Gigabyte", 0x0414, "RCT6773W22 (MTP+ADB)", 0x0c02, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Gigabyte", 0x0414, "RCT6773W22 (MTP)", 0x2008, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* https://sourceforge.net/p/libmtp/bugs/1264/ */
   { "Meizu", 0x2a45, "MX Phone (MTP)", 0x2008, DEVICE_FLAGS_ANDROID_BUGS },
