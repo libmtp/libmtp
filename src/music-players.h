@@ -2242,6 +2242,11 @@
   /* https://sourceforge.net/p/libmtp/bugs/1279/ */
   { "Asus", 0x0b05, "ZenFone 5 (MTP+ADB)", 0x5481,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1236/ */
+  { "Asus", 0x0b05, "ZenFone 6 (MTP)", 0x5490,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "ZenFone 6 (MTP+ADB)", 0x5491,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1196/ */
   { "Asus", 0x0b05, "MemoPad 7 (MTP+ADB)", 0x5506,
       DEVICE_FLAGS_ANDROID_BUGS },
