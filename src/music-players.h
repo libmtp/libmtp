@@ -2503,6 +2503,9 @@
   /*
    * Kobo
    */
+  /* https://sourceforge.net/p/libmtp/bugs/1208/ */
+  { "Kobo", 0x2237, "Arc 7 HD", 0xb108,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by George Talusan
   { "Kobo", 0x2237, "Arc (ID1)", 0xd108,
       DEVICE_FLAGS_ANDROID_BUGS },
