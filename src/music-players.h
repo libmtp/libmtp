@@ -819,6 +819,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Dell Inc", 0x413c, "Dell Venue 7 inch", 0xb11a,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Dell Inc", 0x413c, "Dell Venue 7 inch (2nd ID)", 0xb11b,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Toshiba
