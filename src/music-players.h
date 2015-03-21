@@ -583,6 +583,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "Iconia A1-840FHD", 0x362d,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1251/ */
+  { "Acer", 0x0502, "E39", 0x3643,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * SanDisk
