@@ -2264,6 +2264,9 @@
   // Reported by: XChesser <XChesser@users.sourceforge.net>
   { "Lenovo", 0x17ef, "P700", 0x7497,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1185/ */
+  { "Lenovo", 0x17ef, "A820", 0x7498,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1190/ */
   { "Lenovo", 0x17ef, "P780", 0x74a6,
       DEVICE_FLAGS_ANDROID_BUGS },
