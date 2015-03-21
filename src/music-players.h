@@ -528,6 +528,9 @@
   // Reported by Philip Rhoades
   { "Philips", 0x0471, "GoGear Ariaz/97", 0x2138,
       DEVICE_FLAG_UNLOAD_DRIVER },
+  /* https://sourceforge.net/p/libmtp/bugs/1186/ */
+  { "Philips", 0x0471, "PI3900B2/58 ", 0x2190,
+      DEVICE_FLAG_UNLOAD_DRIVER },
   // from XNJB user
   { "Philips", 0x0471, "PSA235", 0x7e01, DEVICE_FLAG_NONE },
 
