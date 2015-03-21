@@ -2707,6 +2707,7 @@
   { "Caterpillar", 0x04b7, "Cat S50", 0x88a9, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* https://sourceforge.net/p/libmtp/bugs/682/ */
+  { "Pegatron", 0x1d4d, "Chagall (ADB)", 0x5035, DEVICE_FLAGS_ANDROID_BUGS },
   { "Pegatron", 0x1d4d, "Chagall", 0x5036, DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Other strange stuff.
