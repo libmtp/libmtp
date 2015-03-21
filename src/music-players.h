@@ -1122,8 +1122,10 @@
   /* https://sourceforge.net/p/libmtp/support-requests/146/ */
   { "Nokia", 0x0421, "XL", 0x06e8, DEVICE_FLAG_UNLOAD_DRIVER },
   /* https://sourceforge.net/p/libmtp/patches/69/
-     https://sourceforge.net/p/libmtp/bugs/1285/ */
-  { "Nokia", 0x0421, "Lumia 635 (RM-975)", 0x06fc, DEVICE_FLAG_NONE },
+   * https://sourceforge.net/p/libmtp/bugs/1285/
+   * ID is the same for various Lumia version.
+   */
+  { "Nokia", 0x0421, "Lumia (RM-975)", 0x06fc, DEVICE_FLAG_NONE },
 
 
   /*
