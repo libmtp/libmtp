@@ -2624,6 +2624,9 @@
    */
   { "Kurio", 0x1f3a, "7S", 0x1006,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1245/ */
+  { "DigiLand", 0x1f3a, "DL701Q", 0x0c02,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /* In update 4 the order of devices was changed for
      better OS X / Windows suport and another device-id
