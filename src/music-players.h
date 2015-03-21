@@ -2384,6 +2384,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/128/ */
   { "HTC", 0x0bb4, "HTC One M8 (HTC6525LVW)", 0x07ca,
       DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/bugs/1161/ */
+  { "HTC", 0x0bb4, "HTC One M8 (Verizon) (HTC6525LVW)", 0x07cb,
+      DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/bugs/1133/ */
   { "HTC", 0x0bb4, "HTC One Remix (HTC6515LVW)", 0x07d9,
       DEVICE_FLAG_NONE },
