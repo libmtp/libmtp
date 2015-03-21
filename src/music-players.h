@@ -2251,6 +2251,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1179/ */
   { "Asus", 0x0b05, "ZenFone 4 A400CG (MTP)", 0x581f,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1258/ */
+  { "Asus", 0x0b05, "A450CG (MTP)", 0x5a0f,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1247/ */
   { "Asus", 0x0b05, "ZenFone 5 A500KL (MTP+ADB)", 0x7781,
       DEVICE_FLAGS_ANDROID_BUGS },
