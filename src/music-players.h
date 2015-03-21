@@ -2354,7 +2354,7 @@
    * Kevin Cheng <kache@users.sf.net>
    */
   /* https://sourceforge.net/p/libmtp/bugs/1221/ */
-  { "HTC", 0x0bb4, "One M8 (MTP+ADB)", 0x060b,
+  { "HTC", 0x0bb4, "One M8 Google Play Edition (MTP+ADB)", 0x060b,
       DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/support-requests/153/ */
   { "HTC", 0x0bb4, "HTC6515LVW/One Remix", 0x07d8,
