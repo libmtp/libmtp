@@ -1688,6 +1688,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1280/ */
   { "SONY", 0x0fce, "Xperia Z3 Compact MTP", 0x01bb,
       DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/bugs/1299/ */
+  { "SONY", 0x0fce, "Xperia E3 MTP", 0x01bc,
+      DEVICE_FLAG_NONE },
 
 
   /*
