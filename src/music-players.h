@@ -2703,6 +2703,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1263/ */
   { "Meizu", 0x2a45, "MX Phone (MTP+ADB)", 0x0c02, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/bugs/1201/ */
+  { "Caterpillar", 0x04b7, "Cat S50", 0x88a9, DEVICE_FLAGS_ANDROID_BUGS },
+
   /*
    * Other strange stuff.
    */
