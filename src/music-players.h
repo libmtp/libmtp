@@ -2372,6 +2372,9 @@
    * Steven Eastland <grassmonk@users.sourceforge.net>
    * Kevin Cheng <kache@users.sf.net>
    */
+  /* reported by Mikkel Oscar Lyderik <mikkeloscar@gmail.com> */
+  { "HTC", 0x0bb4, "HTC Desire 510 (MTP+ADB)", 0x05fd,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1221/ */
   { "HTC", 0x0bb4, "One M8 Google Play Edition (MTP+ADB)", 0x060b,
       DEVICE_FLAG_NONE },
