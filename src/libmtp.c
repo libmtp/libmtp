@@ -1327,13 +1327,14 @@ static char *get_string_from_object(LIBMTP_mtpdevice_t *device, uint32_t const o
 {
   PTPPropertyValue propval;
   char *retstring = NULL;
-  PTPParams *params = (PTPParams *) device->params;
+  PTPParams *params;
   uint16_t ret;
   MTPProperties *prop;
 
-  if ( device == NULL || object_id == 0) {
+  if (!device || !object_id)
     return NULL;
-  }
+
+  params = (PTPParams *) device->params;
 
   prop = ptp_find_object_prop_in_cache(params, object_id, attribute_id);
   if (prop) {
@@ -1370,13 +1371,14 @@ static uint64_t get_u64_from_object(LIBMTP_mtpdevice_t *device,uint32_t const ob
 {
   PTPPropertyValue propval;
   uint64_t retval = value_default;
-  PTPParams *params = (PTPParams *) device->params;
+  PTPParams *params;
   uint16_t ret;
   MTPProperties *prop;
 
-  if ( device == NULL ) {
+  if (!device)
     return value_default;
-  }
+
+  params = (PTPParams *) device->params;
 
   prop = ptp_find_object_prop_in_cache(params, object_id, attribute_id);
   if (prop)
@@ -1409,13 +1411,14 @@ static uint32_t get_u32_from_object(LIBMTP_mtpdevice_t *device,uint32_t const ob
 {
   PTPPropertyValue propval;
   uint32_t retval = value_default;
-  PTPParams *params = (PTPParams *) device->params;
+  PTPParams *params;
   uint16_t ret;
   MTPProperties *prop;
 
-  if ( device == NULL ) {
+  if (!device)
     return value_default;
-  }
+
+  params = (PTPParams *) device->params;
 
   prop = ptp_find_object_prop_in_cache(params, object_id, attribute_id);
   if (prop)
@@ -1447,13 +1450,14 @@ static uint16_t get_u16_from_object(LIBMTP_mtpdevice_t *device, uint32_t const o
 {
   PTPPropertyValue propval;
   uint16_t retval = value_default;
-  PTPParams *params = (PTPParams *) device->params;
+  PTPParams *params;
   uint16_t ret;
   MTPProperties *prop;
 
-  if ( device == NULL ) {
+  if (!device)
     return value_default;
-  }
+
+  params = (PTPParams *) device->params;
 
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
@@ -1488,13 +1492,14 @@ static uint8_t get_u8_from_object(LIBMTP_mtpdevice_t *device, uint32_t const obj
 {
   PTPPropertyValue propval;
   uint8_t retval = value_default;
-  PTPParams *params = (PTPParams *) device->params;
+  PTPParams *params;
   uint16_t ret;
   MTPProperties *prop;
 
-  if ( device == NULL ) {
+  if (!device)
     return value_default;
-  }
+
+  params = (PTPParams *) device->params;
 
   // This O(n) search should not be used so often, since code
   // using the cached properties don't usually call this function.
@@ -1528,12 +1533,13 @@ static int set_object_string(LIBMTP_mtpdevice_t *device, uint32_t const object_i
 			     uint16_t const attribute_id, char const * const string)
 {
   PTPPropertyValue propval;
-  PTPParams *params = (PTPParams *) device->params;
+  PTPParams *params;
   uint16_t ret;
 
-  if (device == NULL || string == NULL) {
+  if (!device || !string)
     return -1;
-  }
+
+  params = (PTPParams *) device->params;
 
   if (!ptp_operation_issupported(params,PTP_OC_MTP_SetObjectPropValue)) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "set_object_string(): could not set object string: "
@@ -1564,12 +1570,13 @@ static int set_object_u32(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 			  uint16_t const attribute_id, uint32_t const value)
 {
   PTPPropertyValue propval;
-  PTPParams *params = (PTPParams *) device->params;
+  PTPParams *params;
   uint16_t ret;
 
-  if (device == NULL) {
+  if (!device)
     return -1;
-  }
+
+  params = (PTPParams *) device->params;
 
   if (!ptp_operation_issupported(params,PTP_OC_MTP_SetObjectPropValue)) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "set_object_u32(): could not set unsigned 32bit integer property: "
@@ -1600,12 +1607,13 @@ static int set_object_u16(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 			  uint16_t const attribute_id, uint16_t const value)
 {
   PTPPropertyValue propval;
-  PTPParams *params = (PTPParams *) device->params;
+  PTPParams *params;
   uint16_t ret;
 
-  if (device == NULL) {
+  if (!device)
     return 1;
-  }
+
+  params = (PTPParams *) device->params;
 
   if (!ptp_operation_issupported(params,PTP_OC_MTP_SetObjectPropValue)) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "set_object_u16(): could not set unsigned 16bit integer property: "
@@ -1635,12 +1643,13 @@ static int set_object_u8(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 			 uint16_t const attribute_id, uint8_t const value)
 {
   PTPPropertyValue propval;
-  PTPParams *params = (PTPParams *) device->params;
+  PTPParams *params;
   uint16_t ret;
 
-  if (device == NULL) {
+  if (!device)
     return 1;
-  }
+
+  params = (PTPParams *) device->params;
 
   if (!ptp_operation_issupported(params,PTP_OC_MTP_SetObjectPropValue)) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "set_object_u8(): could not set unsigned 8bit integer property: "
