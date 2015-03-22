@@ -1378,8 +1378,9 @@
   { "LG Electronics Inc.", 0x1004, "Android phone (ID2)", 0x61f9,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "LG Electronics Inc.", 0x1004, "LG2 Optimus", 0x6225,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNLOAD_DRIVER },
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "LG Electronics Inc.", 0x1004, "LG VS870", 0x6239,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "LG Electronics Inc.", 0x1004, "VK810", 0x6265,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/134/ */
