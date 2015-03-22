@@ -2664,6 +2664,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Alcatel/Bouygues", 0x1bbb, "BS472", 0x904d,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1304/ */
+  { "Alcatel", 0x1bbb, "OneTouch 5042D (MTP)", 0xa00e,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/114/ */
   { "Alcatel", 0x1bbb, "OneTouch 6034R", 0xf003,
       DEVICE_FLAGS_ANDROID_BUGS },
