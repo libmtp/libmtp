@@ -29,6 +29,7 @@
 static void usage(void)
 {
   fprintf(stderr, "usage: hotplug [-u -H -i -a\"ACTION\"] -p\"DIR\" -g\"GROUP\" -m\"MODE\"\n");
+  fprintf(stderr, "       -w:  use hwdb syntax\n");
   fprintf(stderr, "       -u:  use udev syntax\n");
   fprintf(stderr, "       -o:  use old udev syntax\n");
   fprintf(stderr, "       -H:  use hal syntax\n");
@@ -45,7 +46,8 @@ enum style {
   style_udev,
   style_udev_old,
   style_hal,
-  style_usbids
+  style_usbids,
+  style_hwdb
 };
 
 int main (int argc, char **argv)
@@ -73,7 +75,7 @@ int main (int argc, char **argv)
   char *udev_group= NULL;
   char *udev_mode = NULL;
 
-  while ( (opt = getopt(argc, argv, "uoiHa:p:g:m:")) != -1 ) {
+  while ( (opt = getopt(argc, argv, "wuoiHa:p:g:m:")) != -1 ) {
     switch (opt) {
     case 'a':
       udev_action = strdup(optarg);
@@ -89,6 +91,9 @@ int main (int argc, char **argv)
       break;
     case 'i':
       style = style_usbids;
+      break;
+    case 'w':
+      style = style_hwdb;
       break;
     case 'p':
       strncpy(mtp_probe_dir,optarg,sizeof(mtp_probe_dir));
@@ -180,6 +185,9 @@ int main (int argc, char **argv)
       printf("# usb.ids style device list from libmtp\n");
       printf("# Compare: http://www.linux-usb.org/usb.ids\n");
       break;
+    case style_hwdb:
+      printf("# hardware database file for libmtp supported devices\n");
+      break;
     }
 
     for (i = 0; i < numentries; i++) {
@@ -198,7 +206,7 @@ int main (int argc, char **argv)
           printf("# %s %s\n", entry->vendor, entry->product);
           printf("libmtp.sh    0x0003  0x%04x  0x%04x  0x0000  0x0000  0x00    0x00    0x00    0x00    0x00    0x00    0x00000000\n", entry->vendor_id, entry->product_id);
           break;
-        case style_hal:
+      case style_hal:
           printf("      <!-- %s %s -->\n", entry->vendor, entry->product);
           printf("      <match key=\"usb.vendor_id\" int=\"0x%04x\">\n", entry->vendor_id);
           printf("        <match key=\"usb.product_id\" int=\"0x%04x\">\n", entry->product_id);
@@ -233,12 +241,19 @@ int main (int argc, char **argv)
           printf("        </match>\n");
           printf("      </match>\n");
         break;
-        case style_usbids:
+      case style_usbids:
           if (last_vendor != entry->vendor_id) {
             printf("%04x\n", entry->vendor_id);
           }
           printf("\t%04x  %s %s\n", entry->product_id, entry->vendor, entry->product);
         break;
+      case style_hwdb:
+          printf("# %s %s\n", entry->vendor, entry->product);
+          printf("usb:v%04xp%04x*\n", entry->vendor_id, entry->product_id);
+          printf(" ID_MEDIA_PLAYER=1\n");
+          printf(" ID_MTP_DEVICE=1\n");
+          printf("\n");
+          break;
       }
       last_vendor = entry->vendor_id;
     }
@@ -250,6 +265,7 @@ int main (int argc, char **argv)
   // Then the footer.
   switch (style) {
   case style_usbmap:
+  case style_hwdb:
     break;
   case style_udev:
   case style_udev_old:

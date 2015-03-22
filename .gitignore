@@ -16,6 +16,7 @@ compile
 configure
 *.rules
 *.fdi
+*.hwdb
 *.pc
 *.usermap
 hotplug.sh

@@ -15,7 +15,7 @@ AC_PROG_LIBTOOL
 AM_ICONV
 
 # Optionally set install location of udev
-UDEV=/lib/udev
+UDEV=/usr/lib/udev
 AC_ARG_WITH(udev,
     AC_HELP_STRING([--with-udev=DIR],
     [directory where udev is installed [default=/lib/udev]]),
