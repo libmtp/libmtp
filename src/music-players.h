@@ -2318,6 +2318,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/166/ */
   { "Lenovo", 0x17ef, "IdeaTab S2210a", 0x757d,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1123/ */
+  { "Lenovo", 0x17ef, "K900 (ID1)", 0x75b5,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by rvelev@mail.bg
   { "Lenovo", 0x17ef, "IdeaPad A3000 (ID1)", 0x75bc,
       DEVICE_FLAGS_ANDROID_BUGS },
