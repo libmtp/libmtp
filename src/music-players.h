@@ -2790,6 +2790,9 @@
 
   /* https://sourceforge.net/p/libmtp/bugs/1303/ */
   { "Megafon", 0x1271, "Login+", 0x2012, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /* https://sourceforge.net/p/libmtp/bugs/1127/ */
+  { "Fly", 0x2970, "iq4415 era style 3", 0x0c02, DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Other strange stuff.
    */
