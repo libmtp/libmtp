@@ -590,6 +590,7 @@
   /* https://sourceforge.net/p/libmtp/bugs/1103/ */
   { "Acer", 0x0502, "Liquid E3", 0x35a8,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1147/ */
   { "Acer", 0x0502, "Z150", 0x35e4,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1298/ */
