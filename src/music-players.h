@@ -2242,9 +2242,15 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "Memo ME172V (MTP)", 0x5400,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1072/ */
+  { "Asus", 0x0b05, "Fonepad 7 LTE ME372CL (MTP)", 0x540f,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "Memo ME173X (MTP)", 0x5410,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "Memo ME173X (MTP+ADB)", 0x5411,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1072/ */
+  { "Asus", 0x0b05, "Fonepad 7 LTE ME372CL (MTP+ADB)", 0x541f,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "Memo K00F (MTP)", 0x5460,
       DEVICE_FLAGS_ANDROID_BUGS },
