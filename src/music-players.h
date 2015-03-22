@@ -2236,6 +2236,11 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "ME302C MemoPad (MTP)", 0x521f,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1066/ */
+  { "Asus", 0x0b05, "PadFone Infinity (2nd ID) (MTP)", 0x5220,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "PadFone Infinity (2nd ID) (MTP+ADB)", 0x5221,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "PadFone Infinity (MTP)", 0x5230,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "PadFone Infinity (MTP+ADB)", 0x5231,
