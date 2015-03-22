@@ -1826,7 +1826,6 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *rawdevi
 
   /* Allocate dynamic space for our device */
   mtp_device = (LIBMTP_mtpdevice_t *) malloc(sizeof(LIBMTP_mtpdevice_t));
-  memset(mtp_device, 0, sizeof(LIBMTP_mtpdevice_t));
   /* Check if there was a memory allocation error */
   if(mtp_device == NULL) {
     /* There has been an memory allocation error. We are going to ignore this
@@ -1839,6 +1838,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *rawdevi
 
     return NULL;
   }
+  memset(mtp_device, 0, sizeof(LIBMTP_mtpdevice_t));
   // Non-cached by default
   mtp_device->cached = 0;
 
