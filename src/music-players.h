@@ -947,6 +947,8 @@
   { "Archos", 0x0e79, "97 Titanium", 0x14ad, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "80 Titanium", 0x14bf, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "101 Titanium", 0x14b9, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/91/ */
+  { "Archos", 0x0e79, "70b Titanium", 0x14ef, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "8o G9 (MTP mode)", 0x1508, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "8o G9 Turbo (MTP mode)", 0x1509, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "80G9", 0x1518, DEVICE_FLAGS_ANDROID_BUGS },
