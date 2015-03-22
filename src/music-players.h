@@ -2515,6 +2515,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "nVidia", 0x0955, "Shield (ID1)", 0xb400,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* benpro82@gmail.com */
+  { "nVidia", 0x0955, "Shield (ID2)", 0xcf07,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Vizio
