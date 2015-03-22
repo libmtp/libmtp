@@ -1515,134 +1515,133 @@ ptp_mtpz_validatehandshakeresponse (PTPParams* params, unsigned char *random, un
 	unsigned char* response = NULL;
 
 	ret = ptp_mtpz_getwmdrmpdappresponse (params, &response, &len);
-	if (ret == PTP_RC_OK)
+	if (ret != PTP_RC_OK)
 	{
-		char *reader = (char *)response;
-		int i;
+		LIBMTP_INFO ("(MTPZ) Failure - did not receive device's response.\n");
+		return ret;
+	}
 
-		if (*(reader++) != '\x02')
-		{
-			return -1;
-		}
+	char *reader = (char *)response;
+	int i;
 
-		if (*(reader++) != '\x02')
-		{
-			return -1;
-		}
+	if (*(reader++) != '\x02')
+	{
+		return -1;
+	}
 
-		// Message is always 128 bytes.
-		reader++;
-		if (*(reader++) != '\x80')
-		{
-			return -1;
-		}
+	if (*(reader++) != '\x02')
+	{
+		return -1;
+	}
 
-		char *message = (char *)malloc(128);
-		memcpy(message, reader, 128);
-		reader += 128;
+	// Message is always 128 bytes.
+	reader++;
+	if (*(reader++) != '\x80')
+	{
+		return -1;
+	}
 
-		// Decrypt the hash-key-message..
-		char *msg_dec = (char *)malloc(128);
-		memset(msg_dec, 0, 128);
+	char *message = (char *)malloc(128);
+	memcpy(message, reader, 128);
+	reader += 128;
 
-		mtpz_rsa_t *rsa = mtpz_rsa_init(MTPZ_MODULUS, MTPZ_PRIVATE_KEY, MTPZ_PUBLIC_EXPONENT);
-		if (!rsa)
-		{
-			LIBMTP_INFO ("(MTPZ) Failure - could not instantiate RSA object.\n");
-			free(message);
-			free(msg_dec);
-			return -1;
-		}
+	// Decrypt the hash-key-message..
+	char *msg_dec = (char *)malloc(128);
+	memset(msg_dec, 0, 128);
 
-		if (mtpz_rsa_decrypt(128, (unsigned char *)message, 128, (unsigned char *)msg_dec, rsa) == 0)
-		{
-			LIBMTP_INFO ("(MTPZ) Failure - could not perform RSA decryption.\n");
+	mtpz_rsa_t *rsa = mtpz_rsa_init(MTPZ_MODULUS, MTPZ_PRIVATE_KEY, MTPZ_PUBLIC_EXPONENT);
+	if (!rsa)
+	{
+		LIBMTP_INFO ("(MTPZ) Failure - could not instantiate RSA object.\n");
+		free(message);
+		free(msg_dec);
+		return -1;
+	}
 
-			free(message);
-			free(msg_dec);
-			mtpz_rsa_free(rsa);
-			return -1;
-		}
-
-		mtpz_rsa_free(rsa);
-		rsa = NULL;
-
-		char *state = mtpz_hash_init_state();
-		char *hash_key = (char *)malloc(16);
-		char *v10 = mtpz_hash_custom6A5DC(state, msg_dec + 21, 107, 20);
-
-		for (i = 0; i < 20; i++)
-			msg_dec[i + 1] ^= v10[i];
-
-		char *v11 = mtpz_hash_custom6A5DC(state, msg_dec + 1, 20, 107);
-
-		for (i = 0; i < 107; i++)
-			msg_dec[i + 21] ^= v11[i];
-
-		memcpy(hash_key, msg_dec + 112, 16);
-
-		// Encrypted message is 0x340 bytes.
-		reader += 2;
-		if (*(reader++) != '\x03' || *(reader++) != '\x40')
-		{
-			return -1;
-		}
-
-		unsigned char *act_msg = (unsigned char *)malloc(832);
-		unsigned char *act_reader = act_msg;
-		memcpy(act_msg, reader, 832);
-		reader = NULL;
-
-		mtpz_encryption_cipher_advanced((unsigned char *)hash_key, 16, act_msg, 832, 0);
-
-		act_reader++;
-		unsigned int certs_length = MTPZ_SWAP(*(unsigned int *)(act_reader));
-		act_reader += 4;
-		act_reader += certs_length;
-
-		unsigned int rand_length = MTPZ_SWAP(*(unsigned short *)(act_reader) << 16);
-		act_reader += 2;
-		unsigned char *rand_data = (unsigned char *)malloc(rand_length);
-		memcpy(rand_data, act_reader, rand_length);
-		if (memcmp(rand_data, random, 16) != 0)
-		{
-			free(rand_data);
-			return -1;
-		}
-		free(rand_data);
-		act_reader += rand_length;
-
-		unsigned int dev_rand_length = MTPZ_SWAP(*(unsigned short *)(act_reader) << 16);
-		act_reader += 2;
-		act_reader += dev_rand_length;
-
-		act_reader++;
-
-		unsigned int sig_length = MTPZ_SWAP(*(unsigned short *)(act_reader) << 16);
-		act_reader += 2;
-		act_reader += sig_length;
-
-		act_reader++;
-
-		unsigned int machash_length = MTPZ_SWAP(*(unsigned short *)(act_reader) << 16);
-		act_reader += 2;
-		unsigned char *machash_data = (unsigned char *)malloc(machash_length);
-		memcpy(machash_data, act_reader, machash_length);
-		act_reader += machash_length;
-
-		*calculatedHash = machash_data;
+	if (mtpz_rsa_decrypt(128, (unsigned char *)message, 128, (unsigned char *)msg_dec, rsa) == 0)
+	{
+		LIBMTP_INFO ("(MTPZ) Failure - could not perform RSA decryption.\n");
 
 		free(message);
 		free(msg_dec);
-		free(state);
-		free(v10);
-		free(v11);
-		free(act_msg);
+		mtpz_rsa_free(rsa);
+		return -1;
 	}
-	else
+
+	mtpz_rsa_free(rsa);
+	rsa = NULL;
+
+	char *state = mtpz_hash_init_state();
+	char *hash_key = (char *)malloc(16);
+	char *v10 = mtpz_hash_custom6A5DC(state, msg_dec + 21, 107, 20);
+
+	for (i = 0; i < 20; i++)
+		msg_dec[i + 1] ^= v10[i];
+
+	char *v11 = mtpz_hash_custom6A5DC(state, msg_dec + 1, 20, 107);
+
+	for (i = 0; i < 107; i++)
+		msg_dec[i + 21] ^= v11[i];
+
+	memcpy(hash_key, msg_dec + 112, 16);
+
+	// Encrypted message is 0x340 bytes.
+	reader += 2;
+	if (*(reader++) != '\x03' || *(reader++) != '\x40')
 	{
-		LIBMTP_INFO ("(MTPZ) Failure - did not receive device's response.\n");
+		return -1;
 	}
+
+	unsigned char *act_msg = (unsigned char *)malloc(832);
+	unsigned char *act_reader = act_msg;
+	memcpy(act_msg, reader, 832);
+	reader = NULL;
+
+	mtpz_encryption_cipher_advanced((unsigned char *)hash_key, 16, act_msg, 832, 0);
+
+	act_reader++;
+	unsigned int certs_length = MTPZ_SWAP(*(unsigned int *)(act_reader));
+	act_reader += 4;
+	act_reader += certs_length;
+
+	unsigned int rand_length = MTPZ_SWAP(*(unsigned short *)(act_reader) << 16);
+	act_reader += 2;
+	unsigned char *rand_data = (unsigned char *)malloc(rand_length);
+	memcpy(rand_data, act_reader, rand_length);
+	if (memcmp(rand_data, random, 16) != 0)
+	{
+		free(rand_data);
+		return -1;
+	}
+	free(rand_data);
+	act_reader += rand_length;
+
+	unsigned int dev_rand_length = MTPZ_SWAP(*(unsigned short *)(act_reader) << 16);
+	act_reader += 2;
+	act_reader += dev_rand_length;
+
+	act_reader++;
+
+	unsigned int sig_length = MTPZ_SWAP(*(unsigned short *)(act_reader) << 16);
+	act_reader += 2;
+	act_reader += sig_length;
+
+	act_reader++;
+
+	unsigned int machash_length = MTPZ_SWAP(*(unsigned short *)(act_reader) << 16);
+	act_reader += 2;
+	unsigned char *machash_data = (unsigned char *)malloc(machash_length);
+	memcpy(machash_data, act_reader, machash_length);
+	act_reader += machash_length;
+
+	*calculatedHash = machash_data;
+
+	free(message);
+	free(msg_dec);
+	free(state);
+	free(v10);
+	free(v11);
+	free(act_msg);
 
 	return ret;
 }
