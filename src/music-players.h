@@ -1368,14 +1368,6 @@
   { "LG Electronics Inc.", 0x1004, "LG8575", 0x619a,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
       DEVICE_FLAG_UNLOAD_DRIVER },
-  /* https://sourceforge.net/p/libmtp/support-requests/167/ */
-  { "LG Electronics Inc.", 0x1004, "G2 Sprint", 0x631c,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNLOAD_DRIVER },
-  /* https://sourceforge.net/p/libmtp/bugs/1294/ */
-  { "LG Electronics Inc.", 0x1004, "LG G Flex 2", 0x633e,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
-      DEVICE_FLAG_UNLOAD_DRIVER },
   /*
    * These two are LG Android phones:
    * LG-F6
@@ -1404,6 +1396,9 @@
    * P700
    */
   { "LG Electronics Inc.", 0x1004, "Various E and P models", 0x631c,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1294/ */
+  { "LG Electronics Inc.", 0x1004, "LG G Flex 2", 0x633e,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
