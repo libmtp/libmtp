@@ -1855,6 +1855,8 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z3 Compact MTP+ADB", 0x51bb,
       DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia E3 MTP+ADB", 0x51bc,
+      DEVICE_FLAG_NONE },
 
   /*
    * MTP+UMS modes
