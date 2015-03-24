@@ -2595,6 +2595,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Amazon", 0x1949, "Kindle Fire (ID3)", 0x000a,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1026/ */
+  { "Amazon", 0x1949, "Kindle Fire (ID6)", 0x000b,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Amazon", 0x1949, "Kindle Fire (ID4)", 0x000c,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Amazon", 0x1949, "Kindle Fire (ID5)", 0x0012,
