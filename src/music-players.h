@@ -2822,6 +2822,8 @@
 
   /* https://sourceforge.net/p/libmtp/bugs/1127/ */
   { "Fly", 0x2970, "iq4415 era style 3", 0x0c02, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1082/ */
+  { "Fly", 0x1782, "iq449", 0x4001, DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Other strange stuff.
    */
