@@ -580,6 +580,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "Liquid Z120 MT65xx Android Phone", 0x3473,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1029/ */
+  { "Acer", 0x0502, "Liquid E2", 0x3514,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "Iconia A1-810", 0x353c,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "Liquid Z130 MT65xx Android Phone", 0x355f,
