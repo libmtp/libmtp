@@ -596,6 +596,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1147/ */
   { "Acer", 0x0502, "Z150", 0x35e4,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1184/ */
+  { "Acer", 0x0502, "Liquid X1", 0x3609,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1298/ */
   { "Acer", 0x0502, "Z160", 0x361d,
       DEVICE_FLAGS_ANDROID_BUGS },
