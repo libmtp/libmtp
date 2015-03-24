@@ -1939,6 +1939,9 @@
   // Reported by  B,H,Kissinger <mrkissinger@users.sourceforge.net>
   { "Motorola", 0x22b8, "XT912/XT928", 0x4362,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1104/ , PTP id. */
+  { "Motorola", 0x22b8, "DROID4 (PTP)", 0x4373,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Lundgren <alundgren@users.sourceforge.net>
   { "Motorola", 0x22b8, "DROID4", 0x437f,
       DEVICE_FLAGS_ANDROID_BUGS },
