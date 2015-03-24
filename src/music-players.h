@@ -1960,6 +1960,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "DROID2 (ID2)", 0x42a7,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Motorola", 0x22b8, "Xoom 2 Media Edition (ID2)", 0x4306,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Xoom 2 Media Edition", 0x4311,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by  B,H,Kissinger <mrkissinger@users.sourceforge.net>
