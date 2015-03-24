@@ -1697,6 +1697,8 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z2 MTP", 0x01af,
       DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia Z Ultra MTP", 0x01b6,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "SONY", 0x0fce, "Xperia Z3 MTP", 0x01ba,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z3 Compact MTP", 0x01bb,
