@@ -1142,6 +1142,8 @@
       DEVICE_FLAG_UNLOAD_DRIVER },
   // From: Maxin B. John <maxin.john@gmail.com>
   { "Nokia", 0x0421, "N9", 0x051a, DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/bugs/1308/ */
+  { "Nokia", 0x0421, "N300", 0x0524, DEVICE_FLAG_NONE },
   { "Nokia", 0x0421, "C5-00", 0x0592, DEVICE_FLAG_NONE },
   { "Nokia", 0x0421, "808 PureView", 0x05d3, DEVICE_FLAG_NONE },
   // Reported by Sampo Savola
