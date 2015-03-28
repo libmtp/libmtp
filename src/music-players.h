@@ -2006,6 +2006,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Razr D1/D3/i (MTP+?)", 0x64b6,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/697/ */
+  { "Motorola", 0x22b8, "Atrix XT687 (MTP)", 0x64cf,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Brian Dolbec <dol-sen@users.sourceforge.net>
   { "Motorola", 0x22b8, "Atrix MB860 (MTP)", 0x7088,
       DEVICE_FLAGS_ANDROID_BUGS },
