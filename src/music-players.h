@@ -2256,7 +2256,7 @@
   /* https://sourceforge.net/p/libmtp/support-requests/135/ */
   { "Asus", 0x0b05, "ME302KL MeMo Pad FHD10 (MTP)", 0x4cc0,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Asus", 0x0b05, "ME302KL MeMo Pad FHD10 (MTP)", 0x4cc1,
+  { "Asus", 0x0b05, "ME302KL MeMo Pad FHD10 (MTP+ADB)", 0x4cc1,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "ME301T MeMo Pad Smart 10 (MTP)", 0x4cd0,
       DEVICE_FLAGS_ANDROID_BUGS },
