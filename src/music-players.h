@@ -1964,7 +1964,7 @@
   { "Motorola", 0x22b8, "Moto G (XT1032)", 0x2e84,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Jader Rodrigues Simoes <jadersimoes@users.sourceforge.net>
-  { "Motorola", 0x22b8, "Xoom 2 Media Edition (ID2)", 0x41cf,
+  { "Motorola", 0x22b8, "Xoom 2 Media Edition (ID3)", 0x41cf,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Steven Roemen <sdroemen@users.sourceforge.net>
   { "Motorola", 0x22b8, "Droid X/MB525 (Defy)", 0x41d6,
