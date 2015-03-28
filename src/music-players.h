@@ -2798,7 +2798,7 @@
   /*
    * Jolla
    */
-  { "Jolla", 0x2931, "Sailfish", 0x0a01,
+  { "Jolla", 0x2931, "Sailfish (ID1)", 0x0a01,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
@@ -2831,7 +2831,7 @@
   /* In update 4 the order of devices was changed for
      better OS X / Windows suport and another device-id
      got assigned for the MTP */
-  { "Jolla", 0x2931, "Sailfish", 0x0a05,
+  { "Jolla", 0x2931, "Sailfish (ID2)", 0x0a05,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
