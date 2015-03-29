@@ -34,6 +34,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
+#include "config.h"
 #include "libmtp.h"
 #include "util.h"
 
