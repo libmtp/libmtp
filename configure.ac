@@ -18,7 +18,7 @@ AM_ICONV
 UDEV=/usr/lib/udev
 AC_ARG_WITH(udev,
     AC_HELP_STRING([--with-udev=DIR],
-    [directory where udev is installed [default=/lib/udev]]),
+    [directory where udev is installed [default=/usr/lib/udev]]),
     [UDEV="${withval}"], [])
 AC_SUBST(UDEV)
 
