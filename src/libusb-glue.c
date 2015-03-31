@@ -676,18 +676,9 @@ LIBMTP_error_number_t LIBMTP_Detect_Raw_Devices(LIBMTP_raw_device_t ** devices,
       }
     }
     if (!device_known) {
-      // This device is unknown to the developers
-      LIBMTP_ERROR("Device %d (VID=%04x and PID=%04x) is UNKNOWN.\n",
-	      i,
-	      dev->libusb_device->descriptor.idVendor,
-	      dev->libusb_device->descriptor.idProduct);
-      LIBMTP_ERROR("Please report this VID/PID and the device model to the "
-	      "libmtp development team\n");
-      /*
-       * Trying to get iManufacturer or iProduct from the device at this
-       * point would require opening a device handle, that we don't want
-       * to do right now. (Takes time for no good enough reason.)
-       */
+      device_unknown(i,
+                     dev->libusb_device->descriptor.idVendor,
+                     dev->libusb_device->descriptor.idProduct);
     }
     // Save the location on the bus
     retdevs[i].bus_location = dev->bus_location;

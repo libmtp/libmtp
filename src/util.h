@@ -29,6 +29,7 @@ void data_dump_ascii (FILE *f, void *buf, uint32_t n, uint32_t dump_boundry);
 #ifndef HAVE_STRNDUP
 char *strndup (const char *s, size_t n);
 #endif
+void device_unknown(const int dev_number, const int id_vendor, const int id_product);
 
 /**
  * Info macro
