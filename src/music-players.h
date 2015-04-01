@@ -2486,7 +2486,10 @@
   { "HTC", 0x0bb4, "Windows Phone 8X ID2", 0x0ba2,
       DEVICE_FLAG_NONE },
 
-#if 0
+#if 1
+  /* after some review I commented it back in. There was apparently
+   * only one or two devices misbehaving (having this ID in mass storage mode),
+   * but more seem to use it regulary as MTP devices. Marcus 20150401 */
   /*
    * This had to be commented out - the same VID+PID is used also for
    * other modes than MTP, so we need to let mtp-probe do its job on this
@@ -2562,7 +2565,10 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One M8 (MTP+ADB+UMS)", 0x0fb4,
       DEVICE_FLAGS_ANDROID_BUGS },
-#if 0
+#if 1
+  /* after some review I commented it back in. There was apparently
+   * only one or two devices misbehaving (having this ID in mass storage mode),
+   * but more seem to use it regulary as MTP devices. Marcus 20150401 */
   /*
    * This had to be commented out - the same VID+PID is used also for
    * other modes than MTP, so we need to let mtp-probe do its job on this
