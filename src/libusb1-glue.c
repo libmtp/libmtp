@@ -135,14 +135,21 @@ int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t ** const devices,
 
 static LIBMTP_error_number_t init_usb()
 {
+  static int libusb1_initialized = 0;
+
   /*
    * Some additional libusb debugging please.
    * We use the same level debug between MTP and USB.
    */
+  if (libusb1_initialized)
+     return LIBMTP_ERROR_NONE;
+
   if (libusb_init(NULL) < 0) {
     LIBMTP_ERROR("Libusb1 init failed\n");
     return LIBMTP_ERROR_USB_LAYER;
   }
+
+  libusb1_initialized = 1;
 
   if ((LIBMTP_debug & LIBMTP_DEBUG_USB) != 0)
     libusb_set_debug(NULL,9);
