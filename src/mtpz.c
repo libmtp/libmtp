@@ -130,11 +130,7 @@ int mtpz_loaddata()
 
 	FILE *fdata = fopen(path, "r");
 	if (!fdata)
-	{
-		LIBMTP_ERROR("Unable to open ~/.mtpz-data for reading, MTPZ disabled.\n");
 		return ret;
-	}
-
 
 	// Should only be six characters in length, but fgets will encounter a newline and stop.
 	MTPZ_PUBLIC_EXPONENT = (unsigned char *)fgets_strip((char *)malloc(8), 8, fdata);
