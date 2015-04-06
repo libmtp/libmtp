@@ -2913,6 +2913,9 @@
   */
   { "YU Yureka", 0x1ebf, "Vodafone smart turbo 4", 0x7f29, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/bugs/1314/ */
+  { "BenQ", 0x1d45, "F5", 0x459d, DEVICE_FLAGS_ANDROID_BUGS },
+
   /*
    * Other strange stuff.
    */
