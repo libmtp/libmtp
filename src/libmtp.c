@@ -1754,12 +1754,12 @@ static void parse_extension_descriptor(LIBMTP_mtpdevice_t *mtpdevice,
   /* descriptors are divided by semicolons */
   while (end < strlen(desc)) {
     /* Skip past initial whitespace */
-    while (desc[start] == ' ' && end < strlen(desc)) {
+    while ((end < strlen(desc)) && (desc[start] == ' ' )) {
       start++;
       end++;
     }
     /* Detect extension */
-    while (desc[end] != ';' && end < strlen(desc))
+    while ((end < strlen(desc)) && (desc[end] != ';'))
       end++;
     if (end < strlen(desc)) {
       char *element = strndup(desc + start, end-start);
@@ -1768,7 +1768,7 @@ static void parse_extension_descriptor(LIBMTP_mtpdevice_t *mtpdevice,
         // printf("  Element: \"%s\"\n", element);
 
         /* Parse for an extension */
-        while (element[i] != ':' && i < strlen(element))
+        while ((i < strlen(element)) && (element[i] != ':'))
           i++;
         if (i < strlen(element)) {
           char *name = strndup(element, i);
@@ -1776,7 +1776,7 @@ static void parse_extension_descriptor(LIBMTP_mtpdevice_t *mtpdevice,
           // printf("    Extension: \"%s\"\n", name);
 
           /* Parse for minor/major punctuation mark for this extension */
-          while (element[i] != '.' && i < strlen(element))
+          while ((i < strlen(element)) && (element[i] != '.'))
             i++;
           if (i > majstart && i < strlen(element)) {
             LIBMTP_device_extension_t *extension;
@@ -1786,6 +1786,8 @@ static void parse_extension_descriptor(LIBMTP_mtpdevice_t *mtpdevice,
             char *minorstr = strndup(element + i + 1, strlen(element) - i - 1);
             major = atoi(majorstr);
             minor = atoi(minorstr);
+            // printf("    Major: \"%s\" (parsed %d) Minor: \"%s\" (parsed %d)\n",
+            //      majorstr, major, minorstr, minor);
 	    free(majorstr);
 	    free(minorstr);
             extension = malloc(sizeof(LIBMTP_device_extension_t));
@@ -1801,8 +1803,6 @@ static void parse_extension_descriptor(LIBMTP_mtpdevice_t *mtpdevice,
                 tmp = tmp->next;
               tmp->next = extension;
             }
-            // printf("    Major: \"%s\" (parsed %d) Minor: \"%s\" (parsed %d)\n",
-            //      majorstr, major, minorstr, minor);
           } else {
             LIBMTP_ERROR("LIBMTP ERROR: couldnt parse extension %s\n",
                          element);
