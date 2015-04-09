@@ -1922,12 +1922,11 @@ static int find_interface_and_endpoints(libusb_device *dev,
     struct libusb_config_descriptor *config;
 
     ret = libusb_get_config_descriptor(dev, i, &config);
-    if (ret != 0)
+    if (ret != LIBUSB_SUCCESS)
       continue;
 
     *conf = config->bConfigurationValue;
 
-    if (ret != LIBUSB_SUCCESS) continue;
     // Loop over each configurations interfaces
     for (j = 0; j < config->bNumInterfaces; j++) {
       uint8_t k, l;
