@@ -1582,12 +1582,14 @@ ptp_usb_event (PTPParams* params, PTPContainer* event, int wait)
 	int result, xread;
 	unsigned long rlen;
 	PTPUSBEventContainer usbevent;
-	PTP_USB *ptp_usb = (PTP_USB *)(params->data);
+	PTP_USB *ptp_usb;
 
 	memset(&usbevent,0,sizeof(usbevent));
 
 	if ((params==NULL) || (event==NULL))
 		return PTP_ERROR_BADPARAM;
+	ptp_usb = (PTP_USB *)(params->data);
+
 	ret = PTP_RC_OK;
 	switch(wait) {
 	case PTP_EVENT_CHECK:
