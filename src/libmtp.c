@@ -8042,6 +8042,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 	  add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "update_abstract_list(): "
 				  "could not set artist name.");
 	}
+	break;
       case PTP_OPC_Composer:
 	// Update composer
 	ret = set_object_string(device, objecthandle, PTP_OPC_Composer, composer);
@@ -8071,6 +8072,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
 	  }
 	  free(tmpdate);
 	}
+	break;
       default:
 	break;
       }
