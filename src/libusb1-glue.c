@@ -1001,7 +1001,7 @@ ptp_write_func (
   }
   while (curwrite < size) {
     unsigned long usbwritten = 0;
-    int xwritten;
+    int xwritten = 0;
 
     towrite = size-curwrite;
     if (towrite > CONTEXT_BLOCK_SIZE) {
