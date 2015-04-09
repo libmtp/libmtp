@@ -185,8 +185,10 @@ static int check_interface(char *sysfspath)
 
   /* Check for dirs that identify endpoints */
   ret = regcomp(&r, "^ep_[0-9a-f]+$", REG_EXTENDED | REG_NOSUB);
-  if (ret)
+  if (ret) {
+    closedir(dir);
     return -1;
+  }
 
   while ((dent = readdir(dir))) {
     struct stat st;
