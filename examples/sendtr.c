@@ -376,7 +376,7 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pa
 }
 
 int sendtrack_command (int argc, char **argv) {
-  int opt;
+  int opt, ret;
   extern int optind;
   extern char *optarg;
   char *partist = NULL;
@@ -445,5 +445,13 @@ int sendtrack_command (int argc, char **argv) {
   checklang();
 
   printf("%s,%s,%s,%s,%s,%s,%s,%s,%d%d,%d,%u,%d\n",argv[0],argv[1],partist,palbumartist,ptitle,pgenre,palbum,pcomposer,tracknum, length, year, storageid, quiet);
-  return sendtrack_function(argv[0],argv[1],partist,palbumartist,ptitle,pgenre,palbum,pcomposer, tracknum, length, year, storageid, quiet);
+  ret = sendtrack_function(argv[0],argv[1],partist,palbumartist,ptitle,pgenre,palbum,pcomposer, tracknum, length, year, storageid, quiet);
+  free (ptitle);
+  free (partist);
+  free (palbumartist);
+  free (pcomposer);
+  free (palbum);
+  free (pcodec);
+  free (pgenre);
+  return ret;
 }
