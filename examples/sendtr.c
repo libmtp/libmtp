@@ -196,9 +196,6 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pa
 
   printf("Sending track %s to %s\n", from_path, to_path);
 
-  trackmeta = LIBMTP_new_track_t();
-  albuminfo = LIBMTP_new_album_t();
-
   parent = dirname(strdup(to_path));
   filename = basename(strdup(to_path));
   parent_id = parse_path (parent,files,folders);
@@ -217,9 +214,12 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pa
     return 0;
 
   filesize = sb.st_size;
+
+  trackmeta = LIBMTP_new_track_t();
   trackmeta->filetype = find_filetype (from_path);
   if (!LIBMTP_FILETYPE_IS_TRACK(trackmeta->filetype)) {
     printf("Not a valid track codec: \"%s\"\n", LIBMTP_Get_Filetype_Description(trackmeta->filetype));
+    LIBMTP_destroy_track_t(trackmeta);
     return 1;
   }
 
@@ -283,6 +283,9 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pa
     printf("Title:     %s\n", ptitle);
     trackmeta->title = strdup(ptitle);
   }
+
+  albuminfo = LIBMTP_new_album_t();
+
   if (palbum) {
     printf("Album:     %s\n", palbum);
     trackmeta->album = strdup(palbum);
