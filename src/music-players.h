@@ -1952,6 +1952,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Moto X (XT1058)", 0x2e63,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1323/ */
+  { "Motorola", 0x22b8, "Moto X (XT1080)", 0x2e66,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Droid Maxx (XT1080)", 0x2e67,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Droid Ultra", 0x2e68,
