@@ -2725,6 +2725,8 @@
   { "Intel", 0x8087, "Foxconn iView i700", 0x0a15, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1237/ */
   { "Intel", 0x8087, "Telcast Air 3G", 0x0a5e, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1338/ */
+  { "Intel", 0x8087, "Chuwi vi8", 0x0a5f, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Xiaomi
