@@ -14,12 +14,15 @@ controller interface, using libusb to access the host
 controller.
 
 If you're more interested in the MTP responders, gadgets like
-MP3 players, mobile phones etc, look into MeeGo:s Buteo Sync:
-http://wiki.meego.com/Buteo - these guys are creating a fully
-open source MTP responder.
-
-Android has an MTP responder implementation:
-https://android.googlesource.com/platform/frameworks/base/+/master/media/jni/
+MP3 players, mobile phones etc, look into:
+- MeeGo:s Buteo Sync:
+  https://github.com/nemomobile/buteo-mtp
+  https://wiki.merproject.org/wiki/Buteo/MTP
+- Android has an MTP responder implementation:
+  https://android.googlesource.com/platform/frameworks/base/+/master/media/jni/
+- Ubuntu/Ricardo Salveti has mtp-server and libmtp-server going:
+  https://code.launchpad.net/~phablet-team/mtp/trunk
+  http://bazaar.launchpad.net/~phablet-team/mtp/trunk/files
 
 Heritage
 --------
