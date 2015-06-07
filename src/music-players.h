@@ -1744,6 +1744,8 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia E3 MTP", 0x01bc,
       DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria E4g MTP", 0x01cb,
+      DEVICE_FLAG_NONE },
 
 
   /*
@@ -1814,6 +1816,12 @@
   { "SONY", 0x0fce, "Xperia Z2 MTP+CDROM", 0x41af,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z3 MTP+CDROM", 0x41ba,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia Z3 Compact MTP+CDROM", 0x41bb,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia E3 MTP+CDROM", 0x01bc,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria E4g MTP+CDROM", 0x41cb,
       DEVICE_FLAG_NONE },
 
   /*
@@ -1914,6 +1922,8 @@
   { "SONY", 0x0fce, "Xperia Z3 Compact MTP+ADB", 0x51bb,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia E3 MTP+ADB", 0x51bc,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce,  "XPeria E4g MTP", 0x51cb,
       DEVICE_FLAG_NONE },
 
   /*
