@@ -1923,7 +1923,7 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia E3 MTP+ADB", 0x51bc,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce,  "XPeria E4g MTP", 0x51cb,
+  { "SONY", 0x0fce,  "XPeria E4g MTP+ADB", 0x51cb,
       DEVICE_FLAG_NONE },
 
   /*
