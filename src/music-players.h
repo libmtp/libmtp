@@ -1801,7 +1801,7 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia M MTP+CDROM", 0x419b,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "Xperia Z Ultra MTP (ID3)", 0x419c,
+  { "SONY", 0x0fce, "Xperia Z Ultra MTP+CDROM (ID3)", 0x419c,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia Z1 MTP+CDROM", 0x419e,
       DEVICE_FLAG_NONE },
