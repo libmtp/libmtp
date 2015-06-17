@@ -40,7 +40,8 @@
 
 
 /**
- * This prints to stdout info about device being UNKNOWN & its ids.
+ * This prints to stdout info about device being UNKNOWN, its
+ * ids, and libmtp's version number.
  *
  * @param dev_number the device number
  * @param id_vendor vendor ID from the usb_device_desc struct
@@ -49,10 +50,11 @@
 void device_unknown(const int dev_number, const int id_vendor, const int id_product)
 {
   // This device is unknown to the developers
-  LIBMTP_ERROR("Device %d (VID=%04x and PID=%04x) is UNKNOWN.\n",
+  LIBMTP_ERROR("Device %d (VID=%04x and PID=%04x) is UNKNOWN in libmtp v%s.\n",
     dev_number,
     id_vendor,
-    id_product);
+    id_product,
+    LIBMTP_VERSION_STRING);
   LIBMTP_ERROR("Please report this VID/PID and the device model to the "
                "libmtp development team\n");
   /*
