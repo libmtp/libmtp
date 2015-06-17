@@ -2982,6 +2982,8 @@
   /* https://sourceforge.net/p/libmtp/bugs/1314/ */
   { "BenQ", 0x1d45, "F5", 0x459d, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/bugs/1362/ */
+  { "TomTom", 0x1390, "Rider 40", 0x5455, DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Other strange stuff.
    */
