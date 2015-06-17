@@ -40,8 +40,7 @@
 
 
 /**
- * This prints to stdout info about device being UNKNOWN, its
- * ids, and libmtp's version number.
+ * This prints to stdout info about device being UNKNOWN & its ids.
  *
  * @param dev_number the device number
  * @param id_vendor vendor ID from the usb_device_desc struct
