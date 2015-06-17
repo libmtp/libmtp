@@ -1254,6 +1254,9 @@
   // Reported by anonymous SourceForge user
   { "Medion", 0x066f, "MD8333 (ID2)", 0x8588,
     DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
+  /* https://sourceforge.net/p/libmtp/bugs/1359/ */
+  { "Verizon", 0x0408, "Ellipsis 7", 0x3899,
+    DEVICE_FLAGS_ANDROID_BUGS },
   // The vendor ID is "Quanta Computer, Inc."
   // same as Olivetti Olipad 110
   // Guessing on device flags
