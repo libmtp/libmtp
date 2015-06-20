@@ -59,5 +59,13 @@ else
     echo "Could not autoupdate config.sub and config.guess"
 fi
 
-echo "Finished!"
+if [ ! -z "$NOCONFIGURE" ]; then
+	echo "autogen.sh finished! ./configure skipped."
+	exit $?
+fi
 
+echo "autogen.sh finished! Now going to run ./configure $@"
+./configure $@ || {
+    echo "./configure failed";
+    exit 1;
+}
