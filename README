@@ -177,7 +177,7 @@ cannot test your solution.
   Sometimes the "gvfs-gphoto2-volume-monitor" is running on the
   system and hogging the device, try something like:
 
-  pkill gvfs-gphoto2-volume-monitor
+  killall gvfs-gphoto2-volume-monitor
 
   Then plug in the device and issue "mtp-detect" to figure out if
   this may be the case.
