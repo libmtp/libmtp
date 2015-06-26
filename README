@@ -174,9 +174,11 @@ cannot test your solution.
 
   Then re-attach the device.
 
-  Sometimes the "gvfs-gphoto2-volume-monitor" is running on the
-  system and hogging the device, try something like:
+  Sometimes some gvfs daemons are running on the
+  system and hogging the device, try stopping them
+  with something like these commands:
 
+  killall gvfs-mtp-volume-monitor
   killall gvfs-gphoto2-volume-monitor
 
   Then plug in the device and issue "mtp-detect" to figure out if
