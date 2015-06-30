@@ -2407,6 +2407,9 @@
   /*
    * Lenovo
    */
+  /* https://sourceforge.net/p/libmtp/support-requests/178/ */
+  { "Lenovo", 0x17ef, "P70-A", 0x0c02,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Richard Körber <shredzone@users.sourceforge.net>
   { "Lenovo", 0x17ef, "K1", 0x740a,
       DEVICE_FLAGS_ANDROID_BUGS },
