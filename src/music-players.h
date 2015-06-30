@@ -2864,6 +2864,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Hewlett-Packard", 0x03f0, "Slate 7 2800", 0x5d1d,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1366/ */
+  { "Hewlett-Packard", 0x03f0, "Slate 10 HD", 0x7e1d,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * MediaTek Inc.
