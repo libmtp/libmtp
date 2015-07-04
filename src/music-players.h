@@ -607,6 +607,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1251/ */
   { "Acer", 0x0502, "E39", 0x3643,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1369/ */
+  { "Acer", 0x0502, "liquid e700", 0x3644,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Acer", 0x0502, "One 7", 0x3657,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1341/ */
