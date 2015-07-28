@@ -2527,6 +2527,9 @@
    * Steven Eastland <grassmonk@users.sourceforge.net>
    * Kevin Cheng <kache@users.sf.net>
    */
+  /* https://sourceforge.net/p/libmtp/support-requests/181/ */
+  { "HTC", 0x0bb4, "HTC One M9 (MTP)", 0x040b,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* reported by Mikkel Oscar Lyderik <mikkeloscar@gmail.com> */
   { "HTC", 0x0bb4, "HTC Desire 510 (MTP+ADB)", 0x05fd,
       DEVICE_FLAGS_ANDROID_BUGS },
