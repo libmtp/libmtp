@@ -2381,7 +2381,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1244/ */
   { "Asus", 0x0b05, "MemoPad 8 ME181 CX (MTP)", 0x5561,
       DEVICE_FLAGS_ANDROID_BUGS },
-  /* https://sourceforge.net/p/libmtp/bugs/1337/ */
+  /* https://sourceforge.net/p/libmtp/bugs/1364/ */
+  { "Asus", 0x0b05, "Z00AD (MTP)", 0x5601,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Asus", 0x0b05, "TX201LA (MTP)", 0x561f,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1271/ */
