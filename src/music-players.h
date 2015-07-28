@@ -3007,6 +3007,9 @@
 
   /* https://sourceforge.net/p/libmtp/bugs/1362/ */
   { "TomTom", 0x1390, "Rider 40", 0x5455, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /* https://sourceforge.net/p/libmtp/feature-requests/135/. guessed android. */
+  { "OUYA", 0x2836, "Videogame Console", 0x0010, DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Other strange stuff.
    */
