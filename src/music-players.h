@@ -2962,6 +2962,8 @@
   /* https://sourceforge.net/p/libmtp/bugs/1287/ */
   { "Gensis", 0x040d, "GT-7305 ", 0x885c, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/support-requests/182/ */
+  { "Oppo", 0x22d9, "Find 5", 0x2764, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1207/ */
   { "Oppo", 0x22d9, "Find 7 (ID 1)", 0x2765, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1277/ */
