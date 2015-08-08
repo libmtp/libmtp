@@ -2414,6 +2414,8 @@
   /* https://sourceforge.net/p/libmtp/bugs/1351/ */
   { "Asus", 0x0b05, "Fonepad 7 (FE375CXG)", 0x7773,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Asus", 0x0b05, "ZenFone 5 A500KL (MTP)", 0x7780,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1247/ */
   { "Asus", 0x0b05, "ZenFone 5 A500KL (MTP+ADB)", 0x7781,
       DEVICE_FLAGS_ANDROID_BUGS },
