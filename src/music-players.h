@@ -1979,6 +1979,9 @@
    * Motorola
    * Assume DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST on all of these.
    */
+  /* https://sourceforge.net/p/libmtp/feature-requests/136/ */
+  { "Motorola", 0x22b8, "XT1524 (MTP)", 0x002e,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by David Boyd <tiggrdave@users.sourceforge.net>
   { "Motorola", 0x22b8, "V3m/V750 verizon", 0x2a65,
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
