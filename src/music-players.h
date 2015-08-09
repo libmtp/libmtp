@@ -1238,6 +1238,9 @@
   // Reported by Thomas Bretthauer
   { "Fujitsu, Ltd", 0x04c5, "STYLISTIC M532", 0x133b,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/137/ */
+  { "Fujitsu, Ltd", 0x04c5, "F02-E", 0x1378,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Palm device userland program named Pocket Tunes
