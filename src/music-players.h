@@ -3029,6 +3029,9 @@
 
   /* https://sourceforge.net/p/libmtp/feature-requests/135/. guessed android. */
   { "OUYA", 0x2836, "Videogame Console", 0x0010, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /* https://sourceforge.net/p/libmtp/bugs/1383/ */
+  { "BLU", 0x0e8d, "Studio HD", 0x2008, DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Other strange stuff.
    */

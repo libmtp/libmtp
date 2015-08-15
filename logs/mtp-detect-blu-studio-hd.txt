@@ -1,0 +1,142 @@
+Output of mtp-detect:
+
+hari@hari-VGN-N250N:~/Desktop$ mtp-detect
+Unable to open ~/.mtpz-data for reading, MTPZ disabled.libmtp version: 1.1.9
+
+Listing raw device(s)
+Device 0 (VID=0e8d and PID=2008) is UNKNOWN.
+Please report this VID/PID and the device model to the libmtp development team
+   Found 1 device(s):
+   0e8d:2008 @ bus 1, dev 14
+Attempting to connect device(s)
+Android device detected, assigning default bug flags
+Error 2: PTP Layer error 02ff: get_handles_recursively(): could not get object handles.
+Error 2: Error 02ff: PTP: I/O error
+Error 2: PTP Layer error 02ff: get_handles_recursively(): could not get object handles.
+Error 2: Error 02ff: PTP: I/O error
+USB low-level info:
+   Interface has a kernel driver attached.
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 0e8d
+   idProduct: 2008
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Raw device info:
+      Bus location: 1
+      Device number: 14
+      Device entry info:
+         Vendor: (null)
+         Vendor id: 0x0e8d
+         Product: (null)
+         Vendor id: 0x2008
+         Device flags: 0x08008106
+Configuration 0, interface 0, altsetting 0:
+   Interface description contains the string "MTP"
+   Device recognized as MTP, no further probing.
+Device info:
+   Manufacturer: BLU
+   Model: STUDIO6.0HD
+   Device version: 1.0
+   Serial number: J805D1ZB4B240D36
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0; android.com: 1.0;
+   Detected object size: 64 bits
+   Extensions:
+        microsoft.com: 1.0
+        android.com: 1.0
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100a: Get thumbnail
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   1017: Reset device property value
+   101b: Get partial object
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9810: Get object references
+   9811: Set object references
+   95c1: Get Partial Object (64bit Offset)
+   95c2: Send Partial Object
+   95c3: Truncate Object
+   95c4: Begin Edit Object
+   95c5: End Edit Object
+Events supported:
+   0x4002
+   0x4003
+   0x4004
+   0x4005
+   0x4006
+   0x4007
+   0x400c
+Device Properties Supported:
+   0xd401: Synchronization Partner
+   0xd402: Friendly Device Name
+   0x5003: Image Size
+   0x5001: Battery Level
+Playable File (Object) Types and Object Properties Supported:
+   3000: Undefined Type
+   3001: Association/Directory
+   3004: Text
+   3005: HTML
+   3008: MS Wave
+   3009: MP3
+   300b: MPEG
+   3801: JPEG
+   3802: TIFF EP
+   3804: BMP
+   3807: GIF
+   3808: JFIF
+   380b: PNG
+   380d: TIFF
+
+
+
+---
+
+** [bugs:#1383] Device 0 (VID=0e8d and PID=2008) is UNKNOWN.**
+
+**Status:** pending
+**Group:** unknown release (please set)
+**Created:** Sun Aug 09, 2015 01:16 PM UTC by Anonymous
+**Last Updated:** Wed Aug 12, 2015 01:21 PM UTC
+**Owner:** Marcus Meissner
+
+
+me@me-VGN-N250N:~/Desktop$ mtp-detect 
+Unable to open ~/.mtpz-data for reading, MTPZ disabled.libmtp version: 1.1.6
+
+Listing raw device(s)
+Device 0 (VID=0e8d and PID=2008) is UNKNOWN.
+Please report this VID/PID and the device model to the libmtp development team
+   Found 1 device(s):
+   0e8d:2008 @ bus 1, dev 29
+Attempting to connect device(s)
+Android device detected, assigning default bug flags
+
+
+
+---
+
+Sent from sourceforge.net because you indicated interest in <https://sourceforge.net/p/libmtp/bugs/1383/>
+
+
+
+To unsubscribe from further messages, please visit <https://sourceforge.net/auth/subscriptions/>
