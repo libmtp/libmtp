@@ -1763,6 +1763,8 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia E3 MTP", 0x01bc,
       DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria Z3+ MTP", 0x01c9,
+      DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria E4g MTP", 0x01cb,
       DEVICE_FLAG_NONE },
 
@@ -1839,6 +1841,8 @@
   { "SONY", 0x0fce, "Xperia Z3 Compact MTP+CDROM", 0x41bb,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia E3 MTP+CDROM", 0x01bc,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria Z3+ MTP+CDROM", 0x41c9,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria E4g MTP+CDROM", 0x41cb,
       DEVICE_FLAG_NONE },
@@ -1941,6 +1945,8 @@
   { "SONY", 0x0fce, "Xperia Z3 Compact MTP+ADB", 0x51bb,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia E3 MTP+ADB", 0x51bc,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria Z3+ MTP+ADB", 0x51c9,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce,  "XPeria E4g MTP+ADB", 0x51cb,
       DEVICE_FLAG_NONE },
@@ -2490,6 +2496,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1155/ */
   { "Lenovo", 0x17ef, "Yoga Tablet 10 B8000-H", 0x76ff,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /*  https://sourceforge.net/p/libmtp/bugs/1391/ */
+  { "Lenovo", 0x17ef, "A7600-F", 0x7731,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1291/ */
   { "Lenovo", 0x17ef, "A3500-F", 0x7737,
