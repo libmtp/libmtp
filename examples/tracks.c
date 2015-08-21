@@ -79,15 +79,52 @@ static void dump_trackinfo(LIBMTP_track_t *track)
   }
 }
 
+static void
+dump_tracks(LIBMTP_mtpdevice_t *device, uint32_t storageid, int leaf)
+{
+  LIBMTP_file_t *files;
+
+  /* Get track listing. */
+  files = LIBMTP_Get_Files_And_Folders(device,
+				       storageid,
+				       leaf);
+  if (files == NULL) {
+    LIBMTP_Dump_Errorstack(device);
+    LIBMTP_Clear_Errorstack(device);
+  } else {
+    LIBMTP_file_t *file, *tmp;
+
+    file = files;
+    while (file != NULL) {
+      /* Please don't print these */
+      if (file->filetype == LIBMTP_FILETYPE_FOLDER) {
+	dump_tracks(device, storageid, file->item_id);
+      } else if (LIBMTP_FILETYPE_IS_TRACK(file->filetype)) {
+	LIBMTP_track_t *track;
+
+	track = LIBMTP_Get_Trackmetadata(device, file->item_id);
+	dump_trackinfo(track);
+	LIBMTP_destroy_track_t(track);
+      }
+      tmp = file;
+      file = file->next;
+      LIBMTP_destroy_file_t(tmp);
+    }
+  }
+}
+
 int main (int argc, char **argv)
 {
-  LIBMTP_mtpdevice_t *device_list, *device;
-  LIBMTP_track_t *tracks;
+  LIBMTP_raw_device_t *rawdevices;
+  int numrawdevices;
+  LIBMTP_error_number_t err;
+  int i;
 
   LIBMTP_Init();
   fprintf(stdout, "Attempting to connect device(s)\n");
 
-  switch(LIBMTP_Get_Connected_Devices(&device_list))
+  err = LIBMTP_Detect_Raw_Devices(&rawdevices, &numrawdevices);
+  switch(err)
   {
   case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
     fprintf(stdout, "mtp-tracks: No Devices have been found\n");
@@ -110,11 +147,20 @@ int main (int argc, char **argv)
   case LIBMTP_ERROR_NONE:
     fprintf(stdout, "mtp-tracks: Successfully connected\n");
     fflush(stdout);
+    break;
   }
 
-  /* iterate through connected MTP devices */
-  for(device = device_list; device != NULL; device = device->next) {
+  /* Iterate through connected MTP devices */
+  for (i = 0; i < numrawdevices; i++) {
+    LIBMTP_mtpdevice_t *device;
+    LIBMTP_devicestorage_t *storage;
     char *friendlyname;
+
+    device = LIBMTP_Open_Raw_Device_Uncached(&rawdevices[i]);
+    if (device == NULL) {
+      fprintf(stderr, "Unable to open raw device %d\n", i);
+      continue;
+    }
 
     /* Echo the friendly name so we know which device we are working with */
     friendlyname = LIBMTP_Get_Friendlyname(device);
@@ -124,23 +170,18 @@ int main (int argc, char **argv)
       printf("Friendly name: %s\n", friendlyname);
       free(friendlyname);
     }
-    // Get track listing.
-    tracks = LIBMTP_Get_Tracklisting_With_Callback(device, NULL, NULL);
-    if (tracks == NULL) {
-      printf("No tracks.\n");
-    } else {
-      LIBMTP_track_t *track, *tmp;
-      track = tracks;
-      while (track != NULL) {
-	dump_trackinfo(track);
-	tmp = track;
-	track = track->next;
-	LIBMTP_destroy_track_t(tmp);
-      }
+
+    LIBMTP_Dump_Errorstack(device);
+    LIBMTP_Clear_Errorstack(device);
+
+    /* Loop over storages */
+    for (storage = device->storage; storage != 0; storage = storage->next) {
+      dump_tracks(device, storage->id, 0);
     }
+
+    LIBMTP_Release_Device(device);
   }
 
-  LIBMTP_Release_Device_List(device_list);
   printf("OK.\n");
   exit (0);
 }

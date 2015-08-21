@@ -46,7 +46,8 @@ static void dump_fileinfo(LIBMTP_file_t *file)
   printf("   Filetype: %s\n", LIBMTP_Get_Filetype_Description(file->filetype));
 }
 
-void dump_files(LIBMTP_mtpdevice_t *device, uint32_t storageid, int leaf)
+static void
+dump_files(LIBMTP_mtpdevice_t *device, uint32_t storageid, int leaf)
 {
   LIBMTP_file_t *files;
 
@@ -78,7 +79,6 @@ int main(int argc, char **argv)
 {
   LIBMTP_raw_device_t *rawdevices;
   int numrawdevices;
-  LIBMTP_file_t *files;
   LIBMTP_error_number_t err;
   int i;
 
