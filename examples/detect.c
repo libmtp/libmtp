@@ -2,7 +2,7 @@
  * \file detect.c
  * Example program to detect a device and list capabilities.
  *
- * Copyright (C) 2005-2008 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2005-2015 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2007 Ted Bullock <tbullock@canada.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -130,7 +130,7 @@ int main (int argc, char **argv)
   fprintf(stdout, "Attempting to connect device(s)\n");
   for (i = 0; i < numrawdevices; i++) {
     LIBMTP_mtpdevice_t *device;
-    LIBMTP_file_t *files;
+    LIBMTP_devicestorage_t *storage;
     char *friendlyname;
     char *syncpartner;
     char *sectime;
@@ -141,7 +141,7 @@ int main (int argc, char **argv)
     uint8_t currbattlevel;
     int ret;
 
-    device = LIBMTP_Open_Raw_Device(&rawdevices[i]);
+    device = LIBMTP_Open_Raw_Device_Uncached(&rawdevices[i]);
     if (device == NULL) {
       fprintf(stderr, "Unable to open raw device %d\n", i);
       continue;
@@ -203,34 +203,43 @@ int main (int argc, char **argv)
     }
 
     // Device certificate XML fragment
-#if 0
-    /*
-     * This code is currently disabled: all devices say that
-     * they support getting a device certificate but a lot of
-     * them obviously doesn't, instead they crash when you try
-     * to obtain it.
-     */
-    ret = LIBMTP_Get_Device_Certificate(device, &devcert);
-    if (ret == 0 && devcert != NULL) {
-      fprintf(stdout, "\nDevice Certificate:\n%s\n", devcert);
-      free(devcert);
-    } else {
-      fprintf(stdout, "Unable to acquire device certificate, perhaps this device "
-	      "does not support this\n");
-      LIBMTP_Dump_Errorstack(device);
-      LIBMTP_Clear_Errorstack(device);
+    if (rawdevices[i].device_entry.vendor_id == 0x041e) {
+      /*
+       * This code is currently disabled except for vendors we
+       * know does support it: all devices say that
+       * they support getting a device certificate but a lot of
+       * them obviously doesn't, instead they crash when you try
+       * to obtain it.
+       */
+      ret = LIBMTP_Get_Device_Certificate(device, &devcert);
+      if (ret == 0 && devcert != NULL) {
+	fprintf(stdout, "\nDevice Certificate:\n%s\n", devcert);
+	free(devcert);
+      } else {
+	fprintf(stdout, "Unable to acquire device certificate, perhaps this device "
+		"does not support this\n");
+	LIBMTP_Dump_Errorstack(device);
+	LIBMTP_Clear_Errorstack(device);
+      }
     }
-#endif
 
-    // Try to get Media player device info XML file...
-    files = LIBMTP_Get_Filelisting_With_Callback(device, NULL, NULL);
-    if (files != NULL) {
-      LIBMTP_file_t *file, *tmp;
-      file = files;
-      while (file != NULL) {
-	if (!strcmp(file->filename, "WMPInfo.xml") ||
-	    !strcmp(file->filename, "WMPinfo.xml") ||
-	    !strcmp(file->filename, "default-capabilities.xml")) {
+    /* Try to get Media player device info XML file... */
+    /* Loop over storages */
+    for (storage = device->storage; storage != 0; storage = storage->next) {
+      LIBMTP_file_t *files;
+
+      /* Get file listing for the root directory, no other dirs */
+      files = LIBMTP_Get_Files_And_Folders(device,
+					   storage->id,
+					   0);
+
+      if (files != NULL) {
+	LIBMTP_file_t *file, *tmp;
+	file = files;
+	while (file != NULL) {
+	  if (!strcmp(file->filename, "WMPInfo.xml") ||
+	      !strcmp(file->filename, "WMPinfo.xml") ||
+	      !strcmp(file->filename, "default-capabilities.xml")) {
 	    if (file->item_id != 0) {
 	      /* Dump this file */
 	      FILE *xmltmp = tmpfile();
@@ -274,10 +283,11 @@ int main (int argc, char **argv)
 		fclose(xmltmp);
 	      }
 	    }
+	  }
+	  tmp = file;
+	  file = file->next;
+	  LIBMTP_destroy_file_t(tmp);
 	}
-	tmp = file;
-	file = file->next;
-	LIBMTP_destroy_file_t(tmp);
       }
     }
     LIBMTP_Release_Device(device);
