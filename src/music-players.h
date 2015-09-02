@@ -2903,6 +2903,8 @@
    */
   { "MediaTek Inc", 0x0e8d, "MT5xx and MT6xx SoCs", 0x0050,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/79/ */
+  { "MediaTek Inc", 0x0e8d, "Elephone P8000", 0x201d,
 
   /*
    * Jolla
