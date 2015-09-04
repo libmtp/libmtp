@@ -2836,6 +2836,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1339/ */
   { "Xiaomi", 0x2717, "Mi-2s (MTP)", 0xff48,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1402/ */
+  { "Xiaomi", 0x2717, "Redmi 2 (MTP)", 0xff60,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * XO Learning Tablet
