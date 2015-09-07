@@ -970,6 +970,8 @@
   { "Archos", 0x0e79, "101 G4", 0x4002, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos (for Tesco)", 0x0e79, "Hudl (ID1)", 0x5008, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos (for Tesco)", 0x0e79, "Hudl (ID2)", 0x5009, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1404/ */
+  { "Archos", 0x0e79, "AC40DTI", 0x5217, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Dunlop (OEM of EGOMAN ltd?) reported by Nanomad
