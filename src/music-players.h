@@ -940,6 +940,7 @@
   { "Archos", 0x0e79, "SPOD (MTP mode)", 0x1341, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "5S IT (MTP mode)", 0x1351, DEVICE_FLAG_UNLOAD_DRIVER },
   { "Archos", 0x0e79, "5H IT (MTP mode)", 0x1357, DEVICE_FLAG_UNLOAD_DRIVER },
+  { "Archos", 0x0e79, "48 (MTP mode)", 0x1421, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "Arnova Childpad", 0x1458, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "Arnova 8c G3", 0x145e, DEVICE_FLAGS_ANDROID_BUGS },
   { "Archos", 0x0e79, "Arnova 10bG3 Tablet", 0x146b, DEVICE_FLAGS_ANDROID_BUGS },
