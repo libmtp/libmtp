@@ -2522,6 +2522,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1361/ */
   { "Huawei", 0x12d1, "Ascend P8 ", 0x1082,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1418/ */
+  { "Huawei", 0x12d1, "Honor 3C ", 0x2012,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Huawei", 0x12d1, "Mediapad (mode 0)", 0x360f,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Bearsh <bearsh@users.sourceforge.net>
