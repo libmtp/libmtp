@@ -3062,6 +3062,9 @@
 
   /* https://sourceforge.net/p/libmtp/bugs/1383/ */
   { "BLU", 0x0e8d, "Studio HD", 0x2008, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /* https://sourceforge.net/p/libmtp/bugs/1423/ */
+  { "OnePlus", 0x2a70, "ONE A2001", 0x9011, DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Other strange stuff.
    */
