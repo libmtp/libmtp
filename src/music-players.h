@@ -2901,6 +2901,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1304/ */
   { "Alcatel", 0x1bbb, "OneTouch 5042D (MTP)", 0xa00e,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/189/ */
+  { "Alcatel", 0x1bbb, "OneTouch Idol 3 small (MTP)", 0xaf2a,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1401/ */
   { "Alcatel", 0x1bbb, "OneTouch Idol 3 (MTP)", 0xaf2b,
       DEVICE_FLAGS_ANDROID_BUGS },
