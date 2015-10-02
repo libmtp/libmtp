@@ -1421,6 +1421,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/992/ */
   { "LG Electronics Inc.", 0x1004, "LG VS890", 0x623d,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/190/ */
+  { "LG Electronics Inc.", 0x1004, "LG Optimus Zone 2", 0x6259,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "LG Electronics Inc.", 0x1004, "VK810", 0x6265,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "LG Electronics Inc.", 0x1004, "G3", 0x627f,
