@@ -442,13 +442,12 @@ int sendtrack_command (int argc, char **argv) {
   if ( argc != 2 ) {
     printf("You need to pass a filename and destination.\n");
     sendtrack_usage();
-    return 0;
+    ret = 0;
+  } else {
+    checklang();
+    printf("%s,%s,%s,%s,%s,%s,%s,%s,%d%d,%d,%u,%d\n",argv[0],argv[1],partist,palbumartist,ptitle,pgenre,palbum,pcomposer,tracknum, length, year, storageid, quiet);
+    ret = sendtrack_function(argv[0],argv[1],partist,palbumartist,ptitle,pgenre,palbum,pcomposer, tracknum, length, year, storageid, quiet);
   }
-
-  checklang();
-
-  printf("%s,%s,%s,%s,%s,%s,%s,%s,%d%d,%d,%u,%d\n",argv[0],argv[1],partist,palbumartist,ptitle,pgenre,palbum,pcomposer,tracknum, length, year, storageid, quiet);
-  ret = sendtrack_function(argv[0],argv[1],partist,palbumartist,ptitle,pgenre,palbum,pcomposer, tracknum, length, year, storageid, quiet);
   free (ptitle);
   free (partist);
   free (palbumartist);
