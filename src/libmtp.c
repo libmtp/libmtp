@@ -1684,6 +1684,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
   }
 
   if (devices == NULL || numdevs == 0) {
+    free(devices);
     return NULL;
   }
 
@@ -2316,6 +2317,7 @@ LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **device_l
   /* Assign linked list of devices */
   if (devices == NULL || numdevs == 0) {
     *device_list = NULL;
+    free(devices);
     return LIBMTP_ERROR_NO_DEVICE_ATTACHED;
   }
 
@@ -2588,7 +2590,7 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
       prop++;
   }
   lasthandle = 0xffffffff;
-  params->objects = calloc (sizeof(PTPObject),cnt);
+  params->objects = calloc (cnt, sizeof(PTPObject));
   prop = props;
   i = -1;
   for (j=0;j<nrofprops;j++) {
@@ -2638,7 +2640,7 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
         newprops = realloc(params->objects[i].mtpprops,
 		(params->objects[i].nrofmtpprops+1)*sizeof(MTPProperties));
       } else {
-        newprops = calloc(sizeof(MTPProperties),1);
+        newprops = calloc(1,sizeof(MTPProperties));
       }
       if (!newprops) return 0; /* FIXME: error handling? */
       params->objects[i].mtpprops = newprops;
