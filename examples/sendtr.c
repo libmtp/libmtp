@@ -186,6 +186,7 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pa
 {
   char *filename, *parent;
   char artist[80], albumartist[80], title[80], genre[80], album[80], composer[80];
+  char *to_path_copy = NULL;
   char num[80];
   uint64_t filesize;
   uint32_t parent_id = 0;
@@ -196,22 +197,28 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pa
 
   printf("Sending track %s to %s\n", from_path, to_path);
 
-  parent = dirname(strdup(to_path));
-  filename = basename(strdup(to_path));
+  to_path_copy = strdup(to_path);
+  parent = dirname(to_path_copy);
   parent_id = parse_path (parent,files,folders);
   if (parent_id == -1) {
+    free (to_path_copy);
     printf("Parent folder could not be found, skipping\n");
     return 1;
   }
+  strcpy (to_path_copy,to_path);
+  filename = basename(to_path_copy);
 
   if (stat(from_path, &sb) == -1) {
     fprintf(stderr, "%s: ", from_path);
     perror("stat");
+    free (to_path_copy);
     return 1;
   }
 
-  if (!S_ISREG(sb.st_mode))
+  if (!S_ISREG(sb.st_mode)) {
+    free (to_path_copy);
     return 0;
+  }
 
   filesize = sb.st_size;
 
@@ -220,6 +227,7 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pa
   if (!LIBMTP_FILETYPE_IS_TRACK(trackmeta->filetype)) {
     printf("Not a valid track codec: \"%s\"\n", LIBMTP_Get_Filetype_Description(trackmeta->filetype));
     LIBMTP_destroy_track_t(trackmeta);
+    free (to_path_copy);
     return 1;
   }
 
@@ -374,6 +382,7 @@ int sendtrack_function(char * from_path, char * to_path, char *partist, char *pa
 
   LIBMTP_destroy_album_t(albuminfo);
   LIBMTP_destroy_track_t(trackmeta);
+  free (to_path_copy);
 
   return ret;
 }
@@ -397,24 +406,31 @@ int sendtrack_command (int argc, char **argv) {
   while ( (opt = getopt(argc, argv, "qD:t:a:A:w:l:c:g:n:d:y:s:")) != -1 ) {
     switch (opt) {
     case 't':
+      free (ptitle);
       ptitle = strdup(optarg);
       break;
     case 'a':
+      free (partist);
       partist = strdup(optarg);
       break;
     case 'A':
+      free (palbumartist);
       palbumartist = strdup(optarg);
       break;
     case 'w':
+      free (pcomposer);
       pcomposer = strdup(optarg);
       break;
     case 'l':
+      free (palbum);
       palbum = strdup(optarg);
       break;
     case 'c':
+      free (pcodec);
       pcodec = strdup(optarg); // FIXME: DSM check for MP3, WAV or WMA
       break;
     case 'g':
+      free (pgenre);
       pgenre = strdup(optarg);
       break;
     case 'n':
