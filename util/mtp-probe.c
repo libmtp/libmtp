@@ -249,8 +249,10 @@ static int check_sysfs(char *sysfspath)
 
   /* Check for dirs that identify interfaces */
   ret = regcomp(&r, "^[0-9]+-[0-9]+(.[0-9])?\\:[0-9]+\\.[0-9]+$", REG_EXTENDED | REG_NOSUB);
-  if (ret)
+  if (ret) {
+    closedir(dir);
     return -1;
+  }
 
   while ((dent = readdir(dir))) {
     struct stat st;
