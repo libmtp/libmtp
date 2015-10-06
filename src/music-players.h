@@ -2716,6 +2716,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1198/ */
   { "HTC", 0x0bb4, "Motorola Razr D1", 0x2012,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1440/ */
+  { "HTC", 0x0bb4, "Motorola P98 4G", 0x201d,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // These identify themselves as "cm_tenderloin", fun...
   // Done by HTC for HP I guess.
   { "HTC (for Hewlett-Packard)", 0x0bb4, "HP Touchpad (MTP)", 0x685c,
