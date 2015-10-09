@@ -2795,6 +2795,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1353/ */
   { "Amazon", 0x1949, "Kindle Fire HD6", 0x00f2,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1448/ */
+  { "Amazon", 0x1949, "Kindle Fire 7", 0x0221,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Amazon", 0x1949, "Fire Phone", 0x0800,
       DEVICE_FLAGS_ANDROID_BUGS },
 
