@@ -188,7 +188,6 @@ AC_TYPE_SIZE_T
 AC_STRUCT_ST_BLKSIZE
 
 # Checks for library functions.
-AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
 AC_FUNC_STAT
 AC_CHECK_FUNCS(basename memset select strdup strerror strndup strrchr strtoul usleep mkstemp)
