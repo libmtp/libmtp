@@ -2753,6 +2753,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "nVidia", 0x0955, "Shield (ID1)", 0xb400,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1447/ */
+  { "nVidia", 0x0955, "Shield (Tegra4)", 0xb401,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1087/ */
   { "nVidia", 0x0955, "Tegra Note", 0xcf02,
       DEVICE_FLAGS_ANDROID_BUGS },
