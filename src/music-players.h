@@ -1158,6 +1158,8 @@
    * ID is the same for various Lumia version.
    */
   { "Nokia", 0x0421, "Lumia (RM-975)", 0x06fc, DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/bugs/1453/ */
+  { "Nokia", 0x0421, "X2 Dual Sim", 0x0708, DEVICE_FLAG_NONE },
 
 
   /*
