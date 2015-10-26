@@ -1767,6 +1767,8 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria E4g MTP", 0x01cb,
       DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria Z5 Compact MTP", 0x01da,
+      DEVICE_FLAG_NONE },
 
 
   /*
@@ -1855,6 +1857,8 @@
   { "SONY", 0x0fce, "XPeria Z3+ MTP+CDROM", 0x41c9,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria E4g MTP+CDROM", 0x41cb,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria Z5 Compact MTP+CDROM", 0x41da,
       DEVICE_FLAG_NONE },
 
   /*
@@ -1967,6 +1971,8 @@
   { "SONY", 0x0fce, "XPeria Z3+ MTP+ADB", 0x51c9,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce,  "XPeria E4g MTP+ADB", 0x51cb,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria Z5 Compact MTP+ADB", 0x51da,
       DEVICE_FLAG_NONE },
 
   /*
