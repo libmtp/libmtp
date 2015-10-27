@@ -478,6 +478,8 @@
   { "Philips", 0x0471, "GoGear SA6125/SA6145/SA6185", 0x2002, DEVICE_FLAG_UNLOAD_DRIVER },
   // From anonymous Sourceforge user, not verified to be MTP!
   { "Philips", 0x0471, "GoGear SA3345", 0x2004, DEVICE_FLAG_UNLOAD_DRIVER },
+  /* https://sourceforge.net/p/libmtp/support-requests/163/ */
+  { "Philips", 0x0471, "W6610", 0x2008, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Roberto Vidmar <rvidmar@libero.it>
   { "Philips", 0x0471, "SA5285", 0x2022, DEVICE_FLAG_UNLOAD_DRIVER },
   // From Elie De Brauwer <elie@de-brauwer.be>
