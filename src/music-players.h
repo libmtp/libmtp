@@ -3103,6 +3103,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1212/ */
   { "Fly", 0x2970, "Evo Tech 4", 0x2008, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/feature-requests/146/ */
+  { "Wileyfox", 0x2970, "Swift", 0x2281, DEVICE_FLAGS_ANDROID_BUGS },
+
   /* https://sourceforge.net/p/libmtp/bugs/1303/ */
   { "Megafon", 0x1271, "Login+", 0x2012, DEVICE_FLAGS_ANDROID_BUGS },
 
