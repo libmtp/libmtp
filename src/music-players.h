@@ -2560,6 +2560,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1360/ */
   { "Lenovo", 0x17ef, "K3 Note", 0x7883,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1465/ */
+  { "Lenovo", 0x17ef, "A1000 Smartphone", 0x7928,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Huawei
