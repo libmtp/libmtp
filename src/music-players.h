@@ -1434,6 +1434,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "LG Electronics Inc.", 0x1004, "G3", 0x627f,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1463/ */
+  { "LG Electronics Inc.", 0x1004, "810 tablet", 0x6263,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/134/ */
   { "LG Electronics Inc.", 0x1004, "G3 (VS985)", 0x626e,
       DEVICE_FLAGS_ANDROID_BUGS },
