@@ -1,0 +1,188 @@
+libmtp version: 1.1.10
+
+Listing raw device(s)
+   Found 1 device(s):
+   HERO4 Session: Action Cam (2672:000f) @ bus 1, dev 6
+Attempting to connect device(s)
+USB low-level info:
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 2672
+   idProduct: 000f
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Raw device info:
+      Bus location: 1
+      Device number: 6
+      Device entry info:
+         Vendor: HERO4 Session
+         Vendor id: 0x2672
+         Product: Action Cam
+         Vendor id: 0x000f
+         Device flags: 0x00000000
+Device info:
+   Manufacturer: GoPro
+   Model: HERO4 Session
+   Device version: HX1.01.01.50
+   Serial number: C3141324616764
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com/DEVICESERVICES:
+   Detected object size: 64 bits
+   Extensions:
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100a: Get thumbnail
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   101b: Get partial object
+   100f: Format storage
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+Events supported:
+   0x4001
+   0x4002
+   0x4003
+   0x4004
+   0x4005
+   0x4006
+   0x4007
+   0x4008
+   0x4009
+   0x400a
+   0x400c
+Device Properties Supported:
+   0x5001: Battery Level
+   0x5011: Date & Time
+   0xd406: Session Initiator Info
+   0xd407: Perceived Device Type
+   0xd303: Unknown property
+Playable File (Object) Types and Object Properties Supported:
+   3001: Association/Directory
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+   3002: Script
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc08: Date Created STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+   3006: DPOF
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc08: Date Created STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+   3801: JPEG
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc08: Date Created STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc87: Width UINT32 data type range: MIN 0, MAX -1, STEP 1 READ ONLY
+      dc88: Height UINT32 data type range: MIN 0, MAX -1, STEP 1 READ ONLY
+      dcd3: Image Bit Depth UINT32 data type range: MIN 0, MAX -1, STEP 1 READ ONLY
+   300d: Apple Quicktime
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc08: Date Created STRING data type DATETIME FORM READ ONLY
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc87: Width UINT32 data type range: MIN 0, MAX -1, STEP 1 READ ONLY
+      dc88: Height UINT32 data type range: MIN 0, MAX -1, STEP 1 READ ONLY
+      dc89: Duration UINT32 data type range: MIN 0, MAX -1, STEP 1 READ ONLY
+      de93: Sample Rate UINT32 data type range: MIN 0, MAX -1, STEP 1 READ ONLY
+      de94: Number Of Channels UINT16 data type enumeration: 0, 1, 2,  GET/SET
+      de97: Scan Depth UINT16 data type enumeration: 0, 1,  GET/SET
+      de9a: Audio Bit Rate UINT32 data type range: MIN 0, MAX -1, STEP 1 READ ONLY
+      de9b: Video Four CC Codec UINT32 data type enumeration: 0, 1785528320, 845703024,  GET/SET
+      de9c: Video Bit Rate UINT32 data type range: MIN 0, MAX -1, STEP 1 READ ONLY
+   3005: HTML
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc08: Date Created STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+   3004: Text
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type enumeration: 0, 1,  READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc08: Date Created STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0004 removable RAM storage
+      FilesystemType: 0x0003 DCF
+      AccessCapability: 0x0002 read only + object deletion
+      MaxCapacity: 64020807680
+      FreeSpaceInBytes: 63943606272
+      FreeSpaceInObjects: 4294967295
+      StorageDescription: External Memory
+      VolumeIdentifier: MTP Device
+Special directories:
+   Default music folder: 0xffffffff
+   Default playlist folder: 0xffffffff
+   Default picture folder: 0xffffffff
+   Default video folder: 0xffffffff
+   Default organizer folder: 0xffffffff
+   Default zencast folder: 0xffffffff
+   Default album folder: 0xffffffff
+   Default text folder: 0xffffffff
+MTP-specific device properties:
+   Friendly name: (NULL)
+   Synchronization partner: (NULL)
+   Battery level 199 of 100 (199%)
+libmtp supported (playable) filetypes:
+   Folder
+   JPEG file
+   Apple Quicktime container format
+   HTML file
+   Text file
+OK.
