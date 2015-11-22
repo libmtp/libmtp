@@ -7271,7 +7271,7 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
  *        if the device does not support all the characters in the
  *        name.
  * @param parent_id id of parent folder to add the new folder to,
- *        or 0 to put it in the root directory.
+ *        or 0xFFFFFFFF to put it in the root directory.
  * @param storage_id id of the storage to add this new folder to.
  *        notice that you cannot mismatch storage id and parent id:
  *        they must both be on the same storage! Pass in 0 if you
