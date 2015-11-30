@@ -2711,6 +2711,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1182/ */
   { "HTC", 0x0bb4, "Desire 310 (MTP)", 0x0ec6,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1481/ */
+  { "HTC", 0x0bb4, "Desire 310 (2nd id) (MTP)", 0x0ec7,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1420/ */
   { "HTC", 0x0bb4, "Desire 816G (MTP)", 0x0edb,
       DEVICE_FLAGS_ANDROID_BUGS },
