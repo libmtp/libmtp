@@ -3179,12 +3179,14 @@
   /*
    * GoPro Action Cams.
    */
-  { "HERO3+ Black", 0x2672, "Action Cam", 0x0011, DEVICE_FLAG_NONE },
-  { "HERO", 0x2672, "Action Cam", 0x000c, DEVICE_FLAG_NONE },  
-  { "HERO4 Silver", 0x2672, "Action Cam", 0x000d, DEVICE_FLAG_NONE },
-  { "HERO4 Black", 0x2672, "Action Cam", 0x000e, DEVICE_FLAG_NONE },
-  { "HERO4 Session", 0x2672, "Action Cam", 0x000f, DEVICE_FLAG_NONE },
+  { "GoPro" , 0x2672, "HERO3+ Black", 0x0011, DEVICE_FLAG_NONE },
+  { "GoPro" , 0x2672, "HERO", 0x000c, DEVICE_FLAG_NONE },  
+  { "GoPro" , 0x2672, "HERO4 Silver", 0x000d, DEVICE_FLAG_NONE },
+  { "Gopro" , 0x2672, "HERO4 Black", 0x000e, DEVICE_FLAG_NONE },
+  { "GoPro" , 0x2672, "HERO4 Session", 0x000f, DEVICE_FLAG_NONE },
 
+  /* https://sourceforge.net/p/libmtp/bugs/1490/ */
+  { "Marshall" , 0x2ad9, "London", 0x000b, DEVICE_FLAG_NONE },
   /*
    * Other strange stuff.
    */
