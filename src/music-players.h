@@ -2197,7 +2197,7 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc (for LG Electronics/Samsung)", 0x18d1,
       "Nexus 4/5/7/10 (MTP)", 0x4ee1,
-      DEVICE_FLAGS_ANDROID_BUGS },
+      (DEVICE_FLAGS_ANDROID_BUGS | DEVICE_FLAG_PROPLIST_OVERRIDES_OI) & ~DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   { "Google Inc (for LG Electronics/Samsung)", 0x18d1,
       "Nexus 4/5/7/10 (MTP+ADB)", 0x4ee2,
       DEVICE_FLAGS_ANDROID_BUGS },
