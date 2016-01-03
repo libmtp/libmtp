@@ -2643,6 +2643,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1221/ */
   { "HTC", 0x0bb4, "One M8 Google Play Edition (MTP+ADB)", 0x060b,
       DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/support-requests/200/ */
+  { "HTC", 0x0bb4, "HTC Desire 520", 0x0670,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/153/ */
   { "HTC", 0x0bb4, "HTC6515LVW/One Remix", 0x07d8,
       DEVICE_FLAG_NONE },
