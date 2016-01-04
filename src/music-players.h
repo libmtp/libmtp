@@ -2581,6 +2581,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1488/ */
   { "Lenovo", 0x17ef, "A10-70F", 0x789a,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1497/ */
+  { "Lenovo", 0x17ef, "A10-70L", 0x789b,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1480/ */
   { "Medion", 0x17ef, "P8312 Tablet", 0x78ae,
       DEVICE_FLAGS_ANDROID_BUGS },
