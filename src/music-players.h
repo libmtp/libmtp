@@ -1243,6 +1243,9 @@
   /* https://sourceforge.net/p/libmtp/feature-requests/137/ */
   { "Fujitsu, Ltd", 0x04c5, "F02-E", 0x1378,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1495/ */
+  { "Fujitsu, Ltd", 0x04c5, "Arrows 202F", 0x13dd,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Palm device userland program named Pocket Tunes
