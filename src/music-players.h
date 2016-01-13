@@ -2888,6 +2888,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Barnes&Noble", 0x2080, "Nook HD", 0x0006,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1504/ */
+  { "Barnes&Noble", 0x2080, "Nook Glowlight+", 0x000a,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Viewpia, bq, YiFang
