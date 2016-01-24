@@ -2608,6 +2608,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Huawei", 0x12d1, "MTP device (ID2)", 0x1052,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1507/ */
+  { "Huawei", 0x12d1, "Honor 7", 0x1074,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1381/ */
   { "Huawei", 0x12d1, "H60-L11", 0x1079,
       DEVICE_FLAGS_ANDROID_BUGS },
