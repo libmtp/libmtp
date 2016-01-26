@@ -2670,6 +2670,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1500/ */
   { "HTC", 0x0bb4, "One Mini 2 (MTP)", 0x0629,
       DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/bugs/1508/ */
+  { "HTC", 0x0bb4, "One M9 (MTP)", 0x065c,
+      DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/support-requests/200/ */
   { "HTC", 0x0bb4, "HTC Desire 520", 0x0670,
       DEVICE_FLAGS_ANDROID_BUGS },
