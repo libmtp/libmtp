@@ -1362,7 +1362,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 				break;
 			}
 		}
-		if (rlen == PTP_USB_BULK_HS_MAX_PACKET_LEN_READ) {
+		if (rlen == ptp_usb->inep_maxpacket) {
 		  /* Copy first part of data to 'data' */
 		  putfunc_ret =
 		    handler->putfunc(
@@ -1444,7 +1444,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		  return putfunc_ret;
 
 		if (FLAG_NO_ZERO_READS(ptp_usb) &&
-		    len+PTP_USB_BULK_HDR_LEN == PTP_USB_BULK_HS_MAX_PACKET_LEN_READ) {
+		    len+PTP_USB_BULK_HDR_LEN == ptp_usb->inep_maxpacket) {
 
 		  LIBMTP_USB_DEBUG("Reading in extra terminating byte\n");
 
@@ -1459,8 +1459,8 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 					 ptp_usb->timeout);
 
 		  if (result != 1)
-		    LIBMTP_INFO("Could not read in extra byte for PTP_USB_BULK_HS_MAX_PACKET_LEN_READ long file, return value 0x%04x\n", result);
-		} else if (len+PTP_USB_BULK_HDR_LEN == PTP_USB_BULK_HS_MAX_PACKET_LEN_READ && params->split_header_data == 0) {
+		    LIBMTP_INFO("Could not read in extra byte for %d byte long file, return value 0x%04x\n", ptp_usb->inep_maxpacket, result);
+		} else if (len+PTP_USB_BULK_HDR_LEN == ptp_usb->inep_maxpacket && params->split_header_data == 0) {
 		  int zeroresult = 0, xread;
 		  unsigned char zerobyte = 0;
 
