@@ -3242,6 +3242,9 @@
 
   /* https://sourceforge.net/p/libmtp/bugs/1490/ */
   { "Marshall" , 0x2ad9, "London", 0x000b, DEVICE_FLAG_NONE },
+
+  /* https://sourceforge.net/p/libmtp/support-requests/202/ */
+  { "Fairphone" , 0x2ae5, "Fairphone 2", 0xf003, DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Other strange stuff.
    */
