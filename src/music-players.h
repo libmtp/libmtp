@@ -3245,6 +3245,9 @@
 
   /* https://sourceforge.net/p/libmtp/support-requests/202/ */
   { "Fairphone" , 0x2ae5, "Fairphone 2", 0xf003, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /*  https://sourceforge.net/p/libmtp/bugs/1512/ */
+  { "Allview" , 0x271d, "Energy P5", 0x4016, DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Other strange stuff.
    */
