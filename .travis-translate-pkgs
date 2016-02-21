@@ -19,7 +19,7 @@ case "$TRAVIS_OS_NAME" in
 	echo "autopoint" "$@"
 	;;
     osx)
-	accu="gettext"
+	accu="gettext libtool"
 	for pkg in "$@"; do
 	    pkg="$(ubuntu2osx "$pkg")"
 	    accu="$accu $pkg"
