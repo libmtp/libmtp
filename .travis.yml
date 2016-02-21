@@ -5,7 +5,6 @@ os:
  - osx
 
 env:
- - EXTRALIBS=""
  - EXTRALIBS="libusb-dev"
  - EXTRALIBS="libusb-1.0-0-dev"
 
@@ -22,7 +21,6 @@ compiler:
  - gcc
 
 script:
- - PATH=/usr/local/opt/gettext/bin:$PATH autoreconf -i -f
  - echo "n" | sh ./autogen.sh
  - make && make check
 
