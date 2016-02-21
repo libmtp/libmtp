@@ -222,7 +222,7 @@ typedef struct _MTPDataHandler {
 } MTPDataHandler;
 
 static uint16_t get_func_wrapper(PTPParams* params, void* priv, unsigned long wantlen, unsigned char *data, unsigned long *gotlen);
-static uint16_t put_func_wrapper(PTPParams* params, void* priv, unsigned long sendlen, unsigned char *data, unsigned long *putlen);
+static uint16_t put_func_wrapper(PTPParams* params, void* priv, unsigned long sendlen, unsigned char *data);
 
 /**
  * Checks if a filename ends with ".ogg". Used in various
@@ -2425,6 +2425,8 @@ static void add_ptp_error_to_errorstack(LIBMTP_mtpdevice_t *device,
 					uint16_t ptp_error,
 					char const * const error_text)
 {
+  PTPParams      *params = (PTPParams *) device->params;
+
   if (device == NULL) {
     LIBMTP_ERROR("LIBMTP PANIC: Trying to add PTP error to a NULL device!\n");
     return;
@@ -2434,7 +2436,7 @@ static void add_ptp_error_to_errorstack(LIBMTP_mtpdevice_t *device,
     outstr[sizeof(outstr)-1] = '\0';
     add_error_to_errorstack(device, LIBMTP_ERROR_PTP_LAYER, outstr);
 
-    snprintf(outstr, sizeof(outstr), "Error %04x: %s", ptp_error, ptp_strerror(ptp_error));
+    snprintf(outstr, sizeof(outstr), "Error %04x: %s", ptp_error, ptp_strerror(ptp_error, params->deviceinfo.VendorExtensionID));
     outstr[sizeof(outstr)-1] = '\0';
     add_error_to_errorstack(device, LIBMTP_ERROR_PTP_LAYER, outstr);
   }
@@ -3108,7 +3110,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
   for (i=0;i<params->deviceinfo.OperationsSupported_len;i++) {
     char txt[256];
 
-    (void) ptp_render_opcode(params, params->deviceinfo.OperationsSupported[i],
+    (void) ptp_render_ofc(params, params->deviceinfo.OperationsSupported[i],
 			     sizeof(txt), txt);
     printf("   %04x: %s\n", params->deviceinfo.OperationsSupported[i], txt);
   }
@@ -5079,16 +5081,19 @@ static uint16_t get_func_wrapper(PTPParams* params, void* priv, unsigned long wa
  * This is a manual conversion from MTPDataPutFunc to PTPDataPutFunc
  * to isolate the internal type.
  */
-static uint16_t put_func_wrapper(PTPParams* params, void* priv, unsigned long sendlen, unsigned char *data, unsigned long *putlen)
+static uint16_t put_func_wrapper(PTPParams* params, void* priv, unsigned long sendlen, unsigned char *data)
 {
   MTPDataHandler *handler = (MTPDataHandler *)priv;
   uint16_t ret;
   uint32_t local_putlen = 0;
+
   ret = handler->putfunc(params, handler->priv, sendlen, data, &local_putlen);
-  *putlen = local_putlen;
+
   switch (ret)
   {
     case LIBMTP_HANDLER_RETURN_OK:
+      if (local_putlen != sendlen)
+	return PTP_ERROR_IO;
       return PTP_RC_OK;
     case LIBMTP_HANDLER_RETURN_ERROR:
       return PTP_ERROR_IO;

@@ -1,7 +1,7 @@
 /* ptp.h
  *
  * Copyright (C) 2001 Mariusz Woloszyn <emsi@ipartners.pl>
- * Copyright (C) 2003-2012 Marcus Meissner <marcus@jet.franken.de>
+ * Copyright (C) 2003-2014 Marcus Meissner <marcus@jet.franken.de>
  * Copyright (C) 2006-2008 Linus Walleij <triad@df.lth.se>
  *
  * This library is free software; you can redistribute it and/or
@@ -25,7 +25,7 @@
 
 #include <stdarg.h>
 #include <time.h>
-#ifdef HAVE_ICONV
+#if defined(HAVE_ICONV) && defined(HAVE_LANGINFO_H)
 #include <iconv.h>
 #endif
 #include "gphoto2-endian.h"
@@ -175,6 +175,9 @@ typedef struct _PTPIPHeader PTPIPHeader;
 /* Vendor extension ID used for MTP (occasionaly, usualy 6 is used) */
 #define PTP_VENDOR_MTP			0xffffffff  
 
+/* gphoto overrides */
+#define PTP_VENDOR_GP_OLYMPUS		0xfffffffe
+
 /* Operation Codes */
 
 /* PTP v1.0 operation codes */
@@ -275,6 +278,7 @@ typedef struct _PTPIPHeader PTPIPHeader;
 /* 902c: no parms, read 3 uint32 in data, no response parms */
 #define PTP_OC_CANON_902C			0x902C
 #define PTP_OC_CANON_GetDirectory		0x902D
+#define PTP_OC_CANON_902E			0x902E
 
 #define PTP_OC_CANON_SetPairingInfo		0x9030
 #define PTP_OC_CANON_GetPairingInfo		0x9031
@@ -396,6 +400,7 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_OC_CANON_EOS_GetLensAdjust		0x9136
 #define PTP_OC_CANON_EOS_SetLensAdjust		0x9137
 #define PTP_OC_CANON_EOS_GetMusicInfo		0x9138
+/* 3 paramaeters, no data, OFC, size, unknown */
 #define PTP_OC_CANON_EOS_CreateHandle		0x9139
 #define PTP_OC_CANON_EOS_SendPartialObjectEx	0x913A
 #define PTP_OC_CANON_EOS_EndSendPartialObjectEx	0x913B
@@ -412,6 +417,7 @@ typedef struct _PTPIPHeader PTPIPHeader;
 
 #define PTP_OC_CANON_EOS_InitiateViewfinder	0x9151
 #define PTP_OC_CANON_EOS_TerminateViewfinder	0x9152
+/* EOS M2 wlan: 2 params, 0x00200000 0x01000000 */
 #define PTP_OC_CANON_EOS_GetViewFinderData	0x9153
 #define PTP_OC_CANON_EOS_DoAf			0x9154
 #define PTP_OC_CANON_EOS_DriveLens		0x9155
@@ -645,6 +651,24 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_OC_ANDROID_BeginEditObject			0x95C4
 #define PTP_OC_ANDROID_EndEditObject			0x95C5
 
+/* Leica opcodes, from Lightroom tether plugin */
+#define PTP_OC_LEICA_SetCameraSettings			0x9001
+#define PTP_OC_LEICA_GetCameraSettings			0x9002
+#define PTP_OC_LEICA_GetLensParameter			0x9003
+/* probably 2 arguments.
+ * generic: releaseStage, stepSize
+ * Release(releasestage) = (releasestage,0)
+ * Release() = (0,0)
+ * AEStart() = (1,0)
+ * Autofocusrelease() = (2,0)
+ * AutofocusPush() = (1,0) ... same as AEStart?
+ * KeepCameraActive() = (0xe,0)
+ */
+#define PTP_OC_LEICA_Release				0x9004
+#define PTP_OC_LEICA_OpenLESession			0x9005
+#define PTP_OC_LEICA_CloseLESession			0x9006
+#define PTP_OC_LEICA_RequestObjectTransferReady		0x9007
+
 /* Proprietary vendor extension operations mask */
 #define PTP_OC_EXTENSION_MASK           0xF000
 #define PTP_OC_EXTENSION                0x9000
@@ -743,12 +767,12 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_RC_MTP_WFC_Version_Not_Supported	0xA122
 
 /* libptp2 extended ERROR codes */
-#define PTP_ERROR_IO			0x02FF
-#define PTP_ERROR_DATA_EXPECTED		0x02FE
-#define PTP_ERROR_RESP_EXPECTED		0x02FD
-#define PTP_ERROR_BADPARAM		0x02FC
-#define PTP_ERROR_CANCEL		0x02FB
 #define PTP_ERROR_TIMEOUT		0x02FA
+#define PTP_ERROR_CANCEL		0x02FB
+#define PTP_ERROR_BADPARAM		0x02FC
+#define PTP_ERROR_RESP_EXPECTED		0x02FD
+#define PTP_ERROR_DATA_EXPECTED		0x02FE
+#define PTP_ERROR_IO			0x02FF
 
 /* PTP Event Codes */
 
@@ -822,7 +846,7 @@ typedef struct _PTPIPHeader PTPIPHeader;
 
 /* Sony */
 #define PTP_EC_Sony_ObjectAdded			0xC201
-/* c202 ... unclear. also called with object id? */
+#define PTP_EC_Sony_ObjectRemoved		0xC202
 #define PTP_EC_Sony_PropertyChanged		0xC203
 
 /* MTP Event codes */
@@ -1237,11 +1261,16 @@ struct _PTPNIKONWifiProfile {
 
 typedef struct _PTPNIKONWifiProfile PTPNIKONWifiProfile;
 
-#define PTP_CANON_EOS_CHANGES_TYPE_UNKNOWN		0
-#define PTP_CANON_EOS_CHANGES_TYPE_OBJECTINFO		1
-#define PTP_CANON_EOS_CHANGES_TYPE_OBJECTTRANSFER	2
-#define PTP_CANON_EOS_CHANGES_TYPE_PROPERTY		3
-#define PTP_CANON_EOS_CHANGES_TYPE_CAMERASTATUS		4
+enum _PTPCanon_changes_types {
+	PTP_CANON_EOS_CHANGES_TYPE_UNKNOWN,
+	PTP_CANON_EOS_CHANGES_TYPE_OBJECTINFO,
+	PTP_CANON_EOS_CHANGES_TYPE_OBJECTTRANSFER,
+	PTP_CANON_EOS_CHANGES_TYPE_PROPERTY,
+	PTP_CANON_EOS_CHANGES_TYPE_CAMERASTATUS,
+	PTP_CANON_EOS_CHANGES_TYPE_FOCUSINFO,
+	PTP_CANON_EOS_CHANGES_TYPE_FOCUSMASK,
+	PTP_CANON_EOS_CHANGES_TYPE_OBJECTREMOVED
+};
 
 struct _PTPCanon_New_Object {
 	uint32_t	oid;
@@ -1249,7 +1278,7 @@ struct _PTPCanon_New_Object {
 };
 
 struct _PTPCanon_changes_entry {
-	int	type;
+	enum _PTPCanon_changes_types	type;
 	union {
 		struct _PTPCanon_New_Object	object;	/* TYPE_OBJECTINFO */
 		char				*info;
@@ -1261,7 +1290,6 @@ typedef struct _PTPCanon_changes_entry PTPCanon_changes_entry;
 
 typedef struct _PTPCanon_Property {
 	uint32_t		size;
-	uint32_t		type;
 	uint32_t		proptype;
 	unsigned char		*data;
 
@@ -1666,6 +1694,7 @@ typedef struct _PTPCanonEOSDeviceInfo {
 #define PTP_DPC_NIKON_RemoteMode			0xD035
 #define PTP_DPC_NIKON_VideoMode				0xD036
 #define PTP_DPC_NIKON_EffectMode			0xD037
+#define PTP_DPC_NIKON_1_Mode				0xD038
 #define PTP_DPC_NIKON_CSMMenuBankSelect			0xD040
 #define PTP_DPC_NIKON_MenuBankNameA			0xD041
 #define PTP_DPC_NIKON_MenuBankNameB			0xD042
@@ -1750,6 +1779,7 @@ typedef struct _PTPCanonEOSDeviceInfo {
 #define PTP_DPC_NIKON_MovFileSlot			0xD0A3
 #define PTP_DPC_NIKON_MovRecProhibitCondition		0xD0A4
 #define PTP_DPC_NIKON_ManualMovieSetting		0xD0A6
+#define PTP_DPC_NIKON_MovQuality			0xD0A7
 #define PTP_DPC_NIKON_LiveViewScreenDisplaySetting	0xD0B2
 #define PTP_DPC_NIKON_MonitorOffDelay			0xD0B3
 #define PTP_DPC_NIKON_Bracketing			0xD0C0
@@ -1861,6 +1891,10 @@ typedef struct _PTPCanonEOSDeviceInfo {
 #define PTP_DPC_NIKON_LiveViewStatus			0xD1A2
 #define PTP_DPC_NIKON_LiveViewImageZoomRatio		0xD1A3
 #define PTP_DPC_NIKON_LiveViewProhibitCondition		0xD1A4
+#define PTP_DPC_NIKON_MovieShutterSpeed			0xD1A8
+#define PTP_DPC_NIKON_MovieFNumber			0xD1A9
+#define PTP_DPC_NIKON_MovieISO				0xD1AA
+#define PTP_DPC_NIKON_LiveViewMovieMode			0xD1AC /* ? */
 #define PTP_DPC_NIKON_ExposureDisplayStatus		0xD1B0
 #define PTP_DPC_NIKON_ExposureIndicateStatus		0xD1B1
 #define PTP_DPC_NIKON_InfoDispErrStatus			0xD1B2
@@ -1884,6 +1918,8 @@ typedef struct _PTPCanonEOSDeviceInfo {
 #define PTP_DPC_NIKON_ActiveSlot			0xD1F2
 #define PTP_DPC_NIKON_ActivePicCtrlItem			0xD200
 #define PTP_DPC_NIKON_ChangePicCtrlItem			0xD201
+#define PTP_DPC_NIKON_MovieNrHighISO			0xD236
+
 
 /* Nikon V1 (or WU adapter?) Trace */
 /* d241 - gets string "Nikon_WU2_0090B5123C61" */
@@ -1892,11 +1928,22 @@ typedef struct _PTPCanonEOSDeviceInfo {
 #define PTP_DPC_NIKON_D244				0xD244
 /* d247 - gets 3 bytes 0x01 0x00 0x00 */
 #define PTP_DPC_NIKON_D247				0xD247
+/* S9700 */
+#define PTP_DPC_NIKON_GUID				0xD24F
 /* d250 - gets a string "0000123C61" */
 #define PTP_DPC_NIKON_D250				0xD250
 /* d251 - gets a 0x0100000d */
 #define PTP_DPC_NIKON_D251				0xD251
 
+/* this is irregular, as it should be -0x5000 or 0xD000 based */
+#define PTP_DPC_NIKON_1_ISO				0xF002
+#define PTP_DPC_NIKON_1_ImageCompression		0xF009
+#define PTP_DPC_NIKON_1_ImageSize			0xF00A
+#define PTP_DPC_NIKON_1_WhiteBalance			0xF00C
+#define PTP_DPC_NIKON_1_LongExposureNoiseReduction	0xF00D
+#define PTP_DPC_NIKON_1_HiISONoiseReduction		0xF00E
+#define PTP_DPC_NIKON_1_ActiveDLighting			0xF00F
+#define PTP_DPC_NIKON_1_MovQuality			0xF01C
 
 /* Fuji specific */
 #define PTP_DPC_FUJI_ColorTemperature			0xD017
@@ -2058,6 +2105,8 @@ typedef struct _PTPCanonEOSDeviceInfo {
 #define PTP_DPC_CASIO_UNKNOWN_16	0xD020
 #define PTP_DPC_CASIO_UNKNOWN_17	0xD030
 #define PTP_DPC_CASIO_UNKNOWN_18	0xD080
+
+#define PTP_DPC_RICOH_ShutterSpeed	0xD00F
 
 /* MTP specific Object Properties */
 #define PTP_OPC_StorageID				0xDC01
@@ -2262,7 +2311,7 @@ typedef uint16_t (* PTPDataGetFunc)	(PTPParams* params, void*priv,
 
 typedef uint16_t (* PTPDataPutFunc)	(PTPParams* params, void*priv,
 					unsigned long sendlen,
-	                                unsigned char *data, unsigned long *putlen);
+	                                unsigned char *data);
 typedef struct _PTPDataHandler {
 	PTPDataGetFunc		getfunc;
 	PTPDataPutFunc		putfunc;
@@ -2273,7 +2322,7 @@ typedef struct _PTPDataHandler {
  * This functions take PTP oriented arguments and send them over an
  * appropriate data layer doing byteorder conversion accordingly.
  */
-typedef uint16_t (* PTPIOSendReq)	(PTPParams* params, PTPContainer* req);
+typedef uint16_t (* PTPIOSendReq)	(PTPParams* params, PTPContainer* req, int dataphase);
 typedef uint16_t (* PTPIOSendData)	(PTPParams* params, PTPContainer* ptp,
 					 uint64_t size, PTPDataHandler*getter);
 
@@ -2319,6 +2368,12 @@ struct _PTPDeviceProperty {
 };
 typedef struct _PTPDeviceProperty PTPDeviceProperty;
 
+/* Transaction data phase description, internal flags to sendreq / transaction driver. */
+#define PTP_DP_NODATA           0x0000  /* no data phase */
+#define PTP_DP_SENDDATA         0x0001  /* sending data */
+#define PTP_DP_GETDATA          0x0002  /* receiving data */
+#define PTP_DP_DATA_MASK        0x00ff  /* data phase mask */
+
 struct _PTPParams {
 	/* device flags */
 	uint32_t	device_flags;
@@ -2347,6 +2402,9 @@ struct _PTPParams {
 	uint32_t	transaction_id;
 	/* ptp session ID */
 	uint32_t	session_id;
+
+	/* used for open capture */
+	uint32_t	opencapture_transid;
 
 	/* PTP IO: if we have MTP style split header/data transfers */
 	int		split_header_data;
@@ -2383,6 +2441,8 @@ struct _PTPParams {
 
 	/* PTP: Nikon specifics */
 	int			controlmode;
+	int			event90c7works;
+	int			deletesdramfails;
 
 	/* PTP: Wifi profiles */
 	uint8_t 	wifi_profiles_version;
@@ -2401,7 +2461,7 @@ struct _PTPParams {
 	char		*olympus_reply;
 	struct _PTPParams *outer_params;
 
-#ifdef HAVE_ICONV
+#if defined(HAVE_ICONV) && defined(HAVE_LANGINFO_H)
 	/* PTP: iconv converters */
 	iconv_t	cd_locale_to_ucs2;
 	iconv_t cd_ucs2_to_locale;
@@ -2415,7 +2475,7 @@ struct _PTPParams {
 };
 
 /* last, but not least - ptp functions */
-uint16_t ptp_usb_sendreq	(PTPParams* params, PTPContainer* req);
+uint16_t ptp_usb_sendreq	(PTPParams* params, PTPContainer* req, int dataphase);
 uint16_t ptp_usb_senddata	(PTPParams* params, PTPContainer* ptp,
 				 uint64_t size, PTPDataHandler *handler);
 uint16_t ptp_usb_getresp	(PTPParams* params, PTPContainer* resp);
@@ -2431,7 +2491,7 @@ uint16_t ptp_usb_control_cancel_request (PTPParams *params, uint32_t transid);
 
 
 int      ptp_ptpip_connect	(PTPParams* params, const char *port);
-uint16_t ptp_ptpip_sendreq	(PTPParams* params, PTPContainer* req);
+uint16_t ptp_ptpip_sendreq	(PTPParams* params, PTPContainer* req, int dataphase);
 uint16_t ptp_ptpip_senddata	(PTPParams* params, PTPContainer* ptp,
 				uint64_t size, PTPDataHandler *handler);
 uint16_t ptp_ptpip_getresp	(PTPParams* params, PTPContainer* resp);
@@ -2464,6 +2524,16 @@ uint16_t ptp_transaction (PTPParams* params, PTPContainer* ptp,
  * Return values: Some PTP_RC_* code.
  **/
 #define ptp_closesession(params) ptp_generic_no_data(params,PTP_OC_CloseSession,0)
+
+/**
+ * ptp_powerdown:
+ * params:      PTPParams*
+ *
+ * Powers down device.
+ *
+ * Return values: Some PTP_RC_* code.
+ **/
+#define ptp_powerdown(params) ptp_generic_no_data(params,PTP_OC_PowerDown,0)
 /**
  * ptp_resetdevice:
  * params:      PTPParams*
@@ -2510,6 +2580,9 @@ uint16_t ptp_getobject_to_handler (PTPParams* params, uint32_t handle, PTPDataHa
 uint16_t ptp_getpartialobject	(PTPParams* params, uint32_t handle, uint32_t offset,
 				uint32_t maxbytes, unsigned char** object,
 				uint32_t *len);
+uint16_t ptp_getpartialobject_to_handler (PTPParams* params, uint32_t handle, uint32_t offset,
+                        	uint32_t maxbytes, PTPDataHandler *handler);
+
 uint16_t ptp_getthumb		(PTPParams *params, uint32_t handle,
 				unsigned char** object, unsigned int *len);
 
@@ -2550,6 +2623,9 @@ uint16_t ptp_sendobject_from_handler  (PTPParams* params, PTPDataHandler*, uint6
  **/
 #define ptp_initiatecapture(params,storageid,ofc) ptp_generic_no_data(params,PTP_OC_InitiateCapture,2,storageid,ofc)
 
+#define ptp_initiateopencapture(params,storageid,ofc)	ptp_generic_no_data(params,PTP_OC_InitiateOpenCapture,2,storageid,ofc)
+#define ptp_terminateopencapture(params,transid)	ptp_generic_no_data(params,PTP_OC_TerminateOpenCapture,1,transid)
+
 uint16_t ptp_getdevicepropdesc	(PTPParams* params, uint16_t propcode,
 				PTPDevicePropDesc *devicepropertydesc);
 uint16_t ptp_generic_getdevicepropdesc (PTPParams *params, uint16_t propcode,
@@ -2567,6 +2643,7 @@ uint16_t ptp_getfilesystemmanifest (PTPParams* params, uint32_t storage,
 
 
 uint16_t ptp_check_event (PTPParams *params);
+uint16_t ptp_wait_event (PTPParams *params);
 uint16_t ptp_add_event (PTPParams *params, PTPContainer *evt);
 int ptp_get_one_event (PTPParams *params, PTPContainer *evt);
 uint16_t ptp_check_eos_events (PTPParams *params);
@@ -2895,6 +2972,8 @@ uint16_t ptp_sony_setdevicecontrolvaluea (PTPParams* params, uint16_t propcode,
                         	PTPPropertyValue* value, uint16_t datatype);
 uint16_t ptp_sony_setdevicecontrolvalueb (PTPParams* params, uint16_t propcode,
                         	PTPPropertyValue* value, uint16_t datatype);
+uint16_t ptp_sony_9280 (PTPParams* params, uint32_t additional, uint32_t data1, uint32_t data2, uint32_t data3, uint32_t data4, uint8_t x, uint8_t y);
+uint16_t ptp_sony_9281 (PTPParams* params, uint32_t param1);
 /**
  * ptp_nikon_deletewifiprofile:
  *
@@ -2989,6 +3068,17 @@ uint16_t ptp_sony_setdevicecontrolvalueb (PTPParams* params, uint16_t propcode,
  *
  **/
 #define ptp_canon_eos_afdrive(params) ptp_generic_no_data(params,PTP_OC_CANON_EOS_DoAf,0)
+/**
+ * ptp_canon_eos_afcancel:
+ *
+ * This command cancels the lens autofocus.
+ *  
+ * params:      PTPParams*
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+#define ptp_canon_eos_afcancel(params) ptp_generic_no_data(params,PTP_OC_CANON_EOS_AfCancel,0)
 /**
  * ptp_canon_eos_zoom:
  *
@@ -3128,17 +3218,17 @@ uint16_t ptp_mtp_getobjectpropssupported (PTPParams* params, uint16_t ofc, uint3
 uint16_t ptp_android_getpartialobject64	(PTPParams* params, uint32_t handle, uint64_t offset,
 					uint32_t maxbytes, unsigned char** object,
 					uint32_t *len);
-#define ptp_android_begineditobject(params,handle) ptp_generic_no_data (params, PTP_OC_ANDROID_BeginEditObject, 1, handle);
-#define ptp_android_truncate(params,handle,offset) ptp_generic_no_data (params, PTP_OC_ANDROID_TruncateObject, 3, handle, (offset & 0xFFFFFFFF), (offset >> 32));
+#define ptp_android_begineditobject(params,handle) ptp_generic_no_data (params, PTP_OC_ANDROID_BeginEditObject, 1, handle)
+#define ptp_android_truncate(params,handle,offset) ptp_generic_no_data (params, PTP_OC_ANDROID_TruncateObject, 3, handle, (offset & 0xFFFFFFFF), (offset >> 32))
 uint16_t ptp_android_sendpartialobject (PTPParams *params, uint32_t handle,
 					uint64_t offset, unsigned char *object, uint32_t len);
-#define ptp_android_endeditobject(params,handle) ptp_generic_no_data (params, PTP_OC_ANDROID_EndEditObject, 1, handle);
+#define ptp_android_endeditobject(params,handle) ptp_generic_no_data (params, PTP_OC_ANDROID_EndEditObject, 1, handle)
 
 uint16_t ptp_olympus_getdeviceinfo (PTPParams*, PTPDeviceInfo*);
-#define ptp_olympus_setcameracontrolmode(params,p1) ptp_generic_no_data (params, PTP_OC_OLYMPUS_SetCameraControlMode, 1, p1);
-uint16_t ptp_olympus_opensession (PTPParams*, unsigned char**, unsigned long *);
-#define ptp_olympus_capture(params,p1) ptp_generic_no_data (params, PTP_OC_OLYMPUS_Capture, 1, p1);
-uint16_t ptp_olympus_getcameraid (PTPParams*, unsigned char**, unsigned long *);
+#define ptp_olympus_setcameracontrolmode(params,p1) ptp_generic_no_data (params, PTP_OC_OLYMPUS_SetCameraControlMode, 1, p1)
+uint16_t ptp_olympus_opensession (PTPParams*, unsigned char**, unsigned int *);
+#define ptp_olympus_capture(params,p1) ptp_generic_no_data (params, PTP_OC_OLYMPUS_Capture, 1, p1)
+uint16_t ptp_olympus_getcameraid (PTPParams*, unsigned char**, unsigned int *);
 
 /* Non PTP protocol functions */
 static inline int
@@ -3163,26 +3253,25 @@ void ptp_free_devicepropvalue	(uint16_t, PTPPropertyValue*);
 void ptp_free_objectinfo	(PTPObjectInfo *oi);
 void ptp_free_object		(PTPObject *oi);
 
-const char *ptp_strerror(uint16_t error);
-void ptp_perror			(PTPParams* params, uint16_t error);
+const char *ptp_strerror	(uint16_t ret, uint16_t vendor);
 void ptp_debug			(PTPParams *params, const char *format, ...);
 void ptp_error			(PTPParams *params, const char *format, ...);
 
 
-const char*
-ptp_get_property_description(PTPParams* params, uint16_t dpc);
+const char* ptp_get_property_description(PTPParams* params, uint16_t dpc);
+
+const char* ptp_get_opcode_name(PTPParams* params, uint16_t opcode);
 
 int
 ptp_render_property_value(PTPParams* params, uint16_t dpc,
                           PTPDevicePropDesc *dpd, unsigned int length, char *out);
 int ptp_render_ofc(PTPParams* params, uint16_t ofc, int spaceleft, char *txt);
-int ptp_render_opcode(PTPParams* params, uint16_t opcode, int spaceleft, char *txt);
 int ptp_render_mtp_propname(uint16_t propid, int spaceleft, char *txt);
 MTPProperties *ptp_get_new_object_prop_entry(MTPProperties **props, int *nrofprops);
 void ptp_destroy_object_prop(MTPProperties *prop);
 void ptp_destroy_object_prop_list(MTPProperties *props, int nrofprops);
 MTPProperties *ptp_find_object_prop_in_cache(PTPParams *params, uint32_t const handle, uint32_t const attribute_id);
-void ptp_remove_object_from_cache(PTPParams *params, uint32_t handle);
+uint16_t ptp_remove_object_from_cache(PTPParams *params, uint32_t handle);
 uint16_t ptp_add_object_to_cache(PTPParams *params, uint32_t handle);
 uint16_t ptp_object_want (PTPParams *, uint32_t handle, unsigned int want, PTPObject**retob);
 void ptp_objects_sort (PTPParams *);
@@ -3236,7 +3325,7 @@ typedef struct {
 uint16_t ptp_chdk_get_memory(PTPParams* params, int start, int num, unsigned char **);
 uint16_t ptp_chdk_set_memory_long(PTPParams* params, int addr, int val);
 int ptp_chdk_upload(PTPParams* params, char *local_fn, char *remote_fn);
-int ptp_chdk_download(PTPParams* params, char *remote_fn, char *local_fn);
+uint16_t ptp_chdk_download(PTPParams* params, char *remote_fn, PTPDataHandler *handler);
 
 /* remote capture */
 uint16_t ptp_chdk_rcisready(PTPParams* params, int *isready,int *imgnum);

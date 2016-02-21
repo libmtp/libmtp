@@ -835,7 +835,6 @@ ptp_read_func (
   int ret = 0;
   int xread;
   unsigned long curread = 0;
-  unsigned long written;
   unsigned char *bytes;
   int expect_terminator_byte = 0;
   unsigned long usb_inep_maxpacket_size;
@@ -916,7 +915,7 @@ ptp_read_func (
       xread--;
     }
 
-    int putfunc_ret = handler->putfunc(NULL, handler->priv, xread, bytes, &written);
+    int putfunc_ret = handler->putfunc(NULL, handler->priv, xread, bytes);
     if (putfunc_ret != PTP_RC_OK)
       return putfunc_ret;
 
@@ -1099,8 +1098,7 @@ memory_getfunc(PTPParams* params, void* private,
 
 static uint16_t
 memory_putfunc(PTPParams* params, void* private,
-	       unsigned long sendlen, unsigned char *data,
-	       unsigned long *putlen
+	       unsigned long sendlen, unsigned char *data
 ) {
 	PTPMemHandlerPrivate* priv = (PTPMemHandlerPrivate*)private;
 
@@ -1110,7 +1108,6 @@ memory_putfunc(PTPParams* params, void* private,
 	}
 	memcpy (priv->data + priv->curoff, data, sendlen);
 	priv->curoff += sendlen;
-	*putlen = sendlen;
 	return PTP_RC_OK;
 }
 
@@ -1172,7 +1169,7 @@ ptp_exit_recv_memory_handler (PTPDataHandler *handler,
 /* send / receive functions */
 
 uint16_t
-ptp_usb_sendreq (PTPParams* params, PTPContainer* req)
+ptp_usb_sendreq (PTPParams* params, PTPContainer* req, int dataphase)
 {
 	uint16_t ret;
 	PTPUSBBulkContainer usbreq;
@@ -1182,7 +1179,7 @@ ptp_usb_sendreq (PTPParams* params, PTPContainer* req)
 
 	char txt[256];
 
-	(void) ptp_render_opcode (params, req->Code, sizeof(txt), txt);
+	(void) ptp_render_ofc (params, req->Code, sizeof(txt), txt);
 	LIBMTP_USB_DEBUG("REQUEST: 0x%04x, %s\n", req->Code, txt);
 
 	/* build appropriate USB container */
@@ -1320,7 +1317,6 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 {
 	uint16_t ret;
 	PTPUSBBulkContainer usbdata;
-	unsigned long	written;
 	PTP_USB *ptp_usb = (PTP_USB *) params->data;
 	int putfunc_ret;
 
@@ -1366,8 +1362,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		  /* Copy first part of data to 'data' */
 		  putfunc_ret =
 		    handler->putfunc(
-				     params, handler->priv, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data,
-				     &written
+				     params, handler->priv, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data
 				     );
 		  if (putfunc_ret != PTP_RC_OK)
 		    return putfunc_ret;
@@ -1437,8 +1432,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		putfunc_ret =
 		  handler->putfunc(
 				   params, handler->priv, rlen - PTP_USB_BULK_HDR_LEN,
-				   usbdata.payload.data,
-				   &written
+				   usbdata.payload.data
 				   );
 		if (putfunc_ret != PTP_RC_OK)
 		  return putfunc_ret;
