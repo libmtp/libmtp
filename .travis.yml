@@ -21,7 +21,7 @@ compiler:
  - gcc
 
 script:
- - echo "n" | sh ./autogen.sh
+ - export PATH=/usr/local/opt/gettext/bin:$PATH ; echo "n" | sh ./autogen.sh
  - make && make check
 
 notifications:
