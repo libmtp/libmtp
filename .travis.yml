@@ -23,7 +23,8 @@ compiler:
 
 script:
  - PATH=/usr/local/opt/gettext/bin:$PATH autoreconf -i -f
- - sh ./autogen.sh && make && make check
+ - echo "n" | sh ./autogen.sh
+ - make && make check
 
 notifications:
   email:
