@@ -2673,7 +2673,7 @@
    * Kevin Cheng <kache@users.sf.net>
    */
   /* https://sourceforge.net/p/libmtp/support-requests/181/ */
-  { "HTC", 0x0bb4, "HTC One M9 (MTP)", 0x040b,
+  { "HTC", 0x0bb4, "One M9 (1st ID)", 0x040b,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1398/ */
   { "HTC", 0x0bb4, "Spreadtrum SH57MYZ03342 (MTP)", 0x05e3,
@@ -2688,7 +2688,7 @@
   { "HTC", 0x0bb4, "One Mini 2 (MTP)", 0x0629,
       DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/bugs/1508/ */
-  { "HTC", 0x0bb4, "One M9 (MTP)", 0x065c,
+  { "HTC", 0x0bb4, "One M9 (2nd ID)", 0x065c,
       DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/support-requests/200/ */
   { "HTC", 0x0bb4, "HTC Desire 520", 0x0670,
@@ -2798,6 +2798,10 @@
   { "HTC", 0x0bb4, "HTC One M8 (MTP+UMS)", 0x0fb5,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "HTC One M8 (MTP+ADB+UMS)", 0x0fb4,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
+  /* https://sourceforge.net/p/libmtp/bugs/1508/ */
+  { "HTC", 0x0bb4, "One M9 (3rd ID)", 0x4ee1,
       DEVICE_FLAGS_ANDROID_BUGS },
 #if 1
   /* after some review I commented it back in. There was apparently
