@@ -2911,6 +2911,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1460/ */
   { "Amazon", 0x1949, "Kindle Fire 8", 0x0211,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/158/ */
+  { "Amazon", 0x1949, "Kindle Fire 8 HD", 0x0212,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1448/ */
   { "Amazon", 0x1949, "Kindle Fire 7", 0x0221,
       DEVICE_FLAGS_ANDROID_BUGS },

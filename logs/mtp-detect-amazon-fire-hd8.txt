@@ -1,0 +1,895 @@
+stephen@stephen-Z97-HD3:~$ mtp-detect
+libmtp version: 1.1.9
+
+Listing raw device(s)
+Device 0 (VID=1949 and PID=0212) is UNKNOWN.
+Please report this VID/PID and the device model to the libmtp development team
+   Found 1 device(s):
+   1949:0212 @ bus 3, dev 21
+Attempting to connect device(s)
+Android device detected, assigning default bug flags
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 7: Found a bad handle, trying to ignore it.
+Error 2: PTP Layer error 02ff: get_handles_recursively(): could not get object handles.
+Error 2: Error 02ff: PTP: I/O error
+USB low-level info:
+   Interface has a kernel driver attached.
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 1949
+   idProduct: 0212
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Raw device info:
+      Bus location: 3
+      Device number: 21
+      Device entry info:
+         Vendor: (null)
+         Vendor id: 0x1949
+         Product: (null)
+         Vendor id: 0x0212
+         Device flags: 0x18008106
+Device info:
+   Manufacturer: Amazon
+   Model: Fire
+   Device version: 1.0
+   Serial number: G090H907536504SP
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0; android.com: 1.0;
+   Detected object size: 64 bits
+   Extensions:
+        microsoft.com: 1.0
+        android.com: 1.0
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100a: Get thumbnail
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   1017: Reset device property value
+   101b: Get partial object
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9810: Get object references
+   9811: Set object references
+   95c1: Get Partial Object (64bit Offset)
+   95c2: Send Partial Object
+   95c3: Truncate Object
+   95c4: Begin Edit Object
+   95c5: End Edit Object
+Events supported:
+   0x4002
+   0x4003
+   0x4004
+   0x4005
+   0x4006
+   0x400c
+   0xc801
+Device Properties Supported:
+   0xd401: Synchronization Partner
+   0xd402: Friendly Device Name
+   0x5003: Image Size
+   0x5001: Battery Level
+Playable File (Object) Types and Object Properties Supported:
+   3000: Undefined Type
+   3001: Association/Directory
+   3004: Text
+   3005: HTML
+   3008: MS Wave
+   3009: MP3
+   300b: MPEG
+   3801: JPEG
+   3802: TIFF EP
+   3804: BMP
+   3807: GIF
+   3808: JFIF
+   380b: PNG
+   380d: TIFF
+   b901: WMA
+   b902: OGG
+   b903: AAC
+   b982: MP4
+   b983: MP2
+   b984: 3GP
+   ba05: Abstract Audio Video Playlist
+   ba10: WPL Playlist
+   ba11: M3U Playlist
+   ba14: PLS Playlist
+   ba82: XMLDocument
+   b906: FLAC
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0003 fixed RAM storage
+      FilesystemType: 0x0002 generic hierarchical
+      AccessCapability: 0x0000 read/write
+      MaxCapacity: 13764251648
+      FreeSpaceInBytes: 9642545152
+      FreeSpaceInObjects: 1073741824
+      StorageDescription: Internal storage
+      VolumeIdentifier: (null)
+   StorageID: 0x00020001
+      StorageType: 0x0004 removable RAM storage
+      FilesystemType: 0x0002 generic hierarchical
+      AccessCapability: 0x0000 read/write
+      MaxCapacity: 63831015424
+      FreeSpaceInBytes: 62790303744
+      FreeSpaceInObjects: 1073741824
+      StorageDescription: Storage device
+      VolumeIdentifier: (null)
+Special directories:
+   Default music folder: 0xffffffff
+   Default playlist folder: 0xffffffff
+   Default picture folder: 0xffffffff
+   Default video folder: 0xffffffff
+   Default organizer folder: 0xffffffff
+   Default zencast folder: 0xffffffff
+   Default album folder: 0xffffffff
+   Default text folder: 0xffffffff
+MTP-specific device properties:
+   Friendly name: (NULL)
+   Synchronization partner: (NULL)
+libmtp supported (playable) filetypes:
+   Folder
+   Text file
+   HTML file
+   RIFF WAVE file
+   ISO MPEG-1 Audio Layer 3
+   MPEG video stream
+   JPEG file
+   BMP bitmap file
+   GIF bitmap file
+   JFIF file
+   Portable Network Graphics
+   TIFF bitmap file
+   Microsoft Windows Media Audio
+   Ogg container format
+   Advanced Audio Coding (AAC)/MPEG-2 Part 7/MPEG-4 Part 3
+   MPEG-4 Part 14 Container Format (Audio+Video Emphasis)
+   ISO MPEG-1 Audio Layer 2
+   Abstract Playlist file
+   XML file
+   Free Lossless Audio Codec (FLAC)
+ERROR: Could not close session!
+inep: usb_get_endpoint_status(): No such device
+outep: usb_get_endpoint_status(): No such device
+OK.
+stephen@stephen-Z97-HD3:~$
