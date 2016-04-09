@@ -2474,6 +2474,9 @@ struct _PTPParams {
 	uint16_t	response_packet_size;
 };
 
+/* Asynchronous event callback */
+typedef void(* PTPEventCbFn) (PTPParams *params, uint16_t code, PTPContainer *event, void *user_data);
+
 /* last, but not least - ptp functions */
 uint16_t ptp_usb_sendreq	(PTPParams* params, PTPContainer* req, int dataphase);
 uint16_t ptp_usb_senddata	(PTPParams* params, PTPContainer* ptp,
@@ -2483,6 +2486,7 @@ uint16_t ptp_usb_getdata	(PTPParams* params, PTPContainer* ptp,
 	                         PTPDataHandler *handler);
 uint16_t ptp_usb_event_check	(PTPParams* params, PTPContainer* event);
 uint16_t ptp_usb_event_wait	(PTPParams* params, PTPContainer* event);
+uint16_t ptp_usb_event_async	(PTPParams *params, PTPEventCbFn cb, void *user_data);
 
 uint16_t ptp_usb_control_get_extended_event_data (PTPParams *params, char *buffer, int *size);
 uint16_t ptp_usb_control_device_reset_request (PTPParams *params);

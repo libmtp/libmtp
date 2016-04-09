@@ -77,6 +77,12 @@ struct mtpdevice_list_struct {
 };
 typedef struct mtpdevice_list_struct mtpdevice_list_t;
 
+struct ptp_event_cb_data {
+  PTPEventCbFn cb;
+  void *user_data;
+  PTPParams *params;
+};
+
 static const LIBMTP_device_entry_t mtp_device_table[] = {
 /* We include an .h file which is shared between us and libgphoto2 */
 #include "music-players.h"
@@ -1643,6 +1649,109 @@ uint16_t
 ptp_usb_event_wait (PTPParams* params, PTPContainer* event) {
 
 	return ptp_usb_event (params, event, PTP_EVENT_CHECK);
+}
+
+static void
+ptp_usb_event_cb (struct libusb_transfer *t) {
+	struct ptp_event_cb_data *data = t->user_data;
+	PTPParams *params = data->params;
+	PTPUSBEventContainer *usbevent = (void *)t->buffer;
+	PTPContainer event = {0,};
+	uint16_t code;
+
+	switch (t->status) {
+	case LIBUSB_TRANSFER_COMPLETED:
+		if (t->actual_length < 8) {
+			libusb_glue_error (params,
+				"PTP: reading event an short read of %ld bytes occurred\n",
+				t->actual_length);
+			code = PTP_ERROR_IO;
+		} else {
+			event.Code=dtoh16(usbevent->code);
+			event.SessionID=params->session_id;
+			event.Transaction_ID=dtoh32(usbevent->trans_id);
+			event.Param1=dtoh32(usbevent->param1);
+			event.Param2=dtoh32(usbevent->param2);
+			event.Param3=dtoh32(usbevent->param3);
+			code = PTP_RC_OK;
+		}
+		break;
+	case LIBUSB_TRANSFER_TIMED_OUT:
+		code = PTP_ERROR_TIMEOUT;
+		break;
+	case LIBUSB_TRANSFER_CANCELLED:
+		code = PTP_ERROR_CANCEL;
+		break;
+	case LIBUSB_TRANSFER_STALL:
+		code = PTP_ERROR_DATA_EXPECTED;
+		break;
+	case LIBUSB_TRANSFER_ERROR:
+	case LIBUSB_TRANSFER_NO_DEVICE:
+	case LIBUSB_TRANSFER_OVERFLOW:
+	default:
+		code = PTP_ERROR_IO;
+		break;
+	}
+	if (code != PTP_RC_OK) {
+		libusb_glue_error (params,
+			"PTP: reading event an error 0x%02x occurred\n",
+			t->status);
+	}
+	data->cb(params, code, &event, data->user_data);
+	free(data);
+}
+
+uint16_t
+ptp_usb_event_async (PTPParams* params, PTPEventCbFn cb, void *user_data) {
+	PTP_USB *ptp_usb;
+	PTPUSBEventContainer *usbevent;
+	struct ptp_event_cb_data *data;
+	struct libusb_transfer *t;
+	int ret;
+
+	if (params == NULL) {
+		return PTP_ERROR_BADPARAM;
+	}
+
+        usbevent = calloc(1, sizeof(*usbevent));
+        if (usbevent == NULL) {
+		return PTP_ERROR_IO;
+        }
+
+	data = malloc(sizeof(*data));
+	if (data == NULL) {
+		free(usbevent);
+		return PTP_ERROR_IO;
+	}
+
+	t = libusb_alloc_transfer(0);
+	if (t == NULL) {
+		free(data);
+		free(usbevent);
+		return PTP_ERROR_IO;
+	}
+
+	data->cb = cb;
+	data->user_data = user_data;
+	data->params = params;
+
+	ptp_usb = (PTP_USB *)(params->data);
+	libusb_fill_interrupt_transfer(t, ptp_usb->handle, ptp_usb->intep,
+	                               (unsigned char *)usbevent, sizeof(*usbevent),
+	                               ptp_usb_event_cb, data, 0);
+	t->flags = LIBUSB_TRANSFER_FREE_BUFFER | LIBUSB_TRANSFER_FREE_TRANSFER;
+
+	ret = libusb_submit_transfer(t);
+	return ret == 0 ? PTP_RC_OK : PTP_ERROR_IO;
+}
+
+/**
+ * Trivial wrapper around the most generic libusb method for polling for events.
+ * Can be used to drive asynchronous event detection.
+ */
+int LIBMTP_Handle_Events_Timeout_Completed(struct timeval *tv, int *completed) {
+	/* Pass NULL for context as libmtp always uses the default context */
+	return libusb_handle_events_timeout_completed(NULL, tv, completed);
 }
 
 uint16_t

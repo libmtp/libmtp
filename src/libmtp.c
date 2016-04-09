@@ -114,6 +114,15 @@ typedef struct propertymap_struct {
   struct propertymap_struct *next;
 } propertymap_t;
 
+/*
+ * This is a simple container for holding our callback and user_data
+ * for parsing onwards to the usb_event_async function.
+ */
+typedef struct event_cb_data_struct {
+  LIBMTP_event_cb_fn cb;
+  void *user_data;
+} event_cb_data_t;
+
 // Global variables
 // This holds the global filetype mapping table
 static filemap_t *g_filemap = NULL;
@@ -210,6 +219,8 @@ static int set_object_filename(LIBMTP_mtpdevice_t *device,
                 const char **newname);
 static char *generate_unique_filename(PTPParams* params, char const * const filename);
 static int check_filename_exists(PTPParams* params, char const * const filename);
+static void LIBMTP_Handle_Event(PTPContainer *ptp_event,
+                                LIBMTP_event_t *event, uint32_t *out1);
 
 /**
  * These are to wrap the get/put handlers to convert from the MTP types to PTP types
@@ -2162,21 +2173,27 @@ int LIBMTP_Read_Event(LIBMTP_mtpdevice_t *device, LIBMTP_event_t *event, uint32_
   PTPParams *params = (PTPParams *) device->params;
   PTPContainer ptp_event;
   uint16_t ret = ptp_usb_event_wait(params, &ptp_event);
-  uint16_t code;
-  uint32_t session_id;
-  uint32_t param1;
 
   if (ret != PTP_RC_OK) {
     /* Device is closing down or other fatal stuff, exit thread */
     return -1;
   }
+  LIBMTP_Handle_Event(&ptp_event, event, out1);
+  return 0;
+}
+
+void LIBMTP_Handle_Event(PTPContainer *ptp_event,
+                         LIBMTP_event_t *event, uint32_t *out1) {
+  uint16_t code;
+  uint32_t session_id;
+  uint32_t param1;
 
   *event = LIBMTP_EVENT_NONE;
 
   /* Process the event */
-  code = ptp_event.Code;
-  session_id = ptp_event.SessionID;
-  param1 = ptp_event.Param1;
+  code = ptp_event->Code;
+  session_id = ptp_event->SessionID;
+  param1 = ptp_event->Param1;
 
   switch(code) {
     case PTP_EC_Undefined:
@@ -2242,8 +2259,60 @@ int LIBMTP_Read_Event(LIBMTP_mtpdevice_t *device, LIBMTP_event_t *event, uint32_
       LIBMTP_INFO( "Received unknown event in session %u\n", session_id);
       break;
   }
+}
 
-  return 0;
+static void LIBMTP_Read_Event_Cb(PTPParams *params, uint16_t ret_code,
+                                 PTPContainer *ptp_event, void *user_data) {
+  event_cb_data_t *data = user_data;
+  LIBMTP_event_t event = LIBMTP_EVENT_NONE;
+  uint32_t param1 = 0;
+  int handler_ret;
+
+  switch (ret_code) {
+  case PTP_RC_OK:
+    handler_ret = LIBMTP_HANDLER_RETURN_OK;
+    LIBMTP_Handle_Event(ptp_event, &event, &param1);
+    break;
+  case PTP_ERROR_CANCEL:
+    handler_ret = LIBMTP_HANDLER_RETURN_CANCEL;
+    break;
+  default:
+    handler_ret = LIBMTP_HANDLER_RETURN_ERROR;
+    break;
+  }
+
+  data->cb(handler_ret, event, param1, data->user_data);
+  free(data);
+}
+
+/**
+ * This function reads events sent by the device, in a non-blocking manner.
+ * The callback function will be called when an event is received, but for the function
+ * to make progress, polling must take place, using LIBMTP_Handle_Events_Timeout_Completed.
+ *
+ * After an event is received, this function should be called again to listen for the next
+ * event.
+ *
+ * For now, this non-blocking mechanism only works with libusb-1.0, and not any of the
+ * other usb library backends. Attempting to call this method with another backend will
+ * always return an error.
+ *
+ * @param device a pointer to the MTP device to poll for events.
+ * @param cb a callback to be invoked when an event is received.
+ * @param user_data arbitrary user data passed to the callback.
+ * @return 0 on success, any other value means that the callback was not registered and
+ *         no event notification will take place.
+ */
+int LIBMTP_Read_Event_Async(LIBMTP_mtpdevice_t *device, LIBMTP_event_cb_fn cb, void *user_data) {
+  PTPParams *params = (PTPParams *) device->params;
+  event_cb_data_t *data =  malloc(sizeof(event_cb_data_t));
+  uint16_t ret;
+
+  data->cb = cb;
+  data->user_data = user_data;
+
+  ret = ptp_usb_event_async(params, LIBMTP_Read_Event_Cb, data);
+  return ret == PTP_RC_OK ? 0 : -1;
 }
 
 /**

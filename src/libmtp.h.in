@@ -50,6 +50,8 @@ typedef unsigned __int16 uint16_t;
 typedef __int32 int32_t;
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int64 uint64_t;
+#else
+#include <sys/time.h>
 #endif
 
 #include <stdio.h>
@@ -1048,7 +1050,10 @@ int LIBMTP_TruncateObject(LIBMTP_mtpdevice_t *, uint32_t const, uint64_t);
  * @defgroup files The events API.
  * @{
  */
+typedef void(* LIBMTP_event_cb_fn) (int, LIBMTP_event_t, uint32_t, void *);
 int LIBMTP_Read_Event(LIBMTP_mtpdevice_t *, LIBMTP_event_t *, uint32_t *);
+int LIBMTP_Read_Event_Async(LIBMTP_mtpdevice_t *, LIBMTP_event_cb_fn, void *);
+int LIBMTP_Handle_Events_Timeout_Completed(struct timeval *, int *);
 
 /** @} */
 

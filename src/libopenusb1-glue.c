@@ -1692,6 +1692,17 @@ ptp_usb_event_wait(PTPParams* params, PTPContainer* event) {
 }
 
 uint16_t
+ptp_usb_event_async (PTPParams* params, PTPEventCbFn cb, void *user_data) {
+	/* Unsupported */
+	return PTP_ERROR_CANCEL;
+}
+
+int LIBMTP_Handle_Events_Timeout_Completed(struct timeval *tv, int *completed) {
+	/* Unsupported */
+	return -12;
+}
+
+uint16_t
 ptp_usb_control_cancel_request(PTPParams *params, uint32_t transactionid) {
     PTP_USB *ptp_usb = (PTP_USB *) (params->data);
     int ret;
