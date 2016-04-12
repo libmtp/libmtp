@@ -2087,6 +2087,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "RAZR M XT907 (MTP+ADB)", 0x2e51,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1539/ */
+  { "Motorola", 0x22b8, "Droid Turbo 2 (XT1585)", 0x2e61,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Moto X (XT1053)", 0x2e62,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Moto X (XT1058)", 0x2e63,
