@@ -3285,6 +3285,7 @@
 
   /* https://sourceforge.net/p/libmtp/support-requests/210/ */
   { "Letv" , 0x2b0e, "1s", 0x1704, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Letv" , 0x2b0e, "X800", 0x1830, DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Other strange stuff.
    */
