@@ -610,6 +610,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1469/ */
   { "Acer", 0x0502, "Z530", 0x3822,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1534/ */
+  { "Acer", 0x0502, "Z530 16GB", 0x3823,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * SanDisk
