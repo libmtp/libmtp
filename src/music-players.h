@@ -2518,6 +2518,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1258/ */
   { "Asus", 0x0b05, "A450CG (MTP)", 0x5a0f,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1546/ */
+  { "Asus", 0x0b05, "ZenPad 80 (MTP)", 0x5e0f,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1350/ */
   { "Asus", 0x0b05, "Zenfone 2 ZE550ML (MTP)", 0x5f02,
       DEVICE_FLAGS_ANDROID_BUGS },
