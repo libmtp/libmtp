@@ -3306,6 +3306,9 @@
   /*  https://sourceforge.net/p/libmtp/bugs/1512/ */
   { "Allview" , 0x271d, "Energy P5", 0x4016, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/bugs/1545/ */
+  { "Zuk" , 0x2b4c, "Z1", 0x1004, DEVICE_FLAGS_ANDROID_BUGS },
+
   /* https://sourceforge.net/p/libmtp/support-requests/210/ */
   { "Letv" , 0x2b0e, "1s", 0x1704, DEVICE_FLAGS_ANDROID_BUGS },
   { "Letv" , 0x2b0e, "X800", 0x1830, DEVICE_FLAGS_ANDROID_BUGS },
