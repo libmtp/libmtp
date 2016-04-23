@@ -2640,6 +2640,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/201/ */
   { "Lenovo", 0x17ef, "Lifetab S1034X", 0x78b0,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/213/ */
+  { "Lenovo", 0x17ef, "Vibe P1 Pro", 0x78fc,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1531/ */
   { "Lenovo", 0x17ef, "Vibe X", 0x7902,
       DEVICE_FLAGS_ANDROID_BUGS },
