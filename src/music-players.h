@@ -2518,6 +2518,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1179/ */
   { "Asus", 0x0b05, "ZenFone 4 A400CG (MTP)", 0x581f,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1548/ */
+  { "Asus", 0x0b05, "ASUS FonePad 8 FE380CG (MTP)", 0x590f,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1258/ */
   { "Asus", 0x0b05, "A450CG (MTP)", 0x5a0f,
       DEVICE_FLAGS_ANDROID_BUGS },

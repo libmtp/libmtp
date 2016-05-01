@@ -1,0 +1,639 @@
+
+
+
+---
+
+** [bugs:#1548] Device Unknown ASUS FonePad 8 FE380CG**
+
+**Status:** open
+**Group:** 1.1.11
+**Labels:** New device 
+**Created:** Wed Apr 27, 2016 03:06 PM UTC by Anonymous
+**Last Updated:** Wed Apr 27, 2016 03:06 PM UTC
+**Owner:** nobody
+
+
+Hello, the device is unknown
+
+mtp-detetct:
+~~~~
+libmtp version: 1.1.11
+
+Listing raw device(s)
+Device 0 (VID=0b05 and PID=590f) is UNKNOWN in libmtp v1.1.11.
+Please report this VID/PID and the device model to the libmtp development team
+   Found 1 device(s):
+   0b05:590f @ bus 1, dev 12
+Attempting to connect device(s)
+Android device detected, assigning default bug flags
+USB low-level info:
+   bcdUSB: 528
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 0b05
+   idProduct: 590f
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Raw device info:
+      Bus location: 1
+      Device number: 12
+      Device entry info:
+         Vendor: (null)
+         Vendor id: 0x0b05
+         Product: (null)
+         Vendor id: 0x590f
+         Device flags: 0x18008106
+Configuration 0, interface 0, altsetting 0:
+   Interface description contains the string "MTP"
+   Device recognized as MTP, no further probing.
+Device info:
+   Manufacturer: asus
+   Model: K016
+   Device version: 1.0
+   Serial number: ECNKCX217165
+   Vendor extension ID: 0x00000006
+   Vendor extension description: microsoft.com: 1.0; android.com: 1.0;
+   Detected object size: 64 bits
+   Extensions:
+        microsoft.com: 1.0
+        android.com: 1.0
+Supported operations:
+   1001: get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100a: Get thumbnail
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   1017: Reset device property value
+   101b: Get partial object
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9810: Get object references
+   9811: Set object references
+   95c1: Get Partial Object (64bit Offset)
+   95c2: Send Partial Object
+   95c3: Truncate Object
+   95c4: Begin Edit Object
+   95c5: End Edit Object
+Events supported:
+   0x4002
+   0x4003
+   0x4004
+   0x4005
+   0x4006
+   0x400c
+Device Properties Supported:
+   0xd401: Synchronization Partner
+   0xd402: Friendly Device Name
+   0x5003: Image Size
+   0x5001: Battery Level
+Playable File (Object) Types and Object Properties Supported:
+   3000: Undefined Type
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+   3001: Association/Directory
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+   3004: Text
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+   3005: HTML
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+   3008: MS Wave
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dce0: Display Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+      dc46: Artist STRING data type READ ONLY
+      dc9a: Album Name STRING data type READ ONLY
+      dc9b: Album Artist STRING data type READ ONLY
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc99: Original Release Date STRING data type DATETIME FORM READ ONLY
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc8c: Genre STRING data type READ ONLY
+      dc96: Composer STRING data type READ ONLY
+      de99: Audio WAVE Codec UINT32 data type ANY 32BIT VALUE form READ ONLY
+      de92: Bit Rate Type UINT16 data type enumeration: 1, 2,  READ ONLY
+      de9a: Audio Bit Rate UINT32 data type range: MIN 1, MAX 1536000, STEP 1 READ ONLY
+      de94: Number Of Channels UINT16 data type enumeration: 1, 2, 3, 4, 5, 6, 7, 8, 9,  READ ONLY
+      de93: Sample Rate UINT32 data type range: MIN 8000, MAX 48000, STEP 1 READ ONLY
+   3009: MP3
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dce0: Display Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+      dc46: Artist STRING data type READ ONLY
+      dc9a: Album Name STRING data type READ ONLY
+      dc9b: Album Artist STRING data type READ ONLY
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc99: Original Release Date STRING data type DATETIME FORM READ ONLY
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc8c: Genre STRING data type READ ONLY
+      dc96: Composer STRING data type READ ONLY
+      de99: Audio WAVE Codec UINT32 data type ANY 32BIT VALUE form READ ONLY
+      de92: Bit Rate Type UINT16 data type enumeration: 1, 2,  READ ONLY
+      de9a: Audio Bit Rate UINT32 data type range: MIN 1, MAX 1536000, STEP 1 READ ONLY
+      de94: Number Of Channels UINT16 data type enumeration: 1, 2, 3, 4, 5, 6, 7, 8, 9,  READ ONLY
+      de93: Sample Rate UINT32 data type range: MIN 8000, MAX 48000, STEP 1 READ ONLY
+   300b: MPEG
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dce0: Display Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+      dc46: Artist STRING data type READ ONLY
+      dc9a: Album Name STRING data type READ ONLY
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc48: Description STRING data type READ ONLY
+   3801: JPEG
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dce0: Display Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+      dc48: Description STRING data type READ ONLY
+   3802: TIFF EP
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+   3804: BMP
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dce0: Display Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+      dc48: Description STRING data type READ ONLY
+   3807: GIF
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dce0: Display Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+      dc48: Description STRING data type READ ONLY
+   3808: JFIF
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+   380b: PNG
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dce0: Display Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+      dc48: Description STRING data type READ ONLY
+   380d: TIFF
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+   b901: WMA
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dce0: Display Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+      dc46: Artist STRING data type READ ONLY
+      dc9a: Album Name STRING data type READ ONLY
+      dc9b: Album Artist STRING data type READ ONLY
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc99: Original Release Date STRING data type DATETIME FORM READ ONLY
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc8c: Genre STRING data type READ ONLY
+      dc96: Composer STRING data type READ ONLY
+      de99: Audio WAVE Codec UINT32 data type ANY 32BIT VALUE form READ ONLY
+      de92: Bit Rate Type UINT16 data type enumeration: 1, 2,  READ ONLY
+      de9a: Audio Bit Rate UINT32 data type range: MIN 1, MAX 1536000, STEP 1 READ ONLY
+      de94: Number Of Channels UINT16 data type enumeration: 1, 2, 3, 4, 5, 6, 7, 8, 9,  READ ONLY
+      de93: Sample Rate UINT32 data type range: MIN 8000, MAX 48000, STEP 1 READ ONLY
+   b902: OGG
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dce0: Display Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+      dc46: Artist STRING data type READ ONLY
+      dc9a: Album Name STRING data type READ ONLY
+      dc9b: Album Artist STRING data type READ ONLY
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc99: Original Release Date STRING data type DATETIME FORM READ ONLY
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc8c: Genre STRING data type READ ONLY
+      dc96: Composer STRING data type READ ONLY
+      de99: Audio WAVE Codec UINT32 data type ANY 32BIT VALUE form READ ONLY
+      de92: Bit Rate Type UINT16 data type enumeration: 1, 2,  READ ONLY
+      de9a: Audio Bit Rate UINT32 data type range: MIN 1, MAX 1536000, STEP 1 READ ONLY
+      de94: Number Of Channels UINT16 data type enumeration: 1, 2, 3, 4, 5, 6, 7, 8, 9,  READ ONLY
+      de93: Sample Rate UINT32 data type range: MIN 8000, MAX 48000, STEP 1 READ ONLY
+   b903: AAC
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dce0: Display Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+      dc46: Artist STRING data type READ ONLY
+      dc9a: Album Name STRING data type READ ONLY
+      dc9b: Album Artist STRING data type READ ONLY
+      dc8b: Track UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc99: Original Release Date STRING data type DATETIME FORM READ ONLY
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc8c: Genre STRING data type READ ONLY
+      dc96: Composer STRING data type READ ONLY
+      de99: Audio WAVE Codec UINT32 data type ANY 32BIT VALUE form READ ONLY
+      de92: Bit Rate Type UINT16 data type enumeration: 1, 2,  READ ONLY
+      de9a: Audio Bit Rate UINT32 data type range: MIN 1, MAX 1536000, STEP 1 READ ONLY
+      de94: Number Of Channels UINT16 data type enumeration: 1, 2, 3, 4, 5, 6, 7, 8, 9,  READ ONLY
+      de93: Sample Rate UINT32 data type range: MIN 8000, MAX 48000, STEP 1 READ ONLY
+   b982: MP4
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+   b983: MP2
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+   b984: 3GP
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dce0: Display Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+      dc46: Artist STRING data type READ ONLY
+      dc9a: Album Name STRING data type READ ONLY
+      dc89: Duration UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc48: Description STRING data type READ ONLY
+   ba05: Abstract Audio Video Playlist
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+   ba10: WPL Playlist
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+   ba11: M3U Playlist
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+   ba14: PLS Playlist
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+   ba82: XMLDocument
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+   b906: FLAC
+      dc01: Storage ID UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc02: Object Format UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc03: Protection Status UINT16 data type ANY 16BIT VALUE form READ ONLY
+      dc04: Object Size UINT64 data type READ ONLY
+      dc07: Object File Name STRING data type GET/SET
+      dc09: Date Modified STRING data type DATETIME FORM READ ONLY
+      dc0b: Parent Object UINT32 data type ANY 32BIT VALUE form READ ONLY
+      dc41: Persistant Unique Object Identifier UINT128 data type READ ONLY
+      dc44: Name STRING data type READ ONLY
+      dc4e: Date Added STRING data type DATETIME FORM READ ONLY
+Storage Devices:
+   StorageID: 0x00010001
+      StorageType: 0x0003 fixed RAM storage
+      FilesystemType: 0x0002 generic hierarchical
+      AccessCapability: 0x0000 read/write
+      MaxCapacity: 4587995136
+      FreeSpaceInBytes: 267374592
+      FreeSpaceInObjects: 1073741824
+      StorageDescription: Memoria interna
+      VolumeIdentifier: (null)
+   StorageID: 0x00020001
+      StorageType: 0x0004 removable RAM storage
+      FilesystemType: 0x0002 generic hierarchical
+      AccessCapability: 0x0000 read/write
+      MaxCapacity: 31902040064
+      FreeSpaceInBytes: 4960059392
+      FreeSpaceInObjects: 1073741824
+      StorageDescription: Scheda SD
+      VolumeIdentifier: (null)
+Special directories:
+   Default music folder: 0xffffffff
+   Default playlist folder: 0xffffffff
+   Default picture folder: 0xffffffff
+   Default video folder: 0xffffffff
+   Default organizer folder: 0xffffffff
+   Default zencast folder: 0xffffffff
+   Default album folder: 0xffffffff
+   Default text folder: 0xffffffff
+MTP-specific device properties:
+   Friendly name: (NULL)
+   Synchronization partner: (NULL)
+   Battery level 90 of 100 (89%)
+libmtp supported (playable) filetypes:
+   Folder
+   Text file
+   HTML file
+   RIFF WAVE file
+   ISO MPEG-1 Audio Layer 3
+   MPEG video stream
+   JPEG file
+   BMP bitmap file
+   GIF bitmap file
+   JFIF file
+   Portable Network Graphics
+   TIFF bitmap file
+   Microsoft Windows Media Audio
+   Ogg container format
+   Advanced Audio Coding (AAC)/MPEG-2 Part 7/MPEG-4 Part 3
+   MPEG-4 Part 14 Container Format (Audio+Video Emphasis)
+   ISO MPEG-1 Audio Layer 2
+   Abstract Playlist file
+   XML file
+   Free Lossless Audio Codec (FLAC)
+~~~~
+lsusb -v:
+
+~~~~
+Bus 001 Device 012: ID 0b05:590f ASUSTek Computer, Inc. 
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.10
+  bDeviceClass            0 
+  bDeviceSubClass         0 
+  bDeviceProtocol         0 
+  bMaxPacketSize0        64
+  idVendor           0x0b05 ASUSTek Computer, Inc.
+  idProduct          0x590f 
+  bcdDevice           ff.ff
+  iManufacturer           2 Android
+  iProduct                3 Android
+  iSerial                 4 ECNKCX217165
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength           44
+    bNumInterfaces          1
+    bConfigurationValue     1
+    iConfiguration          0 
+    bmAttributes         0x80
+      (Bus Powered)
+    MaxPower              500mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           3
+      bInterfaceClass       255 Vendor Specific Class
+      bInterfaceSubClass    255 Vendor Specific Subclass
+      bInterfaceProtocol      0 
+      iInterface              5 MTP
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x82  EP 2 IN
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            2
+          Transfer Type            Bulk
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x0200  1x 512 bytes
+        bInterval               0
+      Endpoint Descriptor:
+        bLength                 7
+        bDescriptorType         5
+        bEndpointAddress     0x83  EP 3 IN
+        bmAttributes            3
+          Transfer Type            Interrupt
+          Synch Type               None
+          Usage Type               Data
+        wMaxPacketSize     0x001c  1x 28 bytes
+        bInterval               6
+Binary Object Store Descriptor:
+  bLength                 5
+  bDescriptorType        15
+  wTotalLength           22
+  bNumDeviceCaps          2
+  USB 2.0 Extension Device Capability:
+    bLength                 7
+    bDescriptorType        16
+    bDevCapabilityType      2
+    bmAttributes   0x00000002
+      HIRD Link Power Management (LPM) Supported
+  SuperSpeed USB Device Capability:
+    bLength                10
+    bDescriptorType        16
+    bDevCapabilityType      3
+    bmAttributes         0x00
+    wSpeedsSupported   0x000f
+      Device can operate at Low Speed (1Mbps)
+      Device can operate at Full Speed (12Mbps)
+      Device can operate at High Speed (480Mbps)
+      Device can operate at SuperSpeed (5Gbps)
+    bFunctionalitySupport   1
+      Lowest fully-functional device speed is Full Speed (12Mbps)
+    bU1DevExitLat           1 micro seconds
+    bU2DevExitLat         500 micro seconds
+can't get debug descriptor: Resource temporarily unavailable
+Device Status:     0x0000
+  (Bus Powered)
+~~~~
+
+
+---
+
+Sent from sourceforge.net because you indicated interest in <https://sourceforge.net/p/libmtp/bugs/1548/>
+
+
+
+To unsubscribe from further messages, please visit <https://sourceforge.net/auth/subscriptions/>
