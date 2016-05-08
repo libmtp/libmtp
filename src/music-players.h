@@ -607,6 +607,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1478/ */
   { "Acer", 0x0502, "Liquid Z330", 0x3750,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1552/ */
+  { "Acer", 0x0502, "Liquid Z630", 0x37ef,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1469/ */
   { "Acer", 0x0502, "Z530", 0x3822,
       DEVICE_FLAGS_ANDROID_BUGS },
