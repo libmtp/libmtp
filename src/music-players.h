@@ -451,6 +451,11 @@
   { "JVC", 0x04f1, "Alneo XA-HD500", 0x6105, DEVICE_FLAG_NONE },
 
   /*
+   * Jolla
+   */
+  { "Jolla", 0x2931, "Jolla", 0x0a07, DEVICE_FLAG_NONE },
+
+  /*
    * Philips
    */
   { "Philips", 0x0471, "HDD6320/00 or HDD6330/17", 0x014b, DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
