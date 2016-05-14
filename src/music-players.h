@@ -3278,6 +3278,9 @@
   /* https://sourceforge.net/p/libmtp/feature-requests/159/ */
   { "Wileyfox", 0x2970, "Swift 2", 0x2282, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/bugs/1554/ */
+  { "Kazam", 0x2970, "Trooper 650 4G", 0x9039, DEVICE_FLAGS_ANDROID_BUGS },
+
   /* https://sourceforge.net/p/libmtp/bugs/1303/ */
   { "Megafon", 0x1271, "Login+", 0x2012, DEVICE_FLAGS_ANDROID_BUGS },
 
