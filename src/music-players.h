@@ -3214,6 +3214,9 @@
   /* https://sourceforge.net/p/libmtp/feature-requests/163/ */
   { "bq", 0x2a47, "Aquaris M10 (MTP)", 0x200d,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1558/ */
+  { "bq", 0x2a47, "Avila Cooler (MTP)", 0x201d,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "bq", 0x2a47, "Krillin (MTP+ADB)", 0x0c02,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1311/ */
