@@ -914,6 +914,9 @@
   // Reported by Andree Jacobson <nmcandree@users.sourceforge.net>
   { "Toshiba", 0x0930, "Excite AT300", 0x0963,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1557/ */
+  { "Toshiba", 0x0930, "Excite AT200", 0x0960,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Nigel Cunningham <nigel@tuxonice.net>
   // Guessing on Android bugs
   { "Toshiba", 0x0930, "Thrive AT100/AT105", 0x7100,
@@ -2657,6 +2660,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/201/ */
   { "Lenovo", 0x17ef, "Lifetab S1034X", 0x78b0,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1562/ */
+  { "Lenovo", 0x17ef, "Vibe K4 Note", 0x78f6,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/213/ */
   { "Lenovo", 0x17ef, "Vibe P1 Pro", 0x78fc,
