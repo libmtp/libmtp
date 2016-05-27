@@ -2281,6 +2281,8 @@
   // Another OEM for Medion
   { "Google Inc (for Medion)", 0x18d1, "MD99000 (P9514)", 0xb00a,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1563/ */
+  { "Meizu", 0x18d1, "Pro 5 Ubuntu Phone", 0xd001, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Frederik Himpe <fhimpe@telenet.be>
   { "Google Inc (for LG Electronics)", 0x18d1, "P990/Optimus (Cyanogen)",
       0xd109, DEVICE_FLAGS_ANDROID_BUGS },
