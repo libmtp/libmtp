@@ -2927,6 +2927,9 @@
    * Reported by:
    * Michael Gurski <gurski@users.sourceforge.net>
    */
+  /* https://sourceforge.net/p/libmtp/bugs/1567/ */
+  { "InFocus", 0x0489, "M808", 0xc00b,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/138/ */
   { "InFocus", 0x0489, "M810", 0xc025,
       DEVICE_FLAGS_ANDROID_BUGS },
