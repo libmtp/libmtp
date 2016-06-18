@@ -2666,6 +2666,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/201/ */
   { "Lenovo", 0x17ef, "Lifetab S1034X", 0x78b0,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1572/ */
+  { "Lenovo", 0x17ef, "PHAB Plus", 0x78d1,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1562/ */
   { "Lenovo", 0x17ef, "Vibe K4 Note", 0x78f6,
       DEVICE_FLAGS_ANDROID_BUGS },
