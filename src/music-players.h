@@ -3182,6 +3182,9 @@
    */
   { "MediaTek Inc", 0x0e8d, "MT5xx and MT6xx SoCs", 0x0050,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1553/ */
+  { "Bravis", 0x0e8d, "A401 Neo", 0x0c03,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1422/ */
   { "MediaTek Inc", 0x0e8d, "MT65xx", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
