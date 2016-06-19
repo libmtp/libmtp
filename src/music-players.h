@@ -2652,6 +2652,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/168/ */
   { "Lenovo", 0x17ef, "Yoga Tablet 2 Pro", 0x77b1,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/219/ */
+  { "Lenovo", 0x17ef, "Tab S8-50F", 0x77d8,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/125/ */
   { "Lenovo", 0x17ef, "Vibe Z2", 0x77ea,
       DEVICE_FLAGS_ANDROID_BUGS },
