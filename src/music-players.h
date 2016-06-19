@@ -3375,6 +3375,8 @@
 
   /*  https://sourceforge.net/p/libmtp/bugs/1512/ */
   { "Allview" , 0x271d, "Energy P5", 0x4016, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1575/ */
+  { "Blu" , 0x271d, "Studio Energy 2", 0x4016, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* https://sourceforge.net/p/libmtp/bugs/1545/ */
   { "Zuk" , 0x2b4c, "Z1", 0x1004, DEVICE_FLAGS_ANDROID_BUGS },
