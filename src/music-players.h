@@ -603,6 +603,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/183/ */
   { "Acer", 0x0502, "Z200", 0x3683,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1579/ */
+  { "Acer", 0x0502, "A1-841", 0x365e,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1341/ */
   { "Acer", 0x0502, "Liquid S56", 0x3725,
       DEVICE_FLAGS_ANDROID_BUGS },
