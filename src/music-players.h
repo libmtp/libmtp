@@ -3222,6 +3222,16 @@
   { "Jolla", 0x2931, "Sailfish (ID1)", 0x0a01,
       DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* In update 4 the order of devices was changed for
+     better OS X / Windows suport and another device-id
+     got assigned for the MTP */
+  { "Jolla", 0x2931, "Sailfish (ID2)", 0x0a05,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
+  /* In a later version, the ID changed again. */
+  { "Jolla", 0x2931, "Sailfish (ID3)", 0x0a07,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
   /*
    * TCL? Alcatel?
    */
@@ -3250,12 +3260,6 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1245/ */
   { "DigiLand", 0x1f3a, "DL701Q", 0x0c02,
-      DEVICE_FLAGS_ANDROID_BUGS },
-
-  /* In update 4 the order of devices was changed for
-     better OS X / Windows suport and another device-id
-     got assigned for the MTP */
-  { "Jolla", 0x2931, "Sailfish (ID2)", 0x0a05,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
