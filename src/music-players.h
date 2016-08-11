@@ -3372,6 +3372,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1383/ */
   { "BLU", 0x0e8d, "Studio HD", 0x2008, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/feature-requests/161/ */
+  { "Cubot", 0x0e8d, "X17", 0x201d, DEVICE_FLAGS_ANDROID_BUGS },
+
   /* https://sourceforge.net/p/libmtp/bugs/1423/ */
   { "OnePlus", 0x2a70, "ONE A2001", 0x9011, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1450/ */
