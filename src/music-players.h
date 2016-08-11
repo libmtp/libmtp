@@ -3329,6 +3329,8 @@
   /* https://sourceforge.net/p/libmtp/feature-requests/115/ */
   { "Pegatron", 0x1d4d, "Hudl 2", 0x504a, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/support-requests/127/ */
+  { "Yota", 0x2916, "Phone C9660", 0x9039, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1229/ */
   { "Yota", 0x2916, "Phone 2", 0x914d, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1267/ */
