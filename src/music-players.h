@@ -3266,6 +3266,8 @@
    * bq
    * https://sourceforge.net/p/libmtp/feature-requests/128/
    */
+  { "bq", 0x2a47, "Krillin (MTP+ADB)", 0x0c02,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "bq", 0x2a47, "Krillin (MTP)", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/163/ */
@@ -3274,7 +3276,8 @@
   /* https://sourceforge.net/p/libmtp/bugs/1558/ */
   { "bq", 0x2a47, "Avila Cooler (MTP)", 0x201d,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "bq", 0x2a47, "Krillin (MTP+ADB)", 0x0c02,
+  /* https://sourceforge.net/p/libmtp/support-requests/224/ */
+  { "bq", 0x2a47, "Aquaris X5 (MTP)", 0x3003,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1311/ */
   { "bq", 0x2a47, "Aquarius E5-4G", 0x7f10,
