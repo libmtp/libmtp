@@ -2631,7 +2631,15 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Lenovo", 0x17ef, "IdeaPad A3000 (ID2)", 0x75be,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "Lenovo", 0x17ef, "IdeaTab S5000", 0x76e8,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Lenovo", 0x17ef, "Toga Tablet B6000-F", 0x76f2,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1155/ */
+  { "Lenovo", 0x17ef, "Yoga Tablet 10 B8000-H", 0x76ff,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1597/ */
+  { "Lenovo", 0x17ef, "K910SS", 0x7713,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1122/ */
   { "Lenovo", 0x17ef, "S930", 0x7718,
@@ -2639,21 +2647,16 @@
   /* https://sourceforge.net/p/libmtp/bugs/1250/ */
   { "Lenovo", 0x17ef, "A5500-F", 0x772b,
       DEVICE_FLAGS_ANDROID_BUGS },
-  /* https://sourceforge.net/p/libmtp/bugs/1556/ */
-  { "Lenovo", 0x17ef, "A3500-FL", 0x7738,
-      DEVICE_FLAGS_ANDROID_BUGS },
-  { "Lenovo", 0x17ef, "LifeTab E733X", 0x775a,
-      DEVICE_FLAGS_ANDROID_BUGS },
-  { "Lenovo", 0x17ef, "IdeaTab S5000", 0x76e8,
-      DEVICE_FLAGS_ANDROID_BUGS },
-  /* https://sourceforge.net/p/libmtp/bugs/1155/ */
-  { "Lenovo", 0x17ef, "Yoga Tablet 10 B8000-H", 0x76ff,
-      DEVICE_FLAGS_ANDROID_BUGS },
   /*  https://sourceforge.net/p/libmtp/bugs/1391/ */
   { "Lenovo", 0x17ef, "A7600-F", 0x7731,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1291/ */
   { "Lenovo", 0x17ef, "A3500-F", 0x7737,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1556/ */
+  { "Lenovo", 0x17ef, "A3500-FL", 0x7738,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Lenovo", 0x17ef, "LifeTab E733X", 0x775a,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/186/ */
   { "Lenovo", 0x17ef, "Yoga Tablet 2 - 1050F", 0x77a4,
