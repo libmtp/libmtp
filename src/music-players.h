@@ -1017,6 +1017,8 @@
   /* https://sourceforge.net/p/libmtp/bugs/1581/ */
   { "Archos", 0x0e79, "40 Helium phone", 0x52c2, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/support-requests/222/ */
+  { "Archos", 0x0e79, "Diamond S", 0x5305, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1587/ */
   { "Archos", 0x0e79, "50d neon ", 0x5371, DEVICE_FLAGS_ANDROID_BUGS },
 
