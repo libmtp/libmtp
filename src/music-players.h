@@ -3157,6 +3157,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1304/ */
   { "Alcatel", 0x1bbb, "OneTouch 5042D (MTP)", 0xa00e,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1605/ */
+  { "Alcatel", 0x1bbb, "OneTouch Idol 3 ID2 (MTP)", 0xaf00,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/189/ */
   { "Alcatel", 0x1bbb, "OneTouch Idol 3 small (MTP)", 0xaf2a,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -3413,7 +3416,7 @@
   /*  https://sourceforge.net/p/libmtp/bugs/1512/ */
   { "Allview" , 0x271d, "Energy P5", 0x4016, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1575/ */
-  { "Blu" , 0x271d, "Studio Energy 2", 0x4016, DEVICE_FLAGS_ANDROID_BUGS },
+  { "BLU" , 0x271d, "Studio Energy 2", 0x4016, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* https://sourceforge.net/p/libmtp/bugs/1545/ */
   { "Zuk" , 0x2b4c, "Z1", 0x1004, DEVICE_FLAGS_ANDROID_BUGS },
