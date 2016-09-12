@@ -450,10 +450,8 @@
   // From Mark Veinot
   { "JVC", 0x04f1, "Alneo XA-HD500", 0x6105, DEVICE_FLAG_NONE },
 
-  /*
-   * Jolla
-   */
-  { "Jolla", 0x2931, "Jolla", 0x0a07, DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/bugs/1613/ */
+  { "Intex", 0x05c6, "Aqua Fish", 0x0a07, DEVICE_FLAG_NONE },
 
   /*
    * Philips
