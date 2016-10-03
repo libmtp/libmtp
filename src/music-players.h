@@ -3293,6 +3293,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1311/ */
   { "bq", 0x2a47, "Aquarius E5-4G", 0x7f10,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/181/ */
+  { "bq", 0x2a47, "Aquarius X5 (MTP) (ID2)", 0x7f11,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1541/ */
   { "bq", 0x2a47, "Aquarius M5.5", 0x901b,
       DEVICE_FLAGS_ANDROID_BUGS },
