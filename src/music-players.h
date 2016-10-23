@@ -2634,6 +2634,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Lenovo", 0x17ef, "IdeaPad A3000 (ID2)", 0x75be,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/232/ */
+  { "Lenovo", 0x17ef, "A706", 0x7614,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Lenovo", 0x17ef, "IdeaTab S5000", 0x76e8,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Lenovo", 0x17ef, "Toga Tablet B6000-F", 0x76f2,
