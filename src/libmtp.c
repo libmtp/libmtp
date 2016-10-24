@@ -1784,24 +1784,15 @@ static void parse_extension_descriptor(LIBMTP_mtpdevice_t *mtpdevice,
           i++;
         if (i < strlen(element)) {
           char *name = strndup(element, i);
-          int majstart = i+1;
-          // printf("    Extension: \"%s\"\n", name);
+          int major = 0, minor = 0;
 
-          /* Parse for minor/major punctuation mark for this extension */
-          while ((i < strlen(element)) && (element[i] != '.'))
-            i++;
-          if (i > majstart && i < strlen(element)) {
+	  /* extension versions have to be MAJOR.MINOR, but Samsung has one
+	   * with just 0, so just cope with those cases too */
+	  if (	(2 == sscanf(element+i+1,"%d.%d",&major,&minor)) || 
+	  	(1 == sscanf(element+i+1,"%d",&major))
+	  ) {
             LIBMTP_device_extension_t *extension;
-            int major = 0;
-            int minor = 0;
-            char *majorstr = strndup(element + majstart, i - majstart);
-            char *minorstr = strndup(element + i + 1, strlen(element) - i - 1);
-            major = atoi(majorstr);
-            minor = atoi(minorstr);
-            // printf("    Major: \"%s\" (parsed %d) Minor: \"%s\" (parsed %d)\n",
-            //      majorstr, major, minorstr, minor);
-	    free(majorstr);
-	    free(minorstr);
+
             extension = malloc(sizeof(LIBMTP_device_extension_t));
             extension->name = name;
             extension->major = major;
