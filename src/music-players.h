@@ -2673,6 +2673,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Lenovo", 0x17ef, "LifeTab E733X", 0x775a,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1595/ */
+  { "Lenovo", 0x17ef, "K920", 0x778f,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/186/ */
   { "Lenovo", 0x17ef, "Yoga Tablet 2 - 1050F", 0x77a4,
       DEVICE_FLAGS_ANDROID_BUGS },
