@@ -2723,6 +2723,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Lenovo", 0x17ef, "Vibe K5 Note", 0x7999,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1624/ */
+  { "Lenovo", 0x17ef, "B Smartphone", 0x7a18,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Huawei
