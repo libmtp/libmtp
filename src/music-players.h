@@ -2715,6 +2715,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1531/ */
   { "Lenovo", 0x17ef, "Vibe X", 0x7902,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/235/ */
+  { "Lenovo", 0x17ef, "P1ma40", 0x7921,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1465/ */
   { "Lenovo", 0x17ef, "A1000 Smartphone", 0x7928,
       DEVICE_FLAGS_ANDROID_BUGS },
