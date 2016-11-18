@@ -3167,19 +3167,14 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
     tmpext = tmpext->next;
   }
   printf("Supported operations:\n");
-  for (i=0;i<params->deviceinfo.OperationsSupported_len;i++) {
-    char txt[256];
-
-    (void) ptp_render_ofc(params, params->deviceinfo.OperationsSupported[i],
-			     sizeof(txt), txt);
-    printf("   %04x: %s\n", params->deviceinfo.OperationsSupported[i], txt);
-  }
+  for (i=0;i<params->deviceinfo.OperationsSupported_len;i++)
+    printf("   %04x: %s\n", params->deviceinfo.OperationsSupported[i], ptp_get_opcode_name(params, params->deviceinfo.OperationsSupported[i]));
   printf("Events supported:\n");
   if (params->deviceinfo.EventsSupported_len == 0) {
     printf("   None.\n");
   } else {
     for (i=0;i<params->deviceinfo.EventsSupported_len;i++) {
-      printf("   0x%04x\n", params->deviceinfo.EventsSupported[i]);
+      printf("   0x%04x (%s)\n", params->deviceinfo.EventsSupported[i], ptp_strerror(params->deviceinfo.EventsSupported[i], params->deviceinfo.VendorExtensionID));
     }
   }
   printf("Device Properties Supported:\n");
