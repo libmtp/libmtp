@@ -3179,6 +3179,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "SHARP Corporation", 0x04dd, "SH-06E", 0x96ca,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/192/ */
+  { "SHARP Corporation", 0x04dd, "SHV35 AQUOS U ", 0x99d2,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * T & A Mobile phones Alcatel and TCT
