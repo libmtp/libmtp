@@ -2754,6 +2754,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1550/ */
   { "Huawei", 0x12d1, "H60-L12", 0x107a,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1640/ */
+  { "Huawei", 0x12d1, "Nova", 0x107d,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/173/ */
   { "Huawei", 0x12d1, "P9 Plus", 0x107e,
       DEVICE_FLAGS_ANDROID_BUGS },
