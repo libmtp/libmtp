@@ -628,6 +628,9 @@
   /* Reported by Jocelyn Mayer <l_indien@magic.fr> */
   { "Acer", 0x0502, "Iconia One 10", 0x3841,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* Mia */
+  { "Acer", 0x0502, "Liquid Zest Plus", 0x38bb,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * SanDisk
