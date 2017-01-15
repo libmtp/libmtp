@@ -2588,6 +2588,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1364/ */
   { "Asus", 0x0b05, "Zenfone 2 ZE551ML (MTP)", 0x5f03,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1642/ */
+  { "Asus", 0x0b05, "ME581CL", 0x7770,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1232/ */
   { "Asus", 0x0b05, "MemoPad 7 (ME572CL)", 0x7772,
       DEVICE_FLAGS_ANDROID_BUGS },
