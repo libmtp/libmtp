@@ -139,7 +139,7 @@ int main(int argc, char **argv)
 
     /* Loop over storages */
     for (storage = device->storage; storage != 0; storage = storage->next) {
-      dump_files(device, storage->id, 0);
+      dump_files(device, storage->id, LIBMTP_FILES_AND_FOLDERS_ROOT);
     }
     LIBMTP_Release_Device(device);
   }

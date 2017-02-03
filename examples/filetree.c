@@ -147,7 +147,7 @@ int main (int argc, char **argv)
     /* Loop over storages */
     for (storage = device->storage; storage != 0; storage = storage->next) {
       fprintf(stdout, "Storage: %s\n", storage->StorageDescription);
-      recursive_file_tree(device, storage, 0, 0);
+      recursive_file_tree(device, storage, LIBMTP_FILES_AND_FOLDERS_ROOT, 0);
     }
 
   bailout:

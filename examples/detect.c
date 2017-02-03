@@ -231,7 +231,7 @@ int main (int argc, char **argv)
       /* Get file listing for the root directory, no other dirs */
       files = LIBMTP_Get_Files_And_Folders(device,
 					   storage->id,
-					   0);
+					   LIBMTP_FILES_AND_FOLDERS_ROOT);
 
       if (files != NULL) {
 	LIBMTP_file_t *file, *tmp;
