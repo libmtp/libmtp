@@ -2407,6 +2407,9 @@
   { "RIM", 0x0fca, "BlackBerry Priv", 0x8031, DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_SWITCH_MODE_BLACKBERRY | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
 
+  /* https://sourceforge.net/p/libmtp/bugs/1658/ */
+  { "RIM", 0x0fca, "BlackBerry Dtek 60", 0x8041, DEVICE_FLAGS_ANDROID_BUGS },
+
   /*
    * Nextar
    */
