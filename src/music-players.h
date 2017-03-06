@@ -3533,6 +3533,9 @@
   { "Recon Instruments" , 0x2523, "Jet", 0xd209, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1571/ */
   { "Recon Instruments" , 0x2523, "Snow2 HUD", 0xd109, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /* https://sourceforge.net/p/libmtp/bugs/1663/ */
+  { "Nextbit" , 0x2c3f, "Robin", 0x0001, DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Other strange stuff.
    */
