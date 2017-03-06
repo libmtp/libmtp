@@ -1859,6 +1859,8 @@
   /* https://sourceforge.net/p/libmtp/bugs/1649/ */
   { "SONY", 0x0fce, "XPeria XA MTP", 0x01de,
       DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria XZ MTP", 0x01e7,
+      DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "F5321 MTP", 0x01e8,
       DEVICE_FLAG_NONE },
 
@@ -1965,6 +1967,8 @@
   { "SONY", 0x0fce, "XPeria Z5 Compact MTP+CDROM", 0x41da,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XA MTP+CDROM", 0x41de,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria XZ MTP+CDROM", 0x41e7,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "F5321 MTP+CDROM", 0x41e8,
       DEVICE_FLAG_NONE },
@@ -2095,6 +2099,8 @@
   { "SONY", 0x0fce, "XPeria Z5 Compact MTP+ADB", 0x51da,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XA MTP+ADB", 0x51de,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria XZ MTP+ADB", 0x51e7,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "F5321 MTP+ADB", 0x51e8,
       DEVICE_FLAG_NONE },
