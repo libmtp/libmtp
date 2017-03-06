@@ -1,0 +1,118 @@
+
+
+
+---
+
+** [bugs:#1661] Yotaphone MTP**
+
+**Status:** open
+**Group:** 1.1.11
+**Created:** Wed Feb 22, 2017 07:51 PM UTC by Anonymous
+**Last Updated:** Wed Feb 22, 2017 07:51 PM UTC
+**Owner:** nobody
+
+
+gft reports the following:
+Device 0 (VID=2916 and PID=9139) is UNKNOWN in libmtp v1.1.11.
+Please report this VID/PID and the device model to the libmtp development team.
+Yotaphone2
+Gentoo
+~~~
+~ # /usr/bin/mtp-detect 
+libmtp version: 1.1.11
+
+Listing raw device(s)
+Device 0 (VID=2916 and PID=9139) is UNKNOWN in libmtp v1.1.11.
+Please report this VID/PID and the device model to the libmtp development team
+   Found 1 device(s):
+   2916:9139 @ bus 1, dev 3
+Attempting to connect device(s)
+ignoring libusb_claim_interface() = -6PTP_ERROR_IO: failed to open session, trying again after resetting USB interface
+LIBMTP libusb: Attempt to reset device
+Android device detected, assigning default bug flags
+USB low-level info:
+   bcdUSB: 528
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 2916
+   idProduct: 9139
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Raw device info:
+      Bus location: 1
+      Device number: 3
+      Device entry info:
+         Vendor: (null)
+         Vendor id: 0x2916
+         Product: (null)
+         Vendor id: 0x9139
+         Device flags: 0x18008106
+Configuration 0, interface 0, altsetting 0:
+   Interface description contains the string "MTP"
+   Device recognized as MTP, no further probing.
+Device info:                                                                                                      
+   Manufacturer: Yota Devices Limited                                                                             
+   Model: YotaPhone                                                                                               
+   Device version: 1.0                                                                                            
+   Serial number: c70ab674                                                                                        
+   Vendor extension ID: 0x00000006                                                                                
+   Vendor extension description: microsoft.com: 1.0; android.com: 1.0;                                            
+   Detected object size: 64 bits                                                                                  
+   Extensions:                                                                                                    
+        microsoft.com: 1.0                                                                                        
+        android.com: 1.0            
+        
+Supported operations:                                                                                             
+   1001: get device info                                                                                          
+   1002: Open session                                                                                             
+   1003: Close session                                                                                            
+   1004: Get storage IDs                                                                                          
+   1005: Get storage info                                                                                         
+   1006: Get number of objects                                                                                    
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100a: Get thumbnail
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+   1017: Reset device property value
+   101b: Get partial object
+   9801: Get object properties supported
+   9802: Get object property description
+   9803: Get object property value
+   9804: Set object property value
+   9805: Get object property list
+   9810: Get object references
+   9811: Set object references
+   95c1: Get Partial Object (64bit Offset)
+   95c2: Send Partial Object
+   95c3: Truncate Object
+   95c4: Begin Edit Object
+   95c5: End Edit Object
+Events supported:
+   0x4002
+   0x4003
+   0x4004
+   0x4005
+   0x4006
+Device Properties Supported:
+   0xd401: Synchronization Partner
+   0xd402: Friendly Device Name
+   0x5003: Image Size
+   0x5001: Battery Level
+
+~~~
+
+
+---
+
+Sent from sourceforge.net because you indicated interest in <https://sourceforge.net/p/libmtp/bugs/1661/>
+
+
+
+To unsubscribe from further messages, please visit <https://sourceforge.net/auth/subscriptions/>
