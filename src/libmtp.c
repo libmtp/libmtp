@@ -1863,6 +1863,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *rawdevi
   memset(current_params, 0, sizeof(PTPParams));
   current_params->device_flags = rawdevice->device_entry.device_flags;
   current_params->nrofobjects = 0;
+  current_params->cachetime = 2;
   current_params->objects = NULL;
   current_params->response_packet_size = 0;
   current_params->response_packet = NULL;
