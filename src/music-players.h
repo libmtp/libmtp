@@ -2309,14 +2309,14 @@
   // Reported by Michael Hess <mhess126@gmail.com>
   { "Google Inc (for Asus)", 0x18d1, "Nexus 7 (MTP+ADB)", 0x4e42,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Google Inc (for LG Electronics/Samsung)", 0x18d1,
-      "Nexus 4/5/7/10 (MTP)", 0x4ee1,
+  { "Google Inc", 0x18d1, "Nexus/Pixel (MTP)", 0x4ee1,
       (DEVICE_FLAGS_ANDROID_BUGS | DEVICE_FLAG_PROPLIST_OVERRIDES_OI) & ~DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
-  { "Google Inc (for LG Electronics/Samsung)", 0x18d1,
-      "Nexus 4/5/7/10 (MTP+ADB)", 0x4ee2,
+  { "Google Inc", 0x18d1, "Nexus/Pixel (MTP+ADB)", 0x4ee2,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1255/ */
-  { "Google", 0x18d1, "Nexus 5 (MTP)", 0x4ee5,
+  { "Google Inc", 0x18d1, "Nexus/Pixel (PTP)", 0x4ee5,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Google Inc", 0x18d1, "Nexus/Pixel (PTP+ADB)", 0x4ee6,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1444/ */
   { "Google", 0x18d1, "Pixel C (MTP)", 0x5202,
