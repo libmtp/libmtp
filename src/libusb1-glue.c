@@ -1181,10 +1181,7 @@ ptp_usb_sendreq (PTPParams* params, PTPContainer* req, int dataphase)
 	unsigned long written = 0;
 	unsigned long towrite;
 
-	char txt[256];
-
-	(void) ptp_render_ofc (params, req->Code, sizeof(txt), txt);
-	LIBMTP_USB_DEBUG("REQUEST: 0x%04x, %s\n", req->Code, txt);
+        LIBMTP_USB_DEBUG("REQUEST: 0x%04x, %s\n", req->Code, ptp_get_opcode_name(params, req->Code));
 
 	/* build appropriate USB container */
 	usbreq.length=htod32(PTP_USB_BULK_REQ_LEN-
