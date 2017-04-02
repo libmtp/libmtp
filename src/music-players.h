@@ -386,8 +386,8 @@
       DEVICE_FLAG_FLAC_IS_UNKNOWN },
   { "Samsung", 0x04e8,
       "Galaxy models (MTP)", 0x6860,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      /*DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |*/
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT |
       DEVICE_FLAG_PROPLIST_OVERRIDES_OI |
@@ -2174,7 +2174,7 @@
   { "Motorola", 0x22b8, "Moto G (ID1)", 0x2e76,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Moto G (ID2)", 0x2e82,
-      DEVICE_FLAGS_ANDROID_BUGS },
+      DEVICE_FLAGS_ANDROID_BUGS & ~DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL & ~DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST},
   /* https://sourceforge.net/p/libmtp/bugs/1030/, PTP Id */
   { "Motorola", 0x22b8, "Moto G (XT1032)", 0x2e84,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -3161,6 +3161,9 @@
    * Intel
    * Also sold rebranded as Orange products
    */
+  /* https://sourceforge.net/p/libmtp/feature-requests/215/ */
+  { "Intel", 0x8087, "Point of View TAB-I847", 0x092a, DEVICE_FLAGS_ANDROID_BUGS },
+
   { "Intel", 0x8087, "Xolo 900/AZ210A", 0x09fb, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1256/ */
   { "Intel", 0x8087, "Noblex T7A21", 0x0a16, DEVICE_FLAGS_ANDROID_BUGS },
