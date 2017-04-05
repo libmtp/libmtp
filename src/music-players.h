@@ -2908,6 +2908,9 @@
   { "HTC", 0x0bb4, "Android Device ID1 (Zopo, HD2, Bird...)", 0x0c02,
       DEVICE_FLAGS_ANDROID_BUGS },
 #endif
+  /* https://sourceforge.net/p/libmtp/bugs/1677/ */
+  { "DEXP", 0x0bb4, "Ixion XL145 Snatch", 0x0c08,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "EVO 4G LTE/One V (ID1)", 0x0c93,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "HTC", 0x0bb4, "EVO 4G LTE/One V (ID2)", 0x0ca8,
