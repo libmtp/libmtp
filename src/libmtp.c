@@ -2717,8 +2717,12 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
     prop++;
   }
   /* mark last entry also */
-  params->objects[i].flags |= PTPOBJECT_OBJECTINFO_LOADED;
-  params->nrofobjects = i+1;
+  if (i >= 0) {
+    params->objects[i].flags |= PTPOBJECT_OBJECTINFO_LOADED;
+    params->nrofobjects = i+1;
+  } else {
+    params->nrofobjects = 0;
+  }
   free (props);
   /* The device might not give the list in linear ascending order */
   ptp_objects_sort (params);
