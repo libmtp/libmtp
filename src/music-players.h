@@ -2660,6 +2660,9 @@
   // Reported by: anonymous sourceforge user
   { "Lenovo", 0x17ef, "Lifetab S9512", 0x74cc,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/217/ */
+  { "Lenovo", 0x17ef, "Vibe K5", 0x74ee,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/170/ */
   { "Lenovo", 0x17ef, "S660", 0x74f8,
       DEVICE_FLAGS_ANDROID_BUGS },
