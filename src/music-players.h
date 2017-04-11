@@ -2289,6 +2289,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc (for Sony)", 0x18d1, "S1", 0x05b3,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/218/ */
+  { "Google Inc (for Fairphone)", 0x18d1, "Fairphone 2", 0x0a07,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by anonymous Sourceforge user
   { "Google Inc (for Barnes & Noble)", 0x18d1, "Nook Color", 0x2d02,
       DEVICE_FLAGS_ANDROID_BUGS },
