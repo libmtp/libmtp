@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2005-2007 Richard A. Low <richard@wentnet.com>
  * Copyright (C) 2005-2013 Linus Walleij <triad@df.lth.se>
- * Copyright (C) 2006-2007,2015 Marcus Meissner <marcus@jet.franken.de>
+ * Copyright (C) 2006-2007,2015-2017 Marcus Meissner <marcus@jet.franken.de>
  * Copyright (C) 2007 Ted Bullock
  * Copyright (C) 2012 Sony Mobile Communications AB
  *
@@ -1614,6 +1614,9 @@
       DEVICE_FLAGS_SONY_NWZ_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1540/ */
   { "Sony", 0x054c, "NWZ-E474", 0x06a9,
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1688/ */
+  { "Sony", 0x054c, "NWZ-E384", 0x0882,
       DEVICE_FLAGS_SONY_NWZ_BUGS },
   { "Sony", 0x054c, "DCR-SR75", 0x1294,
       DEVICE_FLAGS_SONY_NWZ_BUGS },
