@@ -4,8 +4,8 @@ os:
  - linux
 
 env:
- - EXTRALIBS="libusb-dev"
- - EXTRALIBS="libusb-1.0-0-dev"
+ - EXTRALIBS="gettext libusb-dev"
+ - EXTRALIBS="gettext libusb-1.0-0-dev"
 
 # Note: Keep the sudo commands in .travis.yml - they do not work from
 #       a helper shell script.
