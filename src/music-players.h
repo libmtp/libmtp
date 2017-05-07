@@ -3306,6 +3306,8 @@
   { "Kyocera", 0x0482, "KC-S701", 0x09cb, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/192/ */
   { "Kyocera", 0x0482, "C6740N", 0x0a73, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/220/ */
+  { "Kyocera", 0x0482, "Duraforce XD", 0x0a9a, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * HiSense
