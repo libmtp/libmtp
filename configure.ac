@@ -114,7 +114,7 @@ AM_CONDITIONAL(MS_LIB_EXE, test x$ms_lib_exe = xyes)
 
 # Check for libusb-1.0
 PKG_CHECK_MODULES(LIBUSB, libusb-1.0 >= 1.0.0,[
-   LIBUSB_VER=`pkg-config --modversion libusb-1.0`
+   LIBUSB_VER=`$PKG_CONFIG --modversion libusb-1.0`
    LIBUSB_REQUIRES='libusb-1.0'
    AC_DEFINE(HAVE_LIBUSB1, [], [Have libusb 1.0])
    found_libusb1_pkg=yes
@@ -125,7 +125,7 @@ PKG_CHECK_MODULES(LIBUSB, libusb-1.0 >= 1.0.0,[
         LIBUSB_VER=1.0
    ],[
       PKG_CHECK_MODULES(LIBUSB, libusb >= 0.1.8, [
-         LIBUSB_VER=`pkg-config --modversion libusb`
+         LIBUSB_VER=`$PKG_CONFIG --modversion libusb`
          LIBUSB_REQUIRES='libusb'
          AC_DEFINE(HAVE_LIBUSB0, [], [Have libusb 0.x])
          found_libusb0_pkg=yes
