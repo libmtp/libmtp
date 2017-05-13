@@ -2783,6 +2783,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1664/ */
   { "Lenovo", 0x17ef, "Vibe K4", 0x79b7,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/242/ */
+  { "Lenovo", 0x17ef, "Tab 3 10 Plus", 0x79de,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1624/ */
   { "Lenovo", 0x17ef, "B Smartphone", 0x7a18,
       DEVICE_FLAGS_ANDROID_BUGS },
