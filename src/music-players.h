@@ -2834,6 +2834,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/227/ */
   { "Huawei", 0x12d1, "Y560-L01", 0x259c,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /*  https://sourceforge.net/p/libmtp/bugs/1695/ */
+  { "Huawei", 0x12d1, "unknown 1", 0x2608,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Huawei", 0x12d1, "Mediapad (mode 0)", 0x360f,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Bearsh <bearsh@users.sourceforge.net>
