@@ -1039,6 +1039,9 @@
   /* https://sourceforge.net/p/libmtp/feature-requests/209/ */
   { "Archos", 0x0e79, "55 diamond Selfie", 0x5465, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/feature-requests/221/ */
+  { "Archos", 0x0e79, "50 Helium Plus", 0x5229, DEVICE_FLAGS_ANDROID_BUGS },
+
   /*
    * Dunlop (OEM of EGOMAN ltd?) reported by Nanomad
    * This unit is falsely detected as USB mass storage in Linux
@@ -1357,6 +1360,9 @@
 
   /* Also Thalia Toline. https://sourceforge.net/p/libmtp/bugs/1156/ */
   {"iRiver", 0x1e68, "Tolino Tab 7", 0x1002,
+    DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1694/ */
+  {"iRiver", 0x1e68, "Tolino Tab 8", 0x1007,
     DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
