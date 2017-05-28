@@ -1367,6 +1367,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1694/ */
   {"iRiver", 0x1e68, "Tolino Tab 8", 0x1007,
     DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1699/ */
+  {"Trekstor", 0x1e68, "SurfTab breeze 7.0 quad 3G", 0x1045,
+    DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Disney/Tevion/MyMusix
