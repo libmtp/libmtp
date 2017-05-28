@@ -2785,6 +2785,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1465/ */
   { "Lenovo", 0x17ef, "A1000 Smartphone ADB", 0x7929,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/224/ */
+  { "Lenovo", 0x17ef, "Yoga 10 Tablet YT3-X50F", 0x7932,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/204/ */
   { "Lenovo", 0x17ef, "TAB 2 A10-30", 0x7949,
       DEVICE_FLAGS_ANDROID_BUGS },
