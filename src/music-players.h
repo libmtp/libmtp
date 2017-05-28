@@ -1515,6 +1515,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/134/ */
   { "LG Electronics Inc.", 0x1004, "G3 (VS985)", 0x626e,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/222/ */
+  { "LG Electronics Inc.", 0x1004, "LG G5 Phone", 0x62ce,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * This VID+PID is used by a lot of LG models:
    * E430
