@@ -631,6 +631,9 @@
   /* Mia */
   { "Acer", 0x0502, "Liquid Zest Plus", 0x38bb,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* Richard Waterbeek <richard@fotobakje.nl> on libmtp-discuss */
+  { "Acer", 0x0502, "Liquid Liquid Z6E", 0x3938,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * SanDisk
