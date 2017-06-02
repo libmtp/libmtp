@@ -690,21 +690,22 @@ void mtpz_encryption_expand_key_inner(unsigned char *constant, int key_len, unsi
 
 	switch (key_len)
 	{
-		case 16:
-			ks = 16 * (10 + 1);
-			break;
+	case 16:
+		ks = 16 * (10 + 1);
+		break;
 
-		case 24:
-			ks = 16 * (12 + 1);
-			break;
+	case 24:
+		ks = 16 * (12 + 1);
+		break;
 
-		case 32:
-			ks = 16 * (14 + 1);
-			break;
+	case 32:
+		ks = 16 * (14 + 1);
+		break;
 
-		default:
-			*out = NULL;
-			*out_len = 0;
+	default:
+		*out = NULL;
+		*out_len = 0;
+		return;
 	}
 
 	unsigned char *key = (unsigned char *)malloc(ks);
