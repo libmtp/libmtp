@@ -1,0 +1,16 @@
+Unable to open ~/.mtpz-data for reading, MTPZ disabled.
+libmtp version: 1.1.8
+
+Listing raw device(s)
+Device 0 (VID=12d1 and PID=255d) is UNKNOWN.
+Please report this VID/PID and the device model to the libmtp development team
+   Found 1 device(s):
+   12d1:255d @ bus 1, dev 17
+Attempting to connect device(s)
+ignoring libusb_claim_interface() = -6PTP_ERROR_IO: failed to open session, trying again after resetting USB interface
+LIBMTP libusb: Attempt to reset device
+inep: usb_get_endpoint_status(): Device or resource busy
+outep: usb_get_endpoint_status(): Device or resource busy
+ignoring libusb_claim_interface() = -6LIBMTP PANIC: failed to open session on second attempt
+Unable to open raw device 0
+OK.
