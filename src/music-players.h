@@ -3244,6 +3244,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1164/ */
   { "Redmi", 0x2717, "HM 1S (MTP)", 0x1268,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1702/ */
+  { "Xiaomi", 0x2717, "HM NOTE 1LTEW 4G Phone (MTP)", 0x1360,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/discussion/535190/ */
   { "Xiaomi", 0x2717, "HM NOTE 1LTEW MIUI (MTP)", 0x1368,
       DEVICE_FLAGS_ANDROID_BUGS },
