@@ -110,3 +110,4 @@ LIBMTP_BeginEditObject
 LIBMTP_EndEditObject
 LIBMTP_TruncateObject
 LIBMTP_Check_Capability
+LIBMTP_Custom_Operation

@@ -1058,6 +1058,13 @@ int LIBMTP_Read_Event(LIBMTP_mtpdevice_t *, LIBMTP_event_t *, uint32_t *);
 int LIBMTP_Read_Event_Async(LIBMTP_mtpdevice_t *, LIBMTP_event_cb_fn, void *);
 int LIBMTP_Handle_Events_Timeout_Completed(struct timeval *, int *);
 
+/**
+ * @}
+ * @defgroup custom Custom operations API.
+ * @{
+ */
+int LIBMTP_Custom_Operation(LIBMTP_mtpdevice_t *, uint16_t, int, ...);
+
 /** @} */
 
 /* End of C++ exports */

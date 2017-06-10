@@ -45,6 +45,7 @@
 
 #include "mtpz.h"
 
+#include <stdarg.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <unistd.h>
@@ -9153,4 +9154,37 @@ static void update_metadata_cache(LIBMTP_mtpdevice_t *device, uint32_t object_id
 
   ptp_remove_object_from_cache(params, object_id);
   add_object_to_cache(device, object_id);
+}
+
+
+/**
+ * Issue custom (e.g. vendor specific) operation (without data phase)
+ * @param device a pointer to the device to send custom operation to.
+ * @param code operation code to send.
+ * @param n_param number of parameters passed.
+ * @param ... uint32_t operation specific parameters.
+ */
+int LIBMTP_Custom_Operation(LIBMTP_mtpdevice_t *device, uint16_t code, int n_param, ...)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  PTPContainer ptp;
+  va_list args;
+  uint16_t ret;
+  int i;
+
+  ptp.Code = code;
+  ptp.Nparam = n_param;
+  va_start(args, n_param);
+  for (i = 0; i < n_param; i++)
+    (&ptp.Param1)[i] = va_arg(args, uint32_t);
+  va_end(args);
+
+  ret = ptp_transaction_new(params, &ptp, PTP_DP_NODATA, 0, NULL);
+
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Custom_Operation(): failed to execute operation.");
+    return -1;
+  }
+
+  return 0;
 }
