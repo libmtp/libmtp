@@ -3204,8 +3204,12 @@
    * Hisense
    */
   // Reported by Anonymous SourceForge users
+  { "HiSense", 0x109b, "Sero 7 Pro", 0x9105, DEVICE_FLAGS_ANDROID_BUGS },
   { "Hisense", 0x109b, "E860 (ID1)", 0x9106, DEVICE_FLAGS_ANDROID_BUGS },
   { "Hisense", 0x109b, "E860 (ID2)", 0x9109, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1704/ */
+  { "Crosscall", 0x109b, "Trekker M1 core", 0x9130, DEVICE_FLAGS_ANDROID_BUGS },
+
 
   /*
    * Intel
@@ -3345,12 +3349,6 @@
   { "Kyocera", 0x0482, "C6740N", 0x0a73, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/220/ */
   { "Kyocera", 0x0482, "Duraforce XD", 0x0a9a, DEVICE_FLAGS_ANDROID_BUGS },
-
-  /*
-   * HiSense
-   */
-  { "HiSense", 0x109b, "Sero 7 Pro", 0x9105,
-      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Hewlett-Packard
