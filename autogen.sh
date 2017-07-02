@@ -16,7 +16,8 @@ fail() {
 echo "Removing libtool cruft"
 rm -f ltmain.sh config.guess config.sub
 echo "Running libtoolize"
-libtoolize --copy --force || fail
+(glibtoolize --version) < /dev/null > /dev/null 2>&1 && LIBTOOLIZE=glibtoolize || LIBTOOLIZE=libtoolize
+$LIBTOOLIZE --copy --force || fail
 
 # Refresh GNU autotools toolchain: aclocal autoheader
 echo "Removing aclocal cruft"
