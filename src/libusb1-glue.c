@@ -52,6 +52,7 @@
  * spend a bit of time collecting data.  Higher values also
  * make connecting/disconnecting more reliable.
  */
+#define USB_START_TIMEOUT 5000
 #define USB_TIMEOUT_DEFAULT     20000
 #define USB_TIMEOUT_LONG        60000
 static inline int get_timeout(PTP_USB* ptp_usb)
@@ -2175,6 +2176,8 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
     return LIBMTP_ERROR_CONNECTING;
   }
 
+  /* Special short timeout for the first trial of opensession. */
+  set_usb_device_timeout(ptp_usb, USB_START_TIMEOUT);
   /*
    * This works in situations where previous bad applications
    * have not used LIBMTP_Release_Device on exit
@@ -2192,6 +2195,7 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
       return LIBMTP_ERROR_CONNECTING;
     }
 
+    /* Normal timeout will have been restored by init_ptp_usb */
     /* Device has been reset, try again */
     if ((ret = ptp_opensession(params, 1)) == PTP_ERROR_IO) {
       LIBMTP_ERROR("LIBMTP PANIC: failed to open session on second attempt\n");
@@ -2217,6 +2221,9 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
     free (ptp_usb);
     return LIBMTP_ERROR_CONNECTING;
   }
+
+  /* If everything is good, ensure to reset the timeout to the correct value */
+  set_usb_device_timeout(ptp_usb, get_timeout(ptp_usb));
 
   /* OK configured properly */
   *usbinfo = (void *) ptp_usb;
