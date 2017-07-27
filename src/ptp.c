@@ -2474,15 +2474,34 @@ ptp_canon_eos_getobjectinfoex (
 
 	xdata = data+sizeof(uint32_t);
 	for (i=0;i<*nrofentries;i++) {
-		if ((dtoh32a(xdata) + (xdata-data)) > size) {
-			ptp_debug (params, "reading canon FEs run over read data size?\n");
+		unsigned int entrysize;
+
+		if (4 + (xdata - data) > size) {
+			ptp_debug (params, "reading canon FEs run over read data size? (1)\n");
 			free (*entries);
 			*entries = NULL;
 			*nrofentries = 0;
 			ret = PTP_RC_GeneralError;
 			goto exit;
 		}
-		ptp_unpack_Canon_EOS_FE (params, &xdata[4], &((*entries)[i]));
+		entrysize = dtoh32a(xdata);
+		if ((entrysize + (xdata-data)) > size) {
+			ptp_debug (params, "reading canon FEs run over read data size? (2)\n");
+			free (*entries);
+			*entries = NULL;
+			*nrofentries = 0;
+			ret = PTP_RC_GeneralError;
+			goto exit;
+		}
+		if (entrysize < 4 + 48 + 4)  {
+			ptp_debug (params, "%d entry size %d does not match expected 56\n", i, entrysize);
+			free (*entries);
+			*entries = NULL;
+			*nrofentries = 0;
+			ret = PTP_RC_GeneralError;
+			goto exit;
+		}
+		ptp_unpack_Canon_EOS_FE (params, &xdata[4], dtoh32a(xdata) - 4, &((*entries)[i]));
 		xdata += dtoh32a(xdata);
 	}
 exit:
@@ -4233,6 +4252,7 @@ static struct {
 	{PTP_RC_CANON_BATTERY_LOW,	PTP_VENDOR_CANON, N_("Battery Low")},
 	{PTP_RC_CANON_NOT_READY,	PTP_VENDOR_CANON, N_("Camera Not Ready")},
 
+	{PTP_ERROR_NODEVICE,		0, N_("PTP No Device")},
 	{PTP_ERROR_TIMEOUT,		0, N_("PTP Timeout")},
 	{PTP_ERROR_CANCEL,		0, N_("PTP Cancel Request")},
 	{PTP_ERROR_BADPARAM,		0, N_("PTP Invalid Parameter")},

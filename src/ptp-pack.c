@@ -1,7 +1,7 @@
 /* ptp-pack.c
  *
  * Copyright (C) 2001-2004 Mariusz Woloszyn <emsi@ipartners.pl>
- * Copyright (C) 2003-2016 Marcus Meissner <marcus@jet.franken.de>
+ * Copyright (C) 2003-2017 Marcus Meissner <marcus@jet.franken.de>
  * Copyright (C) 2006-2008 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2007 Tero Saarni <tero.saarni@gmail.com>
  * Copyright (C) 2009 Axel Waggershauser <awagger@web.de>
@@ -1096,6 +1096,10 @@ ptp_unpack_OPD (PTPParams *params, unsigned char* data, PTPObjectPropDesc *opd, 
 	unsigned int offset=0, ret;
 
 	memset (opd, 0, sizeof(*opd));
+
+	if (opdlen < 5)
+		return 0;
+
 	opd->ObjectPropertyCode=dtoh16a(&data[PTP_opd_ObjectPropertyCode]);
 	opd->DataType=dtoh16a(&data[PTP_opd_DataType]);
 	opd->GetSet=dtoh8a(&data[PTP_opd_GetSet]);
@@ -1338,24 +1342,32 @@ _compare_func(const void* x, const void *y) {
 static inline int
 ptp_unpack_OPL (PTPParams *params, unsigned char* data, MTPProperties **pprops, unsigned int len)
 { 
-	uint32_t prop_count = dtoh32a(data);
+	uint32_t prop_count;
 	MTPProperties *props = NULL;
 	unsigned int offset = 0, i;
 
+	if (len < sizeof(uint32_t)) {
+		ptp_debug (params ,"must have at least 4 bytes data, not %d", len);
+		return 0;
+	}
+
+	prop_count = dtoh32a(data);
 	*pprops = NULL;
 	if (prop_count == 0)
 		return 0;
+
 	if (prop_count >= INT_MAX/sizeof(MTPProperties)) {
 		ptp_debug (params ,"prop_count %d is too large", prop_count);
 		return 0;
 	}
 	ptp_debug (params ,"Unpacking MTP OPL, size %d (prop_count %d)", len, prop_count);
+
 	data += sizeof(uint32_t);
 	len -= sizeof(uint32_t);
 	props = malloc(prop_count * sizeof(MTPProperties));
 	if (!props) return 0;
 	for (i = 0; i < prop_count; i++) {
-		if (len <= 0) {
+		if (len <= (sizeof(uint32_t) + sizeof(uint16_t) + sizeof(uint16_t))) {
 			ptp_debug (params ,"short MTP Object Property List at property %d (of %d)", i, prop_count);
 			ptp_debug (params ,"device probably needs DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL");
 			ptp_debug (params ,"or even DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST", i);
@@ -1363,6 +1375,8 @@ ptp_unpack_OPL (PTPParams *params, unsigned char* data, MTPProperties **pprops, 
 			*pprops = props;
 			return i;
 		}
+
+
 		props[i].ObjectHandle = dtoh32a(data);
 		data += sizeof(uint32_t);
 		len -= sizeof(uint32_t);
@@ -1528,9 +1542,11 @@ ObjectInfo for 'IMG_0199.JPG':
 #define PTP_cefe_Time			48
 
 static inline void
-ptp_unpack_Canon_EOS_FE (PTPParams *params, unsigned char* data, PTPCANONFolderEntry *fe)
+ptp_unpack_Canon_EOS_FE (PTPParams *params, unsigned char* data, unsigned int size, PTPCANONFolderEntry *fe)
 {
 	int i;
+
+	if (size < PTP_cefe_Time + 4) return;
 
 	fe->ObjectHandle=dtoh32a(&data[PTP_cefe_ObjectHandle]);
 	fe->ObjectFormatCode=dtoh16a(&data[PTP_cefe_ObjectFormatCode]);
@@ -2165,6 +2181,7 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 				case PTP_DPC_CANON_EOS_EVFOutputDevice:
 				case PTP_DPC_CANON_EOS_AutoPowerOff:
 				case PTP_DPC_CANON_EOS_EVFRecordStatus:
+				case PTP_DPC_CANON_EOS_MultiAspect: /* actually a 32bit value, but lets try it for easyness */
 					dpd->DataType = PTP_DTC_UINT16;
 					break;
 				case PTP_DPC_CANON_EOS_PictureStyle:
