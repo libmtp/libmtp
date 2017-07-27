@@ -2570,7 +2570,6 @@ uint16_t ptp_usb_control_get_extended_event_data (PTPParams *params, char *buffe
 uint16_t ptp_usb_control_device_reset_request (PTPParams *params);
 uint16_t ptp_usb_control_get_device_status (PTPParams *params, char *buffer, int *size);
 uint16_t ptp_usb_control_cancel_request (PTPParams *params, uint32_t transid);
-uint16_t ptp_usb_control_cancel_request (PTPParams *params, uint32_t transid);
 uint16_t ptp_usb_control_device_status_request (PTPParams *params);
 
 
