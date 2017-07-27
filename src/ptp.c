@@ -170,6 +170,7 @@ ptp_transaction_new (PTPParams* params, PTPContainer* ptp,
 	ptp->SessionID=params->session_id;
 	/* send request */
 	CHECK_PTP_RC(params->sendreq_func (params, ptp, flags));
+
 	/* is there a dataphase? */
 	switch (flags&PTP_DP_DATA_MASK) {
 	case PTP_DP_SENDDATA:
@@ -182,10 +183,7 @@ ptp_transaction_new (PTPParams* params, PTPContainer* ptp,
 		break;
 	case PTP_DP_GETDATA:
 		{
-			uint16_t ret = params->getdata_func(params, ptp, handler);
-			if (ret == PTP_ERROR_CANCEL)
-				CHECK_PTP_RC(params->cancelreq_func(params, params->transaction_id-1));
-			CHECK_PTP_RC(ret);
+			CHECK_PTP_RC(params->getdata_func(params, ptp, handler));
 		}
 		break;
 	case PTP_DP_NODATA:
