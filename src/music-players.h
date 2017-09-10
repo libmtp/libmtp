@@ -3132,16 +3132,18 @@
   /* https://sourceforge.net/p/libmtp/bugs/1582/ */
   { "nVidia", 0x0955, "Jetson TX1", 0x7721,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "nVidia", 0x0955, "Shield (ID1)", 0xb400,
+  { "nVidia", 0x0955, "Shield (MTP+ADB)", 0xb400,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1447/ */
-  { "nVidia", 0x0955, "Shield (Tegra4)", 0xb401,
+  { "nVidia", 0x0955, "Shield (MTP)", 0xb401,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1087/ */
   { "nVidia", 0x0955, "Tegra Note", 0xcf02,
       DEVICE_FLAGS_ANDROID_BUGS },
+  { "nVidia", 0x0955, "Shield Tablet (MTP+ADB)", 0xcf05,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* benpro82@gmail.com */
-  { "nVidia", 0x0955, "Shield (ID2)", 0xcf07,
+  { "nVidia", 0x0955, "Shield Tablet (MTP)", 0xcf07,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
