@@ -1928,6 +1928,13 @@ static int init_ptp_usb(PTPParams* params, PTP_USB* ptp_usb, libusb_device* dev)
       }
   }
 
+  usbresult = libusb_claim_interface(device_handle, ptp_usb->interface);
+
+  if (usbresult != 0) {
+    fprintf(stderr, "error returned by libusb_claim_interface() = %d", usbresult);
+    return -1;
+  }
+	
   /*
    * Check if the config is set to something else than what we want
    * to use. Only set the configuration if we absolutely have to.
@@ -1962,16 +1969,6 @@ static int init_ptp_usb(PTPParams* params, PTP_USB* ptp_usb, libusb_device* dev)
       return -1;
     }
   }
-
-  /*
-   * It seems like on kernel 2.6.31 if we already have it open on another
-   * pthread in our app, we'll get an error if we try to claim it again,
-   * but that error is harmless because our process already claimed the interface
-   */
-  usbresult = libusb_claim_interface(device_handle, ptp_usb->interface);
-
-  if (usbresult != 0)
-    fprintf(stderr, "ignoring libusb_claim_interface() = %d", usbresult);
 
   /*
    * If the altsetting is set to something different than we want, switch
