@@ -1882,6 +1882,9 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria Z5 Compact MTP", 0x01da,
       DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/feature-requests/236/ */
+  { "SONY", 0x0fce, "XPeria Z5 Premium Dual Sim MTP", 0x01db,
+      DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/bugs/1649/ */
   { "SONY", 0x0fce, "XPeria XA MTP", 0x01de,
       DEVICE_FLAG_NONE },
@@ -1997,6 +2000,8 @@
   { "SONY", 0x0fce, "XPeria Z5 MTP+CDROM", 0x41d9,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria Z5 Compact MTP+CDROM", 0x41da,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria Z5 Premium Dual Sim MTP+CDROM", 0x41db,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XA MTP+CDROM", 0x41de,
       DEVICE_FLAG_NONE },
@@ -2133,6 +2138,8 @@
   { "SONY", 0x0fce, "XPeria Z5 MTP+ADB", 0x51d9,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria Z5 Compact MTP+ADB", 0x51da,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria Z5 Premium Dual Sim MTP+ADB", 0x51db,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XA MTP+ADB", 0x51de,
       DEVICE_FLAG_NONE },
