@@ -3418,6 +3418,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1467/ */
   { "elephone", 0x0e8d, "p6000", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/234/ */
+  { "DOODGE", 0x0e8d, "X6pro", 0x200a,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/79/ */
   { "MediaTek Inc", 0x0e8d, "Elephone P8000", 0x201d,
       DEVICE_FLAGS_ANDROID_BUGS },
