@@ -2204,6 +2204,9 @@
   { "Motorola", 0x22b8, "V3m/V750 verizon", 0x2a65,
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
+  /* https://sourceforge.net/p/libmtp/support-requests/130/ */
+  { "Motorola", 0x22b8, "X 2nd edition XT1097 (MTP)", 0x2e24,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Atrix/Razr HD (MTP)", 0x2e32,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Atrix/Razr HD (MTP+ADB)", 0x2e33,
