@@ -1924,17 +1924,11 @@ static int init_ptp_usb(PTPParams* params, PTP_USB* ptp_usb, libusb_device* dev)
       libusb_kernel_driver_active(device_handle, ptp_usb->interface)
   ) {
       if (LIBUSB_SUCCESS != libusb_detach_kernel_driver(device_handle, ptp_usb->interface)) {
-	perror("libusb_detach_kernel_driver() failed, continuing anyway...");
+        perror("libusb_detach_kernel_driver() failed, continuing anyway...");
       }
   }
 
-  usbresult = libusb_claim_interface(device_handle, ptp_usb->interface);
 
-  if (usbresult != 0) {
-    fprintf(stderr, "error returned by libusb_claim_interface() = %d", usbresult);
-    return -1;
-  }
-	
   /*
    * Check if the config is set to something else than what we want
    * to use. Only set the configuration if we absolutely have to.
@@ -1968,6 +1962,12 @@ static int init_ptp_usb(PTPParams* params, PTP_USB* ptp_usb, libusb_device* dev)
       perror("libusb_get_active_config_descriptor(2) failed");
       return -1;
     }
+  }
+
+  usbresult = libusb_claim_interface(device_handle, ptp_usb->interface);
+  if (usbresult != 0) {
+    fprintf(stderr, "error returned by libusb_claim_interface() = %d", usbresult);
+    return -1;
   }
 
   /*
