@@ -1904,6 +1904,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/251/ */
   { "SONY", 0x0fce, "XPeria XZ Premium", 0x01f1,
       DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/support-requests/252/ */
+  { "SONY", 0x0fce, "XPeria XZ1 Compact", 0x01f4,
+      DEVICE_FLAG_NONE },
 
 
   /*
@@ -2022,6 +2025,8 @@
   { "SONY", 0x0fce, "XPeria XZ CDROM", 0x41ed,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XZ Premium MTP+CDROM", 0x41f1,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria XZ1 Compact MTP+CDROM", 0x41f4,
       DEVICE_FLAG_NONE },
 
   /*
@@ -2164,6 +2169,8 @@
   { "SONY", 0x0fce, "XPeria XZ ADB", 0x51ed,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XZ Premium MTP+ADB", 0x51f1,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria XZ1 Compact MTP+ADB", 0x51f4,
       DEVICE_FLAG_NONE },
 
   /*
