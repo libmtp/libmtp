@@ -3140,6 +3140,8 @@
    * NEC
    */
   { "NEC", 0x0409, "FOMA N01A", 0x0242, DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/bugs/1724/ */
+  { "Casio", 0x0409, "GzOne Commando C771", 0x02ed, DEVICE_FLAG_NONE },
   { "NEC", 0x0409, "Casio C811", 0x0326, DEVICE_FLAG_NONE },
   { "NEC", 0x0409, "Casio CA-201L", 0x0432, DEVICE_FLAG_NONE },
 
