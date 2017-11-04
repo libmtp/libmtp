@@ -2862,6 +2862,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1624/ */
   { "Lenovo", 0x17ef, "B Smartphone", 0x7a18,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1738/ */
+  { "Lenovo", 0x17ef, "K6 Power", 0x7a2a,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1679/ */
   { "Lenovo", 0x17ef, "C2", 0x7a36,
       DEVICE_FLAGS_ANDROID_BUGS },
