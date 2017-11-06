@@ -4237,6 +4237,10 @@ static LIBMTP_file_t *obj2file(LIBMTP_mtpdevice_t *device, PTPObject *ob)
   file->parent_id = ob->oi.ParentObject;
   file->storage_id = ob->oi.StorageID;
 
+  if (ob->oi.Filename != NULL) {
+    file->filename = strdup(ob->oi.Filename);
+  }
+
   // Set the filetype
   file->filetype = map_ptp_type_to_libmtp_type(ob->oi.ObjectFormat);
 
@@ -4250,7 +4254,7 @@ static LIBMTP_file_t *obj2file(LIBMTP_mtpdevice_t *device, PTPObject *ob)
    */
   if (file->filetype == LIBMTP_FILETYPE_UNKNOWN) {
     if ((FLAG_IRIVER_OGG_ALZHEIMER(ptp_usb) ||
-	 FLAG_OGG_IS_UNKNOWN(ptp_usb)) &&
+        FLAG_OGG_IS_UNKNOWN(ptp_usb)) &&
         has_ogg_extension(file->filename)) {
       file->filetype = LIBMTP_FILETYPE_OGG;
     }
@@ -4265,9 +4269,6 @@ static LIBMTP_file_t *obj2file(LIBMTP_mtpdevice_t *device, PTPObject *ob)
 
   // We only have 32-bit file size here; later we use the PTP_OPC_ObjectSize property
   file->filesize = ob->oi.ObjectCompressedSize;
-  if (ob->oi.Filename != NULL) {
-    file->filename = strdup(ob->oi.Filename);
-  }
 
   // This is a unique ID so we can keep track of the file.
   file->item_id = ob->oid;
