@@ -8987,8 +8987,19 @@ int LIBMTP_GetPartialObject(LIBMTP_mtpdevice_t *device, uint32_t const id,
                             uint64_t offset, uint32_t maxbytes,
                             unsigned char **data, unsigned int *size)
 {
-  PTPParams *params = (PTPParams *) device->params;
-  uint16_t ret;
+  PTPParams	*params = (PTPParams *) device->params;
+  uint16_t	ret;
+  LIBMTP_file_t	*mtpfile = LIBMTP_Get_Filemetadata(device, id);
+
+  /* Some devices do not like reading over the end and hang instead of progressing */
+  if (offset >= mtpfile->filesize) {
+    *size = 0;
+    LIBMTP_destroy_file_t (mtpfile);
+    return 0;
+  }
+  if (offset + maxbytes > mtpfile->filesize) {
+    maxbytes = mtpfile->filesize - offset;
+  }
 
   if (!ptp_operation_issupported(params, PTP_OC_ANDROID_GetPartialObject64)) {
     if  (!ptp_operation_issupported(params, PTP_OC_GetPartialObject)) {
