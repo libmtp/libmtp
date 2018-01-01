@@ -3578,6 +3578,8 @@
   { "Caterpillar", 0x04b7, "Cat S50 (2nd ID)", 0x88aa, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1603/ */
   { "Caterpillar", 0x04b7, "Cat S40", 0x88b0, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/253/ */
+  { "Caterpillar", 0x04b7, "Cat S30", 0x88b9, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/176/ */
   { "Caterpillar", 0x04b7, "Cat S60", 0x88c0, DEVICE_FLAGS_ANDROID_BUGS },
 
