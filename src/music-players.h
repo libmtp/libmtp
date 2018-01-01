@@ -3719,6 +3719,9 @@
 
   /* https://sourceforge.net/p/libmtp/feature-requests/240/ */
   { "Spreadtrum" , 0x1782, "STK Storm 2e Pluz", 0x4002, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /* https://sourceforge.net/p/libmtp/feature-requests/242/ */
+  { "Essential Phone" , 0x2e17, "PH-1", 0xc033, DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Other strange stuff.
    */
