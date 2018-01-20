@@ -2865,6 +2865,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/242/ */
   { "Lenovo", 0x17ef, "Tab 3 10 Plus", 0x79de,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1755/ */
+  { "Lenovo", 0x17ef, "TB3-850M ", 0x79de,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1624/ */
   { "Lenovo", 0x17ef, "B Smartphone", 0x7a18,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2876,6 +2879,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/248/ */
   { "Lenovo", 0x17ef, "P2c72", 0x7a36,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* Marcus parents */
+  { "Lenovo", 0x17ef, "Tab 10", 0x7a50,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1736/ */
   { "Lenovo", 0x17ef, "P1060X", 0x9039,
