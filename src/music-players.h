@@ -2943,6 +2943,9 @@
    */
   { "Huawei", 0x12d1, "CUN-U29", 0x2608,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/257/ */
+  { "Huawei", 0x12d1, "LUA-L02", 0x260b,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Huawei", 0x12d1, "Mediapad (mode 0)", 0x360f,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Bearsh <bearsh@users.sourceforge.net>
