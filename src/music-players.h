@@ -3752,6 +3752,9 @@
   { "Essential Phone" , 0x2e17, "PH-1a", 0xc030, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/242/ */
   { "Essential Phone" , 0x2e17, "PH-1", 0xc033, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /* https://sourceforge.net/p/libmtp/feature-requests/247/ */
+  { "VEGA" , 0x10a9, "R3", 0x1105, DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Other strange stuff.
    */
