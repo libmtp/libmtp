@@ -288,6 +288,15 @@
  * 32 bit.
  */
 #define DEVICE_FLAG_PROPLIST_OVERRIDES_OI	0x40000000
+/**
+ * The MTP stack of Samsung Galaxy devices has a mysterious bug in
+ * GetPartialObject. When GetPartialObject is invoked to read the last
+ * bytes of a file and the amount of data to read is such that the
+ * last USB packet sent in the reply matches exactly the USB 2.0
+ * packet size, then the Samsung Galaxy device hangs, resulting in a
+ * timeout error.
+ */
+#define DEVICE_FLAG_SAMSUNG_OFFSET_BUG		0x80000000
 
 /**
  * All these bug flags need to be set on SONY NWZ Walkman
