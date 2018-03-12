@@ -5250,25 +5250,27 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
-  PTPObject *ob;
 
-  ret = ptp_object_want (params, id, PTPOBJECT_OBJECTINFO_LOADED, &ob);
-  if (ret != PTP_RC_OK) {
+  LIBMTP_file_t *mtpfile = LIBMTP_Get_Filemetadata(device, id);
+  if (mtpfile == NULL) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Get_File_To_File_Descriptor(): Could not get object info.");
     return -1;
   }
-  if (ob->oi.ObjectFormat == PTP_OFC_Association) {
+  if (mtpfile->filetype == LIBMTP_FILETYPE_FOLDER) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Get_File_To_File_Descriptor(): Bad object format.");
     return -1;
   }
 
   // Callbacks
   ptp_usb->callback_active = 1;
-  ptp_usb->current_transfer_total = ob->oi.ObjectCompressedSize+
+  ptp_usb->current_transfer_total = mtpfile->filesize +
     PTP_USB_BULK_HDR_LEN+sizeof(uint32_t); // Request length, one parameter
   ptp_usb->current_transfer_complete = 0;
   ptp_usb->current_transfer_callback = callback;
   ptp_usb->current_transfer_callback_data = data;
+
+  // Don't need mtpfile anymore
+  LIBMTP_destroy_file_t(mtpfile);
 
   ret = ptp_getobject_tofd(params, id, fd);
 
@@ -5312,28 +5314,30 @@ int LIBMTP_Get_File_To_Handler(LIBMTP_mtpdevice_t *device,
 					LIBMTP_progressfunc_t const callback,
 					void const * const data)
 {
-  PTPObject *ob;
   uint16_t ret;
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
 
-  ret = ptp_object_want (params, id, PTPOBJECT_OBJECTINFO_LOADED, &ob);
-  if (ret != PTP_RC_OK) {
+  LIBMTP_file_t *mtpfile = LIBMTP_Get_Filemetadata(device, id);
+  if (mtpfile == NULL) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Get_File_To_File_Descriptor(): Could not get object info.");
     return -1;
   }
-  if (ob->oi.ObjectFormat == PTP_OFC_Association) {
+  if (mtpfile->filetype == LIBMTP_FILETYPE_FOLDER) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Get_File_To_File_Descriptor(): Bad object format.");
     return -1;
   }
 
   // Callbacks
   ptp_usb->callback_active = 1;
-  ptp_usb->current_transfer_total = ob->oi.ObjectCompressedSize+
+  ptp_usb->current_transfer_total = mtpfile->filesize +
     PTP_USB_BULK_HDR_LEN+sizeof(uint32_t); // Request length, one parameter
   ptp_usb->current_transfer_complete = 0;
   ptp_usb->current_transfer_callback = callback;
   ptp_usb->current_transfer_callback_data = data;
+
+  // Don't need mtpfile anymore
+  LIBMTP_destroy_file_t(mtpfile);
 
   MTPDataHandler mtp_handler;
   mtp_handler.getfunc = NULL;
