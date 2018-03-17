@@ -4042,6 +4042,12 @@ int LIBMTP_Check_Capability(LIBMTP_mtpdevice_t *device, LIBMTP_devicecap_t cap)
 				      PTP_OC_ANDROID_BeginEditObject) &&
 	    ptp_operation_issupported(device->params,
 				      PTP_OC_ANDROID_EndEditObject));
+  case LIBMTP_DEVICECAP_MoveObject:
+    return ptp_operation_issupported(device->params,
+				     PTP_OC_MoveObject);
+  case LIBMTP_DEVICECAP_CopyObject:
+    return ptp_operation_issupported(device->params,
+				     PTP_OC_CopyObject);
   /*
    * Handle other capabilities here, this is also a good place to
    * blacklist some advanced operations on specific devices if need
@@ -6784,6 +6790,79 @@ int LIBMTP_Delete_Object(LIBMTP_mtpdevice_t *device,
   ret = ptp_deleteobject(params, object_id, 0);
   if (ret != PTP_RC_OK) {
     add_ptp_error_to_errorstack(device, ret, "LIBMTP_Delete_Object(): could not delete object.");
+    return -1;
+  }
+
+  return 0;
+}
+
+/**
+ * The function moves an object from one location on a device to another
+ * location.
+ *
+ * The semantics of moving a folder are not defined in the spec, but it
+ * appears to do the right thing when tested (but devices that implement
+ * this operation are rare).
+ *
+ * Note that moving an object may take a significant amount of time,
+ * particularly if being moved between storages. MTP does not provide
+ * any kind of progress mechanism, so the operation will simply block
+ * for the duration.
+ *
+ * @param device a pointer to the device where the object exists.
+ * @param object_id the object to move.
+ * @param storage_id the id of the destination storage.
+ * @param parent_id the id of the destination parent object (folder).
+ *	  If the destination is the root of the storage, pass '0'.
+ * @return 0 on success, any other value means failure.
+ */
+int LIBMTP_Move_Object(LIBMTP_mtpdevice_t *device,
+		       uint32_t object_id,
+		       uint32_t storage_id,
+		       uint32_t parent_id)
+{
+  uint16_t ret;
+  PTPParams *params = (PTPParams *) device->params;
+
+  ret = ptp_moveobject(params, object_id, storage_id, parent_id);
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Move_Object(): could not move object.");
+    return -1;
+  }
+
+  return 0;
+}
+
+/**
+ * The function copies an object from one location on a device to another
+ * location.
+ *
+ * The semantics of copying a folder are not defined in the spec, but it
+ * appears to do the right thing when tested (but devices that implement
+ * this operation are rare).
+ *
+ * Note that copying an object may take a significant amount of time.
+ * MTP does not provide any kind of progress mechanism, so the operation
+ * will simply block for the duration.
+ *
+ * @param device a pointer to the device where the object exists.
+ * @param object_id the object to copy.
+ * @param storage_id the id of the destination storage.
+ * @param parent_id the id of the destination parent object (folder).
+ *	  If the destination is the root of the storage, pass '0'.
+ * @return 0 on success, any other value means failure.
+ */
+int LIBMTP_Copy_Object(LIBMTP_mtpdevice_t *device,
+		       uint32_t object_id,
+		       uint32_t storage_id,
+		       uint32_t parent_id)
+{
+  uint16_t ret;
+  PTPParams *params = (PTPParams *) device->params;
+
+  ret = ptp_copyobject(params, object_id, storage_id, parent_id);
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret, "LIBMTP_Copy_Object(): could not copy object.");
     return -1;
   }
 
