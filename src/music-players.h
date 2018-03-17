@@ -3760,6 +3760,9 @@
 
   /* https://sourceforge.net/p/libmtp/feature-requests/247/ */
   { "VEGA" , 0x10a9, "R3", 0x1105, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /* https://sourceforge.net/p/libmtp/bugs/1764/ */
+  { "O&P Innovations" , 0x0746, "XDP-100R", 0xa003, DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Other strange stuff.
    */
