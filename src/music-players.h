@@ -2820,6 +2820,9 @@
   /* https://sourceforge.net/p/libmtp/feature-requests/125/ */
   { "Lenovo", 0x17ef, "Vibe Z2", 0x77ea,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/253/ */
+  { "Lenovo", 0x17ef, "A7000-A Smartphone", 0x7882,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1360/ */
   { "Lenovo", 0x17ef, "K3 Note", 0x7883,
       DEVICE_FLAGS_ANDROID_BUGS },
