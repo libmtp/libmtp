@@ -1910,6 +1910,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/251/ */
   { "SONY", 0x0fce, "XPeria XZ Premium", 0x01f1,
       DEVICE_FLAG_NONE },
+  /* Nicholas O'Connor <lavacano@lavacano.net> on libmtp-discuss */
+  { "SONY", 0x0fce, "XPeria XZ1", 0x01f3,
+      DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/support-requests/252/ */
   { "SONY", 0x0fce, "XPeria XZ1 Compact", 0x01f4,
       DEVICE_FLAG_NONE },
@@ -2033,6 +2036,8 @@
   { "SONY", 0x0fce, "XPeria XZ CDROM", 0x41ed,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XZ Premium MTP+CDROM", 0x41f1,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria XZ1 MTP+CDROM", 0x41f3,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XZ1 Compact MTP+CDROM", 0x41f4,
       DEVICE_FLAG_NONE },
@@ -2179,6 +2184,8 @@
   { "SONY", 0x0fce, "XPeria XZ ADB", 0x51ed,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XZ Premium MTP+ADB", 0x51f1,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria XZ1 ADB", 0x51f3,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XZ1 Compact MTP+ADB", 0x51f4,
       DEVICE_FLAG_NONE },
@@ -3736,6 +3743,8 @@
 
   /* https://sourceforge.net/p/libmtp/bugs/1716/ */
   { "Letv" , 0x2b0e, "Le Max2", 0x1840, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1768/ */
+  { "Letv" , 0x2b0e, "Le Max2 (ID2)", 0x1844, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* https://sourceforge.net/p/libmtp/bugs/1606/ */
   { "TP-Link" , 0x2357, "Neffos C5 (MTP)", 0x0314, DEVICE_FLAGS_ANDROID_BUGS },
