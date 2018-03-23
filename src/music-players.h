@@ -849,6 +849,10 @@
   { "iRiver", 0x4102, "E30", 0x1167,
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS |
     DEVICE_FLAG_OGG_IS_UNKNOWN },
+  /* https://sourceforge.net/p/libmtp/bugs/1766/ */
+  { "iRiver", 0x4102, "AK380", 0x1195,
+    DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS |
+    DEVICE_FLAG_OGG_IS_UNKNOWN },
   /* https://sourceforge.net/p/libmtp/bugs/1634/ 
    * copying flags from above */
   { "iRiver", 0x4102, "AK70", 0x1200,
