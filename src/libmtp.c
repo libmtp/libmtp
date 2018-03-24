@@ -2220,6 +2220,8 @@ void LIBMTP_Handle_Event(PTPContainer *ptp_event,
     case PTP_EC_DevicePropChanged:
       LIBMTP_INFO("Received event PTP_EC_DevicePropChanged in session %u\n", session_id);
       /* TODO: update device properties */
+      *event = LIBMTP_EVENT_DEVICE_PROPERTY_CHANGED;
+      *out1 = param1;
       break;
     case PTP_EC_ObjectInfoChanged:
       LIBMTP_INFO("Received event PTP_EC_ObjectInfoChanged in session %u\n", session_id);
