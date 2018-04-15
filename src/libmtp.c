@@ -9086,6 +9086,21 @@ int LIBMTP_GetPartialObject(LIBMTP_mtpdevice_t *device, uint32_t const id,
   if (offset + maxbytes > mtpfile->filesize) {
     maxbytes = mtpfile->filesize - offset;
   }
+  /* The MTP stack of Samsung Galaxy devices has a mysterious bug in
+   * GetPartialObject. When GetPartialObject is invoked to read the
+   * last bytes of a file and the amount of data to read is such that
+   * the last USB packet sent in the reply matches exactly the USB 2.0
+   * packet size, then the Samsung Galaxy device hangs, resulting in a
+   * timeout error.
+   * As a workaround, we read one less byte instead of reaching the
+   * end of the file, forcing the caller to perform an additional read
+   * to get the last byte (i.e. the final read that would fail is
+   * replaced with two partial reads that succeed).
+   */
+  if ((params->device_flags & DEVICE_FLAG_SAMSUNG_OFFSET_BUG) &&
+      (maxbytes % PTP_USB_BULK_HS_MAX_PACKET_LEN_READ) == (PTP_USB_BULK_HS_MAX_PACKET_LEN_READ - PTP_USB_BULK_HDR_LEN)) {
+    maxbytes--;
+  }
 
   if (!ptp_operation_issupported(params, PTP_OC_ANDROID_GetPartialObject64)) {
     if  (!ptp_operation_issupported(params, PTP_OC_GetPartialObject)) {
