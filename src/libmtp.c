@@ -3182,7 +3182,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
     printf("   None.\n");
   } else {
     for (i=0;i<params->deviceinfo.EventsSupported_len;i++) {
-      printf("   0x%04x (%s)\n", params->deviceinfo.EventsSupported[i], ptp_strerror(params->deviceinfo.EventsSupported[i], params->deviceinfo.VendorExtensionID));
+      printf("   0x%04x: %s\n", params->deviceinfo.EventsSupported[i], ptp_get_event_code_name(params, params->deviceinfo.EventsSupported[i]));
     }
   }
   printf("Device Properties Supported:\n");
