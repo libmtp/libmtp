@@ -2859,6 +2859,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1497/ */
   { "Lenovo", 0x17ef, "A10-70L", 0x789b,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/264/ */
+  { "Lenovo", 0x17ef, "Vibe Shot Z90a40", 0x78a7,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1480/ */
   { "Medion", 0x17ef, "P8312 Tablet", 0x78ae,
       DEVICE_FLAGS_ANDROID_BUGS },
