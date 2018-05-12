@@ -1875,8 +1875,8 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *rawdevi
   current_params->error_func = LIBMTP_ptp_error;
   /* TODO: Will this always be little endian? */
   current_params->byteorder = PTP_DL_LE;
-  current_params->cd_locale_to_ucs2 = iconv_open("UCS-2LE", "UTF-8");
-  current_params->cd_ucs2_to_locale = iconv_open("UTF-8", "UCS-2LE");
+  current_params->cd_locale_to_ucs2 = iconv_open("UTF-16LE", "UTF-8");
+  current_params->cd_ucs2_to_locale = iconv_open("UTF-8", "UTF-16LE");
 
   if(current_params->cd_locale_to_ucs2 == (iconv_t) -1 ||
      current_params->cd_ucs2_to_locale == (iconv_t) -1) {
