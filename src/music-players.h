@@ -3455,6 +3455,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1304/ */
   { "Alcatel", 0x1bbb, "OneTouch 5042D (MTP)", 0xa00e,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1776/ */
+  { "Alcatel", 0x1bbb, "Popo4 (MTP)", 0xa00f,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1605/ */
   { "Alcatel", 0x1bbb, "OneTouch Idol 3 ID2 (MTP)", 0xaf00,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -3552,6 +3555,9 @@
    * Garmin
    */
   { "Garmin", 0x091e, "Monterra", 0x2585,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1779/ */
+  { "Garmin", 0x091e, "Forerunner 645 Music", 0x4b48,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
