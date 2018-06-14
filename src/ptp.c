@@ -1,7 +1,7 @@
 /* ptp.c
  *
  * Copyright (C) 2001-2004 Mariusz Woloszyn <emsi@ipartners.pl>
- * Copyright (C) 2003-2017 Marcus Meissner <marcus@jet.franken.de>
+ * Copyright (C) 2003-2018 Marcus Meissner <marcus@jet.franken.de>
  * Copyright (C) 2006-2008 Linus Walleij <triad@df.lth.se>
  * Copyright (C) 2007 Tero Saarni <tero.saarni@gmail.com>
  * Copyright (C) 2009 Axel Waggershauser <awagger@web.de>
@@ -461,7 +461,7 @@ uint16_t
 ptp_getdeviceinfo (PTPParams* params, PTPDeviceInfo* deviceinfo)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size;
 	int		ret;
 
@@ -479,7 +479,7 @@ uint16_t
 ptp_canon_eos_getdeviceinfo (PTPParams* params, PTPCanonEOSDeviceInfo*di)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size;
 	int		ret;
 
@@ -914,7 +914,7 @@ ptp_olympus_getdeviceinfo (PTPParams* params, PTPDeviceInfo *di)
 #ifdef HAVE_LIBXML2
 	PTPContainer	ptp;
 	uint16_t 	ret;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size;
 	xmlNodePtr	code;
 
@@ -1154,7 +1154,7 @@ uint16_t
 ptp_getstorageids (PTPParams* params, PTPStorageIDs* storageids)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size;
 
 	PTP_CNT_INIT(ptp, PTP_OC_GetStorageIDs);
@@ -1179,7 +1179,7 @@ ptp_getstorageinfo (PTPParams* params, uint32_t storageid,
 			PTPStorageInfo* storageinfo)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size;
 
 	PTP_CNT_INIT(ptp, PTP_OC_GetStorageInfo, storageid);
@@ -1216,7 +1216,7 @@ ptp_getobjecthandles (PTPParams* params, uint32_t storage,
 {
 	PTPContainer	ptp;
 	uint16_t	ret;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size;
 
 	objecthandles->Handler = NULL;
@@ -1245,13 +1245,19 @@ ptp_getobjecthandles (PTPParams* params, uint32_t storage,
 
 uint16_t
 ptp_getfilesystemmanifest (PTPParams* params, uint32_t storage,
-			uint32_t objectformatcode, uint32_t associationOH,
-			unsigned char** data)
-{
-	PTPContainer ptp;
+	uint32_t objectformatcode, uint32_t associationOH,
+        uint64_t *numoifs, PTPObjectFilesystemInfo **oifs
+) {
+	PTPContainer	ptp;
+	unsigned int	size = 0;
+	unsigned char	*data = NULL;
 
+	*oifs = NULL;
+	*numoifs = 0;
 	PTP_CNT_INIT(ptp, PTP_OC_GetFilesystemManifest, storage, objectformatcode, associationOH);
-	return ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, data, NULL);
+	CHECK_PTP_RC (ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, &size));
+	ptp_unpack_ptp11_manifest (params, data, size, numoifs, oifs);
+	return PTP_RC_OK;
 }
 
 /**
@@ -1363,7 +1369,7 @@ ptp_getobjectinfo (PTPParams* params, uint32_t handle,
 			PTPObjectInfo* objectinfo)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size;
 
 	PTP_CNT_INIT(ptp, PTP_OC_GetObjectInfo, handle);
@@ -1708,7 +1714,7 @@ ptp_getdevicepropdesc (PTPParams* params, uint16_t propcode,
 {
 	PTPContainer	ptp;
 	uint16_t	ret = PTP_RC_OK;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size;
 
 	PTP_CNT_INIT(ptp, PTP_OC_GetDevicePropDesc, propcode);
@@ -1756,7 +1762,7 @@ ptp_getdevicepropvalue (PTPParams* params, uint16_t propcode,
 			PTPPropertyValue* value, uint16_t datatype)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size, offset = 0;
 	uint16_t	ret;
 
@@ -2042,7 +2048,7 @@ ptp_canon_get_directory (PTPParams* params,
 	uint32_t		**flags		/* size(handles->n) */
 ) {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	uint16_t	ret;
 
 	PTP_CNT_INIT(ptp, PTP_OC_CANON_GetDirectory);
@@ -2113,7 +2119,7 @@ ptp_canon_gettreesize (PTPParams* params,
 {
 	PTPContainer	ptp;
 	uint16_t	ret = PTP_RC_OK;
-	unsigned char	*data, *cur;
+	unsigned char	*data = NULL, *cur;
 	unsigned int	size, i;
 
 	PTP_CNT_INIT(ptp, PTP_OC_CANON_GetTreeSize);
@@ -2159,7 +2165,7 @@ uint16_t
 ptp_canon_checkevent (PTPParams* params, PTPContainer* event, int* isevent)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size;
 	
 	PTP_CNT_INIT(ptp, PTP_OC_CANON_CheckEvent);
@@ -2182,6 +2188,304 @@ ptp_add_event (PTPParams *params, PTPContainer *evt)
 	return PTP_RC_OK;
 }
 
+/* CANON EOS fast directory mode */
+/* FIXME: incomplete ... needs storage mode retrieval support too (storage == 0xffffffff) */
+static uint16_t
+ptp_list_folder_eos (PTPParams *params, uint32_t storage, uint32_t handle) {
+	unsigned int	k, i, j, last, changed;
+	PTPCANONFolderEntry *tmp = NULL;
+	unsigned int	nroftmp = 0;
+	uint16_t	ret;
+	PTPStorageIDs	storageids;
+	PTPObject	*ob;
+
+	if ((handle != 0xffffffff) && (handle != 0)) {
+		ret = ptp_object_want (params, handle, PTPOBJECT_OBJECTINFO_LOADED, &ob);
+		if ((ret == PTP_RC_OK) && (ob->flags & PTPOBJECT_DIRECTORY_LOADED))
+			return PTP_RC_OK;
+	}
+
+	if (storage == 0xffffffff) {
+		if (handle != 0xffffffff)
+			handle = 0xffffffff;
+		ret = ptp_getstorageids(params, &storageids);
+		if (ret != PTP_RC_OK)
+			return ret;
+	} else {
+		storageids.n = 1;
+		storageids.Storage = malloc(sizeof(storageids.Storage[0]));
+		storageids.Storage[0] = storage;
+	}
+	last = changed = 0;
+
+	for (k=0;k<storageids.n;k++) {
+		if ((storageids.Storage[k] & 0xffff) == 0) {
+			ptp_debug (params, "reading directory, storage 0x%08x skipped (invalid)", storageids.Storage[k]);
+			continue;
+		}
+		ptp_debug (params, "reading handle %08x directory of 0x%08x", storageids.Storage[k], handle);
+		tmp = NULL;
+		ret = ptp_canon_eos_getobjectinfoex (
+			  params, storageids.Storage[k], handle ? handle : 0xffffffff, 0x100000, &tmp, &nroftmp);
+		if (ret != PTP_RC_OK) {
+			ptp_error (params, "error 0x%04x", ret);
+			free (storageids.Storage);
+			return ret;
+		}
+		/* convert read entries into objectinfos */
+		for (i=0;i<nroftmp;i++) {
+			PTPObject	*newobs;
+
+			ob = NULL;
+			for (j=0;j<params->nrofobjects;j++) {
+				if (params->objects[(last+j)%params->nrofobjects].oid == tmp[i].ObjectHandle)  {
+					ob = &params->objects[(last+j)%params->nrofobjects];
+					break;
+				}
+			}
+			if (j == params->nrofobjects) {
+				ptp_debug (params, "adding new objectid 0x%08x (nrofobs=%d,j=%d)", tmp[i].ObjectHandle, params->nrofobjects,j);
+				newobs = realloc (params->objects,sizeof(PTPObject)*(params->nrofobjects+1));
+				if (!newobs) {
+					free (tmp);
+					return PTP_RC_GeneralError;
+				}
+				params->objects = newobs;
+				memset (&params->objects[params->nrofobjects],0,sizeof(params->objects[params->nrofobjects]));
+				params->objects[params->nrofobjects].oid   = tmp[i].ObjectHandle;
+				params->objects[params->nrofobjects].flags = 0;
+
+				params->objects[params->nrofobjects].oi.StorageID = storageids.Storage[k];
+				params->objects[params->nrofobjects].flags |= PTPOBJECT_STORAGEID_LOADED;
+				if (handle == 0xffffffff)
+					params->objects[params->nrofobjects].oi.ParentObject = 0;
+				else
+					params->objects[params->nrofobjects].oi.ParentObject = handle;
+				params->objects[params->nrofobjects].flags |= PTPOBJECT_PARENTOBJECT_LOADED;
+				params->objects[params->nrofobjects].oi.Filename = strdup(tmp[i].Filename);
+				params->objects[params->nrofobjects].oi.ObjectFormat = tmp[i].ObjectFormatCode;
+
+				ptp_debug (params, "   flags %x", tmp[i].Flags);
+				if (tmp[i].Flags & 0x1)
+					params->objects[params->nrofobjects].oi.ProtectionStatus = PTP_PS_ReadOnly;
+				else
+					params->objects[params->nrofobjects].oi.ProtectionStatus = PTP_PS_NoProtection;
+				params->objects[params->nrofobjects].canon_flags = tmp[i].Flags;
+				params->objects[params->nrofobjects].oi.ObjectCompressedSize = tmp[i].ObjectSize;
+				params->objects[params->nrofobjects].oi.CaptureDate = tmp[i].Time;
+				params->objects[params->nrofobjects].oi.ModificationDate = tmp[i].Time;
+				params->objects[params->nrofobjects].flags |= PTPOBJECT_OBJECTINFO_LOADED;
+
+				/*debug_objectinfo(params, tmp[i].ObjectHandle, &params->objects[params->nrofobjects].oi);*/
+				last = params->nrofobjects;
+				params->nrofobjects++;
+				changed = 1;
+			} else {
+				ptp_debug (params, "adding old objectid 0x%08x (nrofobs=%d,j=%d)", tmp[i].ObjectHandle, params->nrofobjects,j);
+				ob = &params->objects[(last+j)%params->nrofobjects];
+				/* for speeding up search */
+				last = (last+j)%params->nrofobjects;
+				if (handle != PTP_HANDLER_SPECIAL) {
+					ob->oi.ParentObject = handle;
+					ob->flags |= PTPOBJECT_PARENTOBJECT_LOADED;
+				}
+				if (storageids.Storage[k] != PTP_HANDLER_SPECIAL) {
+					ob->oi.StorageID = storageids.Storage[k];
+					ob->flags |= PTPOBJECT_STORAGEID_LOADED;
+				}
+			}
+		}
+		free (tmp);
+	}
+	if (changed) ptp_objects_sort (params);
+
+	/* Do not cache ob, it might be reallocated and have a new address */
+	if (handle != 0xffffffff) {
+		ret = ptp_object_want (params, handle, PTPOBJECT_OBJECTINFO_LOADED, &ob);
+		if (ret == PTP_RC_OK)
+			ob->flags |= PTPOBJECT_DIRECTORY_LOADED;
+	}
+	free (storageids.Storage);
+	return PTP_RC_OK;
+}
+
+uint16_t
+ptp_list_folder (PTPParams *params, uint32_t storage, uint32_t handle) {
+	unsigned int		i, changed, last;
+	uint16_t		ret;
+	uint32_t		xhandle = handle;
+	PTPObject		*newobs;
+	PTPObjectHandles	handles;
+
+	ptp_debug (params, "(storage=0x%08x, handle=0x%08x)", storage, handle);
+	/* handle=0 is only not read when there is no object in the list yet
+	 * and we do the initial read. */
+	if (!handle && params->nrofobjects)
+		return PTP_RC_OK;
+	/* but we can override this to read 0 object of storages */
+	if (handle == PTP_HANDLER_SPECIAL)
+		handle = 0;
+
+	/* Canon EOS Fast directory strategy */
+	if ((params->deviceinfo.VendorExtensionID == PTP_VENDOR_CANON) &&
+	    ptp_operation_issupported(params, PTP_OC_CANON_EOS_GetObjectInfoEx)) {
+		ret = ptp_list_folder_eos (params, storage, handle);
+		if (ret == PTP_RC_OK)
+			return ret;
+	}
+
+	if (handle) { /* 0 is the virtual root */
+		PTPObject		*ob;
+		/* first check if object itself is loaded, and get its objectinfo. */
+		ret = ptp_object_want (params, handle, PTPOBJECT_OBJECTINFO_LOADED, &ob);
+		if (ret != PTP_RC_OK)
+			return ret;
+		if (ob->oi.ObjectFormat != PTP_OFC_Association)
+			return PTP_RC_GeneralError;
+		if (ob->flags & PTPOBJECT_DIRECTORY_LOADED) return PTP_RC_OK;
+		ob->flags |= PTPOBJECT_DIRECTORY_LOADED;
+		/*debug_objectinfo(params, handle, &ob->oi);*/
+	}
+
+	if (ptp_operation_issupported(params, PTP_OC_GetFilesystemManifest)) {
+		uint64_t		numoifs = 0;
+		PTPObjectFilesystemInfo	*oifs = NULL;
+
+		if (storage == PTP_HANDLER_SPECIAL) storage = 0;
+		ret = ptp_getfilesystemmanifest (params, storage, 0, handle, &numoifs, &oifs);
+		if (ret != PTP_RC_OK || !numoifs)
+			goto fallback;
+
+		last = changed = 0;
+		for (i=0;i<numoifs;i++) {
+			PTPObject	*ob;
+			unsigned int	j;
+
+			ob = NULL;
+			for (j=0;j<params->nrofobjects;j++) {
+				if (params->objects[(last+j)%params->nrofobjects].oid == oifs[i].ObjectHandle)  {
+					ob = &params->objects[(last+j)%params->nrofobjects];
+					break;
+				}
+			}
+			if (j == params->nrofobjects) {
+				ptp_debug (params, "adding new objectid 0x%08x (nrofobs=%d,j=%d)", oifs[i].ObjectHandle, params->nrofobjects,j);
+				newobs = realloc (params->objects,sizeof(PTPObject)*(params->nrofobjects+1));
+				if (!newobs) {
+					free (oifs);
+					return PTP_RC_GeneralError;
+				}
+				params->objects = newobs;
+				memset (&params->objects[params->nrofobjects],0,sizeof(params->objects[params->nrofobjects]));
+				params->objects[params->nrofobjects].oid = oifs[i].ObjectHandle;
+				params->objects[params->nrofobjects].flags = 0;
+				ob = &params->objects[params->nrofobjects];
+				params->nrofobjects++;
+				changed = 1;
+			} else {
+				ptp_debug (params, "adding old objectid 0x%08x (nrofobs=%d,j=%d)", oifs[i].ObjectHandle, params->nrofobjects,j);
+				ob = &params->objects[(last+j)%params->nrofobjects];
+				/* for speeding up search */
+				last = (last+j)%params->nrofobjects;
+			}
+
+			ob->oi.StorageID 		= oifs[i].StorageID;
+			ob->oi.ObjectFormat 		= oifs[i].ObjectFormat;
+			ob->oi.ProtectionStatus 	= oifs[i].ProtectionStatus;
+			ob->oi.ObjectCompressedSize	= oifs[i].ObjectCompressedSize64;
+			ob->oi.ParentObject		= oifs[i].ParentObject;
+
+			/* bad iOS, returns StorageID instead of 0x0 */
+			if (ob->oi.ParentObject == oifs[i].StorageID) {
+				ptp_debug (params, "objectid 0x%08x aka %s has parent %08x, rewriting to 0", oifs[i].ObjectHandle, oifs[i].Filename, oifs[i].ParentObject);
+				ob->oi.ParentObject = 0;
+			}
+
+			ob->oi.AssociationType		= oifs[i].AssociationType;
+			ob->oi.AssociationDesc		= oifs[i].AssociationDesc;
+			ob->oi.SequenceNumber		= oifs[i].SequenceNumber;
+			ob->oi.Filename			= oifs[i].Filename; /* hand over memory ownership */
+			ob->oi.ModificationDate		= oifs[i].ModificationDate;
+			/* FIXME: most of it ... but not the image sizes */
+			ob->flags			|= PTPOBJECT_OBJECTINFO_LOADED|PTPOBJECT_STORAGEID_LOADED|PTPOBJECT_PARENTOBJECT_LOADED;
+		}
+		free (oifs);
+		if (changed) ptp_objects_sort (params);
+		return PTP_RC_OK;
+	}
+fallback:
+	ptp_debug (params, "Listing ... ");
+	if (handle == 0) xhandle = PTP_HANDLER_SPECIAL; /* 0 would mean all */
+	ret = ptp_getobjecthandles (params, storage, 0, xhandle, &handles);
+	if (ret == PTP_RC_ParameterNotSupported) {/* try without storage */
+		storage = PTP_HANDLER_SPECIAL;
+		ret = ptp_getobjecthandles (params, PTP_HANDLER_SPECIAL, 0, xhandle, &handles);
+	}
+	if (ret == PTP_RC_ParameterNotSupported) { /* fall back to always supported method */
+		xhandle = PTP_HANDLER_SPECIAL;
+		handle = PTP_HANDLER_SPECIAL;
+		ret = ptp_getobjecthandles (params, PTP_HANDLER_SPECIAL, 0, 0, &handles);
+	}
+	if (ret != PTP_RC_OK)
+		return ret;
+	last = changed = 0;
+	for (i=0;i<handles.n;i++) {
+		PTPObject	*ob;
+		unsigned int	j;
+
+		ob = NULL;
+		for (j=0;j<params->nrofobjects;j++) {
+			if (params->objects[(last+j)%params->nrofobjects].oid == handles.Handler[i])  {
+				ob = &params->objects[(last+j)%params->nrofobjects];
+				break;
+			}
+		}
+		if (j == params->nrofobjects) {
+			ptp_debug (params, "adding new objectid 0x%08x (nrofobs=%d,j=%d)", handles.Handler[i], params->nrofobjects,j);
+			newobs = realloc (params->objects,sizeof(PTPObject)*(params->nrofobjects+1));
+			if (!newobs) return PTP_RC_GeneralError;
+			params->objects = newobs;
+			memset (&params->objects[params->nrofobjects],0,sizeof(params->objects[params->nrofobjects]));
+			params->objects[params->nrofobjects].oid = handles.Handler[i];
+			params->objects[params->nrofobjects].flags = 0;
+			/* root directory list files might return all files, so avoid tagging it */
+			if (handle != PTP_HANDLER_SPECIAL && handle) {
+				ptp_debug (params, "  parenthandle 0x%08x", handle);
+				if (handles.Handler[i] == handle) { /* EOS bug where oid == parent(oid) */
+					params->objects[params->nrofobjects].oi.ParentObject = 0;
+				} else {
+					params->objects[params->nrofobjects].oi.ParentObject = handle;
+				}
+				params->objects[params->nrofobjects].flags |= PTPOBJECT_PARENTOBJECT_LOADED;
+			}
+			if (storage != PTP_HANDLER_SPECIAL) {
+				ptp_debug (params, "  storage 0x%08x", storage);
+				params->objects[params->nrofobjects].oi.StorageID = storage;
+				params->objects[params->nrofobjects].flags |= PTPOBJECT_STORAGEID_LOADED;
+			}
+			params->nrofobjects++;
+			changed = 1;
+		} else {
+			ptp_debug (params, "adding old objectid 0x%08x (nrofobs=%d,j=%d)", handles.Handler[i], params->nrofobjects,j);
+			ob = &params->objects[(last+j)%params->nrofobjects];
+			/* for speeding up search */
+			last = (last+j)%params->nrofobjects;
+			if (handle != PTP_HANDLER_SPECIAL) {
+				ob->oi.ParentObject = handle;
+				ob->flags |= PTPOBJECT_PARENTOBJECT_LOADED;
+			}
+			if (storage != PTP_HANDLER_SPECIAL) {
+				ob->oi.StorageID = storage;
+				ob->flags |= PTPOBJECT_STORAGEID_LOADED;
+			}
+		}
+	}
+	free (handles.Handler);
+	if (changed) ptp_objects_sort (params);
+	return PTP_RC_OK;
+}
+
+
 static void
 handle_event_internal (PTPParams *params, PTPContainer *event)
 {
@@ -2202,6 +2506,8 @@ handle_event_internal (PTPParams *params, PTPContainer *event)
 	case PTP_EC_StoreRemoved: {
 		int i;
 
+		/* FIXME: if we just remove 1 out of many storages, we do not need to invalidate/reload the entire tree? */
+
 		/* refetch storage IDs and also invalidate whole object tree */
 		free (params->storageids.Storage);
 		params->storageids.Storage	= NULL;
@@ -2217,6 +2523,20 @@ handle_event_internal (PTPParams *params, PTPContainer *event)
 		params->nrofobjects 		= 0;
 
 		params->storagechanged		= 1;
+		/* mirror what we do in camera_init, fetch root directory entries. */
+		if (params->deviceinfo.VendorExtensionID != PTP_VENDOR_SONY)
+			ptp_list_folder (params, PTP_HANDLER_SPECIAL, PTP_HANDLER_SPECIAL);
+
+		{
+			unsigned int k;
+
+			for (k=0;k<params->storageids.n;k++) {
+				if (!(params->storageids.Storage[k] & 0xffff)) continue;
+				if (params->storageids.Storage[k] == 0x80000001) continue;
+				ptp_list_folder (params, params->storageids.Storage[k], PTP_HANDLER_SPECIAL);
+			}
+		}
+
 		break;
 	}
 	default: /* check if we should handle it internally too */
@@ -2270,9 +2590,9 @@ ptp_check_event (PTPParams *params)
 			params->events = realloc(params->events, sizeof(PTPContainer)*(evtcnt+params->nrofevents));
 			memcpy (&params->events[params->nrofevents],xevent,evtcnt*sizeof(PTPContainer));
 			params->nrofevents += evtcnt;
-			free (xevent);
 			params->event90c7works = 1;
 		}
+		free (xevent);
 		if (params->event90c7works)
 			return PTP_RC_OK;
 		/* fall through to generic event handling */
@@ -2375,7 +2695,7 @@ uint16_t
 ptp_canon_eos_getevent (PTPParams* params, PTPCanon_changes_entry **entries, int *nrofentries)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int 	size;
 
 	PTP_CNT_INIT(ptp, PTP_OC_CANON_EOS_GetEvent);
@@ -2465,7 +2785,7 @@ uint16_t
 ptp_canon_eos_getstorageids (PTPParams* params, PTPStorageIDs* storageids)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size;
 
 	PTP_CNT_INIT(ptp, PTP_OC_CANON_EOS_GetStorageIDs);
@@ -2492,7 +2812,7 @@ ptp_canon_eos_getobjectinfoex (
 ) {
 	PTPContainer	ptp;
 	uint16_t	ret = PTP_RC_OK;
-	unsigned char	*data, *xdata;
+	unsigned char	*data = NULL, *xdata;
 	unsigned int	size, i;
 
 	PTP_CNT_INIT(ptp, PTP_OC_CANON_EOS_GetObjectInfoEx, storageid, oid, unk);
@@ -2548,8 +2868,8 @@ ptp_canon_eos_getobjectinfoex (
 			ret = PTP_RC_GeneralError;
 			goto exit;
 		}
-		ptp_unpack_Canon_EOS_FE (params, &xdata[4], dtoh32a(xdata) - 4, &((*entries)[i]));
-		xdata += dtoh32a(xdata);
+		ptp_unpack_Canon_EOS_FE (params, &xdata[4], entrysize - 4, &((*entries)[i]));
+		xdata += entrysize;
 	}
 exit:
 	free (data);
@@ -2578,6 +2898,33 @@ ptp_canon_eos_getpartialobject (PTPParams* params, uint32_t oid, uint32_t offset
 	PTPContainer	ptp;
 
 	PTP_CNT_INIT(ptp, PTP_OC_CANON_EOS_GetPartialObject, oid, offset, xsize);
+	return ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, data, NULL);
+}
+
+/**
+ * ptp_canon_eos_getpartialobjectex:
+ * 
+ * This retrieves a part of an PTP object which you specify as object id.
+ * The id originates from 0x9116 call.
+ * After finishing it, we seem to need to call ptp_canon_eos_enddirecttransfer.
+ *
+ * params:	PTPParams*
+ * 		oid		Object ID
+ * 		offset		The offset where to start the data transfer 
+ *		xsize		Size in bytes of the transfer to do
+ *		data		Pointer that receives the malloc()ed memory of the transfer.
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ */
+uint16_t
+ptp_canon_eos_getpartialobjectex (PTPParams* params, uint32_t oid, uint32_t offset, uint32_t xsize, unsigned char**data)
+{
+	PTPContainer	ptp;
+
+/* 5bf19091  00008001  00001000  00000000  */
+/* objectid  offset    size      ? 64bit part ? */
+	PTP_CNT_INIT(ptp, PTP_OC_CANON_EOS_GetPartialObjectEx, oid, offset, xsize, 0);
 	return ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, data, NULL);
 }
 
@@ -2699,7 +3046,7 @@ ptp_canon_getpartialobject (PTPParams* params, uint32_t handle,
 {
 	PTPContainer	ptp;
 	uint16_t	ret;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	
 	PTP_CNT_INIT(ptp, PTP_OC_CANON_GetPartialObjectEx, handle, offset, size, pos);
 	ret=ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, NULL);
@@ -2761,7 +3108,7 @@ uint16_t
 ptp_canon_getchanges (PTPParams* params, uint16_t** props, uint32_t* propnum)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size;
 	
 	PTP_CNT_INIT(ptp, PTP_OC_CANON_GetChanges);
@@ -2801,7 +3148,7 @@ ptp_canon_getobjectinfo (PTPParams* params, uint32_t store, uint32_t p2,
 {
 	PTPContainer	ptp;
 	uint16_t	ret;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	i, size;
 	
 	*entnum = 0;
@@ -2922,7 +3269,7 @@ uint16_t
 ptp_sony_sdioconnect (PTPParams* params, uint32_t p1, uint32_t p2, uint32_t p3)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 
 	PTP_CNT_INIT(ptp, PTP_OC_SONY_SDIOConnect, p1, p2, p3);
 	CHECK_PTP_RC(ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, NULL));
@@ -2984,7 +3331,7 @@ uint16_t
 ptp_sony_getdevicepropdesc (PTPParams* params, uint16_t propcode, PTPDevicePropDesc *dpd)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int 	size, len = 0;
 	uint16_t	ret;
 
@@ -3001,7 +3348,7 @@ uint16_t
 ptp_sony_getalldevicepropdesc (PTPParams* params)
 {
 	PTPContainer		ptp;
-	unsigned char		*data, *dpddata;
+	unsigned char		*data = NULL, *dpddata;
 	unsigned int		size, readlen;
 	PTPDevicePropDesc	dpd;
 
@@ -3415,7 +3762,7 @@ uint16_t
 ptp_nikon_check_event (PTPParams* params, PTPContainer** event, unsigned int* evtcnt)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size;
 
 	PTP_CNT_INIT(ptp, PTP_OC_NIKON_CheckEvent);
@@ -3462,7 +3809,7 @@ ptp_nikon_getwifiprofilelist (PTPParams* params)
 {
 	PTPContainer	ptp;
 	uint16_t	ret;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size, pos, profn, n;
 	char		*buffer;
 	uint8_t		len;
@@ -3693,7 +4040,7 @@ ptp_mtp_getobjectpropdesc (
 	PTPParams* params, uint16_t opc, uint16_t ofc, PTPObjectPropDesc *opd
 ) {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size;
 
         PTP_CNT_INIT(ptp, PTP_OC_MTP_GetObjectPropDesc, opc, ofc);
@@ -3722,7 +4069,7 @@ ptp_mtp_getobjectpropvalue (
 ) {
 	PTPContainer	ptp;
 	uint16_t	ret = PTP_RC_OK;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size, offset = 0;
         
         PTP_CNT_INIT(ptp, PTP_OC_MTP_GetObjectPropValue, oid, opc);
@@ -3768,7 +4115,7 @@ uint16_t
 ptp_mtp_getobjectreferences (PTPParams* params, uint32_t handle, uint32_t** ohArray, uint32_t* arraylen)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size;
 
 	PTP_CNT_INIT(ptp, PTP_OC_MTP_GetObjectReferences, handle);
@@ -3804,7 +4151,7 @@ uint16_t
 ptp_mtp_getobjectproplist (PTPParams* params, uint32_t handle, MTPProperties **props, int *nrofprops)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size;
 
 	PTP_CNT_INIT(ptp, PTP_OC_MTP_GetObjPropList, handle,
@@ -3823,7 +4170,7 @@ uint16_t
 ptp_mtp_getobjectproplist_single (PTPParams* params, uint32_t handle, MTPProperties **props, int *nrofprops)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 	unsigned int	size;
 
 	PTP_CNT_INIT(ptp, PTP_OC_MTP_GetObjPropList, handle,
@@ -4081,7 +4428,7 @@ uint16_t
 ptp_chdk_read_script_msg(PTPParams* params, ptp_chdk_script_msg **msg)
 {
 	PTPContainer	ptp;
-	unsigned char	*data;
+	unsigned char	*data = NULL;
 
 	PTP_CNT_INIT(ptp, PTP_OC_CHDK, PTP_CHDK_ReadScriptMsg);
 
@@ -4130,7 +4477,29 @@ ptp_chdk_call_function(PTPParams* params, int *args, int size, int *ret)
 	return PTP_RC_OK;
 }
 
+uint16_t
+ptp_chdk_parse_live_data (PTPParams* params, unsigned char *data, unsigned int data_size,
+			  lv_data_header *header,
+			  lv_framebuffer_desc *vpd, lv_framebuffer_desc *bmd
+) {
+	int byte_w;
 
+	if (data_size < sizeof (*header))
+		return PTP_ERROR_IO;
+	ptp_unpack_chdk_lv_data_header (params, data, header);
+	if (data_size < (header->vp_desc_start + sizeof (*vpd)) || data_size < (header->bm_desc_start + sizeof (*bmd)))
+		return PTP_ERROR_IO;
+	ptp_unpack_chdk_lv_framebuffer_desc (params, data+header->vp_desc_start, vpd);
+	ptp_unpack_chdk_lv_framebuffer_desc (params, data+header->vp_desc_start, bmd);
+
+	/* The buffer_width field corresponds to the number of Y values in a row,
+	 * so the actual number of bytes would be either one and a half times
+	 * or (for Digic 6 cameras) twice so large */
+	byte_w = (vpd->fb_type == LV_FB_YUV8) ? vpd->buffer_width * 1.5 : vpd->buffer_width * 2;
+	if (data_size < (vpd->data_start + (byte_w * vpd->visible_height)))
+		return PTP_ERROR_IO;
+	return PTP_RC_OK;
+}
 
 
 /**
@@ -4184,6 +4553,41 @@ ptp_android_sendpartialobject (PTPParams* params, uint32_t handle, uint64_t offs
 	params->split_header_data = 0;
 
 	return ret;
+}
+
+uint16_t
+ptp_fuji_getevents (PTPParams* params, uint16_t** events, uint16_t* count)
+{
+	PTPContainer	ptp;
+	unsigned char	*data = NULL;
+	unsigned int	size = 0;
+
+	PTP_CNT_INIT(ptp, PTP_OC_GetDevicePropValue, 0xd212);
+	CHECK_PTP_RC(ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, &size));
+	ptp_debug(params, "ptp_fuji_getevents");
+	*count = 0;
+        if(size >= 2)
+        {
+                *count = dtoh16a(data);
+                ptp_debug(params, "event count: %d", *count);
+                *events = calloc(*count, sizeof(uint16_t));
+                if(size >= 2 + *count * 6)
+                {
+			uint16_t	param;
+			uint32_t	value;
+			int		i;
+
+			for(i = 0; i < *count; i++)
+			{
+				param = dtoh16a(&data[2 + 6 * i]);
+				value = dtoh32a(&data[2 + 6 * i + 2]);
+				*events[i] = param;
+				ptp_debug(params, "param: %02x, value: %d ", param, value);
+			}
+		}
+	}
+	free(data);
+	return PTP_RC_OK;        
 }
 
 
@@ -6269,6 +6673,26 @@ ptp_opcode_trans_t ptp_opcode_canon_trans[] = {
 	{PTP_OC_CANON_EOS_CancelTransfer2,"PTP_OC_CANON_EOS_CancelTransfer2"},
 	{PTP_OC_CANON_EOS_FAPIMessageTX,"PTP_OC_CANON_EOS_FAPIMessageTX"},
 	{PTP_OC_CANON_EOS_FAPIMessageRX,"PTP_OC_CANON_EOS_FAPIMessageRX"},
+	{PTP_OC_CANON_EOS_SetImageRecoveryData,"PTP_OC_CANON_EOS_SetImageRecoveryData"},
+	{PTP_OC_CANON_EOS_GetImageRecoveryList,"PTP_OC_CANON_EOS_GetImageRecoveryList"},
+	{PTP_OC_CANON_EOS_FormatImageRecoveryData,"PTP_OC_CANON_EOS_FormatImageRecoveryData"},
+	{PTP_OC_CANON_EOS_GetPresetLensAdjustParam,"PTP_OC_CANON_EOS_GetPresetLensAdjustParam"},
+	{PTP_OC_CANON_EOS_GetRawDispImage,"PTP_OC_CANON_EOS_GetRawDispImage"},
+	{PTP_OC_CANON_EOS_SaveImageRecoveryData,"PTP_OC_CANON_EOS_SaveImageRecoveryData"},
+	{PTP_OC_CANON_EOS_RequestBLE,"PTP_OC_CANON_EOS_RequestBLE"},
+	{PTP_OC_CANON_EOS_DrivePowerZoom,"PTP_OC_CANON_EOS_DrivePowerZoom"},
+	{PTP_OC_CANON_EOS_GetIptcData,"PTP_OC_CANON_EOS_GetIptcData"},
+	{PTP_OC_CANON_EOS_SetIptcData,"PTP_OC_CANON_EOS_SetIptcData"},
+	{PTP_OC_CANON_EOS_GetObjectInfo64,"PTP_OC_CANON_EOS_GetObjectInfo64"},
+	{PTP_OC_CANON_EOS_GetObject64,"PTP_OC_CANON_EOS_GetObject64"},
+	{PTP_OC_CANON_EOS_GetPartialObject64,"PTP_OC_CANON_EOS_GetPartialObject64"},
+	{PTP_OC_CANON_EOS_GetObjectInfoEx64,"PTP_OC_CANON_EOS_GetObjectInfoEx64"},
+	{PTP_OC_CANON_EOS_GetPartialObjectEX64,"PTP_OC_CANON_EOS_GetPartialObjectEX64"},
+	{PTP_OC_CANON_EOS_CreateHandle64,"PTP_OC_CANON_EOS_CreateHandle64"},
+	{PTP_OC_CANON_EOS_NotifyEstimateNumberofImport,"PTP_OC_CANON_EOS_NotifyEstimateNumberofImport"},
+	{PTP_OC_CANON_EOS_NotifyNumberofImported,"PTP_OC_CANON_EOS_NotifyNumberofImported"},
+	{PTP_OC_CANON_EOS_NotifySizeOfPartialDataTransfer,"PTP_OC_CANON_EOS_NotifySizeOfPartialDataTransfer"},
+	{PTP_OC_CANON_EOS_NotifyFinish,"PTP_OC_CANON_EOS_NotifyFinish"},
 };
 
 ptp_opcode_trans_t ptp_opcode_sony_trans[] = {
@@ -6776,12 +7200,21 @@ ptp_object_want (PTPParams *params, uint32_t handle, unsigned int want, PTPObjec
 			return ret;
 		}
 		if (!ob->oi.Filename) ob->oi.Filename=strdup("<none>");
-		if (ob->flags & PTPOBJECT_PARENTOBJECT_LOADED)
+		if (ob->flags & PTPOBJECT_PARENTOBJECT_LOADED) {
+			if (ob->oi.ParentObject != saveparent)
+				ptp_debug (params, "saved parent %08x is not the same as read via getobjectinfo %08x", ob->oi.ParentObject, saveparent);
 			ob->oi.ParentObject = saveparent;
+		}
 
 		/* Second EOS issue, 0x20000000 has 0x20000000 as parent */
 		if (ob->oi.ParentObject == handle)
 			ob->oi.ParentObject = 0;
+
+		/* Apple iOS X does that for the root folder. */
+		if (ob->oi.ParentObject == ob->oi.StorageID) {
+			ptp_debug (params, "parent %08x of %s has same id as storage id. rewriting to 0.", ob->oi.ParentObject, ob->oi.Filename);
+			ob->oi.ParentObject = 0;
+		}
 
 		/* Read out the canon special flags */
 		if ((params->deviceinfo.VendorExtensionID == PTP_VENDOR_CANON) &&
@@ -6847,10 +7280,7 @@ ptp_object_want (PTPParams *params, uint32_t handle, unsigned int want, PTPObjec
 					break;
 				case PTP_OPC_ObjectSize:
 					if (prop->datatype == PTP_DTC_UINT64) {
-						if (prop->propval.u64 > 0xFFFFFFFFU)
-							ob->oi.ObjectCompressedSize = 0xFFFFFFFFU;
-						else
-							ob->oi.ObjectCompressedSize = (uint32_t)prop->propval.u64;
+						ob->oi.ObjectCompressedSize = prop->propval.u64;
 					} else if (prop->datatype == PTP_DTC_UINT32) {
 						ob->oi.ObjectCompressedSize = prop->propval.u32;
 					}
