@@ -1247,6 +1247,8 @@
 
   /* https://sourceforge.net/p/libmtp/bugs/1711/ */
   { "Nokia", 0x2e04, "6", 0xc025, DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/bugs/1783/ */
+  { "Nokia", 0x2e04, "6.1", 0xc026, DEVICE_FLAG_NONE },
 
   /*
    * Qualcomm
@@ -2886,6 +2888,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1531/ */
   { "Lenovo", 0x17ef, "Vibe X", 0x7902,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1784/ */
+  { "Lenovo", 0x17ef, "P1ma40 (2nd ID)", 0x7920,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/235/ */
   { "Lenovo", 0x17ef, "P1ma40", 0x7921,
