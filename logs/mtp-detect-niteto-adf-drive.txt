@@ -1,0 +1,110 @@
+
+
+
+---
+
+** [bugs:#1786] Unknown device ADF-Drive**
+
+**Status:** open
+**Group:** unknown release (please set)
+**Created:** Sun Jul 15, 2018 01:33 PM UTC by Anonymous
+**Last Updated:** Sun Jul 15, 2018 01:33 PM UTC
+**Owner:** nobody
+
+
+Listing raw device(s)
+Device 0 (VID=16c0 and PID=0489) is UNKNOWN in libmtp v1.1.15.
+Please report this VID/PID and the device model to the libmtp development team
+   Found 1 device(s):
+   16c0:0489 @ bus 2, dev 22
+Attempting to connect device(s)
+Error 2: PTP Layer error 2002: LIBMTP_Get_Storage(): Could not get storage info.
+Error 2: Error 2002: PTP General Error
+Error 1: Get Storage information failed.
+USB low-level info:
+   bcdUSB: 257
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 16c0
+   idProduct: 0489
+   IN endpoint maxpacket: 64 bytes
+   OUT endpoint maxpacket: 64 bytes
+   Raw device info:
+      Bus location: 2
+      Device number: 22
+      Device entry info:
+         Vendor: (null)
+         Vendor id: 0x16c0
+         Product: (null)
+         Vendor id: 0x0489
+         Device flags: 0x00000000
+Configuration 0, interface 2, altsetting 0:
+   Interface description contains the string "MTP"
+   Device recognized as MTP, no further probing.
+Device info:
+   Manufacturer: Niteto
+   Model: ADF-Drive
+   Device version: v0.625                                                                                                                                                                      
+   Serial number: 18:46:21 Oct  1 2017                                                                                                                                                         
+   Vendor extension ID: 0x00000006                                                                                                                                                             
+   Vendor extension description: microsoft.com: 1.0;                                                                                                                                           
+   Detected object size: 32 bits                                                                                                                                                               
+   Extensions:                                                                                                                                                                                 
+        microsoft.com: 1.0                                                                                                                                                                     
+Supported operations:                                                                                                                                                                          
+   1001: Get device info                                                                                                                                                                       
+   1002: Open session                                                                                                                                                                          
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100a: Get thumbnail
+   100b: Delete object
+   100c: Send object info
+   100d: Send object
+   100f: Format storage
+   1014: Get device property description
+   1015: Get device property value
+   1016: Set device property value
+Events supported:
+   0x4002: ObjectAdded
+   0x4003: ObjectRemoved
+   0x4004: StoreAdded
+   0x4005: StoreRemoved
+   0x4007: ObjectInfoChanged
+   0x400b: DeviceReset
+   0x400c: StorageInfoChanged
+   0x400e: UnreportedStatus
+Device Properties Supported:
+   0x5001: Battery Level
+   0x5011: Date & Time
+   0xd402: Friendly Device Name
+Special directories:
+   Default music folder: 0xffffffff
+   Default playlist folder: 0xffffffff
+   Default picture folder: 0xffffffff
+   Default video folder: 0xffffffff
+   Default organizer folder: 0xffffffff
+   Default zencast folder: 0xffffffff
+   Default album folder: 0xffffffff
+   Default text folder: 0xffffffff
+MTP-specific device properties:
+   Friendly name: ADF-Drive
+   Synchronization partner: (NULL)
+libmtp supported (playable) filetypes:
+   Folder
+OK.
+
+
+
+---
+
+Sent from sourceforge.net because you indicated interest in <https://sourceforge.net/p/libmtp/bugs/1786/>
+
+
+
+To unsubscribe from further messages, please visit <https://sourceforge.net/auth/subscriptions/>

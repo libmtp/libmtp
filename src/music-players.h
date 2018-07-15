@@ -3825,6 +3825,9 @@
 
   /* https://sourceforge.net/p/libmtp/bugs/1764/ */
   { "O&P Innovations" , 0x0746, "XDP-100R", 0xa003, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /* https://sourceforge.net/p/libmtp/bugs/1786/ */
+  { "Niteto" , 0x16c0, "ADF-Drive", 0x0489, DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Other strange stuff.
    */
