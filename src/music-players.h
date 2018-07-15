@@ -2541,6 +2541,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1658/ */
   { "RIM", 0x0fca, "BlackBerry Dtek 60", 0x8041, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/feature-requests/264/ */
+  { "RIM", 0x0fca, "BlackBerry Keyone", 0x8042, DEVICE_FLAGS_ANDROID_BUGS },
+
   /*
    * Nextar
    */
