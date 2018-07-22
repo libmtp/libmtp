@@ -232,6 +232,12 @@
 #define DEVICE_FLAG_NIKON_BROKEN_CAPTURE	0x00100000
 
 /**
+ * To distinguish the V1 series from the DSLRs and handle them
+ * (libgphoto2)
+ */
+#define DEVICE_FLAG_NIKON_1			0x00200000
+
+/**
  * Broken capture support where cameras do not send CaptureComplete events.
  * (libgphoto2)
  */
@@ -269,14 +275,10 @@
  */
 #define DEVICE_FLAG_FORCE_RESET_ON_CLOSE	0x10000000
 /**
- * Early Creative Zen (etc) models actually only support
- * command 9805 (Get object property list) and will hang
- * if you try to get individual properties of an object.
- * Or so it seemed. Later bug fixes to the library has made
- * this work flawlessly so the bug flag is moot.
- * NOT USED ANYMORE, THIS FLAG MAY BE RECYCLED.
+ * On 2016 EOS cameras, do not close the session on exiting,
+ * as the device will only report ptp errors afterwards.
  */
-#define DEVICE_FLAG_BROKEN_GET_OBJECT_PROPVAL	0x20000000
+#define DEVICE_FLAG_DONT_CLOSE_SESSION          0x20000000
 /**
  * It seems that some devices return an bad data when
  * using the GetObjectInfo operation. So in these cases
