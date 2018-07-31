@@ -3761,7 +3761,11 @@
   { "GoPro" , 0x2672, "HERO+", 0x0021, DEVICE_FLAG_NONE },
   { "GoPro" , 0x2672, "HERO5 Black", 0x0027, DEVICE_FLAG_NONE },
   { "GoPro" , 0x2672, "HERO5 Session", 0x0029, DEVICE_FLAG_NONE },
+  { "GoPro" , 0x2672, "HERO 2018", 0x002d, DEVICE_FLAG_NONE },
+  { "GoPro" , 0x2672, "FUSION (back)", 0x0032, DEVICE_FLAG_NONE },
+  { "GoPro" , 0x2672, "FUSION (front)", 0x0035, DEVICE_FLAG_NONE },
   { "GoPro" , 0x2672, "HERO6 Black", 0x0037, DEVICE_FLAG_NONE },
+  { "GoPro" , 0x2672, "HERO7 Black", 0x0047, DEVICE_FLAG_NONE },
 
   /* https://sourceforge.net/p/libmtp/bugs/1490/ */
   { "Marshall" , 0x2ad9, "London", 0x000b, DEVICE_FLAG_NONE },
