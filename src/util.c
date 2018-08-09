@@ -149,4 +149,3 @@ char *strndup (const char *s, size_t n)
   return ret;
 }
 #endif
-
