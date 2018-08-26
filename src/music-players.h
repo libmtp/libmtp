@@ -3509,6 +3509,8 @@
   { "Kyocera", 0x0482, "Hydro Elite C6750", 0x073c, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/discussion/535190/thread/6270f5ce/ */
   { "Kyocera", 0x0482, "KYL22", 0x0810, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/270/ */
+  { "Kyocera", 0x0482, "Hydro Icon", 0x085e, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1518/ */
   { "Kyocera", 0x0482, "302KC", 0x09fc, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1345/ */
