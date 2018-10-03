@@ -1055,6 +1055,8 @@
 
   /* https://sourceforge.net/p/libmtp/support-requests/245/ */
   { "Archos", 0x0e79, "55B Platinum", 0x544a, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1799/ */
+  { "Archos", 0x0e79, "50F Helium", 0x545c, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/209/ */
   { "Archos", 0x0e79, "55 diamond Selfie", 0x5465, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/262/ */
