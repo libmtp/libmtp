@@ -44,6 +44,7 @@
 #include "util.h"
 
 #include "mtpz.h"
+int use_mtpz;
 
 #include <stdarg.h>
 #include <stdlib.h>

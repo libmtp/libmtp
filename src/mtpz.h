@@ -45,7 +45,7 @@ static inline int mtpz_loaddata(void)
 
 #endif
 
-int use_mtpz;
+extern int use_mtpz;
 
 #endif /* LIBMTP_H_INCLUSION_GUARD */
 
