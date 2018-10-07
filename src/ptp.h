@@ -155,6 +155,7 @@ struct _PTPIPHeader {
 typedef struct _PTPIPHeader PTPIPHeader;
 
 /* Vendor IDs */
+/* List is linked from here: http://www.imaging.org/site/IST/Standards/PTP_Standards.aspx */
 #define PTP_VENDOR_EASTMAN_KODAK		0x00000001
 #define PTP_VENDOR_SEIKO_EPSON			0x00000002
 #define PTP_VENDOR_AGILENT			0x00000003
@@ -180,7 +181,9 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_VENDOR_MTP			0xffffffff  
 
 /* gphoto overrides */
-#define PTP_VENDOR_GP_OLYMPUS		0xfffffffe
+#define PTP_VENDOR_GP_OLYMPUS          0x0000fffe
+#define PTP_VENDOR_GP_OLYMPUS_OMD      0x0000fffd
+
 
 /* Operation Codes */
 
@@ -537,7 +540,7 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_OC_NIKON_GetPartialObjectHiSpeed	0x9400	/* 3 params, data in */
 
 /* From Nikon V1 Trace */
-#define PTP_OC_NIKON_GetDevicePropEx		0x9504	/* gets device prop dataa */
+#define PTP_OC_NIKON_GetDevicePropEx		0x9504	/* gets device prop data */
 
 /* Casio EX-F1 (from http://code.google.com/p/exf1ctrl/ ) */
 #define PTP_OC_CASIO_STILL_START	0x9001
@@ -675,8 +678,16 @@ typedef struct _PTPIPHeader PTPIPHeader;
 /* WiFi Provisioning MTP Extension Codes (microsoft.com/WPDWCN: 1.0) */
 #define PTP_OC_MTP_WPDWCN_ProcessWFCObject		0x9122
 
+/* Olympus OMD series commands */
+#define PTP_OC_OLYMPUS_OMD_Capture			0x9481
+#define PTP_OC_OLYMPUS_GetLiveViewImage			0x9484	/* liveview */
+#define PTP_OC_OLYMPUS_OMD_GetImage			0x9485	/* gets an JPEG image (from the capture? SDRAM style?) */
+#define PTP_OC_OLYMPUS_OMD_ChangedProperties		0x9486
+#define PTP_OC_OLYMPUS_OMD_MFDrive			0x9487
+#define PTP_OC_OLYMPUS_OMD_SetProperties		0x9489 /* Sends to the device a PTP list of all 16 bit device properties , count 32bit, then 16bit vals */
 
 /* Olympus E series commands */
+
 #define PTP_OC_OLYMPUS_Capture				0x9101
 #define PTP_OC_OLYMPUS_SelfCleaning			0x9103
 #define PTP_OC_OLYMPUS_SetRGBGain			0x9106
@@ -691,6 +702,7 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_OC_OLYMPUS_GetDateTime			0x9482
 #define PTP_OC_OLYMPUS_SetCameraID			0x9501
 #define PTP_OC_OLYMPUS_GetCameraID			0x9581
+
 
 /* Android Random I/O Extensions Codes */
 #define PTP_OC_ANDROID_GetPartialObject64		0x95C1
@@ -731,6 +743,54 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_OC_PARROT_StopMagnetoCalib		0x9211
 #define PTP_OC_PARROT_MagnetoCalibStatus	0x9212
 #define PTP_OC_PARROT_SendFirmwareUpdate	0x9213
+
+#define PTP_OC_PANASONIC_9101			0x9101
+#define PTP_OC_PANASONIC_OpenSession		0x9102	/* opensession (1 arg, seems to be storage id 0x00010001)*/
+#define PTP_OC_PANASONIC_CloseSession		0x9103	/* closesession (no arg) */
+#define PTP_OC_PANASONIC_9104			0x9104	/* get ext device id (1 arg?) */
+/* 9104 gets this data:
+0000  24 00 00 00 02 00 04 91-04 00 00 00 01 00 01 00  $...............
+0010  01 00 e1 07 10 00 00 00-00 00 00 00 00 00 00 00  ................
+0020  00 00 00 00            -                         ....            
+*/
+
+#define PTP_OC_PANASONIC_9107			0x9107	/* getsize? */
+#define PTP_OC_PANASONIC_ListProperty		0x9108
+#define PTP_OC_PANASONIC_9110			0x9110 	/* Get_Object infos */
+#define PTP_OC_PANASONIC_9112			0x9112 	/* Get Partial Object , 4 args */
+#define PTP_OC_PANASONIC_9113			0x9113 	/* Skip Objects Transfer , 1 arg */
+
+#define PTP_OC_PANASONIC_9401			0x9401
+#define PTP_OC_PANASONIC_GetProperty		0x9402
+#define PTP_OC_PANASONIC_SetProperty		0x9403
+#define PTP_OC_PANASONIC_InitiateCapture	0x9404	/* Rec Ctrl Release */
+#define PTP_OC_PANASONIC_9405			0x9405	/* Rec Ctrl AF AE */
+#define PTP_OC_PANASONIC_9406			0x9406	/* Setup Ctrl various functions: Format, Sensor Cleaning, Menu Save, firmware update? */
+#define PTP_OC_PANASONIC_9408			0x9408
+#define PTP_OC_PANASONIC_9409			0x9409	/* 1 arg */
+#define PTP_OC_PANASONIC_940A			0x940A	/* 1 arg, e.g. 0x08000010 */
+#define PTP_OC_PANASONIC_940B			0x940B	/* 1 arg, e.g. 0x08000010 */
+#define PTP_OC_PANASONIC_MoveRecControl		0x940C	/* 07000011 start, 07000012 stop, 0700013 still capture */
+#define PTP_OC_PANASONIC_PowerControl		0x940D	/* 1 arg: 0x0A000011 power off, 0x0a00012 device reset, 0x0a00013 device restart */
+#define PTP_OC_PANASONIC_PlayControl		0x940E	/* 2 arg? 0x05000011 current=0, next=1, prev=0xffffffff */
+#define PTP_OC_PANASONIC_PlayControlPlay	0x940F	/* 0x05000020 */
+#define PTP_OC_PANASONIC_9410			0x9410	/* Rec Ctrl Other */
+#define PTP_OC_PANASONIC_SetGPSDataInfo		0x9411
+#define PTP_OC_PANASONIC_Liveview		0x9412	/* 0d000010 start, 0d000011 stop */
+#define PTP_OC_PANASONIC_9414			0x9414	/* 1 arg e.g 12000020 */
+#define PTP_OC_PANASONIC_9416			0x9416	/* Rec Ctrl Mf Assist, Rec Ctrl Backup Req ... 1 arg */
+
+#define PTP_OC_PANASONIC_ChangeEvent		0x9603	/* 2 args ... e.g. 0x4002, new (change object added event) */
+#define PTP_OC_PANASONIC_GetFromEventInfo	0x9605	/* 1 arg, e.g. 0x41000013 , 15c00021: setup exec menu save comp, 15c00022: setup exec pixel refresh comp */
+#define PTP_OC_PANASONIC_SendDataInfo		0x9606	/* no args? used during firmware update */
+#define PTP_OC_PANASONIC_StartSendData		0x9607	/* no args? used during firmware update */
+
+#define PTP_OC_PANASONIC_9703			0x9703	/* Mnt_GetInfo_GetVersion  ... 1 arg? */
+#define PTP_OC_PANASONIC_9704			0x9704	/* Set USB Mode ... 80040001 */
+#define PTP_OC_PANASONIC_9705			0x9705	/* Ctrl Liveview */
+#define PTP_OC_PANASONIC_LiveviewImage		0x9706	/* Get Liveview Data */
+#define PTP_OC_PANASONIC_9707			0x9707	/* 4k6k cutting get stream */
+
 
 
 /* Proprietary vendor extension operations mask */
@@ -946,6 +1006,8 @@ typedef struct _PTPIPHeader PTPIPHeader;
 
 #define PTP_EC_PARROT_Status			0xC201
 #define PTP_EC_PARROT_MagnetoCalibrationStatus	0xC202
+
+#define PTP_EC_PANASONIC_ObjectAdded		0xC108
 
 
 /* constants for GetObjectHandles */
@@ -2100,6 +2162,7 @@ typedef struct _PTPCanonEOSDeviceInfo {
 #define PTP_DPC_FUJI_ReleaseMode			0xD201
 #define PTP_DPC_FUJI_FocusAreas				0xD206
 #define PTP_DPC_FUJI_AELock				0xD213
+#define PTP_DPC_FUJI_Copyright				0xD215
 #define PTP_DPC_FUJI_Aperture				0xD218
 #define PTP_DPC_FUJI_ShutterSpeed			0xD219
 
@@ -2123,6 +2186,22 @@ typedef struct _PTPCanonEOSDeviceInfo {
 #define PTP_DPC_MTP_Zune_UnknownVersion			0xD181
 
 /* Olympus */
+/* these are from OMD E-M1 Mark 2 */
+#define PTP_DPC_OLYMPUS_Aperture			0xD002
+#define PTP_DPC_OLYMPUS_FocusMode			0xD003
+#define PTP_DPC_OLYMPUS_ExposureMeteringMode		0xD004
+#define PTP_DPC_OLYMPUS_ISO				0xD007
+#define PTP_DPC_OLYMPUS_ExposureCompensation		0xD008
+#define PTP_DPC_OLYMPUS_OMD_DriveMode			0xD009
+#define PTP_DPC_OLYMPUS_ImageFormat			0xD00D
+#define PTP_DPC_OLYMPUS_FaceDetection			0xD01A
+#define PTP_DPC_OLYMPUS_AspectRatio			0xD01B
+#define PTP_DPC_OLYMPUS_Shutterspeed			0xD01C
+#define PTP_DPC_OLYMPUS_WhiteBalance			0xD01E
+#define PTP_DPC_OLYMPUS_LiveViewModeOM			0xD06D
+#define PTP_DPC_OLYMPUS_CaptureTarget			0xD0DC
+
+/* unsure where these were from */
 #define PTP_DPC_OLYMPUS_ResolutionMode			0xD102
 #define PTP_DPC_OLYMPUS_FocusPriority			0xD103
 #define PTP_DPC_OLYMPUS_DriveMode			0xD104
@@ -2286,6 +2365,83 @@ typedef struct _PTPCanonEOSDeviceInfo {
 #define PTP_DPC_PARROT_MultisensorsIrradianceGain		0xD217
 #define PTP_DPC_PARROT_MultisensorsIrradianceIntegrationTime	0xD218
 #define PTP_DPC_PARROT_OverlapRate				0xD219
+
+/* Panasonic does not have regular device properties, they use some 32bit values */
+#define PTP_DPC_PANASONIC_PhotoStyle			0x02000010
+#define PTP_DPC_PANASONIC_ISO				0x02000020
+#define PTP_DPC_PANASONIC_ShutterSpeed			0x02000030
+#define PTP_DPC_PANASONIC_Aperture			0x02000040
+#define PTP_DPC_PANASONIC_WhiteBalance			0x02000050
+#define PTP_DPC_PANASONIC_Exposure			0x02000060
+#define PTP_DPC_PANASONIC_AFArea			0x02000070
+#define PTP_DPC_PANASONIC_CameraMode			0x02000080
+#define PTP_DPC_PANASONIC_ImageFormat			0x020000A2
+#define PTP_DPC_PANASONIC_MeteringInfo			0x020000B0
+#define PTP_DPC_PANASONIC_IntervalInfo			0x020000C0
+#define PTP_DPC_PANASONIC_RecDispConfig			0x020000E0
+#define PTP_DPC_PANASONIC_RecInfoFlash			0x02000110
+#define PTP_DPC_PANASONIC_BurstBracket			0x02000140
+#define PTP_DPC_PANASONIC_RecPreviewConfig		0x02000170
+#define PTP_DPC_PANASONIC_RecInfoSelfTimer		0x020001A0
+#define PTP_DPC_PANASONIC_RecInfoFlash2			0x020001B0
+#define PTP_DPC_PANASONIC_MovConfig			0x06000010
+#define PTP_DPC_PANASONIC_08000010			0x08000010
+/* various modes of the camera, HDMI, GetDateTimeWorldTime Mode/Area, SetupCfgInfo, SetupConfig_DateTime, GetSystemFreq Mode, GetSetupConfig Info */
+/*
+0000  54 00 00 00 02 00 0a 94-04 00 00 00 11 00 00 08  T...............
+0010  0a 00 00 00 e2 07 07 00-10 00 11 00 09 00 12 00  ................
+0020  00 08 02 00 00 00 00 00-13 00 00 08 02 00 00 00  ................
+0030  00 00 14 00 00 08 04 00-00 00 00 00 00 00 15 00  ................
+0040  00 08 04 00 00 00 00 00-00 00 16 00 00 08 02 00  ................
+0050  00 00 01 00            -                         ....            
+
+0000  d0 00 00 00 02 00 07 91-04 00 00 00 10 00 00 08  ................
+0010  14 00 00 00 14 00 00 00-01 00 01 00 00 00 00 00  ................
+0020  06 00 00 00 38 03 00 00-11 00 00 08 14 00 00 00  ....8...........
+0030  14 00 00 00 01 00 01 00-00 00 00 00 05 00 00 00  ................
+0040  c8 00 00 00 12 00 00 08-14 00 00 00 14 00 00 00  ................
+0050  01 00 01 00 00 00 00 00-01 00 00 00 36 00 00 00  ............6...
+0060  13 00 00 08 14 00 00 00-14 00 00 00 01 00 01 00  ................
+0070  00 00 00 00 01 00 00 00-2a 00 00 00 14 00 00 08  ........*.......
+0080  14 00 00 00 14 00 00 00-01 00 01 00 00 00 00 00  ................
+0090  02 00 00 00 9e 00 00 00-15 00 00 08 14 00 00 00  ................
+00a0  14 00 00 00 01 00 01 00-00 00 00 00 02 00 00 00  ................
+00b0  9e 00 00 00 16 00 00 08-14 00 00 00 14 00 00 00  ................
+00c0  01 00 01 00 00 00 00 00-01 00 00 00 2c 00 00 00  ............,...
+ */
+#define PTP_DPC_PANASONIC_08000091			0x08000091 /* SetupFilesConfig_Set_Target */
+/*
+0000  16 00 00 00 02 00 0a 94-04 00 00 00 91 00 00 08  ................
+0010  02 00 00 00 00 00      -                         ......          
+
+0000  44 00 00 00 02 00 07 91-04 00 00 00 90 00 00 08  D...............
+0010  14 00 00 00 14 00 00 00-01 00 01 00 00 00 00 00  ................
+0020  01 00 00 00 48 00 00 00-91 00 00 08 14 00 00 00  ....H...........
+0030  14 00 00 00 01 00 01 00-00 00 00 00 01 00 00 00  ................
+0040  2c 00 00 00            -                         ,...            
+ */
+
+#define PTP_DPC_PANASONIC_GetFreeSpaceInImages		0x12000010
+/* 
+0000  98 00 00 00 02 00 14 94-04 00 00 00 11 00 00 12  ................
+0010  04 00 00 00 4e 00 00 00-12 00 00 12 04 00 00 00  ....N...........
+0020  00 00 00 00 13 00 00 12-02 00 00 00 00 00 14 00  ................
+0030  00 12 04 00 00 00 00 00-00 00 15 00 00 12 06 00  ................
+0040  00 00 02 00 01 00 00 00-16 00 00 12 3a 00 00 00  ............:...
+0050  02 00 4e 00 00 00 00 00-00 00 4e 00 00 00 ff ff  ..N.......N.....
+0060  ff ff 00 00 00 00 ff ff-ff ff 00 00 00 00 00 00  ................
+0070  00 00 00 00 00 00 ff ff-ff ff 00 00 00 00 ff ff  ................
+0080  ff ff 00 00 00 00 00 00-00 00 17 00 00 12 06 00  ................
+0090  00 00 00 00 00 00 00 00-                         ........        
+ */
+#define PTP_DPC_PANASONIC_GetBatteryInfo		0x16000010
+/* 
+0000  1c 00 00 00 02 00 14 94-04 00 00 00 11 00 00 16  ................
+0010  08 00 00 00 4b 00 00 00-4b 00 ff ff              ....K...K...    
+ */
+#define PTP_DPC_PANASONIC_LensGetMFBar			0x12010040
+/* 15c00010 GetSetupInfo Error */
+/* 18000010 GetUSBSpeed */
 
 
 /* MTP specific Object Properties */
@@ -2510,7 +2666,6 @@ typedef uint16_t (* PTPIOGetResp)	(PTPParams* params, PTPContainer* resp);
 typedef uint16_t (* PTPIOGetData)	(PTPParams* params, PTPContainer* ptp,
 	                                 PTPDataHandler *putter);
 typedef uint16_t (* PTPIOCancelReq)	(PTPParams* params, uint32_t transaction_id);
-typedef uint16_t (* PTPIODevStatReq) (PTPParams* params);
 
 /* debug functions */
 typedef void (* PTPErrorFunc) (void *data, const char *format, va_list args)
@@ -2572,7 +2727,6 @@ struct _PTPParams {
 	PTPIOGetResp	event_check_queue;
 	PTPIOGetResp	event_wait;
 	PTPIOCancelReq	cancelreq_func;
-	PTPIODevStatReq	devstatreq_func;
 
 	/* Custom error and debug function */
 	PTPErrorFunc	error_func;
@@ -2683,8 +2837,6 @@ uint16_t ptp_usb_control_get_extended_event_data (PTPParams *params, char *buffe
 uint16_t ptp_usb_control_device_reset_request (PTPParams *params);
 uint16_t ptp_usb_control_get_device_status (PTPParams *params, char *buffer, int *size);
 uint16_t ptp_usb_control_cancel_request (PTPParams *params, uint32_t transid);
-uint16_t ptp_usb_control_cancel_request (PTPParams *params, uint32_t transid);
-uint16_t ptp_usb_control_device_status_request (PTPParams *params);
 
 
 int      ptp_ptpip_connect	(PTPParams* params, const char *port);
@@ -3440,6 +3592,9 @@ uint16_t ptp_olympus_opensession (PTPParams*, unsigned char**, unsigned int *);
 #define ptp_olympus_capture(params,p1) ptp_generic_no_data (params, PTP_OC_OLYMPUS_Capture, 1, p1)
 uint16_t ptp_olympus_getcameraid (PTPParams*, unsigned char**, unsigned int *);
 
+uint16_t ptp_olympus_omd_capture (PTPParams* params);
+uint16_t ptp_olympus_omd_move_focus (PTPParams* params, uint32_t direction, uint32_t step_size);
+
 /* Non PTP protocol functions */
 static inline int
 ptp_operation_issupported(PTPParams* params, uint16_t operation)
@@ -3559,7 +3714,25 @@ uint16_t ptp_chdk_call_function(PTPParams* params, int *args, int size, int *ret
 
 uint16_t ptp_fuji_getevents (PTPParams* params, uint16_t** events, uint16_t* count);
 
+#define ptp_panasonic_liveview(params,enable) ptp_generic_no_data(params,PTP_OC_PANASONIC_Liveview,1,enable?0xD000010:0xD000011)
+uint16_t ptp_panasonic_liveview_image (PTPParams* params, unsigned char **data, unsigned int *size);
 
+uint16_t ptp_panasonic_setdeviceproperty (PTPParams* params, uint32_t propcode, unsigned char *value, uint16_t valuesize);
+uint16_t ptp_panasonic_getdeviceproperty (PTPParams *params, uint32_t propcode, uint16_t *valuesize, uint32_t *currentValue);
+uint16_t ptp_panasonic_getdevicepropertydesc (PTPParams *params, uint32_t propcode, uint16_t valuesize, uint32_t *currentValue, uint32_t **propertyValueList, uint32_t *propertyValueListLength);
+uint16_t ptp_panasonic_getdevicepropertysize (PTPParams *params, uint32_t propcode);
+
+
+
+uint16_t ptp_olympus_liveview_image (PTPParams* params, unsigned char **data, unsigned int *size);
+#define ptp_olympus_omd_move_focus(params,direction,step_size) ptp_generic_no_data(params,PTP_OC_OLYMPUS_OMD_MFDrive,2,direction,step_size)
+uint16_t ptp_olympus_omd_capture (PTPParams* params);
+uint16_t ptp_olympus_init_pc_mode (PTPParams* params);
+uint16_t ptp_olympus_sdram_image (PTPParams* params, unsigned char **data, unsigned int *size);
+
+
+
+#define ptp_panasonic_capture(params) ptp_generic_no_data(params,PTP_OC_PANASONIC_InitiateCapture,1,0x3000011)
 
 #ifdef __cplusplus
 }
