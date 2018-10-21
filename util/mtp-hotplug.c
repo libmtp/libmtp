@@ -140,7 +140,7 @@ int main (int argc, char **argv)
     case style_udev:
       printf("# UDEV-style hotplug map for libmtp\n");
       printf("# Put this file in /etc/udev/rules.d\n\n");
-      printf("ACTION!=\"add\", GOTO=\"libmtp_rules_end\"\n");
+      printf("ACTION!=\"add\", ACTION!=\"bind\", GOTO=\"libmtp_rules_end\"\n");
       printf("ENV{MAJOR}!=\"?*\", GOTO=\"libmtp_rules_end\"\n");
       printf("SUBSYSTEM==\"usb\", GOTO=\"libmtp_usb_rules\"\n"
 	     "GOTO=\"libmtp_rules_end\"\n\n"
@@ -165,7 +165,7 @@ int main (int argc, char **argv)
     case style_udev_old:
       printf("# UDEV-style hotplug map for libmtp\n");
       printf("# Put this file in /etc/udev/rules.d\n\n");
-      printf("ACTION!=\"add\", GOTO=\"libmtp_rules_end\"\n");
+      printf("ACTION!=\"add\", ACTION!=\"bind\", GOTO=\"libmtp_rules_end\"\n");
       printf("ENV{MAJOR}!=\"?*\", GOTO=\"libmtp_rules_end\"\n");
       printf("SUBSYSTEM==\"usb_device\", GOTO=\"libmtp_usb_device_rules\"\n"
 	     "GOTO=\"libmtp_rules_end\"\n\n"
