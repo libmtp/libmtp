@@ -822,7 +822,7 @@ ptp_read_func(
             // this is the last packet
             toread = size - curread;
             // this is equivalent to zero read for these devices
-            if (readzero && FLAG_NO_ZERO_READS(ptp_usb) && toread % 64 == 0) {
+            if (readzero && FLAG_NO_ZERO_READS(ptp_usb) && (toread % ptp_usb->inep_maxpacket == 0)) {
                 toread += 1;
                 expect_terminator_byte = 1;
             }
