@@ -2754,7 +2754,9 @@ static void get_handles_recursively(LIBMTP_mtpdevice_t *device,
                                       &currentHandles);
 
   if (ret != PTP_RC_OK) {
-    add_ptp_error_to_errorstack(device, ret, "get_handles_recursively(): could not get object handles.");
+    char buf[80];
+    sprintf(buf,"get_handles_recursively(): could not get object handles of %08x", parent);
+    add_ptp_error_to_errorstack(device, ret, buf);
     return;
   }
 
@@ -3376,7 +3378,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 	      printf(" UINT32 data type");
 	      switch (opd.FormFlag) {
 	      case PTP_OPFF_Range:
-		printf(" range: MIN %d, MAX %d, STEP %d",
+		printf(" range: MIN %u, MAX %u, STEP %u",
 		       opd.FORM.Range.MinimumValue.u32,
 		       opd.FORM.Range.MaximumValue.u32,
 		       opd.FORM.Range.StepSize.u32);
@@ -3402,7 +3404,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 		} else {
 		  printf(" enumeration: ");
 		  for(k=0;k<opd.FORM.Enum.NumberOfValues;k++) {
-		    printf("%d, ", opd.FORM.Enum.SupportedValue[k].u32);
+		    printf("%u, ", opd.FORM.Enum.SupportedValue[k].u32);
 		  }
 		}
 		break;
@@ -4520,8 +4522,9 @@ LIBMTP_file_t * LIBMTP_Get_Files_And_Folders(LIBMTP_mtpdevice_t *device,
 			     &currentHandles);
 
   if (ret != PTP_RC_OK) {
-    add_ptp_error_to_errorstack(device, ret,
-		"LIBMTP_Get_Files_And_Folders(): could not get object handles.");
+    char buf[80];
+    sprintf(buf,"LIBMTP_Get_Files_And_Folders(): could not get object handles of %08x.", parent);
+    add_ptp_error_to_errorstack(device, ret, buf);
     return NULL;
   }
 
