@@ -1586,6 +1586,9 @@ ptp_mtpz_validatehandshakeresponse (PTPParams* params, unsigned char *random, un
 	reader += 2;
 	if (*(reader++) != '\x03' || *(reader++) != '\x40')
 	{
+		free(v10);
+		free(v11);
+		free(hash_key);
 		return -1;
 	}
 
@@ -1608,6 +1611,9 @@ ptp_mtpz_validatehandshakeresponse (PTPParams* params, unsigned char *random, un
 	if (memcmp(rand_data, random, 16) != 0)
 	{
 		free(rand_data);
+		free(hash_key);
+		free(v10);
+		free(v11);
 		return -1;
 	}
 	free(rand_data);
@@ -1639,6 +1645,7 @@ ptp_mtpz_validatehandshakeresponse (PTPParams* params, unsigned char *random, un
 	free(v10);
 	free(v11);
 	free(act_msg);
+	free(hash_key);
 
 	return ret;
 }
@@ -1736,6 +1743,7 @@ ptp_mtpz_makeapplicationcertificatemessage (unsigned int *out_len, unsigned char
 	{
 		LIBMTP_INFO("(MTPZ) Failure - could not instantiate RSA object.\n");
 		*out_len = 0;
+		free(odata);
 		return NULL;
 	}
 
