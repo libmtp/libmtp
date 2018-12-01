@@ -3879,6 +3879,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1786/ */
   { "Niteto" , 0x16c0, "ADF-Drive", 0x0489, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/support-requests/277/ */
+  { "Vivo" , 0x2d95, "V11", 0x6002, DEVICE_FLAGS_ANDROID_BUGS },
+
   /* https://sourceforge.net/p/libmtp/bugs/1786/ */
   { "Longcheer" , 0x1c9e, "D", 0xf003, DEVICE_FLAGS_ANDROID_BUGS },
   /*
