@@ -170,7 +170,6 @@ ptp_transaction_new (PTPParams* params, PTPContainer* ptp,
 	ptp->SessionID=params->session_id;
 	/* send request */
 	CHECK_PTP_RC(params->sendreq_func (params, ptp, flags));
-
 	/* is there a dataphase? */
 	switch (flags&PTP_DP_DATA_MASK) {
 	case PTP_DP_SENDDATA:
@@ -183,7 +182,10 @@ ptp_transaction_new (PTPParams* params, PTPContainer* ptp,
 		break;
 	case PTP_DP_GETDATA:
 		{
-			CHECK_PTP_RC(params->getdata_func(params, ptp, handler));
+			uint16_t ret = params->getdata_func(params, ptp, handler);
+			if (ret == PTP_ERROR_CANCEL)
+				CHECK_PTP_RC(params->cancelreq_func(params, params->transaction_id-1));
+			CHECK_PTP_RC(ret);
 		}
 		break;
 	case PTP_DP_NODATA:
@@ -2569,6 +2571,7 @@ ptp_list_folder (PTPParams *params, uint32_t storage, uint32_t handle) {
 		/*debug_objectinfo(params, handle, &ob->oi);*/
 	}
 
+#if 0 /* apple devices report it, but the conrtent they have does not match the standard somehow. Neesd further debugging */
 	if (ptp_operation_issupported(params, PTP_OC_GetFilesystemManifest)) {
 		uint64_t		numoifs = 0;
 		PTPObjectFilesystemInfo	*oifs = NULL;
@@ -2635,6 +2638,8 @@ ptp_list_folder (PTPParams *params, uint32_t storage, uint32_t handle) {
 		if (changed) ptp_objects_sort (params);
 		return PTP_RC_OK;
 	}
+#endif
+
 fallback:
 	ptp_debug (params, "Listing ... ");
 	if (handle == 0) xhandle = PTP_HANDLER_SPECIAL; /* 0 would mean all */
@@ -3378,7 +3383,7 @@ ptp_canon_getobjectinfo (PTPParams* params, uint32_t store, uint32_t p2,
 	PTP_CNT_INIT(ptp, PTP_OC_CANON_GetObjectInfoEx, store, p2, parent, handle);
 	data = NULL;
 	size = 0;
-	ret=ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, NULL);
+	ret=ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, &size);
 	if (ret != PTP_RC_OK)
 		goto exit;
 	if (!data)
