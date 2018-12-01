@@ -1925,6 +1925,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/247/ */
   { "SONY", 0x0fce, "XPeria XZ", 0x01ed,
       DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/bugs/1812/ */
+  { "SONY", 0x0fce, "XPeria XA1 Ultra", 0x01ef,
+      DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/support-requests/251/ */
   { "SONY", 0x0fce, "XPeria XZ Premium", 0x01f1,
       DEVICE_FLAG_NONE },
@@ -2062,6 +2065,8 @@
   { "SONY", 0x0fce, "XPeria G3123 MTP+CDROM", 0x41eb,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XZ CDROM", 0x41ed,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria XA1 Ultra MTP+CDROM", 0x41ef,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XZ Premium MTP+CDROM", 0x41f1,
       DEVICE_FLAG_NONE },
@@ -2218,6 +2223,8 @@
   { "SONY", 0x0fce, "XPeria G3123 MTP+ADB", 0x51eb,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XZ ADB", 0x51ed,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria XA1 Ultra MTP+ADB", 0x51ef,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XZ Premium MTP+ADB", 0x51f1,
       DEVICE_FLAG_NONE },
