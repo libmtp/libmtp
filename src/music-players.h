@@ -3905,4 +3905,7 @@
   /*
    * Other strange stuff.
    */
-  { "Isabella", 0x0b20, "Her Prototype", 0xddee, DEVICE_FLAG_NONE }
+  { "Isabella", 0x0b20, "Her Prototype", 0xddee, DEVICE_FLAG_NONE },
+
+  /* qemu 3.0.0 hw/usb/dev-mtp.c */
+  { "QEMU", 0x46f4, "Virtual MTP", 0x0004, DEVICE_FLAG_NONE }
