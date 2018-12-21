@@ -2017,7 +2017,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *rawdevi
                                     current_params->deviceinfo.ImageFormats[i],
                                     &opd) != PTP_RC_OK) {
         LIBMTP_ERROR("LIBMTP PANIC: "
-                     "could not inspect object property descriptions!\n");
+                     "could not inspect object property description 0x%04x!\n", current_params->deviceinfo.ImageFormats[i]);
       } else {
         if (opd.DataType == PTP_DTC_UINT32) {
           if (bs == 0) {
