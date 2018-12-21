@@ -631,6 +631,9 @@
   /* Reported by Jocelyn Mayer <l_indien@magic.fr> */
   { "Acer", 0x0502, "Iconia One 10", 0x3841,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/279/ */
+  { "Acer", 0x0502, "B3-A20", 0x3841,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1733/ */
   { "Acer", 0x0502, "Liquid Zest 4G", 0x38a5,
       DEVICE_FLAGS_ANDROID_BUGS },
