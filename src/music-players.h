@@ -1563,6 +1563,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1294/ */
   { "LG Electronics Inc.", 0x1004, "LG G Flex 2", 0x633e,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/280/ */
+  { "LG Electronics Inc.", 0x1004, "LG G3 f460s", 0x633f,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Sony
