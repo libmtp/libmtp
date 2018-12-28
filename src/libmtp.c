@@ -147,7 +147,7 @@ static void add_ptp_error_to_errorstack(LIBMTP_mtpdevice_t *device,
 					uint16_t ptp_error,
 					char const * const error_text);
 static void flush_handles(LIBMTP_mtpdevice_t *device);
-static void get_handles_recursively(LIBMTP_mtpdevice_t *device,
+static uint16_t get_handles_recursively(LIBMTP_mtpdevice_t *device,
 				    PTPParams *params,
 				    uint32_t storageid,
 				    uint32_t parent);
@@ -2740,7 +2740,7 @@ static int get_all_metadata_fast(LIBMTP_mtpdevice_t *device)
  * certain directory and does not respect the option to get all metadata
  * for all objects.
  */
-static void get_handles_recursively(LIBMTP_mtpdevice_t *device,
+static uint16_t get_handles_recursively(LIBMTP_mtpdevice_t *device,
 				    PTPParams *params,
 				    uint32_t storageid,
 				    uint32_t parent)
@@ -2757,11 +2757,11 @@ static void get_handles_recursively(LIBMTP_mtpdevice_t *device,
     char buf[80];
     sprintf(buf,"get_handles_recursively(): could not get object handles of %08x", parent);
     add_ptp_error_to_errorstack(device, ret, buf);
-    return;
+    return ret;
   }
 
   if (currentHandles.Handler == NULL || currentHandles.n == 0)
-    return;
+    return PTP_RC_OK;
 
   // Now descend into any subdirectories found
   for (i = 0; i < currentHandles.n; i++) {
@@ -2776,9 +2776,11 @@ static void get_handles_recursively(LIBMTP_mtpdevice_t *device,
       add_error_to_errorstack(device,
 			      LIBMTP_ERROR_CONNECTING,
 			      "Found a bad handle, trying to ignore it.");
+      return ret;
     }
   }
   free(currentHandles.Handler);
+  return PTP_RC_OK;
 }
 
 /**
@@ -3440,6 +3442,8 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 	  } else {
 	    printf(" READ ONLY");
 	  }
+	  printf(" GROUP 0x%x", opd.GroupCode);
+
 	  printf("\n");
 	  ptp_free_objectpropdesc(&opd);
 	}
