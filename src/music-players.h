@@ -3911,6 +3911,9 @@
 
   /* https://sourceforge.net/p/libmtp/bugs/1786/ */
   { "Longcheer" , 0x1c9e, "D", 0xf003, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /* https://sourceforge.net/p/libmtp/bugs/1822/ */
+  { "vtevch" , 0x0f88, "Storio Max XL 2.0", 0x0684, DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * Other strange stuff.
    */
