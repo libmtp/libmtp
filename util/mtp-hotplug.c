@@ -161,6 +161,8 @@ int main (int argc, char **argv)
       printf("ATTR{idVendor}==\"03eb\", GOTO=\"libmtp_rules_end\"\n");
       printf("# Sensitive Philips device\n");
       printf("ATTR{idVendor}==\"0471\", ATTR{idProduct}==\"083f\", GOTO=\"libmtp_rules_end\"\n");
+      printf("# DUALi NFC readers\n");
+      printf("ATTR{idVendor}==\"1db2\", ATTR{idProduct}==\"060*\", GOTO=\"libmtp_rules_end\"\n");
       break;
     case style_udev_old:
       printf("# UDEV-style hotplug map for libmtp\n");
