@@ -3517,6 +3517,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Alcatel", 0x1bbb, "6030a", 0x0168,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/276/ */
+  { "Alcatel", 0x1bbb, "A405DL", 0x901b,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Alcatel/Bouygues", 0x1bbb, "BS472", 0x904d,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1304/ */
