@@ -1259,7 +1259,7 @@
   /* https://sourceforge.net/p/libmtp/bugs/1711/ */
   { "Nokia", 0x2e04, "6", 0xc025, DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/bugs/1783/ */
-  { "Nokia", 0x2e04, "6.1", 0xc026, DEVICE_FLAG_NONE },
+  { "Nokia", 0x2e04, "6.1", 0xc026, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Qualcomm
