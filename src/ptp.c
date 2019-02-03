@@ -495,6 +495,19 @@ ptp_canon_eos_getdeviceinfo (PTPParams* params, PTPCanonEOSDeviceInfo*di)
 		return PTP_ERROR_IO;
 }
 
+uint16_t
+ptp_canon_eos_905f (PTPParams* params, uint32_t x)
+{
+	PTPContainer	ptp;
+	unsigned char	*data = NULL;
+	unsigned int	size;
+
+	PTP_CNT_INIT(ptp, 0x905f, x);
+	CHECK_PTP_RC(ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, &size));
+	free (data);
+	return PTP_RC_OK;
+}
+
 #ifdef HAVE_LIBXML2
 static int
 traverse_tree (PTPParams *params, int depth, xmlNodePtr node)
@@ -942,6 +955,20 @@ ptp_olympus_sdram_image (PTPParams* params, unsigned char **data, unsigned int *
 }
 
 uint16_t
+ptp_panasonic_9401 (PTPParams* params, uint32_t param1)
+{
+        PTPContainer    ptp;
+	uint16_t	ret;
+	unsigned int	*size = 0;
+	unsigned char   *data = NULL;
+
+	PTP_CNT_INIT(ptp, PTP_OC_PANASONIC_9401, param1);
+	ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, size);
+	free(data);
+	return ret;
+}
+
+uint16_t
 ptp_panasonic_setdeviceproperty (PTPParams* params, uint32_t propcode,
 			unsigned char *value, uint16_t valuesize)
 {
@@ -983,6 +1010,41 @@ ptp_panasonic_getdevicepropertysize (PTPParams *params, uint32_t propcode)
 	ptp_debug(params, "header: %lu, code: %lu\n", headerLength, propertyCode);
 
 	return PTP_RC_OK;
+}
+
+uint16_t
+ptp_panasonic_manualfocusdrive (PTPParams* params, uint16_t mode)
+{
+	PTPContainer   	ptp;
+	unsigned char  	data[10];
+	unsigned char	*xdata = data;
+	uint32_t 	propcode = 0x03010011;
+	uint32_t 	type = 2;
+
+	htod32a(data, propcode);	/* memcpy(data, &propcode, 4); */
+	htod32a(&data[4], type);	/* memcpy(&data[4], &type, 4); */
+	htod16a(&data[8], mode);	/* memcpy(&data[8], &mode, 2); */
+
+	PTP_CNT_INIT(ptp, PTP_OC_PANASONIC_ManualFocusDrive, propcode);
+	return ptp_transaction(params, &ptp, PTP_DP_SENDDATA, sizeof(data), &xdata, NULL);
+}
+
+uint16_t
+ptp_panasonic_setcapturetarget (PTPParams* params, uint16_t mode) // mode == 1 == RAM, mode == 0 == SD
+{
+	PTPContainer    ptp;
+	unsigned char	data[10];
+	uint32_t	propcode = 0x00000000;
+	uint32_t	propcodedata = 0x08000091;
+	uint32_t	type = 2;
+	unsigned char	*xdata = (unsigned char*)data;
+
+	htod32a(data, propcodedata); /* memcpy(data, &propcodedata, 4); */
+	htod32a(&data[4], type); /* memcpy(&data[4], &type, 4); */
+	htod16a(&data[8], mode); /* memcpy(&data[8], &mode, 2); */
+
+	PTP_CNT_INIT(ptp, PTP_OC_PANASONIC_SetCaptureTarget, propcode);
+	return ptp_transaction(params, &ptp, PTP_DP_SENDDATA, sizeof(data), &xdata, NULL);
 }
 
 uint16_t
@@ -1973,7 +2035,11 @@ ptp_getdevicepropdesc (PTPParams* params, uint16_t propcode,
 		}
 #endif
 	} else {
-		ptp_unpack_DPD(params, data, devicepropertydesc, size);
+		if (!ptp_unpack_DPD(params, data, devicepropertydesc, size)) {
+			ptp_debug(params,"failed to unpack DPD of propcode 0x%04x, likely corrupted?", propcode);
+			free (data);
+			return PTP_RC_InvalidDevicePropFormat;
+		}
 	}
 	free(data);
 	return ret;
@@ -2639,9 +2705,9 @@ ptp_list_folder (PTPParams *params, uint32_t storage, uint32_t handle) {
 		if (changed) ptp_objects_sort (params);
 		return PTP_RC_OK;
 	}
+fallback:
 #endif
 
-fallback:
 	ptp_debug (params, "Listing ... ");
 	if (handle == 0) xhandle = PTP_HANDLER_SPECIAL; /* 0 would mean all */
 	ret = ptp_getobjecthandles (params, storage, 0, xhandle, &handles);
@@ -3822,7 +3888,7 @@ ptp_generic_getdevicepropdesc (PTPParams *params, uint16_t propcode, PTPDevicePr
 		return PTP_RC_OK;
 	}
 
-	return PTP_RC_OK;
+	return PTP_RC_OperationNotSupported;
 }
 
 /**
@@ -6871,7 +6937,7 @@ ptp_opcode_trans_t ptp_opcode_canon_trans[] = {
 	{PTP_OC_CANON_EOS_GetCTGInfo,"PTP_OC_CANON_EOS_GetCTGInfo"},
 	{PTP_OC_CANON_EOS_GetLensAdjust,"PTP_OC_CANON_EOS_GetLensAdjust"},
 	{PTP_OC_CANON_EOS_SetLensAdjust,"PTP_OC_CANON_EOS_SetLensAdjust"},
-	{PTP_OC_CANON_EOS_GetMusicInfo,"PTP_OC_CANON_EOS_GetMusicInfo"},
+	{PTP_OC_CANON_EOS_ReadyToSendMusic,"PTP_OC_CANON_EOS_ReadyToSendMusic"},
 	{PTP_OC_CANON_EOS_CreateHandle,"PTP_OC_CANON_EOS_CreateHandle"},
 	{PTP_OC_CANON_EOS_SendPartialObjectEx,"PTP_OC_CANON_EOS_SendPartialObjectEx"},
 	{PTP_OC_CANON_EOS_EndSendPartialObjectEx,"PTP_OC_CANON_EOS_EndSendPartialObjectEx"},
@@ -6927,6 +6993,12 @@ ptp_opcode_trans_t ptp_opcode_canon_trans[] = {
 	{PTP_OC_CANON_EOS_NotifyNumberofImported,"PTP_OC_CANON_EOS_NotifyNumberofImported"},
 	{PTP_OC_CANON_EOS_NotifySizeOfPartialDataTransfer,"PTP_OC_CANON_EOS_NotifySizeOfPartialDataTransfer"},
 	{PTP_OC_CANON_EOS_NotifyFinish,"PTP_OC_CANON_EOS_NotifyFinish"},
+	{PTP_OC_CANON_EOS_SetImageRecoveryDataEx,"PTP_OC_CANON_EOS_SetImageRecoveryDataEx"},
+	{PTP_OC_CANON_EOS_GetImageRecoveryListEx,"PTP_OC_CANON_EOS_GetImageRecoveryListEx"},
+	{PTP_OC_CANON_EOS_NotifyAutoTransferStatus,"PTP_OC_CANON_EOS_NotifyAutoTransferStatus"},
+	{PTP_OC_CANON_EOS_GetReducedObject,"PTP_OC_CANON_EOS_GetReducedObject"},
+	{PTP_OC_CANON_EOS_NotifySaveComplete,"PTP_OC_CANON_EOS_NotifySaveComplete"},
+	{PTP_OC_CANON_EOS_GetObjectURL,"PTP_OC_CANON_EOS_GetObjectURL"},
 };
 
 ptp_opcode_trans_t ptp_opcode_sony_trans[] = {
