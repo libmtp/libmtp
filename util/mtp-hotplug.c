@@ -274,9 +274,10 @@ int main (int argc, char **argv)
     /*
      * This is code that invokes the mtp-probe program on
      * every USB device that is either PTP or vendor specific
+     * also dont run probe if gphoto2 already matched it as camera.
      */
     printf("\n# Autoprobe vendor-specific, communication and PTP devices\n");
-    printf("ENV{ID_MTP_DEVICE}!=\"1\", ENV{MTP_NO_PROBE}!=\"1\", ENV{COLOR_MEASUREMENT_DEVICE}!=\"1\", ENV{libsane_matched}!=\"yes\", ATTR{bDeviceClass}==\"00|02|06|ef|ff\", PROGRAM=\"%smtp-probe /sys$env{DEVPATH} $attr{busnum} $attr{devnum}\", RESULT==\"1\", %s", mtp_probe_dir, action);
+    printf("ENV{ID_MTP_DEVICE}!=\"1\", ENV{MTP_NO_PROBE}!=\"1\", ENV{COLOR_MEASUREMENT_DEVICE}!=\"1\", ENV{ID_GPHOTO}!=\"1\", ENV{libsane_matched}!=\"yes\", ATTR{bDeviceClass}==\"00|02|06|ef|ff\", PROGRAM=\"%smtp-probe /sys$env{DEVPATH} $attr{busnum} $attr{devnum}\", RESULT==\"1\", %s", mtp_probe_dir, action);
     if (udev_group != NULL) printf(", GROUP=\"%s\"", udev_group);
     if (udev_mode != NULL) printf(", MODE=\"%s\"", udev_mode);
     printf("\n");
