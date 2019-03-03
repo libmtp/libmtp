@@ -1260,7 +1260,7 @@
   { "Nokia", 0x0421, "X2 Dual Sim", 0x0708, DEVICE_FLAG_NONE },
 
   /* https://sourceforge.net/p/libmtp/bugs/1711/ */
-  { "Nokia", 0x2e04, "6", 0xc025, DEVICE_FLAG_NONE },
+  { "Nokia", 0x2e04, "6", 0xc025, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1783/ */
   { "Nokia", 0x2e04, "6.1", 0xc026, DEVICE_FLAGS_ANDROID_BUGS },
 
