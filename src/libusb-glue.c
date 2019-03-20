@@ -733,7 +733,7 @@ void dump_usbinfo(PTP_USB *ptp_usb)
 }
 
 /**
- * Retrieve the apropriate playlist extension for this
+ * Retrieve the appropriate playlist extension for this
  * device. Rather hacky at the moment. This is probably
  * desired by the managing software, but when creating
  * lists on the device itself you notice certain preferences.

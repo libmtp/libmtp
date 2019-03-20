@@ -8321,7 +8321,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
  * @param device a pointer to the device to create the new playlist on.
  * @param metadata the metadata for the playlist to be updated.
  *                 notice that the field <code>playlist_id</code>
- *                 must contain the apropriate playlist ID. Playlist ID
+ *                 must contain the appropriate playlist ID. Playlist ID
  *                 be modified to a new playlist ID by the time the
  *                 function returns since edit-in-place is not always possible.
  * @return 0 on success, any other value means failure.
@@ -9213,7 +9213,7 @@ int LIBMTP_TruncateObject(LIBMTP_mtpdevice_t *device, uint32_t const id,
  * @param device a pointer to the device to create the new album on.
  * @param metadata the metadata for the album to be updated.
  *                 notice that the field <code>album_id</code>
- *                 must contain the apropriate album ID.
+ *                 must contain the appropriate album ID.
  * @return 0 on success, any other value means failure.
  * @see LIBMTP_Create_New_Album()
  * @see LIBMTP_Delete_Object()
