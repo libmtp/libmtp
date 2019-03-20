@@ -409,7 +409,7 @@ typedef enum {
  */
 typedef enum {
   /**
-   * This capability tells whether you can call the funcion getting
+   * This capability tells whether you can call the function getting
    * partial objects, @see LIBMTP_GetPartialObject()
    */
   LIBMTP_DEVICECAP_GetPartialObject,
