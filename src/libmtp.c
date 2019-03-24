@@ -4083,7 +4083,7 @@ int LIBMTP_Check_Capability(LIBMTP_mtpdevice_t *device, LIBMTP_devicecap_t cap)
  * this function, then dereference the device struct
  * (<code>device-&gt;storage</code>) to get out information on the storage.
  *
- * You need to call this everytime you want to update the
+ * You need to call this every time you want to update the
  * <code>device-&gt;storage</code> list, for example anytime you need
  * to check available storage somewhere.
  *
