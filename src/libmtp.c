@@ -7430,7 +7430,7 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
  *        notice that you cannot mismatch storage id and parent id:
  *        they must both be on the same storage! Pass in 0 if you
  *        want to create this folder on the default storage.
- * @return id to new folder or 0 if an error occured
+ * @return id to new folder or 0 if an error occurred
  */
 uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name,
 			      uint32_t parent_id, uint32_t storage_id)

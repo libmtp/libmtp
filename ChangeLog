@@ -615,7 +615,7 @@
 2008-11-25  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: fix a bug on handling folder children with an illegal
-	  ID of 0. Occured in the ZEN Xi-Fi in the "Recordings" folder, when
+	  ID of 0. Occurred in the ZEN Xi-Fi in the "Recordings" folder, when
 	  that is created on the device.
 
 2008-11-17  Alistair Boyle <alistair.js.boyle@gmail.com>
