@@ -3972,7 +3972,7 @@ int LIBMTP_Get_Device_Certificate(LIBMTP_mtpdevice_t *device, char ** const devc
  * This function retrieves a list of supported file types, i.e. the file
  * types that this device claims it supports, e.g. audio file types that
  * the device can play etc. This list is mitigated to
- * inlcude the file types that libmtp can handle, i.e. it will not list
+ * include the file types that libmtp can handle, i.e. it will not list
  * filetypes that libmtp will handle internally like playlists and folders.
  * @param device a pointer to the device to get the filetype capabilities for.
  * @param filetypes a pointer to a pointer that will hold the list of
