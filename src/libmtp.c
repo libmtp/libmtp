@@ -3708,7 +3708,7 @@ int LIBMTP_Set_Friendlyname(LIBMTP_mtpdevice_t *device,
 }
 
 /**
- * This retrieves the syncronization partner of an MTP device. This
+ * This retrieves the synchronization partner of an MTP device. This
  * property should be supported by all MTP devices.
  * @param device a pointer to the device to get the sync partner for.
  * @return a newly allocated UTF-8 string representing the synchronization

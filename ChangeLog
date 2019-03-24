@@ -2650,7 +2650,7 @@
 
 2006-08-19  Linus Walleij <triad@df.lth.se>
 
-	* src/libmtp.h.in: add function to get syncronization
+	* src/libmtp.h.in: add function to get synchronization
 	  partner for the device.
 	* src/libmtp.c: dito.
 	* examples/detect.c: use that function.
