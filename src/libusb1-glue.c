@@ -130,7 +130,7 @@ static int usb_get_endpoint_status(PTP_USB* ptp_usb,
  *        successful.
  * @param numdevs a pointer to an integer that will hold the number
  *        of devices in the device list if the call was successful.
- * @return 0 if the list was successfull retrieved, any other
+ * @return 0 if the list was successful retrieved, any other
  *        value means failure.
  */
 int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t ** const devices,
