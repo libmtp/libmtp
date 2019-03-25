@@ -145,7 +145,7 @@ uint16_t *utf8_to_utf16(LIBMTP_mtpdevice_t *device, const char *localstr)
 /**
  * This helper function simply removes any consecutive chars
  * > 0x7F and replace then with an underscore. In UTF-8
- * consequtive chars > 0x7F represent one single character so
+ * consecutive chars > 0x7F represent one single character so
  * it has to be done like this (and it's elegant). It will only
  * shrink the string in size so no copying is needed.
  */
@@ -159,7 +159,7 @@ void strip_7bit_from_utf8(char *str)
     if ((uint8_t) str[i] > 0x7FU) {
       str[j] = '_';
       i++;
-      // Skip over any consequtive > 0x7F chars.
+      // Skip over any consecutive > 0x7F chars.
       while((uint8_t) str[i] > 0x7FU) {
 	i++;
       }

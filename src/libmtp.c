@@ -3708,7 +3708,7 @@ int LIBMTP_Set_Friendlyname(LIBMTP_mtpdevice_t *device,
 }
 
 /**
- * This retrieves the syncronization partner of an MTP device. This
+ * This retrieves the synchronization partner of an MTP device. This
  * property should be supported by all MTP devices.
  * @param device a pointer to the device to get the sync partner for.
  * @return a newly allocated UTF-8 string representing the synchronization
@@ -3972,7 +3972,7 @@ int LIBMTP_Get_Device_Certificate(LIBMTP_mtpdevice_t *device, char ** const devc
  * This function retrieves a list of supported file types, i.e. the file
  * types that this device claims it supports, e.g. audio file types that
  * the device can play etc. This list is mitigated to
- * inlcude the file types that libmtp can handle, i.e. it will not list
+ * include the file types that libmtp can handle, i.e. it will not list
  * filetypes that libmtp will handle internally like playlists and folders.
  * @param device a pointer to the device to get the filetype capabilities for.
  * @param filetypes a pointer to a pointer that will hold the list of
@@ -4083,7 +4083,7 @@ int LIBMTP_Check_Capability(LIBMTP_mtpdevice_t *device, LIBMTP_devicecap_t cap)
  * this function, then dereference the device struct
  * (<code>device-&gt;storage</code>) to get out information on the storage.
  *
- * You need to call this everytime you want to update the
+ * You need to call this every time you want to update the
  * <code>device-&gt;storage</code> list, for example anytime you need
  * to check available storage somewhere.
  *
@@ -7430,7 +7430,7 @@ LIBMTP_folder_t *LIBMTP_Get_Folder_List(LIBMTP_mtpdevice_t *device)
  *        notice that you cannot mismatch storage id and parent id:
  *        they must both be on the same storage! Pass in 0 if you
  *        want to create this folder on the default storage.
- * @return id to new folder or 0 if an error occured
+ * @return id to new folder or 0 if an error occurred
  */
 uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name,
 			      uint32_t parent_id, uint32_t storage_id)
@@ -8321,7 +8321,7 @@ int LIBMTP_Create_New_Playlist(LIBMTP_mtpdevice_t *device,
  * @param device a pointer to the device to create the new playlist on.
  * @param metadata the metadata for the playlist to be updated.
  *                 notice that the field <code>playlist_id</code>
- *                 must contain the apropriate playlist ID. Playlist ID
+ *                 must contain the appropriate playlist ID. Playlist ID
  *                 be modified to a new playlist ID by the time the
  *                 function returns since edit-in-place is not always possible.
  * @return 0 on success, any other value means failure.
@@ -9213,7 +9213,7 @@ int LIBMTP_TruncateObject(LIBMTP_mtpdevice_t *device, uint32_t const id,
  * @param device a pointer to the device to create the new album on.
  * @param metadata the metadata for the album to be updated.
  *                 notice that the field <code>album_id</code>
- *                 must contain the apropriate album ID.
+ *                 must contain the appropriate album ID.
  * @return 0 on success, any other value means failure.
  * @see LIBMTP_Create_New_Album()
  * @see LIBMTP_Delete_Object()

@@ -125,7 +125,7 @@ static openusb_handle_t libmtp_openusb_handle;
  *        successful.
  * @param numdevs a pointer to an integer that will hold the number
  *        of devices in the device list if the call was successful.
- * @return 0 if the list was successfull retrieved, any other
+ * @return 0 if the list was successful retrieved, any other
  *        value means failure.
  */
 int LIBMTP_Get_Supported_Devices_List(LIBMTP_device_entry_t * * const devices, int * const numdevs) {
@@ -706,7 +706,7 @@ void dump_usbinfo(PTP_USB *ptp_usb) {
 }
 
 /**
- * Retrieve the apropriate playlist extension for this
+ * Retrieve the appropriate playlist extension for this
  * device. Rather hacky at the moment. This is probably
  * desired by the managing software, but when creating
  * lists on the device itself you notice certain preferences.

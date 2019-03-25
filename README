@@ -275,7 +275,7 @@ cannot test your solution.
 * Zen models AVI file seeking problem: the Zens cannot parse the
   files for the runlength metadata. Do not transfer file with e.g.
   mtp-sendfile, use mtp-sendtr and set the length of the track to
-  the apropriate number of seconds and it will work. In graphical
+  the appropriate number of seconds and it will work. In graphical
   clients, use a "track transfer" function to send these AVI files,
   the Zens need the metadata associated with tracks to play back
   movies properly. Movies are considered "tracks" in the MTP world.
