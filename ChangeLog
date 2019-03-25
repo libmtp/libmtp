@@ -615,7 +615,7 @@
 2008-11-25  Linus Walleij <triad@df.lth.se>
 
 	* src/libmtp.c: fix a bug on handling folder children with an illegal
-	  ID of 0. Occured in the ZEN Xi-Fi in the "Recordings" folder, when
+	  ID of 0. Occurred in the ZEN Xi-Fi in the "Recordings" folder, when
 	  that is created on the device.
 
 2008-11-17  Alistair Boyle <alistair.js.boyle@gmail.com>
@@ -2650,7 +2650,7 @@
 
 2006-08-19  Linus Walleij <triad@df.lth.se>
 
-	* src/libmtp.h.in: add function to get syncronization
+	* src/libmtp.h.in: add function to get synchronization
 	  partner for the device.
 	* src/libmtp.c: dito.
 	* examples/detect.c: use that function.
