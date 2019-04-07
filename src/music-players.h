@@ -3414,6 +3414,9 @@
   /* https://bugs.debian.org/917259 */
   { "Various", 0x2207, "Onyx Boox Max 2", 0x000b,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1834/ */
+  { "Onyx", 0x2207, "Boox Note", 0x000d,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1354/ */
   { "Various", 0x2207, "Viewpia DR/bq Kepler Debugging", 0x0011,
       DEVICE_FLAGS_ANDROID_BUGS },
