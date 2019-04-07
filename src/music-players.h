@@ -1948,6 +1948,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/252/ */
   { "SONY", 0x0fce, "XPeria XZ1 Compact", 0x01f4,
       DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/feature-requests/281/ */
+  { "SONY", 0x0fce, "XPeria L2", 0x01f6,
+      DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XA2 Compact", 0x01f7,
       DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/bugs/1804/ */
@@ -2087,6 +2090,8 @@
   { "SONY", 0x0fce, "XPeria XZ1 MTP+CDROM", 0x41f3,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XZ1 Compact MTP+CDROM", 0x41f4,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria L2 MTP+CDROM", 0x41f6,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XA2 Compact MTP+CDROM", 0x41f7,
       DEVICE_FLAG_NONE },
@@ -2245,6 +2250,8 @@
   { "SONY", 0x0fce, "XPeria XZ1 ADB", 0x51f3,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XZ1 Compact MTP+ADB", 0x51f4,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria L2 MTP+ADB", 0x51f6,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XA2 Compact MTP+ADB", 0x51f7,
       DEVICE_FLAG_NONE },
