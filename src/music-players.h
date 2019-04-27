@@ -2458,6 +2458,9 @@
   // Reported by anonymous Sourceforge user
   { "Google Inc (for Asus)", 0x18d1, "TF101 Transformer", 0x4e0f,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1837/ */
+  { "Google Inc (for Samsung)", 0x18d1, "Nexus One (MTP)", 0x4e12,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // 0x4e21 (Nexus S) is a USB Mass Storage device.
   { "Google Inc (for Samsung)", 0x18d1, "Nexus S (MTP)", 0x4e25,
       DEVICE_FLAGS_ANDROID_BUGS },
