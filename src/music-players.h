@@ -2871,6 +2871,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1122/ */
   { "Lenovo", 0x17ef, "S930", 0x7718,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/discussion/535190/ */
+  { "Lenovo", 0x17ef, "A5500-H", 0x772a,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1250/ */
   { "Lenovo", 0x17ef, "A5500-F", 0x772b,
       DEVICE_FLAGS_ANDROID_BUGS },
