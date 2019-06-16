@@ -2342,6 +2342,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1477/ */
   { "Motorola", 0x22b8, "Moto Maxx (XT1225)", 0x2ea4,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1841/ */
+  { "Motorola", 0x22b8, "Moto Z2 (XT1789)", 0x2e81,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/189/ */
   { "Motorola", 0x22b8, "MB632", 0x2dff,
       DEVICE_FLAGS_ANDROID_BUGS },
