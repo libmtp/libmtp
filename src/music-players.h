@@ -646,6 +646,9 @@
   /* Richard Waterbeek <richard@fotobakje.nl> on libmtp-discuss */
   { "Acer", 0x0502, "Liquid Liquid Z6E", 0x3938,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1838/ */
+  { "Acer", 0x0502, "Iconia One 10 B3-A40 ", 0x394b,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * SanDisk
