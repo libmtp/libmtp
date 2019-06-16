@@ -1671,6 +1671,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1688/ */
   { "Sony", 0x054c, "NWZ-E384", 0x0882,
       DEVICE_FLAGS_SONY_NWZ_BUGS },
+  /* hartmut001@users.sourceforge.net */
+  { "Sony", 0x054c, "NW-A45 Walkman", 0x0c71,
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   { "Sony", 0x054c, "DCR-SR75", 0x1294,
       DEVICE_FLAGS_SONY_NWZ_BUGS },
 
