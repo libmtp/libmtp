@@ -1959,6 +1959,9 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XA2 Compact", 0x01f7,
       DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/support-requests/285/ */
+  { "SONY", 0x0fce, "XPeria XA2 Ultra", 0x01f8,
+      DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/bugs/1804/ */
   { "SONY", 0x0fce, "Xperia XZ2 Compact Dual Sim", 0x01f9,
       DEVICE_FLAG_NONE },
@@ -2100,6 +2103,8 @@
   { "SONY", 0x0fce, "XPeria L2 MTP+CDROM", 0x41f6,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XA2 Compact MTP+CDROM", 0x41f7,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria XA2 Ultra MTP+CDROM", 0x41f8,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia XZ2 Compact Dual Sim MTP+CDROM", 0x41f9,
       DEVICE_FLAG_NONE },
@@ -2260,6 +2265,8 @@
   { "SONY", 0x0fce, "XPeria L2 MTP+ADB", 0x51f6,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria XA2 Compact MTP+ADB", 0x51f7,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "XPeria XA2 Ultra MTP+ADB", 0x51f8,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia XZ2 Compact Dual Sim MTP+ADB", 0x51f9,
       DEVICE_FLAG_NONE },
