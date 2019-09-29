@@ -3746,6 +3746,8 @@
   { "Prestigio", 0x29e4, "5504 DUO ", 0x1203, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/141/ */
   { "Prestigio", 0x29e4, "3405 DUO ", 0x3201, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/287/ */
+  { "Prestigio", 0x29e4, "Multipad Color 8", 0xb001, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/148/ */
   { "Prestigio", 0x29e4, "Multipad Color 7.0", 0xb003, DEVICE_FLAGS_ANDROID_BUGS },
 
