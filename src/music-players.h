@@ -3401,6 +3401,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1776/ */
   { "Amazon", 0x1949, "Kindle Fire 7 (2nd ID)", 0x0271,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1845/ */
+  { "Amazon", 0x1949, "Kindle Fire Kids", 0x0272,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/21 */
   { "Amazon", 0x1949, "Kindle Fire 8 HD (2nd ID)", 0x0331,
       DEVICE_FLAGS_ANDROID_BUGS },
