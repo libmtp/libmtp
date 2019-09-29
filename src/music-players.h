@@ -3643,6 +3643,8 @@
   /* https://sourceforge.net/p/libmtp/feature-requests/234/ */
   { "DOODGE", 0x0e8d, "X6pro", 0x200a,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/289/ */
+  { "Jinga", 0x0e8d, "PassPluss", 0x2012, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/79/ */
   { "MediaTek Inc", 0x0e8d, "Elephone P8000", 0x201d,
       DEVICE_FLAGS_ANDROID_BUGS },
