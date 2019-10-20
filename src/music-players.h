@@ -1556,6 +1556,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1701/ */
   { "LG Electronics Inc.", 0x1004, "Transpyre", 0x628a,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/290/ */
+  { "LG Electronics Inc.", 0x1004, "LG G6 Phone", 0x62c9,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/222/ */
   { "LG Electronics Inc.", 0x1004, "LG G5 Phone", 0x62ce,
       DEVICE_FLAGS_ANDROID_BUGS },
