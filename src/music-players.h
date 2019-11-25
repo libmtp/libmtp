@@ -3722,6 +3722,8 @@
   { "Garmin", 0x091e, "Fenix 5/5S/5X Plus", 0x4b54, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/271/ */
   { "Garmin", 0x091e, "Vivoactive 3", 0x4bac, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1852/ */
+  { "Garmin", 0x091e, "Fenix 6", 0x4cda, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Wacom
