@@ -1973,6 +1973,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1775/ */
   { "SONY", 0x0fce, "Xperia XZ2 (H8266)", 0x01fa,
       DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/bugs/1854/ */
+  { "SONY", 0x0fce, "Xperia XZ2 Premium", 0x01fb,
+      DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/bugs/1849/ */
   { "SONY", 0x0fce, "Xperia I4312", 0x0207,
       DEVICE_FLAG_NONE },
@@ -2117,6 +2120,8 @@
   { "SONY", 0x0fce, "Xperia XZ2 Compact Dual Sim MTP+CDROM", 0x41f9,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia XZ2 (H8266) MTP+CDROM", 0x41fa,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia XZ2 Premium MTP+CDROM", 0x41fb,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia I4312 MTP+CDROM", 0x4207,
       DEVICE_FLAG_NONE },
@@ -2281,6 +2286,8 @@
   { "SONY", 0x0fce, "Xperia XZ2 Compact Dual Sim MTP+ADB", 0x51f9,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia XZ2 (H8266) MTP+ADB", 0x51fa,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia XZ2 Premium MTP+ADB", 0x51fb,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia I4312 MTP+ADB", 0x5207,
       DEVICE_FLAG_NONE },
