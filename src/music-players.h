@@ -3673,6 +3673,8 @@
   /* https://sourceforge.net/p/libmtp/bugs/1717/ */
   { "MediaTek Inc", 0x0e8d, "Wiko Sunny", 0x4001,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1855/ */
+  { "Vivo", 0x0e8d, "Y21", 0xff00, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Jolla
