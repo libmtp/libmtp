@@ -3022,6 +3022,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Lenovo", 0x17ef, "Vibe K5 Note", 0x7999,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/293/ */
+  { "Lenovo", 0x17ef, "TB3-710F", 0x79a2,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1820/ */
   { "Lenovo", 0x17ef, "YB1-X90F", 0x79af,
       DEVICE_FLAGS_ANDROID_BUGS },
