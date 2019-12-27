@@ -3444,11 +3444,14 @@
   /* https://sourceforge.net/p/libmtp/bugs/1845/ */
   { "Amazon", 0x1949, "Kindle Fire Kids", 0x0272,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/279/ */
+  { "Amazon", 0x1949, "Kindle Fire Tablet 10 HD", 0x0281,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/21 */
   { "Amazon", 0x1949, "Kindle Fire 8 HD (2nd ID)", 0x0331,
       DEVICE_FLAGS_ANDROID_BUGS },
-  /* https://sourceforge.net/p/libmtp/feature-requests/279/ */
-  { "Amazon", 0x1949, "Kindle Fire Tablet 10 HD", 0x0281,
+  /* https://sourceforge.net/p/libmtp/support-requests/293/ */
+  { "Amazon", 0x1949, "Kindle Fire Tablet 10 HD (2nd ID)", 0x03f1,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Amazon", 0x1949, "Fire Phone", 0x0800,
       DEVICE_FLAGS_ANDROID_BUGS },
