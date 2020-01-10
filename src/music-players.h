@@ -3742,6 +3742,7 @@
   { "Garmin", 0x091e, "Venu", 0x4c9a, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1852/ */
   { "Garmin", 0x091e, "Fenix 6", 0x4cda, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Garmin", 0x091e, "Fenix 6 Sapphire", 0x4cdb, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Wacom
