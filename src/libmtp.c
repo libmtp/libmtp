@@ -9082,6 +9082,13 @@ int LIBMTP_GetPartialObject(LIBMTP_mtpdevice_t *device, uint32_t const id,
   uint16_t	ret;
   LIBMTP_file_t	*mtpfile = LIBMTP_Get_Filemetadata(device, id);
 
+  if (!mtpfile) {
+      add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL,
+        "LIBMTP_GetPartialObject: could not find mtpfile");
+    *size = 0;
+    return -1;
+  }
+
   /* Some devices do not like reading over the end and hang instead of progressing */
   if (offset >= mtpfile->filesize) {
     *size = 0;
