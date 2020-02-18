@@ -3431,6 +3431,10 @@
   /* https://sourceforge.net/p/libmtp/bugs/1353/ */
   { "Amazon", 0x1949, "Kindle Fire HD6", 0x00f2,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* R Billing tested one unit rbilling@tanglewood.online
+   * https://github.com/gphoto/libgphoto2/issues/473 */
+  { "Amazon", 0x1949, "Kindle Fire 7 (3rd ID)", 0x0121,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1460/ */
   { "Amazon", 0x1949, "Kindle Fire 8", 0x0211,
       DEVICE_FLAGS_ANDROID_BUGS },
