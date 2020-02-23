@@ -2301,6 +2301,8 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia XZ2 Premium MTP+ADB", 0x51fb,
       DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia XZ3 Dual Sim (H9436) MTP+ADB", 0x01ff,
+      DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia 10 (I4113) MTP+ADB", 0x5201,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia 1 (J9110) MTP+ADB", 0x5205,
