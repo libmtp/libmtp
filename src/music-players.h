@@ -1978,6 +1978,8 @@
   /* https://sourceforge.net/p/libmtp/bugs/1854/ */
   { "SONY", 0x0fce, "Xperia XZ2 Premium", 0x01fb,
       DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia XZ3 Dual Sim (H9436)", 0x01ff,
+      DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/bugs/1853/ */
   { "SONY", 0x0fce, "Xperia 10 (I4113)", 0x0201,
       DEVICE_FLAG_NONE },
@@ -2130,6 +2132,8 @@
   { "SONY", 0x0fce, "Xperia XZ2 (H8266) MTP+CDROM", 0x41fa,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia XZ2 Premium MTP+CDROM", 0x41fb,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia XZ3 Dual Sim (H9436) MTP+CDROM", 0x41ff,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia 10 (I4113) MTP+CDROM", 0x4201,
       DEVICE_FLAG_NONE },
@@ -2301,7 +2305,7 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia XZ2 Premium MTP+ADB", 0x51fb,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "Xperia XZ3 Dual Sim (H9436) MTP+ADB", 0x01ff,
+  { "SONY", 0x0fce, "Xperia XZ3 Dual Sim (H9436) MTP+ADB", 0x51ff,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia 10 (I4113) MTP+ADB", 0x5201,
       DEVICE_FLAG_NONE },
