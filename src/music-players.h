@@ -2251,7 +2251,7 @@
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia E3 MTP+ADB", 0x51bc,
       DEVICE_FLAG_NONE },
-  { "SONY", 0x0fce, "Xperia Z3 Tablet MTP+ADB", 0x41c0,
+  { "SONY", 0x0fce, "Xperia Z3 Tablet MTP+ADB", 0x51c0,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "XPeria M4 Aqua Dual MTP+ADB", 0x51c4,
       DEVICE_FLAG_NONE },
