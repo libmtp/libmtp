@@ -1398,7 +1398,7 @@
   // DEVICE_FLAG_UNLOAD_DRIVER },
   // Reported by Anonymous SourceForge user
   {"TrekStor", 0x1e68, "i.Beat Organix 2.0", 0x0002,
-    DEVICE_FLAG_UNLOAD_DRIVER },
+    DEVICE_FLAG_UNLOAD_DRIVER | DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
 
   /* Also Thalia Toline. https://sourceforge.net/p/libmtp/bugs/1156/ */
   {"iRiver", 0x1e68, "Tolino Tab 7", 0x1002,
@@ -3759,6 +3759,7 @@
   { "Garmin", 0x091e, "Fenix 5/5S/5X Plus", 0x4b54, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/271/ */
   { "Garmin", 0x091e, "Vivoactive 3", 0x4bac, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Garmin", 0x091e, "Vivoactive 4S", 0x4c98, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1864/ */
   { "Garmin", 0x091e, "Venu", 0x4c9a, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1852/ */
