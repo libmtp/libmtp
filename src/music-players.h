@@ -3815,6 +3815,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/269/ */
   { "bq", 0x2a47, "Aquarius U", 0x9039,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1874/ */
+  { "bq", 0x2a47, "Aquarius U (2nd id)", 0x903a,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/231/ */
   { "bq", 0x2a47, "U Plus", 0xf003, DEVICE_FLAGS_ANDROID_BUGS },
 
