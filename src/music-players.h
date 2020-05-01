@@ -3482,6 +3482,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Amazon", 0x1949, "Fire Phone", 0x0800,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1876/ */
+  { "Amazon", 0x1949, "Kindle Fire (ID 8)", 0x0c31,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Barnes&Noble
