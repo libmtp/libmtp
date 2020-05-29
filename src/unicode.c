@@ -35,8 +35,6 @@
 #include <string.h>
 #ifdef HAVE_ICONV
 #include "iconv.h"
-#else
-#error "libmtp unicode.c needs fixing to work without iconv()!"
 #endif
 #include "libmtp.h"
 #include "unicode.h"
@@ -87,12 +85,14 @@ char *utf16_to_utf8(LIBMTP_mtpdevice_t *device, const uint16_t *unicstr)
   size_t convmax = STRING_BUFFER_LENGTH*3;
 
   loclstr[0]='\0';
+  #if defined(HAVE_ICONV) && defined(HAVE_LANGINFO_H)
   /* Do the conversion.  */
   nconv = iconv(params->cd_ucs2_to_locale, &stringp, &convlen, &locp, &convmax);
   if (nconv == (size_t) -1) {
     // Return partial string anyway.
     *locp = '\0';
   }
+  #endif
   loclstr[STRING_BUFFER_LENGTH*3] = '\0';
   // Strip off any BOM, it's totally useless...
   if ((uint8_t) loclstr[0] == 0xEFU && (uint8_t) loclstr[1] == 0xBBU && (uint8_t) loclstr[2] == 0xBFU) {
@@ -122,9 +122,11 @@ uint16_t *utf8_to_utf16(LIBMTP_mtpdevice_t *device, const char *localstr)
   unicstr[0]='\0';
   unicstr[1]='\0';
 
+  #if defined(HAVE_ICONV) && defined(HAVE_LANGINFO_H)
   /* Do the conversion.  */
   nconv = iconv(params->cd_locale_to_ucs2, &stringp, &convlen, &unip, &convmax);
-
+  #endif
+  
   if (nconv == (size_t) -1) {
     // Return partial string anyway.
     unip[0] = '\0';
