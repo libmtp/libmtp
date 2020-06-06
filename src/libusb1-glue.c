@@ -1966,7 +1966,10 @@ static int init_ptp_usb(PTPParams* params, PTP_USB* ptp_usb, libusb_device* dev)
 
   usbresult = libusb_claim_interface(device_handle, ptp_usb->interface);
   if (usbresult != 0) {
-    fprintf(stderr, "error returned by libusb_claim_interface() = %d", usbresult);
+    if (usbresult == LIBUSB_ERROR_BUSY)
+      fprintf(stderr, "libusb_claim_interface() reports device is busy, likely in use by GVFS or KDE MTP device handling already");
+    else
+      fprintf(stderr, "error returned by libusb_claim_interface() = %d", usbresult);
     return -1;
   }
 
