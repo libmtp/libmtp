@@ -3391,6 +3391,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1447/ */
   { "nVidia", 0x0955, "Shield (MTP)", 0xb401,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/297/ */
+  { "nVidia", 0x0955, "Shield Android TV pro (MTP)", 0xb42a,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1087/ */
   { "nVidia", 0x0955, "Tegra Note", 0xcf02,
       DEVICE_FLAGS_ANDROID_BUGS },
