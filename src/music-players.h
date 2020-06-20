@@ -1293,8 +1293,9 @@
       0x6765, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* https://sourceforge.net/p/libmtp/bugs/1377/ */
-  { "Qualcomm (for Xolo)", 0x901b, "Xolo Black (MTP)",
-      0x9039, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/44 */
+  { "Qualcomm (for Xolo)", 0x05c6, "Xolo Black (MTP)",
+      0x901b, DEVICE_FLAGS_ANDROID_BUGS },
 
   { "Qualcomm (for PhiComm)", 0x05c6, "C230w (MTP)",
       0x9039, DEVICE_FLAGS_ANDROID_BUGS },
