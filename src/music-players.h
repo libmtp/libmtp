@@ -3632,7 +3632,10 @@
   { "SHARP Corporation", 0x04dd, "SH-06E", 0x96ca,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/192/ */
-  { "SHARP Corporation", 0x04dd, "SHV35 AQUOS U ", 0x99d2,
+  { "SHARP Corporation", 0x04dd, "SHV35 AQUOS U", 0x99d2,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1883/ */
+  { "SHARP Corporation", 0x04dd, "AndroidOne S5", 0x9c90,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
