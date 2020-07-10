@@ -1679,6 +1679,8 @@
   /* https://sourceforge.net/p/libmtp/bugs/1540/ */
   { "Sony", 0x054c, "NWZ-E474", 0x06a9,
       DEVICE_FLAGS_SONY_NWZ_BUGS },
+  { "Sony", 0x054c, "Xperia Tablet S - SGPT12", 0x06ac,
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1688/ */
   { "Sony", 0x054c, "NWZ-E384", 0x0882,
       DEVICE_FLAGS_SONY_NWZ_BUGS },
