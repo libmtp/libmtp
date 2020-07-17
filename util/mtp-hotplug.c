@@ -255,7 +255,7 @@ int main (int argc, char **argv)
         break;
       case style_hwdb:
           printf("# %s %s\n", entry->vendor, entry->product);
-          printf("usb:v%04xp%04x*\n", entry->vendor_id, entry->product_id);
+          printf("usb:v%04Xp%04X*\n", entry->vendor_id, entry->product_id);
           printf(" ID_MEDIA_PLAYER=1\n");
           printf(" ID_MTP_DEVICE=1\n");
           printf("\n");
