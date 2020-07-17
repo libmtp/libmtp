@@ -73,7 +73,7 @@ int main (int argc, char **argv)
 
   char *action = NULL; // To hold the action when specified by the user.
   uint16_t last_vendor = 0x0000U;
-  char mtp_probe_dir[256];
+  char mtp_probe_dir[256] = "/usr/lib/udev/";
   char *udev_group= NULL;
   char *udev_mode = NULL;
 
