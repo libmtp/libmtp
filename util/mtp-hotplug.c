@@ -50,6 +50,9 @@ enum style {
   style_hwdb
 };
 
+#define UDEV_ACTION "SYMLINK+=\"libmtp-%k\""
+#define FULL_UDEV_ACTION UDEV_ACTION ", ENV{ID_MTP_DEVICE}=\"1\", ENV{ID_MEDIA_PLAYER}=\"1\""
+
 int main (int argc, char **argv)
 {
   LIBMTP_device_entry_t *entries;
@@ -60,7 +63,6 @@ int main (int argc, char **argv)
   int opt;
   extern int optind;
   extern char *optarg;
-  char *udev_action = NULL;
   /*
    * You could tag on MODE="0666" here to enfore writeable
    * device nodes, use the command line argument for that.
@@ -68,8 +70,8 @@ int main (int argc, char **argv)
    * with ENV{ID_MEDIA_PLAYER}=1 writable for the console
    * user.
    */
-  char default_udev_action[] = "SYMLINK+=\"libmtp-%k\", ENV{ID_MTP_DEVICE}=\"1\", ENV{ID_MEDIA_PLAYER}=\"1\"";
-  char *action; // To hold the action actually used.
+
+  char *action = NULL; // To hold the action when specified by the user.
   uint16_t last_vendor = 0x0000U;
   char mtp_probe_dir[256];
   char *udev_group= NULL;
@@ -78,7 +80,7 @@ int main (int argc, char **argv)
   while ( (opt = getopt(argc, argv, "wuoiHa:p:g:m:")) != -1 ) {
     switch (opt) {
     case 'a':
-      udev_action = strdup(optarg);
+      action = optarg;
       break;
     case 'u':
       style = style_udev;
@@ -127,12 +129,6 @@ int main (int argc, char **argv)
     }
   }
 
-  if (udev_action != NULL) {
-    action = udev_action;
-  } else {
-    action = default_udev_action;
-  }
-
   LIBMTP_Init();
   ret = LIBMTP_Get_Supported_Devices_List(&entries, &numentries);
   if (ret == 0) {
@@ -145,6 +141,14 @@ int main (int argc, char **argv)
       printf("SUBSYSTEM==\"usb\", GOTO=\"libmtp_usb_rules\"\n"
 	     "GOTO=\"libmtp_rules_end\"\n\n"
 	     "LABEL=\"libmtp_usb_rules\"\n\n");
+
+      printf("# If we have a hwdb entry for this device, act immediately!\n");
+      printf("ENV{ID_MTP_DEVICE}==\"1\", %s", action ?: UDEV_ACTION);
+      if (udev_group != NULL) printf(", GROUP=\"%s\"", udev_group);
+      if (udev_mode != NULL) printf(", MODE=\"%s\"", udev_mode);
+      printf(", GOTO=\"libmtp_rules_end\"\n\n");
+
+      printf("# Fall back to probing.\n");
       printf("# Some sensitive devices we surely don\'t wanna probe\n");
       printf("# Color instruments\n");
       printf("ATTR{idVendor}==\"0670\", GOTO=\"libmtp_rules_end\"\n");
@@ -200,10 +204,10 @@ int main (int argc, char **argv)
       LIBMTP_device_entry_t * entry = &entries[i];
 
       switch (style) {
-      case style_udev:
       case style_udev_old:
 	printf("# %s %s\n", entry->vendor, entry->product);
-	printf("ATTR{idVendor}==\"%04x\", ATTR{idProduct}==\"%04x\", %s", entry->vendor_id, entry->product_id, action);
+	printf("ATTR{idVendor}==\"%04x\", ATTR{idProduct}==\"%04x\", %s",
+               entry->vendor_id, entry->product_id, action ?: FULL_UDEV_ACTION);
 	if (udev_group != NULL) printf(", GROUP=\"%s\"", udev_group);
 	if (udev_mode != NULL) printf(", MODE=\"%s\"", udev_mode);
 	printf("\n");
@@ -281,7 +285,8 @@ int main (int argc, char **argv)
      * also dont run probe if gphoto2 already matched it as camera.
      */
     printf("\n# Autoprobe vendor-specific, communication and PTP devices\n");
-    printf("ENV{ID_MTP_DEVICE}!=\"1\", ENV{MTP_NO_PROBE}!=\"1\", ENV{COLOR_MEASUREMENT_DEVICE}!=\"1\", ENV{ID_GPHOTO}!=\"1\", ENV{libsane_matched}!=\"yes\", ATTR{bDeviceClass}==\"00|02|06|ef|ff\", PROGRAM=\"%smtp-probe /sys$env{DEVPATH} $attr{busnum} $attr{devnum}\", RESULT==\"1\", %s", mtp_probe_dir, action);
+    printf("ENV{ID_MTP_DEVICE}!=\"1\", ENV{MTP_NO_PROBE}!=\"1\", ENV{COLOR_MEASUREMENT_DEVICE}!=\"1\", ENV{ID_GPHOTO}!=\"1\", ENV{libsane_matched}!=\"yes\", ATTR{bDeviceClass}==\"00|02|06|ef|ff\", PROGRAM=\"%smtp-probe /sys$env{DEVPATH} $attr{busnum} $attr{devnum}\", RESULT==\"1\", %s",
+           mtp_probe_dir, action ?: FULL_UDEV_ACTION);
     if (udev_group != NULL) printf(", GROUP=\"%s\"", udev_group);
     if (udev_mode != NULL) printf(", MODE=\"%s\"", udev_mode);
     printf("\n");
