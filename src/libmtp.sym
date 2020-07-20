@@ -5,6 +5,7 @@ LIBMTP_Detect_Raw_Devices
 LIBMTP_Check_Specific_Device
 LIBMTP_Open_Raw_Device
 LIBMTP_Open_Raw_Device_Uncached
+LIBMTP_Get_Device
 LIBMTP_Get_First_Device
 LIBMTP_Get_Connected_Devices
 LIBMTP_Number_Devices_In_List

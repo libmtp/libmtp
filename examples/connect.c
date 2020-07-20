@@ -69,7 +69,11 @@ int main (int argc, char **argv)
 
   fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
 
-  device = LIBMTP_Get_First_Device();
+  if ((strncmp(basename(argv[0]),"mtp-getfile",11) == 0) || (strncmp(basename(argv[0]),"getfile",7) == 0))
+    device = getfile_device(argc,argv);
+  else
+    device = LIBMTP_Get_First_Device();
+
   if (device == NULL) {
     printf("No devices.\n");
     return 0;
@@ -79,11 +83,11 @@ int main (int argc, char **argv)
 
   if ((strncmp(basename(argv[0]),"mtp-delfile",11) == 0) || (strncmp(basename(argv[0]),"delfile",7) == 0)) {
     ret = delfile_command(argc,argv);
-  } else if ((strncmp(basename(argv[0]),"mtp-getfile",13) == 0) || (strncmp(basename(argv[0]),"getfile",9) == 0)) {
+  } else if ((strncmp(basename(argv[0]),"mtp-getfile",11) == 0) || (strncmp(basename(argv[0]),"getfile",7) == 0)) {
     ret = getfile_command(argc,argv);
   } else if ((strncmp(basename(argv[0]),"mtp-newfolder",13) == 0) || (strncmp(basename(argv[0]),"newfolder",9) == 0)) {
     ret = newfolder_command(argc,argv);
-  } else if ((strncmp(basename(argv[0]),"mtp-sendfile",11) == 0) || (strncmp(basename(argv[0]),"sendfile",7) == 0)) {
+  } else if ((strncmp(basename(argv[0]),"mtp-sendfile",12) == 0) || (strncmp(basename(argv[0]),"sendfile",8) == 0)) {
     ret = sendfile_command(argc, argv);
   } else if ((strncmp(basename(argv[0]),"mtp-sendtr",10) == 0) || (strncmp(basename(argv[0]),"sendtr",6) == 0)) {
     ret = sendtrack_command(argc, argv);

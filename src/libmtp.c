@@ -1680,13 +1680,13 @@ static int set_object_u8(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 }
 
 /**
- * Get the first (as in "first in the list of") connected MTP device.
+ * Get connected MTP device by list position.
  * @return a device pointer.
  * @see LIBMTP_Get_Connected_Devices()
  */
-LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
+LIBMTP_mtpdevice_t *LIBMTP_Get_Device(int device_nr)
 {
-  LIBMTP_mtpdevice_t *first_device = NULL;
+  LIBMTP_mtpdevice_t *device = NULL;
   LIBMTP_raw_device_t *devices;
   int numdevs;
   LIBMTP_error_number_t ret;
@@ -1701,9 +1701,24 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
     return NULL;
   }
 
-  first_device = LIBMTP_Open_Raw_Device(&devices[0]);
+  if (device_nr < 0 || device_nr >= numdevs) {
+    free(devices);
+    return NULL;
+  }
+
+  device = LIBMTP_Open_Raw_Device(&devices[device_nr]);
   free(devices);
-  return first_device;
+  return device;
+}
+
+/**
+ * Get the first (as in "first in the list of") connected MTP device.
+ * @return a device pointer.
+ * @see LIBMTP_Get_Connected_Devices()
+ */
+LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
+{
+  return LIBMTP_Get_Device(0);
 }
 
 /**
