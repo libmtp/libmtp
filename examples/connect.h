@@ -30,6 +30,7 @@ int sendfile_function(char *,char *);
 int sendfile_command(int, char **);
 void sendfile_usage(void);
 int getfile_function(char *,char *);
+LIBMTP_mtpdevice_t *getfile_device(int, char **);
 int getfile_command(int, char **);
 void getfile_usage(void);
 int newfolder_function(char *);

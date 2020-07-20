@@ -69,7 +69,11 @@ int main (int argc, char **argv)
 
   fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
 
-  device = LIBMTP_Get_First_Device();
+  if ((strncmp(basename(argv[0]),"mtp-getfile",11) == 0) || (strncmp(basename(argv[0]),"getfile",7) == 0))
+    device = getfile_device(argc,argv);
+  else
+    device = LIBMTP_Get_First_Device();
+
   if (device == NULL) {
     printf("No devices.\n");
     return 0;

@@ -842,6 +842,7 @@ int LIBMTP_Check_Specific_Device(int busno, int devno);
 LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *);
 LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *);
 /* Begin old, legacy interface */
+LIBMTP_mtpdevice_t *LIBMTP_Get_Device(int);
 LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void);
 LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **);
 uint32_t LIBMTP_Number_Devices_In_List(LIBMTP_mtpdevice_t *);

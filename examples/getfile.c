@@ -33,7 +33,7 @@ extern LIBMTP_mtpdevice_t *device;
 
 void getfile_usage (void)
 {
-  fprintf(stderr, "getfile <fileid/trackid> <filename>\n");
+  fprintf(stderr, "getfile [<deviceid>] <fileid/trackid> <filename>\n");
 }
 
 int
@@ -52,32 +52,56 @@ getfile_function(char * from_path,char * to_path)
   return 0;
 }
 
+LIBMTP_mtpdevice_t *getfile_device(int argc, char **argv)
+{
+  if (argc == 3)
+    return LIBMTP_Get_First_Device();
+
+  if (argc == 4) {
+    uint32_t id;
+    char *endptr;
+
+    // Sanity check device ID
+    id = strtoul(argv[1], &endptr, 10);
+    if ( *endptr != 0 ) {
+      fprintf(stderr, "illegal value %s\n", argv[1]);
+      return NULL;
+    }
+
+    return LIBMTP_Get_Device(id);
+  }
+
+  getfile_usage();
+
+  return NULL;
+}
 
 int getfile_command(int argc, char **argv)
 {
   uint32_t id;
   char *endptr;
   char *file;
+  int off = (argc == 4 ? 1 : 0);
   int ret = 0;
 
-  // We need file ID and filename
-  if ( argc != 3 ) {
+  // We need file ID and filename (device ID is optional)
+  if ( argc != 3 && argc != 4 ) {
     getfile_usage();
     return 0;
   }
 
   // Sanity check song ID
-  id = strtoul(argv[1], &endptr, 10);
+  id = strtoul(argv[1 + off], &endptr, 10);
   if ( *endptr != 0 ) {
-    fprintf(stderr, "illegal value %s\n", argv[1]);
+    fprintf(stderr, "illegal value %s\n", argv[1 + off]);
     return 1;
   } else if ( ! id ) {
     fprintf(stderr, "bad file/track id %u\n", id);
     return 1;
- }
+  }
 
   // Filename, e.g. "foo.mp3"
-  file = argv[2];
+  file = argv[2 + off];
   printf("Getting file/track %d to local file %s\n", id, file);
 
   // This function will also work just as well for tracks.
