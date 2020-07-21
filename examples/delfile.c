@@ -34,7 +34,7 @@ extern LIBMTP_file_t *files;
 
 void delfile_usage(void)
 {
-  printf("Usage: delfile [-n] <fileid/trackid> | -f <filename>\n");
+  printf("Usage: delfile -n <fileid/trackid> | -f <filename> ...\n");
 }
 
 int
