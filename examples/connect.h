@@ -21,6 +21,7 @@
  * Boston, MA 02111-1307, USA.
  */
 int delfile_function(char *);
+LIBMTP_mtpdevice_t *delfile_device(int, char **);
 int delfile_command(int, char **);
 void delfile_usage(void);
 int sendtrack_function (char *, char *, char *, char *, char *, char *, char *, char *, uint16_t, uint16_t, uint16_t, uint32_t, uint16_t);
