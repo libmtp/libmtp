@@ -34,7 +34,7 @@ extern LIBMTP_file_t *files;
 
 void delfile_usage(void)
 {
-  printf("Usage: delfile [-n] <fileid/trackid> | -f <filename>\n");
+  printf("Usage: delfile [<deviceid>] -n <fileid/trackid> | -f <filename> ...\n");
 }
 
 int
@@ -56,21 +56,46 @@ delfile_function(char * path)
   return 0;
 }
 
+LIBMTP_mtpdevice_t *delfile_device(int argc, char **argv)
+{
+  if (argc >= 3 && argv[1][0] == '-')
+    return LIBMTP_Get_First_Device();
+
+  if (argc >= 4) {
+    uint32_t id;
+    char *endptr;
+
+    // Sanity check device ID
+    id = strtoul(argv[1], &endptr, 10);
+    if ( *endptr != 0 ) {
+      fprintf(stderr, "illegal value %s\n", argv[1]);
+      return NULL;
+    }
+
+    return LIBMTP_Get_Device(id);
+  }
+
+  delfile_usage();
+
+  return NULL;
+}
+
 int delfile_command(int argc, char **argv)
 {
   int FILENAME = 1;
   int ITEMID = 2;
   int field_type = 0;
   int i;
+  int off = (argc >= 4 && argv[1][0] != '-' ? 1 : 0);
   int ret = 0;
 
   if ( argc > 2 ) {
-    if (strncmp(argv[1],"-f",2) == 0) {
+    if (strncmp(argv[1 + off],"-f",2) == 0) {
       field_type = FILENAME;
-      strcpy(argv[1],"");
-    } else if (strncmp(argv[1],"-n",2) == 0) {
+      strcpy(argv[1 + off],"");
+    } else if (strncmp(argv[1 + off],"-n",2) == 0) {
       field_type = ITEMID;
-      strcpy(argv[1],"0");
+      strcpy(argv[1 + off],"0");
     } else {
       delfile_usage();
       return 0;
@@ -80,7 +105,7 @@ int delfile_command(int argc, char **argv)
     return 0;
   }
 
-  for (i=1;i<argc;i++) {
+  for (i=1+off;i<argc;i++) {
     uint32_t id;
     char *endptr;
 
