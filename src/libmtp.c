@@ -5286,6 +5286,7 @@ int LIBMTP_Get_File_To_File_Descriptor(LIBMTP_mtpdevice_t *device,
   }
   if (mtpfile->filetype == LIBMTP_FILETYPE_FOLDER) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Get_File_To_File_Descriptor(): Bad object format.");
+    LIBMTP_destroy_file_t (mtpfile);
     return -1;
   }
 
@@ -5353,6 +5354,7 @@ int LIBMTP_Get_File_To_Handler(LIBMTP_mtpdevice_t *device,
   }
   if (mtpfile->filetype == LIBMTP_FILETYPE_FOLDER) {
     add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Get_File_To_File_Descriptor(): Bad object format.");
+    LIBMTP_destroy_file_t (mtpfile);
     return -1;
   }
 
@@ -9113,6 +9115,10 @@ int LIBMTP_GetPartialObject(LIBMTP_mtpdevice_t *device, uint32_t const id,
   if (offset + maxbytes > mtpfile->filesize) {
     maxbytes = mtpfile->filesize - offset;
   }
+
+  /* do not need it anymore */
+  LIBMTP_destroy_file_t (mtpfile);
+
   /* The MTP stack of Samsung Galaxy devices has a mysterious bug in
    * GetPartialObject. When GetPartialObject is invoked to read the
    * last bytes of a file and the amount of data to read is such that
