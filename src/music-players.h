@@ -1243,6 +1243,8 @@
   { "Nokia", 0x0421, "N9", 0x051a, DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/bugs/1308/ */
   { "Nokia", 0x0421, "N300", 0x0524, DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/bugs/1885/ */
+  { "Nokia", 0x0421, "701", 0x0530, DEVICE_FLAG_NONE },
   { "Nokia", 0x0421, "C5-00", 0x0592, DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/bugs/1457/ */
   { "Nokia", 0x0421, "C5-00 (ID2)", 0x0595, DEVICE_FLAG_NONE },
