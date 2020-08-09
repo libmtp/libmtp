@@ -3776,6 +3776,8 @@
   { "Garmin", 0x091e, "Fenix 5/5S/5X Plus", 0x4b54, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/271/ */
   { "Garmin", 0x091e, "Vivoactive 3", 0x4bac, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1884/ */
+  { "Garmin", 0x091e, "Forerunner 245 Music ", 0x4c05, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Vivoactive 4S", 0x4c98, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/51 */
   { "Garmin", 0x091e, "Vivoactive 4", 0x4c99, DEVICE_FLAGS_ANDROID_BUGS },
