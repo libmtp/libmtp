@@ -637,6 +637,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/279/ */
   { "Acer", 0x0502, "B3-A20", 0x3841,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/298/ */
+  { "Acer", 0x0502, "A3-A40", 0x387a,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1733/ */
   { "Acer", 0x0502, "Liquid Zest 4G", 0x38a5,
       DEVICE_FLAGS_ANDROID_BUGS },
