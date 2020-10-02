@@ -4098,6 +4098,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1822/ */
   { "vtevch" , 0x0f88, "Storio Max XL 2.0", 0x0684, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/bugs/1889/ */
+  { "Tolino" , 0x1f85, "Vision 4 HD", 0x6056 , DEVICE_FLAGS_ANDROID_BUGS },
+
   /* https://sourceforge.net/p/libmtp/bugs/1846/ */
   { "Netronix" , 0x1f85, "E60QH2", 0x6a12 , DEVICE_FLAGS_ANDROID_BUGS },
 
