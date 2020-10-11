@@ -4,7 +4,7 @@ ACLOCAL_AMFLAGS=-I m4
 pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA=libmtp.pc
 
-EXTRA_DIST=libmtp.pc libmtp.sh COPYING README.windows.txt
+EXTRA_DIST=libmtp.pc libmtp.sh COPYING README.windows.txt RELEASE-CHECKLIST.md
 
 # This stuff only makes sense on Linux so only
 # build and ship it on Linux.
