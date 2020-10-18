@@ -1645,7 +1645,7 @@ ptp_usb_control_cancel_request (PTPParams *params, uint32_t transactionid) {
 			      (char *) buffer,
 			      sizeof(buffer),
 			      ptp_usb->timeout);
-	if (ret < sizeof(buffer))
+	if (ret < (int)sizeof(buffer))
 		return PTP_ERROR_IO;
 	return PTP_RC_OK;
 }
