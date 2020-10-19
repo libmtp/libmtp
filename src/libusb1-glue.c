@@ -1852,7 +1852,7 @@ ptp_usb_control_cancel_request (PTPParams *params, uint32_t transactionid) {
 			      buffer,
 			      sizeof(buffer),
 			      ptp_usb->timeout);
-	if (ret < sizeof(buffer))
+	if (ret < (int)sizeof(buffer))
 		return PTP_ERROR_IO;
 	return PTP_RC_OK;
 }
@@ -1874,7 +1874,7 @@ ptp_usb_control_device_status_request (PTPParams *params) {
                   buffer,
                   sizeof(buffer),
                   ptp_usb->timeout);
-    if (ret < sizeof(buffer))
+    if (ret < (int)sizeof(buffer))
         return PTP_ERROR_IO;
 
     ret = dtoh16a(&buffer[2]);
