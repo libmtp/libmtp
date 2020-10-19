@@ -101,7 +101,7 @@ void data_dump_ascii (FILE *f, void *buf, uint32_t n, uint32_t dump_boundry)
 {
   uint32_t remain = n;
   uint32_t ln, lc;
-  int i;
+  unsigned int i;
   unsigned char *bp = (unsigned char *) buf;
 
   lc = 0;

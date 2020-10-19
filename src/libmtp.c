@@ -1163,7 +1163,7 @@ int LIBMTP_Is_Property_Supported(LIBMTP_mtpdevice_t *device, LIBMTP_property_t c
   uint16_t *props = NULL;
   uint32_t propcnt = 0;
   uint16_t ret = 0;
-  int i = 0;
+  unsigned int i = 0;
   int supported = 0;
   uint16_t ptp_prop = map_libmtp_property_to_ptp_property(property);
 
@@ -1773,8 +1773,8 @@ LIBMTP_ptp_error(void *data, const char *format, va_list args)
 static void parse_extension_descriptor(LIBMTP_mtpdevice_t *mtpdevice,
                                        char *desc)
 {
-  int start = 0;
-  int end = 0;
+  unsigned int start = 0;
+  unsigned int end = 0;
 
   /* NULL on Canon A70 */
   if (!desc)
@@ -1793,7 +1793,7 @@ static void parse_extension_descriptor(LIBMTP_mtpdevice_t *mtpdevice,
     if (end < strlen(desc)) {
       char *element = strndup(desc + start, end-start);
       if (element) {
-        int i = 0;
+        unsigned int i = 0;
         // printf("  Element: \"%s\"\n", element);
 
         /* Parse for an extension */
@@ -1851,7 +1851,7 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *rawdevi
   PTPParams *current_params;
   PTP_USB *ptp_usb;
   LIBMTP_error_number_t err;
-  int i;
+  unsigned int i;
 
   /* Allocate dynamic space for our device */
   mtp_device = (LIBMTP_mtpdevice_t *) malloc(sizeof(LIBMTP_mtpdevice_t));
@@ -2334,9 +2334,9 @@ int LIBMTP_Read_Event_Async(LIBMTP_mtpdevice_t *device, LIBMTP_event_cb_fn cb, v
  * @return a device pointer to a newly created mtpdevice (used in linked
  * list creation).
  */
-static LIBMTP_mtpdevice_t * create_usb_mtp_devices(LIBMTP_raw_device_t *devices, int numdevs)
+static LIBMTP_mtpdevice_t * create_usb_mtp_devices(LIBMTP_raw_device_t *devices, unsigned int numdevs)
 {
-  uint8_t i;
+  unsigned int i;
   LIBMTP_mtpdevice_t *mtp_device_list = NULL;
   LIBMTP_mtpdevice_t *current_device = NULL;
 
@@ -2764,7 +2764,7 @@ static uint16_t get_handles_recursively(LIBMTP_mtpdevice_t *device,
 				    uint32_t parent)
 {
   PTPObjectHandles currentHandles;
-  int i = 0;
+  unsigned int i = 0;
   uint16_t ret = ptp_getobjecthandles(params,
                                       storageid,
                                       PTP_GOH_ALL_FORMATS,
@@ -3169,7 +3169,7 @@ static int get_storage_freespace(LIBMTP_mtpdevice_t *device,
  */
 void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 {
-  int i;
+  unsigned int i;
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   LIBMTP_devicestorage_t *storage = device->storage;
@@ -3229,7 +3229,7 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
       uint16_t ret;
       uint16_t *props = NULL;
       uint32_t propcnt = 0;
-      int j;
+      unsigned int j;
 
       (void) ptp_render_ofc (params, params->deviceinfo.ImageFormats[i],
 			     sizeof(txt), txt);
@@ -3920,7 +3920,7 @@ static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
   PTPParams *params = (PTPParams *) device->params;
   uint16_t *tmp;
   uint16_t ret;
-  int i;
+  unsigned int i;
 
   if (!ptp_property_issupported(params, property)) {
     return -1;
@@ -4268,7 +4268,7 @@ static LIBMTP_file_t *obj2file(LIBMTP_mtpdevice_t *device, PTPObject *ob)
   PTPParams *params = (PTPParams *) device->params;
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   LIBMTP_file_t *file;
-  int i;
+  unsigned int i;
 
   // Allocate a new file type
   file = LIBMTP_new_file_t();
@@ -4528,7 +4528,7 @@ LIBMTP_file_t * LIBMTP_Get_Files_And_Folders(LIBMTP_mtpdevice_t *device,
   PTPObjectHandles currentHandles;
   uint32_t storageid;
   uint16_t ret;
-  int i = 0;
+  unsigned int i = 0;
 
   if (device->cached) {
     // This function is only supposed to be used by devices
@@ -5563,7 +5563,7 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
  */
 static int check_filename_exists(PTPParams* params, char const * const filename)
 {
-  int i;
+  unsigned int i;
 
   for (i = 0; i < params->nrofobjects; i++) {
     char *fname = params->objects[i].oi.Filename;
@@ -6133,7 +6133,7 @@ static int send_file_object_info(LIBMTP_mtpdevice_t *device, LIBMTP_file_t *file
   LIBMTP_devicestorage_t *storage;
   uint32_t localph = filedata->parent_id;
   uint16_t ret;
-  int i;
+  unsigned int i;
 
 #if 0
   // Sanity check: no zerolength files on some devices?
@@ -7327,7 +7327,7 @@ static LIBMTP_folder_t *get_subfolders_for_folder(LIBMTP_folder_t *list, uint32_
 {
   PTPParams *params = (PTPParams *) device->params;
   LIBMTP_folder_t head, *rv;
-  int i;
+  unsigned int i;
 
   // Get all the handles if we haven't already done that
   if (params->nrofobjects == 0) {
@@ -7749,7 +7749,7 @@ static int create_new_abstract_list(LIBMTP_mtpdevice_t *device,
 				    uint32_t const no_tracks)
 
 {
-  int i;
+  unsigned int i;
   int supported = 0;
   uint16_t ret;
   uint16_t *properties = NULL;
@@ -8084,7 +8084,7 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
   PTP_USB *ptp_usb = (PTP_USB*) device->usbinfo;
   uint16_t *properties = NULL;
   uint32_t propcnt = 0;
-  int i;
+  unsigned int i;
 
   // First see which properties can be set
   // i.e only try to update this metadata for object tags that exist on the current player.
@@ -8786,7 +8786,7 @@ int LIBMTP_Get_Representative_Sample_Format(LIBMTP_mtpdevice_t *device,
   PTPParams *params = (PTPParams *) device->params;
   uint16_t *props = NULL;
   uint32_t propcnt = 0;
-  int i;
+  unsigned int i;
   // TODO: Get rid of these when we can properly query the device.
   int support_data = 0;
   int support_format = 0;

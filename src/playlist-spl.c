@@ -274,7 +274,7 @@ int update_spl_playlist(LIBMTP_mtpdevice_t *device,
 
   // check if the playlists match
   int delta = 0;
-  int i;
+  unsigned int i;
   if(old->no_tracks != newlist->no_tracks)
     delta++;
   for(i=0;i<newlist->no_tracks && delta==0;i++) {
@@ -458,7 +458,7 @@ static void write_from_spl_text_t(LIBMTP_mtpdevice_t *device,
     char *const t = (char*) utf8_to_utf16(device, p->text);
     // note: 2 bytes per ucs2 character
     const size_t len = ucs2_strlen((uint16_t*)t)*sizeof(uint16_t);
-    int i;
+    unsigned int i;
 
     LIBMTP_PLST_DEBUG("\nutf8=%s ",p->text);
     for(i=0;i<strlen(p->text);i++)
@@ -607,7 +607,7 @@ static void spl_text_t_from_tracks(text_t** p,
   append_text_t(&c, "");
 
   // TRACKS
-  int i;
+  unsigned int i;
   char* f;
   for(i=0;i<trackno;i++) {
     discover_filepath_from_id(&f, tracks[i], folders, files);
@@ -725,7 +725,7 @@ static uint32_t discover_id_from_filepath(const char* s, LIBMTP_folder_t* folder
   if(s[0] != '\\')
     return 0;
 
-  int i;
+  unsigned int i;
   uint32_t id = 0;
   char* sc = strdup(s);
   char* sci = sc +1; // iterator
