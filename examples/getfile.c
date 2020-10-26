@@ -33,7 +33,7 @@ extern LIBMTP_mtpdevice_t *device;
 
 void getfile_usage (void)
 {
-  fprintf(stderr, "getfile [<deviceid>] <fileid/trackid> <filename>\n");
+  fprintf(stderr, "getfile [<deviceid> | SN:<serialnumber>] <fileid/trackid> <filename>\n");
 }
 
 int
@@ -57,19 +57,8 @@ LIBMTP_mtpdevice_t *getfile_device(int argc, char **argv)
   if (argc == 3)
     return LIBMTP_Get_First_Device();
 
-  if (argc == 4) {
-    uint32_t id;
-    char *endptr;
-
-    // Sanity check device ID
-    id = strtoul(argv[1], &endptr, 10);
-    if ( *endptr != 0 ) {
-      fprintf(stderr, "illegal value %s\n", argv[1]);
-      return NULL;
-    }
-
-    return LIBMTP_Get_Device(id);
-  }
+  if (argc == 4)
+    return LIBMTP_Get_Device_By_ID(argv[1]);
 
   getfile_usage();
 
