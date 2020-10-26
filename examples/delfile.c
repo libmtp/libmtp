@@ -34,7 +34,7 @@ extern LIBMTP_file_t *files;
 
 void delfile_usage(void)
 {
-  printf("Usage: delfile [<deviceid>] -n <fileid/trackid> | -f <filename> ...\n");
+  printf("Usage: delfile [<deviceid> | SN:<serialnumber>] -n <fileid/trackid> | -f <filename> ...\n");
 }
 
 int
@@ -61,19 +61,8 @@ LIBMTP_mtpdevice_t *delfile_device(int argc, char **argv)
   if (argc >= 3 && argv[1][0] == '-')
     return LIBMTP_Get_First_Device();
 
-  if (argc >= 4) {
-    uint32_t id;
-    char *endptr;
-
-    // Sanity check device ID
-    id = strtoul(argv[1], &endptr, 10);
-    if ( *endptr != 0 ) {
-      fprintf(stderr, "illegal value %s\n", argv[1]);
-      return NULL;
-    }
-
-    return LIBMTP_Get_Device(id);
-  }
+  if (argc >= 4)
+    return LIBMTP_Get_Device_By_ID(argv[1]);
 
   delfile_usage();
 
