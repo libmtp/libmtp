@@ -1848,7 +1848,7 @@ ptp_usb_control_cancel_request (PTPParams *params, uint32_t transactionid) {
 	htod32a(&buffer[2],transactionid);
 	ret = libusb_control_transfer(ptp_usb->handle,
 			      LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_RECIPIENT_INTERFACE,
-                              0x64, 0x0000, 0x0000,
+                              0x64, 0x0000, ptp_usb->interface,
 			      buffer,
 			      sizeof(buffer),
 			      ptp_usb->timeout);
@@ -1870,7 +1870,7 @@ ptp_usb_control_device_status_request (PTPParams *params) {
 
     ret = libusb_control_transfer(ptp_usb->handle,
                   LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_RECIPIENT_INTERFACE,
-                  0x67, 0x0000, 0x0000,
+                  0x67, 0x0000, ptp_usb->interface,
                   buffer,
                   sizeof(buffer),
                   ptp_usb->timeout);
