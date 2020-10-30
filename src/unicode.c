@@ -76,16 +76,16 @@ int ucs2_strlen(uint16_t const * const unicstr)
  */
 char *utf16_to_utf8(LIBMTP_mtpdevice_t *device, const uint16_t *unicstr)
 {
+  char loclstr[STRING_BUFFER_LENGTH*3+1]; // UTF-8 encoding is max 3 bytes per UCS2 char.
+
+  loclstr[0]='\0';
+  #if defined(HAVE_ICONV) && defined(HAVE_LANGINFO_H)
   PTPParams *params = (PTPParams *) device->params;
   char *stringp = (char *) unicstr;
-  char loclstr[STRING_BUFFER_LENGTH*3+1]; // UTF-8 encoding is max 3 bytes per UCS2 char.
   char *locp = loclstr;
   size_t nconv;
   size_t convlen = (ucs2_strlen(unicstr)+1) * sizeof(uint16_t); // UCS-2 is 16 bit wide, include terminator
   size_t convmax = STRING_BUFFER_LENGTH*3;
-
-  loclstr[0]='\0';
-  #if defined(HAVE_ICONV) && defined(HAVE_LANGINFO_H)
   /* Do the conversion.  */
   nconv = iconv(params->cd_ucs2_to_locale, &stringp, &convlen, &locp, &convmax);
   if (nconv == (size_t) -1) {
@@ -111,18 +111,18 @@ char *utf16_to_utf8(LIBMTP_mtpdevice_t *device, const uint16_t *unicstr)
  */
 uint16_t *utf8_to_utf16(LIBMTP_mtpdevice_t *device, const char *localstr)
 {
-  PTPParams *params = (PTPParams *) device->params;
-  char *stringp = (char *) localstr; // cast away "const"
   char unicstr[(STRING_BUFFER_LENGTH+1)*2]; // UCS2 encoding is 2 bytes per UTF-8 char.
   char *unip = unicstr;
   size_t nconv = 0;
-  size_t convlen = strlen(localstr)+1; // utf8 bytes, include terminator
-  size_t convmax = STRING_BUFFER_LENGTH*2;
 
   unicstr[0]='\0';
   unicstr[1]='\0';
 
   #if defined(HAVE_ICONV) && defined(HAVE_LANGINFO_H)
+  PTPParams *params = (PTPParams *) device->params;
+  char *stringp = (char *) localstr; // cast away "const"
+  size_t convlen = strlen(localstr)+1; // utf8 bytes, include terminator
+  size_t convmax = STRING_BUFFER_LENGTH*2;
   /* Do the conversion.  */
   nconv = iconv(params->cd_locale_to_ucs2, &stringp, &convlen, &unip, &convmax);
   #endif
