@@ -4003,6 +4003,8 @@
   /* https://sourceforge.net/p/libmtp/bugs/1436/ */
   { "Parrot", 0x19cf, "Bebop Drone", 0x5038, DEVICE_FLAGS_ANDROID_BUGS },
 
+#ifndef _GPHOTO2_INTERNAL_CODE
+  /* gphoto lists them in its library.c */
   /*
    * GoPro Action Cams.
    */
@@ -4021,6 +4023,7 @@
   { "GoPro" , 0x2672, "HERO7 Silver", 0x0043, DEVICE_FLAG_NONE },
   { "GoPro" , 0x2672, "HERO7 Black", 0x0047, DEVICE_FLAG_NONE },
   { "GoPro" , 0x2672, "HERO8 Black", 0x0049, DEVICE_FLAG_NONE },
+#endif
 
   /* https://sourceforge.net/p/libmtp/bugs/1490/ */
   { "Marshall" , 0x2ad9, "London", 0x000b, DEVICE_FLAG_NONE },
