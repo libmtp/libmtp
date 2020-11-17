@@ -374,6 +374,7 @@
    * - has a weird USB bug if it reads exactly 512byte (usb 2 packetsize) 
    *   the device will hang. this is one of the reasons we need to disable
    *   DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST as it can hit this size :/
+   *   Post scriptum: This did not help, so we added it again. -Marcus
    *
    * From: Ignacio Martínez <ignacio.martinezrivera@yahoo.es> and others
    * From Harrison Metzger <harrisonmetz@gmail.com>
@@ -390,8 +391,8 @@
       DEVICE_FLAG_FLAC_IS_UNKNOWN },
   { "Samsung", 0x04e8,
       "Galaxy models (MTP)", 0x6860,
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
-      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST |
+      /* DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL |
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | */
       DEVICE_FLAG_UNLOAD_DRIVER |
       DEVICE_FLAG_LONG_TIMEOUT |
       DEVICE_FLAG_PROPLIST_OVERRIDES_OI |
