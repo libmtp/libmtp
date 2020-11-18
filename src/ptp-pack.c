@@ -128,7 +128,8 @@ dtoh64ap (PTPParams *params, const unsigned char *a)
 
 /*
  * PTP strings ... if the size field is:
- * size 0  : "empty string" ... we interpret that as NULL, return 1
+ * size 0  : "empty string" ... we interpret that as string with just \0 terminator, return 1
+ *  (the whole PTP standard is not that clear, it occasionaly refers to strings as optional in such cases, but no clear guidance).
  * size > 0: all other strings have a terminating \0, included in the length (not sure how conforming everyone is here)
  *
  * len - in ptp string characters currently
@@ -152,6 +153,7 @@ ptp_unpack_string(PTPParams *params, unsigned char* data, uint32_t offset, uint3
 	length = dtoh8a(&data[offset]);	/* PTP_MAXSTRLEN == 255, 8 bit len */
 	if (length == 0) {		/* nothing to do? */
 		*len = 0;
+		*retstr = strdup("");	/* return an empty string, not NULL */
 		return 1;
 	}
 
@@ -2253,6 +2255,7 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, unsigned int d
 					XX(EOS_EFComp)
 					XX(EOS_LensName)
 					XX(EOS_LensID)
+					XX(EOS_FixedMovie)
 #undef XX
 						dpd->GetSet = PTP_DPGS_Get;
 						break;
@@ -2282,6 +2285,7 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, unsigned int d
 				case PTP_DPC_CANON_EOS_BuiltinStroboMode:
 				case PTP_DPC_CANON_EOS_StroboETTL2Metering:
 				case PTP_DPC_CANON_EOS_ColorTemperature:
+				case PTP_DPC_CANON_EOS_FixedMovie:
 					dpd->DataType = PTP_DTC_UINT32;
 					break;
 				/* enumeration for AEM is never provided, but is available to set */
