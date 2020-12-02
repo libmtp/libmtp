@@ -4148,5 +4148,8 @@
   /* https://sourceforge.net/p/libmtp/bugs/1817/ */
   { "Nox", 0x1e0a, "A1", 0x1001, DEVICE_FLAG_NONE },
 
+  /* https://sourceforge.net/p/libmtp/bugs/1893/ */
+  { "Nintendo", 0x057e, "Switch Lite", 0x201d, DEVICE_FLAG_NONE },
+
   /* qemu 3.0.0 hw/usb/dev-mtp.c */
   { "QEMU", 0x46f4, "Virtual MTP", 0x0004, DEVICE_FLAG_NONE }
