@@ -4023,6 +4023,7 @@
   { "GoPro" , 0x2672, "HERO7 Silver", 0x0043, DEVICE_FLAG_NONE },
   { "GoPro" , 0x2672, "HERO7 Black", 0x0047, DEVICE_FLAG_NONE },
   { "GoPro" , 0x2672, "HERO8 Black", 0x0049, DEVICE_FLAG_NONE },
+  { "GoPro" , 0x2672, "HERO9 Black", 0x004d, DEVICE_FLAG_NONE },
 #endif
 
   /* These Ricoh Theta cameras run Android but seem to work
