@@ -1453,6 +1453,10 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		if (putfunc_ret != PTP_RC_OK)
 			return ptp_read_cancel_func(params, ptp->Transaction_ID);
 
+		/* Nothing more left to read*/
+		if (rlen == usbdata.length)
+			return PTP_RC_OK;
+
 		  /* stuff data directly to passed data handler */
 		  while (1) {
 		    unsigned long readdata;
