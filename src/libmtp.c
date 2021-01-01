@@ -3262,10 +3262,10 @@ void LIBMTP_Dump_Device_Info(LIBMTP_mtpdevice_t *device)
 	    printf(" STRING data type");
 	    switch (opd.FormFlag) {
 	    case PTP_OPFF_DateTime:
-	      printf(" DATETIME FORM");
+	      printf(" DATETIME FORM (%s)", opd.FORM.DateTime.String);
 	      break;
 	    case PTP_OPFF_RegularExpression:
-	      printf(" REGULAR EXPRESSION FORM");
+	      printf(" REGULAR EXPRESSION FORM (%s)", opd.FORM.RegularExpression.String);
 	      break;
 	    case PTP_OPFF_LongString:
 	      printf(" LONG STRING FORM");
