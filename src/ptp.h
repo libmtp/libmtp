@@ -441,6 +441,10 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_OC_CANON_EOS_SetRequestOLCInfoGroup	0x913D
 #define PTP_OC_CANON_EOS_SetRequestRollingPitchingLevel	0x913E /* 1 arg: onoff? */
 /* 3 args, 0x21201020, 0x110, 0x1000000 (potentially reverse order) */
+
+/* EOS M6 Mark2:	opargs: 0x01000000, 0x000001020, 0 (supportkind, modelid ?),
+			response args: 0x00000811, 0x00000001 */
+
 #define PTP_OC_CANON_EOS_GetCameraSupport	0x913F
 #define PTP_OC_CANON_EOS_SetRating		0x9140 /* 2 args, objectid, rating? */
 #define PTP_OC_CANON_EOS_RequestInnerDevelopStart	0x9141 /* 2 args: 1 type, 1 object? */
@@ -586,6 +590,7 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_OC_NIKON_ActiveSelectionControl	0x941f
 #define PTP_OC_NIKON_SaveCameraSetting		0x9420
 #define PTP_OC_NIKON_GetObjectSize		0x9421	/* param: objecthandle, returns 64bit objectsize as DATA */
+#define PTP_OC_NIKON_ChangeMonitorOff		0x9422
 #define PTP_OC_NIKON_GetLiveViewCompressedSize	0x9423
 #define PTP_OC_NIKON_StartTracking		0x9424
 #define PTP_OC_NIKON_EndTracking		0x9425
@@ -593,6 +598,10 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_OC_NIKON_GetLiveViewImageEx		0x9428
 #define PTP_OC_NIKON_GetPartialObjectEx		0x9431	/* p1: objecthandle, p2: offset lower 32bit, p3: offset higher 32bit, p4: maxsize lower 32bit, p5: maxsize upper 32bit, response is r1: lower 32bit, r2: higher 32bit */
 #define PTP_OC_NIKON_GetManualSettingLensData	0x9432
+#define PTP_OC_NIKON_InitiatePixelMapping	0x9433
+#define PTP_OC_NIKON_GetObjectsMetaData		0x9434
+#define PTP_OC_NIKON_ChangeApplicationMode	0x9435
+#define PTP_OC_NIKON_ResetMenu			0x9436
 
 
 /* From Nikon V1 Trace */
@@ -1211,6 +1220,8 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_EC_Nikon_AdvancedTransfer		0xC103
 #define PTP_EC_Nikon_PreviewImageAdded		0xC104
 #define PTP_EC_Nikon_MovieRecordInterrupted	0xC105	/* e1: errocode, e2: recordkind */
+#define PTP_EC_Nikon_1stCaptureComplete		0xC106	/* 1st phase of mirror up is complete */
+#define PTP_EC_Nikon_MirrorUpCancelComplete	0xC107	/* mirror up canceling is complete */
 #define PTP_EC_Nikon_MovieRecordComplete	0xC108	/* e1: recordkind */
 #define PTP_EC_Nikon_MovieRecordStarted		0xC10A	/* e1: recordkind */
 #define PTP_EC_Nikon_PictureControlAdjustChanged	0xC10B	/* e1: picctrlitem e2: shootingmode */
@@ -3636,7 +3647,7 @@ struct _PTPParams {
 
 	/* PTP: the current event queue */
 	PTPContainer	*events;
-	int		nrofevents;
+	unsigned int	nrofevents;
 
 	/* Capture count for SDRAM capture style images */
 	unsigned int		capcnt;
@@ -3907,7 +3918,9 @@ uint16_t ptp_check_event (PTPParams *params);
 uint16_t ptp_check_event_queue (PTPParams *params);
 uint16_t ptp_wait_event (PTPParams *params);
 uint16_t ptp_add_event (PTPParams *params, PTPContainer *evt);
+int ptp_have_event(PTPParams *params, uint16_t code);
 int ptp_get_one_event (PTPParams *params, PTPContainer *evt);
+int ptp_get_one_event_by_type(PTPParams *params, uint16_t code, PTPContainer *event);
 uint16_t ptp_check_eos_events (PTPParams *params);
 int ptp_get_one_eos_event (PTPParams *params, PTPCanon_changes_entry *entry);
 
@@ -4242,6 +4255,8 @@ uint16_t ptp_nikon_curve_download (PTPParams* params,
 				unsigned char **data, unsigned int *size);
 uint16_t ptp_nikon_getlargethumb (PTPParams *params, uint32_t handle,
 				unsigned char** object, unsigned int *len);
+uint16_t ptp_nikon_getobjectsize (PTPParams* params, uint32_t handle, uint64_t *objectsize);
+uint16_t ptp_nikon_getpartialobjectex (PTPParams* params, uint32_t handle, uint64_t offset, uint64_t maxbytes, unsigned char** object, uint32_t *len);
 uint16_t ptp_nikon_getptpipinfo (PTPParams* params, unsigned char **data, unsigned int *size);
 uint16_t ptp_nikon_getwifiprofilelist (PTPParams* params);
 uint16_t ptp_nikon_writewifiprofile (PTPParams* params, PTPNIKONWifiProfile* profile);
@@ -4288,6 +4303,18 @@ uint16_t ptp_sony_9281 (PTPParams* params, uint32_t param1);
  *
  **/
 #define ptp_nikon_changecameramode(params,mode) ptp_generic_no_data(params,PTP_OC_NIKON_ChangeCameraMode,1,mode)
+/**
+ * ptp_nikon_changeapplicationmeramode:
+ *
+ * This command can switch the camera between PC control and remote mode.
+ *
+ * params:      PTPParams*
+ *      uint32_t mode - mode
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+#define ptp_nikon_changeapplicationmode(params,mode) ptp_generic_no_data(params,PTP_OC_NIKON_ChangeApplicationMode,1,mode)
 /**
  * ptp_nikon_terminatecapture:
  *
@@ -4487,6 +4514,7 @@ uint16_t ptp_nikon_get_preview_image (PTPParams* params, unsigned char**, unsign
  **/
 #define ptp_nikon_end_liveview(params) ptp_generic_no_data(params,PTP_OC_NIKON_EndLiveView,0)
 uint16_t ptp_nikon_check_event (PTPParams* params, PTPContainer **evt, unsigned int *evtcnt);
+uint16_t ptp_nikon_check_eventex (PTPParams* params, PTPContainer **evt, unsigned int *evtcnt);
 uint16_t ptp_nikon_getfileinfoinblock (PTPParams* params, uint32_t p1, uint32_t p2, uint32_t p3,
 					unsigned char **data, unsigned int *size);
 /**
