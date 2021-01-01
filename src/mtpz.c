@@ -103,7 +103,7 @@ static char *hex_to_bytes(char *hex, size_t len)
 
 	char *bytes = malloc(len / 2);
 	unsigned int u;
-	int i = 0;
+	unsigned int i = 0;
 
 	while (i < len && sscanf(hex + i, "%2x", &u) == 1)
 	{
@@ -958,7 +958,7 @@ void mtpz_encryption_encrypt_mac(unsigned char *hash, unsigned int hash_length, 
 		unsigned char *actual_seed = (unsigned char *)malloc(16);
 		memset(actual_seed, 0, 16);
 
-		int i = 0;
+		unsigned int i = 0;
 
 		if (seed_len == 16)
 		{
