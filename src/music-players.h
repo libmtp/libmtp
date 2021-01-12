@@ -2568,6 +2568,7 @@
   // Another OEM for Medion
   { "Google Inc (for Medion)", 0x18d1, "MD99000 (P9514)", 0xb00a,
       DEVICE_FLAGS_ANDROID_BUGS },
+
   /* https://sourceforge.net/p/libmtp/bugs/1563/ */
   { "Meizu", 0x18d1, "Pro 5 Ubuntu Phone", 0xd001, DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Frederik Himpe <fhimpe@telenet.be>
@@ -3090,6 +3091,8 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1873/ */
   { "Lenovo", 0x17ef, "Tab P10", 0x7bd3,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Lenovo", 0x17ef, "TB-X606F", 0x7c45,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1736/ */
   { "Lenovo", 0x17ef, "P1060X", 0x9039,
