@@ -2557,6 +2557,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Google", 0x18d1, "Pixel C (MTP+ADB)", 0x5203,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1892/ */
+  { "Nook", 0x18d1, "Tablet", 0x685c,
+      DEVICE_FLAGS_ANDROID_BUGS },
   // WiFi-only version of Xoom
   // See: http://bugzilla.gnome.org/show_bug.cgi?id=647506
   { "Google Inc (for Motorola)", 0x18d1, "Xoom (MZ604)", 0x70a8,
