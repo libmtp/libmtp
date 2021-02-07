@@ -46,6 +46,9 @@
    * some of the folders will start to disappear when getting all objects
    * and properties.
    */
+  /* https://sourceforge.net/p/libmtp/bugs/1898/ */
+  { "Creative", 0x041e, "ZEN Micro", 0x411e,
+      DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   { "Creative", 0x041e, "ZEN Vision", 0x411f,
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   { "Creative", 0x041e, "Portable Media Center", 0x4123,
