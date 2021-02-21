@@ -3551,6 +3551,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/291/ */
   { "Onyx", 0x2207, "Boox Nova", 0x0014,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1900/ */
+  { "Onyx", 0x2207, "Boox Nova Pro", 0x0015,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Kobo
