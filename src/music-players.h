@@ -2855,6 +2855,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1364/ */
   { "Asus", 0x0b05, "Zenfone 2 ZE551ML (MTP)", 0x5f03,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/75 */
+  { "Asus", 0x0b05, "Zenpad 10", 0x600f,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/255/ */
   { "Asus", 0x0b05, "Zenfone V (MTP)", 0x610f,
       DEVICE_FLAGS_ANDROID_BUGS },
