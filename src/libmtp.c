@@ -1722,6 +1722,80 @@ LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void)
 }
 
 /**
+ * Get connected MTP device by serial number.
+ * @return a device pointer.
+ * @see LIBMTP_Get_Connected_Devices()
+ */
+LIBMTP_mtpdevice_t *LIBMTP_Get_Device_By_SerialNumber(char *serial_number)
+{
+  LIBMTP_mtpdevice_t *device = NULL;
+  LIBMTP_raw_device_t *devices;
+  int numdevs;
+  LIBMTP_error_number_t ret;
+  PTPParams *params;
+  int found_device = 0;
+  int i;
+
+  if (serial_number == NULL || *serial_number == '\0')
+    return NULL;
+
+  ret = LIBMTP_Detect_Raw_Devices(&devices, &numdevs);
+  if (ret != LIBMTP_ERROR_NONE)
+    return NULL;
+
+  if (devices == NULL || numdevs == 0) {
+    free(devices);
+    return NULL;
+  }
+
+  for (i = 0; i < numdevs; i++) {
+    device = LIBMTP_Open_Raw_Device(&devices[i]);
+    if (device == NULL)
+      continue;
+
+    params = (PTPParams *) device->params;
+    if (strcmp(params->deviceinfo.SerialNumber, serial_number) == 0) {
+      found_device = 1;
+      break;
+    }
+
+    LIBMTP_Release_Device(device);
+  }
+
+  free(devices);
+
+  if (!found_device)
+    return NULL;
+
+  return device;
+}
+
+/**
+ * Get connected MTP device by list position or serial number.
+ * @return a device pointer.
+ * @see LIBMTP_Get_Connected_Devices()
+ */
+LIBMTP_mtpdevice_t *LIBMTP_Get_Device_By_ID(char *device_id)
+{
+  uint32_t device_nr;
+  char *endptr;
+
+  if (device_id == NULL || *device_id == '\0')
+    return NULL;
+
+  // 1st try: serial number
+  if (strlen(device_id) > 3 && strncmp(device_id, "SN:", 3) == 0)
+    return LIBMTP_Get_Device_By_SerialNumber(device_id + 3);
+
+  // 2nd try: device number
+  device_nr = strtoul(device_id, &endptr, 10);
+  if (*endptr == '\0')
+    return LIBMTP_Get_Device(device_nr);
+
+  return NULL;
+}
+
+/**
  * Overriding debug function.
  * This way we can disable debug prints.
  */

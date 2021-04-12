@@ -7,6 +7,8 @@ LIBMTP_Open_Raw_Device
 LIBMTP_Open_Raw_Device_Uncached
 LIBMTP_Get_Device
 LIBMTP_Get_First_Device
+LIBMTP_Get_Device_By_SerialNumber
+LIBMTP_Get_Device_By_ID
 LIBMTP_Get_Connected_Devices
 LIBMTP_Number_Devices_In_List
 LIBMTP_Release_Device_List
