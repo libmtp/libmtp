@@ -1313,6 +1313,9 @@
   { "Qualcomm (for PhiComm)", 0x05c6, "C230w (MTP)",
       0x9039, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://github.com/libmtp/libmtp/issues/78 */
+  { "OnePlus", 0x05c6, "OnePlus 7Pro (MTP)",
+      0xf000, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1513/ */
   { "Qualcomm (for OnePlus)", 0x05c6, "One Plus 2 (A2003) (MTP)",
       0xf003, DEVICE_FLAGS_ANDROID_BUGS },
