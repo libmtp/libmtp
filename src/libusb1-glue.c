@@ -78,6 +78,8 @@ struct mtpdevice_list_struct {
 };
 typedef struct mtpdevice_list_struct mtpdevice_list_t;
 
+static libusb_context *libmtp_libusb_context;
+
 struct ptp_event_cb_data {
   PTPEventCbFn cb;
   void *user_data;
@@ -153,7 +155,7 @@ static LIBMTP_error_number_t init_usb()
   if (libusb1_initialized)
      return LIBMTP_ERROR_NONE;
 
-  if (libusb_init(NULL) < 0) {
+  if (libusb_init(&libmtp_libusb_context) < 0) {
     LIBMTP_ERROR("Libusb1 init failed\n");
     return LIBMTP_ERROR_USB_LAYER;
   }
@@ -161,7 +163,7 @@ static LIBMTP_error_number_t init_usb()
   libusb1_initialized = 1;
 
   if ((LIBMTP_debug & LIBMTP_DEBUG_USB) != 0)
-    libusb_set_debug(NULL,9);
+    libusb_set_debug(libmtp_libusb_context,9);
   return LIBMTP_ERROR_NONE;
 }
 
@@ -523,7 +525,7 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
   if (init_usb_ret != LIBMTP_ERROR_NONE)
     return init_usb_ret;
 
-  nrofdevs = libusb_get_device_list (NULL, &devs);
+  nrofdevs = libusb_get_device_list (libmtp_libusb_context, &devs);
   for (i = 0; i < nrofdevs ; i++) {
       libusb_device *dev = devs[i];
       struct libusb_device_descriptor desc;
@@ -600,7 +602,7 @@ int LIBMTP_Check_Specific_Device(int busno, int devno)
   if (init_usb_ret != LIBMTP_ERROR_NONE)
     return 0;
 
-  nrofdevs = libusb_get_device_list (NULL, &devs);
+  nrofdevs = libusb_get_device_list (libmtp_libusb_context, &devs);
   for (i = 0; i < nrofdevs ; i++ ) {
     if (libusb_get_bus_number(devs[i]) != busno)
 	continue;
@@ -1839,7 +1841,7 @@ ptp_usb_event_async (PTPParams* params, PTPEventCbFn cb, void *user_data) {
  */
 int LIBMTP_Handle_Events_Timeout_Completed(struct timeval *tv, int *completed) {
 	/* Pass NULL for context as libmtp always uses the default context */
-	return libusb_handle_events_timeout_completed(NULL, tv, completed);
+	return libusb_handle_events_timeout_completed(libmtp_libusb_context, tv, completed);
 }
 
 uint16_t
@@ -2218,7 +2220,7 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
   if (init_usb_ret != LIBMTP_ERROR_NONE)
     return init_usb_ret;
 
-  nrofdevs = libusb_get_device_list(NULL, &devs);
+  nrofdevs = libusb_get_device_list(libmtp_libusb_context, &devs);
   for (i = 0; i < nrofdevs ; i++) {
     if (libusb_get_bus_number(devs[i]) != device->bus_location)
       continue;
