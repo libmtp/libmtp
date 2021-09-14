@@ -3099,6 +3099,9 @@
   /* Marcus parents */
   { "Lenovo", 0x17ef, "Tab 10", 0x7a50,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1903/ */
+  { "Lenovo", 0x17ef, "TB-8703F", 0x7a6b,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/33 */
   { "Lenovo", 0x17ef, "Tab4 10 Plus", 0x7ad0,
       DEVICE_FLAGS_ANDROID_BUGS },
