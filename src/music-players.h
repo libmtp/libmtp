@@ -3576,6 +3576,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1900/ */
   { "Onyx", 0x2207, "Boox Nova Pro", 0x0015,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/82 */
+  { "Supernote", 0x2207, "A5X", 0x0031,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Kobo
