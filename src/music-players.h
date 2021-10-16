@@ -4043,6 +4043,8 @@
 
   /* https://sourceforge.net/p/libmtp/bugs/1423/ */
   { "OnePlus", 0x2a70, "ONE A2001", 0x9011, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1910/ */
+  { "OnePlus", 0x2a70, "OnePlus 9 5G", 0x9012, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1450/ */
   { "OnePlus", 0x2a70, "OnePlus 2 A2005", 0xf003, DEVICE_FLAGS_ANDROID_BUGS },
 
