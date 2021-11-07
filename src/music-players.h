@@ -2418,16 +2418,24 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Moto G (ID1)", 0x2e76,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1841/ */
+  { "Motorola", 0x22b8, "Moto Z2 (XT1789)", 0x2e81,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Moto G (ID2)", 0x2e82,
       DEVICE_FLAGS_ANDROID_BUGS & ~(DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL|DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST)},
+  /* https://github.com/gphoto/gphoto2/issues/463 */
+  { "Motorola", 0x22b8, "XT1032", 0x2e83,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1030/, PTP Id */
   { "Motorola", 0x22b8, "Moto G (XT1032)", 0x2e84,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1477/ */
   { "Motorola", 0x22b8, "Moto Maxx (XT1225)", 0x2ea4,
       DEVICE_FLAGS_ANDROID_BUGS },
-  /* https://sourceforge.net/p/libmtp/bugs/1841/ */
-  { "Motorola", 0x22b8, "Moto Z2 (XT1789)", 0x2e81,
+  /* https://sourceforge.net/p/libmtp/bugs/1183/ */
+  { "Motorola", 0x22b8, "Droid Turbo (XT1254)", 0x2ea5,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Motorola", 0x22b8, "Droid Turbo Verizon", 0x2ea8,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/189/ */
   { "Motorola", 0x22b8, "MB632", 0x2dff,
@@ -2513,11 +2521,6 @@
   { "Motorola", 0x22b8, "XT890/907/Razr (MTP)", 0x710d,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "XT890/907/Razr (MTP+ADB)", 0x710e,
-      DEVICE_FLAGS_ANDROID_BUGS },
-  /* https://sourceforge.net/p/libmtp/bugs/1183/ */
-  { "Motorola", 0x22b8, "Droid Turbo (XT1254)", 0x2ea5,
-      DEVICE_FLAGS_ANDROID_BUGS },
-  { "Motorola", 0x22b8, "Droid Turbo Verizon", 0x2ea8,
       DEVICE_FLAGS_ANDROID_BUGS },
   /*
    * XT890/907/Razr
