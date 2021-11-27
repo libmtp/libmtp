@@ -3543,6 +3543,9 @@
 
   { "Amazon", 0x1949, "Kindle Fire HD8 Plus", 0x0581,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1913/ */
+  { "Amazon", 0x1949, "Kindle Fire 10 Plus", 0x05e1,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Amazon", 0x1949, "Fire Phone", 0x0800,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1876/ */
