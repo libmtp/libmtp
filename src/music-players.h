@@ -3118,6 +3118,9 @@
   /* https://sourceforge.net/p/libmtp/feature-requests/296/ */
   { "Lenovo", 0x17ef, "TB-7304I", 0x7b3c,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1912/ */
+  { "Lenovo", 0x17ef, "TB-8304F1", 0x7b84,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1831/ */
   { "Lenovo", 0x17ef, "Tab4 10 (2nd ID)", 0x7bc7,
       DEVICE_FLAGS_ANDROID_BUGS },
