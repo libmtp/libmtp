@@ -2589,6 +2589,9 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc (for Toshiba)", 0x18d1, "Thrive 7/AT105", 0x7102,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/88 */
+  { "OnePlus", 0x18d1, "6T A6013", 0x7169,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc (for Lenovo)", 0x18d1, "Ideapad K1", 0x740a,
       DEVICE_FLAGS_ANDROID_BUGS },
   // Another OEM for Medion
