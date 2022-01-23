@@ -1201,7 +1201,7 @@ int LIBMTP_Is_Property_Supported(LIBMTP_mtpdevice_t *device, LIBMTP_property_t c
 char *LIBMTP_Get_String_From_Object(LIBMTP_mtpdevice_t *device, uint32_t const object_id,
 				    LIBMTP_property_t const attribute_id)
 {
-  return get_string_from_object(device, object_id, attribute_id);
+  return get_string_from_object(device, object_id, map_libmtp_property_to_ptp_property(attribute_id));
 }
 
 /**
