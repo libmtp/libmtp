@@ -22,7 +22,7 @@ MP3 players, mobile phones etc, look into:
   https://android.googlesource.com/platform/frameworks/base/+/master/media/jni/
 - Ubuntu/Ricardo Salveti has mtp-server and libmtp-server going:
   https://code.launchpad.net/~phablet-team/mtp/trunk
-  http://bazaar.launchpad.net/~phablet-team/mtp/trunk/files
+  https://bazaar.launchpad.net/~phablet-team/mtp/trunk/files
 
 Heritage
 --------
@@ -31,7 +31,7 @@ libmtp is based on several ancestors:
 
 * libptp2 by Mariusz Woloszyn was the starting point used
   by Richard A. Low for the initial starter port. You can
-  find it at http://libptp.sourceforge.net/
+  find it at https://libptp.sourceforge.net/
 
 * libgphoto2 by Mariusz Woloszyn and Marcus Meissner was
   used at a later stage since it was (is) more actively
@@ -43,26 +43,28 @@ libmtp is based on several ancestors:
   source code. If you need to change things in these files,
   make sure it is so general that libgphoto2 will want to
   merge it to their codebase too. You find libgphoto2 as part
-  of gPhoto: http://gphoto.sourceforge.net/
+  of gPhoto: https://gphoto.sourceforge.net/
 
 * libnjb was a project that Richard and Linus were working
   on before libmtp. When Linus took Richards initial port
   and made an generic C API he re-used the philosophy and
   much code from libnjb. Many of the sample programs are for
   example taken quite literally from libnjb. You find it here:
-  http://libnjb.sourceforge.net/
+  https://libnjb.sourceforge.net/
 
 
 Contacting and Contributing
 ---------------------------
 
-See the project page at http://libmtp.sourceforge.net/
+See the project page at https://libmtp.sourceforge.net/
 We always need your help. There is a mailinglist and a
 bug report system there.
 
+You can also file github issues at https://github.com/libmtp/libmtp
+
 People who want to discuss MTP devices in fora seem to
 hang out on the forums at AnythingbutiPod:
-http://www.anythingbutipod.com/forum/
+https://www.anythingbutipod.com/forum/
 
 
 Compiling programs for libmtp
@@ -99,7 +101,7 @@ It will be output in doc/html if you have Doxygen properly
 installed. (It will not be created unless you have Doxygen!)
 
 For information about the Media Transfer Protocol, see:
-http://en.wikipedia.org/wiki/Media_Transfer_Protocol
+https://en.wikipedia.org/wiki/Media_Transfer_Protocol
 
 The official 1.0 specification for MTP was released by the
 USB Implementers Forum in may, 2008. Prior to this, only a
@@ -107,7 +109,7 @@ proprietary Microsoft version was available, and quite a few
 devices out there still use some aspects of the Microsoft
 version, which deviates from the specified standard. You can
 find the official specification here:
-http://www.usb.org/developers/devclass_docs/MTP_1.0.zip
+https://www.usb.org/developers/devclass_docs/MTP_1.0.zip
 
 
 The Examples
@@ -243,14 +245,14 @@ cannot test your solution.
   and USB mass storage alike, even down to the lowest layers
   of USB. You can always discuss such issues at the linux-usb
   mailing list if you're using Linux:
-  http://www.linux-usb.org/mailing.html
+  https://www.linux-usb.org/mailing.html
 
   If you have a problem specific to USB mass storage mode, there
   is a list of strange behaving devices in the Linux kernel:
-  http://lxr.linux.no/linux/drivers/usb/storage/unusual_devs.h
+  https://lxr.linux.no/linux/drivers/usb/storage/unusual_devs.h
   You can discuss this too on the mentioned list, for understanding
   the quirks, see:
-  http://www2.one-eyed-alien.net/~mdharm/linux-usb/target_offenses.txt
+  https://www2.one-eyed-alien.net/~mdharm/linux-usb/target_offenses.txt
 
 * Generic certificate misbehaviour. All devices are actually
   required to support a device certificate to be able to
@@ -418,13 +420,13 @@ Windows Media Player and your device. This can be done
 using e.g.:
 
 * USBsnoop:
-  http://benoit.papillault.free.fr/usbsnoop/
+  https://benoit.papillault.free.fr/usbsnoop/
 
 * The trial version of HHD Softwares software-only
   USB monitor. You need to get a copy of version 2.37 since
   the newer trial versions won't let you carry out the
   needed packet sniffs. (As of 2007-03-10 a copy can be found
-  at: http://www.cobbleware.com/files/usb-monitor-237.exe)
+  at: https://www.cobbleware.com/files/usb-monitor-237.exe)
 
 There are other USB monitors as well, some more expensive
 alternatives use hardware and even measure electronic
@@ -717,7 +719,7 @@ that has appeared on the libmtp mailing list from time to time.
 
 The problem is of a generic nature, and related to dynamic library
 loading. It is colloquially known as "dependency hell".
-(http://en.wikipedia.org/wiki/Dependency_hell)
+(https://en.wikipedia.org/wiki/Dependency_hell)
 
 The gnomad2 application calls upon the dynamic linker in Linux to
 resolve the symbol "LIBMTP_Get_Storageinfo" or any other symbol
@@ -727,7 +729,7 @@ resolve from label to actual address.)
 For generic information on this subject see the INSTALL file and
 this Wikipedia page:
 
-http://en.wikipedia.org/wiki/Library_(computing)
+https://en.wikipedia.org/wiki/Library_(computing)
 
 When Linux /lib/ld-linux.so.X is called to link the symbols compiled
 into gnomad2 (or any other executable using libmtp), it examines the
