@@ -3558,6 +3558,9 @@
   { "Amazon", 0x1949, "Kindle Fire (ID 8)", 0x0c31,
       DEVICE_FLAGS_ANDROID_BUGS },
 
+  { "Amazon", 0x1949, "Kindle Fire 8 HD (7th Gen)", 0x0262,
+      DEVICE_FLAGS_ANDROID_BUGS },
+
   /*
    * Barnes&Noble
    */
