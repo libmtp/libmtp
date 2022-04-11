@@ -3683,6 +3683,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1905/ */
   { "Xiaomi", 0x0a9d, "POCO X3 Pro (MTP)", 0xff40,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/90 */
+  { "Xiaomi", 0x0a9d, "MI 9 M1902F1G", 0xff40,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1339/ */
   { "Xiaomi", 0x2717, "Mi-2s (MTP)", 0xff48,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -3691,9 +3694,6 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1445/ */
   { "Xiaomi", 0x2717, "Redmi 2 2014811 (MTP)", 0xff68,
-      DEVICE_FLAGS_ANDROID_BUGS },
-  /* https://github.com/libmtp/libmtp/issues/90 */
-  { "Xiaomi", 0x0a9d, "MI 9 M1902F1G", 0xff40,
       DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
