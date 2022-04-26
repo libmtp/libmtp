@@ -4042,6 +4042,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1082/ */
   { "Fly", 0x1782, "iq449", 0x4001, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://github.com/libmtp/libmtp/issues/109 */
+  { "Alldocube", 0x1782, "Smile X", 0x4003, DEVICE_FLAGS_ANDROID_BUGS },
+
   /*
   * YU Yureka.
   */
