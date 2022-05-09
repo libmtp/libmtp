@@ -3883,6 +3883,8 @@
   { "Garmin", 0x091e, "Venu Mercedes-Benz Collection", 0x4e9C, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/95 */
   { "Garmin", 0x091e, "Fenix 7 Sapphire Solar", 0x4f42, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/299/ */
+  { "Garmin", 0x091e, "EPIX 2", 0x4f67, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Wacom
