@@ -3123,6 +3123,9 @@
   /* https://sourceforge.net/p/libmtp/support-requests/262/ */
   { "Lenovo", 0x17ef, "Tab4 10", 0x7ac5,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/support-requests/297/ */
+  { "Lenovo", 0x17ef, "Tab TB-X704A", 0x7b25,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/296/ */
   { "Lenovo", 0x17ef, "TB-7304I", 0x7b3c,
       DEVICE_FLAGS_ANDROID_BUGS },
