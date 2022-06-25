@@ -3153,6 +3153,9 @@
   /* https://github.com/libmtp/libmtp/issues/74 */
   { "Lenovo", 0x17ef, "TB-X606F (Lenovo Tab M10 FHD Plus)", 0x7c46,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /*https://github.com/libmtp/libmtp/issues/111  */
+  { "Lenovo", 0x17ef, "TAB M7 Gen 3", 0x7cb3,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1736/ */
   { "Lenovo", 0x17ef, "P1060X", 0x9039,
       DEVICE_FLAGS_ANDROID_BUGS },
