@@ -2020,6 +2020,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1849/ */
   { "SONY", 0x0fce, "Xperia I4312", 0x0207,
       DEVICE_FLAG_NONE },
+  /* https://github.com/libmtp/libmtp/issues/113 */
+  { "SONY", 0x0fce, "Xperia 5", 0x020a,
+      DEVICE_FLAG_NONE },
   /* https://sourceforge.net/p/libmtp/feature-requests/303/ */
   { "SONY", 0x0fce, "Xperia 5 II Phone", 0x020d,
       DEVICE_FLAG_NONE },
@@ -2174,6 +2177,8 @@
   { "SONY", 0x0fce, "Xperia 1 (J9110) MTP+CDROM", 0x4205,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia I4312 MTP+CDROM", 0x4207,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia 5 MTP+CDROM", 0x420a,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia 5 II Phone MTP+CDROM", 0x420d,
       DEVICE_FLAG_NONE },
@@ -2348,6 +2353,8 @@
   { "SONY", 0x0fce, "Xperia 1 (J9110) MTP+ADB", 0x5205,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia I4312 MTP+ADB", 0x5207,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia 5 MTP+ADB", 0x520a,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia 5 II Phone MTP+ADB", 0x520d,
       DEVICE_FLAG_NONE },
