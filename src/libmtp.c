@@ -7217,7 +7217,7 @@ LIBMTP_folder_t *LIBMTP_new_folder_t(void)
 /**
  * This recursively deletes the memory for a folder structure.
  * This shall typically be called on a top-level folder list to
- * detsroy the entire folder tree.
+ * destroy the entire folder tree.
  *
  * @param folder folder structure to destroy
  * @see LIBMTP_new_folder_t()
