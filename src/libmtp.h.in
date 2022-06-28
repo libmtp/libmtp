@@ -467,7 +467,6 @@ typedef struct LIBMTP_track_struct LIBMTP_track_t; /**< @see LIBMTP_track_struct
 typedef struct LIBMTP_playlist_struct LIBMTP_playlist_t; /**< @see LIBMTP_playlist_struct */
 typedef struct LIBMTP_album_struct LIBMTP_album_t; /**< @see LIBMTP_album_struct */
 typedef struct LIBMTP_folder_struct LIBMTP_folder_t; /**< @see LIBMTP_folder_t */
-typedef struct LIBMTP_object_struct LIBMTP_object_t; /**< @see LIBMTP_object_t */
 typedef struct LIBMTP_filesampledata_struct LIBMTP_filesampledata_t; /**< @see LIBMTP_filesample_t */
 typedef struct LIBMTP_devicestorage_struct LIBMTP_devicestorage_t; /**< @see LIBMTP_devicestorage_t */
 
