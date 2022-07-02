@@ -3738,6 +3738,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1883/ */
   { "SHARP Corporation", 0x04dd, "AndroidOne S5", 0x9c90,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1914/ */
+  { "SHARP Corporation", 0x04dd, "S7-SH", 0x9d6e,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * T & A Mobile phones Alcatel and TCT
