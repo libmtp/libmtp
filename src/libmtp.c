@@ -2956,10 +2956,9 @@ static void free_storage_list(LIBMTP_mtpdevice_t *device)
 }
 
 /**
- * This function traverses a devices storage list freeing up the
- * strings and the structs.
+ * This function sorts a devices storage list according to the criteria passed.
  * @param device a pointer to the MTP device to free the storage
- * list for.
+ * @param sortby LIBMTP_STORAGE_SORTBY_* flag to sort the list for (either by free space or maximum space)
  */
 static int sort_storage_by(LIBMTP_mtpdevice_t *device,int const sortby)
 {
