@@ -4266,5 +4266,8 @@
   /* https://sourceforge.net/p/libmtp/bugs/1921/ */
   { "Tolino", 0x4173, "Tolino Vision 6", 0x8000, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://github.com/libmtp/libmtp/issues/122 */
+  { "FLIR", 0x09cb, "C5", 0x100b, DEVICE_FLAGS_ANDROID_BUGS },
+
   /* qemu 3.0.0 hw/usb/dev-mtp.c */
   { "QEMU", 0x46f4, "Virtual MTP", 0x0004, DEVICE_FLAG_NONE }
