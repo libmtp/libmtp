@@ -2980,7 +2980,7 @@ static int sort_storage_by(LIBMTP_mtpdevice_t *device,int const sortby)
 
       if (sortby == LIBMTP_STORAGE_SORTBY_FREESPACE && ptr1->FreeSpaceInBytes > ptr2->FreeSpaceInBytes)
         ptr2 = ptr1;
-      if (sortby == LIBMTP_STORAGE_SORTBY_MAXSPACE && ptr1->FreeSpaceInBytes > ptr2->FreeSpaceInBytes)
+      if (sortby == LIBMTP_STORAGE_SORTBY_MAXSPACE && ptr1->MaxCapacity > ptr2->MaxCapacity)
         ptr2 = ptr1;
 
       ptr1 = ptr1->next;
