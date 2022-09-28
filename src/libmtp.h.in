@@ -843,6 +843,8 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *);
 /* Begin old, legacy interface */
 LIBMTP_mtpdevice_t *LIBMTP_Get_Device(int);
 LIBMTP_mtpdevice_t *LIBMTP_Get_First_Device(void);
+LIBMTP_mtpdevice_t *LIBMTP_Get_Device_By_SerialNumber(char *);
+LIBMTP_mtpdevice_t *LIBMTP_Get_Device_By_ID(char *);
 LIBMTP_error_number_t LIBMTP_Get_Connected_Devices(LIBMTP_mtpdevice_t **);
 uint32_t LIBMTP_Number_Devices_In_List(LIBMTP_mtpdevice_t *);
 void LIBMTP_Release_Device_List(LIBMTP_mtpdevice_t*);

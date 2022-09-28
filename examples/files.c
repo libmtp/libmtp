@@ -21,6 +21,7 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "common.h"
+#include "ptp.h"
 #include <stdlib.h>
 
 static void dump_fileinfo(LIBMTP_file_t *file)
@@ -117,6 +118,7 @@ int main(int argc, char **argv)
   for (i = 0; i < numrawdevices; i++) {
     LIBMTP_mtpdevice_t *device;
     LIBMTP_devicestorage_t *storage;
+    PTPParams *params;
     char *friendlyname;
 
     device = LIBMTP_Open_Raw_Device_Uncached(&rawdevices[i]);
@@ -127,10 +129,13 @@ int main(int argc, char **argv)
 
     /* Echo the friendly name so we know which device we are working with */
     friendlyname = LIBMTP_Get_Friendlyname(device);
+    params = (PTPParams *) device->params;
     if (friendlyname == NULL) {
-      printf("Listing File Information on Device with name: (NULL)\n");
+      printf("Listing File Information on Device with name: (NULL) [SN:%s]\n",
+             params->deviceinfo.SerialNumber);
     } else {
-      printf("Listing File Information on Device with name: %s\n", friendlyname);
+      printf("Listing File Information on Device with name: %s [SN:%s]\n",
+             friendlyname, params->deviceinfo.SerialNumber);
       free(friendlyname);
     }
 
