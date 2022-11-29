@@ -229,7 +229,9 @@ ptp_pack_string(PTPParams *params, char *string, unsigned char* data, uint16_t o
 #endif
 	{
 		unsigned int i;
-
+		if (convlen > PTP_MAXSTRLEN) {
+			convlen = PTP_MAXSTRLEN;
+		}
 		for (i=0;i<convlen;i++) {
 			ucs2str[i] = string[i];
 		}
