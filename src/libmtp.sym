@@ -51,6 +51,7 @@ LIBMTP_Get_Filetype_Description
 LIBMTP_Get_Filelisting
 LIBMTP_Get_Filelisting_With_Callback
 LIBMTP_Get_Files_And_Folders
+LIBMTP_Get_Children
 LIBMTP_Get_Filemetadata
 LIBMTP_Get_File_To_File
 LIBMTP_Get_File_To_File_Descriptor

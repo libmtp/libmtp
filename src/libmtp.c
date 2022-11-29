@@ -4657,6 +4657,65 @@ LIBMTP_file_t * LIBMTP_Get_Files_And_Folders(LIBMTP_mtpdevice_t *device,
   return retfiles;
 }
 
+/**
+ * This function retrieves the list of ids of files and folders in a certain
+ * folder with id parent on a certain storage on a certain device.
+ * The device used with this operations must have been opened with
+ * LIBMTP_Open_Raw_Device_Uncached() or it will fail.
+ *
+ * NOTE: the request will always perform I/O with the device.
+ * @param device a pointer to the MTP device to report info from.
+ * @param storage a storage on the device to report info from. If
+ *        0 is passed in, the files for the given parent will be
+ *        searched across all available storages.
+ * @param parent the parent folder id.
+ * @param out the pointer where the array of ids is returned. It is
+ *        set only when the returned value > 0. The caller takes the
+ *        ownership of the array and has to free() it.
+ * @return the length of the returned array or -1 in case of failure.
+ */
+
+int LIBMTP_Get_Children(LIBMTP_mtpdevice_t *device,
+                        uint32_t const storage,
+                        uint32_t const parent,
+                        uint32_t **out)
+{
+  PTPParams *params = (PTPParams *) device->params;
+  LIBMTP_file_t *retfiles = NULL;
+  LIBMTP_file_t *curfile = NULL;
+  PTPObjectHandles currentHandles;
+  uint32_t storageid;
+  uint16_t ret;
+
+  if (device->cached) {
+    // This function is only supposed to be used by devices
+    // opened as uncached!
+    LIBMTP_ERROR("tried to use %s on a cached device!\n", __func__);
+    return -1;
+  }
+
+  if (storage == 0)
+    storageid = PTP_GOH_ALL_STORAGE;
+  else
+    storageid = storage;
+
+  ret = ptp_getobjecthandles(params,
+                             storageid,
+                             PTP_GOH_ALL_FORMATS,
+                             parent,
+                             &currentHandles);
+
+  if (ret != PTP_RC_OK) {
+    add_ptp_error_to_errorstack(device, ret,
+        "LIBMTP_Get_Children(): could not get object handles.");
+    return -1;
+  }
+
+  if (currentHandles.Handler == NULL || currentHandles.n == 0)
+    return 0;
+  *out = currentHandles.Handler;
+  return currentHandles.n;
+}
 
 /**
  * This creates a new track metadata structure and allocates memory
