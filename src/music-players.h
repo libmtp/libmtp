@@ -3834,13 +3834,13 @@
   { "Bravis", 0x0e8d, "A401 Neo", 0x0c03,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1422/ */
+  /* https://sourceforge.net/p/libmtp/bugs/1467/ */
+  /* https://sourceforge.net/p/libmtp/bugs/1922/ */
   { "MediaTek Inc", 0x0e8d, "MT65xx", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
-  /* https://sourceforge.net/p/libmtp/bugs/1467/ */
-  { "elephone", 0x0e8d, "p6000", 0x2008,
-      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/234/ */
-  { "DOODGE", 0x0e8d, "X6pro", 0x200a,
+  /* https://sourceforge.net/p/libmtp/bugs/1923/ */
+  { "MediaTek Inc", 0x0e8d, "MT67xx", 0x200a,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/289/ */
   { "Jinga", 0x0e8d, "PassPluss", 0x2012, DEVICE_FLAGS_ANDROID_BUGS },
