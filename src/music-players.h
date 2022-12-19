@@ -1558,9 +1558,11 @@
   { "LG Electronics Inc.", 0x1004, "Android phone (ID2)", 0x61f9,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1007/ */
-  { "LG Electronics Inc.", 0x1004, "LG VS980", 0x621c,
+  /* https://sourceforge.net/p/libmtp/bugs/1924/ */
+  { "LG Electronics Inc.", 0x1004, "G2 (VS980)", 0x621c,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "LG Electronics Inc.", 0x1004, "LG2 Optimus", 0x6225,
+  /* https://sourceforge.net/p/libmtp/bugs/1924/ */
+  { "LG Electronics Inc.", 0x1004, "G2", 0x6225,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1386/ */
   { "LG Electronics Inc.", 0x1004, "LG VS950", 0x622a,
