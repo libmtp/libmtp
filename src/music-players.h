@@ -3841,17 +3841,16 @@
   /* https://sourceforge.net/p/libmtp/bugs/1422/ */
   /* https://sourceforge.net/p/libmtp/bugs/1467/ */
   /* https://sourceforge.net/p/libmtp/bugs/1922/ */
-  { "MediaTek Inc", 0x0e8d, "MT65xx", 0x2008,
+  { "MediaTek Inc", 0x0e8d, "MT65xx/67xx (MTP mode)", 0x2008,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/234/ */
   /* https://sourceforge.net/p/libmtp/bugs/1923/ */
-  { "MediaTek Inc", 0x0e8d, "MT67xx", 0x200a,
+  { "MediaTek Inc", 0x0e8d, "MT65xx/67xx (MTP + CDC + ADB mode)", 0x200a,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/289/ */
-  { "Jinga", 0x0e8d, "PassPluss", 0x2012, DEVICE_FLAGS_ANDROID_BUGS },
+  { "MediaTek Inc", 0x0e8d, "MT65xx/67xx (MTP + CDC mode)", 0x2012, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/79/ */
-  { "MediaTek Inc", 0x0e8d, "Elephone P8000", 0x201d,
-      DEVICE_FLAGS_ANDROID_BUGS },
+  { "MediaTek Inc", 0x0e8d, "MT65xx/67xx (MTP + ADB mode)", 0x201d, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1717/ */
   { "MediaTek Inc", 0x0e8d, "Wiko Sunny", 0x4001,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -4106,12 +4105,6 @@
 
   /* https://sourceforge.net/p/libmtp/feature-requests/135/. guessed android. */
   { "OUYA", 0x2836, "Videogame Console", 0x0010, DEVICE_FLAGS_ANDROID_BUGS },
-
-  /* https://sourceforge.net/p/libmtp/bugs/1383/ */
-  { "BLU", 0x0e8d, "Studio HD", 0x2008, DEVICE_FLAGS_ANDROID_BUGS },
-
-  /* https://sourceforge.net/p/libmtp/feature-requests/161/ */
-  { "Cubot", 0x0e8d, "X17", 0x201d, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* https://sourceforge.net/p/libmtp/bugs/1423/ */
   { "OnePlus", 0x2a70, "ONE A2001", 0x9011, DEVICE_FLAGS_ANDROID_BUGS },
