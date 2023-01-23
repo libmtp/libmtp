@@ -1323,10 +1323,10 @@
       0x9039, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* https://github.com/libmtp/libmtp/issues/78 */
-  { "OnePlus", 0x05c6, "OnePlus 7Pro (MTP)",
+  { "OnePlus", 0x05c6, "OnePlus 7 Pro (MTP)",
       0xf000, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1513/ */
-  { "Qualcomm (for OnePlus)", 0x05c6, "One Plus 2 (A2003) (MTP)",
+  { "Qualcomm (for OnePlus)", 0x05c6, "OnePlus 2 (A2003) (MTP)",
       0xf003, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1284/ */
   { "Qualcomm (for Highscreen)", 0x05c6, "Omega Prime S",
@@ -2607,7 +2607,7 @@
   { "Google Inc (for Toshiba)", 0x18d1, "Thrive 7/AT105", 0x7102,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/88 */
-  { "OnePlus", 0x18d1, "6T A6013", 0x7169,
+  { "Google Inc (for OnePlus)", 0x18d1, "OnePlus 6T (A6013)", 0x7169,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc (for Lenovo)", 0x18d1, "Ideapad K1", 0x740a,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -3501,19 +3501,19 @@
    * Michael Gurski <gurski@users.sourceforge.net>
    */
   /* https://sourceforge.net/p/libmtp/support-requests/221/ */
-  { "Nokia", 0x0489, "N1", 0x1ab0,
+  { "Foxconn (for Nokia)", 0x0489, "N1", 0x1ab0,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1567/ */
-  { "InFocus", 0x0489, "M808", 0xc00b,
+  { "Foxconn (for InFocus)", 0x0489, "M808", 0xc00b,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/138/ */
-  { "InFocus", 0x0489, "M810", 0xc025,
+  { "Foxconn (for InFocus)", 0x0489, "M810", 0xc025,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Vizio", 0x0489, "Unknown 1", 0xc026,
+  { "Foxconn (for Vizio)", 0x0489, "Unknown 1", 0xc026,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Vizio", 0x0489, "VTAB1008", 0xe040,
+  { "Foxconn (for Vizio)", 0x0489, "VTAB1008", 0xe040,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Vizio (for Lenovo)", 0x0489, "LIFETAB S9714", 0xe111,
+  { "Foxconn (for Lenovo)", 0x0489, "IdeaTab A2109/A2110/Medion LIFETAB S9714", 0xe111,
       DEVICE_FLAGS_ANDROID_BUGS },
 
 
