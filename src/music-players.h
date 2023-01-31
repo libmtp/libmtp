@@ -1326,10 +1326,8 @@
   { "OnePlus", 0x05c6, "OnePlus 7 Pro (MTP)",
       0xf000, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1513/ */
-  { "Qualcomm (for OnePlus)", 0x05c6, "OnePlus 2 (A2003) (MTP)",
-      0xf003, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1284/ */
-  { "Qualcomm (for Highscreen)", 0x05c6, "Omega Prime S",
+  { "Qualcomm (for OnePlus)", 0x05c6, "OnePlus 2 (A2003) (MTP)",
       0xf003, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
@@ -3716,10 +3714,8 @@
   { "Xiaomi", 0x2717, "Mi-2s (id2) (MTP)", 0xff40,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1905/ */
-  { "Xiaomi", 0x0a9d, "POCO X3 Pro (MTP)", 0xff40,
-      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/90 */
-  { "Xiaomi", 0x0a9d, "MI 9 M1902F1G", 0xff40,
+  { "Xiaomi", 0x0a9d, "MI 9 M1902F1G or POCO X3 Pro (MTP)", 0xff40,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1339/ */
   { "Xiaomi", 0x2717, "Mi-2s (MTP)", 0xff48,
@@ -4084,10 +4080,12 @@
   /* https://sourceforge.net/p/libmtp/bugs/1127/ */
   { "Fly", 0x2970, "iq4415 era style 3", 0x0c02, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1082/ */
-  { "Fly", 0x1782, "iq449", 0x4001, DEVICE_FLAGS_ANDROID_BUGS },
-
+  /* https://sourceforge.net/p/libmtp/bugs/1932/ */
+  { "Spreadtrum (Unisoc)", 0x1782, "Various devices (MTP)", 0x4001, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/240/ */
+  { "Spreadtrum (Unisoc)", 0x1782, "Various devices (MTP+ADB, ID 1)", 0x4002, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/109 */
-  { "Alldocube", 0x1782, "Smile X", 0x4003, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Spreadtrum (Unisoc)", 0x1782, "Various devices (MTP+ADB, ID 2)", 0x4003, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
   * YU Yureka.
@@ -4218,9 +4216,6 @@
 
   /* https://sourceforge.net/p/libmtp/bugs/1663/ */
   { "Nextbit" , 0x2c3f, "Robin", 0x0001, DEVICE_FLAGS_ANDROID_BUGS },
-
-  /* https://sourceforge.net/p/libmtp/feature-requests/240/ */
-  { "Spreadtrum" , 0x1782, "STK Storm 2e Pluz", 0x4002, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* https://sourceforge.net/p/libmtp/support-requests/258/ */
   { "Essential Phone" , 0x2e17, "PH-1a", 0xc030, DEVICE_FLAGS_ANDROID_BUGS },
