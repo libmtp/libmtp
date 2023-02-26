@@ -17,7 +17,7 @@ AM_ICONV
 # Optionally set install location of udev
 UDEV=/usr/lib/udev
 AC_ARG_WITH(udev,
-    AC_HELP_STRING([--with-udev=DIR],
+    AS_HELP_STRING([--with-udev=DIR],
     [directory where udev is installed [default=/usr/lib/udev]]),
     [UDEV="${withval}"], [])
 AC_SUBST(UDEV)
@@ -31,7 +31,7 @@ AC_SUBST(UDEV)
 # Later rules can then use the identifiers for its processing.
 UDEV_RULES=69-libmtp.rules
 AC_ARG_WITH(udev-rules,
-    AC_HELP_STRING([--with-udev-rules=NAME],
+    AS_HELP_STRING([--with-udev-rules=NAME],
     [file name for udev rules [default=69-libmtp.rules]]),
     [UDEV_RULES="${withval}"], [])
 AC_SUBST(UDEV_RULES)
@@ -39,7 +39,7 @@ AC_SUBST(UDEV_RULES)
 # Optionally set group for device nodes
 UDEV_GROUP=
 AC_ARG_WITH(udev-group,
-    AC_HELP_STRING([--with-udev-group=GROUP],
+    AS_HELP_STRING([--with-udev-group=GROUP],
     [file group for device nodes [default: none specified]]),
     [UDEV_GROUP="-g\"${withval}\""], [])
 AC_SUBST(UDEV_GROUP)
@@ -47,7 +47,7 @@ AC_SUBST(UDEV_GROUP)
 # Optionally set mode for device nodes
 UDEV_MODE=
 AC_ARG_WITH(udev-mode,
-    AC_HELP_STRING([--with-udev-mode=GROUP],
+    AS_HELP_STRING([--with-udev-mode=GROUP],
     [file mode for device nodes [default: none specified]]),
     [UDEV_MODE="-m\"${withval}\""], [])
 AC_SUBST(UDEV_MODE)
@@ -144,7 +144,7 @@ PKG_CHECK_MODULES(LIBUSB, libusb-1.0 >= 1.0.0,[
 
 # Optionally disable MTPZ functionality.
 AC_ARG_ENABLE([mtpz],
-	AC_HELP_STRING([--disable-mtpz], [Disable functionality to connect to MTPZ devices (e.g. Zune)]),
+	AS_HELP_STRING([--disable-mtpz], [Disable functionality to connect to MTPZ devices (e.g. Zune)]),
 	[use_mtpz=$enableval],
 	[use_mtpz="yes"])
 
