@@ -216,6 +216,11 @@ AX_NEED_STDINT_H([src/_stdint.h])
 # hard-coded byte swapper that will be eternally portable.
 AC_NEED_BYTEORDER_H(src/gphoto2-endian.h)
 
+# Put ifdef wrapper around config.h so it's not accidently called twice.
+AH_TOP([#ifndef _LIBMTP_CONFIG_H
+#define _LIBMTP_CONFIG_H 1])
+AH_BOTTOM([#endif])
+
 AC_CONFIG_FILES([src/libmtp.h doc/Doxyfile Makefile doc/Makefile src/Makefile
 	examples/Makefile util/Makefile libmtp.sh hotplug.sh libmtp.pc])
 AC_OUTPUT
