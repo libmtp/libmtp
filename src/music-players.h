@@ -2569,12 +2569,6 @@
   /* https://sourceforge.net/p/libmtp/bugs/1837/ */
   { "Google Inc (for Samsung)", 0x18d1, "Nexus One (MTP)", 0x4e12,
       DEVICE_FLAGS_ANDROID_BUGS },
-  // 0x4e21 (Nexus S) is a USB Mass Storage device.
-  { "Google Inc (for Samsung)", 0x18d1, "Nexus S (MTP)", 0x4e25,
-      DEVICE_FLAGS_ANDROID_BUGS },
-  // 0x4e26 is also used by "Ramos W30HD Pro Quad Core"
-  { "Google Inc (for Samsung)", 0x18d1, "Nexus S (MTP+ADB)", 0x4e26,
-      DEVICE_FLAGS_ANDROID_BUGS },
   // Reported by Chris Smith <tcgsmythe@users.sourceforge.net>
   { "Google Inc (for Asus)", 0x18d1, "Nexus 7 (MTP)", 0x4e41,
       DEVICE_FLAGS_ANDROID_BUGS },
