@@ -4681,8 +4681,6 @@ int LIBMTP_Get_Children(LIBMTP_mtpdevice_t *device,
                         uint32_t **out)
 {
   PTPParams *params = (PTPParams *) device->params;
-  LIBMTP_file_t *retfiles = NULL;
-  LIBMTP_file_t *curfile = NULL;
   PTPObjectHandles currentHandles;
   uint32_t storageid;
   uint16_t ret;
