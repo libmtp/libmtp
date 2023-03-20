@@ -213,6 +213,9 @@ ptp_pack_string(PTPParams *params, char *string, unsigned char* data, uint16_t o
 	char *ucs2strp = (char *) ucs2str;
 	size_t convlen = strlen(string);
 
+	if (convlen > PTP_MAXSTRLEN) {
+		convlen = PTP_MAXSTRLEN;
+	}
 	/* Cannot exceed 255 (PTP_MAXSTRLEN) since it is a single byte, duh ... */
 	memset(ucs2strp, 0, sizeof(ucs2str));  /* XXX: necessary? */
 #if defined(HAVE_ICONV) && defined(HAVE_LANGINFO_H)
