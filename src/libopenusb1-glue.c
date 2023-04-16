@@ -700,7 +700,7 @@ void dump_usbinfo(PTP_USB *ptp_usb) {
     LIBMTP_INFO("         Vendor: %s\n", ptp_usb->rawdevice.device_entry.vendor);
     LIBMTP_INFO("         Vendor id: 0x%04x\n", ptp_usb->rawdevice.device_entry.vendor_id);
     LIBMTP_INFO("         Product: %s\n", ptp_usb->rawdevice.device_entry.product);
-    LIBMTP_INFO("         Vendor id: 0x%04x\n", ptp_usb->rawdevice.device_entry.product_id);
+    LIBMTP_INFO("         Product id: 0x%04x\n", ptp_usb->rawdevice.device_entry.product_id);
     LIBMTP_INFO("         Device flags: 0x%08x\n", ptp_usb->rawdevice.device_entry.device_flags);
     // TODO: (void) probe_device_descriptor(dev, stdout);
 }
