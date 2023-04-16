@@ -31,8 +31,10 @@ Dependencies
 ------------
 
 To build libmtp you should only need development files for libusb.
-(Often named libusb-devel or similar.) For working with CVS versions
-you may need autoconf, automake, libtool, pkg-config, gettext(-devel).
+(Often named libusb-devel or similar.)
+
+For working with the GIT versions you will need autoconf, automake,
+libtool, pkg-config, and gettext(-devel).
 
 To enable the optional MTPZ support using libgcrypt you need the
 libgcrypt library installed as well.
@@ -112,6 +114,14 @@ libgcrypt.
 BASIC BUILD PROCEDURE
 =====================
 
+If you checked out the sources from GIT, you must first run the
+autogen.sh script that generates all the GNU autotools files.
+Notice that this requires GNU autoconf, automake and libtool and
+possibly some other packages like gettext, readline, intltool and
+other M4 macro sources. This is done with:
+
+   % ./autogen.sh
+
 To build the package:
 
    % ./configure
@@ -132,14 +142,6 @@ executable.
 if you want to install the documentation type:
 
    % make install-docs
-
-if you checked out the sources from CVS, you must first run the
-autogen.sh script that generates all the GNU autotools files.
-Notice that this requires GNU autoconf, automake and libtool and
-possibly some other packages like gettext, readline, intltool and
-other M4 macro sources. This is done with:
-
-   % ./autogen.sh
 
 
 Linux hotplugging
