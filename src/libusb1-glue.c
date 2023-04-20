@@ -209,7 +209,6 @@ static mtpdevice_list_t *append_to_mtpdevice_list(mtpdevice_list_t *devlist,
  * of USB MTP devices
  * @param devlist dynamic linked list of pointers to usb devices with MTP
  * properties.
- * @return nothing
  */
 static void free_mtpdevice_list(mtpdevice_list_t *devlist)
 {
