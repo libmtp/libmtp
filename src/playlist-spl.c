@@ -256,7 +256,7 @@ int playlist_t_to_spl(LIBMTP_mtpdevice_t *device,
  * ignored.
  *
  * @param device mtp device pointer
- * @param new the LIBMTP_playlist_t to convert (pl->playlist_id will be updated
+ * @param newlist the LIBMTP_playlist_t to convert (pl->playlist_id will be updated
  *           with the newly created object's id)
  * @return 0 on success, any other value means failure.
  */
@@ -555,7 +555,7 @@ static uint32_t trackno_spl_text_t(text_t* p) {
  *               enough to accomodate all the tracks as reported by
  *               trackno_spl_text_t()
  * @param folders the folders list for the device
- * @param fiels the files list for the device
+ * @param files the files list for the device
  * @see spl_to_playlist_t()
  */
 static void tracks_from_spl_text_t(text_t* p,
@@ -582,7 +582,7 @@ static void tracks_from_spl_text_t(text_t* p,
  * @param p the text to search
  * @param tracks list of track id's to look up
  * @param folders the folders list for the device
- * @param fiels the files list for the device
+ * @param files the files list for the device
  * @see playlist_t_to_spl()
  */
 static void spl_text_t_from_tracks(text_t** p,

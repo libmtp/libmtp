@@ -3190,7 +3190,7 @@ static int get_suggested_storage_id(LIBMTP_mtpdevice_t *device,
  * device storage list.
  * @param device a pointer to the MTP device to free the storage
  * list for.
- * @param storageid the storage ID for the storage to flush and
+ * @param storage a pointer to the storage to flush and
  * get free space for.
  * @param freespace the free space on this storage will be returned
  * in this variable.
@@ -3871,7 +3871,7 @@ int LIBMTP_Set_Syncpartner(LIBMTP_mtpdevice_t *device,
  * if it's too big.
  * @param device a pointer to the device.
  * @param filesize the size of the file to check whether it will fit.
- * @param storageid the ID of the storage to try to fit the file on.
+ * @param storage a pointer to the storage to try to fit the file on.
  * @return 0 if the file fits, any other value means failure.
  */
 static int check_if_file_fits(LIBMTP_mtpdevice_t *device,
@@ -4880,7 +4880,6 @@ static void pick_property_to_track_metadata(LIBMTP_mtpdevice_t *device, MTPPrope
  * This function retrieves the track metadata for a track
  * given by a unique ID.
  * @param device a pointer to the device to get the track metadata off.
- * @param trackid the unique ID of the track.
  * @param objectformat the object format of this track, so we know what it supports.
  * @param track a metadata set to fill in.
  */
@@ -5687,8 +5686,8 @@ int LIBMTP_Send_Track_From_File(LIBMTP_mtpdevice_t *device,
 
 /**
  * This helper function checks if a filename already exists on the device
- * @param PTPParams*
- * @param string representing the filename
+ * @param params the PTP params to check against
+ * @param filename a string representing the filename
  * @return 0 if the filename doesn't exist, -1 if it does
  */
 static int check_filename_exists(PTPParams* params, char const * const filename)
@@ -5708,7 +5707,8 @@ static int check_filename_exists(PTPParams* params, char const * const filename)
 
 /**
  * This helper function returns a unique filename, with a random string before the extension
- * @param string representing the original filename
+ * @param params the PTP params to check against
+ * @param filename string representing the original filename
  * @return a string representing the unique filename
  */
 static char *generate_unique_filename(PTPParams* params, char const * const filename)
@@ -9035,7 +9035,7 @@ int LIBMTP_Get_Representative_Sample_Format(LIBMTP_mtpdevice_t *device,
  * maximum size, dimensions, etc..
  * @param device a pointer to the device which the object is on.
  * @param id unique id of the object to set artwork for.
- * @param pointer to LIBMTP_filesampledata_t struct containing data
+ * @param sampledata pointer to LIBMTP_filesampledata_t struct containing data
  * @return 0 on success, any other value means failure.
  * @see LIBMTP_Get_Representative_Sample()
  * @see LIBMTP_Get_Representative_Sample_Format()
@@ -9130,7 +9130,7 @@ int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
  * if the device supports it.
  * @param device a pointer to the device which the object is on.
  * @param id unique id of the object to get data for.
- * @param pointer to LIBMTP_filesampledata_t struct to receive data
+ * @param sampledata pointer to LIBMTP_filesampledata_t struct to receive data
  * @return 0 on success, any other value means failure.
  * @see LIBMTP_Send_Representative_Sample()
  * @see LIBMTP_Get_Representative_Sample_Format()
