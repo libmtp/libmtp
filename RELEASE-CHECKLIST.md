@@ -5,7 +5,7 @@
 - make check
 - change configure.ac to the new version
 - commit
-- tag this commit with libmtp-1-1-x
+- tag this commit with libmtp-1-1-x and v1.1.x
 - git push --tags  		to sourceforge and
 - git push --tags github	to github
 - make dist
