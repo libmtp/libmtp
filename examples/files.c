@@ -135,7 +135,7 @@ int main(int argc, char **argv)
     } else {
       printf("Listing File Information on Device with name: %s [SN:%s]\n",
              friendlyname, serialnr);
-      free(friendlyname);
+      LIBMTP_FreeMemory(friendlyname);
     }
 
     LIBMTP_Dump_Errorstack(device);
@@ -148,7 +148,7 @@ int main(int argc, char **argv)
     LIBMTP_Release_Device(device);
   }
 
-  free(rawdevices);
+  LIBMTP_FreeMemory(rawdevices);
 
   printf("OK.\n");
   exit (0);

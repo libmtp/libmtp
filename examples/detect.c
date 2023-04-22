@@ -158,14 +158,14 @@ int main (int argc, char **argv)
       fprintf(stdout, "   Friendly name: (NULL)\n");
     } else {
       fprintf(stdout, "   Friendly name: %s\n", friendlyname);
-      free(friendlyname);
+      LIBMTP_FreeMemory(friendlyname);
     }
     syncpartner = LIBMTP_Get_Syncpartner(device);
     if (syncpartner == NULL) {
       fprintf(stdout, "   Synchronization partner: (NULL)\n");
     } else {
       fprintf(stdout, "   Synchronization partner: %s\n", syncpartner);
-      free(syncpartner);
+      LIBMTP_FreeMemory(syncpartner);
     }
 
     // Some battery info
@@ -196,7 +196,7 @@ int main (int argc, char **argv)
     ret = LIBMTP_Get_Secure_Time(device, &sectime);
     if (ret == 0 && sectime != NULL) {
       fprintf(stdout, "\nSecure Time:\n%s\n", sectime);
-      free(sectime);
+      LIBMTP_FreeMemory(sectime);
     } else {
       // Silently ignore - there may be devices not supporting secure time.
       LIBMTP_Clear_Errorstack(device);
@@ -214,7 +214,7 @@ int main (int argc, char **argv)
       ret = LIBMTP_Get_Device_Certificate(device, &devcert);
       if (ret == 0 && devcert != NULL) {
 	fprintf(stdout, "\nDevice Certificate:\n%s\n", devcert);
-	free(devcert);
+	LIBMTP_FreeMemory(devcert);
       } else {
 	fprintf(stdout, "Unable to acquire device certificate, perhaps this device "
 		"does not support this\n");
@@ -260,7 +260,7 @@ int main (int argc, char **argv)
 		    printf("Could not allocate %08x bytes...\n", XML_BUFSIZE);
 		    LIBMTP_Dump_Errorstack(device);
 		    LIBMTP_Clear_Errorstack(device);
-		    free(rawdevices);
+		    LIBMTP_FreeMemory(rawdevices);
 		    return 1;
 		  }
 
@@ -275,7 +275,7 @@ int main (int argc, char **argv)
 		    LIBMTP_Dump_Errorstack(device);
 		    LIBMTP_Clear_Errorstack(device);
 		  }
-		  free(buf);
+		  LIBMTP_FreeMemory(buf);
 		} else {
 		  LIBMTP_Dump_Errorstack(device);
 		  LIBMTP_Clear_Errorstack(device);
@@ -293,7 +293,7 @@ int main (int argc, char **argv)
     LIBMTP_Release_Device(device);
   } /* End For Loop */
 
-  free(rawdevices);
+  LIBMTP_FreeMemory(rawdevices);
 
   printf("OK.\n");
 

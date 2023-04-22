@@ -134,7 +134,7 @@ int main (int argc, char **argv)
       printf("Device: (NULL)\n");
     } else {
       printf("Device: %s\n", friendlyname);
-      free(friendlyname);
+      LIBMTP_FreeMemory(friendlyname);
     }
 
     /* Get all storages for this device */
@@ -154,7 +154,7 @@ int main (int argc, char **argv)
     LIBMTP_Release_Device(device);
   } /* End For Loop */
 
-  free(rawdevices);
+  LIBMTP_FreeMemory(rawdevices);
 
   printf("OK.\n");
 

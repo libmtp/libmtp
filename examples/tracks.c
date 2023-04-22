@@ -168,7 +168,7 @@ int main (int argc, char **argv)
       printf("Friendly name: (NULL)\n");
     } else {
       printf("Friendly name: %s\n", friendlyname);
-      free(friendlyname);
+      LIBMTP_FreeMemory(friendlyname);
     }
 
     LIBMTP_Dump_Errorstack(device);
