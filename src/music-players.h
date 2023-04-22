@@ -3057,6 +3057,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1572/ */
   { "Lenovo", 0x17ef, "PHAB Plus", 0x78d1,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/310/ */
+  { "Lenovo", 0x17ef, "TAB 2 A8-50F", 0x78da,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1562/ */
   { "Lenovo", 0x17ef, "Vibe K4 Note", 0x78f6,
       DEVICE_FLAGS_ANDROID_BUGS },
