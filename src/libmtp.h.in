@@ -871,6 +871,8 @@ LIBMTP_error_t *LIBMTP_Get_Errorstack(LIBMTP_mtpdevice_t*);
 void LIBMTP_Clear_Errorstack(LIBMTP_mtpdevice_t*);
 void LIBMTP_Dump_Errorstack(LIBMTP_mtpdevice_t*);
 
+void LIBMTP_FreeMemory(void *);
+
 #define LIBMTP_STORAGE_SORTBY_NOTSORTED 0
 #define LIBMTP_STORAGE_SORTBY_FREESPACE 1
 #define LIBMTP_STORAGE_SORTBY_MAXSPACE  2

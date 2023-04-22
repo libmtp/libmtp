@@ -9463,3 +9463,12 @@ int LIBMTP_Custom_Operation(LIBMTP_mtpdevice_t *device, uint16_t code, int n_par
 
   return 0;
 }
+
+/**
+ * Free memory allocated by libmtp. Is doing the same as libc free(mem) in most cases.
+ * @mem pointer to allocated memory.
+ */
+void LIBMTP_FreeMemory(void *mem)
+{
+  free (mem);
+}
