@@ -9,23 +9,25 @@ EXTRA_DIST=libmtp.pc libmtp.sh COPYING README.windows.txt RELEASE-CHECKLIST.md
 # This stuff only makes sense on Linux so only
 # build and ship it on Linux.
 if USE_LINUX
+MTP_HOTPLUG = util/mtp-hotplug
+
 udevrulesdir=@UDEV@/rules.d
 hwdbdir=@UDEV@/hwdb.d
 udevrules_DATA=@UDEV_RULES@
 hwdb_DATA=69-libmtp.hwdb
 noinst_DATA=libmtp.usermap libmtp.fdi
 
-libmtp.usermap: util/mtp-hotplug
-	util/mtp-hotplug > libmtp.usermap
+libmtp.usermap: $(MTP_HOTPLUG)
+	$(MTP_HOTPLUG) > libmtp.usermap
 
-@UDEV_RULES@: util/mtp-hotplug
-	util/mtp-hotplug -u -p"@UDEV@" @UDEV_GROUP@ @UDEV_MODE@ > @UDEV_RULES@
+@UDEV_RULES@: $(MTP_HOTPLUG)
+	$(MTP_HOTPLUG) -u -p"@UDEV@" @UDEV_GROUP@ @UDEV_MODE@ > @UDEV_RULES@
 
-libmtp.fdi: util/mtp-hotplug
-	util/mtp-hotplug -H > libmtp.fdi
+libmtp.fdi: $(MTP_HOTPLUG)
+	$(MTP_HOTPLUG) -H > libmtp.fdi
 
-$(hwdb_DATA): util/mtp-hotplug
-	util/mtp-hotplug -w > $(hwdb_DATA)
+$(hwdb_DATA): $(MTP_HOTPLUG)
+	$(MTP_HOTPLUG) -w > $(hwdb_DATA)
 
 CLEANFILES = libmtp.usermap @UDEV_RULES@ libmtp.fdi libmtp.hwdb
 endif
