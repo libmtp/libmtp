@@ -3922,6 +3922,8 @@
   { "Garmin", 0x091e, "Forerunner 955 Solar", 0x4fb8, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1920/ */
   { "Garmin", 0x091e, "Tactix 7", 0x5027, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/152 */
+  { "Garmin", 0x091e, "Forerunner 965", 0x50db, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Wacom
