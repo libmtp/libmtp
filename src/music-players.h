@@ -4275,5 +4275,8 @@
   /* https://github.com/libmtp/libmtp/issues/135 */
   { "Honor", 0x339b, "X8/X9 5G", 0x107d, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/feature-requests/305/ */
+  { "SHIFT", 0x3360, "SHIFT6m", 0x2008, DEVICE_FLAGS_ANDROID_BUGS },
+
   /* qemu 3.0.0 hw/usb/dev-mtp.c */
   { "QEMU", 0x46f4, "Virtual MTP", 0x0004, DEVICE_FLAG_NONE }
