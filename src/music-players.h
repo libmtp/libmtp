@@ -1721,6 +1721,9 @@
   /* https://github.com/libmtp/libmtp/issues/81 */
   { "Sony", 0x054c, "NW-ZX500", 0x0d01,
       DEVICE_FLAGS_SONY_NWZ_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/170 */
+  { "Sony", 0x054c, "NW-A306", 0x0e6e,
+      DEVICE_FLAGS_SONY_NWZ_BUGS },
   { "Sony", 0x054c, "DCR-SR75", 0x1294,
       DEVICE_FLAGS_SONY_NWZ_BUGS },
 
