@@ -298,6 +298,7 @@ int main (int argc, char **argv)
           printf("\t%04x  %s %s\n", entry->product_id, entry->vendor, entry->product);
         break;
       case style_hwdb:
+          entry = &entries[sorted_codes[i]];
           printf("# %s %s\n", entry->vendor, entry->product);
           printf("usb:v%04Xp%04X*\n", entry->vendor_id, entry->product_id);
           printf(" ID_MEDIA_PLAYER=1\n");
