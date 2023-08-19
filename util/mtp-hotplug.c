@@ -173,7 +173,7 @@ int main (int argc, char **argv)
       printf("# Put this file in /etc/udev/rules.d\n\n");
       printf("ACTION!=\"add\", ACTION!=\"bind\", GOTO=\"libmtp_rules_end\"\n");
       printf("ENV{MAJOR}!=\"?*\", GOTO=\"libmtp_rules_end\"\n");
-      printf("SUBSYSTEM!=\"usb\", GOTO=\"libmtp_rules_end\"\n\n");
+      printf("SUBSYSTEM!=\"usb_device\", GOTO=\"libmtp_rules_end\"\n\n");
       break;
     case style_usbmap:
       printf("# This usermap will call the script \"libmtp.sh\" whenever a known MTP device is attached.\n\n");
