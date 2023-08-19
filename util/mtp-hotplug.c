@@ -138,9 +138,7 @@ int main (int argc, char **argv)
       printf("# Put this file in /etc/udev/rules.d\n\n");
       printf("ACTION!=\"add\", ACTION!=\"bind\", GOTO=\"libmtp_rules_end\"\n");
       printf("ENV{MAJOR}!=\"?*\", GOTO=\"libmtp_rules_end\"\n");
-      printf("SUBSYSTEM==\"usb\", GOTO=\"libmtp_usb_rules\"\n"
-	     "GOTO=\"libmtp_rules_end\"\n\n"
-	     "LABEL=\"libmtp_usb_rules\"\n\n");
+      printf("SUBSYSTEM!=\"usb\", GOTO=\"libmtp_rules_end\"\n\n");
 
       printf("# If we have a hwdb entry for this device, act immediately!\n");
       printf("ENV{ID_MTP_DEVICE}==\"1\", %s", action ?: UDEV_ACTION);
@@ -167,8 +165,6 @@ int main (int argc, char **argv)
       printf("ATTR{idVendor}==\"0471\", ATTR{idProduct}==\"083f\", GOTO=\"libmtp_rules_end\"\n");
       printf("# DUALi NFC readers\n");
       printf("ATTR{idVendor}==\"1db2\", ATTR{idProduct}==\"060*\", GOTO=\"libmtp_rules_end\"\n");
-      printf("# HP printers\n");
-      printf("ATTR{idVendor}==\"03f0\", ENV{ID_USB_INTERFACES}==\"*:0701??:*|*:ffcc00:\", GOTO=\"libmtp_rules_end\"\n");
       printf("# Printers\n");
       printf("ENV{ID_USB_INTERFACES}==\"*:0701??:*\", GOTO=\"libmtp_rules_end\"\n");
       break;
@@ -177,9 +173,7 @@ int main (int argc, char **argv)
       printf("# Put this file in /etc/udev/rules.d\n\n");
       printf("ACTION!=\"add\", ACTION!=\"bind\", GOTO=\"libmtp_rules_end\"\n");
       printf("ENV{MAJOR}!=\"?*\", GOTO=\"libmtp_rules_end\"\n");
-      printf("SUBSYSTEM==\"usb_device\", GOTO=\"libmtp_usb_device_rules\"\n"
-	     "GOTO=\"libmtp_rules_end\"\n\n"
-	     "LABEL=\"libmtp_usb_device_rules\"\n\n");
+      printf("SUBSYSTEM!=\"usb\", GOTO=\"libmtp_rules_end\"\n\n");
       break;
     case style_usbmap:
       printf("# This usermap will call the script \"libmtp.sh\" whenever a known MTP device is attached.\n\n");
