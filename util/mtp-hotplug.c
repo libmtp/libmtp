@@ -28,9 +28,10 @@
 
 static void usage(void)
 {
-  fprintf(stderr, "usage: hotplug [-u -H -i -a\"ACTION\"] -p\"DIR\" -g\"GROUP\" -m\"MODE\"\n");
+  fprintf(stderr, "usage: hotplug [-w -u -f -o -H -i -a\"ACTION\"] -p\"DIR\" -g\"GROUP\" -m\"MODE\"\n");
   fprintf(stderr, "       -w:  use hwdb syntax\n");
   fprintf(stderr, "       -u:  use udev syntax\n");
+  fprintf(stderr, "       -f:  use udev fast syntax\n");
   fprintf(stderr, "       -o:  use old udev syntax\n");
   fprintf(stderr, "       -H:  use hal syntax\n");
   fprintf(stderr, "       -i:  use usb.ids simple list syntax\n");
@@ -44,6 +45,7 @@ static void usage(void)
 enum style {
   style_usbmap,
   style_udev,
+  style_udev_fast,
   style_udev_old,
   style_hal,
   style_usbids,
@@ -57,14 +59,14 @@ int main (int argc, char **argv)
 {
   LIBMTP_device_entry_t *entries;
   int numentries;
-  int i;
+  int i, j, k;
   int ret;
   enum style style = style_usbmap;
   int opt;
   extern int optind;
   extern char *optarg;
   /*
-   * You could tag on MODE="0666" here to enfore writeable
+   * You could tag on MODE="0666" here to enforce writeable
    * device nodes, use the command line argument for that.
    * Current udev default rules will make any device tagged
    * with ENV{ID_MEDIA_PLAYER}=1 writable for the console
@@ -76,14 +78,18 @@ int main (int argc, char **argv)
   char mtp_probe_dir[256] = "/usr/lib/udev/";
   char *udev_group= NULL;
   char *udev_mode = NULL;
+  int *sorted_codes;
 
-  while ( (opt = getopt(argc, argv, "wuoiHa:p:g:m:")) != -1 ) {
+  while ( (opt = getopt(argc, argv, "wufoiHa:p:g:m:")) != -1 ) {
     switch (opt) {
     case 'a':
       action = optarg;
       break;
     case 'u':
       style = style_udev;
+      break;
+    case 'f':
+      style = style_udev_fast;
       break;
     case 'o':
       style = style_udev_old;
@@ -132,6 +138,30 @@ int main (int argc, char **argv)
   LIBMTP_Init();
   ret = LIBMTP_Get_Supported_Devices_List(&entries, &numentries);
   if (ret == 0) {
+    /* sort codes numerically */
+    sorted_codes = malloc(numentries * sizeof(int));
+    if (sorted_codes == NULL) {
+      ret = -1;
+  } else {
+      sorted_codes[0] = 0;
+      for (i = 1; i < numentries; i++) {
+	for (j = 0; j < i; j++) {
+	  if (entries[i].vendor_id < entries[sorted_codes[j]].vendor_id)
+	    break;
+	  if (entries[i].vendor_id == entries[sorted_codes[j]].vendor_id && \
+	      entries[i].product_id < entries[sorted_codes[j]].product_id)
+	    break;
+	}
+	if (j < i) {
+	  for (k = i; k > j; k--) {
+	    sorted_codes[k] = sorted_codes[k - 1];
+	  }
+	}
+	sorted_codes[j] = i;
+      }
+    }
+  }
+  if (ret == 0) {
     switch (style) {
     case style_udev:
       printf("# UDEV-style hotplug map for libmtp\n");
@@ -168,6 +198,7 @@ int main (int argc, char **argv)
       printf("# Printers\n");
       printf("ENV{ID_USB_INTERFACES}==\"*:0701??:*\", GOTO=\"libmtp_rules_end\"\n");
       break;
+    case style_udev_fast:
     case style_udev_old:
       printf("# UDEV-style hotplug map for libmtp\n");
       printf("# Put this file in /etc/udev/rules.d\n\n");
@@ -194,10 +225,25 @@ int main (int argc, char **argv)
       break;
     }
 
+    last_vendor = 0xffff;
     for (i = 0; i < numentries; i++) {
       LIBMTP_device_entry_t * entry = &entries[i];
 
       switch (style) {
+      case style_udev_fast:
+	entry = &entries[sorted_codes[i]];
+	if (last_vendor != entry->vendor_id) {
+	  if (last_vendor != 0xffff) {
+	    printf("GOTO=\"libmtp_rules_probe\"\n");
+	    printf("LABEL=\"not_%04x\"\n\n", last_vendor);
+	    last_vendor = entry->vendor_id;
+	  }
+	  printf("ATTR{idVendor}!=\"%04x\", GOTO=\"not_%04x\"\n", \
+		 entry->vendor_id, entry->vendor_id);
+	};
+	printf("# %s %s\n", entry->vendor, entry->product);
+	printf("ATTR{idProduct}==\"%04x\", GOTO=\"libmtp_rules_match\"\n", entry->product_id);
+	break;
       case style_udev_old:
 	printf("# %s %s\n", entry->vendor, entry->product);
 	printf("ATTR{idVendor}==\"%04x\", ATTR{idProduct}==\"%04x\", %s",
@@ -261,6 +307,7 @@ int main (int argc, char **argv)
       }
       last_vendor = entry->vendor_id;
     }
+    free(sorted_codes);
   } else {
     printf("Error.\n");
     exit(1);
@@ -271,12 +318,22 @@ int main (int argc, char **argv)
   case style_usbmap:
   case style_hwdb:
     break;
+  case style_udev_fast:
+    printf("GOTO=\"libmtp_rules_end\"\n");
+    printf("LABEL=\"not_%04x\"\n\n", last_vendor);
+    printf("GOTO=\"libmtp_rules_probe\"\n");
+    printf("\nLABEL=\"libmtp_rules_match\"\n");
+    printf("%s", action ?: FULL_UDEV_ACTION);
+    if (udev_group != NULL) printf(", GROUP=\"%s\"", udev_group);
+    if (udev_mode != NULL) printf(", MODE=\"%s\"", udev_mode);
+    printf("\nGOTO=\"libmtp_rules_end\"\n");
+    printf("\nLABEL=\"libmtp_rules_probe\"");
   case style_udev:
   case style_udev_old:
     /*
      * This is code that invokes the mtp-probe program on
      * every USB device that is either PTP or vendor specific
-     * also dont run probe if gphoto2 already matched it as camera.
+     * also don't run probe if gphoto2 already matched it as camera.
      */
     printf("\n# Autoprobe vendor-specific, communication and PTP devices\n");
     printf("ENV{ID_MTP_DEVICE}!=\"1\", ENV{MTP_NO_PROBE}!=\"1\", ENV{COLOR_MEASUREMENT_DEVICE}!=\"1\", ENV{ID_GPHOTO}!=\"1\", ENV{libsane_matched}!=\"yes\", ATTR{bDeviceClass}==\"00|02|06|ef|ff\", PROGRAM=\"%smtp-probe /sys$env{DEVPATH} $attr{busnum} $attr{devnum}\", RESULT==\"1\", %s",
@@ -284,7 +341,7 @@ int main (int argc, char **argv)
     if (udev_group != NULL) printf(", GROUP=\"%s\"", udev_group);
     if (udev_mode != NULL) printf(", MODE=\"%s\"", udev_mode);
     printf("\n");
-   printf("\nLABEL=\"libmtp_rules_end\"\n");
+    printf("\nLABEL=\"libmtp_rules_end\"\n");
     break;
   case style_hal:
     printf("    </match>\n");
