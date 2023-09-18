@@ -20,6 +20,7 @@ AC_ARG_WITH(udev,
     AS_HELP_STRING([--with-udev=DIR],
     [directory where udev is installed [default=/usr/lib/udev]]),
     [UDEV="${withval}"], [])
+AC_DEFINE_UNQUOTED([UDEV_DIR], ["${UDEV}/"], [where mtp-probe is installed, default=/usr/lib/udev/])
 AC_SUBST(UDEV)
 
 # Optionally set name of udev rules file, default

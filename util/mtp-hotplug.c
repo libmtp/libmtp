@@ -20,6 +20,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+#include "config.h"
 #include <libmtp.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -75,7 +76,7 @@ int main (int argc, char **argv)
 
   char *action = NULL; // To hold the action when specified by the user.
   uint16_t last_vendor = 0x0000U;
-  char mtp_probe_dir[256] = "/usr/lib/udev/";
+  char mtp_probe_dir[256] = UDEV_DIR;
   char *udev_group= NULL;
   char *udev_mode = NULL;
   int *sorted_codes;
