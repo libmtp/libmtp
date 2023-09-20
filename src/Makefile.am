@@ -6,24 +6,34 @@ libmtp_la_SOURCES = libmtp.c unicode.c unicode.h util.c util.h playlist-spl.c \
 	music-players.h device-flags.h playlist-spl.h mtpz.h \
 	chdk_live_view.h chdk_ptp.h
 
+EXTRA_DIST = gphoto2-sync.sh libmtp.h.in libmtp.sym ptp-pack.c
+nodist_EXTRA_DATA = libmtp.h
+
 if MTPZ_COMPILE
 libmtp_la_SOURCES += mtpz.c
+else
+EXTRA_DIST += mtpz.c
 endif
 
 if LIBUSB1_COMPILE
 libmtp_la_SOURCES += libusb1-glue.c
+else
+EXTRA_DIST += libusb1-glue.c
 endif
 
 if LIBUSB0_COMPILE
 libmtp_la_SOURCES += libusb-glue.c
+else
+EXTRA_DIST += libusb-glue.c
 endif
 
 if LIBOPENUSB_COMPILE
 libmtp_la_SOURCES += libopenusb1-glue.c
+else
+EXTRA_DIST += libopenusb1-glue.c
 endif
 
-include_HEADERS=libmtp.h
-EXTRA_DIST=libmtp.h.in libmtp.sym ptp-pack.c
+include_HEADERS = libmtp.h
 
 # ---------------------------------------------------------------------------
 # Advanced information about versioning:
