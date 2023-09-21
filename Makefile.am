@@ -12,7 +12,15 @@ DISTCHECK_CONFIGURE_FLAGS = --with-udev-group=nobody --with-udev-mode=760, --dis
 # build and ship it on Linux.
 if USE_LINUX
 MTP_HOTPLUG = util/mtp-hotplug
+
+udevrules_DATA=@UDEV_RULES@
+udevrulesdir = $(datadir)
+hwdb_DATA=69-libmtp.hwdb
+hwdbdir = $(datadir)
 @UDEVdata_SNIPPET@
+
+noinst_DATA = libmtp.fdi libmtp.usermap
+no_DIST = 69-libmtp.hwdb $(UDEV_RULES) libmtp.fdi libmtp.usermap
 
 libmtp.usermap: $(MTP_HOTPLUG)
 	$(MTP_HOTPLUG) > libmtp.usermap

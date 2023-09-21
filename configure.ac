@@ -31,10 +31,6 @@ noinst_DATA = libmtp.fdi libmtp.usermap
 ifeq ($(shell id -u),0)
     udevrulesdir = $(UDEV)/rules.d
     hwdbdir = $(UDEV)/hwdb.d
-    udevrules_DATA=@UDEV_RULES@
-    hwdb_DATA=69-libmtp.hwdb
-else
-    noinst_DATA += 69-libmtp.hwdb $(UDEV_RULES)
 endif
 no_DIST = 69-libmtp.hwdb $(UDEV_RULES) libmtp.fdi libmtp.usermap
 '
@@ -43,12 +39,7 @@ AM_SUBST_NOTMAKE([UDEVdata_SNIPPET])
 UDEVbin_SNIPPET='
 mtp_probe_SOURCES = mtp-probe.c
 ifeq ($(shell id -u),0)
-    mtp_probe_PROGRAMS = mtp-probe
     mtp_probedir = $(UDEV)
-else
-    bin_PROGRAMS += mtp-probe
-    noinst_PROGRAMS = mtp-probe
-    EXTRA_DIST = mtp-probe.c
 endif
 '
 AC_SUBST([UDEVbin_SNIPPET])
