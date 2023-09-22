@@ -19,11 +19,17 @@ hwdb_DATA=69-libmtp.hwdb
 hwdbdir = $(datadir)
 @UDEVdata_SNIPPET@
 
-noinst_DATA = libmtp.fdi libmtp.usermap
-no_DIST = 69-libmtp.hwdb $(UDEV_RULES) libmtp.fdi libmtp.usermap
+GENERATED = 69-libmtp.hwdb $(UDEV_RULES)
 
-libmtp.usermap: $(MTP_HOTPLUG)
-	$(MTP_HOTPLUG) > libmtp.usermap
+if ENABLE_CROSSBUILD
+$(hwdb_DATA): $(MTP_HOTPLUG)
+	$(HOST_MTP_HOTPLUG) -w > $(hwdb_DATA)
+
+@UDEV_RULES@: $(MTP_HOTPLUG)
+	$(HOST_MTP_HOTPLUG) -u -p"@UDEV@" @UDEV_GROUP@ @UDEV_MODE@ > @UDEV_RULES@
+else
+$(hwdb_DATA): $(MTP_HOTPLUG)
+	$(MTP_HOTPLUG) -w > $(hwdb_DATA)
 
 @UDEV_RULES@: $(MTP_HOTPLUG)
 	$(MTP_HOTPLUG) -u -p"@UDEV@" @UDEV_GROUP@ @UDEV_MODE@ > @UDEV_RULES@
@@ -31,8 +37,13 @@ libmtp.usermap: $(MTP_HOTPLUG)
 libmtp.fdi: $(MTP_HOTPLUG)
 	$(MTP_HOTPLUG) -H > libmtp.fdi
 
-$(hwdb_DATA): $(MTP_HOTPLUG)
-	$(MTP_HOTPLUG) -w > $(hwdb_DATA)
+libmtp.usermap: $(MTP_HOTPLUG)
+	$(MTP_HOTPLUG) > libmtp.usermap
 
-CLEANFILES = libmtp.usermap @UDEV_RULES@ libmtp.fdi 69-libmtp.hwdb
+noinst_DATA = libmtp.fdi libmtp.usermap
+GENERATED += libmtp.fdi libmtp.usermap
+endif
+
+no_DIST = $(GENERATED)
+CLEANFILES = $(GENERATED)
 endif
