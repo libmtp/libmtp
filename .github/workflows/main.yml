@@ -1,0 +1,46 @@
+name: libmtp
+on: [push,pull_request]
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        choiceL: [--disable-silent-rules, --with-udev-group=nobody --with-udev-mode=760, --disable-mtpz]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create configure
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install autoconf automake libtool gettext gcc libgcrypt-dev libusb-dev libusb-1.0-0-dev
+          touch ./config.rpath
+          aclocal
+          autoconf
+          autoreconf -i
+          automake
+      - name: Choose configure option(s)
+        run: ./configure ${{ matrix.choiceL }}
+      - name: Make libmtp library
+        run: make
+      - name: Test make distcheck
+        if: matrix.choiceL == '--disable-silent-rules'
+        run: make distcheck
+  macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        choiceL: [--disable-silent-rules, --with-udev-group=nobody --with-udev-mode=760, --disable-mtpz]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create configure
+        run: |
+          brew install autoconf automake libtool gcc libgcrypt
+          touch ./config.rpath
+          aclocal
+          autoconf
+          autoreconf -i
+          automake
+      - name: Choose configure option(s)
+        run: ./configure ${{ matrix.choiceM }}
+      - name: Make libmtp library
+        run: make
