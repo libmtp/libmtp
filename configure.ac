@@ -10,6 +10,7 @@ AM_CONFIG_HEADER(config.h)
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LN_S
+AC_CHECK_TOOL([HOST_MTP_HOTPLUG],[mtp-hotplug],[:])
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
 AM_ICONV
@@ -31,15 +32,20 @@ noinst_DATA = libmtp.fdi libmtp.usermap
 ifeq ($(shell id -u),0)
     udevrulesdir = $(UDEV)/rules.d
     hwdbdir = $(UDEV)/hwdb.d
+ifdef ENABLE_CROSSBUILD
+    udevrulesdir = $(TARGET_UDEV)/rules.d
+    hwdbdir = $(TARGET_UDEV)/hwdb.d
 endif
-no_DIST = 69-libmtp.hwdb $(UDEV_RULES) libmtp.fdi libmtp.usermap
+endif
 '
 AC_SUBST([UDEVdata_SNIPPET])
 AM_SUBST_NOTMAKE([UDEVdata_SNIPPET])
 UDEVbin_SNIPPET='
-mtp_probe_SOURCES = mtp-probe.c
 ifeq ($(shell id -u),0)
     mtp_probedir = $(UDEV)
+ifdef ENABLE_CROSSBUILD
+    mtp_probedir = $(TARGET_UDEV)
+endif
 endif
 '
 AC_SUBST([UDEVbin_SNIPPET])
@@ -92,6 +98,38 @@ else
     AC_MSG_NOTICE([API documentation will not be generated])
 fi
 AM_CONDITIONAL(HAVE_DOXYGEN,$HAVE_DOXYGEN)
+
+# Optionally crossbuild libmtp for a target CPU/OS
+# Most users can safely ignore this option and leave it as 'off'.
+# Users crossbuilding for another CPU/OS need to follow 3 steps
+# 1) First, make sure the host has same version libmtp installed.
+#    Easiest way to ensure this is to install this on host first.
+#    crossbuild uses the host's mtp-hotplug to create files.
+# 2) Next, run ./configure with appropriate settings.
+#    Users will need to set these two options in configure:
+#    --with-udev=UDEV_DIR_as_seen_later_by_the_target_cpu
+#    --enable-crossbuilddir=UDEV_DIR_as_seen_now_by_host_cpu
+#    here is an example for crossbuilding
+#    ./configure --with-udev=/usr/lib/udev --enable-crossbuilddir=target_root_dir/usr/lib/udev
+# 3) next, run 'make' and then 'sudo make install'
+#    note that 'make install' will install mtp-hotprobe in the
+#    target directory, but will not run target mtp-hotplug to
+#    create target config files because the target CPU may not
+#    be binary equivalent with host CPU. 69-libmtp.hwdb and
+#    @UDEV_RULES@ should also get installed in target udev too.
+#
+crossbuilddir=off
+AC_ARG_ENABLE(crossbuilddir,
+    AS_HELP_STRING([--enable-crossbuilddir], [crossbuild libmtp (this is step 2of3) [default=off]]),
+    [crossbuilddir=$enableval], [crossbuilddir=off])
+if test "$crossbuilddir" != off; then
+    if test x"${HOST_MTP_HOTPLUG}" = "x:"; then
+        AC_MSG_ERROR([Error: Host PC 'mtp-hotplug' not found! Please install 'libmtp' on host PC before doing crossbuild!])
+    fi
+fi
+AM_CONDITIONAL(ENABLE_CROSSBUILD,[test "$crossbuilddir" != off])
+TARGET_UDEV = ${crossbuilddir}
+AC_SUBST(TARGET_UDEV)
 
 # Check for Darwin
 AC_MSG_CHECKING([if the host operating system is Darwin])
