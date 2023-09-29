@@ -3848,6 +3848,7 @@
   /* https://sourceforge.net/p/libmtp/bugs/1553/ */
   { "Bravis", 0x0e8d, "A401 Neo", 0x0c03,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/M0Rf30/android-udev-rules/issues/259 (MOTO e22i, 2005=USB) */
   /* https://sourceforge.net/p/libmtp/bugs/1422/ */
   /* https://sourceforge.net/p/libmtp/bugs/1467/ */
   /* https://sourceforge.net/p/libmtp/bugs/1922/ */
@@ -3857,13 +3858,18 @@
   /* https://sourceforge.net/p/libmtp/bugs/1923/ */
   { "MediaTek Inc", 0x0e8d, "MT65xx/67xx (MTP + CDC + ADB mode)", 0x200a,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/M0Rf30/android-udev-rules/issues/259 (MOTO e22i) */
+  { "MediaTek Inc", 0x0e8d, "MOTO E22i (PTP + ADB mode)", 0x200c, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/support-requests/289/ */
   { "MediaTek Inc", 0x0e8d, "MT65xx/67xx (MTP + CDC mode)", 0x2012, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/79/ */
+  /* https://github.com/M0Rf30/android-udev-rules/issues/259 (MOTO e22i) */
   { "MediaTek Inc", 0x0e8d, "MT65xx/67xx (MTP + ADB mode)", 0x201d, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* likely also a mediatek rebrand: https://github.com/libmtp/libmtp/issues/155 */
   { "qin", 0x0e8d, "phone f21 pro", 0x2026, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /* https://github.com/M0Rf30/android-udev-rules/issues/259 (MOTO e22i, 2048=MIDI) */
 
   /* https://sourceforge.net/p/libmtp/bugs/1717/ */
   { "MediaTek Inc", 0x0e8d, "Wiko Sunny", 0x4001,
