@@ -350,16 +350,22 @@
    *
    * 0x685b - UMS
    * 0x685c - MTP + ADB
+   * 0x685d - Odin
    * 0x685e - UMS + CDC (not MTP)
    * 0x6860 - MTP mode (default)
    * 0x6863 - USB CDC RNDIS (not MTP)
+   * 0x6864 - USB CDC RNDIS ADB (not MTP)
    * 0x6865 - PTP mode (not MTP)
+   * 0x6865 - PTP ADB mode (not MTP)
+   * 0x686c - MIDI ADB mode (not MTP)
    * 0x6877 - Kies mode? Does it have MTP?
    *
    * Used on these samsung devices:
    * GT P7310/P7510/N7000/I9100/I9250/I9300
+   * Galaxy Core
    * Galaxy Nexus
    * Galaxy Tab 7.7/10.1
+   * Galaxy A5
    * Galaxy S GT-I9000
    * Galaxy S Advance GT-I9070
    * Galaxy S2
@@ -2563,9 +2569,11 @@
   /* https://sourceforge.net/p/libmtp/feature-requests/218/ */
   { "Google Inc (for Fairphone)", 0x18d1, "Fairphone 2", 0x0a07,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/M0Rf30/android-udev-rules/issues/269 2d02=audio */
   // Reported by anonymous Sourceforge user
   { "Google Inc (for Barnes & Noble)", 0x18d1, "Nook Color", 0x2d02,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/M0Rf30/android-udev-rules/issues/269 2d03=audio+adb */
   // Reported by anonymous Sourceforge user
   { "Google Inc (for Asus)", 0x18d1, "TF201 Transformer", 0x4d00,
       DEVICE_FLAGS_ANDROID_BUGS },
