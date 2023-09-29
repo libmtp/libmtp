@@ -2585,6 +2585,7 @@
       (DEVICE_FLAGS_ANDROID_BUGS | DEVICE_FLAG_PROPLIST_OVERRIDES_OI) & ~DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST },
   { "Google Inc", 0x18d1, "Nexus/Pixel (MTP+ADB)", 0x4ee2,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* 4ee3=(Tethering), 4ee4=(Tethering+ADB) */
   /* https://sourceforge.net/p/libmtp/bugs/1255/ */
   { "Google Inc", 0x18d1, "Nexus/Pixel (PTP)", 0x4ee5,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -3561,6 +3562,15 @@
   /* https://sourceforge.net/p/libmtp/bugs/1491/ */
   { "Amazon", 0x1949, "Kindle Fire 5", 0x0222,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/M0Rf30/android-udev-rules/issues/256 (5.7.0.0) */
+  { "Amazon", 0x1949, "Kindle Fire 8 (MTP) (3rd ID)", 0x0231,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Amazon", 0x1949, "Kindle Fire 8 (MTP+ADB) (3rd ID)", 0x0232,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Amazon", 0x1949, "Kindle Fire 8 (PTP) (3rd ID)", 0x0233,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Amazon", 0x1949, "Kindle Fire 8 (PTP+ADB) (3rd ID)", 0x0234,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1718/ */
   { "Amazon", 0x1949, "Kindle Fire 8 (2nd ID)", 0x0261,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -3586,7 +3596,14 @@
   { "Amazon", 0x1949, "Kindle Fire HD8 Plus", 0x0581,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1913/ */
-  { "Amazon", 0x1949, "Kindle Fire 10 Plus", 0x05e1,
+  { "Amazon", 0x1949, "Kindle Fire 10 Plus (MTP)", 0x05e1,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/M0Rf30/android-udev-rules/issues/256 (7.3.2.8) */
+  { "Amazon", 0x1949, "Kindle Fire 10 (MTP+ADB)", 0x05e2,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Amazon", 0x1949, "Kindle Fire 10 (PTP)", 0x05e3,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  { "Amazon", 0x1949, "Kindle Fire 10 (PTP+ADB)", 0x05e4,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Amazon", 0x1949, "Fire Phone", 0x0800,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -3596,6 +3613,7 @@
 
   { "Amazon", 0x1949, "Kindle Fire 8 HD (7th Gen)", 0x0262,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* 2046=(MIDI), 2048=(MIDI+ADB) */
 
   /*
    * Barnes&Noble
@@ -3611,10 +3629,25 @@
   /*
    * Viewpia, bq, YiFang
    * Seems like some multi-branded OEM product line.
+   * 
+   * These values were given for the Anbernic RG353P (Beta#1) depending on mode:
+   * https://github.com/M0Rf30/android-udev-rules/issues/256 (Anbernic RG353P)
+   * 0x0003 - USB tether (not MTP)
+   * 0x0007 - MTP
+   * 0x0008 - PTP
+   * 0x0013 - CDC + ADB (tether, not MTP)
+   * 0x0017 - MTP + ADB
+   * 0x0018 - PTP + ADB
    */
   { "Various", 0x2207, "Viewpia DR/bq Kepler", 0x0001,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "YiFang", 0x2207, "BQ Tesla", 0x0006,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/M0Rf30/android-udev-rules/issues/256 (Anbernic RG353P) */
+  { "Various", 0x2207, "Anbernic RG353P (MTP)", 0x0007,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/M0Rf30/android-udev-rules/issues/256 (Anbernic RG353P) */
+  { "Various", 0x2207, "Anbernic RG353P (PTP+ADB)", 0x0008,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://bugs.debian.org/917259 */
   { "Various", 0x2207, "Onyx Boox Max 2", 0x000b,
@@ -3635,7 +3668,11 @@
   { "Onyx", 0x2207, "Boox Nova Pro", 0x0015,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/125 */
-  { "iBasso", 0x2207, "DX170 DAP", 0x0017,
+  /* https://github.com/M0Rf30/android-udev-rules/issues/256 (Anbernic RG353P) */
+  { "Various", 0x2207, "Anbernic RG353P/iBasso DX170 DAP (MTP+ADB)", 0x0017,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/M0Rf30/android-udev-rules/issues/256 (Anbernic RG353P) */
+  { "Various", 0x2207, "Anbernic RG353P (PTP+ADB)", 0x0018,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/82 */
   { "Supernote", 0x2207, "A5X", 0x0031,
