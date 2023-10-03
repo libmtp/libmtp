@@ -7380,7 +7380,7 @@ void LIBMTP_destroy_folder_t(LIBMTP_folder_t *folder)
  * specified id.
  *
  * @param folderlist list of folders to search
- * @id id of folder to look for
+ * @param id of folder to look for
  * @return a folder or NULL if not found
  */
 LIBMTP_folder_t *LIBMTP_Find_Folder(LIBMTP_folder_t *folderlist, uint32_t id)
@@ -9206,6 +9206,8 @@ int LIBMTP_Get_Representative_Sample(LIBMTP_mtpdevice_t *device,
  * Retrieve the thumbnail for a file.
  * @param device a pointer to the device to get the thumbnail from.
  * @param id the object ID of the file to retrieve the thumbnail for.
+ * @param data a memory pointer to retrieved thumbnail (user frees memory later when done with data).
+ * @param size data length of retrieved thumbnail.
  * @return 0 on success, any other value means failure.
  */
 int LIBMTP_Get_Thumbnail(LIBMTP_mtpdevice_t *device, uint32_t const id,
