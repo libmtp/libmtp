@@ -1302,6 +1302,7 @@
   /*
    * Qualcomm
    * This vendor ID seems to be used a bit by others.
+   * Qualcomm is an OEM (Snapdragon) chip vendor.
    */
 
   // Reported by Richard Wall <richard@the-moon.net>
@@ -1327,6 +1328,9 @@
 
   { "Qualcomm (for PhiComm)", 0x05c6, "C230w (MTP)",
       0x9039, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /* https://github.com/M0Rf30/android-udev-rules/issues/264 QCOM */
+  /* 9091=PTP+ADB, 9092=PTP *low-level* requires precise software */
 
   /* https://github.com/libmtp/libmtp/issues/78 */
   { "OnePlus", 0x05c6, "OnePlus 7 Pro (MTP)",
@@ -2419,8 +2423,11 @@
       DEVICE_FLAG_BROKEN_SET_OBJECT_PROPLIST |
       DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL },
   /* https://sourceforge.net/p/libmtp/support-requests/130/ */
+  /* https://github.com/M0Rf30/android-udev-rules/issues/264 (conflicts with USB tether) */
+  /* https://github.com/M0Rf30/android-udev-rules/issues/277 (conflicts with RNDIS) */
   { "Motorola", 0x22b8, "X 2nd edition XT1097 (MTP)", 0x2e24,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* 2e24=(Tether), 2e25=(Tether+ADB) */
   { "Motorola", 0x22b8, "Atrix/Razr HD (MTP)", 0x2e32,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Atrix/Razr HD (MTP+ADB)", 0x2e33,
@@ -2443,18 +2450,28 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Droid Ultra", 0x2e68,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Motorola", 0x22b8, "Moto G (ID1)", 0x2e76,
+  /* https://github.com/M0Rf30/android-udev-rules/issues/264 (MTP) */
+  /* https://github.com/M0Rf30/android-udev-rules/issues/277 (MTP+ADB) */
+  { "Motorola", 0x22b8, "Moto E/G (ID1) (MTP+ADB)", 0x2e76,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* 2e80=(fastboot) Moto E/G */
+  /* https://github.com/M0Rf30/android-udev-rules/issues/264 (sideload) */
   /* https://sourceforge.net/p/libmtp/bugs/1841/ */
   { "Motorola", 0x22b8, "Moto Z2 (XT1789)", 0x2e81,
       DEVICE_FLAGS_ANDROID_BUGS },
-  { "Motorola", 0x22b8, "Moto G (ID2)", 0x2e82,
+  /* https://github.com/M0Rf30/android-udev-rules/issues/264 (MTP) */
+  /* https://github.com/M0Rf30/android-udev-rules/issues/277 (MTP) */
+  { "Motorola", 0x22b8, "Moto E/G/Z (ID2) (MTP)", 0x2e82,
       DEVICE_FLAGS_ANDROID_BUGS & ~(DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST_ALL|DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST)},
   /* https://github.com/gphoto/gphoto2/issues/463 */
-  { "Motorola", 0x22b8, "XT1032", 0x2e83,
+  /* https://github.com/M0Rf30/android-udev-rules/issues/264 (PTP) */
+  /* https://github.com/M0Rf30/android-udev-rules/issues/277 (PTP) */
+  { "Motorola", 0x22b8, "Moto XT1032/XT1052/Z (PTP)", 0x2e83,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1030/, PTP Id */
-  { "Motorola", 0x22b8, "Moto G (XT1032)", 0x2e84,
+  /* https://github.com/M0Rf30/android-udev-rules/issues/264 (PTP+ADB) */
+  /* https://github.com/M0Rf30/android-udev-rules/issues/277 (PTP+ADB) */
+  { "Motorola", 0x22b8, "Moto E/G/Z (XT1032) (PTP+ADB)", 0x2e84,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1477/ */
   { "Motorola", 0x22b8, "Moto Maxx (XT1225)", 0x2ea4,
@@ -2464,6 +2481,7 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Motorola", 0x22b8, "Droid Turbo Verizon", 0x2ea8,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* not used here. 2eb7. BP TOOLS {2ee5,2ee6,2ee7,2ee8} */
   /* https://sourceforge.net/p/libmtp/feature-requests/189/ */
   { "Motorola", 0x22b8, "MB632", 0x2dff,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2570,10 +2588,12 @@
   { "Google Inc (for Fairphone)", 0x18d1, "Fairphone 2", 0x0a07,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/M0Rf30/android-udev-rules/issues/269 2d02=audio */
+  /* https://github.com/M0Rf30/android-udev-rules/issues/277 2d02=audio */
   // Reported by anonymous Sourceforge user
   { "Google Inc (for Barnes & Noble)", 0x18d1, "Nook Color", 0x2d02,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/M0Rf30/android-udev-rules/issues/269 2d03=audio+adb */
+  /* https://github.com/M0Rf30/android-udev-rules/issues/277 2d03=audio+adb */
   // Reported by anonymous Sourceforge user
   { "Google Inc (for Asus)", 0x18d1, "TF201 Transformer", 0x4d00,
       DEVICE_FLAGS_ANDROID_BUGS },
@@ -2599,6 +2619,7 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Google Inc", 0x18d1, "Nexus/Pixel (PTP+ADB)", 0x4ee6,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* 4ee8=(MIDI), 4ee9=(MIDI+ADB) */
   /* https://sourceforge.net/p/libmtp/bugs/1444/ */
   { "Google", 0x18d1, "Pixel C (MTP)", 0x5202,
       DEVICE_FLAGS_ANDROID_BUGS },
