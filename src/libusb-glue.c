@@ -567,7 +567,7 @@ static LIBMTP_error_number_t get_mtp_usb_device_list(mtpdevice_list_t ** mtp_dev
  * number has an MTP type device descriptor.
  *
  * @param busno the bus number of the device to check
- * @param deviceno the device number of the device to check
+ * @param devno the device number of the device to check
  * @return 1 if the device is MTP else 0
  */
 int LIBMTP_Check_Specific_Device(int busno, int devno)
@@ -1958,6 +1958,7 @@ static int find_interface_and_endpoints(struct usb_device *dev,
  * This function assigns params and usbinfo given a raw device
  * as input.
  * @param device the device to be assigned.
+ * @param params current session parameters for this device.
  * @param usbinfo a pointer to the new usbinfo.
  * @return an error code.
  */
