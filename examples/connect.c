@@ -62,6 +62,8 @@ usage(void)
 int main (int argc, char **argv)
 {
   int ret = 0;
+  char *argv0;
+  char *basename_argv0;
 
   checklang();
 
@@ -69,35 +71,41 @@ int main (int argc, char **argv)
 
   fprintf(stdout, "libmtp version: " LIBMTP_VERSION_STRING "\n\n");
 
-  if ((strncmp(basename(argv[0]),"mtp-delfile",11) == 0) || (strncmp(basename(argv[0]),"delfile",7) == 0))
+  argv0 = strdup(argv[0]);
+  basename_argv0 = basename(argv0);
+
+  if ((strncmp(basename_argv0,"mtp-delfile",11) == 0) || (strncmp(basename_argv0,"delfile",7) == 0))
     device = delfile_device(argc,argv);
-  else if ((strncmp(basename(argv[0]),"mtp-getfile",11) == 0) || (strncmp(basename(argv[0]),"getfile",7) == 0))
+  else if ((strncmp(basename_argv0,"mtp-getfile",11) == 0) || (strncmp(basename_argv0,"getfile",7) == 0))
     device = getfile_device(argc,argv);
   else
     device = LIBMTP_Get_First_Device();
 
   if (device == NULL) {
     printf("No devices.\n");
+    free(argv0);
     return 0;
   }
   files = LIBMTP_Get_Filelisting_With_Callback (device, NULL, NULL);
   folders = LIBMTP_Get_Folder_List (device);
 
-  if ((strncmp(basename(argv[0]),"mtp-delfile",11) == 0) || (strncmp(basename(argv[0]),"delfile",7) == 0)) {
+  if ((strncmp(basename_argv0,"mtp-delfile",11) == 0) || (strncmp(basename_argv0,"delfile",7) == 0)) {
     ret = delfile_command(argc,argv);
-  } else if ((strncmp(basename(argv[0]),"mtp-getfile",11) == 0) || (strncmp(basename(argv[0]),"getfile",7) == 0)) {
+  } else if ((strncmp(basename_argv0,"mtp-getfile",11) == 0) || (strncmp(basename_argv0,"getfile",7) == 0)) {
     ret = getfile_command(argc,argv);
-  } else if ((strncmp(basename(argv[0]),"mtp-newfolder",13) == 0) || (strncmp(basename(argv[0]),"newfolder",9) == 0)) {
+  } else if ((strncmp(basename_argv0,"mtp-newfolder",13) == 0) || (strncmp(basename_argv0,"newfolder",9) == 0)) {
     ret = newfolder_command(argc,argv);
-  } else if ((strncmp(basename(argv[0]),"mtp-sendfile",12) == 0) || (strncmp(basename(argv[0]),"sendfile",8) == 0)) {
+  } else if ((strncmp(basename_argv0,"mtp-sendfile",12) == 0) || (strncmp(basename_argv0,"sendfile",8) == 0)) {
     ret = sendfile_command(argc, argv);
-  } else if ((strncmp(basename(argv[0]),"mtp-sendtr",10) == 0) || (strncmp(basename(argv[0]),"sendtr",6) == 0)) {
+  } else if ((strncmp(basename_argv0,"mtp-sendtr",10) == 0) || (strncmp(basename_argv0,"sendtr",6) == 0)) {
     ret = sendtrack_command(argc, argv);
   } else {
     if ( argc < 2 ) {
+      free(argv0);
       usage ();
       return 1;
     }
+
 
     while (1) {
       int option_index = 0;
@@ -155,6 +163,7 @@ int main (int argc, char **argv)
   }
 
   LIBMTP_Release_Device(device);
+  free(argv0);
 
   return ret;
 }
