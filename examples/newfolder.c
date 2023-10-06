@@ -56,10 +56,14 @@ int
 newfolder_function(char * path)
 {
   printf("Creating new folder %s\n",path);
-  char * parent = dirname(path);
-  char * folder = basename(path);
+  char * path_for_parent = strdup(path);
+  char * path_for_folder = strdup(path);
+  char * parent = dirname(path_for_parent);
+  char * folder = basename(path_for_folder);
   int id = parse_path (parent,files,folders);
   int newid = LIBMTP_Create_Folder(device, folder, id, 0);
+  free(path_for_folder);
+  free(path_for_parent);
   if (newid == 0) {
     printf("Folder creation failed.\n");
     LIBMTP_Dump_Errorstack(device);
