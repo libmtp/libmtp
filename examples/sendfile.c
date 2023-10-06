@@ -48,6 +48,7 @@ int sendfile_function(char * from_path, char *to_path)
 {
   printf("Sending %s to %s\n",from_path,to_path);
   char *filename;
+  char *from_path_for_filename;
   uint64_t filesize;
   struct stat sb;
   LIBMTP_file_t *genfile;
@@ -61,10 +62,12 @@ int sendfile_function(char * from_path, char *to_path)
   }
 
   filesize = sb.st_size;
-  filename = basename(from_path);
+  from_path_for_filename = strdup(from_path);
+  filename = basename(from_path_for_filename);
   parent_id = parse_path (to_path,files,folders);
   if (parent_id == -1) {
     printf("Parent folder could not be found, skipping\n");
+    free(from_path_for_filename);
     return 0;
   }
 
@@ -74,6 +77,7 @@ int sendfile_function(char * from_path, char *to_path)
   genfile->filetype = find_filetype (filename);
   genfile->parent_id = parent_id;
   genfile->storage_id = 0;
+  free(from_path_for_filename);
 
   printf("Sending file...\n");
   ret = LIBMTP_Send_File_From_File(device, from_path, genfile, progress, NULL);
