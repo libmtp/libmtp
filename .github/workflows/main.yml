@@ -34,7 +34,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Create configure
         run: |
-          brew install autoconf automake libtool gcc libgcrypt
+          brew install autoconf automake libtool gcc libgcrypt libiconv
           touch ./config.rpath
           aclocal
           autoconf

@@ -240,6 +240,15 @@ AC_HEADER_TIME
 AC_CHECK_HEADERS([ctype.h errno.h fcntl.h getopt.h libgen.h \
 	limits.h stdio.h string.h sys/stat.h sys/time.h unistd.h \
 	langinfo.h locale.h arpa/inet.h byteswap.h sys/uio.h])
+dnl glibc>=2.1 has iconv_open(), but older glibc or distros, and
+dnl other OSes will need to install libiconv before building libmtp
+dnl see Installation info: https://www.gnu.org/software/libiconv/
+have_iconv=no
+AC_CHECK_HEADERS([iconv.h],[AC_CHECK_FUNC([iconv_open],[have_iconv=yes])])
+if test x"$have_iconv" = "xno" ; then
+	AC_SEARCH_LIBS([iconv],[have_iconv=yes],[
+	AC_MSG_ERROR([*** ERROR! iconv_open() required! Please install libiconv first. ***])])
+fi
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
