@@ -34,7 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 #ifdef HAVE_ICONV
-#include "iconv.h"
+#include <iconv.h>
 #endif
 #include "libmtp.h"
 #include "unicode.h"
@@ -48,20 +48,50 @@
 
 /**
  * Gets the length (in characters, not bytes) of a unicode
- * UCS-2 string, eg a string which physically is 0x00 0x41 0x00 0x00
- * will return a value of 1.
+ * UCS-2LE string, eg a string which physically is 0x00 0x41 0x00 0x00
+ * will return a value of 1 (Add 1 to include needed trailing 0x0000).
+ * mode=0: UCS-2LE, codes 0x0000...0xffff. 2xlength=total number of uint16_t chars.
+ * mode=1: UTF-16LE, Unicode >= 2.0. {0xd800..0xdbff:0xdc00..0xdfff} counts as 1 char.
+ * mode=2: UTF-16LE. Unicode >= 2.0. {0xdc00..0xdfff:0xd800..0xdbff}==err, return length=-1.
  *
- * @param unicstr a UCS-2 Unicode string
- * @return the length of the string, in number of characters. If you
- *         want to know the length in bytes, multiply this by two and
- *         add two (for zero terminator).
+ * @param unicstr a UCS-2LE/UTF-16LE Unicode string
+ * @param mode count method, mode={0,1,2}
+ * @return the length of the string in number of characters.
  */
-int ucs2_strlen(uint16_t const * const unicstr)
+int ucs2_strlen(uint16_t const * const unicstr, int mode)
 {
+  unsigned char *p8in; /* intentionally load as little-endian regardless of host CPU endianess */
+  uint16_t chin;
   int length;
 
-  /* Unicode strings are terminated with 2 * 0x00 */
-  for(length = 0; unicstr[length] != 0x0000U; length ++);
+  if (mode == 0) {
+    /* Unicode strings are terminated with 2 * 0x00 */
+    for (length = 0; unicstr[length]; length++);
+  } else {
+    /* Need to account for {dc00...dfff} code pairs */
+    p8in = (unsigned char *)(unicstr);
+    chin = *p8in++;
+
+    for (length = 0; (chin |= ((*p8in++) << 8)); length++) {
+      /* look for {d800..dbff|dc00..dfff} code pair */
+      if (chin >= 0xd800 && chin <= 0xdfff) {
+	if (chin <= 0xdbff) {
+	  chin = p8in[1];
+	  chin = (chin << 8) | p8in[0];
+	  if (chin >= 0xdC00 && chin <= 0xdfff) {
+	    p8in += 2; /* this is a valid code pair */
+	  } else if (mode == 2) {
+	    length = -1;
+	    break;
+	  }
+	} else if (mode == 2) {
+	  length = -1;
+	  break;
+	}
+      }
+      chin = *p8in++;
+    }
+  }
   return length;
 }
 
@@ -84,7 +114,7 @@ char *utf16_to_utf8(LIBMTP_mtpdevice_t *device, const uint16_t *unicstr)
   char *stringp = (char *) unicstr;
   char *locp = loclstr;
   size_t nconv;
-  size_t convlen = (ucs2_strlen(unicstr)+1) * sizeof(uint16_t); // UCS-2 is 16 bit wide, include terminator
+  size_t convlen = (ucs2_strlen(unicstr, 0)+1) * sizeof(uint16_t); // UCS-2 is 16 bit wide, include terminator
   size_t convmax = STRING_BUFFER_LENGTH*3;
   /* Do the conversion.  */
   nconv = iconv(params->cd_ucs2_to_locale, &stringp, &convlen, &locp, &convmax);
@@ -138,7 +168,7 @@ uint16_t *utf8_to_utf16(LIBMTP_mtpdevice_t *device, const char *localstr)
 
   // allocate the string to be returned
   // Note: can't use strdup since every other byte is a null byte
-  int ret_len = ucs2_strlen((uint16_t*)unicstr)*sizeof(uint16_t)+2;
+  int ret_len = ucs2_strlen((uint16_t*)unicstr, 0)*sizeof(uint16_t)+2;
   uint16_t* ret = malloc(ret_len);
   memcpy(ret,unicstr,(size_t)ret_len);
   return ret;
@@ -146,7 +176,7 @@ uint16_t *utf8_to_utf16(LIBMTP_mtpdevice_t *device, const char *localstr)
 
 /**
  * This helper function simply removes any consecutive chars
- * > 0x7F and replace then with an underscore. In UTF-8
+ * > 0x7F and replaces them with an underscore. In UTF-8
  * consecutive chars > 0x7F represent one single character so
  * it has to be done like this (and it's elegant). It will only
  * shrink the string in size so no copying is needed.
@@ -154,8 +184,7 @@ uint16_t *utf8_to_utf16(LIBMTP_mtpdevice_t *device, const char *localstr)
 void strip_7bit_from_utf8(char *str)
 {
   int i,j,k;
-  i = 0;
-  j = 0;
+  i = j = 0;
   k = strlen(str);
   while (i < k) {
     if ((uint8_t) str[i] > 0x7FU) {

@@ -387,7 +387,7 @@ static text_t* read_into_spl_text_t(LIBMTP_mtpdevice_t *device, const int fd)
 
         // drop empty lines
         //  ... cast as a string of 2 byte characters
-        if(ucs2_strlen((uint16_t*)w) == 0) {
+        if(ucs2_strlen((uint16_t*)w, 0) == 0) { // we just need a strlen(), use mode=0
           iw = w;
           continue;
         }
@@ -457,7 +457,7 @@ static void write_from_spl_text_t(LIBMTP_mtpdevice_t *device,
   while(p != NULL) {
     char *const t = (char*) utf8_to_utf16(device, p->text);
     // note: 2 bytes per ucs2 character
-    const size_t len = ucs2_strlen((uint16_t*)t)*sizeof(uint16_t);
+    const size_t len = ucs2_strlen((uint16_t*)t, 0)*sizeof(uint16_t);
     unsigned int i;
 
     LIBMTP_PLST_DEBUG("\nutf8=%s ",p->text);
@@ -465,7 +465,7 @@ static void write_from_spl_text_t(LIBMTP_mtpdevice_t *device,
       LIBMTP_PLST_DEBUG("%02x ", p->text[i] & 0xff);
     LIBMTP_PLST_DEBUG("\n");
     LIBMTP_PLST_DEBUG("ucs2=");
-    for(i=0;i<ucs2_strlen((uint16_t*)t)*sizeof(uint16_t);i++)
+    for(i=0;i<ucs2_strlen((uint16_t*)t, 0)*sizeof(uint16_t);i++)
       LIBMTP_PLST_DEBUG("%02x ", t[i] & 0xff);
     LIBMTP_PLST_DEBUG("\n");
 

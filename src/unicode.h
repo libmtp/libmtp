@@ -32,7 +32,7 @@
 #ifndef __MTP__UNICODE__H
 #define __MTP__UNICODE__H
 
-int ucs2_strlen(uint16_t const * const);
+int ucs2_strlen(uint16_t const * const, int);
 char *utf16_to_utf8(LIBMTP_mtpdevice_t*,const uint16_t*);
 uint16_t *utf8_to_utf16(LIBMTP_mtpdevice_t*, const char*);
 void strip_7bit_from_utf8(char *str);

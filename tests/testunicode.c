@@ -31,13 +31,75 @@
 #include "ptp.h"
 
 static int test_ucs2_strlen() {
-  uint16_t str[6] = { 5,4,3,2,1,0 };
+  uint16_t str0[6] = { 5,4,3,2,1,0 };
+  uint16_t str1[6] = { 0xd9d9,0xdddd,3,0xd9d9,0xdddd,0 };
+  /* next three are badly sequenced utf-16 codes */
+  uint16_t str2[6] = { 5,4,3,0xd9d9,0xd9d9,0 };
+  uint16_t str3[6] = { 5,4,3,0xdddd,0xdddd,0 };
+  uint16_t str4[6] = { 5,4,3,0xdddd,0xd9d9,0 };
   int length;
 
-  printf("test ucs2_strlen()\n");
-  length = ucs2_strlen(str);
+  printf("test ucs2_strlen(str0,0)\n");
+  length = ucs2_strlen(str0,0);
+  printf("expected length=5, returned %d\n", length);
+  if (length != 5) return -1;
+
+  printf("test ucs2_strlen(str1,0)\n");
+  length = ucs2_strlen(str1,0);
   printf("expected length=5, returned %d\n\n", length);
-  return length;
+  if (length != 5) return -1;
+
+  printf("test ucs2_strlen(str0,1)\n");
+  length = ucs2_strlen(str0,1);
+  printf("expected length=5, returned %d\n", length);
+  if (length != 5) return -1;
+
+  printf("test ucs2_strlen(str1,1)\n");
+  length = ucs2_strlen(str1,1);
+  printf("expected length=3, returned %d\n", length);
+  if (length != 3) return -1;
+
+  printf("test ucs2_strlen(str2,1)\n");
+  length = ucs2_strlen(str2,1);
+  printf("expected length=5, returned %d\n", length);
+  if (length != 5) return -1;
+
+  printf("test ucs2_strlen(str3,1)\n");
+  length = ucs2_strlen(str3,1);
+  printf("expected length=5, returned %d\n", length);
+  if (length != 5) return -1;
+
+  printf("test ucs2_strlen(str4,1)\n");
+  length = ucs2_strlen(str4,1);
+  printf("expected length=5, returned %d\n\n", length);
+  if (length != 5) return -1;
+
+  printf("test ucs2_strlen(str0,2)\n");
+  length = ucs2_strlen(str0,2);
+  printf("expected length=5, returned %d\n", length);
+  if (length != 5) return -1;
+
+  printf("test ucs2_strlen(str1,2)\n");
+  length = ucs2_strlen(str1,2);
+  printf("expected length=3, returned %d\n", length);
+  if (length != 3) return -1;
+
+  printf("test ucs2_strlen(str2,2)\n");
+  length = ucs2_strlen(str2,2);
+  printf("expected error=length=-1, returned %d\n", length);
+  if (length != -1) return -1;
+
+  printf("test ucs2_strlen(str3,2)\n");
+  length = ucs2_strlen(str3,2);
+  printf("expected error=length=-1, returned %d\n", length);
+  if (length != -1) return -1;
+
+  printf("test ucs2_strlen(str4,2)\n");
+  length = ucs2_strlen(str4,2);
+  printf("expected error=length=-1, returned %d\n\n", length);
+  if (length != -1) return -1;
+
+  return 0;
 }
 
 static int test_strip_7bit_from_utf8() {
@@ -55,7 +117,7 @@ static int test_strip_7bit_from_utf8() {
 
 int main(int argc, char **argv) {
 
-  if (test_ucs2_strlen() != 5) return -1;
+  if (test_ucs2_strlen()) return -1;
 
   if (test_strip_7bit_from_utf8()) return -2;
 
