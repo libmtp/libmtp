@@ -96,38 +96,81 @@ int ucs2_strlen(uint16_t const * const unicstr, int mode)
 }
 
 /**
- * Converts a big-endian UTF-16 2-byte string
- * to a UTF-8 string. Actually just a UCS-2 internal conversion
- * routine that strips off the BOM if there is one.
+ * Converts a little-endian UTF-16 string into a UTF-8 string.
+ * Actually this is just a UCS-2 internal conversion
+ * routine that also strips off the BOM if there is one.
+ * NOTE: UTF-16 to UTF-8 conversion is limited to worst-case 1024chars x 4utf8 + 1 buffer space.
  *
- * @param device a pointer to the current device.
- * @param unicstr the UTF-16 unicode string to convert
+ * @param unicstr the UTF-16LE unicode string to convert
  * @return a UTF-8 string.
  */
-char *utf16_to_utf8(LIBMTP_mtpdevice_t *device, const uint16_t *unicstr)
+char *utf16_to_utf8(const uint16_t *unicstr)
 {
-  char loclstr[STRING_BUFFER_LENGTH*3+1]; // UTF-8 encoding is max 3 bytes per UCS2 char.
+  char loclstr[STRING_BUFFER_LENGTH*4+1], *ploclstr; // UTF-8 encoding max 4 bytes per UTF-16 char.
+  unsigned char *p8in; // intentionally load string little-endian regardless of host CPU endianess.
+  uint32_t chin, chin2;
+  int lin;
 
-  loclstr[0]='\0';
-  #if defined(HAVE_ICONV) && defined(HAVE_LANGINFO_H)
-  PTPParams *params = (PTPParams *) device->params;
-  char *stringp = (char *) unicstr;
-  char *locp = loclstr;
-  size_t nconv;
-  size_t convlen = (ucs2_strlen(unicstr, 0)+1) * sizeof(uint16_t); // UCS-2 is 16 bit wide, include terminator
-  size_t convmax = STRING_BUFFER_LENGTH*3;
-  /* Do the conversion.  */
-  nconv = iconv(params->cd_ucs2_to_locale, &stringp, &convlen, &locp, &convmax);
-  if (nconv == (size_t) -1) {
-    // Return partial string anyway.
-    *locp = '\0';
+  ploclstr = loclstr;
+  p8in = (unsigned char *)(unicstr);
+  chin = *p8in++;
+
+  /* Strip off any BOM, it's totally useless... */
+  if (chin == 0xff && *p8in == 0xfe) {
+    p8in++;
+    chin = *p8in++;
   }
-  #endif
-  loclstr[STRING_BUFFER_LENGTH*3] = '\0';
-  // Strip off any BOM, it's totally useless...
-  if ((uint8_t) loclstr[0] == 0xEFU && (uint8_t) loclstr[1] == 0xBBU && (uint8_t) loclstr[2] == 0xBFU) {
-    return strdup(loclstr+3);
+
+  lin = STRING_BUFFER_LENGTH * 4 - 3;
+  while ((lin >= 0) && (chin |= ((*p8in++) << 8))) {
+    /* look for {d800..dbff|dc00..dfff} code pair */
+    if (chin >= 0xd800 && chin <= 0xdfff) {
+      if (chin > 0xdbff) {
+	chin = '_'; /* error, skip and continue */
+      } else {
+	chin2 = *p8in++;
+	chin2 |= ((*p8in++) << 8);
+	if (chin2 < 0xdC00 || chin2 > 0xdfff) {
+	  chin = '_'; /* error, skip and continue */
+	} else {
+	  chin2 -= 0xdc00;
+	  chin = ((chin - 0xd800) << 10) + chin2 + 0x10000;
+	}
+      }
+    }
+    /* exclude off-limits characters */
+    chin2 = chin & 0xfffe;
+    if ( chin2 == 0xfffe) {
+      chin = '_';
+    }
+    /* convert chin to UTF-8 */
+    if (chin > 127) {
+      if (chin <= 0x7ff) {
+	/* chin >= 0x80 && chin <= 0x7ff */
+	*ploclstr++ = 0xc0 | (chin >> 6);
+	--lin;
+      } else {
+	if (chin <= 0xffff) {
+	  /* chin >= 0x800 && chin <= 0xffff */
+	  *ploclstr++ = 0xe0 | (chin >> 12);
+	  --lin;
+	} else {
+	  /* chin >= 0x10000 && chin <= 0x10ffff */
+	  *ploclstr++ = 0xf0 | (chin >> 18);
+	  *ploclstr++ = 0x80 | ((chin >> 12) & 0x3f);
+	  lin -= 2;
+	}
+	*ploclstr++ = 0x80 | ((chin >> 6) & 0x3f);
+	--lin;
+      }
+      chin = 0x80 | (chin & 0x3f);
+    }
+    *ploclstr++ = chin;
+    --lin;
+    chin = *p8in++;
   }
+  *ploclstr++ = '\0';
+
   return strdup(loclstr);
 }
 

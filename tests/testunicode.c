@@ -115,11 +115,100 @@ static int test_strip_7bit_from_utf8() {
   return 0;
 }
 
+static int test_utf16_to_utf8() {
+  /* little-endian   32,   64,   128, 256, 512,1024,2048,   0 */
+  char str[16] = { 32,0, 64,0, 128,0, 0,1, 0,2, 0,4, 0,8, 0,0 };
+  char res[14] = { 32,64,0xc2,0x80,0xc4,0x80,0xc8,0x80,0xd0,0x80,0xe0,0xa0,0x80,0 };
+  char *ret;
+  int err, i, length;
+
+  printf("test ucs2_strlen(str,2) for this str[16]\n");
+  length = ucs2_strlen((uint16_t *)(str),2);
+  printf("expected length=7, returned length=%d\n", length);
+  if (length != 7) return -1;
+  err = -1;
+  printf("testing utf16_to_utf8()\n");
+  ret = utf16_to_utf8((uint16_t *)(str));
+  length = strlen(ret);
+  printf("expected length=13, returned %d. Characters returned are:\n", length);
+  if (length != 13) goto err_test_utf16_to_utf8;
+  for (i = 0; i <= length; i++) {
+    printf("%x, ", (unsigned char)(ret[i]));
+    if (ret[i] != res[i]) goto err_test_utf16_to_utf8;
+  }
+  printf("\nreturned string matches expected result string.\n\n");
+  err = 0;
+err_test_utf16_to_utf8:
+  free(ret);
+  return err;
+}
+
+static int test_utf16_to_utf8_noBOM() {
+  /* little-endian (with BOM)   32,   64,   128, 256, 512,1024,2048,    0xd83d:0xde0e,      0 */
+  char str[22] = { 0xff,0xfe, 32,0, 64,0, 128,0, 0,1, 0,2, 0,4, 0,8, 0x3d,0xd8,0x0e,0xde, 0,0 };
+  char res[18] = { 32,64,0xc2,0x80,0xc4,0x80,0xc8,0x80,0xd0,0x80,0xe0,0xa0,0x80,0xf0,0x9f,0x98,0x8e,0 };
+  char *ret;
+  int err, i, length;
+
+  printf("test ucs2_strlen(str,2) for this str[22]\n");
+  length = ucs2_strlen((uint16_t *)(str),2);
+  printf("expected length=BOM+8=9, returned length=%d\n", length);
+  if (length != 9) return -1;
+  err = -1;
+  printf("testing utf16_to_utf8() (remove BOM)\n");
+  ret = utf16_to_utf8((uint16_t *)(str));
+  length = strlen(ret);
+  printf("expected length=17, returned %d. Characters returned are:\n", length);
+  if (length != 17) goto err_test_utf16_to_utf8_noBOM;
+  for (i = 0; i <= length; i++) {
+    printf("%x, ", (unsigned char)(ret[i]));
+    if (ret[i] != res[i]) goto err_test_utf16_to_utf8_noBOM;
+  }
+  printf("\nreturned string matches expected result string.\n\n");
+  err = 0;
+err_test_utf16_to_utf8_noBOM:
+  free(ret);
+  return err;
+}
+
+static int test_utf16_to_utf8_buffMAX() {
+  uint16_t *str;
+  char *ret;
+  int err, i, length;
+
+  err = -1;
+  printf("testing utf16_to_utf8() (1024MAX chars)\n");
+  str = malloc((1030*2+1)*sizeof(uint16_t)); /* this will get chopped */
+  if (str == NULL) return -1;
+  for (i = 0; i < 1030; i++) {
+    str[i*2] = 0xd9d9; /* creates four utf8 chars 0xf2,0x86,0x97,0x9d */
+    str[i*2+1] = 0xdddd;
+  }
+  str[1030*2+1] = 0;
+  ret = utf16_to_utf8((uint16_t *)(str));
+  printf("test ucs2_strlen(str,2) for this oversized str[1031]\n");
+  length = ucs2_strlen((uint16_t *)(str),2);
+  printf("expected length=1030chars, returned length=%dchars\n", length);
+  if (length != 1030) goto test_utf16_to_utf8_buffMAX_err;
+  length = strlen(ret);
+  printf("expected length=1024*4=4096bytes, returned length=%dbytes.\n", length);
+  if (length != 4096) goto test_utf16_to_utf8_buffMAX_err;
+  err = 0;
+test_utf16_to_utf8_buffMAX_err:
+  free(ret);
+  free(str);
+  return err;
+}
+
 int main(int argc, char **argv) {
 
   if (test_ucs2_strlen()) return -1;
 
   if (test_strip_7bit_from_utf8()) return -2;
+
+  if (test_utf16_to_utf8()) return -3;
+  if (test_utf16_to_utf8_noBOM()) return -4;
+  if (test_utf16_to_utf8_buffMAX()) return -5;
 
   return 0;
 }

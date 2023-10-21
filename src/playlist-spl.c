@@ -403,7 +403,7 @@ static text_t* read_into_spl_text_t(LIBMTP_mtpdevice_t *device, const int fd)
         }
         // fill in the data for the node
         //  ... cast as a string of 2 byte characters
-        tail->text = utf16_to_utf8(device, (uint16_t*) w);
+        tail->text = utf16_to_utf8((uint16_t*)(w));
         iw = w; // start again
 
         LIBMTP_PLST_DEBUG("line: %s\n", tail->text);
