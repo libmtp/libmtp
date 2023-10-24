@@ -11,6 +11,7 @@
  * and <a href="http://en.wikipedia.org/wiki/UTF-8">UTF-8</a>.
  *
  * Copyright (C) 2005-2009 Linus Walleij <triad@df.lth.se>
+ * Copyright (C) 2023 Joe Da Silva <digital@joescat.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,17 +30,11 @@
  *
  */
 
-#include "config.h"
-
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
-#ifdef HAVE_ICONV
-#include <iconv.h>
-#endif
-#include "libmtp.h"
+
 #include "unicode.h"
-#include "util.h"
-#include "ptp.h"
 
 /**
  * The size of the buffer (in characters) used for creating string copies.
@@ -116,6 +111,7 @@ char *utf16_to_utf8(const uint16_t *unicstr)
   chin = *p8in++;
 
   /* Strip off any BOM, it's totally useless... */
+  /* no 0xfffe, BOM sometimes used for id BE/LE */
   if (chin == 0xff && *p8in == 0xfe) {
     p8in++;
     chin = *p8in++;
@@ -175,46 +171,86 @@ char *utf16_to_utf8(const uint16_t *unicstr)
 }
 
 /**
- * Converts a UTF-8 string to a big-endian UTF-16 2-byte string
+ * Converts a UTF-8 string to a UTF-16LE 2-byte, or 4-byte string.
  * Actually just a UCS-2 internal conversion.
+ * mode=0: default, return empty zero length string if bad utf8 code encountered.
+ * mode=1: return NULL if bad UTF-8 code encountered.
  *
- * @param device a pointer to the current device.
  * @param localstr the UTF-8 unicode string to convert
- * @return a UTF-16 string.
+ * @param mode count method, mode={0,1}
+ * @return a UTF-16LE string. User frees string when done.
  */
-uint16_t *utf8_to_utf16(LIBMTP_mtpdevice_t *device, const char *localstr)
+uint16_t *utf8_to_utf16(const char *localstr, int mode)
 {
-  char unicstr[(STRING_BUFFER_LENGTH+1)*2]; // UCS2 encoding is 2 bytes per UTF-8 char.
-  char *unip = unicstr;
-  size_t nconv = 0;
+  unsigned char unicstr[STRING_BUFFER_LENGTH*4+2]; // UTF-16 'max' encoding is 4 bytes per UTF-8 char.
+  uint16_t *ret;
+  unsigned char *p8in, *p8out;
+  uint32_t chout, chout2;
+  int err, lout;
 
-  unicstr[0]='\0';
-  unicstr[1]='\0';
+  p8in = (unsigned char *)(localstr);
+  p8out = unicstr;
 
-  #if defined(HAVE_ICONV) && defined(HAVE_LANGINFO_H)
-  PTPParams *params = (PTPParams *) device->params;
-  char *stringp = (char *) localstr; // cast away "const"
-  size_t convlen = strlen(localstr)+1; // utf8 bytes, include terminator
-  size_t convmax = STRING_BUFFER_LENGTH*2;
-  /* Do the conversion.  */
-  nconv = iconv(params->cd_locale_to_ucs2, &stringp, &convlen, &unip, &convmax);
-  #endif
-  
-  if (nconv == (size_t) -1) {
-    // Return partial string anyway.
-    unip[0] = '\0';
-    unip[1] = '\0';
+  err = -1;
+  lout = STRING_BUFFER_LENGTH * 2;
+  while ((lout-- > 0) && (chout = (*p8in++))) {
+    /* 110xxxxx 10xxxxxx */
+    /* 1110xxxx 10xxxxxx 10xxxxxx */
+    /* 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx */
+    if (chout >= 0x80) {
+      chout2 = (*p8in++) & 0xff;
+      if (chout <= 0xbf || chout2 < 0x80 || chout2 >= 0xc0)
+	goto err0_utf8_to_utf16;
+      chout2 &= 0x3f;
+      if (chout <= 0xdf) {
+	chout = ((chout & 0x1f) << 6) | chout2;
+      } else {
+	if (*p8in < 0x80 || *p8in >= 0xc0)
+	  goto err0_utf8_to_utf16;
+	chout2 = (chout2 << 6) | ((*p8in++) & 0x3f);
+	if (chout <= 0xef) {
+	  chout = ((chout & 0xf) << 12) | chout2;
+	} else {
+	  if (*p8in < 0x80 || *p8in >= 0xc0)
+	    goto err0_utf8_to_utf16;
+	  chout = ((chout & 0x7) << 18) | (chout2 << 6) | ((*p8in++) & 0x3f);
+	}
+      }
+    }
+    if ((chout <= 0xdfff && chout >= 0xd800) || chout > 0x10ffff || ((chout & 0xfffe) == 0xfffe))
+      goto err0_utf8_to_utf16;
+    /* U' = yyyyyyyyyyxxxxxxxxxx -> U - 0x10000 */
+    /* W1 = 110110yyyyyyyyyy -> 0xD800 + yyyyyyyyyy */
+    /* W2 = 110111xxxxxxxxxx -> 0xDC00 + xxxxxxxxxx */
+    if (chout > 0xffff) {
+      lout--;
+      chout -= 0x10000;
+      chout2 = (chout >> 10) + 0xd800;
+      chout = (chout & 0x3ff) + 0xdc00;
+      *p8out++ = (chout2 & 0xff);
+      *p8out++ = ((chout2 >> 8) & 0xff);
+    }
+    *p8out++ = (chout & 0xff);
+    *p8out++ = ((chout >> 8) & 0xff);
   }
-  // make sure the string is null terminated
-  unicstr[STRING_BUFFER_LENGTH*2] = '\0';
-  unicstr[STRING_BUFFER_LENGTH*2+1] = '\0';
+  err = 0;
+err0_utf8_to_utf16:
+  if (err) {
+    if (mode)
+      goto err1_utf8_to_utf16;
+    p8out = unicstr;
+  }
+  *p8out++ = '\0';
+  *p8out++ = '\0';
 
-  // allocate the string to be returned
-  // Note: can't use strdup since every other byte is a null byte
-  int ret_len = ucs2_strlen((uint16_t*)unicstr, 0)*sizeof(uint16_t)+2;
-  uint16_t* ret = malloc(ret_len);
-  memcpy(ret,unicstr,(size_t)ret_len);
+  chout = p8out - unicstr;
+  ret = (uint16_t *)(malloc(chout));
+  if (ret == NULL)
+    goto err1_utf8_to_utf16;
+  memcpy(ret, unicstr, chout);
   return ret;
+err1_utf8_to_utf16:
+  return NULL;
 }
 
 /**

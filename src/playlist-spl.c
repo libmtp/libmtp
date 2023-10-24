@@ -455,7 +455,7 @@ static void write_from_spl_text_t(LIBMTP_mtpdevice_t *device,
   // write out BOM for utf16/ucs2 (byte order mark)
   ret = write(fd,"\xff\xfe",2);
   while(p != NULL) {
-    char *const t = (char*) utf8_to_utf16(device, p->text);
+    char *const t = (char*) utf8_to_utf16(p->text, 0);
     // note: 2 bytes per ucs2 character
     const size_t len = ucs2_strlen((uint16_t*)t, 0)*sizeof(uint16_t);
     unsigned int i;
