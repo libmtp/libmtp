@@ -3972,6 +3972,7 @@
   /* https://sourceforge.net/p/libmtp/bugs/1884/ */
   { "Garmin", 0x091e, "Forerunner 245 Music ", 0x4c05, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Forerunner 945", 0x4c29, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Garmin", 0x091e, "Forerunner 945 LTE", 0x4e44, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "D2 Delta/Delta S/Delta PX", 0x4c7c, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Vivoactive 4S", 0x4c98, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/51 */
