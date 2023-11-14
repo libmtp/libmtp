@@ -3991,6 +3991,7 @@
   { "Garmin", 0x091e, "Darth Vader", 0x4dab, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Captain Marvel", 0x4dac, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "First Avenger", 0x4dad, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Garmin", 0x091e, "Descent Mk2s", 0x4dd7, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Forerunner 745", 0x4e05, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Venu Sq Music", 0x4e0c, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Descent Mk2/Mk2i (APAC)", 0x4e76, DEVICE_FLAGS_ANDROID_BUGS }, /* APAC version */
@@ -4005,6 +4006,7 @@
   { "Garmin", 0x091e, "Fenix 7 Sapphire Solar", 0x4f42, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/164 */
   { "Garmin", 0x091e, "Fenix 7", 0x4f43, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Garmin", 0x091e, "Descent Mk2s (APAC)", 0x4f5a, DEVICE_FLAGS_ANDROID_BUGS }, /* APAC version */
   /* https://sourceforge.net/p/libmtp/support-requests/299/ */
   { "Garmin", 0x091e, "EPIX 2", 0x4f67, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/150 */
@@ -4014,6 +4016,8 @@
   { "Garmin", 0x091e, "Forerunner 955 Solar", 0x4fb8, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1920/ */
   { "Garmin", 0x091e, "Tactix 7", 0x5027, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Garmin", 0x091e, "Descent Mk3/Mk3i - 43mm", 0x507e, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Garmin", 0x091e, "Descent Mk3i - 51mm", 0x507f, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Forerunner 265", 0x50a1, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/152 */
   { "Garmin", 0x091e, "Forerunner 965", 0x50db, DEVICE_FLAGS_ANDROID_BUGS },
