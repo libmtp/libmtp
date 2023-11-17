@@ -4010,7 +4010,7 @@
   /* https://sourceforge.net/p/libmtp/support-requests/299/ */
   { "Garmin", 0x091e, "EPIX 2", 0x4f67, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/150 */
-  { "Garmin", 0x091e, "Garmin Forerunner 255M", 0x4f96, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Garmin", 0x091e, "Forerunner 255M", 0x4f96, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/146 */
   { "Garmin", 0x091e, "Forerunner 255S Music", 0x4f97, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Forerunner 955 Solar", 0x4fb8, DEVICE_FLAGS_ANDROID_BUGS },
