@@ -3643,6 +3643,9 @@
   { "Amazon", 0x1949, "Kindle Fire 8 HD (7th Gen)", 0x0262,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* 2046=(MIDI), 2048=(MIDI+ADB) */
+  /* https://github.com/libmtp/libmtp/issues/191 */
+  { "Amazon", 0x1949, "Kindle Scribe 32GB", 0x9981,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Barnes&Noble
