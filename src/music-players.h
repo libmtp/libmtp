@@ -3935,6 +3935,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1855/ */
   { "Vivo", 0x0e8d, "Y21", 0xff00, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://github.com/libmtp/libmtp/issues/192 */
+  { "Lenovo", 0x0e8d, "Tab P12", 0x7e16, DEVICE_FLAGS_ANDROID_BUGS },
+
   /*
    * Jolla
    */
