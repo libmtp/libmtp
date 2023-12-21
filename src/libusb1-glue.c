@@ -832,7 +832,7 @@ libusb_glue_error (PTPParams *params, const char *format, ...)
  */
 #define CONTEXT_BLOCK_SIZE_1	0x3e00
 #define CONTEXT_BLOCK_SIZE_2  0x200
-#define CONTEXT_BLOCK_SIZE    CONTEXT_BLOCK_SIZE_1+CONTEXT_BLOCK_SIZE_2
+#define CONTEXT_BLOCK_SIZE    (CONTEXT_BLOCK_SIZE_1+CONTEXT_BLOCK_SIZE_2)
 static short
 ptp_read_func (
 	unsigned long size, PTPDataHandler *handler,void *data,

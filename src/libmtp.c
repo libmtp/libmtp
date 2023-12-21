@@ -2582,12 +2582,11 @@ static void add_ptp_error_to_errorstack(LIBMTP_mtpdevice_t *device,
 					uint16_t ptp_error,
 					char const * const error_text)
 {
-  PTPParams      *params = (PTPParams *) device->params;
-
   if (device == NULL) {
     LIBMTP_ERROR("LIBMTP PANIC: Trying to add PTP error to a NULL device!\n");
     return;
   } else {
+    PTPParams      *params = (PTPParams *) device->params;
     char outstr[256];
     snprintf(outstr, sizeof(outstr), "PTP Layer error %04x: %s", ptp_error, error_text);
     outstr[sizeof(outstr)-1] = '\0';
