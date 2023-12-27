@@ -4028,7 +4028,9 @@
   /* https://github.com/libmtp/libmtp/issues/152 */
   { "Garmin", 0x091e, "Forerunner 965", 0x50db, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1934/ */
-  { "Garmin", 0x091e, "Fenix 7s pro sapphire solar", 0x5116, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Garmin", 0x091e, "Fenix 7s Pro Sapphire Solar", 0x5116, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/194 */
+  { "Garmin", 0x091e, "Fenix 7 Pro Solar", 0x5117, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Wacom
