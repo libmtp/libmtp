@@ -28,13 +28,13 @@ dnl we cannot do a 'make distcheck' with it as a non-root user, so
 dnl we need to skip INSTALL or UNINSTALL during 'make distcheck'.
 dnl Do this here since automake can't process 'if/else/endif in Makefile.am
 UDEVdata_SNIPPET='
-noinst_DATA = libmtp.fdi libmtp.usermap
+noinst_DATA="libmtp.fdi libmtp.usermap"
 ifeq ($(shell id -u),0)
-    udevrulesdir = $(UDEV)/rules.d
-    hwdbdir = $(UDEV)/hwdb.d
+    udevrulesdir=$(UDEV)/rules.d
+    hwdbdir=$(UDEV)/hwdb.d
 ifdef ENABLE_CROSSBUILD
-    udevrulesdir = $(TARGET_UDEV)/rules.d
-    hwdbdir = $(TARGET_UDEV)/hwdb.d
+    udevrulesdir=$(TARGET_UDEV)/rules.d
+    hwdbdir=$(TARGET_UDEV)/hwdb.d
 endif
 endif
 '
@@ -42,9 +42,9 @@ AC_SUBST([UDEVdata_SNIPPET])
 AM_SUBST_NOTMAKE([UDEVdata_SNIPPET])
 UDEVbin_SNIPPET='
 ifeq ($(shell id -u),0)
-    mtp_probedir = $(UDEV)
+    mtp_probedir=$(UDEV)
 ifdef ENABLE_CROSSBUILD
-    mtp_probedir = $(TARGET_UDEV)
+    mtp_probedir=$(TARGET_UDEV)
 endif
 endif
 '
@@ -128,7 +128,7 @@ if test "$crossbuilddir" != off; then
     fi
 fi
 AM_CONDITIONAL(ENABLE_CROSSBUILD,[test "$crossbuilddir" != off])
-TARGET_UDEV = ${crossbuilddir}
+TARGET_UDEV=${crossbuilddir}
 AC_SUBST(TARGET_UDEV)
 
 # Check for Darwin
