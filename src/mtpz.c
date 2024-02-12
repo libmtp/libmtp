@@ -74,26 +74,34 @@
  * Microsoft to officially provide keys to this project.
  */
 
-static unsigned char *MTPZ_ENCRYPTION_KEY;
-static unsigned char *MTPZ_PUBLIC_EXPONENT;
-static unsigned char *MTPZ_MODULUS;
-static unsigned char *MTPZ_PRIVATE_KEY;
-static char *MTPZ_CERTIFICATES;
+static unsigned char *MTPZ_ENCRYPTION_KEY = NULL;
+static unsigned char *MTPZ_PUBLIC_EXPONENT = NULL;
+static unsigned char *MTPZ_MODULUS = NULL;
+static unsigned char *MTPZ_PRIVATE_KEY = NULL;
+static char *MTPZ_CERTIFICATES = NULL;
 
 // Strip the trailing newline from fgets().
-static char *fgets_strip(char * str, int num, FILE * stream)
+static char *fgets_strip(char **str, int num, FILE *stream)
 {
-	char *result = str;
-
-	if ((result = fgets(str, num, stream)))
+	*str = (char*)malloc(num);
+	char* result = *str;
+	if (fgets(result, num, stream) != NULL)
 	{
 		size_t newlen = strlen(result);
 
-		if (result[newlen - 1] == '\n')
+		if (newlen > 0 && (result[newlen - 1] == '\n' || result[newlen - 1] == '\r'))
+		{
 			result[newlen - 1] = '\0';
+			if (newlen > 1 && result[newlen - 2] == '\r')
+			{
+				result[newlen - 2] = '\0';
+			}
+		}
+
+		return result;
 	}
 
-	return result;
+	return NULL;
 }
 
 static char *hex_to_bytes(char *hex, size_t len)
@@ -132,23 +140,27 @@ int mtpz_loaddata()
 	if (!fdata)
 		return ret;
 
+	// Possible maximum line ending length; \r\n + \0 or other safety amount.
+	const size_t MAX_LINE_ENDING_LENGTH = 2 + 1;
+
 	// Should only be six characters in length, but fgets will encounter a newline and stop.
-	MTPZ_PUBLIC_EXPONENT = (unsigned char *)fgets_strip((char *)malloc(8), 8, fdata);
-	if (!MTPZ_PUBLIC_EXPONENT)
+	if (!fgets_strip((char**)&MTPZ_PUBLIC_EXPONENT, 6 + MAX_LINE_ENDING_LENGTH, fdata))
 	{
 		LIBMTP_ERROR("Unable to read MTPZ public exponent from ~/.mtpz-data, MTPZ disabled.\n");
 		goto cleanup;
 	}
 
 	// Should only be 33 characters in length, but fgets will encounter a newline and stop.
-	char *hexenckey = fgets_strip((char *)malloc(35), 35, fdata);
-	if (!hexenckey)
+	char *hexenckey;
+	if (!fgets_strip(&hexenckey, 33 + MAX_LINE_ENDING_LENGTH, fdata))
 	{
 		LIBMTP_ERROR("Unable to read MTPZ encryption key from ~/.mtpz-data, MTPZ disabled.\n");
+		free(hexenckey);
 		goto cleanup;
 	}
 
-	MTPZ_ENCRYPTION_KEY = hex_to_bytes(hexenckey, strlen(hexenckey));
+	MTPZ_ENCRYPTION_KEY = (unsigned char *)hex_to_bytes(hexenckey, strlen(hexenckey));
+	free(hexenckey);
 	if (!MTPZ_ENCRYPTION_KEY)
 	{
 		LIBMTP_ERROR("Unable to read MTPZ encryption key from ~/.mtpz-data, MTPZ disabled.\n");
@@ -156,30 +168,30 @@ int mtpz_loaddata()
 	}
 
 	// Should only be 256 characters in length, but fgets will encounter a newline and stop.
-	MTPZ_MODULUS = (unsigned char *)fgets_strip((char *)malloc(260), 260, fdata);
-	if (!MTPZ_MODULUS)
+	if (!fgets_strip((char**)&MTPZ_MODULUS, 256 + MAX_LINE_ENDING_LENGTH, fdata))
 	{
 		LIBMTP_ERROR("Unable to read MTPZ modulus from ~/.mtpz-data, MTPZ disabled.\n");
 		goto cleanup;
 	}
 
 	// Should only be 256 characters in length, but fgets will encounter a newline and stop.
-	MTPZ_PRIVATE_KEY = (unsigned char *)fgets_strip((char *)malloc(260), 260, fdata);
-	if (!MTPZ_PRIVATE_KEY)
+	if (!fgets_strip((char**)&MTPZ_PRIVATE_KEY, 256 + MAX_LINE_ENDING_LENGTH, fdata))
 	{
 		LIBMTP_ERROR("Unable to read MTPZ private key from ~/.mtpz-data, MTPZ disabled.\n");
 		goto cleanup;
 	}
 
 	// Should only be 1258 characters in length, but fgets will encounter the end of the file and stop.
-	char *hexcerts = fgets_strip((char *)malloc(1260), 1260, fdata);
-	if (!hexcerts)
+	char *hexcerts;
+	if (!fgets_strip(&hexcerts, 1258 + MAX_LINE_ENDING_LENGTH, fdata))
 	{
 		LIBMTP_ERROR("Unable to read MTPZ certificates from ~/.mtpz-data, MTPZ disabled.\n");
+		free(hexcerts);
 		goto cleanup;
 	}
 
 	MTPZ_CERTIFICATES = hex_to_bytes(hexcerts, strlen(hexcerts));
+	free(hexcerts);
 	if (!MTPZ_CERTIFICATES)
 	{
 		LIBMTP_ERROR("Unable to parse MTPZ certificates from ~/.mtpz-data, MTPZ disabled.\n");
@@ -188,6 +200,19 @@ int mtpz_loaddata()
 	// If all done without errors, drop the fail
 	ret = 0;
 cleanup:
+	if (ret != 0)
+	{
+		free(MTPZ_ENCRYPTION_KEY);
+		MTPZ_ENCRYPTION_KEY = NULL;
+		free(MTPZ_PUBLIC_EXPONENT);
+		MTPZ_PUBLIC_EXPONENT = NULL;
+		free(MTPZ_MODULUS);
+		MTPZ_MODULUS = NULL;
+		free(MTPZ_PRIVATE_KEY);
+		MTPZ_PRIVATE_KEY = NULL;
+		free(MTPZ_CERTIFICATES);
+		MTPZ_CERTIFICATES = NULL;
+	}
 	fclose(fdata);
 	return ret;
 }
@@ -260,9 +285,9 @@ static inline uint32_t mtpz_bswap32(uint32_t x)
 	return __builtin_bswap32(x);
 #else
 	return (x >> 24) |
-	       ((x >> 8) & 0x0000ff00) |
-	       ((x << 8) & 0x00ff0000) |
-	       (x << 24);
+		   ((x >> 8) & 0x0000ff00) |
+		   ((x << 8) & 0x00ff0000) |
+		   (x << 24);
 #endif
 }
 
@@ -613,9 +638,9 @@ void mtpz_encryption_cipher_advanced(unsigned char *key, unsigned int key_len, u
 			mtpz_encryption_encrypt_custom(data + offset, out, expanded);
 
 			dtf[0] = MTPZ_SWAP(data_int[(offset / 4) + 0]);
-            dtf[1] = MTPZ_SWAP(data_int[(offset / 4) + 1]);
-            dtf[2] = MTPZ_SWAP(data_int[(offset / 4) + 2]);
-            dtf[3] = MTPZ_SWAP(data_int[(offset / 4) + 3]);
+			dtf[1] = MTPZ_SWAP(data_int[(offset / 4) + 1]);
+			dtf[2] = MTPZ_SWAP(data_int[(offset / 4) + 2]);
+			dtf[3] = MTPZ_SWAP(data_int[(offset / 4) + 3]);
 		}
 		else
 		{
@@ -1825,7 +1850,7 @@ uint16_t ptp_mtpz_handshake (PTPParams* params)
 
 	LIBMTP_INFO ("(MTPZ) Sending confirmation message.\n");
 	message = ptp_mtpz_makeconfirmationmessage(hash, &size);
-        ret = ptp_mtpz_sendwmdrmpdapprequest (params, message, size);
+	ret = ptp_mtpz_sendwmdrmpdapprequest (params, message, size);
 	if (ret != PTP_RC_OK)
 		goto free_hash;
 	free (message);
