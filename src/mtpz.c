@@ -260,9 +260,9 @@ static inline uint32_t mtpz_bswap32(uint32_t x)
 	return __builtin_bswap32(x);
 #else
 	return (x >> 24) |
-	       ((x >> 8) & 0x0000ff00) |
-	       ((x << 8) & 0x00ff0000) |
-	       (x << 24);
+		   ((x >> 8) & 0x0000ff00) |
+		   ((x << 8) & 0x00ff0000) |
+		   (x << 24);
 #endif
 }
 
@@ -613,9 +613,9 @@ void mtpz_encryption_cipher_advanced(unsigned char *key, unsigned int key_len, u
 			mtpz_encryption_encrypt_custom(data + offset, out, expanded);
 
 			dtf[0] = MTPZ_SWAP(data_int[(offset / 4) + 0]);
-            dtf[1] = MTPZ_SWAP(data_int[(offset / 4) + 1]);
-            dtf[2] = MTPZ_SWAP(data_int[(offset / 4) + 2]);
-            dtf[3] = MTPZ_SWAP(data_int[(offset / 4) + 3]);
+			dtf[1] = MTPZ_SWAP(data_int[(offset / 4) + 1]);
+			dtf[2] = MTPZ_SWAP(data_int[(offset / 4) + 2]);
+			dtf[3] = MTPZ_SWAP(data_int[(offset / 4) + 3]);
 		}
 		else
 		{
@@ -1825,7 +1825,7 @@ uint16_t ptp_mtpz_handshake (PTPParams* params)
 
 	LIBMTP_INFO ("(MTPZ) Sending confirmation message.\n");
 	message = ptp_mtpz_makeconfirmationmessage(hash, &size);
-        ret = ptp_mtpz_sendwmdrmpdapprequest (params, message, size);
+	ret = ptp_mtpz_sendwmdrmpdapprequest (params, message, size);
 	if (ret != PTP_RC_OK)
 		goto free_hash;
 	free (message);
