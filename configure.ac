@@ -24,9 +24,11 @@ AC_ARG_WITH(udev,
 AC_DEFINE_UNQUOTED([UDEV_DIR], ["${UDEV}/"], [where mtp-probe is installed, default=/usr/lib/udev/])
 AC_SUBST(UDEV)
 dnl NOTE: Since the (default) UDEV directory is not part of libmtp,
-dnl we cannot do a 'make distcheck' with it as a non-root user, so
-dnl we need to skip INSTALL or UNINSTALL during 'make distcheck'.
-dnl Do this here since automake can't process 'if/else/endif in Makefile.am
+dnl we cannot do a 'make distcheck' with it as non-root user, this
+dnl is because 'make distcheck' uses $prefix to create a build dir.
+dnl We default to using '$(libdir)/udev/' as user, so that we can
+dnl run 'make distcheck' as well as run 'rpmbuild -ba' too. Do this
+dnl here since automake can't process 'if/else/endif in Makefile.am
 UDEVdata_SNIPPET='
 noinst_DATA="libmtp.fdi libmtp.usermap"
 ifeq ($(shell id -u),0)
@@ -36,6 +38,9 @@ ifdef ENABLE_CROSSBUILD
     udevrulesdir=$(TARGET_UDEV)/rules.d
     hwdbdir=$(TARGET_UDEV)/hwdb.d
 endif
+else
+    udevrulesdir=$(libdir)/udev/rules.d
+    hwdbdir=$(libdir)/udev/hwdb.d
 endif
 '
 AC_SUBST([UDEVdata_SNIPPET])
@@ -46,6 +51,8 @@ ifeq ($(shell id -u),0)
 ifdef ENABLE_CROSSBUILD
     mtp_probedir=$(TARGET_UDEV)
 endif
+else
+    mtp_probedir=$(libdir)/udev
 endif
 '
 AC_SUBST([UDEVbin_SNIPPET])
