@@ -4036,6 +4036,8 @@
   { "Garmin", 0x091e, "Fenix 7s Pro Sapphire Solar", 0x5116, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/194 */
   { "Garmin", 0x091e, "Fenix 7 Pro Solar", 0x5117, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/207 */
+  { "Garmin", 0x091e, "Tactix 7 AMOLED", 0x51be, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Wacom
