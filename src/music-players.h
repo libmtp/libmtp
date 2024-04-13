@@ -4378,7 +4378,7 @@
   { "Nox", 0x1e0a, "A1", 0x1001, DEVICE_FLAG_NONE },
 
   /* https://sourceforge.net/p/libmtp/bugs/1893/ */
-  { "Nintendo", 0x057e, "Switch Lite", 0x201d, DEVICE_FLAG_NONE },
+  { "Nintendo", 0x057e, "Switch / Switch Lite", 0x201d, DEVICE_FLAG_NONE },
 
   /* https://github.com/libmtp/libmtp/issues/72 https://sourceforge.net/p/libmtp/bugs/1895/ */
   { "Mudita", 0x3310, "Pure Phone", 0x0100, DEVICE_FLAG_NONE },
