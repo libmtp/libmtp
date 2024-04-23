@@ -4013,6 +4013,8 @@
   { "Garmin", 0x091e, "Venu 2 Plus", 0x4f0b, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/95 */
   { "Garmin", 0x091e, "Fenix 7 Sapphire Solar", 0x4f42, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/211 */
+  { "Garmin", 0x091e, "Euduro 2", 0x4f43, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/164 */
   { "Garmin", 0x091e, "Fenix 7", 0x4f43, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Descent Mk2s (APAC)", 0x4f5a, DEVICE_FLAGS_ANDROID_BUGS }, /* APAC version */
