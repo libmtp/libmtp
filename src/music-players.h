@@ -3187,6 +3187,9 @@
   /* https://github.com/libmtp/libmtp/issues/102 */
   { "Lenovo", 0x17ef, "Tab M10", 0x7bdf,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1944/ */
+  { "Lenovo", 0x17ef, "Yoga Smart Tab", 0x7c12,
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Lenovo", 0x17ef, "TB-X606F", 0x7c45,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/74 */
