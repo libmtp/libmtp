@@ -4412,5 +4412,8 @@
   /* https://github.com/libmtp/libmtp/issues/203 */
   { "DJI", 0x2ca3, "Controller 2", 0x1021, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/bugs/1942/ */
+  { "Rohde&Schwarz", 0x00ad, "RTB2004", 0x01d7, DEVICE_FLAGS_ANDROID_BUGS },
+
   /* qemu 3.0.0 hw/usb/dev-mtp.c */
   { "QEMU", 0x46f4, "Virtual MTP", 0x0004, DEVICE_FLAG_NONE }
