@@ -4038,6 +4038,8 @@
   { "Garmin", 0x091e, "Forerunner 265", 0x50a1, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/152 */
   { "Garmin", 0x091e, "Forerunner 965", 0x50db, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/218 */
+  { "Garmin", 0x091e, "GPSMAP 67", 0x50f0, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1934/ */
   { "Garmin", 0x091e, "Fenix 7s Pro Sapphire Solar", 0x5116, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/194 */
