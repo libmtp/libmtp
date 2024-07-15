@@ -276,7 +276,7 @@ AC_SYS_LARGEFILE
 # (No need to use AC_SUBST on this default substituted environment variable.)
 # Only add these additional CFLAGS if we are using GCC. Other C compilers may
 # not support them.
-if test x"$GCC" == "xyes" ; then
+if test x"$GCC" = "xyes" ; then
 	CFLAGS="$CFLAGS -Wall -Wmissing-prototypes"
 fi
 
