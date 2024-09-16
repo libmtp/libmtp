@@ -3207,6 +3207,9 @@
   /* https://github.com/libmtp/libmtp/issues/173 */
   { "Lenovo", 0x17ef, "TAB P11 Plus", 0x7d4b,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/bugs/1945/ */
+  { "Lenovo", 0x17ef, "TAB M11", 0x7e7c,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1736/ */
   { "Lenovo", 0x17ef, "P1060X", 0x9039,
       DEVICE_FLAGS_ANDROID_BUGS },
