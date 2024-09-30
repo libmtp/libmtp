@@ -4261,6 +4261,8 @@
   { "GoPro" , 0x2672, "HERO7 Silver", 0x0043, DEVICE_FLAG_NONE },
   { "GoPro" , 0x2672, "HERO7 Black", 0x0047, DEVICE_FLAG_NONE },
   { "GoPro" , 0x2672, "HERO8 Black", 0x0049, DEVICE_FLAG_NONE },
+  /* https://github.com/libmtp/libmtp/issues/225 */
+  { "GoPro" , 0x2672, "MAX", 0x004b, DEVICE_FLAG_NONE },
   { "GoPro" , 0x2672, "HERO9 Black", 0x004d, DEVICE_FLAG_NONE },
   { "GoPro" , 0x2672, "HERO10 Black", 0x0056, DEVICE_FLAG_NONE },
   { "GoPro" , 0x2672, "HERO11 Black", 0x0059, DEVICE_FLAG_NONE },
