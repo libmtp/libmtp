@@ -3216,6 +3216,9 @@
   /* https://sourceforge.net/p/libmtp/feature-requests/259/ */
   { "Medion", 0x17ef, "P10606", 0xf003,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/228 */
+  { "Lenovo", 0x17ef, "Tab P12", 0x7e16,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Huawei
