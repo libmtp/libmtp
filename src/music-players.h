@@ -4033,7 +4033,6 @@
   { "Garmin", 0x091e, "Descent Mk2s (APAC)", 0x4f5a, DEVICE_FLAGS_ANDROID_BUGS }, /* APAC version */
   /* https://sourceforge.net/p/libmtp/support-requests/299/ */
   { "Garmin", 0x091e, "EPIX 2", 0x4f67, DEVICE_FLAGS_ANDROID_BUGS },
-  { "Garmin", 0x091e, "EPIX Pro", 0x50d9, DEVICE_FLAGS_ANDROID_BUGS },    
   /* https://github.com/libmtp/libmtp/issues/150 */
   { "Garmin", 0x091e, "Forerunner 255M", 0x4f96, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/221 */
@@ -4048,6 +4047,7 @@
   { "Garmin", 0x091e, "Descent Mk3/Mk3i - 43mm", 0x507e, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Descent Mk3i - 51mm", 0x507f, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Forerunner 265", 0x50a1, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Garmin", 0x091e, "EPIX Pro", 0x50d9, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/152 */
   { "Garmin", 0x091e, "Forerunner 965", 0x50db, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/218 */
