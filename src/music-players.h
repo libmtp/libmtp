@@ -4432,6 +4432,8 @@
   /* https://sourceforge.net/p/libmtp/feature-requests/305/ */
   { "SHIFT", 0x3360, "SHIFT6m", 0x2008, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://sourceforge.net/p/libmtp/bugs/1941/ */
+  { "Teenage engineering", 0x2367, "TP-7", 0x0019, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/160 */
   { "Teenage engineering", 0x2367, "OP-1 field", 0x0102, DEVICE_FLAGS_ANDROID_BUGS },
 
