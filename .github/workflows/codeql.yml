@@ -72,7 +72,7 @@ jobs:
     - run: sudo apt-get update && sudo apt-get install -y autopoint automake autoconf libtool
 
     # build and check
-    - run: autoreconf -i -f ; ./configure ; make ; make check
+    - run: bash ./autogen.sh ; ./configure ; make ; make check
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@c36620d31ac7c881962c3d9dd939c40ec9434f2b # v3.26.12
