@@ -4052,6 +4052,7 @@
   /* https://github.com/libmtp/libmtp/issues/146 */
   { "Garmin", 0x091e, "Forerunner 255S Music", 0x4f97, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Forerunner 955 Solar", 0x4fb8, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Garmin", 0x091e, "Edge 840", 0x4fde, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/202 */
   { "Garmin", 0x091e, "Venu SQ 2 Music", 0x5014, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1920/ */
@@ -4059,6 +4060,7 @@
   { "Garmin", 0x091e, "Descent Mk3/Mk3i - 43mm", 0x507e, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Descent Mk3i - 51mm", 0x507f, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Forerunner 265", 0x50a1, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Garmin", 0x091e, "Venu 3s", 0x50a5, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "EPIX Pro", 0x50d9, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/152 */
   { "Garmin", 0x091e, "Forerunner 965", 0x50db, DEVICE_FLAGS_ANDROID_BUGS },
