@@ -69,7 +69,7 @@ jobs:
 
 
     # install automake and friends
-    - run: sudo apt-get update && sudo apt-get install -y autopoint automake autoconf libtool
+    - run: sudo apt-get update && sudo apt-get install -y autopoint automake autoconf libtool libusb-1.0-0-dev
 
     # build and check
     - run: bash ./autogen.sh ; ./configure ; make ; make check
@@ -78,3 +78,7 @@ jobs:
       uses: github/codeql-action/analyze@48ab28a6f5dbc2a99bf1e0131198dd8f1df78169 # v3.28.0
       with:
         category: "/language:${{matrix.language}}"
+        
+    queries:
+    - uses: security-extended
+    - uses: security-and-quality
