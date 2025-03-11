@@ -4022,7 +4022,7 @@ static int get_device_unicode_property(LIBMTP_mtpdevice_t *device,
   tmp[propval.a.count] = 0x0000U;
   free(propval.a.v);
 
-  *unicstring = utf16_to_utf8(device, tmp);
+  *unicstring = utf16_to_utf8(tmp);
 
   free(tmp);
 
