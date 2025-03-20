@@ -6,6 +6,10 @@ AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([src/libmtp.c])
 AM_CONFIG_HEADER(config.h)
 
+m4_include([m4/lib-ld.m4])
+m4_include([m4/lib-link.m4])
+m4_include([m4/lib-prefix.m4])
+
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
