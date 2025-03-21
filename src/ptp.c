@@ -5316,7 +5316,7 @@ ptp_fuji_getdeviceinfo (PTPParams* params, uint16_t **props, unsigned int *numpr
 	uint16_t	ret;
 	unsigned char	*xdata;
 	unsigned char	*data = NULL;
-	unsigned int	nums, i, newoffset, xsize, size  = 0;
+	unsigned int	nums, i, newoffset, size  = 0;
 
         PTP_CNT_INIT(ptp, PTP_OC_FUJI_GetDeviceInfo);
         ret = ptp_transaction(params, &ptp, PTP_DP_GETDATA, 0, &data, &size);
@@ -5328,7 +5328,6 @@ ptp_fuji_getdeviceinfo (PTPParams* params, uint16_t **props, unsigned int *numpr
 
 	nums = dtoh32a(data);
 	xdata = data + 4;
-	xsize = size - 4;
 
 	*props = calloc(sizeof(uint16_t),nums);
 	*numprops = nums;
@@ -5340,7 +5339,6 @@ ptp_fuji_getdeviceinfo (PTPParams* params, uint16_t **props, unsigned int *numpr
 			break;
 		(*props)[i] = dpd.DevicePropertyCode;
 		xdata	+= 4+newoffset;
-		xsize	-= 4+newoffset;
 	}
 	free (data);
 	return ret;
