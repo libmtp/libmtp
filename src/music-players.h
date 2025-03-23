@@ -4065,6 +4065,8 @@
   { "Garmin", 0x091e, "Forerunner 255", 0x4f98, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/146 */
   { "Garmin", 0x091e, "Forerunner 255S Music", 0x4f97, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/269 */
+  { "Garmin", 0x091e, "Forerunner 255S", 0x4f99, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Forerunner 955 Solar", 0x4fb8, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Edge 540", 0x4fdd, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Edge 840", 0x4fde, DEVICE_FLAGS_ANDROID_BUGS },
