@@ -1714,13 +1714,13 @@ ptp_usb_event (PTPParams* params, PTPContainer* event, int wait)
 		break;
 	}
 	if (ret != PTP_RC_OK) {
-		libusb_glue_error (params,
+		libusb_glue_debug (params,
 			"PTP: reading event an error 0x%04x occurred", ret);
 		return PTP_ERROR_IO;
 	}
 	rlen = xread;
 	if (rlen < 8) {
-		libusb_glue_error (params,
+		libusb_glue_debug (params,
 			"PTP: reading event an short read of %ld bytes occurred", rlen);
 		return PTP_ERROR_IO;
 	}
