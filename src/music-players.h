@@ -3582,6 +3582,9 @@
   /* https://github.com/libmtp/libmtp/issues/196 */
   { "SHARP", 0x0489, "AQUOS Wish2", 0xc030,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/254 */
+  { "SHARP", 0x0489, "AQUOS Wish3", 0xc033,
+      DEVICE_FLAGS_ANDROID_BUGS },    
   { "Foxconn (for Vizio)", 0x0489, "VTAB1008", 0xe040,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Foxconn (for Lenovo)", 0x0489, "IdeaTab A2109/A2110/Medion LIFETAB S9714", 0xe111,
