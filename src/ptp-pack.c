@@ -3125,7 +3125,7 @@ ptp_unpack_ptp11_manifest (
 		return 0;
 	numberoifs = dtoh64ap(params,data);
 	curoffset = 8;
-	xoifs = calloc(sizeof(PTPObjectFilesystemInfo),numberoifs);
+	xoifs = calloc(numberoifs,sizeof(PTPObjectFilesystemInfo));
 	if (!xoifs)
 		return 0;
 
