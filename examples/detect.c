@@ -187,6 +187,7 @@ int main (int argc, char **argv)
       for (i = 0; i < filetypes_len; i++) {
 	fprintf(stdout, "   %s\n", LIBMTP_Get_Filetype_Description(filetypes[i]));
       }
+      LIBMTP_FreeMemory(filetypes);
     } else {
       LIBMTP_Dump_Errorstack(device);
       LIBMTP_Clear_Errorstack(device);
