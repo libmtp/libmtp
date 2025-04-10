@@ -380,7 +380,7 @@
    *   that time it will not respond. Thus GUI programs work fine.
    * - Seems also to be used with Galaxy Nexus debug mode and on
    *   US markets for some weird reason.
-   * - has a weird USB bug if it reads exactly 512byte (usb 2 packetsize) 
+   * - has a weird USB bug if it reads exactly 512byte (usb 2 packetsize)
    *   the device will hang. this is one of the reasons we need to disable
    *   DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST as it can hit this size :/
    *   Post scriptum: This did not help, so we added it again. -Marcus
@@ -885,7 +885,7 @@
   { "iRiver", 0x4102, "AK380", 0x1195,
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS |
     DEVICE_FLAG_OGG_IS_UNKNOWN },
-  /* https://sourceforge.net/p/libmtp/bugs/1634/ 
+  /* https://sourceforge.net/p/libmtp/bugs/1634/
    * copying flags from above */
   { "iRiver", 0x4102, "AK70", 0x1200,
     DEVICE_FLAG_BROKEN_MTPGETOBJPROPLIST | DEVICE_FLAG_NO_ZERO_READS |
@@ -3704,7 +3704,7 @@
   /*
    * Viewpia, bq, YiFang
    * Seems like some multi-branded OEM product line.
-   * 
+   *
    * These values were given for the Anbernic RG353P (Beta#1) depending on mode:
    * https://github.com/M0Rf30/android-udev-rules/issues/256 (Anbernic RG353P)
    * 0x0003 - USB tether (not MTP)
@@ -3796,9 +3796,14 @@
   /*
    * Xiaomi
    */
+  /* https://www.debian-fr.org/t/xiaomi-mi3-mal-detecte-par-debian-jessie/66921/4 PTP */
+  { "Xiaomi", 0x2717, "Mi-3w (PTP)", 0x0318,
+      DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1269/ */
+  /* https://www.debian-fr.org/t/xiaomi-mi3-mal-detecte-par-debian-jessie/66921/4 mass_storage */
   { "Xiaomi", 0x2717, "Mi-3w (MTP)", 0x0360,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://www.debian-fr.org/t/xiaomi-mi3-mal-detecte-par-debian-jessie/66921/4 MTP */
   { "Xiaomi", 0x2717, "Mi-3 (MTP)", 0x0368,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1149/ */
@@ -3810,6 +3815,7 @@
   { "Xiaomi", 0x2717, "Hongmi (MTP+ADB)", 0x1240,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1095/ */
+  /* https://www.debian-fr.org/t/xiaomi-mi3-mal-detecte-par-debian-jessie/66921/4 MTP & USB debug */
   { "Xiaomi", 0x2717, "Hongmi (MTP)", 0x1248,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1295/ */
@@ -3824,7 +3830,17 @@
   /* https://sourceforge.net/p/libmtp/discussion/535190/ */
   { "Xiaomi", 0x2717, "HM NOTE 1LTEW MIUI (MTP)", 0x1368,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/92 */
+  /* https://github.com/M0Rf30/android-udev-rules/pull/275 */
   { "Xiaomi", 0x2717, "Mi-2 (MTP+ADB)", 0x9039,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/92 */
+  /* https://github.com/M0Rf30/android-udev-rules/pull/275 */
+  { "Xiaomi", 0x2717, "Mi-2 (PTP)", 0x904d,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/92 */
+  /* https://github.com/M0Rf30/android-udev-rules/pull/275 */
+  { "Xiaomi", 0x2717, "Mi-2 (PTP+ADB)", 0x904e,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Xiaomi", 0x2717, "Mi-2 (MTP)", 0xf003,
       DEVICE_FLAGS_ANDROID_BUGS },
