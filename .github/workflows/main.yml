@@ -22,6 +22,9 @@ jobs:
         run: ./configure ${{ matrix.choiceL }}
       - name: Make libmtp library
         run: make
+      - name: Test make check
+        if: matrix.choiceL == '--disable-mtpz'
+        run: make check
       - name: Test make distcheck
         if: matrix.choiceL == '--disable-silent-rules'
         run: make distcheck
@@ -44,3 +47,6 @@ jobs:
         run: ./configure ${{ matrix.choiceM }}
       - name: Make libmtp library
         run: make
+      - name: Test make check
+        if: matrix.choiceL == '--disable-silent-rules'
+        run: make check
