@@ -4496,5 +4496,8 @@
   /* https://sourceforge.net/p/libmtp/bugs/1942/ */
   { "Rohde&Schwarz", 0x0aad, "RTx Oscilloscope", 0x01d7, DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://github.com/libmtp/libmtp/issues/278 */
+  { "Polar", 0x0da4, "Grit X2 Pro", 0x0014, DEVICE_FLAGS_ANDROID_BUGS },
+
   /* qemu 3.0.0 hw/usb/dev-mtp.c */
   { "QEMU", 0x46f4, "Virtual MTP", 0x0004, DEVICE_FLAG_NONE }
