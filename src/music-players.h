@@ -3584,7 +3584,7 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/254 */
   { "SHARP", 0x0489, "AQUOS Wish3", 0xc033,
-      DEVICE_FLAGS_ANDROID_BUGS },    
+      DEVICE_FLAGS_ANDROID_BUGS },
   { "Foxconn (for Vizio)", 0x0489, "VTAB1008", 0xe040,
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Foxconn (for Lenovo)", 0x0489, "IdeaTab A2109/A2110/Medion LIFETAB S9714", 0xe111,
@@ -4500,4 +4500,8 @@
   { "Polar", 0x0da4, "Grit X2 Pro", 0x0014, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* qemu 3.0.0 hw/usb/dev-mtp.c */
-  { "QEMU", 0x46f4, "Virtual MTP", 0x0004, DEVICE_FLAG_NONE }
+  { "QEMU", 0x46f4, "Virtual MTP", 0x0004, DEVICE_FLAG_NONE },
+
+  /* Gamespy (camera), MCG-13034, vendor=Service & Quality Technology Co., Ltd */
+  /* https://github.com/libmtp/libmtp/issues/284 */
+  { "Service&&Quality" , 0x0ad2, "Gamespy", 0x917a, DEVICE_FLAG_NONE }
