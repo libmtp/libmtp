@@ -43,6 +43,13 @@ static void usage(void)
   exit(1);
 }
 
+static void free_str(char **str)
+{
+  if (*str != NULL) {
+    free(*str);
+  }
+}
+
 enum style {
   style_usbmap,
   style_udev,
@@ -126,9 +133,11 @@ int main (int argc, char **argv)
       }
       break;
     case 'g':
+      free_str(&udev_group);
       udev_group = strdup(optarg);
       break;
     case 'm':
+      free_str(&udev_mode);
       udev_mode = strdup(optarg);
       break;
  default:
@@ -354,5 +363,7 @@ int main (int argc, char **argv)
     printf("\n");
   }
 
+  free_str(&udev_mode);
+  free_str(&udev_group);
   return 0;
 }
