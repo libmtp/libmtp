@@ -150,7 +150,14 @@ int main (int argc, char **argv)
     retval = 1;
   }
 
-  LIBMTP_Init();
+  /* LIBMTP_Init(); */
+  /*
+   * LIBMTP_Get_Supported_Devices_List() is a completely static
+   * function which only returns pointers to a static list, so
+   * it is safe to avoid running LIBMTP_Init() for mtp-hotplug.c
+   *
+   * There are no other LIBMTP calls beyond the one listed below
+   */
   ret = LIBMTP_Get_Supported_Devices_List(&entries, &numentries);
   if (ret == 0) {
     /* sort codes numerically */
