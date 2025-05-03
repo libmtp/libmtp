@@ -21,17 +21,11 @@ aclocal $ACLOCAL_FLAGS || fail
 
 # Refresh GNU autotools toolchain: autoconf
 echo "Removing autoconf cruft"
-rm -f configure config.guess config.sub
+rm -f configure config.guess config.sub ltmain.sh
 rm -rf autom4te*.cache/
 echo "Running autoconf"
 autoconf
-
-# Refresh GNU autotools toolchain: libtool
-echo "Removing libtool cruft"
-rm -f ltmain.sh
-echo "Running libtoolize"
-(glibtoolize --version) < /dev/null > /dev/null 2>&1 && LIBTOOLIZE=glibtoolize || LIBTOOLIZE=libtoolize
-$LIBTOOLIZE --copy --force || fail
+autoreconf -i
 
 echo "Removing autoheader cruft"
 rm -f config.h.in src/config.h.in
