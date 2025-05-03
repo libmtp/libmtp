@@ -19,9 +19,16 @@ touch config.rpath
 echo "Running aclocal $ACLOCAL_FLAGS"
 aclocal $ACLOCAL_FLAGS || fail
 
+# Refresh GNU autotools toolchain: autoconf
+echo "Removing autoconf cruft"
+rm -f configure config.guess config.sub
+rm -rf autom4te*.cache/
+echo "Running autoconf"
+autoconf
+
 # Refresh GNU autotools toolchain: libtool
 echo "Removing libtool cruft"
-rm -f ltmain.sh config.guess config.sub
+rm -f ltmain.sh
 echo "Running libtoolize"
 (glibtoolize --version) < /dev/null > /dev/null 2>&1 && LIBTOOLIZE=glibtoolize || LIBTOOLIZE=libtoolize
 $LIBTOOLIZE --copy --force || fail
@@ -37,13 +44,6 @@ rm -f depcomp install-sh missing mkinstalldirs
 rm -f stamp-h*
 echo "Running automake"
 automake --add-missing --gnu || fail
-
-# Refresh GNU autotools toolchain: autoconf
-echo "Removing autoconf cruft"
-rm -f configure
-rm -rf autom4te*.cache/
-echo "Running autoconf"
-autoconf
 
 # Autoupdate config.sub and config.guess 
 # from GNU CVS
