@@ -186,6 +186,8 @@ int main (int argc, char **argv)
       printf("ATTR{idVendor}==\"0971\", GOTO=\"libmtp_rules_end\"\n");
       printf("# Canon scanners that look like MTP devices (PID 0x22nn)\n");
       printf("ATTR{idVendor}==\"04a9\", ATTR{idProduct}==\"22*\", GOTO=\"libmtp_rules_end\"\n");
+      printf("# HP scanners that look like MTP devices (PID 0xc5nn)\n");
+      printf("ATTR{idVendor}==\"03f0\", ATTR{idProduct}==\"c5*\", GOTO=\"libmtp_rules_end\"\n");
       printf("# Canon digital camera (EOS 3D) that looks like MTP device (PID 0x3113)\n");
       printf("ATTR{idVendor}==\"04a9\", ATTR{idProduct}==\"3113\", GOTO=\"libmtp_rules_end\"\n");
       printf("# Sensitive Atheros devices that look like MTP devices\n");
