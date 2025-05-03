@@ -12,6 +12,13 @@ fail() {
     exit $status
 }
 
+# Refresh GNU autotools toolchain: aclocal autoheader
+echo "Removing aclocal cruft"
+rm -f aclocal.m4 config.rpath
+touch config.rpath
+echo "Running aclocal $ACLOCAL_FLAGS"
+aclocal $ACLOCAL_FLAGS || fail
+
 # Refresh GNU autotools toolchain: libtool
 echo "Removing libtool cruft"
 rm -f ltmain.sh config.guess config.sub
@@ -19,12 +26,6 @@ echo "Running libtoolize"
 (glibtoolize --version) < /dev/null > /dev/null 2>&1 && LIBTOOLIZE=glibtoolize || LIBTOOLIZE=libtoolize
 $LIBTOOLIZE --copy --force || fail
 
-# Refresh GNU autotools toolchain: aclocal autoheader
-echo "Removing aclocal cruft"
-rm -f aclocal.m4 config.rpath
-touch config.rpath
-echo "Running aclocal $ACLOCAL_FLAGS"
-aclocal $ACLOCAL_FLAGS || fail
 echo "Removing autoheader cruft"
 rm -f config.h.in src/config.h.in
 echo "Running autoheader"
