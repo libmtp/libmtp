@@ -1,6 +1,10 @@
 #!/bin/sh
 #set -e
 
+# Before running autogen.sh, you wil need to install: autopoint automake autoconf libtool
+# and the developer versions for: libgcrypt-dev libusb-1.0-0-dev
+# and also the developer version of: libiconv (this may also be within 'gettext' for some distros).
+
 srcdir=`dirname $0`
 
 ACLOCAL_FLAGS="-I ${srcdir}/m4 ${ACLOCAL_FLAGS}"
@@ -44,7 +48,7 @@ rm -rf autom4te*.cache/
 echo "Running autoconf"
 autoconf
 
-# Autoupdate config.sub and config.guess 
+# Autoupdate config.sub and config.guess
 # from GNU CVS
 WGET=`which wget`
 if [ "x$WGET" != "x" ]; then
