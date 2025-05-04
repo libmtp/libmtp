@@ -13,11 +13,7 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install autoconf automake autopoint libtool gettext gcc libgcrypt-dev libusb-dev libusb-1.0-0-dev
-          touch ./config.rpath
-          aclocal
-          autoconf -f
-          autoreconf -i
-          automake
+          bash autogen.sh
       - name: Choose configure option(s)
         run: ./configure ${{ matrix.choiceL }}
       - name: Make libmtp library
