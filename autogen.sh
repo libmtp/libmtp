@@ -46,7 +46,7 @@ echo "Removing autoconf cruft"
 rm -f configure
 rm -rf autom4te*.cache/
 echo "Running autoconf"
-autoconf
+autoconf -f
 
 # Autoupdate config.sub and config.guess
 # from GNU CVS
