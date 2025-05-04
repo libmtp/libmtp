@@ -70,7 +70,9 @@ jobs:
 
     # install automake and friends
     - run: sudo apt-get update && sudo apt-get install -y autopoint automake autoconf libtool
-    - run: sudo apt-get gettext
+
+    # autogen.sh needs to check for and add these too....
+    - run: sudo apt-get install -y gettext libgcrypt-dev libusb-dev libusb-1.0-0-dev
 
     # build and check
     - run: bash ./autogen.sh ; ./configure ; make ; make check
