@@ -12,7 +12,7 @@ jobs:
       - name: Create configure
         run: |
           sudo apt-get update -y
-          sudo apt-get install autoconf automake libtool gettext gcc libgcrypt-dev libusb-dev libusb-1.0-0-dev
+          sudo apt-get install autoconf automake autopoint libtool gettext gcc libgcrypt-dev libusb-dev libusb-1.0-0-dev
           touch ./config.rpath
           aclocal
           autoconf
