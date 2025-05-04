@@ -68,11 +68,8 @@ jobs:
         # queries: security-extended,security-and-quality
 
 
-    # install automake and friends
-    - run: sudo apt-get update && sudo apt-get install -y autopoint automake autoconf libtool
-
-    # install other packages needed to build complete libmtp
-    sudo apt-get install -y gettext libgcrypt-dev libusb-1.0-0-dev
+    # install automake and friends, also necessary dependencies.
+    - run: sudo apt-get update && sudo apt-get install -y autopoint automake autoconf libtool gettext libgcrypt-dev libusb-1.0-0-dev
 
     # build and check
     - run: bash ./autogen.sh ; ./configure ; make ; make check
