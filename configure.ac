@@ -13,6 +13,7 @@ AC_PROG_LN_S
 AC_CHECK_TOOL([HOST_MTP_HOTPLUG],[mtp-hotplug],[:])
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
+AM_GNU_GETTEXT_VERSION([0.11.5])
 AM_ICONV
 
 # Optionally set install location of udev
