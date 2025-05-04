@@ -32,7 +32,7 @@ on:
       - 'LICENSES/*'
   schedule:
     - cron: '35 14 * * 1'
-    
+
 permissions:
   contents: read
 
@@ -70,6 +70,7 @@ jobs:
 
     # install automake and friends
     - run: sudo apt-get update && sudo apt-get install -y autopoint automake autoconf libtool
+    - run: sudo apt-get gettext
 
     # build and check
     - run: bash ./autogen.sh ; ./configure ; make ; make check

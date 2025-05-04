@@ -12,21 +12,18 @@ fail() {
     exit $status
 }
 
+# Refresh GNU autotools toolchain: libtool
+echo "Removing libtool cruft"
+rm -f ltmain.sh config.guess config.sub
+echo "Running libtoolize"
+(glibtoolize --version) < /dev/null > /dev/null 2>&1 && LIBTOOLIZE=glibtoolize || LIBTOOLIZE=libtoolize
+$LIBTOOLIZE --copy --force || fail
+
 # Refresh GNU autotools toolchain: aclocal autoheader
 echo "Removing aclocal cruft"
-rm -f aclocal.m4 config.rpath
-touch config.rpath
+rm -f aclocal.m4
 echo "Running aclocal $ACLOCAL_FLAGS"
 aclocal $ACLOCAL_FLAGS || fail
-
-# Refresh GNU autotools toolchain: autoconf
-echo "Removing autoconf cruft"
-rm -f configure config.guess config.sub ltmain.sh
-rm -rf autom4te*.cache/
-echo "Running autoconf"
-autoconf
-autoreconf -i
-
 echo "Removing autoheader cruft"
 rm -f config.h.in src/config.h.in
 echo "Running autoheader"
@@ -37,9 +34,17 @@ echo "Removing automake cruft"
 rm -f depcomp install-sh missing mkinstalldirs
 rm -f stamp-h*
 echo "Running automake"
+touch config.rpath
 automake --add-missing --gnu || fail
 
-# Autoupdate config.sub and config.guess 
+# Refresh GNU autotools toolchain: autoconf
+echo "Removing autoconf cruft"
+rm -f configure
+rm -rf autom4te*.cache/
+echo "Running autoconf"
+autoconf
+
+# Autoupdate config.sub and config.guess
 # from GNU CVS
 WGET=`which wget`
 if [ "x$WGET" != "x" ]; then
