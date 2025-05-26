@@ -3661,8 +3661,17 @@
   /* https://sourceforge.net/p/libmtp/support-requests/293/ */
   { "Amazon", 0x1949, "Kindle Fire Tablet 10 HD (2nd ID)", 0x03f1,
       DEVICE_FLAGS_ANDROID_BUGS },
-
-  { "Amazon", 0x1949, "Kindle Fire HD8 Plus", 0x0581,
+  /* https://github.com/M0Rf30/android-udev-rules/issues/352 */
+  { "Amazon", 0x1949, "Fire HD8 Plus (10th ID onyx) (MTP)", 0x0581,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/M0Rf30/android-udev-rules/issues/352 */
+  { "Amazon", 0x1949, "Fire HD8 Plus (10th ID onyx) (MTP+ADB)", 0x0582,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/M0Rf30/android-udev-rules/issues/352 */
+  { "Amazon", 0x1949, "Fire HD8 Plus (10th ID onyx) (PTP)", 0x0583,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/M0Rf30/android-udev-rules/issues/352 */
+  { "Amazon", 0x1949, "Fire HD8 Plus (10th ID onyx) (PTP+ADB)", 0x0584,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1913/ */
   { "Amazon", 0x1949, "Kindle Fire 10 Plus (MTP)", 0x05e1,
