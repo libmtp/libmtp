@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Create configure
         run: |
-          brew install autoconf automake libtool gcc libgcrypt libiconv gettext
+          brew install autoconf automake libtool gcc libgcrypt libiconv gettext autopoint
           bash autogen.sh
       - name: Choose configure option(s)
         run: ./configure ${{ matrix.choiceM }}
