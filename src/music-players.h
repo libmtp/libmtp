@@ -4477,6 +4477,8 @@
 
   /* https://sourceforge.net/p/libmtp/bugs/1893/ */
   { "Nintendo", 0x057e, "Switch / Switch Lite", 0x201d, DEVICE_FLAG_NONE },
+  /* https://sourceforge.net/p/libmtp/bugs/1953/ */
+  { "Nintendo", 0x057e, "Switch 2", 0x2061, DEVICE_FLAG_NONE },
 
   /* https://github.com/libmtp/libmtp/issues/72 https://sourceforge.net/p/libmtp/bugs/1895/ */
   { "Mudita", 0x3310, "Pure Phone", 0x0100, DEVICE_FLAG_NONE },

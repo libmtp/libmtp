@@ -1,0 +1,82 @@
+Listing raw device(s)
+Device 0 (VID=057e and PID=2061) is UNKNOWN in libmtp v1.1.22.
+Please report this VID/PID and the device model to the libmtp development team
+   Found 1 device(s):
+   057e:2061 @ bus 1, dev 1
+Attempting to connect device(s)
+LIBMTP WARNING: no MTP vendor extension on device 1 on bus 1LIBMTP WARNING: VendorExtensionID: ffffffffLIBMTP WARNING: VendorExtensionDesc: nintendo.com: 1.0; LIBMTP WARNING: this typically means the device is PTP (i.e. a camera) but not an MTP device at all. Trying to continue anyway.USB low-level info:
+   Interface has a kernel driver attached.
+   bcdUSB: 512
+   bDeviceClass: 0
+   bDeviceSubClass: 0
+   bDeviceProtocol: 0
+   idVendor: 057e
+   idProduct: 2061
+   IN endpoint maxpacket: 512 bytes
+   OUT endpoint maxpacket: 512 bytes
+   Raw device info:
+      Bus location: 1
+      Device number: 1
+      Device entry info:
+         Vendor: (null)
+         Vendor id: 0x057e
+         Product: (null)
+         Product id: 0x2061
+         Device flags: 0x00000000
+Configuration 0, interface 0, altsetting 0:
+   Interface description contains the string "MTP"
+   Device recognized as MTP, no further probing.
+Device info:
+   Manufacturer: Nintendo
+   Model: Nintendo Switch 2
+   Device version: 20.1.5
+   Serial number: HAE10500655976
+   Vendor extension ID: 0xffffffff
+   Vendor extension description: nintendo.com: 1.0;
+   Detected object size: 32 bits
+   Extensions:
+        nintendo.com: 1.0
+Supported operations:
+   1001: Get device info
+   1002: Open session
+   1003: Close session
+   1004: Get storage IDs
+   1005: Get storage info
+   1006: Get number of objects
+   1007: Get object handles
+   1008: Get object info
+   1009: Get object
+   100a: Get thumbnail
+Events supported:
+   0x4002: ObjectAdded
+   0x4003: ObjectRemoved
+   0x4004: StoreAdded
+   0x4005: StoreRemoved
+   0x4007: ObjectInfoChanged
+   0x400c: StorageInfoChanged
+Device Properties Supported:
+Storage Devices:
+   StorageID: 0x00320001
+      StorageType: 0x0001 fixed ROM storage
+      FilesystemType: 0x0002 generic hierarchical
+      AccessCapability: 0x0001 read only
+      MaxCapacity: 18446744073709551615
+      FreeSpaceInBytes: 18446744073709551615
+      FreeSpaceInObjects: 4294967295
+      StorageDescription: Album
+      VolumeIdentifier:
+Special directories:
+   Default music folder: 0xffffffff
+   Default playlist folder: 0xffffffff
+   Default picture folder: 0xffffffff
+   Default video folder: 0xffffffff
+   Default organizer folder: 0xffffffff
+   Default zencast folder: 0xffffffff
+   Default album folder: 0xffffffff
+   Default text folder: 0xffffffff
+MTP-specific device properties:
+   Friendly name: (NULL)
+   Synchronization partner: (NULL)
+libmtp supported (playable) filetypes:
+OK.
+
