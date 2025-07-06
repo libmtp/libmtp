@@ -3759,7 +3759,7 @@
   { "Various", 0x2207, "Anbernic RG353P/iBasso DX170 DAP (MTP+ADB)", 0x0017,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/M0Rf30/android-udev-rules/issues/256 (Anbernic RG353P) */
-  { "Various", 0x2207, "Anbernic RG353P (PTP+ADB)", 0x0018,
+  { "Various", 0x2207, "Anbernic RG353P (PTP+ADB) (2nd id)", 0x0018,
       DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/82 */
   { "Supernote", 0x2207, "A5X", 0x0031,
@@ -4013,7 +4013,7 @@
   { "Vivo", 0x0e8d, "Y21", 0xff00, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* https://github.com/libmtp/libmtp/issues/192 */
-  { "Lenovo", 0x0e8d, "Tab P12", 0x7e16, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Lenovo", 0x0e8d, "Tab P12 (2nd id)", 0x7e16, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Jolla
