@@ -4519,6 +4519,8 @@
   { "Teenage engineering", 0x2367, "TP-7", 0x0019, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/160 */
   { "Teenage engineering", 0x2367, "OP-1 field", 0x0102, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/311 */
+  { "Teenage engineering", 0x2367, "OP-XY", 0x0021, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* https://github.com/libmtp/libmtp/issues/203 */
   { "DJI", 0x2ca3, "Controller 2", 0x1021, DEVICE_FLAGS_ANDROID_BUGS },
