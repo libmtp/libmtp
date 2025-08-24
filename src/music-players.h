@@ -2060,6 +2060,9 @@
   /* https://sourceforge.net/p/libmtp/feature-requests/303/ */
   { "SONY", 0x0fce, "Xperia 5 II Phone", 0x020d,
       DEVICE_FLAG_NONE },
+  /* https://github.com/libmtp/libmtp/issues/315 */
+  { "SONY", 0x0fce, "Xperia 10 VI", 0x020e,
+      DEVICE_FLAG_NONE },
 
   /* https://bugs.kde.org/show_bug.cgi?id=387454 ... probably not in the ADB/CDROM method? */
   { "SONY", 0x0fce, "Xperia XA2 (Jolla Sailfish)", 0x0a07,
@@ -2217,6 +2220,8 @@
   { "SONY", 0x0fce, "Xperia 10 V Phone MTP+CDROM", 0x420c,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia 5 II Phone MTP+CDROM", 0x420d,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia 10 VI MTP+CDROM", 0x420e,
       DEVICE_FLAG_NONE },
 
   /*
@@ -2395,6 +2400,8 @@
   { "SONY", 0x0fce, "Xperia 10 V Phone MTP+ADB", 0x520c,
       DEVICE_FLAG_NONE },
   { "SONY", 0x0fce, "Xperia 5 II Phone MTP+ADB", 0x520d,
+      DEVICE_FLAG_NONE },
+  { "SONY", 0x0fce, "Xperia 10 VI MTP+ADB", 0x520e,
       DEVICE_FLAG_NONE },
 
   /*
