@@ -48,10 +48,10 @@
 /**
  * Debug macro
  */
-#define LIBMTP_PLST_DEBUG(format, args...) \
+#define LIBMTP_PLST_DEBUG(format, ...) \
   do { \
     if ((LIBMTP_debug & LIBMTP_DEBUG_PLST) != 0) \
-      fprintf(stdout, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##args); \
+      fprintf(stdout, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##__VA_ARGS__); \
   } while (0)
 
 
