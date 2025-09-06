@@ -25,7 +25,9 @@
 
 #include <stdio.h>
 #include <stdlib.h> // mkstmp()
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>

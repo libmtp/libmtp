@@ -40,7 +40,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#elif defined(_MSC_VER)
+
+static void usleep(int64_t usec)
+{
+    HANDLE timer;
+    LARGE_INTEGER ft;
+    ft.QuadPart = -(10*usec);
+    timer = CreateWaitableTimer(NULL, TRUE, NULL);
+    SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0);
+    WaitForSingleObject(timer, INFINITE);
+    CloseHandle(timer);
+}
+
+#endif
 
 #include "ptp-pack.c"
 

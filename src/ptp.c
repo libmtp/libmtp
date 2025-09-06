@@ -38,6 +38,22 @@
 # include <unistd.h>
 #endif
 
+#ifdef _MSC_VER
+#include <windows.h>
+typedef SSIZE_T ssize_t;
+
+static void usleep(int64_t usec)
+{
+    HANDLE timer;
+    LARGE_INTEGER ft;
+    ft.QuadPart = -(10*usec);
+    timer = CreateWaitableTimer(NULL, TRUE, NULL);
+    SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0);
+    WaitForSingleObject(timer, INFINITE);
+    CloseHandle(timer);
+}
+#endif
+
 #ifdef ENABLE_NLS
 #  include <libintl.h>
 #  undef _

@@ -49,7 +49,9 @@ int use_mtpz;
 #include <stdarg.h>
 #include <stdlib.h>
 #include <limits.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -59,6 +61,7 @@ int use_mtpz;
 #ifdef _MSC_VER // For MSVC++
 #define USE_WINDOWS_IO_H
 #include <io.h>
+#define strcasecmp _stricmp
 #endif
 
 
