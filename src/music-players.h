@@ -4170,6 +4170,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1245/ */
   { "DigiLand", 0x1f3a, "DL701Q", 0x0c02,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* Marcus temu tablet */
+  { "Allwinner", 0x1f3a, "IT_701A", 0x4ee1,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * bq
