@@ -317,6 +317,11 @@ int update_spl_playlist(LIBMTP_mtpdevice_t *device,
   return 0; // nothing to be done, success
 }
 
+// set MAXREAD to match STRING_BUFFER_LENGTH in unicode.h conversion function
+#define MAXREAD (1024*2)
+// upto 3 bytes per utf8 character, 2 bytes per ucs2 character,
+// +1 for '\0' at end of string
+#define WSIZE (MAXREAD/2*3+1)
 
 /**
  * Load a file descriptor into a string.
@@ -328,12 +333,7 @@ int update_spl_playlist(LIBMTP_mtpdevice_t *device,
  */
 static text_t* read_into_spl_text_t(LIBMTP_mtpdevice_t *device, const int fd)
 {
-  // set MAXREAD to match STRING_BUFFER_LENGTH in unicode.h conversion function
-  const size_t MAXREAD = 1024*2;
   char t[MAXREAD];
-  // upto 3 bytes per utf8 character, 2 bytes per ucs2 character,
-  // +1 for '\0' at end of string
-  const size_t WSIZE = MAXREAD/2*3+1;
   char w[WSIZE];
   char* it = t; // iterator on t
   char* iw = w;
@@ -666,7 +666,7 @@ static void discover_filepath_from_id(char** p,
                                       LIBMTP_file_t* files)
 {
   // fill in a string from the right side since we don't know the root till the end
-  const int M = 1024;
+  #define M (1024)
   char w[M];
   char* iw = w + M; // iterator on w
 

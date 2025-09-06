@@ -5722,18 +5722,19 @@ static char *generate_unique_filename(PTPParams* params, char const * const file
   {
     extension_position = strrchr(filename,'.');
 
-    char basename[extension_position - filename + 1];
+    char *basename = calloc(1, extension_position - filename + 1);
     strncpy(basename, filename, extension_position - filename);
     basename[extension_position - filename] = '\0';
 
     suffix = 1;
-    char newname[ strlen(basename) + 6 + strlen(extension_position)];
+    char *newname = calloc(1, strlen(basename) + 6 + strlen(extension_position));
     sprintf(newname, "%s_%d%s", basename, suffix, extension_position);
     while ((check_filename_exists(params, newname)) && (suffix < 1000000)) {
       suffix++;
       sprintf(newname, "%s_%d%s", basename, suffix, extension_position);
     }
-  return strdup(newname);
+    free(basename);
+    return newname;
   }
   else
   {
