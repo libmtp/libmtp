@@ -107,6 +107,12 @@ else
 fi
 AM_CONDITIONAL(HAVE_DOXYGEN,$HAVE_DOXYGEN)
 
+# Optionally build example programs
+AC_ARG_ENABLE([examples],
+    AS_HELP_STRING([--enable-examples], [Build libmtp example programs [default=yes]]),
+    [ac_enable_examples=$enableval], [ac_enable_examples=yes])
+AM_CONDITIONAL(BUILD_EXAMPLES, [test "$ac_enable_examples" = "yes"])
+
 # Optionally crossbuild libmtp for a target CPU/OS
 # Most users can safely ignore this option and leave it as 'off'.
 # Users crossbuilding for another CPU/OS need to follow 3 steps
