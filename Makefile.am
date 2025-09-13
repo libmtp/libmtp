@@ -1,5 +1,9 @@
-SUBDIRS=src examples util doc
+SUBDIRS = src util doc
 ACLOCAL_AMFLAGS=-I m4
+
+if BUILD_EXAMPLES
+SUBDIRS += examples
+endif
 
 pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA=libmtp.pc
