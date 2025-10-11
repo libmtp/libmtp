@@ -4130,6 +4130,8 @@
   /* https://github.com/libmtp/libmtp/issues/245 */
   { "Garmin", 0x091e, "EPIX Pro (Gen 2)", 0x50d8, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "EPIX Pro", 0x50d9, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/328 */
+  { "Garmin", 0x091e, "EPIX Pro (Gen 2) 51mm", 0x50da, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/152 */
   { "Garmin", 0x091e, "Forerunner 965", 0x50db, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/218 */
