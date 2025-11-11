@@ -200,6 +200,8 @@ int main (int argc, char **argv)
       printf("ATTR{idVendor}==\"1db2\", ATTR{idProduct}==\"060*\", GOTO=\"libmtp_rules_end\"\n");
       printf("# Printers\n");
       printf("ENV{ID_USB_INTERFACES}==\"*:0701??:*\", GOTO=\"libmtp_rules_end\"\n");
+      printf("# Sennheiser/EPOS ADAPT 160 ANC\n");
+      printf("ATTR{idVendor}==\"1395\", ATTR{idProduct}==\"0280\", GOTO=\"libmtp_rules_end\"\n");
       break;
     case style_udev_fast:
     case style_udev_old:
