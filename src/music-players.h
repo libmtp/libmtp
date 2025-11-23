@@ -3597,8 +3597,10 @@
       DEVICE_FLAGS_ANDROID_BUGS },
   { "Foxconn (for Vizio)", 0x0489, "VTAB1008", 0xe040,
       DEVICE_FLAGS_ANDROID_BUGS },
+/* ... seems to cause problems, see https://github.com/libmtp/libmtp/issues/346 
   { "Foxconn (for Lenovo)", 0x0489, "IdeaTab A2109/A2110/Medion LIFETAB S9714", 0xe111,
       DEVICE_FLAGS_ANDROID_BUGS },
+*/
 
 
   /*
