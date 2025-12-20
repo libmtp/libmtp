@@ -4117,7 +4117,6 @@
   { "Garmin", 0x091e, "Forerunner 955 Solar", 0x4fb8, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Edge 540", 0x4fdd, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Edge 840", 0x4fde, DEVICE_FLAGS_ANDROID_BUGS },
-  { "Garmin", 0x091e, "Edge 850", 0x521a, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/202 */
   { "Garmin", 0x091e, "Venu SQ 2 Music", 0x5014, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/264 */
@@ -4156,6 +4155,7 @@
   { "Garmin", 0x091e, "Forerunner 570", 0x51de, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/303 */
   { "Garmin", 0x091e, "Vivoactive 6", 0x5211, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Garmin", 0x091e, "Edge 850", 0x521a, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/309 */
   { "Garmin", 0x091e, "Instinct 3 Solar", 0x5297, DEVICE_FLAGS_ANDROID_BUGS },
 
