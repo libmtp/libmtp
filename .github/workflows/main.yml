@@ -8,7 +8,7 @@ jobs:
       matrix:
         choiceL: [--disable-silent-rules, --with-udev-group=nobody --with-udev-mode=760, --disable-mtpz]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
       - name: Create configure
         run: |
           sudo apt-get update -y
@@ -27,7 +27,7 @@ jobs:
       matrix:
         choiceL: [--disable-silent-rules, --with-udev-group=nobody --with-udev-mode=760, --disable-mtpz]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
       - name: Create configure
         run: |
           brew install autoconf automake libtool gcc libgcrypt libiconv gettext
