@@ -23,6 +23,7 @@ echo "Running libtoolize"
 (glibtoolize --version) < /dev/null > /dev/null 2>&1 && LIBTOOLIZE=glibtoolize || LIBTOOLIZE=libtoolize
 $LIBTOOLIZE --copy --force || fail
 
+echo "Running gettextize --force"
 gettextize --force
 
 # Refresh GNU autotools toolchain: aclocal autoheader
