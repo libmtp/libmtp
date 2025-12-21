@@ -23,6 +23,8 @@ echo "Running libtoolize"
 (glibtoolize --version) < /dev/null > /dev/null 2>&1 && LIBTOOLIZE=glibtoolize || LIBTOOLIZE=libtoolize
 $LIBTOOLIZE --copy --force || fail
 
+gettextize --force
+
 # Refresh GNU autotools toolchain: aclocal autoheader
 echo "Removing aclocal cruft"
 rm -f aclocal.m4
