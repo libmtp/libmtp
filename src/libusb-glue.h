@@ -51,10 +51,10 @@ extern "C" {
 /**
  * Debug macro
  */
-#define LIBMTP_USB_DEBUG(format, args...) \
+#define LIBMTP_USB_DEBUG(format, ...) \
   do { \
     if ((LIBMTP_debug & LIBMTP_DEBUG_USB) != 0) \
-      fprintf(stdout, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##args); \
+      fprintf(stdout, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##__VA_ARGS__); \
   } while (0)
 
 #define LIBMTP_USB_DATA(buffer, length, base) \
