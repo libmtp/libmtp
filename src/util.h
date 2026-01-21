@@ -34,23 +34,23 @@ void device_unknown(const int dev_number, const int id_vendor, const int id_prod
 /**
  * Info macro
  */
-#define LIBMTP_INFO(format, args...) \
+#define LIBMTP_INFO(format, ...) \
   do { \
     if (LIBMTP_debug != 0) \
-      fprintf(stdout, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##args); \
+      fprintf(stdout, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##__VA_ARGS__); \
 	else \
-      fprintf(stdout, format, ##args); \
+      fprintf(stdout, format, ##__VA_ARGS__); \
   } while (0)
 
 /**
  * Error macro
  */
-#define LIBMTP_ERROR(format, args...) \
+#define LIBMTP_ERROR(format, ...) \
   do { \
     if (LIBMTP_debug != 0) \
-      fprintf(stderr, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##args); \
+      fprintf(stderr, "LIBMTP %s[%d]: " format, __FUNCTION__, __LINE__, ##__VA_ARGS__); \
 	else \
-      fprintf(stderr, format, ##args); \
+      fprintf(stderr, format, ##__VA_ARGS__); \
   } while (0)
 
 

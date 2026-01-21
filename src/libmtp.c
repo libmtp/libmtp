@@ -49,7 +49,9 @@ int use_mtpz;
 #include <stdarg.h>
 #include <stdlib.h>
 #include <limits.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -59,6 +61,7 @@ int use_mtpz;
 #ifdef _MSC_VER // For MSVC++
 #define USE_WINDOWS_IO_H
 #include <io.h>
+#define strcasecmp _stricmp
 #endif
 
 
@@ -5719,18 +5722,19 @@ static char *generate_unique_filename(PTPParams* params, char const * const file
   {
     extension_position = strrchr(filename,'.');
 
-    char basename[extension_position - filename + 1];
+    char *basename = calloc(1, extension_position - filename + 1);
     strncpy(basename, filename, extension_position - filename);
     basename[extension_position - filename] = '\0';
 
     suffix = 1;
-    char newname[ strlen(basename) + 6 + strlen(extension_position)];
+    char *newname = calloc(1, strlen(basename) + 6 + strlen(extension_position));
     sprintf(newname, "%s_%d%s", basename, suffix, extension_position);
     while ((check_filename_exists(params, newname)) && (suffix < 1000000)) {
       suffix++;
       sprintf(newname, "%s_%d%s", basename, suffix, extension_position);
     }
-  return strdup(newname);
+    free(basename);
+    return newname;
   }
   else
   {

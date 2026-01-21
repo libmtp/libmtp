@@ -40,7 +40,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#elif defined(_MSC_VER)
+
+static void usleep(int64_t usec)
+{
+    HANDLE timer;
+    LARGE_INTEGER ft;
+    ft.QuadPart = -(10*usec);
+    timer = CreateWaitableTimer(NULL, TRUE, NULL);
+    SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0);
+    WaitForSingleObject(timer, INFINITE);
+    CloseHandle(timer);
+}
+
+#endif
 
 #include "ptp-pack.c"
 
@@ -1747,7 +1763,7 @@ ptp_usb_event_wait (PTPParams* params, PTPContainer* event) {
 	return ptp_usb_event (params, event, PTP_EVENT_CHECK);
 }
 
-static void
+static void LIBUSB_CALL
 ptp_usb_event_cb (struct libusb_transfer *t) {
 	struct ptp_event_cb_data *data = t->user_data;
 	PTPParams *params = data->params;
@@ -1834,7 +1850,7 @@ ptp_usb_event_async (PTPParams* params, PTPEventCbFn cb, void *user_data) {
 	ptp_usb = (PTP_USB *)(params->data);
 	libusb_fill_interrupt_transfer(t, ptp_usb->handle, ptp_usb->intep,
 	                               (unsigned char *)usbevent, sizeof(*usbevent),
-	                               ptp_usb_event_cb, data, 0);
+	                               (libusb_transfer_cb_fn) ptp_usb_event_cb, data, 0);
 	t->flags = LIBUSB_TRANSFER_FREE_BUFFER | LIBUSB_TRANSFER_FREE_TRANSFER;
 
 	ret = libusb_submit_transfer(t);
