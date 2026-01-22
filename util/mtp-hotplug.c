@@ -21,7 +21,7 @@
  * Boston, MA 02111-1307, USA.
  */
 #include "config.h"
-#include <libmtp.h>
+#include "libmtp.h"
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -29,7 +29,8 @@
 
 static void usage(void)
 {
-  fprintf(stderr, "usage: hotplug [-w -u -f -o -H -i -a\"ACTION\"] -p\"DIR\" -g\"GROUP\" -m\"MODE\"\n");
+  fprintf(stderr, "usage: hotplug [-h -w -u -f -o -H -i -a\"ACTION\"] -p\"DIR\" -g\"GROUP\" -m\"MODE\"\n");
+  fprintf(stderr, "       -h:  this help message\n");
   fprintf(stderr, "       -w:  use hwdb syntax\n");
   fprintf(stderr, "       -u:  use udev syntax\n");
   fprintf(stderr, "       -f:  use udev fast syntax\n");
@@ -40,7 +41,13 @@ static void usage(void)
   fprintf(stderr, "       -p\"DIR\": directory where mtp-probe will be installed\n");
   fprintf(stderr, "       -g\"GROUP\": file group for device nodes\n");
   fprintf(stderr, "       -m\"MODE\": file mode for device nodes\n");
-  exit(1);
+}
+
+static void free_str(char **str)
+{
+  if (*str != NULL) {
+    free(*str);
+  }
 }
 
 enum style {
@@ -61,7 +68,7 @@ int main (int argc, char **argv)
   LIBMTP_device_entry_t *entries;
   int numentries;
   int i, j, k;
-  int ret;
+  int ret, retval;
   enum style style = style_usbmap;
   int opt;
   extern int optind;
@@ -81,7 +88,8 @@ int main (int argc, char **argv)
   char *udev_mode = NULL;
   int *sorted_codes;
 
-  while ( (opt = getopt(argc, argv, "wufoiHa:p:g:m:")) != -1 ) {
+  retval = 0;
+  while ( (opt = getopt(argc, argv, "hwufoiHa:p:g:m:")) != -1 ) {
     switch (opt) {
     case 'a':
       action = optarg;
@@ -109,13 +117,13 @@ int main (int argc, char **argv)
       mtp_probe_dir[sizeof(mtp_probe_dir)-1] = '\0';
       if (strlen(mtp_probe_dir) <= 1) {
 	printf("Supply some sane mtp-probe dir\n");
-	exit(1);
+	goto main_exit;
       }
       /* Make sure the dir ends with '/' */
       if (mtp_probe_dir[strlen(mtp_probe_dir)-1] != '/') {
 	int index = strlen(mtp_probe_dir);
 	if (index >= (sizeof(mtp_probe_dir)-1)) {
-	  exit(1);
+	  goto main_exit;
 	}
 	mtp_probe_dir[index] = '/';
 	mtp_probe_dir[index+1] = '\0';
@@ -126,17 +134,30 @@ int main (int argc, char **argv)
       }
       break;
     case 'g':
+      free_str(&udev_group);
       udev_group = strdup(optarg);
       break;
     case 'm':
+      free_str(&udev_mode);
       udev_mode = strdup(optarg);
       break;
- default:
+    default:
+      retval = 1;
+    case 'h':
       usage();
+      goto main_exit;
     }
+    retval = 1;
   }
 
-  LIBMTP_Init();
+  /* LIBMTP_Init(); */
+  /*
+   * LIBMTP_Get_Supported_Devices_List() is a completely static
+   * function which only returns pointers to a static list, so
+   * it is safe to avoid running LIBMTP_Init() for mtp-hotplug.c
+   *
+   * There are no other LIBMTP calls beyond the one listed below
+   */
   ret = LIBMTP_Get_Supported_Devices_List(&entries, &numentries);
   if (ret == 0) {
     /* sort codes numerically */
@@ -316,7 +337,7 @@ int main (int argc, char **argv)
     free(sorted_codes);
   } else {
     printf("Error.\n");
-    exit(1);
+    goto main_exit;
   }
 
   // Then the footer.
@@ -357,6 +378,10 @@ int main (int argc, char **argv)
   case style_usbids:
     printf("\n");
   }
+  retval = 0;
 
-  return 0;
+main_exit:
+  free_str(&udev_mode);
+  free_str(&udev_group);
+  return retval;
 }
