@@ -17,47 +17,28 @@ AM_GNU_GETTEXT_VERSION([0.11.5])
 AM_ICONV
 
 # Optionally set install location of udev
+# set default UDEV=/usr/lib/udev and not UDEV=/usr/local/lib/udev
+# but we'll also need {$prefix} for 'make check', 'make distcheck'
+# 'rpmbuild -ba', 'mock', and other automated installers/checkers.
 UDEV=/usr/lib/udev
+udevdir=${UDEV}
+if test "$prefix" = "/usr/local" || test "$prefix" = "NONE" ;
+then
+    UDEV=\${prefix}/../lib/udev
+else
+    UDEV=\${prefix}/lib/udev
+    udevdir=${prefix}/lib/udev
+fi
 AC_ARG_WITH(udev,
     AS_HELP_STRING([--with-udev=DIR],
     [directory where udev is installed [default=/usr/lib/udev]]),
-    [UDEV="${withval}"], [])
-AC_DEFINE_UNQUOTED([UDEV_DIR], ["${UDEV}/"], [where mtp-probe is installed, default=/usr/lib/udev/])
+    [UDEV="${withval}"
+     udevdir="${withval}"
+    ], [])
+AC_DEFINE_UNQUOTED([UDEV_DIR], ["$udevdir/"], [where mtp-probe is installed, default=/usr/lib/udev/])
+dnl to allow for crossbuilding we define $host seeing $UDEV, but
+dnl we install into $TARGET_UDEV (go see --enable-crossbuilddir)
 AC_SUBST(UDEV)
-dnl NOTE: Since the (default) UDEV directory is not part of libmtp,
-dnl we cannot do a 'make distcheck' with it as non-root user, this
-dnl is because 'make distcheck' uses $prefix to create a build dir.
-dnl We default to using '$(libdir)/udev/' as user, so that we can
-dnl run 'make distcheck' as well as run 'rpmbuild -ba' too. Do this
-dnl here since automake can't process 'if/else/endif in Makefile.am
-UDEVdata_SNIPPET='
-noinst_DATA="libmtp.fdi libmtp.usermap"
-ifeq ($(shell id -u),0)
-    udevrulesdir=$(UDEV)/rules.d
-    hwdbdir=$(UDEV)/hwdb.d
-ifdef ENABLE_CROSSBUILD
-    udevrulesdir=$(TARGET_UDEV)/rules.d
-    hwdbdir=$(TARGET_UDEV)/hwdb.d
-endif
-else
-    udevrulesdir=$(libdir)/udev/rules.d
-    hwdbdir=$(libdir)/udev/hwdb.d
-endif
-'
-AC_SUBST([UDEVdata_SNIPPET])
-AM_SUBST_NOTMAKE([UDEVdata_SNIPPET])
-UDEVbin_SNIPPET='
-ifeq ($(shell id -u),0)
-    mtp_probedir=$(UDEV)
-ifdef ENABLE_CROSSBUILD
-    mtp_probedir=$(TARGET_UDEV)
-endif
-else
-    mtp_probedir=$(libdir)/udev
-endif
-'
-AC_SUBST([UDEVbin_SNIPPET])
-AM_SUBST_NOTMAKE([UDEVbin_SNIPPET])
 
 # Optionally set name of udev rules file, default
 # priority is 69, to appear before 70-acl.rules which handles
@@ -126,6 +107,7 @@ AM_CONDITIONAL(HAVE_DOXYGEN,$HAVE_DOXYGEN)
 #    be binary equivalent with host CPU. 69-libmtp.hwdb and
 #    @UDEV_RULES@ should also get installed in target udev too.
 #
+TARGET_UDEV=${UDEV}
 crossbuilddir=off
 AC_ARG_ENABLE(crossbuilddir,
     AS_HELP_STRING([--enable-crossbuilddir], [crossbuild libmtp (this is step 2of3) [default=off]]),
@@ -134,10 +116,10 @@ if test "$crossbuilddir" != off; then
     if test x"${HOST_MTP_HOTPLUG}" = "x:"; then
         AC_MSG_ERROR([Error: Host PC 'mtp-hotplug' not found! Please install 'libmtp' on host PC before doing crossbuild!])
     fi
+    TARGET_UDEV=${crossbuilddir}
 fi
 AM_CONDITIONAL(ENABLE_CROSSBUILD,[test "$crossbuilddir" != off])
-TARGET_UDEV=${crossbuilddir}
-AC_SUBST(TARGET_UDEV)
+AC_SUBST(TARGET_UDEV) dnl NOTE: this is either default UDEV or new target crossbuilddir
 
 # Check for Darwin
 AC_MSG_CHECKING([if the host operating system is Darwin])
@@ -303,3 +285,26 @@ AC_CONFIG_FILES([src/libmtp.h doc/Doxyfile Makefile doc/Makefile src/Makefile
 	examples/Makefile util/Makefile libmtp.sh hotplug.sh libmtp.pc])
 AC_OUTPUT
 chmod +x hotplug.sh
+
+AC_MSG_NOTICE([
+
+Configuration:
+  Compiler		${CC}
+  Include MTPZ		${use_mtpz}
+  Source code location	${srcdir}
+  Build code location	${builddir}
+  Destination \${prefix}	${prefix}
+  Libmtp Destination	${libdir}
+
+Setup UDEV utilities:	${USE_LINUX}
+  \$UDEV working dir	${UDEV}
+  compiled udev dir	${udevdir}
+  \$UDEV rules file	${UDEV_RULES}
+    group		${UDEV_GROUP}
+    mode		${UDEV_MODE}
+
+Cross-build target dir:	${crossbuilddir}
+
+Documentation:
+  enable/use doxygen	${HAVE_DOXYGEN}
+])
