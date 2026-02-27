@@ -25,9 +25,14 @@
 
 #include <stdarg.h>
 #include <time.h>
+#ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
+#endif
 #if defined(HAVE_ICONV) && defined(HAVE_LANGINFO_H)
 #include <iconv.h>
+#endif
+#ifdef _WIN32
+#include <winsock.h>
 #endif
 #include "gphoto2-endian.h"
 #include "device-flags.h"
