@@ -19,7 +19,9 @@ if command -v brew >/dev/null 2>&1; then
             PATH="$GETTEXT_PREFIX/bin:$PATH"
             export PATH
         fi
-        if [ -d "$GETTEXT_PREFIX/share/aclocal" ]; then
+        if [ -d "$GETTEXT_PREFIX/share/gettext/m4" ]; then
+            ACLOCAL_FLAGS="-I $GETTEXT_PREFIX/share/gettext/m4 ${ACLOCAL_FLAGS}"
+        elif [ -d "$GETTEXT_PREFIX/share/aclocal" ]; then
             ACLOCAL_FLAGS="-I $GETTEXT_PREFIX/share/aclocal ${ACLOCAL_FLAGS}"
         fi
     fi
@@ -65,7 +67,7 @@ echo "Removing autoconf cruft"
 rm -f configure
 rm -rf autom4te*.cache/
 echo "Running autoconf"
-autoconf -f
+autoconf -f || fail
 
 # Autoupdate config.sub and config.guess
 # from GNU CVS
