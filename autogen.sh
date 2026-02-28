@@ -9,6 +9,22 @@ srcdir=`dirname $0`
 
 ACLOCAL_FLAGS="-I ${srcdir}/m4 ${ACLOCAL_FLAGS}"
 
+# Homebrew installs gettext as keg-only, so its tools/macros are not
+# in default lookup paths. Add them when available so AM_ICONV and
+# related macros resolve without symlinks.
+if command -v brew >/dev/null 2>&1; then
+    GETTEXT_PREFIX=`brew --prefix gettext 2>/dev/null`
+    if [ -n "$GETTEXT_PREFIX" ]; then
+        if [ -x "$GETTEXT_PREFIX/bin/autopoint" ]; then
+            PATH="$GETTEXT_PREFIX/bin:$PATH"
+            export PATH
+        fi
+        if [ -d "$GETTEXT_PREFIX/share/aclocal" ]; then
+            ACLOCAL_FLAGS="-I $GETTEXT_PREFIX/share/aclocal ${ACLOCAL_FLAGS}"
+        fi
+    fi
+fi
+
 fail() {
     status=$?
     echo "Last command failed with status $status in directory $(pwd)."
