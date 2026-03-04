@@ -1495,6 +1495,8 @@ ptp_unpack_OPL (PTPParams *params, unsigned char* data, MTPProperties **pprops, 
 		}
 
 
+
+
 		props[i].ObjectHandle = dtoh32a(data);
 		data += sizeof(uint32_t);
 		len -= sizeof(uint32_t);
