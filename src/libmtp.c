@@ -5713,7 +5713,7 @@ static int check_filename_exists(PTPParams* params, char const * const filename)
 static char *generate_unique_filename(PTPParams* params, char const * const filename)
 {
   int suffix;
-  char * extension_position;
+  const char * extension_position;
 
   if (check_filename_exists(params, filename))
   {
