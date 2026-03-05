@@ -4065,6 +4065,8 @@
   { "Garmin", 0x091e, "Fenix 5/5S/5X Plus", 0x4b54, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/271/ */
   { "Garmin", 0x091e, "Vivoactive 3", 0x4bac, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/feature-requests/312/ */
+  { "Garmin", 0x091e, "Drivesmart 55", 0x4bf9, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Vivoactive 3 Music LTE", 0x4bfa, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/bugs/1884/ */
   { "Garmin", 0x091e, "Forerunner 245 Music ", 0x4c05, DEVICE_FLAGS_ANDROID_BUGS },
@@ -4500,6 +4502,9 @@
   /* https://sourceforge.net/p/libmtp/bugs/1846/ */
   { "Netronix" , 0x1f85, "E60QH2", 0x6a12 , DEVICE_FLAGS_ANDROID_BUGS },
 
+  /* https://github.com/libmtp/libmtp/issues/344 */
+  { "mooInk" , 0x1f85, "Plus 2", 0x2571 , DEVICE_FLAGS_ANDROID_BUGS },
+
   /* https://sourceforge.net/p/libmtp/bugs/1871/ */
   { "Doro" , 0x2b43, "Phone 8030 DSB-0010", 0x0006 , DEVICE_FLAGS_ANDROID_BUGS },
 
@@ -4553,6 +4558,9 @@
 
   /* https://github.com/libmtp/libmtp/issues/278 */
   { "Polar", 0x0da4, "Grit X2 Pro", 0x0014, DEVICE_FLAGS_ANDROID_BUGS },
+
+  /* https://github.com/libmtp/libmtp/issues/355 */
+  { "Hawkeye", 0x1d6b, "Ai15", 0x0101, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* qemu 3.0.0 hw/usb/dev-mtp.c */
   { "QEMU", 0x46f4, "Virtual MTP", 0x0004, DEVICE_FLAG_NONE }
