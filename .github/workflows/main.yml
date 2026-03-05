@@ -8,7 +8,7 @@ jobs:
       matrix:
         configure_flags: [--disable-silent-rules, --with-udev-group=nobody --with-udev-mode=760, --disable-mtpz]
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Create configure
         run: |
           sudo apt-get update -y
@@ -27,9 +27,10 @@ jobs:
       matrix:
         configure_flags: [--disable-silent-rules, --disable-mtpz]
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Install dependencies
         run: brew install autoconf automake libtool gettext libgcrypt libusb
+
       - name: Create configure
         run: NOCONFIGURE=1 bash autogen.sh
       - name: Choose configure option(s)
