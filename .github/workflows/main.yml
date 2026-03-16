@@ -6,34 +6,36 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        choiceL: [--disable-silent-rules, --with-udev-group=nobody --with-udev-mode=760, --disable-mtpz]
+        configure_flags: [--disable-silent-rules, --with-udev-group=nobody --with-udev-mode=760, --disable-mtpz]
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Create configure
         run: |
           sudo apt-get update -y
           sudo apt-get install autoconf automake autopoint libtool gettext gcc libgcrypt-dev libusb-dev libusb-1.0-0-dev
           bash autogen.sh
       - name: Choose configure option(s)
-        run: ./configure ${{ matrix.choiceL }}
+        run: ./configure ${{ matrix.configure_flags }}
       - name: Make libmtp library
         run: make
       - name: Test make distcheck
-        if: matrix.choiceL == '--disable-silent-rules'
+        if: matrix.configure_flags == '--disable-silent-rules'
         run: make distcheck
   macos:
     runs-on: macos-latest
     strategy:
       matrix:
-        choiceL: [--disable-silent-rules, --with-udev-group=nobody --with-udev-mode=760, --disable-mtpz]
+        configure_flags: [--disable-silent-rules, --disable-mtpz]
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Install dependencies
+        run: brew install autoconf automake libtool gettext libgcrypt libusb
+
       - name: Create configure
-        run: |
-          brew install autoconf automake libtool gcc libgcrypt libiconv gettext
-          ln -s `brew ls gettext | grep bin/autopoint` /usr/local/bin
-          bash autogen.sh
+        run: NOCONFIGURE=1 bash autogen.sh
       - name: Choose configure option(s)
-        run: ./configure ${{ matrix.choiceM }}
+        run: |
+          PKG_CONFIG_PATH="$(brew --prefix libusb)/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}" \
+            ./configure ${{ matrix.configure_flags }}
       - name: Make libmtp library
         run: make
