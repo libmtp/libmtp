@@ -3260,6 +3260,18 @@
   /* https://github.com/libmtp/libmtp/issues/228 */
   { "Lenovo", 0x17ef, "Tab P12", 0x7e16,
       DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/M0Rf30/android-udev-rules/pull/360 */
+  { "Lenovo", 0x17ef, "Legion Tab Y700 (ADB+MTP)", 0x7f41,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/M0Rf30/android-udev-rules/pull/360 */
+  { "Lenovo", 0x17ef, "Legion Tab Y700 (ADB+PTP)", 0x7f45,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/M0Rf30/android-udev-rules/pull/360 */
+  { "Lenovo", 0x17ef, "Legion Tab Y700 (MTP)", 0x7f40,
+      DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/M0Rf30/android-udev-rules/pull/360 */
+  { "Lenovo", 0x17ef, "Legion Tab Y700 (PTP)", 0x7f44,
+      DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Huawei
