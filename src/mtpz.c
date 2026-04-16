@@ -1817,7 +1817,7 @@ uint16_t ptp_mtpz_handshake (PTPParams* params)
 	uint32_t size;
 	unsigned char *hash=NULL;
 	unsigned char *random=NULL;
-	PTPPropertyValue propval;
+	PTPPropValue propval;
 	unsigned char*	applicationCertificateMessage;
 	unsigned char*	message;
 
