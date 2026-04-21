@@ -4,7 +4,7 @@ ACLOCAL_AMFLAGS=-I m4
 pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA=libmtp.pc
 
-EXTRA_DIST = autogen.sh libmtp.pc libmtp.sh COPYING README.windows.txt RELEASE-CHECKLIST.md sync-usbids.sh
+EXTRA_DIST = autogen.sh libmtp.pc libmtp.sh COPYING README.windows.txt RELEASE-CHECKLIST.md sync-usbids.sh SECURITY.md
 nodist_EXTRA_DATA = .git .github .travis-translate-pkgs .travis.yml
 DISTCHECK_CONFIGURE_FLAGS = --with-udev-group=nobody --with-udev-mode=760, --disable-mtpz
 
