@@ -4165,6 +4165,8 @@
   { "Garmin", 0x091e, "Fenix 7s Pro Sapphire Solar", 0x5116, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/194 */
   { "Garmin", 0x091e, "Fenix 7 Pro Solar", 0x5117, DEVICE_FLAGS_ANDROID_BUGS },
+  /*  https://github.com/libmtp/libmtp/issues/386 */
+  { "Garmin", 0x091e, "Edge 1050", 0x5158, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/300 */
   { "Garmin", 0x091e, "Fenix8", 0x51b6, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/251 */
