@@ -4413,6 +4413,8 @@
    */
   { "Ricoh", 0x05ca, "Theta V (MTP)", 0x0368, DEVICE_FLAG_NONE },
   { "Ricoh", 0x05ca, "Theta Z1 (MTP)", 0x036d, DEVICE_FLAG_NONE },
+  /* https://github.com/libmtp/libmtp/issues/392 */
+  { "Ricoh", 0x25fb, "GR IV", 0x2123, DEVICE_FLAG_NONE },
 
   /* https://sourceforge.net/p/libmtp/bugs/1490/ */
   { "Marshall" , 0x2ad9, "London", 0x000b, DEVICE_FLAG_NONE },
