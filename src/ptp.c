@@ -4130,6 +4130,10 @@ ptp_canon_getobjectinfo (PTPParams* params, uint32_t store, uint32_t p2,
 	}
 
 	*entnum = ptp.Param1;
+	if (*entnum > SIZE_MAX / sizeof(PTPCANONFolderEntry)) {
+		ptp_debug (params, "param1 is %d, overflow", ptp.Param1);
+		goto error;
+	}
 	*entries= calloc(*entnum, sizeof(PTPCANONFolderEntry));
 	if (*entries == NULL)
 		goto error;
