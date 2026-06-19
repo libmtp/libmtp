@@ -1984,6 +1984,10 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *rawdevi
 			     current_params,
 			     &mtp_device->usbinfo);
   if (err != LIBMTP_ERROR_NONE) {
+#if defined(HAVE_ICONV) && defined(HAVE_LANGINFO_H)
+    iconv_close(current_params->cd_locale_to_ucs2);
+    iconv_close(current_params->cd_ucs2_to_locale);
+#endif
     free(current_params);
     free(mtp_device);
     return NULL;
@@ -2000,6 +2004,10 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *rawdevi
 	    rawdevice->devnum, rawdevice->bus_location);
 
     /* Prevent memory leaks for this device */
+#if defined(HAVE_ICONV) && defined(HAVE_LANGINFO_H)
+    iconv_close(current_params->cd_locale_to_ucs2);
+    iconv_close(current_params->cd_ucs2_to_locale);
+#endif
     free(mtp_device->usbinfo);
     free(mtp_device->params);
     current_params = NULL;
