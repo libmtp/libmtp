@@ -300,6 +300,6 @@ AH_TOP([#ifndef _LIBMTP_CONFIG_H
 AH_BOTTOM([#endif])
 
 AC_CONFIG_FILES([src/libmtp.h doc/Doxyfile Makefile doc/Makefile src/Makefile
-	examples/Makefile util/Makefile libmtp.sh hotplug.sh libmtp.pc])
+	examples/Makefile util/Makefile tests/Makefile libmtp.sh hotplug.sh libmtp.pc])
 AC_OUTPUT
 chmod +x hotplug.sh
