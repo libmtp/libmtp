@@ -9064,6 +9064,10 @@ int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
   uint32_t propcnt = 0;
   int supported = 0;
 
+  if (INT_MAX/sizeof(PTPPropValue) <= sampledata->size) {
+    add_error_to_errorstack(device, LIBMTP_ERROR_GENERAL, "LIBMTP_Send_Representative_Sample(): sample size too large.");
+    return -1;
+  }
   // get the file format for the object we're going to send representative data for
   ret = ptp_object_want (params, id, PTPOBJECT_OBJECTINFO_LOADED, &ob);
   if (ret != PTP_RC_OK) {
@@ -9090,6 +9094,7 @@ int LIBMTP_Send_Representative_Sample(LIBMTP_mtpdevice_t *device,
     return -1;
   }
   free(props);
+
 
   // Go ahead and send the data
   propval.a.count = sampledata->size;
