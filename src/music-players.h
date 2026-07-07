@@ -4587,7 +4587,7 @@
   { "Hawkeye", 0x1d6b, "Ai15", 0x0101, DEVICE_FLAGS_ANDROID_BUGS },
 
   /* qemu 3.0.0 hw/usb/dev-mtp.c */
-  { "QEMU", 0x46f4, "Virtual MTP", 0x0004, DEVICE_FLAG_NONE }
+  { "QEMU", 0x46f4, "Virtual MTP", 0x0004, DEVICE_FLAG_NONE },
 
   /* https://github.com/libmtp/libmtp/issues/389 */
   { "HumanWare", 0x1c71, "Stream 3 (Victor Reader Stream)", 0xc150, DEVICE_FLAGS_ANDROID_BUGS }
