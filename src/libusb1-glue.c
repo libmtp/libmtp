@@ -1432,7 +1432,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 		if (dtoh16(usbdata.code)!=ptp->Code) {
 			if (FLAG_IGNORE_HEADER_ERRORS(ptp_usb)) {
 				libusb_glue_debug (params, "ptp2/ptp_usb_getdata: detected a broken "
-					   "PTP header, code field insane, expect problems! (But continuing)");
+						"PTP header, code field insane, expect problems! (But continuing)");
 				// Repair the header, so it won't wreak more havoc, don't just ignore it.
 				// Typically these two fields will be broken.
 				usbdata.code	 = htod16(ptp->Code);
@@ -1446,43 +1446,48 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 				// field entirely.
 				if (ret < PTP_RC_Undefined || ret > PTP_RC_SpecificationOfDestinationUnsupported) {
 					libusb_glue_debug (params, "ptp2/ptp_usb_getdata: detected a broken "
-						   "PTP header, code field insane.");
+							"PTP header, code field insane.");
 					ret = PTP_ERROR_IO;
 				}
 				break;
 			}
 		}
 		if (rlen == ptp_usb->inep_maxpacket) {
-		  /* Copy first part of data to 'data' */
-		  putfunc_ret =
-		    handler->putfunc(
-				     params, handler->priv, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data
-				     );
-		if (putfunc_ret != PTP_RC_OK)
-			return ptp_read_cancel_func(params, ptp->Transaction_ID);
+			/* Copy first part of data to 'data' */
+			putfunc_ret =
+				handler->putfunc(
+						params, handler->priv, rlen - PTP_USB_BULK_HDR_LEN, usbdata.payload.data
+						);
+			if (putfunc_ret != PTP_RC_OK)
+				return ptp_read_cancel_func(params, ptp->Transaction_ID);
 
-		/* Nothing more left to read*/
-		if (rlen == usbdata.length)
-			return PTP_RC_OK;
+			/* Nothing more left to read*/
+			if (rlen == usbdata.length)
+				return PTP_RC_OK;
 
-		  /* stuff data directly to passed data handler */
-		  while (1) {
-		    unsigned long readdata;
+			/* stuff data directly to passed data handler */
+			while (1) {
+				unsigned long readdata;
 
-		    ret = ptp_read_func(
+				ret = ptp_read_func(
 					 0x20000000,
 					 handler,
 					 params->data,
 					 &readdata,
 					 0);
-			if (ret == PTP_ERROR_CANCEL)
-				return ptp_read_cancel_func(params, ptp->Transaction_ID);
-			if (ret != PTP_RC_OK)
-				return ret;
-			if (readdata < 0x20000000)
-				break;
-		  }
-		  return PTP_RC_OK;
+				if (ret == PTP_ERROR_CANCEL)
+					return ptp_read_cancel_func(params, ptp->Transaction_ID);
+				if (ret != PTP_RC_OK)
+					return ret;
+				if (readdata < 0x20000000)
+					break;
+				rlen += readdata;
+				/* upper limit of read dictated by packet size, to avoid reading forever
+				 * from malicious devices */
+				if (rlen > usbdata.length)
+					break;
+			}
+			return PTP_RC_OK;	/* FIXME: should we fallthrough in case we read more? */
 		}
 		if (rlen > dtoh32(usbdata.length)) {
 			/*
