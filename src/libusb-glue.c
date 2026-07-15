@@ -375,8 +375,9 @@ static int probe_device_descriptor(struct usb_device *dev, FILE *dumpfile)
    * Only probe for OS descriptor if the device is vendor specific
    * or one of the interfaces found is.
    */
-  if (dev->descriptor.bDeviceClass == USB_CLASS_VENDOR_SPEC ||
-      found_vendor_spec_interface) {
+  if ((dev->descriptor.bDeviceClass == USB_CLASS_VENDOR_SPEC ||
+       found_vendor_spec_interface) &&
+      dev->descriptor.bcdUSB >= 0x0200) {
 
     /* Read the special descriptor */
     ret = usb_get_descriptor(devh, 0x03, 0xee, buf, sizeof(buf));
