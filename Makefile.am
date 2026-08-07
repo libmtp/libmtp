@@ -1,4 +1,4 @@
-SUBDIRS=src examples util doc
+SUBDIRS=src examples util doc tests
 ACLOCAL_AMFLAGS=-I m4
 
 pkgconfigdir=$(libdir)/pkgconfig
@@ -43,6 +43,16 @@ libmtp.usermap: $(MTP_HOTPLUG)
 noinst_DATA = libmtp.fdi libmtp.usermap
 GENERATED += libmtp.fdi libmtp.usermap
 endif
+
+test_programs = testunincode
+
+test:	$(TEST_PROGS)
+
+.PHONY: test
+# run make test as part of make check
+check-local: test
+
+check-local: $(TEST_PROGS)
 
 no_DIST = $(GENERATED)
 CLEANFILES = $(GENERATED)
