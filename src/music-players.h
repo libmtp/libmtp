@@ -4183,6 +4183,8 @@
   { "Garmin", 0x091e, "Venu X1", 0x51fb, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/303 */
   { "Garmin", 0x091e, "Vivoactive 6", 0x5211, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://github.com/libmtp/libmtp/issues/426 */
+  { "Garmin", 0x091e, "Edge 550", 0x5219, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Edge 850", 0x521a, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/314/ */
   { "Garmin", 0x091e, "Venu 4", 0x5223, DEVICE_FLAGS_ANDROID_BUGS },
