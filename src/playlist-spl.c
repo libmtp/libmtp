@@ -120,6 +120,9 @@ void spl_to_playlist_t(LIBMTP_mtpdevice_t* device, PTPObjectInfo *oi,
 {
   // Fill in playlist metadata
   // Use the Filename as the playlist name, dropping the ".spl" extension
+
+  if (strlen(oi->Filename) < 4) return;
+
   pl->name = malloc(sizeof(char)*(strlen(oi->Filename) -4 +1));
   memcpy(pl->name, oi->Filename, strlen(oi->Filename) -4);
   // Set terminating character
