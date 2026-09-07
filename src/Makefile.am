@@ -3,17 +3,11 @@ lib_LTLIBRARIES = libmtp.la
 libmtp_la_CFLAGS = @LIBUSB_CFLAGS@
 libmtp_la_SOURCES = array.h compiletime-assert.h libmtp.c unicode.c unicode.h util.c util.h playlist-spl.c \
 	gphoto2-endian.h _stdint.h ptp.c ptp.h libusb-glue.h \
-	music-players.h device-flags.h playlist-spl.h mtpz.h \
+	music-players.h device-flags.h playlist-spl.h \
 	chdk_live_view.h chdk_ptp.h
 
 EXTRA_DIST = gphoto2-sync.sh libmtp.h.in libmtp.sym ptp-pack.c
 nodist_EXTRA_DATA = libmtp.h
-
-if MTPZ_COMPILE
-libmtp_la_SOURCES += mtpz.c
-else
-EXTRA_DIST += mtpz.c
-endif
 
 if LIBUSB1_COMPILE
 libmtp_la_SOURCES += libusb1-glue.c
