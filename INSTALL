@@ -36,6 +36,10 @@ To build libmtp you should only need development files for libusb.
 For working with the GIT versions you will need autoconf, automake,
 libtool, pkg-config, and gettext(-devel).
 
+To enable the optional MTPZ support using libgcrypt you need the
+libgcrypt library installed as well.
+
+
 Shared Library Support
 ----------------------
 
@@ -94,6 +98,17 @@ This package depends on libusb. Get libusb from sourceforge at:
 
 libusb 1.0 and later is preferred for libmtp, but currently also
 older 0.1.x versions of libusb are supported.
+
+
+libgcrypt support
+-----------------
+
+The MTPZ extension to libmtp requires libgcrypt to be installed.
+
+   http://www.gnu.org/software/libgcrypt/
+
+MTPZ support will not be built unless the configure script finds
+libgcrypt.
 
 
 BASIC BUILD PROCEDURE
