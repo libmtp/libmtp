@@ -1879,7 +1879,7 @@ static void parse_extension_descriptor(LIBMTP_mtpdevice_t *mtpdevice,
 
 	  /* extension versions have to be MAJOR.MINOR, but Samsung has one
 	   * with just 0, so just cope with those cases too */
-	  if (	(2 == sscanf(element+i+1,"%d.%d",&major,&minor)) || 
+	  if (	(2 == sscanf(element+i+1,"%d.%d",&major,&minor)) ||
 	  	(1 == sscanf(element+i+1,"%d",&major))
 	  ) {
             LIBMTP_device_extension_t *extension;
@@ -2201,17 +2201,6 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *rawdevi
     mtp_device->storage = NULL;
   }
 
-
-  return mtp_device;
-}
-
-LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
-{
-  LIBMTP_mtpdevice_t *mtp_device = LIBMTP_Open_Raw_Device_Uncached(rawdevice);
-
-  if (mtp_device == NULL)
-    return NULL;
-
   /* Check for MTPZ devices. */
   if (use_mtpz) {
     LIBMTP_device_extension_t *tmpext = mtp_device->extensions;
@@ -2229,6 +2218,17 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
       tmpext = tmpext->next;
     }
   }
+
+
+  return mtp_device;
+}
+
+LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
+{
+  LIBMTP_mtpdevice_t *mtp_device = LIBMTP_Open_Raw_Device_Uncached(rawdevice);
+
+  if (mtp_device == NULL)
+    return NULL;
 
   // Set up this device as cached
   mtp_device->cached = 1;
@@ -5053,7 +5053,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
  * arrange tracks into folders, you must dereference the <code>storage_id</code>
  * and/or <code>parent_id</code> field of the returned <code>LIBMTP_track_t</code>
  * struct. To arrange by folders or files you typically have to create the proper
- * trees by calls to <code>LIBMTP_Get_Storage()</code> and/or 
+ * trees by calls to <code>LIBMTP_Get_Storage()</code> and/or
  * <code>LIBMTP_Get_Folder_List()</code> first.
  *
  * @param device a pointer to the device to get the track listing for.
@@ -8419,8 +8419,8 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
  *        exits with success, the <code>playlist_id</code> field of this
  *        struct will contain the new playlist ID of the playlist.
  *        <ul>
- *        <li><code>metadata-&gt;parent_id</code> should be set to the parent 
- *        (e.g. folder) to store this track in. Since some 
+ *        <li><code>metadata-&gt;parent_id</code> should be set to the parent
+ *        (e.g. folder) to store this track in. Since some
  *        devices are a bit picky about where files
  *        are placed, a default folder will be chosen if libmtp
  *        has detected one for the current filetype and this
