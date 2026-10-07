@@ -4174,6 +4174,7 @@
   /* https://github.com/libmtp/libmtp/issues/251 */
   { "Garmin", 0x091e, "Fenix 8 AMOLED", 0x51b8, DEVICE_FLAGS_ANDROID_BUGS },
   { "Garmin", 0x091e, "Fenix 8 Solar Sapphire", 0x51b5, DEVICE_FLAGS_ANDROID_BUGS },
+  { "Garmin", 0x091e, "Fenix 9 Pro", 0x5359, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/207 */
   { "Garmin", 0x091e, "Tactix 7 AMOLED", 0x51be, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://github.com/libmtp/libmtp/issues/305 */
