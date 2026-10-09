@@ -2287,9 +2287,9 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
 				     &ptp_usb->outep_maxpacket,
 				     &ptp_usb->intep);
 
-  if (ptp_usb->inep_maxpacket > PTP_USB_BULK_PAYLOAD_LEN_READ) {
+  if (ptp_usb->inep_maxpacket > sizeof(PTPUSBBulkContainer)) {
     libusb_free_device_list (devs, 0);
-    LIBMTP_ERROR("LIBMTP PANIC: Unable to find interface reports %d size of in endpoints, expected maximum %ld\n", ptp_usb->inep_maxpacket, PTP_USB_BULK_PAYLOAD_LEN_READ);
+    LIBMTP_ERROR("LIBMTP PANIC: Unable to find interface reports %d size of in endpoints, expected maximum %ld\n", ptp_usb->inep_maxpacket, sizeof(PTPUSBBulkContainer));
     free (ptp_usb);
     return LIBMTP_ERROR_CONNECTING;
   }
