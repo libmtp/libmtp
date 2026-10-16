@@ -14,10 +14,9 @@ if USE_LINUX
 MTP_HOTPLUG = util/mtp-hotplug
 
 udevrules_DATA=@UDEV_RULES@
-udevrulesdir = $(datadir)
+udevrulesdir = $(TARGET_UDEV)/rules.d
 hwdb_DATA=69-libmtp.hwdb
-hwdbdir = $(datadir)
-@UDEVdata_SNIPPET@
+hwdbdir = $(TARGET_UDEV)/hwdb.d
 
 GENERATED = 69-libmtp.hwdb $(UDEV_RULES)
 
