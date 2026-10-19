@@ -26,7 +26,7 @@ COMPATIBILITY fixes:
   Thus only unplug or shutdown ends the session. This behaviour can be
   emulated (sort of) by DEVICE_FLAG_NO_RELEASE_INTERFACE which will
   make the device not release the USB low-level interface, though it'll
-  still close the session. But is it really desireable to have
+  still close the session. But is it really desirable to have
   as default? Not unless we run an MTP daemon as well, probably, and
   the behaviour is questionable from an USB interoperability point
   of view.
@@ -42,9 +42,9 @@ FEATURE fixes:
 1. FEATURE: Support playback and volume setting on devices that have it.
   (I don't have one that does - Linus.)
 
-2. FEATURE: Support relevant events. MTP devices seen in existance provide
+2. FEATURE: Support relevant events. MTP devices seen in existence provide
   events for "object added" and "object deleted". These should result in
-  atleast a call to the cache update function.
+  at least a call to the cache update function.
 
 3. FEATURE: Mechanism to retrieve the device icon device property, else if not
   present, look for DevIcon.fil (Windows ICO format) and
@@ -70,14 +70,14 @@ THOSE ARE ALREADY DONE:
   Right now, ptp_getobjectinfo() is called repeatedly on the same
   objects during startup, track listing, file listing, playlist listing,
   album listing and whatever we implement tomorrow. A lot of useless
-  communication can be saved by cacheing this info. Notice that this
+  communication can be saved by caching this info. Notice that this
   needs to be updated whenever flush_handles() is called too.
   (This came from libgphoto2 implementing it!)
 
 3. SPEED: Cache track metadata, file metadata etc in params->proplist.
 
 4. SPEED: Whenever we add an object (file, track, playlist...) we
-  should only need to update the cache with relevant data. Atleast for
+  should only need to update the cache with relevant data. At least for
   speedup caches.
 
 5. COMPATIBILITY: account for different step sizes and intervals on some
@@ -102,12 +102,12 @@ THOSE ARE ALREADY DONE:
   connect a specific hal UDI.
 
 9. SPEEDUP: The recursive function that builds the folder tree is
-  O(n^2)! Atleast remove all non-folders (PTP associations) from the
+  O(n^2)! At least remove all non-folders (PTP associations) from the
   list before we start sorting and building that tree. We walk the
   entire list for each group of siblings right now!
 
 10. FEATURE: program to autoprobe device interfaces on connection.
 
-11. FEATURE: accomodate Googles uncached device needs.
+11. FEATURE: accommodate Googles uncached device needs.
 
 12. FEATURE: rudimentary event interface.

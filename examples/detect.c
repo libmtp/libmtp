@@ -49,7 +49,7 @@ static void dump_xml_fragment(uint8_t *buf, uint32_t len)
 	tmp = buf[bp+0] << 8 | buf[bp+1];
       }
       // Fix this some day, we only print ISO 8859-1 correctly here,
-      // should atleast support UTF-8.
+      // should at least support UTF-8.
       printf("%c", (uint8_t) tmp);
     }
     bp += 2;
