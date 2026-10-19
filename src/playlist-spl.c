@@ -555,7 +555,7 @@ static uint32_t trackno_spl_text_t(text_t* p) {
  *
  * @param p the text to search
  * @param tracks returned list of track id's for the playlist_t, must be large
- *               enough to accomodate all the tracks as reported by
+ *               enough to accommodate all the tracks as reported by
  *               trackno_spl_text_t()
  * @param folders the folders list for the device
  * @param files the files list for the device

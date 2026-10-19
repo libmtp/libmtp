@@ -141,7 +141,7 @@ please volunteer.
 FAQ: Common Problems
 --------------------
 
-Some MTP devices have strange pecularities. We try to work around
+Some MTP devices have strange peculiarities. We try to work around
 these whenever we can, sometimes we cannot work around it or we
 cannot test your solution.
 
@@ -264,7 +264,7 @@ cannot test your solution.
   to get unicode property.
 
   This should only affect "mtp-detect", there is no other
-  application currently retrieveing the certificate (not that we
+  application currently retrieving the certificate (not that we
   know anyway).
 
 * Kernel bug on Linux. Linux 2.6.16 is generally speaking required
@@ -296,7 +296,7 @@ cannot test your solution.
 * For Creative Technology devices, there are hard limits on how
   many files can be put onto the device. For a 30 GiB device (like
   the Zen Xtra) the limit is 6000, for a 60 GiB device the limit
-  is 15000 files. For further Creative pecularities, see the
+  is 15000 files. For further Creative peculiarities, see the
   FAQ sections at www.nomadness.net.
 
 * Sandisk sansa c150 and probably several other Sandisk devices
@@ -332,7 +332,7 @@ cannot test your solution.
   (Yes this requires some kind of Windows Installation I think.)
 
 * Philips HDD 1630/16 or 1630/17 etc may lock themselves up,
-  turning inresponsive due to internal corruption. This typically
+  turning unresponsive due to internal corruption. This typically
   gives an error in opening the PTP session. Apparently you can
   do a "repair" with the firmware utility (Windows only) which
   will often fix this problem and make the device responsive
@@ -391,7 +391,7 @@ vendor/product ID and a descriptive string to the database
 in the file src/music-players.h.
 
 If you want to poke around to see if your device has some
-special pecularities, you can test some special device
+special peculiarities, you can test some special device
 flags (defined in src/device-flags.h) by inserting them
 together with your device entry in src/music-players.h.
 Flags can be tested in isolation or catenated with "|"
@@ -422,7 +422,7 @@ using e.g.:
 * USBsnoop:
   https://benoit.papillault.free.fr/usbsnoop/
 
-* The trial version of HHD Softwares software-only
+* The trial version of HHD Software software-only
   USB monitor. You need to get a copy of version 2.37 since
   the newer trial versions won't let you carry out the
   needed packet sniffs. (As of 2007-03-10 a copy can be found
@@ -437,7 +437,7 @@ Device sniffs are an easy read since the PTP/MTP protocol
 is nicely structured. All commands will have a structure such
 as this in the log, we examplify with a object list request:
 
-PTP REQEUST:
+PTP REQUEST:
 000120: Bulk or Interrupt Transfer (UP), 03.09.2007 12:49:25.9843750 +0.0
 Pipe Handle: 0x863ce234 (Endpoint Address: 0x2)
 Send 0x20 bytes to the device:
@@ -536,7 +536,7 @@ libmtp. Relevant codes are:
 * 0x02 [0000 0010] : Playlist debug
 * 0x04 [0000 0100] : USB debug
 * 0x08 [0000 1000] : USB data debug
-// Codes are hex and binary respectively. Simple add them togther
+// Codes are hex and binary respectively. Simple add them together
 // to get your desired level of output.
 
 (Assuming bash)
@@ -934,7 +934,7 @@ out-of-the-box with libmtp. We need someone on the inside to help in
 bug reporting vendors MTP stacks internally so these issues are raised.
 A good way to go toward better MTP compliance is to test with an
 alternative implementation of the stack. In e.g. IETF standardization
-it is compulsory for an RFC to have atleast two independent implementations
+it is compulsory for an RFC to have at least two independent implementations
 for it to reach the status as standard.
 
 Being compliant with libmtp is also more and more important for
@@ -1047,7 +1047,7 @@ builders summit, might come to recycle this:
   - Android bugs
   - Samsungs special Android MTP stack
   - SonyEricsson Aricent stack for Xperia Androids pre 4.0, broken headers!
-  - Flat access model vs hierarchical, how Android uses MTP as an hierachical
+  - Flat access model vs hierarchical, how Android uses MTP as an hierarchical
     file system while it was previously a flat database.
   - Old paradigm: scan the entire non-hierarchical storage for all content,
     build a cache to speed up the (USB 1.1!) link. Usually all files were

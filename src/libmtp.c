@@ -3974,7 +3974,7 @@ int LIBMTP_Format_Storage(LIBMTP_mtpdevice_t *device,
 
 /**
  * Helper function to extract a unicode property off a device.
- * This is the standard way of retrieveing unicode device
+ * This is the standard way of retrieving unicode device
  * properties as described by the PTP spec.
  * @param device a pointer to the device to get the property from.
  * @param unicstring a pointer to a pointer that will hold the
@@ -4356,7 +4356,7 @@ static LIBMTP_file_t *obj2file(LIBMTP_mtpdevice_t *device, PTPObject *ob)
    * A special quirk for devices that doesn't quite
    * remember that some files marked as "unknown" type are
    * actually OGG or FLAC files. We look at the filename extension
-   * and see if it happens that this was atleast named "ogg" or "flac"
+   * and see if it happens that this was at least named "ogg" or "flac"
    * and fall back on this heuristic approach in that case,
    * for these bugged devices only.
    */
@@ -5140,7 +5140,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback_For_Storage(LIBMTP_mtpdevi
      * A special quirk for iriver devices that doesn't quite
      * remember that some files marked as "unknown" type are
      * actually OGG or FLAC files. We look at the filename extension
-     * and see if it happens that this was atleast named "ogg" or "flac"
+     * and see if it happens that this was at least named "ogg" or "flac"
      * and fall back on this heuristic approach in that case,
      * for these bugged devices only.
      */
@@ -5245,7 +5245,7 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
    * A special quirk for devices that doesn't quite
    * remember that some files marked as "unknown" type are
    * actually OGG or FLAC files. We look at the filename extension
-   * and see if it happens that this was atleast named "ogg"
+   * and see if it happens that this was at least named "ogg"
    * and fall back on this heuristic approach in that case,
    * for these bugged devices only.
    */
@@ -6285,7 +6285,7 @@ static int send_file_object_info(LIBMTP_mtpdevice_t *device, LIBMTP_file_t *file
 
   /*
    * If no destination folder was given, look up a default
-   * folder if possible. Perhaps there is some way of retrieveing
+   * folder if possible. Perhaps there is some way of retrieving
    * the default folder for different forms of content, what
    * do I know, we use a fixed list in lack of any better method.
    * Some devices obviously need to have their files in certain
