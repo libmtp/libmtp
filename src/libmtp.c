@@ -1879,7 +1879,7 @@ static void parse_extension_descriptor(LIBMTP_mtpdevice_t *mtpdevice,
 
 	  /* extension versions have to be MAJOR.MINOR, but Samsung has one
 	   * with just 0, so just cope with those cases too */
-	  if (	(2 == sscanf(element+i+1,"%d.%d",&major,&minor)) || 
+	  if (	(2 == sscanf(element+i+1,"%d.%d",&major,&minor)) ||
 	  	(1 == sscanf(element+i+1,"%d",&major))
 	  ) {
             LIBMTP_device_extension_t *extension;
@@ -2201,17 +2201,6 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device_Uncached(LIBMTP_raw_device_t *rawdevi
     mtp_device->storage = NULL;
   }
 
-
-  return mtp_device;
-}
-
-LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
-{
-  LIBMTP_mtpdevice_t *mtp_device = LIBMTP_Open_Raw_Device_Uncached(rawdevice);
-
-  if (mtp_device == NULL)
-    return NULL;
-
   /* Check for MTPZ devices. */
   if (use_mtpz) {
     LIBMTP_device_extension_t *tmpext = mtp_device->extensions;
@@ -2229,6 +2218,17 @@ LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
       tmpext = tmpext->next;
     }
   }
+
+
+  return mtp_device;
+}
+
+LIBMTP_mtpdevice_t *LIBMTP_Open_Raw_Device(LIBMTP_raw_device_t *rawdevice)
+{
+  LIBMTP_mtpdevice_t *mtp_device = LIBMTP_Open_Raw_Device_Uncached(rawdevice);
+
+  if (mtp_device == NULL)
+    return NULL;
 
   // Set up this device as cached
   mtp_device->cached = 1;
@@ -3974,7 +3974,7 @@ int LIBMTP_Format_Storage(LIBMTP_mtpdevice_t *device,
 
 /**
  * Helper function to extract a unicode property off a device.
- * This is the standard way of retrieveing unicode device
+ * This is the standard way of retrieving unicode device
  * properties as described by the PTP spec.
  * @param device a pointer to the device to get the property from.
  * @param unicstring a pointer to a pointer that will hold the
@@ -4356,7 +4356,7 @@ static LIBMTP_file_t *obj2file(LIBMTP_mtpdevice_t *device, PTPObject *ob)
    * A special quirk for devices that doesn't quite
    * remember that some files marked as "unknown" type are
    * actually OGG or FLAC files. We look at the filename extension
-   * and see if it happens that this was atleast named "ogg" or "flac"
+   * and see if it happens that this was at least named "ogg" or "flac"
    * and fall back on this heuristic approach in that case,
    * for these bugged devices only.
    */
@@ -5053,7 +5053,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback(LIBMTP_mtpdevice_t *device
  * arrange tracks into folders, you must dereference the <code>storage_id</code>
  * and/or <code>parent_id</code> field of the returned <code>LIBMTP_track_t</code>
  * struct. To arrange by folders or files you typically have to create the proper
- * trees by calls to <code>LIBMTP_Get_Storage()</code> and/or 
+ * trees by calls to <code>LIBMTP_Get_Storage()</code> and/or
  * <code>LIBMTP_Get_Folder_List()</code> first.
  *
  * @param device a pointer to the device to get the track listing for.
@@ -5140,7 +5140,7 @@ LIBMTP_track_t *LIBMTP_Get_Tracklisting_With_Callback_For_Storage(LIBMTP_mtpdevi
      * A special quirk for iriver devices that doesn't quite
      * remember that some files marked as "unknown" type are
      * actually OGG or FLAC files. We look at the filename extension
-     * and see if it happens that this was atleast named "ogg" or "flac"
+     * and see if it happens that this was at least named "ogg" or "flac"
      * and fall back on this heuristic approach in that case,
      * for these bugged devices only.
      */
@@ -5245,7 +5245,7 @@ LIBMTP_track_t *LIBMTP_Get_Trackmetadata(LIBMTP_mtpdevice_t *device, uint32_t co
    * A special quirk for devices that doesn't quite
    * remember that some files marked as "unknown" type are
    * actually OGG or FLAC files. We look at the filename extension
-   * and see if it happens that this was atleast named "ogg"
+   * and see if it happens that this was at least named "ogg"
    * and fall back on this heuristic approach in that case,
    * for these bugged devices only.
    */
@@ -6285,7 +6285,7 @@ static int send_file_object_info(LIBMTP_mtpdevice_t *device, LIBMTP_file_t *file
 
   /*
    * If no destination folder was given, look up a default
-   * folder if possible. Perhaps there is some way of retrieveing
+   * folder if possible. Perhaps there is some way of retrieving
    * the default folder for different forms of content, what
    * do I know, we use a fixed list in lack of any better method.
    * Some devices obviously need to have their files in certain
@@ -8419,8 +8419,8 @@ static int update_abstract_list(LIBMTP_mtpdevice_t *device,
  *        exits with success, the <code>playlist_id</code> field of this
  *        struct will contain the new playlist ID of the playlist.
  *        <ul>
- *        <li><code>metadata-&gt;parent_id</code> should be set to the parent 
- *        (e.g. folder) to store this track in. Since some 
+ *        <li><code>metadata-&gt;parent_id</code> should be set to the parent
+ *        (e.g. folder) to store this track in. Since some
  *        devices are a bit picky about where files
  *        are placed, a default folder will be chosen if libmtp
  *        has detected one for the current filetype and this
