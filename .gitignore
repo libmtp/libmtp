@@ -26,3 +26,6 @@ libtool
 ltmain.sh
 missing
 stamp-h1
+test-driver
+src/test-filenames
+*.trs
