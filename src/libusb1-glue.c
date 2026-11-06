@@ -1964,6 +1964,7 @@ static int init_ptp_usb(PTPParams* params, PTP_USB* ptp_usb, libusb_device* dev)
     ret = libusb_get_active_config_descriptor(dev, &config);
     if (ret != LIBUSB_SUCCESS) {
       perror("libusb_get_active_config_descriptor(2) failed");
+      libusb_close(device_handle);
       return -1;
     }
   }
@@ -1977,6 +1978,7 @@ static int init_ptp_usb(PTPParams* params, PTP_USB* ptp_usb, libusb_device* dev)
     ret = libusb_get_active_config_descriptor(dev, &config);
     if (ret != LIBUSB_SUCCESS) {
       perror("libusb_get_active_config_descriptor(2) failed");
+      libusb_close(device_handle);
       return -1;
     }
   }
@@ -1987,6 +1989,8 @@ static int init_ptp_usb(PTPParams* params, PTP_USB* ptp_usb, libusb_device* dev)
       fprintf(stderr, "libusb_claim_interface() reports device is busy, likely in use by GVFS or KDE MTP device handling already");
     else
       fprintf(stderr, "error returned by libusb_claim_interface() = %d", usbresult);
+    libusb_free_config_descriptor(config);
+    libusb_close(device_handle);
     return -1;
   }
 
@@ -2114,6 +2118,20 @@ static void close_usb(PTP_USB* ptp_usb)
      * Reset may help some.
      */
     libusb_reset_device (ptp_usb->handle);
+  }
+  libusb_close(ptp_usb->handle);
+}
+
+/**
+ * Releases the interface and closes the device when no session
+ * could be opened. Unlike close_usb(), this sends nothing else to
+ * the device: no GET_STATUS, which waits for the full timeout when
+ * the device has stopped answering, and no reset.
+ */
+static void close_usb_after_failure(PTP_USB* ptp_usb)
+{
+  if (!FLAG_NO_RELEASE_INTERFACE(ptp_usb)) {
+    libusb_release_interface(ptp_usb->handle, (int) ptp_usb->interface);
   }
   libusb_close(ptp_usb->handle);
 }
@@ -2334,6 +2352,7 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
     /* Device has been reset, try again */
     if ((ret = ptp_opensession(params, 1)) == PTP_ERROR_IO) {
       LIBMTP_ERROR("LIBMTP PANIC: failed to open session on second attempt\n");
+      close_usb_after_failure(ptp_usb);
       libusb_free_device_list (devs, 0);
       free (ptp_usb);
       return LIBMTP_ERROR_CONNECTING;
@@ -2351,7 +2370,7 @@ LIBMTP_error_number_t configure_usb_device(LIBMTP_raw_device_t *device,
     LIBMTP_ERROR("LIBMTP PANIC: Could not open session! "
 	    "(Return code %d)\n  Try to reset the device.\n",
 	    ret);
-    libusb_release_interface(ptp_usb->handle, ptp_usb->interface);
+    close_usb_after_failure(ptp_usb);
     libusb_free_device_list (devs, 0);
     free (ptp_usb);
     return LIBMTP_ERROR_CONNECTING;
