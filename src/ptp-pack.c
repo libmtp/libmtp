@@ -2066,8 +2066,9 @@ ptp_unpack_EOS_events (PTPParams *params, const unsigned char* data, unsigned in
 				/* 'normal' enumerated types */
 				switch (dpd->DataType) {
 #define XX( TYPE, CONV )\
-					if (sizeof(dpd->FORM.Enum.SupportedValue[j].TYPE)*dpd_count > xsize) {	\
-						ptp_debug (params, "%s size %lu does not match needed %u", prefix, sizeof(dpd->FORM.Enum.SupportedValue[j].TYPE)*dpd_count, xsize);	\
+					/* values always occupy 4 bytes, see the increment below */	\
+					if (4UL*dpd_count > xsize) {					\
+						ptp_debug (params, "%s size %lu does not match needed %u", prefix, 4UL*dpd_count, xsize);	\
 						break;							\
 					}								\
 					for (j=0;j<dpd_count;j++) { 					\
