@@ -3993,6 +3993,8 @@
   { "Kyocera", 0x0482, "C6740N", 0x0a73, DEVICE_FLAGS_ANDROID_BUGS },
   /* https://sourceforge.net/p/libmtp/feature-requests/220/ */
   { "Kyocera", 0x0482, "Duraforce XD", 0x0a9a, DEVICE_FLAGS_ANDROID_BUGS },
+  /* https://sourceforge.net/p/libmtp/discussion/535190/ */
+  { "Kyocera", 0x0482, "E4811 Dura Extreme+", 0x0ade, DEVICE_FLAGS_ANDROID_BUGS },
 
   /*
    * Hewlett-Packard
