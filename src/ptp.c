@@ -9571,6 +9571,27 @@ ptp_find_or_insert_object_in_cache (PTPParams *params, uint32_t handle, PTPObjec
 	return PTP_RC_OK;
 }
 
+/*
+ * Date properties are defined as strings in the MTP specification, but some
+ * devices (e.g. the Samsung Galaxy A30) send them as integer timestamps.
+ * Only dereference the string member when the datatype really is a string,
+ * otherwise the numeric value in the union is used as a pointer.
+ */
+static time_t
+ptp_unpack_objectprop_date (const MTPObjectProp *prop)
+{
+	switch (prop->DataType) {
+	case PTP_DTC_STR:
+		return ptp_unpack_PTPTIME (prop->Value.str);
+	case PTP_DTC_UINT32:
+		return (time_t) prop->Value.u32;
+	case PTP_DTC_UINT64:
+		return (time_t) prop->Value.u64;
+	default:
+		return 0;
+	}
+}
+
 uint16_t
 ptp_object_want (PTPParams *params, uint32_t handle, unsigned int want, PTPObject **retob)
 {
@@ -9716,10 +9737,10 @@ ptp_object_want (PTPParams *params, uint32_t handle, unsigned int want, PTPObjec
 					}
 					break;
 				case PTP_OPC_DateCreated:
-					ob->oi.CaptureDate = ptp_unpack_PTPTIME(prop->Value.str);
+					ob->oi.CaptureDate = ptp_unpack_objectprop_date (prop);
 					break;
 				case PTP_OPC_DateModified:
-					ob->oi.ModificationDate = ptp_unpack_PTPTIME(prop->Value.str);
+					ob->oi.ModificationDate = ptp_unpack_objectprop_date (prop);
 					break;
 				case PTP_OPC_Keywords:
 					if (prop->Value.str) {
