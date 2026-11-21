@@ -1483,8 +1483,10 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 					break;
 				rlen += readdata;
 				/* upper limit of read dictated by packet size, to avoid reading forever
-				 * from malicious devices */
-				if (rlen > usbdata.length)
+				 * from malicious devices.
+				 * GetObject sends 0xffffffff for files of 4GB or more,
+				 * no limit in that case. */
+				if (rlen > dtoh32(usbdata.length) && !(ptp->Code == PTP_OC_GetObject && dtoh32(usbdata.length) == 0xffffffffU))
 					break;
 			}
 			return PTP_RC_OK;	/* FIXME: should we fallthrough in case we read more? */
