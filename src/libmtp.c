@@ -6261,6 +6261,8 @@ static int send_file_object_info(LIBMTP_mtpdevice_t *device, LIBMTP_file_t *file
   uint16_t ret;
   unsigned int i;
 
+  sanitize_android_filename(device, filedata->filename);
+
 #if 0
   // Sanity check: no zerolength files on some devices?
   // If the zerolength files cause problems on some devices,
@@ -7594,6 +7596,8 @@ uint32_t LIBMTP_Create_Folder(LIBMTP_mtpdevice_t *device, char *name,
   PTPObjectInfo new_folder;
   uint16_t ret;
   uint32_t new_id = 0;
+
+  sanitize_android_filename(device, name);
 
   if (storage_id == 0) {
     // I'm just guessing that a folder may require 512 bytes

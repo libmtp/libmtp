@@ -9,6 +9,11 @@ libmtp_la_SOURCES = array.h compiletime-assert.h libmtp.c unicode.c unicode.h ut
 EXTRA_DIST = gphoto2-sync.sh libmtp.h.in libmtp.sym ptp-pack.c
 nodist_EXTRA_DATA = libmtp.h
 
+check_PROGRAMS = test-filenames
+TESTS = $(check_PROGRAMS)
+test_filenames_SOURCES = test-filenames.c unicode.c
+test_filenames_LDADD = $(LTLIBICONV)
+
 if MTPZ_COMPILE
 libmtp_la_SOURCES += mtpz.c
 else

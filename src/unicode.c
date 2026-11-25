@@ -174,3 +174,32 @@ void strip_7bit_from_utf8(char *str)
   // Terminate stripped string...
   str[j] = '\0';
 }
+
+/**
+ * Android's shared storage rejects FAT-invalid filename characters even on
+ * emulated storage. Its MTP server may accept SendObjectInfo but then fail to
+ * open the file during SendObject, leaving the remaining data unread.
+ * Replace these ASCII characters before starting the transfer. Apostrophes
+ * and UTF-8 bytes are valid and must be preserved.
+ */
+void sanitize_android_filename(LIBMTP_mtpdevice_t *device, char *str)
+{
+  LIBMTP_device_extension_t *extension;
+  unsigned char *p;
+
+  if (str == NULL)
+    return;
+
+  for (extension = device->extensions; extension != NULL;
+       extension = extension->next) {
+    if (!strcmp(extension->name, "android.com"))
+      break;
+  }
+  if (extension == NULL)
+    return;
+
+  for (p = (unsigned char *) str; *p != '\0'; p++) {
+    if (*p < 0x20 || *p == 0x7f || strchr("\"*/:<>?\\|", *p) != NULL)
+      *p = '_';
+  }
+}
